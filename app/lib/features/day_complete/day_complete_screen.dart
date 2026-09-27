@@ -80,10 +80,12 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
     final tokens = context.tokens;
     final today = ref.watch(todayProvider);
     final first = ref.watch(dayCompleteFirstProvider(today));
-    final view = ref.watch(todayViewProvider).value;
+    final viewState = ref.watch(todayViewProvider);
+    final view = viewState.value;
 
-    // Already celebrated today: straight on to Today.
-    if (first.value == false) {
+    // Already celebrated today, or it can't be told (#677): straight on to
+    // Today, rather than a blank page waiting for a tap.
+    if (first.value == false || first.hasError || viewState.hasError) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _leave());
     }
     final ready = first.value ?? false;

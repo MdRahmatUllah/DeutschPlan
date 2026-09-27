@@ -514,6 +514,23 @@ void main() {
         reason: 'INSERT OR REPLACE would have reset seen',
       );
     });
+
+    test('#621 a re-run with no baseline keeps the diff it recorded', () async {
+      publish(course(version: '202602020000', addWord: true));
+      await updater.runIfNeeded();
+
+      // A reset course or a truncated kept manifest: the re-run has nothing
+      // to diff against and records a change of nothing.
+      File('${support.path}/${ContentUpdater.manifestFile}').deleteSync();
+      expect((await updater.runIfNeeded())!.isEmpty, isTrue);
+
+      final card = await updater.unseen();
+      expect(card?.added, <String>['uid-neu'], reason: 'the card was wiped');
+      final row = await db
+          .customSelect('SELECT added FROM content_updates')
+          .getSingle();
+      expect(row.read<int>('added'), 1);
+    });
   });
 
   test('a removed word keeps its word_state and stops appearing', () async {

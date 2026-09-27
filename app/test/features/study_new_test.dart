@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -436,5 +437,46 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       await tester.pump(StudyScreen.bannerTime);
       await tester.pumpAndSettle();
     });
+  });
+
+  testWidgets("#677 FR-T2 a card whose word won't read has no Show meaning "
+      'and no rating, and says so with Retry', (tester) async {
+    await tester.runAsync(open);
+    addTearDown(
+      () => tester.runAsync(() async {
+        await settings.dispose();
+        await db.close();
+      }),
+    );
+    var reads = 0;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: <Override>[
+          ...overrides(),
+          studyWordProvider.overrideWith((ref, uid) async {
+            reads++;
+            throw StateError('the read failed');
+          }),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: const StudyScreen(args: args),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.pump(StudyScreen.bannerTime);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SgLoadFailed), findsOneWidget);
+    expect(find.text(l10n.wordLoadFailed), findsOneWidget);
+    expect(find.text(l10n.studyShowMeaning), findsNothing);
+    expect(find.byType(StudyNewActions), findsNothing);
+    final before = reads;
+    await tester.tap(find.text(l10n.retry));
+    await tester.pumpAndSettle();
+    expect(reads, greaterThan(before));
   });
 }

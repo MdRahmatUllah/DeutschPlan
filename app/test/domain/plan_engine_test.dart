@@ -134,6 +134,31 @@ void main() {
       expect(opened.newToday, <String>['b1', 'b2', 'b3', 'b4', 'b5']);
     });
 
+    test('#687 AN-7 a day the step ran out part-way through is topped up to '
+        'the new pace, and keeps the revisions it picked (#342)', () async {
+      store.wordsByStep['A1.1'] = <String>['a1', 'a2', 'a3'];
+      final engine = engineWith(autoAdvance: false);
+      // Opened with nothing to revise: an empty Revise block is still picked.
+      final stuck = await engine.openDay(monday);
+      expect(stuck.newToday, <String>['a1', 'a2', 'a3']);
+      expect(stuck.revise, isEmpty);
+      expect(stuck.stepComplete, isTrue);
+
+      store.candidates = <RevisionCandidate>[
+        RevisionCandidate(uid: 'old', stability: 2, lastReview: monday),
+      ];
+      await engine.startNextStep(
+        monday,
+        dailyNew: 5,
+        studyDaysMask: PlanEngine.allDays,
+      );
+
+      final opened = await engine.openDay(monday);
+      expect(opened.newToday, <String>['a1', 'a2', 'a3', 'b1', 'b2']);
+      expect(opened.revise, isEmpty, reason: 'today was opened before');
+      expect(store.lastPlanned, monday);
+    });
+
     test('does nothing while a step is active', () async {
       final engine = engineWith(autoAdvance: false);
       expect(
@@ -1100,21 +1125,23 @@ void main() {
       },
     );
 
-    test(
-      'a day with rows is left alone even if planning never finished',
-      () async {
-        // The guard inside the walk, which `last_planned_date` usually makes
-        // unreachable. A crash between writing the rows and recording the date
-        // leaves exactly this state, and re-walking would plan a *second* seven
-        // words onto the same day.
-        await store.addToPlan(monday, PlanKind.newWord, <String>['w1', 'w2']);
-        expect(store.lastPlanned, isNull, reason: 'the fixture is the crash');
+    test('#687 AN-7 a day with rows is topped up, never doubled, even if '
+        'planning never finished', () async {
+      // The guard inside the walk, which `last_planned_date` usually makes
+      // unreachable. A crash between writing the rows and recording the date
+      // leaves exactly this state, and re-walking would plan a *second* seven
+      // words onto the same day. What it lacks of its seven is planned.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['w1', 'w2']);
+      expect(store.lastPlanned, isNull, reason: 'the fixture is the crash');
 
-        await engineWith().openDay(monday);
+      await engineWith().openDay(monday);
 
-        expect(store.plan['$monday/new'], <String>['w1', 'w2']);
-      },
-    );
+      expect(store.plan['$monday/new'], <String>[
+        for (var i = 1; i <= 7; i++) 'w$i',
+      ]);
+      await engineWith().openDay(monday);
+      expect(store.plan['$monday/new'], hasLength(7));
+    });
 
     test('BR-PLAN-04 #346 a past day reopened is as it was, and so are the '
         'days after it', () async {

@@ -91,6 +91,10 @@ class QuizWord {
 
   /// "der Mietvertrag", or "arbeiten".
   String get headword => article == null ? german : '$article $german';
+
+  /// A phrase with no article of its own: a leading "Das" or "den" is one of
+  /// its words, typed like the rest (`checkGerman`'s phrase, #687 AN-10).
+  bool get isPhrase => pos == 'phrase' && article == null;
 }
 
 /// What the builder needs from the database. Pure Dart, like the plan
@@ -117,6 +121,7 @@ class QuizItem {
     this.options = const <String>[],
     this.form,
     this.hint,
+    this.phrase = false,
   });
 
   /// 1-based, as `quiz_answers.ord`.
@@ -146,6 +151,10 @@ class QuizItem {
   /// The Bangla meaning under an English EN → DE prompt, for a learner
   /// who reads both (`quiz.md`: "EN/BN prompt"); null otherwise.
   final String? hint;
+
+  /// EN → DE and listening: [expected] is a phrase whose leading article-like
+  /// word is typed like the rest ([QuizWord.isPhrase]).
+  final bool phrase;
 
   /// Whether the runner asks with the tiles rather than a field: DE →
   /// বাংলা, since typing Bangla needs a Bangla keyboard, which a learner of
@@ -314,6 +323,7 @@ class QuizBuilder {
           expected: word.headword,
           options: await tiles((w) => w.headword),
           hint: meanings.length == 2 ? word.bangla : null,
+          phrase: word.isPhrase,
         );
       case QuizDirection.articles:
         return QuizItem(
@@ -330,6 +340,7 @@ class QuizBuilder {
           direction: direction,
           prompt: word.headword,
           expected: word.headword,
+          phrase: word.isPhrase,
         );
       case QuizDirection.forms:
         final forms = parseForms(word);
@@ -360,8 +371,11 @@ Verdict grade(QuizItem item, String given) => switch (item.direction) {
   _ when item.tiles => given == item.expected ? Verdict.correct : Verdict.wrong,
   QuizDirection.deEn ||
   QuizDirection.deBn => checkMeaning(given, item.expected),
-  QuizDirection.enDe ||
-  QuizDirection.listening => checkGerman(given, item.expected),
+  QuizDirection.enDe || QuizDirection.listening => checkGerman(
+    given,
+    item.expected,
+    phrase: item.phrase,
+  ),
   QuizDirection.articles => checkArticle(given, item.expected),
   QuizDirection.forms => checkForm(given, item.expected),
   QuizDirection.compare =>

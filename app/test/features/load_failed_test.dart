@@ -12,6 +12,7 @@ import 'package:sogda/features/learn/step_exams.dart';
 import 'package:sogda/features/learn/step_grammar.dart';
 import 'package:sogda/features/learn/step_words.dart';
 import 'package:sogda/features/quiz/quiz_result_screen.dart';
+import 'package:sogda/features/sentences/sentences_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart' show QuizArgs;
 import 'package:sogda/main.dart'
@@ -286,6 +287,17 @@ void main() {
     await expectPanel(tester, calls, l10n.learnLoadFailed, back: true);
   });
 
+  testWidgets("#677 FR-T5 the day's sentences", (tester) async {
+    final calls = await pump(
+      tester,
+      const SentencesScreen(),
+      (calls) => practiceSentencesProvider.overrideWith(
+        () => _FailingSentences(calls),
+      ),
+    );
+    await expectPanel(tester, calls, l10n.todayLoadFailed, back: false);
+  });
+
   testWidgets('#677 FR-T4 the backlog: Back too', (tester) async {
     final calls = await pump(
       tester,
@@ -294,6 +306,18 @@ void main() {
     );
     await expectPanel(tester, calls, l10n.todayLoadFailed, back: true);
   });
+}
+
+class _FailingSentences extends PracticeSentences {
+  _FailingSentences(this.calls);
+
+  final List<int> calls;
+
+  @override
+  Future<List<PracticeSentence>> build() async {
+    calls.add(1);
+    throw StateError('the read failed');
+  }
 }
 
 class _FailingBacklog extends Backlog {

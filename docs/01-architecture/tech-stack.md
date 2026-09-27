@@ -30,7 +30,7 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Routing | `go_router` | 18.x | `StatefulShellRoute.indexedStack` for the four tabs with preserved state; typed routes via `go_router_builder`; deep links. |
 | Database | `drift` + `drift_flutter` + `drift_dev` | 2.35.x | Type-safe SQL, migrations, reactive `Stream` queries, background isolate, **FTS5 helpers in the Dart API** (2.35+). Runs on `sqlite3` 3.x. |
 | SQLite binaries | `sqlite3` | 3.6.x | **Replaces `sqlite3_flutter_libs`, which is end-of-life** ("Not used anymore, update to version 3.x of package:sqlite3 instead"). `sqlite3` 3.x bundles the native library itself and is what drift 2.35 already depends on. FTS5 with the trigram tokenizer must be asserted at runtime — see `02-data/content-database.md`. |
-| Immutable models | `freezed` + `freezed_annotation` + `json_serializable` | 4.x / 3.x / 6.x | Data classes, unions for card kinds and exam sections, JSON for export/import. |
+| Immutable models | none (#697) | — | `@immutable` classes, records and `sealed` hierarchies, and hand-written JSON for export/import. `freezed` and `json_serializable` were declared but never used, and were removed. |
 | Localisation | `flutter_localizations` + `intl` | SDK / 0.20.x | ARB files for en/bn; German date on Today. |
 | TTS (system) | `flutter_tts` | 4.x | Zero-download fallback voice. |
 | TTS (on-device model) | `flutter_onnxruntime` | 1.8.x | Native ONNX Runtime wrapper (ORT 1.22+), 16 KB-page compliant on Android, SPM on iOS. Runs Supertonic 3. |
@@ -42,13 +42,12 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Home-screen widget | `home_widget` | 0.10.x | Bridges to Glance (Android) and WidgetKit (iOS) via a shared JSON snapshot. |
 | Background work | `workmanager` | 0.10.x | Nightly plan pre-generation and widget refresh on Android; iOS uses BGTaskScheduler through the same package. |
 | Files & sharing | `path_provider`, `file_picker`, `share_plus` | 2.x / 13.x / 13.x | Export/import JSON. |
-| Web links | `flutter_custom_tabs` | 2.x | Chrome Custom Tabs / SFSafariViewController for Duden, DWDS, Wiktionary, Linguee, Google. |
-| Animation | `flutter_animate` | 4.x | Declarative micro-animations (reveal, shake, ring fill). Confetti is a custom `CustomPainter`. |
+| Web links | `url_launcher` | 6.x | Its in-app browser view (a Custom Tab on Android, SFSafariViewController on iOS) for Duden, DWDS, Wiktionary, Linguee, Google (FR-R1-06). `flutter_custom_tabs` was never imported and was removed (#697). |
+| Animation | the framework's own | — | Implicit and explicit animations (reveal, shake, ring fill); confetti is a custom `CustomPainter`. `flutter_animate` was never imported and was removed (#697). |
 | Charts | `fl_chart` | 1.x | Activity bars, retention line on Progress. |
 | Permissions | `permission_handler` | 13.x | Mic and notification permissions with rationale. |
-| Device info | `device_info_plus` | 13.x | Glass fallback decision (API level, low-end detection). |
 | Lints | `flutter_lints` + `riverpod_lint` | 6.x / 3.1.x | Enforced by the gate (`dart analyze --fatal-infos`). `custom_lint` is **no longer used**: riverpod_lint 3.1.4+ is a native `analyzer_plugin` and the two cannot co-resolve. |
-| Tests | `flutter_test` (goldens with `matchesGoldenFile`), `integration_test`, `drift` in-memory DB | latest | Unit, widget, golden (three themes) and integration tests. Fakes are hand-written. `mocktail` and `alchemist` are dev dependencies but unused (`testing.md`). |
+| Tests | `flutter_test` (goldens with `matchesGoldenFile`), `integration_test`, `drift` in-memory DB | latest | Unit, widget, golden (three themes) and integration tests. Fakes are hand-written (`testing.md`); `mocktail` and `alchemist` were never used and were removed (#697). |
 
 ## Rejected alternatives (and why)
 

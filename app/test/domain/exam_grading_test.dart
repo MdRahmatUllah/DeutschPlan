@@ -336,6 +336,48 @@ void main() {
       },
     );
 
+    test('#687 AN-10 a phrase is typed whole; a paper stored before the flag '
+        'grades as it did', () {
+      const phrase = WordQuestion(
+        ExamSection.reverse,
+        'p',
+        prompt: "that's not right",
+        expected: 'Das stimmt nicht',
+        phrase: true,
+      );
+      expect(verdictFor(phrase, 'stimmt nicht'), Verdict.wrong);
+      expect(verdictFor(phrase, 'das stimmt nicht'), Verdict.correct);
+      final row = phrase.encode();
+      final before = ExamItem.decode((
+        section: row.section,
+        ref: row.ref,
+        prompt: jsonEncode(<String, Object?>{'prompt': "that's not right"}),
+        options: row.options,
+        expected: row.expected,
+      ));
+      expect(verdictFor(before, 'stimmt nicht'), Verdict.correct);
+    });
+
+    test('#687 AN-12 a rubric that is no list of ticks is none ticked', () {
+      final full = text(targets: 6, words: 30);
+      for (final bad in <String>['not json', '{"a": 1}', '7', 'null', '']) {
+        expect(rubricTicks(bad), isEmpty, reason: bad);
+        expect(
+          itemPoints(writing, given: full, rubric: bad),
+          2,
+          reason: bad,
+        );
+      }
+      expect(rubricTicks(null), isEmpty);
+      expect(rubricTicks('[true, 1, "x", false, true]'), <bool>[
+        true,
+        false,
+        false,
+        false,
+        true,
+      ]);
+    });
+
     test('FR-L12W-03 no text, no rubric points', () {
       expect(itemPoints(writing, rubric: ticks([true, true])), 0);
       expect(itemPoints(writing, given: '  ', rubric: ticks([true, true])), 0);

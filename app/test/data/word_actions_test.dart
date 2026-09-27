@@ -183,6 +183,27 @@ void main() {
       expect(await db.select(db.reviewLog).get(), isEmpty);
       expect((await plan()).single.completedAt, isNull);
     });
+
+    test('#717 a failure closing the older rows saves nothing: no rating, '
+        'and every row still open', () async {
+      await planned('2026-02-27');
+      await planned(today, kind: 'revise');
+      // The rating closes today's row; closing the backlog's fails.
+      await db.customStatement(
+        'CREATE TEMP TRIGGER fail_close BEFORE UPDATE ON plan_items '
+        "WHEN NEW.plan_date = '2026-02-27' AND NEW.completed_at IS NOT NULL "
+        "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+      );
+
+      await expectLater(
+        actions.markKnown(uid, today: today),
+        throwsA(anything),
+      );
+      expect(await db.select(db.reviewLog).get(), isEmpty);
+      expect(await state(), isNull);
+      expect(await db.select(db.dailyStats).get(), isEmpty);
+      expect(await open(), hasLength(2));
+    });
   });
 
   group('FR-W1-02 BR-STATUS-03 Suspend and Resume', () {

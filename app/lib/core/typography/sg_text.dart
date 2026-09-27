@@ -525,6 +525,59 @@ class SgOneLine extends StatelessWidget {
 
   static const String ellipsis = '…';
 
+  /// The longest start of [word] that fits with the ellipsis after it, when
+  /// not even the whole first word does (#746): after a hyphen where one fits
+  /// ("Nomen-Verb-…"), else at a syllable, else at a letter; Bangla only
+  /// between aksharas, so no conjunct is split. The ellipsis alone only when
+  /// not one piece fits: it used to be all a long title showed at 200 %.
+  static String _cutWord(String word, bool Function(String) fits) {
+    String cut(int at) => '${word.substring(0, at)}$ellipsis';
+    // The longest that fits, since a longer start is never narrower.
+    int? longest(List<int> cuts) {
+      int? best;
+      var low = 0, high = cuts.length - 1;
+      while (low <= high) {
+        final middle = (low + high) >> 1;
+        if (fits(cut(cuts[middle]))) {
+          best = cuts[middle];
+          low = middle + 1;
+        } else {
+          high = middle - 1;
+        }
+      }
+      return best;
+    }
+
+    final List<List<int>> tiers;
+    if (SgScript.hasBengali(word)) {
+      final aksharas = <int>[];
+      var at = 0;
+      for (final unit in SgScript.banglaBreaks(word).codeUnits) {
+        unit == SgScript.softHyphen.codeUnitAt(0) ? aksharas.add(at) : at++;
+      }
+      tiers = <List<int>>[aksharas];
+    } else {
+      final letters = <int>[];
+      var at = 0;
+      for (final rune in word.runes) {
+        at += rune > 0xFFFF ? 2 : 1;
+        if (at < word.length) letters.add(at);
+      }
+      tiers = <List<int>>[
+        <int>[
+          for (var i = 1; i < word.length; i++)
+            if (word[i - 1] == '-') i,
+        ],
+        SgScript._syllableBreaks(word),
+        letters,
+      ];
+    }
+    for (final tier in tiers) {
+      if (longest(tier) case final at?) return cut(at);
+    }
+    return ellipsis;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Measured as it will be drawn: `Text` merges the ambient text style —
@@ -580,7 +633,7 @@ class SgOneLine extends StatelessWidget {
             }
           }
           shown = low == 0
-              ? ellipsis
+              ? _cutWord(words.first, fits)
               : '${words.take(low).join(' ').replaceAll(RegExp(r'[,;:—–&·/+-]+$'), '').trimRight()}$ellipsis';
         }
         return SgScript.hasBengali(shown)
