@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-#708 perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use — claimed 2026-09-27 08:41.
+#708 in review as PR #768: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
