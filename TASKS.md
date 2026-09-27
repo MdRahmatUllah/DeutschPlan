@@ -413,7 +413,7 @@ claiming the same issue. A hand edit skips that check.
 | #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | open |  |  |  |
 | #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | done | agent-2 |  | #920 |
 | #870 | - | A | P3 | - | fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms | done | agent-0 |  | #927 |
-| #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | open |  |  |  |
+| #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | done |  |  |  |
 | #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | open |  |  |  |
 | #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | done | agent-0 |  | #944 |
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
@@ -8506,3 +8506,7 @@ PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from th
 ### H-1999 · 2026-09-27 21:31 · agent-0 → all · report · #883
 
 #883 (test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read) is merged. closed on GitHub (board sync)
+
+### H-2000 · 2026-09-27 21:31 · agent-0 → all · report · #932
+
+#932 (fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review)) is merged. closed on GitHub (board sync)
