@@ -174,6 +174,16 @@ void main() {
       expect(await picker.forDay(today), first);
     });
 
+    test('#750 FR-T5-01 the day is the set the store recorded first', () async {
+      final first = <SentenceCandidate>[s('auto', 1, 'Das Auto ist neu.')];
+      store.log[today] = first;
+      // Read the day empty, then another pick wrote before this one did.
+      store.emptyOnce = true;
+
+      expect(await picker.forDay(today), first);
+      expect(store.log[today], first);
+    });
+
     test('with nothing learned there is nothing to record', () async {
       store.pool = <SentenceCandidate>[];
       expect(await picker.forDay(today), isEmpty);
@@ -189,9 +199,18 @@ class _FakeStore implements SentenceStore {
       <PlanDate, List<SentenceCandidate>>{};
   int? askedGap;
 
+  /// The next [shownOn] answers as if the day were empty: it read before
+  /// another pick's write (#750).
+  bool emptyOnce = false;
+
   @override
-  Future<List<SentenceCandidate>> shownOn(PlanDate date) async =>
-      log[date] ?? const <SentenceCandidate>[];
+  Future<List<SentenceCandidate>> shownOn(PlanDate date) async {
+    if (emptyOnce) {
+      emptyOnce = false;
+      return const <SentenceCandidate>[];
+    }
+    return log[date] ?? const <SentenceCandidate>[];
+  }
 
   @override
   Future<List<SentenceCandidate>> candidates(
@@ -206,6 +225,8 @@ class _FakeStore implements SentenceStore {
   Future<Set<String>> learnedKeys() async => learned;
 
   @override
-  Future<void> record(PlanDate date, List<SentenceCandidate> picked) async =>
-      log[date] = picked;
+  Future<List<SentenceCandidate>> record(
+    PlanDate date,
+    List<SentenceCandidate> picked,
+  ) async => log.putIfAbsent(date, () => picked);
 }

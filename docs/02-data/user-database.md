@@ -79,7 +79,7 @@ Never drop columns with data; add nullable columns or new tables.
 ## Transactions
 
 - Rating a card = one transaction: upsert `word_state`, insert `review_log`, update `plan_items`, bump `daily_stats`, push `undo_stack`.
-- Rating a practice sentence = one transaction: bump `daily_stats.sentences_done` on the sentence's first rating (a changed answer isn't another sentence, #659), set `sentence_log.self_rating`, and *Not yet*'s Hard rating of the headword, which is a card rating as above. A day of sentences alone is a day studied, for the streak and M1's heat map.
+- Rating a practice sentence = one transaction: bump `daily_stats.sentences_done` on the sentence's first rating (a changed answer isn't another sentence, #659), set `sentence_log.self_rating`, and *Not yet*'s Hard rating of the headword, which is a card rating as above, on the sentence's first rating only (#662). A day of sentences alone is a day studied, for the streak and M1's heat map.
 - Plan generation for a day = one transaction.
 - Exam answers are written per question so a crash loses at most one answer.
 

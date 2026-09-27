@@ -86,27 +86,38 @@ WHERE s.status IN ('learning', 'done')
   }
 
   @override
-  Future<void> record(PlanDate date, List<SentenceCandidate> picked) =>
-      _db.transaction(() async {
-        for (final sentence in picked) {
-          await _db.customInsert(
-            'INSERT OR IGNORE INTO sentence_log (word_uid, ord, shown_on) '
-            'VALUES (?1, ?2, ?3)',
-            variables: <Variable<Object>>[
-              Variable<String>(sentence.wordUid),
-              Variable<int>(sentence.ord),
-              Variable<String>(date),
-            ],
-            updates: <TableInfo<Table, Object>>{_db.sentenceLog},
-          );
-        }
-      });
+  Future<List<SentenceCandidate>> record(
+    PlanDate date,
+    List<SentenceCandidate> picked,
+  ) => _db.transaction(() async {
+    // Read again inside the transaction: a pick that found the day empty
+    // before another pick's write keeps that one's set, rather than adding
+    // a second (#750).
+    final shown = await shownOn(date);
+    if (shown.isNotEmpty) return shown;
+    for (final sentence in picked) {
+      await _db.customInsert(
+        'INSERT OR IGNORE INTO sentence_log (word_uid, ord, shown_on) '
+        'VALUES (?1, ?2, ?3)',
+        variables: <Variable<Object>>[
+          Variable<String>(sentence.wordUid),
+          Variable<int>(sentence.ord),
+          Variable<String>(date),
+        ],
+        updates: <TableInfo<Table, Object>>{_db.sentenceLog},
+      );
+    }
+    return picked;
+  });
 
   /// FR-T5-02: how a sentence went — `self_rating` 3 Understood, 2 Partly,
   /// 1 Not yet (`sentences.md`).
   ///
   /// [andThen] — *Not yet*'s Hard rating of the headword (BR-FSRS-04) —
-  /// runs in the same transaction, so a failure leaves neither (#174).
+  /// runs in the same transaction, so a failure leaves neither (#174), and
+  /// only with the sentence's first answer: a changed answer changes the
+  /// sentence, not the word, so the word is never rated twice for one
+  /// sentence (#662).
   ///
   /// The sentence's first rating counts it in the day's `sentences_done`
   /// (#659): a day spent only on sentences is a day studied, for the streak
@@ -117,6 +128,17 @@ WHERE s.status IN ('learning', 'done')
     int rating, {
     Future<void> Function()? andThen,
   }) => _db.transaction(() async {
+    final answered = await _db
+        .customSelect(
+          'SELECT 1 FROM sentence_log WHERE word_uid = ?1 AND ord = ?2 '
+          'AND shown_on = ?3 AND self_rating IS NOT NULL',
+          variables: <Variable<Object>>[
+            Variable<String>(sentence.wordUid),
+            Variable<int>(sentence.ord),
+            Variable<String>(date),
+          ],
+        )
+        .getSingleOrNull();
     await _db.customStatement(
       '''
 INSERT INTO daily_stats (day, sentences_done)
@@ -141,7 +163,7 @@ ON CONFLICT(day) DO UPDATE SET sentences_done = sentences_done + 1
       ],
       updates: <TableInfo<Table, Object>>{_db.sentenceLog},
     );
-    await andThen?.call();
+    if (answered == null) await andThen?.call();
   });
 
   /// [date]'s ratings so far, by sentence: where T5 picks up on reopening.
