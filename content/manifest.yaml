@@ -8,6 +8,9 @@
 
 workbooks:
   - file: data/German_B1_Tracker.xlsx # contains A1, A2, B1 (level per word row)
+    # Columns this book never had. Any other column one book lacks and
+    # another has stops the build: it is a renamed header (#714).
+    without: [collocations, synonyms_register]
   - file: data/German_B2_Tracker.xlsx
   - file: data/German_C1_Tracker.xlsx
   - file: data/German_C2_Tracker.xlsx

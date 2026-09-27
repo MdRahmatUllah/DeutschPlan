@@ -18,6 +18,12 @@ content/manifest.yaml
 
 Each workbook MUST contain the sheets **All Words**, **Grammar** and the **C-…** category tabs. The week sheets (**W01**…) are the learner's own tracker and are not read: the only skills content is the same fixed four-line "Weekly skills — put an x when done" block at the foot of every week (listen, read, write, speak), which nothing shows, so `skill_prompts` is written empty (#294). Reading W01's cells had filled it with sheet headers and spreadsheet instructions. Columns are read **by header name**, so column order may change; renaming a header requires updating `HEADER_MAP` in the tool.
 
+A renamed header is a column the build no longer reads, so the build refuses one (#714):
+
+- A workbook whose *All Words* or *Grammar* lacks a column that another workbook's has stops the build, naming the file, the column and the headers in that row it did not know. A column a workbook never had is listed under its entry's `without:` in `content/manifest.yaml` (B1 has no Collocations or Synonyms / register), by field name; `--allow-missing-columns` builds past it once, and each workbook without the column ships its words without it.
+- The German, English, Level and POS headers are required in every workbook, whatever the others carry: POS is part of the uid (PIPE-03), and a renamed POS header would give every word of the workbook a new one. The POS *cell* may be blank.
+- Every header no map reads is reported (`warning: unknown header: …`), except the tracker's own `ID`, `Status`, `Times logged`, `#` and `Notes`.
+
 One header per column, one row each — `HEADER_MAP` is checked against this table by `tools/tests/test_reader.py`, so a column added here and not there fails the build rather than being read as blank.
 
 | Header in All Words | Field | Required | Notes |
@@ -25,7 +31,7 @@ One header per column, one row each — `HEADER_MAP` is checked against this tab
 | Article | `article` | no | |
 | German | `german` | yes | |
 | Plural / Forms | `forms` | no | |
-| POS | `pos` | no | |
+| POS | `pos` | yes | the header; the cell may be blank (#714) |
 | Pronunciation (Bangla) | `pron_bn` | no | |
 | English | `english` | yes | |
 | Bangla meaning | `bangla` | no | |

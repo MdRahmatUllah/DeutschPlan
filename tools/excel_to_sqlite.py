@@ -84,7 +84,14 @@ HEADER_MAP: dict[str, list[str]] = {
     "synonyms_register": ["Synonyms / register", "Synonyms/register"],
 }
 
-REQUIRED_WORD_FIELDS = ("german", "english", "level")
+#: The headers a workbook must carry. `pos` is here although its cell may be
+#: blank: it is part of the uid (PIPE-03), and a renamed POS header would
+#: give every word of the workbook a new one (#714).
+REQUIRED_WORD_FIELDS = ("german", "english", "level", "pos")
+
+#: Headers the trackers carry for the learner's own use, which the course
+#: does not read. Any other header no map knows is reported (#714).
+UNREAD_HEADERS = frozenset({"id", "status", "times logged", "#", "notes"})
 
 GRAMMAR_HEADER_MAP: dict[str, list[str]] = {
     "week": ["Week"],
@@ -174,6 +181,10 @@ class SourceBook:
     words: list[Word] = field(default_factory=list)
     grammar: list[GrammarRow] = field(default_factory=list)
     categories: list[Category] = field(default_factory=list)
+    #: Per sheet: the fields its header row carries, and the headers no map
+    #: knows. `check_columns` compares the workbooks by them (#714).
+    columns: dict[str, set[str]] = field(default_factory=dict)
+    unmatched: dict[str, list[str]] = field(default_factory=dict)
 
 
 @dataclass
@@ -181,6 +192,10 @@ class Manifest:
     workbooks: list[Path]
     tips: Path | None
     corrections: Path | None = None
+    #: Per workbook file name: the fields it is known to lack, from its
+    #: entry's `without:` (#714). B1 has no Collocations column, and that is
+    #: the book, not a rename.
+    without: dict[str, set[str]] = field(default_factory=dict)
 
 
 def read_manifest(path: Path) -> Manifest:
@@ -198,12 +213,22 @@ def read_manifest(path: Path) -> Manifest:
         raise PipelineError(f"{path} lists no workbooks")
 
     books: list[Path] = []
+    without: dict[str, set[str]] = {}
+    known = set(HEADER_MAP) | set(GRAMMAR_HEADER_MAP)
     for entry in entries:
         if not isinstance(entry, dict) or "file" not in entry:
             raise PipelineError(
                 f"{path}: every workbook entry needs a 'file:' key, got {entry!r}"
             )
         books.append(_resolve(entry["file"]))
+        lacks = set(entry.get("without") or [])
+        if lacks - known:
+            raise PipelineError(
+                f"{path}: {entry['file']} `without:` names "
+                f"{', '.join(sorted(lacks - known))}, which no map reads. List "
+                f"fields, as content-pipeline.md's tables name them."
+            )
+        without[books[-1].name] = lacks
 
     tips = raw.get("tips")
     corrections = raw.get("corrections")
@@ -211,6 +236,7 @@ def read_manifest(path: Path) -> Manifest:
         workbooks=books,
         tips=_resolve(tips) if tips else None,
         corrections=_resolve(corrections) if corrections else None,
+        without=without,
     )
 
 
@@ -221,8 +247,11 @@ def _resolve(value: str) -> Path:
 
 def _header_index(
     sheet, header_map: dict[str, list[str]], required: tuple[str, ...], where: str
-) -> tuple[dict[str, int], int]:
+) -> tuple[dict[str, int], int, list[str]]:
     """Finds the header row and maps each field to its column index.
+
+    Also returns the header row's cells no map knows and `UNREAD_HEADERS`
+    does not name: a renamed column shows up there (#714).
 
     The header is not assumed to be row 1: the workbooks carry a title row
     above it often enough that guessing would be a coin flip. The first row
@@ -236,16 +265,20 @@ def _header_index(
 
     for row_number, row in enumerate(sheet.iter_rows(min_row=1, max_row=10), start=1):
         found: dict[str, int] = {}
+        unknown: list[str] = []
         for column, cell in enumerate(row, start=1):
-            if not isinstance(cell.value, str):
+            if not isinstance(cell.value, str) or not cell.value.strip():
                 continue
-            field_name = wanted.get(cell.value.strip().lower())
+            header = cell.value.strip()
+            field_name = wanted.get(header.lower())
             # First spelling wins, so a workbook carrying both "Plural" and
             # "Forms" does not flip between them depending on column order.
             if field_name and field_name not in found:
                 found[field_name] = column
+            elif not field_name and header.lower() not in UNREAD_HEADERS:
+                unknown.append(header)
         if all(name in found for name in required):
-            return found, row_number
+            return found, row_number, unknown
 
     missing = ", ".join(required)
     raise PipelineError(
@@ -327,8 +360,8 @@ def read_workbook(path: Path) -> SourceBook:
             )
 
         source = SourceBook(file=path.name)
-        source.words = _read_words(book[sheets[WORDS_SHEET]], path.name)
-        source.grammar = _read_grammar(book[sheets[GRAMMAR_SHEET]], path.name)
+        source.words = _read_words(book[sheets[WORDS_SHEET]], source)
+        source.grammar = _read_grammar(book[sheets[GRAMMAR_SHEET]], source)
         source.categories = _read_categories(book)
 
         if not source.words:
@@ -338,10 +371,13 @@ def read_workbook(path: Path) -> SourceBook:
         book.close()
 
 
-def _read_words(sheet, file_name: str) -> list[Word]:
-    index, header_row = _header_index(
+def _read_words(sheet, source: SourceBook) -> list[Word]:
+    file_name = source.file
+    index, header_row, unknown = _header_index(
         sheet, HEADER_MAP, REQUIRED_WORD_FIELDS, f"{file_name}!{WORDS_SHEET}"
     )
+    source.columns[WORDS_SHEET] = set(index)
+    source.unmatched[WORDS_SHEET] = unknown
 
     words: list[Word] = []
     for number, row in enumerate(
@@ -397,10 +433,13 @@ def _read_words(sheet, file_name: str) -> list[Word]:
     return words
 
 
-def _read_grammar(sheet, file_name: str) -> list[GrammarRow]:
-    index, header_row = _header_index(
+def _read_grammar(sheet, source: SourceBook) -> list[GrammarRow]:
+    file_name = source.file
+    index, header_row, unknown = _header_index(
         sheet, GRAMMAR_HEADER_MAP, REQUIRED_GRAMMAR_FIELDS, f"{file_name}!{GRAMMAR_SHEET}"
     )
+    source.columns[GRAMMAR_SHEET] = set(index)
+    source.unmatched[GRAMMAR_SHEET] = unknown
 
     rows: list[GrammarRow] = []
     for number, row in enumerate(
@@ -455,9 +494,72 @@ def _text(value) -> str | None:
     return text or None
 
 
-def read_sources(manifest: Manifest) -> list[SourceBook]:
+def read_sources(
+    manifest: Manifest, allow_missing_columns: bool = False
+) -> list[SourceBook]:
     """Reads every workbook, in manifest order."""
-    return [read_workbook(path) for path in manifest.workbooks]
+    sources = [read_workbook(path) for path in manifest.workbooks]
+    check_columns(sources, allow_missing_columns, manifest.without)
+    return sources
+
+
+def _quoted(headers) -> str:
+    return ", ".join(repr(header) for header in headers)
+
+
+def check_columns(
+    sources: list[SourceBook],
+    allow_missing: bool = False,
+    without: dict[str, set[str]] | None = None,
+) -> None:
+    """#714: a column one workbook lacks and another has.
+
+    A renamed header is not read, and nothing else notices: every word of
+    that workbook ships without the column (its Bangla, its article), with
+    no error anywhere. So a workbook missing a column another carries stops
+    the build, naming the file, the column and the headers it did not know;
+    `--allow-missing-columns` builds anyway. Unknown headers are reported
+    either way. A field the workbook's manifest entry lists under
+    `without:` is one it is known to lack.
+    """
+    without = without or {}
+    maps = {WORDS_SHEET: HEADER_MAP, GRAMMAR_SHEET: GRAMMAR_HEADER_MAP}
+    problems, warnings = [], []
+    for sheet, header_map in maps.items():
+        every = set().union(*(s.columns.get(sheet, set()) for s in sources))
+        for source in sources:
+            unknown = source.unmatched.get(sheet, [])
+            if unknown:
+                warnings.append(
+                    f"unknown header: {source.file}!{sheet}: {_quoted(unknown)} "
+                    f"(not read)"
+                )
+            missing = sorted(
+                every
+                - source.columns.get(sheet, set())
+                - without.get(source.file, set())
+            )
+            if not missing:
+                continue
+            problem = (
+                f"{source.file}!{sheet} has no "
+                f"{_quoted(header_map[f][0] for f in missing)} column, which "
+                f"another workbook has"
+            )
+            if unknown:
+                problem += f" (headers it did not know: {_quoted(unknown)})"
+            problems.append(problem)
+    _report(warnings)
+    if problems and not allow_missing:
+        raise PipelineError(
+            "; ".join(problems)
+            + f". Rename the header back, or add its spelling to the map in "
+            f"{Path(__file__).name}; a column the book never had goes under "
+            f"its entry's `without:` in the manifest; --allow-missing-columns "
+            f"builds without it."
+        )
+    for problem in problems:
+        print(f"warning: {problem}; built without it", file=sys.stderr)
 
 
 def correct(sources: list[SourceBook], corrections: dict[str, dict]) -> None:
@@ -687,11 +789,17 @@ def main(argv: list[str] | None = None) -> int:
         help="build even when a word of the previous build is gone and "
         "nothing matches it: learners lose their progress on it",
     )
+    parser.add_argument(
+        "--allow-missing-columns",
+        action="store_true",
+        help="build even when a workbook lacks a column another has "
+        "(its words ship without it)",
+    )
     args = parser.parse_args(argv)
 
     try:
         manifest = read_manifest(args.manifest)
-        sources = read_sources(manifest)
+        sources = read_sources(manifest, args.allow_missing_columns)
         correct(sources, read_corrections(manifest.corrections))
         splits = derive(sources)
         resolved, tip_warnings = resolve_tips(
