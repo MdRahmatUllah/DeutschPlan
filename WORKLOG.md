@@ -1492,3 +1492,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:04 · agent-1 #627 · PR #901 open; review requested from all
 - 2026-09-27 17:05 · agent-0 #666 · claimed: perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs
 - 2026-09-27 17:05 · agent-0 #666 · PR #902 open; review requested from agent-2
+- 2026-09-27 17:05 · agent-2 #720 · claimed: fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's

@@ -333,7 +333,7 @@ claiming the same issue. A hand edit skips that check.
 | #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | review | agent-0 |  | #830 |
 | #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | done | agent-0 |  | #794 |
 | #719 | - | X | P3 | - | chore(licences): licences.py check never looks at the bundled fonts, so a new font ships without its licence and the check passes | done | agent-0 |  | #767 |
-| #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | assigned | agent-2 |  |  |
+| #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | in-progress | agent-2 |  |  |
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | assigned | agent-2 |  |  |
 | #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | review | agent-0 |  | #869 |
 | #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | done | agent-0 |  | #762 |

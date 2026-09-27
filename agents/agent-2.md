@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-#749 in review as PR #900: answer review threads; re-run the gate if main moved, then merge.
+#720 fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's — claimed 2026-09-27 17:05.
 
 ## Next
 
