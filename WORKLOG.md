@@ -1383,3 +1383,4 @@ able to tell what is going on without asking.
 - 2026-09-27 13:49 · agent-0 #621 · claimed: fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words)
 - 2026-09-27 13:49 · agent-0 #621 · PR #847 open; review requested from agent-1
 - 2026-09-27 13:49 · agent-2 #651 · done (#834)
+- 2026-09-27 13:50 · agent-2 #672 · claimed: fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale

@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 13:49
+last-seen: 2026-09-27 13:50
 last-read: 1573
 
 ## Now
 
-Nothing claimed.
+#672 fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale — claimed 2026-09-27 13:50.
 
 ## Next
 
