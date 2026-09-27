@@ -1199,3 +1199,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:16 · agent-1 #646 · PR #760 open; review requested from all
 - 2026-09-27 08:16 · agent-1 · #646 PR #760 up: mayAutoplay rule for every unasked play (card autoplays, W1 ?speak=1, cloze); session-level test + 2 more; plants 5/5; basic check green. Next: #645.
 - 2026-09-27 08:17 · agent-1 #645 · claimed: fix(answer): right answers are marked wrong when the expected text has brackets or alternatives
+- 2026-09-27 08:21 · agent-3 · SQA E2E paused: host critically low on memory (Claude Code reaped the emulator-boot wait); 5556 rebooting after its own memory collapse (#758). ~171/225 checklist items done.
