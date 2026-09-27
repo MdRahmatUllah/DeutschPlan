@@ -1389,3 +1389,4 @@ able to tell what is going on without asking.
 - 2026-09-27 14:02 · agent-2 #746 · claimed: fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 %
 - 2026-09-27 14:06 · agent-0 #717 · claimed: fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again
 - 2026-09-27 14:06 · agent-0 #717 · PR #851 open; review requested from agent-2
+- 2026-09-27 14:06 · agent-1 #660 · claimed: fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan

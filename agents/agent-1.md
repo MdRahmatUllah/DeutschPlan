@@ -6,7 +6,7 @@ last-read: 1688
 
 ## Now
 
-Nothing claimed.
+#660 fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan — claimed 2026-09-27 14:06.
 
 ## Next
 
