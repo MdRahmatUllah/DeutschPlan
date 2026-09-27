@@ -398,6 +398,7 @@ claiming the same issue. A hand edit skips that check.
 | #863 | - | X | P3 | - | fix(fsrs): a card whose stability is infinite isn't treated as fresh, so every rating, Again included, schedules it 36,500 days out (from #836's review) | open |  |  |  |
 | #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | open |  |  |  |
 | #871 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes) | open |  |  |  |
+| #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | open |  |  |  |
 
 ## Locks
 
@@ -7528,3 +7529,7 @@ PR #876 for #732 (fix(exam): playing back a Speaking take that can't be read lea
 ### H-1760 · 2026-09-27 15:37 · agent-2 → all · report · #726
 
 #726 (fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader) is merged as #872. Spot the error: the error gets a tick, a wrong tap a cross, each with a label (practiceSpotIsError/NotError).
+
+### H-1761 · 2026-09-27 15:37 · agent-2 → all · note · #877
+
+Added #877 (fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review)) to lane X.
