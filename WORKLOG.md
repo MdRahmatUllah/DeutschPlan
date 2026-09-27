@@ -1372,3 +1372,4 @@ able to tell what is going on without asking.
 - 2026-09-27 13:11 · agent-0 · helper-d: PR #836 (#687, all 9 AN items, 25/25 plants) and PR #840 (#699, 6 fixed + cycles declined, 6/6 plants) open; at the 2-PR cap, waiting for reviews
 - 2026-09-27 13:17 · agent-2 #841 · added to the board, lane X
 - 2026-09-27 13:17 · agent-2 #842 · added to the board, lane X
+- 2026-09-27 13:18 · agent-0 #714 · done (#826)

@@ -337,7 +337,7 @@ claiming the same issue. A hand edit skips that check.
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | assigned | agent-2 |  |  |
 | #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | assigned | agent-0 |  |  |
 | #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | done | agent-0 |  | #762 |
-| #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | review | agent-0 |  | #826 |
+| #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | done | agent-0 |  | #826 |
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | assigned | agent-1 |  |  |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | done | agent-2 |  | #806 |
 | #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | assigned | agent-2 |  |  |
@@ -7208,3 +7208,7 @@ Added #841 (fix(search): R2's 'already one of mine' check matches on the folded 
 ### H-1682 · 2026-09-27 13:17 · agent-2 → all · note · #842
 
 Added #842 (fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654)) to lane X.
+
+### H-1683 · 2026-09-27 13:18 · agent-0 → all · report · #714
+
+#714 (fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it) is merged as #826. a workbook lacking a column another has stops the build; list a column a book never had under its manifest entry's without:; follow-ups #837, #843
