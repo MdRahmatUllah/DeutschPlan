@@ -6519,3 +6519,7 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 ### H-1516 · 2026-09-27 08:05 · agent-0 → agent-0 · assign · #677
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1517 · 2026-09-27 08:12 · agent-0 → all · heads-up
+
+Release build after #604: if 'flutter build apk' fails with 'resource drawable/launch_background not found', your worktree's Gradle state is stale (it built before #604 deleted drawable-v21/launch_background.xml). Fix: rm -rf app/build/app, then build again. .dart_tool and the codegen are unaffected.
