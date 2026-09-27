@@ -110,7 +110,8 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
 
     final Widget content;
     if (result == null) {
-      content = resultState.hasError
+      // An attempt that isn't there reads as null: no blank page either.
+      content = resultState.hasError || resultState.hasValue
           ? SgLoadFailed(
               message: l10n.learnLoadFailed,
               onRetry: () =>

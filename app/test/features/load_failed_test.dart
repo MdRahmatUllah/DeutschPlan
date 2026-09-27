@@ -232,6 +232,60 @@ void main() {
     await expectPanel(tester, calls, l10n.learnLoadFailed, back: true);
   });
 
+  // The issue's L15 case: a stale uid reads fine but finds no topic (null),
+  // which is no error, and the page stayed blank with no way out.
+  testWidgets('#677 FR-L15 a stale uid, read as no topic: the panel too', (
+    tester,
+  ) async {
+    final calls = await pump(
+      tester,
+      const GrammarPracticeScreen(topicUids: <String>['stale-uid']),
+      (calls) => practiceSetProvider.overrideWith((ref, uid) async {
+        calls.add(1);
+        return null;
+      }),
+    );
+    await expectPanel(tester, calls, l10n.learnLoadFailed, back: true);
+  });
+
+  testWidgets('#677 FR-L4 a stale uid, read as no topic: the panel too', (
+    tester,
+  ) async {
+    final calls = await pump(
+      tester,
+      const GrammarTopicScreen(uid: 'stale-uid'),
+      (calls) => grammarTopicProvider.overrideWith((ref, uid) {
+        calls.add(1);
+        return Stream.value(null);
+      }),
+    );
+    await expectPanel(tester, calls, l10n.learnLoadFailed, back: true);
+  });
+
+  testWidgets("#677 FR-L9 an attempt that isn't there: the panel too", (
+    tester,
+  ) async {
+    final calls = await pump(
+      tester,
+      const QuizResultView(
+        attemptId: 404,
+        args: QuizArgs(
+          direction: 'deEn',
+          source: 'stepLearned',
+          sourceRef: 'A2.1',
+          seed: 7,
+          length: 20,
+          timer: true,
+        ),
+      ),
+      (calls) => quizResultProvider.overrideWith((ref, id) async {
+        calls.add(1);
+        return null;
+      }),
+    );
+    await expectPanel(tester, calls, l10n.learnLoadFailed, back: true);
+  });
+
   testWidgets('#677 FR-T4 the backlog: Back too', (tester) async {
     final calls = await pump(
       tester,

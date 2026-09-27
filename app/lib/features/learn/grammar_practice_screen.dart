@@ -181,9 +181,12 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
 
     final Widget body;
     if (set == null || set.items.isEmpty) {
-      // A topic that won't read (a stale uid, say) must not stop the run on a
-      // blank page (#677).
-      body = practiceState != null && practiceState.hasError
+      // A topic that won't read, a stale uid (read, but no topic: null) or a
+      // topic with nothing to practise must not stop the run on a blank page
+      // (#677): blank only while it loads.
+      body =
+          practiceState != null &&
+              (practiceState.hasError || practiceState.hasValue)
           ? SgLoadFailed(
               message: l10n.learnLoadFailed,
               onRetry: () => ref.invalidate(practiceSetProvider(uid!)),

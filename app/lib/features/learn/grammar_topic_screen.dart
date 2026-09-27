@@ -94,7 +94,10 @@ class GrammarTopicScreen extends ConsumerWidget {
     final Widget body;
     if (topic != null && step != null) {
       body = _Topic(topic: topic, step: step, course: course);
-    } else if (topicState.hasError || (stepState?.hasError ?? false)) {
+    } else if (topicState.hasError ||
+        (stepState?.hasError ?? false) ||
+        // A stale uid: read, but no such topic (#677).
+        (topicState.hasValue && topic == null)) {
       body = SgLoadFailed(
         message: AppLocalizations.of(context).learnLoadFailed,
         onRetry: () {
