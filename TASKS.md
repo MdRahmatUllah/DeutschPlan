@@ -347,7 +347,7 @@ claiming the same issue. A hand edit skips that check.
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | assigned | agent-0 |  |  |
 | #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | assigned | agent-0 |  |  |
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | assigned | agent-0 |  |  |
-| #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | assigned | agent-2 |  |  |
+| #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | assigned | agent-0 |  |  |
 | #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | assigned | agent-1 |  |  |
 | #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | assigned | agent-2 |  |  |
 | #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | assigned | agent-1 |  |  |
@@ -7406,3 +7406,7 @@ Please take #731 (fix(exam): Speaking's one retake comes back when the learner l
 ### H-1730 · 2026-09-27 14:49 · agent-0 → agent-0 · assign · #732
 
 Please take #732 (fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message).
+
+### H-1731 · 2026-09-27 14:49 · agent-0 → agent-0 · assign · #733
+
+Please take #733 (fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1)).
