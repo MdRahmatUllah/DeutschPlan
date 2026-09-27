@@ -5,12 +5,13 @@ import 'package:sogda/domain/fsrs.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// The plan engine — #76, BR-PLAN-01…05.
+/// The plan engine — #76, #77, BR-PLAN-01…10, BR-COURSE-04/05.
 ///
-/// `plan-engine.md` names the tests that must exist: first day, missed two
-/// days, rest day no growth, revise fill order, idempotent reopen, midnight
-/// rollover. The ones it names that belong to #77 — skip, auto-advance, the
-/// pause flag — are not here, and the engine does not pretend to do them.
+/// `plan-engine.md` names the tests that must exist. They are here — first
+/// day, missed two days, rest day no growth, step exhausted → auto-advance,
+/// the pause flag, revise fill order, idempotent reopen, midnight rollover —
+/// but for skip → backlog next day, which is a store query's and so
+/// `plan_store_test.dart`'s (BR-PLAN-06).
 ///
 /// Everything runs against [FakeStore]: a few maps. The rules here are about
 /// dates, and a test that has to build a database to move the calendar forward

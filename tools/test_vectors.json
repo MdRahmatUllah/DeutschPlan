@@ -252,6 +252,24 @@
       "search_key": "আষাঢ়",
       "search_key_alt": "আষাঢ়",
       "why": "a precomposed ddha with nukta decomposes too (#655)"
+    },
+    {
+      "input": "GROẞE",
+      "search_key": "grosse",
+      "search_key_alt": "grosse",
+      "why": "capital sharp s lowers to ß, which is ss (#699)"
+    },
+    {
+      "input": "Øre",
+      "search_key": "øre",
+      "search_key_alt": "øre",
+      "why": "a letter with no decomposition keeps its stroke (#699)"
+    },
+    {
+      "input": "Łódź",
+      "search_key": "łodz",
+      "search_key_alt": "łodz",
+      "why": "the marks go, the stroke stays (#699)"
     }
   ]
 }
