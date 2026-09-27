@@ -377,7 +377,7 @@ claiming the same issue. A hand edit skips that check.
 | #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | done |  |  |  |
 | #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | done | agent-0 |  | #940 |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | done | agent-0 |  | #940 |
-| #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | open |  |  |  |
+| #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | assigned | agent-0 |  |  |
 | #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | assigned | agent-0 |  |  |
 | #804 | - | X | P3 | - | fix(content): the first-run copy writes content.db in place, so a copy cut short can be attached as a partial course | assigned | agent-0 |  |  |
 | #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | assigned | agent-2 |  |  |
@@ -8802,3 +8802,7 @@ Please take #822 (question(backup): on a fresh phone, should restore pre-select 
 ### H-2068 · 2026-09-27 21:58 · agent-0 → all · note · #798
 
 #798 is open again: Owner decided: tiles in the exam for Bangla-meaning learners
+
+### H-2069 · 2026-09-27 21:58 · agent-0 → agent-0 · assign · #798
+
+Please take #798 (question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655)).
