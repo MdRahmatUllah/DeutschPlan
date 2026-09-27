@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 17:55
+last-seen: 2026-09-27 17:56
 last-read: 1767
 
 ## Now
 
-#641 in review as PR #916: answer review threads; re-run the gate if main moved, then merge.
+#734 fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar — claimed 2026-09-27 17:56.
 
 ## Next
 
