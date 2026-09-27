@@ -2,7 +2,6 @@ match_type,match,tip_en,tip_bn,tags
 german,bekommen,"""bekommen"" means to receive, not to become. ""Ich bekomme ein Buch"" = I get a book. To become is ""werden"".","""bekommen"" মানে পাওয়া, হওয়া নয়। হওয়া বোঝাতে ""werden"" ব্যবহার করুন।",false-friend
 german,also,"""also"" means so / therefore. The English ""also"" is ""auch"".","""also"" মানে তাই বা সুতরাং। ইংরেজি ""also"" এর জন্য ""auch"" বলুন।",false-friend
 german,Gift,"""Gift"" is poison. A present is ""das Geschenk"".","""Gift"" মানে বিষ। উপহার বোঝাতে ""das Geschenk"" বলুন।",false-friend
-german,Rat,"""Rat"" is advice. The animal is ""die Ratte"".","""Rat"" মানে পরামর্শ। ইঁদুর হলো ""die Ratte""।",false-friend
 german,Chef,"""Chef"" is a boss. A cook is ""der Koch"".","""Chef"" মানে বস। রাঁধুনি হলো ""der Koch""।",false-friend
 german,Handy,"""Handy"" is a mobile phone — a German word that only looks English.","""Handy"" মানে মোবাইল ফোন। ইংরেজি শব্দ মনে হলেও অর্থ আলাদা।",false-friend
 german,sensibel,"""sensibel"" means sensitive. Sensible is ""vernünftig"".","""sensibel"" মানে সংবেদনশীল। বিচক্ষণ হলো ""vernünftig""।",false-friend

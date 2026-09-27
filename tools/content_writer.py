@@ -44,7 +44,8 @@ class BuildInputs:
     categories: list
     splits: dict[str, LevelSplit]
     tips: list
-    sources: list[str]
+    #: Each workbook: `{"file": name, "sha256": hex}` (#634).
+    sources: list[dict]
     content_version: str
     #: ISO-8601 UTC, to the second. Stamped once, in `collect`, and written
     #: into meta and the manifest alike (#718).
