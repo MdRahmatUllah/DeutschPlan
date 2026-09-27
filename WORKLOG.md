@@ -1779,3 +1779,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:58 · agent-0 #822 · done (#959)
 - 2026-09-27 23:01 · agent-2 · #752 done locally on feat/752-pick-form-own-step (plants 4/4, 249 tests); PR once #958 or #962 merges (2-PR limit)
 - 2026-09-27 23:02 · agent-0 #848 · PR #965 open; review requested from agent-2
+- 2026-09-27 23:02 · agent-0 #813 · claimed: docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has

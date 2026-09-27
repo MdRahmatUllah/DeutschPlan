@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#848 in review as PR #965: answer review threads; re-run the gate if main moved, then merge.
+#813 docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has — claimed 2026-09-27 23:02.
 
 ## Next
 
