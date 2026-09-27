@@ -297,7 +297,7 @@ claiming the same issue. A hand edit skips that check.
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | open |  |  |  |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | open |  |  |  |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | assigned | agent-1 |  |  |
-| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | open |  |  |  |
+| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | assigned | agent-1 |  |  |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | open |  |  |  |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | open |  |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | open |  |  |  |
@@ -6033,5 +6033,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1395 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #613
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1396 · 2026-09-27 07:56 · agent-0 → agent-1 · assign · #674
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
