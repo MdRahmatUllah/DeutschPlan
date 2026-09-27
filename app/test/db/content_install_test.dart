@@ -121,6 +121,20 @@ void main() {
     },
   );
 
+  test('#885 fitsBuild checks every table content_schema.drift declares', () {
+    final declared = <String>{
+      for (final match in RegExp(
+        r'^CREATE (?:VIRTUAL )?TABLE (\w+)',
+        multiLine: true,
+      ).allMatches(File('lib/data/db/content_schema.drift').readAsStringSync()))
+        match.group(1)!,
+    };
+    expect(declared, hasLength(greaterThan(10)));
+    expect(<String>{
+      for (final table in dao.courseTables) table.actualTableName,
+    }, declared);
+  });
+
   test('a second run reuses the installed copy', () async {
     await dao.attach();
     await dao.detach();

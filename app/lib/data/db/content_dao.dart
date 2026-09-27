@@ -335,20 +335,7 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// One an older build copied can lack one (`words.kind`, #860), and every
   /// read of it would fail.
   Future<bool> fitsBuild() async {
-    for (final table in <TableInfo<Table, Object?>>[
-      meta,
-      levels,
-      sublevels,
-      categories,
-      words,
-      wordExamples,
-      grammarTopics,
-      skillPrompts,
-      interferenceTips,
-      wordsFts,
-      wordsTrigram,
-      examplesFts,
-    ]) {
+    for (final table in courseTables) {
       final rows = await customSelect(
         'SELECT name FROM pragma_table_info(?1, ?2)',
         variables: <Variable<Object>>[
@@ -363,6 +350,24 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
     }
     return true;
   }
+
+  /// Every table `content_schema.drift` declares, as [fitsBuild] checks
+  /// them; a test holds the list to the schema file.
+  List<TableInfo<Table, Object?>> get courseTables =>
+      <TableInfo<Table, Object?>>[
+        meta,
+        levels,
+        sublevels,
+        categories,
+        words,
+        wordExamples,
+        grammarTopics,
+        skillPrompts,
+        interferenceTips,
+        wordsFts,
+        wordsTrigram,
+        examplesFts,
+      ];
 
   Future<void> detach() => customStatement('DETACH DATABASE $schema');
 
