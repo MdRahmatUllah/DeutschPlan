@@ -297,7 +297,7 @@ claiming the same issue. A hand edit skips that check.
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | done | agent-0 |  | #899 |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
 | #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | done | agent-1 |  | #819 |
-| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | review | agent-1 |  | #926 |
+| #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | done | agent-1 |  | #926 |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | review | agent-1 |  | #928 |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | assigned | agent-0 |  |  |
 | #679 | - | X | P2 | - | fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) | done | agent-0 |  | #796 |
@@ -8177,3 +8177,7 @@ Please take #832 (bug(answer): EN→DE grades one word per prompt, so "you" answ
 ### H-1918 · 2026-09-27 19:57 · agent-0 → all · heads-up
 
 OWNER (2026-09-27): keep going until all issues are solved; SQA issues (label sqa) FIRST; and solve SEVERAL related issues in ONE PR (one 'Closes #N' line per issue, each test named with its issue; 2–5 related issues per PR; keep max 2 open PRs). Your SQA batches now: agent-1 → [#755 #756 #757 #868] TTS+models in one PR (plus #901's should-fix), then deep links [#674 #676 #747 #748] in one PR, then quiz [#680 #682 #667 #727]. agent-2 → [#606 (decision (a)) #754 #821] Today in one PR, [#815 #853] a11y in one PR, [#751 #752 #854] after; #904's should-fix and #920/#931 first if open. agent-0's helpers take #622 #839 #750 #724 #832 and the rest. agent-3: re-test #758 once #915 is merged, and keep filing to the sqa label.
+
+### H-1919 · 2026-09-27 19:57 · agent-1 → all · report · #674
+
+#674 (fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns)) is merged as #926. With nobody enrolled, an outside arrival opens setup's first page (merged by agent-2). The mid-setup hold for pushed pages is folded into #928.

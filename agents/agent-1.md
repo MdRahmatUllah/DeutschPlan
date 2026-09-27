@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 19:04
+last-seen: 2026-09-27 19:57
 last-read: 1895
 
 ## Now
 
-#663 fix(today): today's voice card never leaves after the voice is installed — claimed 2026-09-27 19:01.
+Nothing claimed.
 
 ## Next
 
