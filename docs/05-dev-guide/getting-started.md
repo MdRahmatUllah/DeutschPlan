@@ -35,7 +35,7 @@ GitHub CI is off (the owner, #302): the local check is the only one. The owner's
 - **Every PR merges on a basic check**, run from `app/` at current `origin/main`:
   - `dart analyze --fatal-infos` (no path arguments);
   - `dart format --output=none --set-exit-if-changed .`;
-  - `python -m pytest ../tools/tests -q`, if `tools/` changed;
+  - `python -m pytest ../tools/tests -q`, if `tools/`, `content/` or `app/assets/db/` changed (the shipped course is held to every PIPE-08 gate there, #634);
   - the test files the change touches, and their goldens (`flutter test --timeout 60s <files>`);
   - planted violations over the behaviour it claims (`tools/plant.py`), all caught.
 - **The full suite runs once, when a milestone completes**: `flutter test -j 2 --timeout 60s`, in the foreground, in chunks. It includes the goldens, so it runs on Windows (`test/golden/README.md`).

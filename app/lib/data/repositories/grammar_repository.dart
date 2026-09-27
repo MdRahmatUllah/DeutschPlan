@@ -154,7 +154,8 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
   /// stored one is what the next review reads back.
   ///
   /// [today] is the local study day, not [PracticeResult.practisedAt]: that is
-  /// an instant, and a study day is a local day.
+  /// an instant, and a study day is a local day. [seconds] is the run's time
+  /// on screen, added to the day's study time as a card's is (#785).
   Future<void> recordPractice({
     required String uid,
     required PracticeResult result,
@@ -164,6 +165,7 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
     required int reps,
     required int lapses,
     required String today,
+    int seconds = 0,
   }) => db.transaction(() async {
     final before = await (select(
       db.grammarState,
@@ -193,9 +195,10 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
     // bumps its counters: two runs finishing in the same millisecond would
     // otherwise each read the same total and one would be lost.
     await db.customStatement(
-      'INSERT INTO daily_stats (day, grammar_done) VALUES (?, 1) '
-      'ON CONFLICT(day) DO UPDATE SET grammar_done = grammar_done + 1',
-      <Object?>[today],
+      'INSERT INTO daily_stats (day, grammar_done, seconds) VALUES (?, 1, ?) '
+      'ON CONFLICT(day) DO UPDATE SET grammar_done = grammar_done + 1, '
+      'seconds = seconds + excluded.seconds',
+      <Object?>[today, seconds],
     );
     // A raw statement, so drift has to be told which streams to re-emit.
     db.markTablesUpdated(<TableInfo<Table, Object?>>{db.dailyStats});

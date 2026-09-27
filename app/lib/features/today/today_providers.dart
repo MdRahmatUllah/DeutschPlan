@@ -247,7 +247,7 @@ Future<TodayView> todayView(Ref ref) async {
       revise: ahead.revise.length,
       newWords: ahead.newToday.length,
       grammar: ahead.grammarDue.length,
-      estimate: await engine.estimate(ahead),
+      estimate: await engine.estimate(ahead, remember: false),
       category: await content.mainCategory(ahead.newToday),
       restDay: !ahead.isStudyDay,
     ),

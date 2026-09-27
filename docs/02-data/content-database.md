@@ -8,7 +8,7 @@ Column names are backticked; `tools/tests/test_schema.py` reads them out of this
 
 | Table | Key columns | Purpose |
 | --- | --- | --- |
-| `meta` | `key`, `value` | `content_version`, `built_at`, `sources`, `word_count`, `sublevel_week_boundaries` |
+| `meta` | `key`, `value` | `content_version`, `built_at`, `sources` (JSON: each workbook's `file` and `sha256`, #634), `word_count`, `sublevel_week_boundaries` |
 | `levels` | `code` (A1…C2), `ord`, `name`, `exam_target` | CEFR levels |
 | `sublevels` | `code` (A1.1…C2.2), `level_code`, `ord` 1–12, `word_count`, `grammar_count` | Steps |
 | `categories` | `id`, `name`, `description` | Word categories (from C-… tabs). `name` and `description` are course content, in English in both UI languages, as the words' English meanings are: the Bangla UI shows "Home & furniture" (owner, #425). A `name_bn` would come with its translations, through the workbooks and the pipeline. |

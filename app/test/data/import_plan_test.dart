@@ -2,6 +2,7 @@
 library;
 
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -196,8 +197,9 @@ VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
 
   test('#622 and the same onto a phone in use whose rest day it is', () async {
     final file = await oldPhoneExport();
-    final phone = await setUpPhone(today, mask: noSunday);
-    await phone.rate('uid-haus', '${today}T08:00:00Z');
+    final phone = await setUpPhone(yesterday, mask: noSunday);
+    await phone.rate('uid-haus', '${yesterday}T08:00:00Z');
+    expect((await phone.engine.openDay(today)).isStudyDay, isFalse);
 
     await phone.importFile(file, today);
     final plan = await phone.engine.openDay(today);
@@ -205,6 +207,64 @@ VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
     expect(plan.isStudyDay, isFalse, reason: "this phone's study days stay");
     expect(plan.newToday, isEmpty);
   });
+
+  test('#622 #606 BR-PLAN-08 set up today on a day switched off, then in '
+      'use: after the merge today is still the study day setup made it, '
+      'topped up to the pace', () async {
+    final file = await oldPhoneExport();
+    final phone = await setUpPhone(today, mask: noSunday);
+    final first = (await phone.engine.openDay(today)).newToday.first;
+    await phone.rate(first, '${today}T08:00:00Z');
+
+    await phone.importFile(file, today);
+    final plan = await phone.engine.openDay(today);
+
+    expect(plan.isStudyDay, isTrue);
+    expect(plan.newToday, hasLength(7));
+    expectOnePlan(plan, await phone.introduced(before: today));
+  });
+
+  test('#622 a merge before today is opened leaves today to openDay: the '
+      'missed days are planned first, in teaching order', () async {
+    final old = await setUpPhone('2026-09-25');
+    final file = await BackupRepository(old.db).exportJson();
+    final phone = await setUpPhone(today);
+
+    await phone.importFile(file, today);
+    final plan = await phone.engine.openDay(today);
+
+    final order = await phone.teachingOrder();
+    final missed = plan.backlog.map(order.indexOf).reduce(math.max);
+    final first = plan.newToday.map(order.indexOf).reduce(math.min);
+    expect(missed, lessThan(first));
+  });
+
+  test(
+    "#937 FR-M6-03 a merge after part of today's Revise is done tops "
+    "the block up from the merged schedule, and keeps what was done",
+    () async {
+      final file = await oldPhoneExport();
+      final phone = await setUpPhone(yesterday);
+      final day1 = (await phone.engine.openDay(yesterday)).newToday;
+      await phone.rate(day1[0], '${yesterday}T08:00:00Z');
+      await phone.rate(day1[1], '${yesterday}T08:01:00Z');
+      final before = await phone.engine.openDay(today);
+      expect(before.revise.toSet(), <String>{day1[0], day1[1]});
+      final done = before.revise.first;
+      await phone.db.customStatement(
+        "UPDATE plan_items SET completed_at = ? WHERE plan_date = ? "
+        "AND word_uid = ? AND kind = 'revise'",
+        <Object?>['${today}T08:30:00Z', today, done],
+      );
+
+      await phone.importFile(file, today);
+      final plan = await phone.engine.openDay(today);
+
+      expect(plan.revise.first, done, reason: 'what was done stays');
+      expect(plan.revise.toSet(), await phone.introduced());
+      expectOnePlan(plan, await phone.introduced(before: today));
+    },
+  );
 }
 
 class _Phone {
@@ -243,6 +303,7 @@ class _Phone {
     await BackupRepository(db)
         .import(json, mode: ImportMode.merge, today: today);
     await settings.reload();
+    await engine.replanToday(today);
   }
 
   /// The words with a schedule, last rated before [before].
@@ -256,6 +317,18 @@ class _Phone {
         .get();
     return <String>{for (final row in rows) row.read<String>('word_uid')};
   }
+
+  /// A1.1's words in teaching order.
+  Future<List<String>> teachingOrder() async => <String>[
+    for (final row
+        in await db
+            .customSelect(
+              "SELECT uid FROM words WHERE sublevel_code = 'A1.1' "
+              "AND kind = 'vocab' ORDER BY seq_in_sublevel",
+            )
+            .get())
+      row.read<String>('uid'),
+  ];
 
   Future<String> startedOn(String step) async =>
       (await db

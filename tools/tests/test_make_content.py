@@ -119,10 +119,10 @@ def test_the_sequence_the_recipe_runs_works_end_to_end(tmp_path, capsys):
     manifest_yaml = tmp_path / "manifest.yaml"
     manifest_yaml.write_text(
         yaml.safe_dump(
-            {
-                "workbooks": [{"file": str(tmp_path / n)} for n in BOOK_LEVELS],
-                "tips": str(REPO / "content" / "interference_tips.csv"),
-            }
+            # No tips: the real CSV's tips name real German, and a tip that
+            # matches no fixture word stops the build (#634).
+            # test_shipped_content.py holds the real CSV to the real course.
+            {"workbooks": [{"file": str(tmp_path / n)} for n in BOOK_LEVELS]}
         ),
         encoding="utf-8",
     )

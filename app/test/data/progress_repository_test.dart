@@ -50,6 +50,23 @@ VALUES
     },
   );
 
+  test('FR-M2-01 #784 from a day on: that day whole, from its local '
+      'midnight, and nothing before it', () async {
+    String at(DateTime local) => local.toUtc().toIso8601String();
+    // East of Greenwich this is still the 21st in UTC.
+    final justAfter = at(DateTime(2026, 9, 22, 0, 30));
+    final before = at(DateTime(2026, 9, 19, 12));
+    await db.customStatement('''
+INSERT INTO review_log (word_uid, reviewed_at, rating, source, elapsed_days)
+VALUES ('a', '$justAfter', 3, 'daily', 2), ('b', '$before', 1, 'daily', 2)
+''');
+
+    final ratings = await progress.revisionRatings(since: '2026-09-22');
+
+    expect(ratings['2026-09-22'], <int>[3]);
+    expect(ratings.containsKey('2026-09-19'), isFalse);
+  });
+
   test('FR-M2-03 the totals: study time, words met, every rating', () async {
     await db.customStatement('''
 INSERT INTO daily_stats (day, seconds) VALUES ('2026-09-21', 600), ('2026-09-22', 150);

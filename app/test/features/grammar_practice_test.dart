@@ -78,6 +78,9 @@ void main() {
   late String? went;
   late String? wentDay;
 
+  /// The clock L15 reads a run's start from (#785).
+  late DateTime now;
+
   /// Every (topic, day) L15 asked items for (#665).
   late List<(String, String)> asked;
   late GoRouter routes;
@@ -92,6 +95,7 @@ void main() {
   }) async {
     rated = <(String, int, int)>[];
     rating = _Rating(rated);
+    now = DateTime(2026, 9, 21, 9);
     went = null;
     wentDay = null;
     asked = <(String, String)>[];
@@ -130,6 +134,7 @@ void main() {
       ProviderScope(
         overrides: <Override>[
           ...todayStub(),
+          clockProvider.overrideWithValue(() => now),
           practiceSetProvider.overrideWith((ref, args) async {
             asked.add(args);
             return (
@@ -428,6 +433,32 @@ void main() {
     expect(rated, <(String, int, int)>[('g3', 3, 3)]);
   });
 
+  testWidgets('#785 FR-M2-03 each topic is rated with when its run began', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      items: <GrammarItem>[pick],
+      topics: <String>['g3', 'g3'],
+    );
+    final begun = now;
+    now = now.add(const Duration(minutes: 1));
+    await tester.tap(find.text('Könnten'));
+    await tester.pumpAndSettle();
+    await tapNext(tester);
+    await tester.pump(GrammarPracticeScreen.bannerTime);
+    await tester.pumpAndSettle();
+    now = now.add(const Duration(seconds: 30));
+    await tester.tap(find.text('Könnten'));
+    await tester.pumpAndSettle();
+    await tapNext(tester);
+
+    expect(rating.starts, <DateTime>[
+      begun,
+      begun.add(const Duration(minutes: 1)),
+    ]);
+  });
+
   testWidgets('FR-L15-04 due topics back to back, a banner between', (
     tester,
   ) async {
@@ -667,6 +698,9 @@ class _Rating implements GrammarRatingService {
 
   final List<(String, int, int)> rated;
 
+  /// Each run's start, as rated (#785).
+  final List<DateTime?> starts = <DateTime?>[];
+
   /// How many writes fail before one goes through (#174).
   int failures = 0;
 
@@ -678,11 +712,13 @@ class _Rating implements GrammarRatingService {
     String uid, {
     required int items,
     required int correct,
+    DateTime? startedAt,
   }) async {
     if (failures > 0) {
       failures--;
       throw StateError('disk I/O error');
     }
     rated.add((uid, items, correct));
+    starts.add(startedAt);
   }
 }
