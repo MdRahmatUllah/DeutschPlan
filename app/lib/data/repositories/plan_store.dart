@@ -29,7 +29,10 @@ class DriftPlanStore implements PlanStore {
   /// runs and holds it to the commit; every other statement or transaction
   /// on the database, from any engine or isolate sharing it, waits. Inside,
   /// statements through [_db] join it, and a nested transaction (addToPlan's)
-  /// is a savepoint.
+  /// is a savepoint. The background task's own connection (#158) waits too,
+  /// under busy_timeout: drift's native BEGIN is IMMEDIATE, so a read here
+  /// can't go stale under its commit (no SQLITE_BUSY_SNAPSHOT; #621, pinned
+  /// in `app_database_open_test.dart`).
   ///
   /// The settings [body] writes are in memory before the commit, as in
   /// `SetupRepository.commit`: read back from the disk if it rolls back.

@@ -297,12 +297,16 @@ class ContentUpdater {
   Future<void> _record(ContentChange change) async {
     // Not INSERT OR REPLACE: that resets `seen`, and a re-run after an
     // interrupted update would bring back a card the learner had dismissed.
+    // #621: a re-run with no baseline (a reset course, a truncated kept
+    // manifest) diffs to nothing; it never wipes the diff already recorded.
     await _db.customStatement(
       'INSERT INTO content_updates '
       '(version, added, removed, changed_json, seen, recorded_at) '
       'VALUES (?, ?, ?, ?, 0, ?) '
-      'ON CONFLICT(version) DO UPDATE SET added = excluded.added, '
-      'removed = excluded.removed, changed_json = excluded.changed_json',
+      'ON CONFLICT(version) DO '
+      '${change.isEmpty ? 'NOTHING' : 'UPDATE SET added = excluded.added, '
+                'removed = excluded.removed, '
+                'changed_json = excluded.changed_json'}',
       <Object?>[
         change.version,
         change.added.length,

@@ -448,14 +448,16 @@ WHERE plan_date = ?1 AND completed_at IS NULL AND skipped = 0
     };
   }
 
-  /// How many words are due on or before [date], suspended ones aside: the
-  /// "12" of TodayRest's "12 → 6 revisions".
+  /// How many words are due on or before [date], suspended ones and words a
+  /// content update removed (BR-CONTENT-02, #621) aside: the "12" of
+  /// TodayRest's "12 → 6 revisions".
   Future<int> dueBy(String date) async {
     final row = await _db
         .customSelect(
           '''
 SELECT COUNT(*) AS n FROM word_state
 WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
+  AND ${inCourse('word_uid')}
 ''',
           variables: <Variable<Object>>[Variable<String>(date)],
           readsFrom: <ResultSetImplementation<Object, Object>>{_db.wordState},
