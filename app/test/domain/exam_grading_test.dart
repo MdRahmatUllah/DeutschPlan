@@ -315,26 +315,18 @@ void main() {
       expect(writingAppPoints(writing, text(targets: 5, words: 29)), 0);
     });
 
-    test(
-      'FR-L12W-03 BR-EXAM-03 and a rubric of 2 × 1, so Writing reaches 4',
-      () {
-        final full = text(targets: 6, words: 30);
-        expect(itemPoints(writing, given: full), 2);
-        expect(
-          itemPoints(writing, given: full, rubric: ticks([true, false])),
-          3,
-        );
-        expect(
-          itemPoints(writing, given: full, rubric: ticks([true, true])),
-          4,
-        );
-        // Only the two ticks Writing has count, whatever the list holds.
-        expect(
-          itemPoints(writing, given: full, rubric: ticks([true, true, true])),
-          4,
-        );
-      },
-    );
+    test('FR-L12W-03 BR-EXAM-03 BR-EXAM-06 and a rubric of 2 × 1, so Writing '
+        'reaches 4', () {
+      final full = text(targets: 6, words: 30);
+      expect(itemPoints(writing, given: full), 2);
+      expect(itemPoints(writing, given: full, rubric: ticks([true, false])), 3);
+      expect(itemPoints(writing, given: full, rubric: ticks([true, true])), 4);
+      // Only the two ticks Writing has count, whatever the list holds.
+      expect(
+        itemPoints(writing, given: full, rubric: ticks([true, true, true])),
+        4,
+      );
+    });
 
     test('#687 AN-10 a phrase is typed whole; a paper stored before the flag '
         'grades as it did', () {
@@ -388,7 +380,7 @@ void main() {
     });
   });
 
-  test('FR-L12S-03 Speaking: its rubric, 4 × 1', () {
+  test('FR-L12S-03 BR-EXAM-06 Speaking: its rubric, 4 × 1', () {
     const recording = 'recordings/7.m4a';
     expect(itemPoints(speaking, given: recording), 0);
     expect(

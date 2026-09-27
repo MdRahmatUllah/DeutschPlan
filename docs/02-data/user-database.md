@@ -1,6 +1,6 @@
 # user.db — learner data (on device, writable)
 
-*On disk the file is `user.sqlite` in app support: `AppDatabase.open` names it `user`, and drift_flutter adds `.sqlite`. These docs call it user.db.*
+*On disk the file is `user.sqlite` in app support, drift_flutter's own name for `user`, which every install has had since M0. `AppDatabase.file()` is its one path: `AppDatabase.open` opens it, and bootstrap's recovery and a background task read it (#641). These docs call it user.db.*
 
 Created on first launch from `lib/data/db/user_schema.drift`, which is the authoritative DDL *and* the file drift generates the typed table classes from — one source, so the schema and the Dart cannot drift apart (ADR 22). It is ordinary SQL; anything wanting the raw DDL can read it. Lives in app-support storage; never leaves the device except through the learner's own export.
 
@@ -11,7 +11,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `settings` (key, value) | all preferences | see keys below |
 | `enrollments` (sublevel_code PK, started_on, daily_new, study_days_mask, completed_on) | steps started | one row with `completed_on IS NULL` = active step |
 | `word_state` (word_uid PK, status, introduced_on, due, stability, difficulty, reps, lapses, fsrs_state, last_review, card_mode, times_logged, note, card_mode_manual) | per-word learning state | `card_mode`: `plain` or `cloze`; `card_mode_manual`: 1 once the learner chose the card in W1, so BR-FSRS-06 keeps it (v3, #316); status per BR-STATUS |
-| `review_log` (id, word_uid, reviewed_at, rating, source, elapsed_days, scheduled_days) | every rating | never deleted; used for stats and future FSRS optimisation |
+| `review_log` (id, word_uid, reviewed_at, rating, source, elapsed_days, scheduled_days) | every rating | kept for stats and future FSRS optimisation; a row goes only with its rating's *Undo*, a step reset (FR-M7-01), *Reset everything* or an import's *Replace* (#700) |
 | `plan_items` (plan_date, word_uid, kind, sublevel_code, completed_at, skipped) PK(plan_date, word_uid, kind) | the daily plan | open `new` rows with plan_date < today = backlog |
 | `grammar_state` (grammar_uid PK, status, due, stability, difficulty, reps, lapses, last_review) | grammar scheduling | same FSRS fields as words |
 | `grammar_practice_log` (id, grammar_uid, practised_at, items, correct) | practice history | |
@@ -20,7 +20,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `exam_attempts` (id, sublevel_code, seed, started_at, finished_at, paused_sec, duration_sec, score_points, max_points, passed, status) | mock exams | status: `in_progress`, `finished`, `abandoned` |
 | `exam_answers` (attempt_id, ord, section, item_ref, prompt, options_json, expected, given, flagged, points, self_rubric_json) | per question | recordings referenced by path in `given` for Speaking |
 | `custom_words` (id, created_at, article, german, meaning, where_seen, example, matched_uid, times_seen) | "My words" | `matched_uid` set when the word exists in content. Scheduled, a word is `custom:<id>` wherever a course uid goes: `word_state`, `plan_items`, `review_log`, `quiz_answers` (#363) |
-| `daily_stats` (day PK, new_done, reviews_done, grammar_done, sentences_done, seconds) | per-day totals | streak and charts |
+| `daily_stats` (day PK, new_done, reviews_done, grammar_done, sentences_done, seconds, completed_shown) | per-day totals | streak and charts; `completed_shown` is 1 once the day's T6 has been shown (FR-T6-01, `claimDayComplete`) |
 | `content_updates` (version PK, added, removed, changed_json, seen, recorded_at) | update cards | `recorded_at` is when this device saw the update; `version` is the build time |
 | `translation_cache` | Hy-MT outputs | keyed by (src_lang, tgt_lang, src_text, model) |
 | `undo_stack` (id, created_at, payload_json) | last-action undo | trimmed to 20 rows |
@@ -28,6 +28,8 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 ## Settings keys and defaults
 
 `SettingsRepository` (`lib/data/repositories/`) reads this table into memory once and serves it synchronously, because settings are read during `build`. `setting_keys.dart` is the typed catalogue, and `test/data/settings_repository_test.dart` parses the table below and fails if a key or a default here and there disagree — so this is the source, not a copy of one.
+
+A write is in memory before it is on disk. A write that fails, or a transaction rolled back around one, reads the table back and tells the listeners of what moved, so a reminder scheduled from the write is taken back (`SettingsRepository.guard`, #688). `last_planned_date` and `planned_study_days` are read from the table, not from memory (`fresh`): the background task writes them through its own connection at 00:05, and an app alive since yesterday would otherwise plan the day again, and give a day opened without revisions some (BR-PLAN-08, #688).
 
 | Key | Default | Screen |
 | --- | --- | --- |
@@ -83,4 +85,4 @@ Never drop columns with data; add nullable columns or new tables.
 
 ## Backups
 
-`user.db` uses WAL mode. Export (M6) serialises every table except `translation_cache` and `undo_stack` to JSON with the schema version; import validates the version and either replaces or merges (per-word most recent `last_review` wins). A replace keeps every id, so the round trip is exact, except that a `custom:<id>` row whose word isn't in the file stays out, as on a merge (#618). AUTOINCREMENT resumes above the file's highest id, so a deleted word's id is the next one given out, and the learner's next word would otherwise inherit that word's reviews and plan. On a merge, every AUTOINCREMENT id is this phone's to assign, since no row key holds one: quiz and exam attempts and their answers, `review_log`, `grammar_practice_log` and the learner's own words. A word of the learner's own gets a fresh id, or the local one when `(created_at, german)` matches. Every `custom:<id>` in `word_state`, `review_log`, `plan_items` and `quiz_answers` follows the word's new id. A `custom:<id>` whose word isn't in the file stays out, so a merge doesn't carry a deleted word's reviews. A compare quiz's `source_ref` isn't rewritten, since nothing reads it back (#369).
+`user.db` uses WAL mode. Export (M6) serialises every table except `translation_cache` and `undo_stack` to JSON with the schema version; import validates the version and either replaces or merges (per-word most recent `last_review` wins). A replace keeps every id, so the round trip is exact, except that a `custom:<id>` row whose word isn't in the file stays out, as on a merge (#618). AUTOINCREMENT resumes above the file's highest id, so a deleted word's id is the next one given out, and the learner's next word would otherwise inherit that word's reviews and plan. On a merge, every AUTOINCREMENT id is this phone's to assign, since no row key holds one: quiz and exam attempts and their answers, `review_log`, `grammar_practice_log` and the learner's own words. A word of the learner's own gets a fresh id, or the local one when `(created_at, german)` matches. Every `custom:<id>` in `word_state`, `review_log`, `plan_items` and `quiz_answers` follows the word's new id. A `custom:<id>` whose word isn't in the file stays out, so a merge doesn't carry a deleted word's reviews. A compare quiz's `source_ref` isn't rewritten, since nothing reads it back (#369). Either way an import empties `undo_stack`: an Undo still on screen would put back a word's state from before it (#688). A Speaking answer comes in without its `given`, since the recordings stay on the phone that made them; its points stand (#688).

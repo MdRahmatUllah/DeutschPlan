@@ -62,7 +62,10 @@ class ExamRunService {
             options: row.optionsJson,
             expected: row.expected,
           )),
-          given: row.given,
+          // #688 DA-6: Speaking's, as the file it names, if it's here.
+          given: row.section == ExamSection.speaking.name
+              ? await _models.recordingOf(attemptId, row.given)
+              : row.given,
           flagged: row.flagged != 0,
           rubric: rubricTicks(row.selfRubricJson),
         ),
@@ -73,9 +76,16 @@ class ExamRunService {
   }
 
   /// FR-L12-01: written as it is given, so a restart loses at most the
-  /// answer being typed.
-  Future<void> answer(int attemptId, int ord, String? given) =>
-      _exams.answer(attemptId: attemptId, ord: ord, given: given);
+  /// answer being typed. A recording, [recordingPath], is written as its
+  /// name (#688 DA-6).
+  Future<void> answer(int attemptId, int ord, String? given) {
+    final name = ModelRepository.recordingName(attemptId);
+    return _exams.answer(
+      attemptId: attemptId,
+      ord: ord,
+      given: given != null && given.endsWith('/$name') ? name : given,
+    );
+  }
 
   /// FR-L12S-03: the ticks, written as they are ticked.
   Future<void> rubric(int attemptId, int ord, List<bool> ticks) =>

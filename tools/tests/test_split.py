@@ -62,7 +62,7 @@ def test_the_twelve_steps_are_the_ones_BR_COURSE_01_names():
 
 
 class TestBoundary:
-    def test_even_weeks_split_down_the_middle(self):
+    def test_BR_COURSE_02_even_weeks_split_down_the_middle(self):
         split = split_level(words("A1", {1: 10, 2: 10, 3: 10, 4: 10}), "A1")
         assert split.boundary_week == 3
         assert (split.words_in_first, split.words_in_second) == (20, 20)
@@ -176,7 +176,7 @@ class TestGrammar:
             for i in range(count)
         ]
 
-    def test_split_by_count_keeping_teaching_order(self):
+    def test_BR_COURSE_03_split_by_count_keeping_teaching_order(self):
         rows = self.grammar("A1", 7)
         split_grammar(rows)
         # BR-COURSE-03: by count, not by the word boundary. The odd topic goes

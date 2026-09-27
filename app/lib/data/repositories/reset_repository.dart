@@ -51,7 +51,13 @@ ORDER BY l.ord, s.ord
   /// quizzes and mock exams. The current step starts again [today]; any other
   /// is no longer started. Returns the mock exams deleted, whose Speaking
   /// recordings go with them.
-  Future<List<int>> resetStep(String step, {required PlanDate today}) async {
+  ///
+  /// [SettingsRepository.guard]ed (#688 DA-8): the plan date it writes is in
+  /// memory before the commit.
+  Future<List<int>> resetStep(String step, {required PlanDate today}) =>
+      _settings.guard(() => _resetStep(step, today));
+
+  Future<List<int>> _resetStep(String step, PlanDate today) async {
     const words = 'SELECT uid FROM words WHERE sublevel_code = ?1';
     const topics = 'SELECT uid FROM grammar_topics WHERE sublevel_code = ?1';
     late final List<int> exams;
@@ -132,7 +138,7 @@ ORDER BY l.ord, s.ord
       // Today was planned with the step's words, which are gone: plan it
       // again, from the step started over (BR-PLAN-08's record is written
       // anew). In the transaction, as the rest.
-      final last = _settings.read(SettingKeys.lastPlannedDate);
+      final last = await _settings.fresh(SettingKeys.lastPlannedDate);
       if (current && last != null && planDate(last).compareTo(today) >= 0) {
         await _settings.write(
           SettingKeys.lastPlannedDate,

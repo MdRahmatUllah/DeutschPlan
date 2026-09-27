@@ -146,6 +146,11 @@ class SearchRepository {
   /// has nothing to match and tier 3 is skipped rather than run empty.
   static const int _minimumTrigramLength = 3;
 
+  /// Tier 4 needs two characters (#736). One letter prefix-matches most of
+  /// the course's sentences, and bm25 ranked them all: the slowest search
+  /// there was, for sentences that share only a first letter with the query.
+  static const int _minimumSentenceLength = 2;
+
   /// BR-SEARCH-03: a longer query earns a longer leash, because a typo in a
   /// compound is further from the word than a typo in "Haus".
   static const int _longQueryLength = 5;
@@ -237,8 +242,19 @@ class SearchRepository {
       }
     }
 
-    // BR-SEARCH-01: higher frequency first inside a tier.
-    return hits.values.toList()..sort(_byRank);
+    // BR-SEARCH-01: higher frequency first inside a tier. But the spelling as
+    // typed first (#734): a word reached only through the umlaut fold
+    // (`search_key_alt`: "schön" folds to `schon`) goes after every word
+    // keyed as the query is, or "schön" would open schon and "Bär" bar.
+    final folded = <String>{
+      for (final row in rows)
+        if (row.searchKey != key && row.bangla != raw) row.uid,
+    };
+    final sorted = hits.values.toList()..sort(_byRank);
+    return <WordHit>[
+      ...sorted.where((hit) => !folded.contains(hit.uid)),
+      ...sorted.where((hit) => folded.contains(hit.uid)),
+    ];
   }
 
   /// Tier 2. FTS ranks these; frequency breaks the ties BR-SEARCH-01 cares
@@ -303,7 +319,7 @@ class SearchRepository {
     String alt,
     String? step,
   ) async {
-    if (key.isEmpty) return const <SentenceHit>[];
+    if (key.length < _minimumSentenceLength) return const <SentenceHit>[];
     final german = <String>{alt, raw.toLowerCase(), _respelled(key)}
       ..remove(key);
     String any(Iterable<String> forms) =>

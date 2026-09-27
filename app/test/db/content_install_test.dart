@@ -76,7 +76,12 @@ void main() {
 
     expect(await dao.attach(), ContentFixture.version);
     expect((await dao.installedFile()).existsSync(), isTrue);
-    expect((await dao.wordsForStep('A1.1').get()), hasLength(2));
+    expect(
+      (await dao
+          .customSelect("SELECT uid FROM words WHERE sublevel_code = 'A1.1'")
+          .get()),
+      hasLength(2),
+    );
   });
 
   test('a second run reuses the installed copy', () async {
@@ -125,7 +130,12 @@ void main() {
     test('the course is readable afterwards', () async {
       await dao.attach();
       await dao.replaceWithBundled();
-      expect(await dao.wordsForStep('A1.1').get(), hasLength(2));
+      expect(
+        await dao
+            .customSelect("SELECT uid FROM words WHERE sublevel_code = 'A1.1'")
+            .get(),
+        hasLength(2),
+      );
     });
 
     test('it leaves no half-written file behind', () async {
@@ -149,7 +159,9 @@ void main() {
       await expectLater(dao.replaceWithBundled(), throwsA(anything));
 
       expect(
-        await dao.wordsForStep('A1.1').get(),
+        await dao
+            .customSelect("SELECT uid FROM words WHERE sublevel_code = 'A1.1'")
+            .get(),
         hasLength(2),
         reason: 'the course was detached and never came back',
       );

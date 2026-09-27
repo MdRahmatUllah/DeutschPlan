@@ -107,7 +107,11 @@ void main() {
 
   test('BR-EXAM-04 a pass marks the step, by query', () async {
     final passed = <bool>[];
-    final watching = exams.watchStepPassed('A1.1').listen(passed.add);
+    // The hub's seeds, where a pass shows (the step's *Passed* chip reads
+    // the same attempts).
+    final watching = exams
+        .watchSeeds('A1.1')
+        .listen((seeds) => passed.add(seeds.any((s) => s.everPassed)));
     addTearDown(watching.cancel);
 
     final id = await sit();

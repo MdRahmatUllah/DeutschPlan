@@ -46,6 +46,7 @@ from pipeline_steps import (
     assign_grammar_uids,
     assign_search_keys,
     assign_uids,
+    cross_level_duplicates,
     drop_article_duplicates,
     split_articles,
     LevelSplit,
@@ -145,6 +146,9 @@ class Word:
     #: The uid the row had as read, when content/corrections.yaml changed it:
     #: the exact link PIPE-09 needs when a correction changes a uid field.
     corrected_from: str | None = None
+    #: The uids of the rows corrections.yaml merged into this one (#635):
+    #: PIPE-09 links each here.
+    merged_from: list = field(default_factory=list)
     sublevel_code: str | None = None
     seq: int | None = None
     seq_in_sublevel: int | None = None
@@ -659,6 +663,8 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
     moved = split_articles(words)
     if moved:
         print(f"articles: {moved} moved out of the German cell", file=sys.stderr)
+    # After the move, so "der Satzakzent" and "Satzakzent" are one word.
+    _report(cross_level_duplicates(words))
 
     return splits
 
@@ -681,6 +687,7 @@ UNCAPPED_WARNINGS = frozenset(
         "uid link",
         "removed",
         "example without its word",
+        "cross-level duplicate",
     }
 )
 
@@ -757,6 +764,7 @@ def link_previous(
     after = {w.uid: word_key(w.level, w.german, w.pos, w.english) for w in words}
     carried = (previous or {}).get("aliases", {})
     corrected = {w.corrected_from: w.uid for w in words if w.corrected_from}
+    corrected.update({old: w.uid for w in words for old in w.merged_from})
     aliases, unmatched = link_uids(before, after, carried, corrected)
 
     fresh = {old: new for old, new in aliases.items() if old in before}
