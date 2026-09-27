@@ -289,7 +289,7 @@ claiming the same issue. A hand edit skips that check.
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | open |  |  |  |
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | open |  |  |  |
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | open |  |  |  |
-| #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | open |  |  |  |
+| #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | assigned | agent-1 |  |  |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | open |  |  |  |
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | assigned | agent-1 |  |  |
 | #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | open |  |  |  |
@@ -6017,5 +6017,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1391 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #750
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1392 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #667
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
