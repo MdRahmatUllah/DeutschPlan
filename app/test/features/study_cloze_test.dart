@@ -97,6 +97,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     bool chosen = false,
     TextScaler? textScaler,
     Locale? locale,
+    Object? clipError,
   }) async {
     spoken = <String>[];
     await tester.runAsync(
@@ -113,7 +114,7 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
-          fakeVoice(FakeTts(voice: voice, spoken: spoken)),
+          fakeVoice(FakeTts(voice: voice, spoken: spoken)..error = clipError),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 9)),
         ],
         child: MaterialApp(
@@ -358,6 +359,14 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     await answer(tester, 'Straße');
     await tester.pump();
     expect(spoken, isEmpty);
+    expect(find.text(l10n.speakerNoVoice), findsNothing);
+  });
+
+  testWidgets('#646 and a voice whose clip fails: a right answer says '
+      'nothing, as a toast would replace the Undo', (tester) async {
+    await pump(tester, clipError: StateError('clip'));
+    await answer(tester, 'Straße');
+    await tester.pump();
     expect(find.text(l10n.speakerNoVoice), findsNothing);
   });
 

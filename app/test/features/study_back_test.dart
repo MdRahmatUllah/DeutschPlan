@@ -133,6 +133,7 @@ void main() {
       VoidCallback? onReveal,
       Set<String> updated = const <String>{},
       bool voice = true,
+      Object? clipError,
     }) async {
       await tester.runAsync(() async {
         db = AppDatabase.memory();
@@ -148,7 +149,7 @@ void main() {
           await db.close();
         }),
       );
-      tts = FakeTts(voice: voice);
+      tts = FakeTts(voice: voice)..error = clipError;
       turned = ValueNotifier<bool>(revealed);
       addTearDown(turned.dispose);
       final shown = word ?? rechnung;
@@ -390,6 +391,19 @@ void main() {
       turned.value = true;
       await tester.pumpAndSettle();
       expect(tts.said, isEmpty);
+      expect(find.text(l10n.speakerNoVoice), findsNothing);
+    });
+
+    testWidgets('#646 and with a voice whose clip fails, the reveal says '
+        'nothing either', (tester) async {
+      await pump(
+        tester,
+        revealed: false,
+        autoplayExample: true,
+        clipError: StateError('clip'),
+      );
+      turned.value = true;
+      await tester.pumpAndSettle();
       expect(find.text(l10n.speakerNoVoice), findsNothing);
     });
 

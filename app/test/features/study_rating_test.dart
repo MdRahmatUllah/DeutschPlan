@@ -429,56 +429,70 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       expect(await tester.runAsync(log), isEmpty);
     });
 
-    testWidgets('#646 FR-T2-02 with no German voice and autoplay on, the next '
-        "card's autoplay leaves the Undo alone", (tester) async {
-      final container = await pump(
-        tester,
-        tts: FakeTts(voice: false),
-        autoplay: true,
-      );
-      await reveal(tester);
+    for (final (voice, tts, known) in <(String, FakeTts Function(), bool)>[
+      ('no German voice', () => FakeTts(voice: false), true),
+      // Supertonic says it is ready, but its clip fails and the phone has no
+      // voice behind it: availability stays yes, and every speak is silent.
+      (
+        'a voice whose clip fails',
+        () => FakeTts()..error = StateError('clip'),
+        false,
+      ),
+    ]) {
+      testWidgets('#646 FR-T2-02 with $voice and autoplay on, the next card\'s '
+          'autoplay leaves the Undo alone', (tester) async {
+        final engine = tts();
+        final container = await pump(tester, tts: engine, autoplay: true);
+        await reveal(tester);
+        int speaks() => engine.log.where((e) => e.startsWith('speak')).length;
+        final spokeBefore = speaks();
 
-      await tester.runAsync(() async {
-        await tester.tap(find.text(l10n.ratingGood));
-        await Future<void>.delayed(const Duration(milliseconds: 50));
-      });
-      // The first card's autoplay said so, at the session's start: that toast
-      // leaves first, then the Undo comes in.
-      await tester.pump();
-      for (var frame = 0; frame < 4; frame++) {
-        await tester.pump(const Duration(milliseconds: 250));
-      }
-      expect(
-        container.read(studySessionProvider(args)).value?.current?.uid,
-        haus,
-      );
-      // Each card is a new widget. The next one's autoplay knows there is no
-      // voice, so it adds no "no voice" toast to replace the Undo, then or
-      // later in its 4 s.
-      for (final _ in <void>[null, null, null]) {
-        expect(find.text(l10n.speakerNoVoice), findsNothing);
+        await tester.runAsync(() async {
+          await tester.tap(find.text(l10n.ratingGood));
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+        });
+        await tester.pump();
+        for (var frame = 0; frame < 4; frame++) {
+          await tester.pump(const Duration(milliseconds: 250));
+        }
         expect(
-          find.text(l10n.studyRated('die Straße', l10n.ratingGood)),
-          findsOneWidget,
+          container.read(studySessionProvider(args)).value?.current?.uid,
+          haus,
         );
-        expect(find.text(l10n.undo).hitTestable(), findsOneWidget);
-        await tester.pump(const Duration(milliseconds: 750));
-      }
+        if (known) {
+          expect(
+            speaks(),
+            spokeBefore,
+            reason: 'known to have no voice, the next card does not try',
+          );
+        }
+        // Each card is a new widget, and its autoplay is quiet: no "no voice"
+        // toast to replace the Undo, then or later in its 4 s.
+        for (final _ in <void>[null, null, null]) {
+          expect(find.text(l10n.speakerNoVoice), findsNothing);
+          expect(
+            find.text(l10n.studyRated('die Straße', l10n.ratingGood)),
+            findsOneWidget,
+          );
+          expect(find.text(l10n.undo).hitTestable(), findsOneWidget);
+          await tester.pump(const Duration(milliseconds: 750));
+        }
 
-      // And it still works. Tapped outside runAsync: the bar's exit then
-      // finishes in the test's own clock, not after the test.
-      await tester.tap(find.text(l10n.undo));
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 50)),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        container.read(studySessionProvider(args)).value?.current?.uid,
-        strasse,
-      );
-      // The card back, its autoplay stays quiet too.
-      expect(find.text(l10n.speakerNoVoice), findsNothing);
-    });
+        // And it still works. Tapped outside runAsync: the bar's exit then
+        // finishes in the test's own clock, not after the test.
+        await tester.tap(find.text(l10n.undo));
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          container.read(studySessionProvider(args)).value?.current?.uid,
+          strasse,
+        );
+        // The card back, its autoplay stays quiet too.
+        expect(find.text(l10n.speakerNoVoice), findsNothing);
+      });
+    }
 
     testWidgets('#165 FR-T2-02 at 200 % text the Undo bar still clears the '
         "front's actions", (tester) async {

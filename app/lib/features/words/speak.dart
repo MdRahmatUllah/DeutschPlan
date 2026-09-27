@@ -20,12 +20,18 @@ import 'package:material_ui/material_ui.dart';
 /// install one instead, and asks `ttsAvailableProvider` again so the speaker
 /// turns slashed. Either toast is [lift]ed clear of a thumb zone. False when
 /// nothing was said.
+///
+/// [quiet] is for a play nobody asked for (an auto-play): with no voice it
+/// still turns the speaker slashed, but says nothing. Its toast would replace
+/// whatever bar is up, the rating's 4 s Undo included (FR-T2-02, #646), and
+/// the slashed speaker and a tap explain it anyway.
 Future<bool> say(
   WidgetRef ref,
   BuildContext context,
   String text, {
   double pace = 1,
   double lift = 0,
+  bool quiet = false,
 }) async {
   final outcome = await ref.read(ttsProvider).speak(text, pace: pace);
   if (!context.mounted) return outcome != TtsOutcome.silent;
@@ -53,7 +59,7 @@ Future<bool> say(
       return true;
     case TtsOutcome.silent:
       ref.invalidate(ttsAvailableProvider);
-      SgToast.show(context, l10n.speakerNoVoice, lift: lift);
+      if (!quiet) SgToast.show(context, l10n.speakerNoVoice, lift: lift);
       return false;
   }
 }
@@ -63,10 +69,10 @@ Future<bool> say(
 /// how to install one.
 bool noVoice(WidgetRef ref) => ref.watch(ttsAvailableProvider).value == false;
 
-/// Whether a play nobody asked for may start: a card's autoplay, a word read
-/// out as it opens. Not once the phone is known to have no German voice: the
-/// "no voice" toast would then come with every card, and each time replace
-/// the rating's 4 s Undo (FR-T2-02, #646). A tap still explains, every time.
+/// Whether a play nobody asked for (a card's auto-play) may start: not once
+/// the phone is known to have no German voice, as there is nothing to try.
+/// It plays [say]'s `quiet`, so a voice that fails anyway says nothing either
+/// (#646). A tap still explains, every time.
 ///
 /// Read, not watched, as it is asked from callbacks: the screen keeps
 /// [ttsAvailableProvider] alive, its speakers watching it through [noVoice].

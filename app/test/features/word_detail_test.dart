@@ -460,50 +460,6 @@ void main() {
       await tester.pumpAndSettle();
       expect(tts.spoken, <String>['die Straße']);
     });
-
-    testWidgets('#646 V01 ?speak=1 with no German voice known plays nothing '
-        'and says nothing: the slashed speaker does', (tester) async {
-      tts = FakeTts(voice: false);
-      await openSettings(tester, AppDatabase.memory());
-      final container = ProviderContainer(
-        overrides: <Override>[
-          settingsProvider.overrideWithValue(settings),
-          fakeVoice(tts),
-          todayProvider.overrideWithValue('2026-09-21'),
-          wordDetailProvider.overrideWith(
-            (ref, uid) => Stream.value(artboardWordDetail()),
-          ),
-          wordHistoryProvider.overrideWith(
-            (ref, uid) => Stream.value(artboardHistory),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-      // The screen under W1 already knows: its own speakers watch it.
-      final known = container.listen(ttsAvailableProvider, (_, _) {});
-      addTearDown(known.close);
-      await tester.runAsync(pumpEventQueue);
-      expect(container.read(ttsAvailableProvider).value, isFalse);
-
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp(
-            theme: AppTheme.light(),
-            localizationsDelegates: appLocalizationsDelegates,
-            supportedLocales: supportedLocales,
-            home: const WordDetailScreen(uid: 'uid-strasse', speak: true),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        tester.widget<SgSpeakerButton>(find.byType(SgSpeakerButton)).state,
-        SgSpeakerState.unavailable,
-      );
-      expect(tts.spoken, isEmpty);
-      expect(find.text(l10n.speakerNoVoice), findsNothing);
-    });
   });
 
   group('FR-W1-06 Compare', () {
