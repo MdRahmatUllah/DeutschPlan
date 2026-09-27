@@ -15,7 +15,7 @@
 **Functional requirements**
 - FR-S1-01 Bootstrap MUST: open user.db (create schema if absent), copy content.db when `content_version` differs, attach it, load settings, resolve theme.
 - FR-S1-02 Warm start to Today MUST be < 500 ms; first run (content copy) SHOULD be < 2 s.
-- FR-S1-03 On bootstrap failure show a full-screen error with *Retry* and *Export progress* — never a blank screen. A *Retry* that works opens the app as a first start does: its own provider container with bootstrap's overrides, and the same light/dark hook, reminders, widget, downloads and voice (#643).
+- FR-S1-03 On bootstrap failure show a full-screen error with *Retry* and *Export progress* — never a blank screen. A *Retry* that works opens the app as a first start does: its own provider container with bootstrap's overrides, and the same light/dark hook, reminders, widget, downloads and voice (#643). Retry and *Export progress* never run together, each disabled while the other works; a Retry that throws stays live, the database closed before a content retry deletes the course file; an export that fails says so (#652).
 - FR-S1-04 Deep links and notification taps MUST be honoured after bootstrap.
 - FR-S1-05 The native launch screen and Flutter's first frame MUST show the same mark at the same place (#602).
 

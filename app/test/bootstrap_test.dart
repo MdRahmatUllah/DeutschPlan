@@ -1,6 +1,7 @@
 @TestOn('vm')
 library;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'dart:convert';
@@ -542,7 +543,7 @@ void main() {
       await tester.pumpWidget(
         BootstrapErrorApp(
           failure: failureOf(BootstrapStep.content, db: db),
-          onExport: () {},
+          onExport: () async => true,
         ),
       );
       await tester.pumpAndSettle();
@@ -633,6 +634,111 @@ void main() {
       expect(wired, <Bootstrap>[ready], reason: 'the retry was not wired');
     });
 
+    testWidgets('FR-S1-03 #652 a Retry that throws leaves Retry live', (
+      tester,
+    ) async {
+      // It used to stay disabled for good: `_retrying` was set and never
+      // cleared when a step threw.
+      var attempts = 0;
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: failureOf(BootstrapStep.database),
+          onReady: (_) {},
+          onRetry: () async {
+            attempts++;
+            throw StateError('disk full');
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(_retryButton);
+      await tester.pumpAndSettle();
+      expect(attempts, 1);
+      expect(find.text('Sogda could not open your data.'), findsOneWidget);
+      expect(
+        tester.widget<SgButton>(_retryButton).onPressed,
+        isNotNull,
+        reason: 'Retry stayed dead',
+      );
+
+      await tester.tap(_retryButton);
+      await tester.pumpAndSettle();
+      expect(attempts, 2);
+    });
+
+    testWidgets('FR-S1-03 #652 a Retry that throws after closing the '
+        'database leaves Export off, not offered on a closed file', (
+      tester,
+    ) async {
+      // The retry closed the failure's database before it threw, so the
+      // failure left on screen has nothing to export from: the export could
+      // only ever say it failed.
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: failureOf(BootstrapStep.database, db: db),
+          onReady: (_) {},
+          onRetry: () async => throw StateError('disk full'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.widget<SgButton>(_exportButton).onPressed, isNotNull);
+
+      await tester.tap(_retryButton);
+      await tester.pumpAndSettle();
+      expect(tester.widget<SgButton>(_exportButton).onPressed, isNull);
+      expect(
+        tester.widget<SgButton>(_retryButton).onPressed,
+        isNotNull,
+        reason: 'Retry is the way on',
+      );
+    });
+
+    testWidgets('FR-S1-03 #652 a ready retry whose app fails to start leaves '
+        'Retry live, and closes that database', (tester) async {
+      final db = AppDatabase.memory();
+      final settings = SettingsRepository(db);
+      await settings.load();
+      final ready = Bootstrap(
+        db: db,
+        content: ContentDao(db),
+        settings: settings,
+        glass: GlassCapability(),
+        router: buildRouter(),
+        contentVersion: ContentFixture.version,
+        contentChange: null,
+        themeMode: SgMode.light,
+        themeSetting: ThemeModeSetting.light,
+        isFirstRun: false,
+        elapsed: Duration.zero,
+      );
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: failureOf(BootstrapStep.database),
+          onReady: (_) => throw StateError('the wiring threw'),
+          onRetry: () async => BootstrapReady(ready),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(_retryButton);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<SgButton>(_retryButton).onPressed,
+        isNotNull,
+        reason: 'Retry stayed dead',
+      );
+      await tester.runAsync(() async {
+        await expectLater(
+          db.customSelect('SELECT 1').get(),
+          throwsA(anything),
+          reason: 'the retry left user.db open behind it',
+        );
+      });
+    });
+
     testWidgets('a retry that fails again says so', (tester) async {
       await tester.pumpWidget(
         BootstrapGate(
@@ -704,6 +810,94 @@ void main() {
       expect(shared, isNotNull, reason: 'the button did nothing');
       expect(shared!.path, endsWith(exportFileName));
       expect(File(shared!.path).existsSync(), isTrue);
+    });
+
+    testWidgets('#652 an export that fails says so, and can be tried again', (
+      tester,
+    ) async {
+      // A throw used to vanish: no word, most likely in the corrupt-database
+      // case the button exists for.
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      var tries = 0;
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: BootstrapFailure(
+            step: BootstrapStep.content,
+            error: 'no content',
+            stackTrace: StackTrace.empty,
+            db: db,
+          ),
+          onReady: (_) {},
+          onShare: (_) async {
+            tries++;
+            throw StateError('no share sheet');
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(_exportButton);
+        for (var i = 0; i < 100 && tries == 0; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tries, 1);
+      expect(find.text("The export didn't finish. Try again."), findsOneWidget);
+      expect(tester.widget<SgButton>(_exportButton).onPressed, isNotNull);
+    });
+
+    testWidgets('#652 while it exports, Retry and Export are off, and a '
+        'second tap exports once', (tester) async {
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      final open = Completer<void>();
+      var shares = 0;
+      await tester.pumpWidget(
+        BootstrapGate(
+          failure: BootstrapFailure(
+            step: BootstrapStep.content,
+            error: 'no content',
+            stackTrace: StackTrace.empty,
+            db: db,
+          ),
+          onReady: (_) {},
+          onShare: (_) async {
+            shares++;
+            await open.future;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(_exportButton);
+        for (var i = 0; i < 100 && shares == 0; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+      });
+      await tester.pump();
+      expect(tester.widget<SgButton>(_exportButton).onPressed, isNull);
+      expect(
+        tester.widget<SgButton>(_retryButton).onPressed,
+        isNull,
+        reason: 'Retry would close the database being exported',
+      );
+
+      await tester.tap(_exportButton, warnIfMissed: false);
+      await tester.runAsync(() async {
+        open.complete();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+      expect(shares, 1);
+      expect(tester.widget<SgButton>(_exportButton).onPressed, isNotNull);
+      expect(tester.widget<SgButton>(_retryButton).onPressed, isNotNull);
     });
 
     // Plain `test`, not `testWidgets`: this pumps no widgets, and a
