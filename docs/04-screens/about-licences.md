@@ -6,11 +6,11 @@
 
 **About layout.** App mark (the app icon, `SgMark.appIcon` at 60 dp: the brand kit's tiles on the Lagoon square, #602); "Version 1.0.0 (build 41) · content 2026.09 · 21 Sep 2026"; **Privacy**: "Your progress stays on this phone. Sogda has no account, no server and no analytics. The internet is used only when you open a web search link or download a model."; **Open-source and model licences** → M8; **Contact** address; **Content**: "5,593 words · 182 grammar topics · 11,186 sentences" (from `meta`).
 
-**Licences layout.** Sections Models (Supertonic 3 — OpenRAIL-M; Hy-MT 1.5 (1.8B) — Hy-MT licence), Fonts (Inter, Noto Sans Bengali — OFL 1.1), Packages (from `LicenseRegistry`).
+**Licences layout.** Sections Models (Supertonic 3 — OpenRAIL-M; Hy-MT 1.5 (1.8B) — Hy-MT licence), Fonts (Inter, Noto Sans Bengali — OFL 1.1), Native libraries (ONNX Runtime — MIT, with its third-party notices; the Android libraries — Apache-2.0; #610), Packages (from `LicenseRegistry`).
 
 **Functional requirements**
 - FR-M9-01 Version/build from `package_info_plus`; content version and counts from `c.meta`.
-- FR-M8-01 Model and font licence texts are bundled as assets and shown in full.
+- FR-M8-01 Model, font and native-library licence texts are bundled as assets and shown in full.
 
 **Tests.** counts equal the content manifest.
 
@@ -28,6 +28,9 @@
   - The Supertonic SDK is under MIT (`supertone-inc/supertonic-py`): `supertonic_text.dart` ports its text front end (#172).
   - Hy-MT 1.5 (1.8B) is under the **Tencent HY Community License** (`tencent/HY-MT1.5-1.8B`). It is named that, not "Hy-MT licence" as the artboard has it. Its text excludes the EU, the UK and South Korea, which the model manager's region gate follows.
 - **Fonts:** Inter and Noto Sans Bengali, SIL OFL 1.1, bundled.
+- **Native libraries** (#610): what ships in the APK that no package's LICENSE covers, so Flutter's registry can't list it.
+  - **ONNX Runtime** 1.23.0, the Supertonic voice's engine (`libonnxruntime.so`, from Maven through flutter_onnxruntime, whose own LICENSE covers only the plugin): its MIT licence and its `ThirdPartyNotices.txt`, both from the release commit.
+  - **The Android libraries** the plugins pull in: AndroidX (core, WorkManager, browser, preference, media), Jetpack Glance, Kotlin and kotlinx, Gson. All are Apache-2.0, so one entry carries that licence (AndroidX's own `LICENSE.txt`).
 - **Collection** is a release step (`release.md`): `tools/licences.py` lists each bundled text's source, and `check` compares them with what the makers publish. It also fails if a package ships no LICENSE file, or if a font family in pubspec's `fonts:` has no licence text (#719).
 - **Packages** come from Flutter's `LicenseRegistry`, each package once, in name order. The registry gives texts, not names, so the line under a package is the licence its text is (MIT, BSD-2-Clause, BSD-3-Clause, Apache-2.0, MPL-2.0, OFL-1.1, ISC), else "Licence".
 - **A licence's text** opens in full in a sheet that scrolls: M8 has no page per licence, so the route table is unchanged.

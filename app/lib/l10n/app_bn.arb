@@ -905,6 +905,7 @@
   "licencesTitle": "লাইসেন্স",
   "licencesModels": "মডেল",
   "licencesFonts": "ফন্ট",
+  "licencesNative": "নেটিভ লাইব্রেরি",
   "licencesPackages": "প্যাকেজ",
   "licencesOther": "লাইসেন্স",
   "modelNotifyRunning": "মডেল ডাউনলোড",
