@@ -243,6 +243,12 @@ class TestRefusals:
         with pytest.raises(PipelineError, match=r"line 2.*'colour'"):
             read_tips(path)
 
+    def test_a_csv_saved_by_excel_with_a_bom_reads_697(self, tmp_path):
+        # Excel's "CSV UTF-8" writes a BOM; read as utf-8 it hid match_type.
+        path = csv(tmp_path, "german,Haus,a tip,,\n")
+        path.write_bytes(b"\xef\xbb\xbf" + path.read_bytes())
+        assert [tip.match_type for tip in read_tips(path)] == ["german"]
+
     def test_a_row_missing_its_english_names_what_is_missing(self, tmp_path):
         path = csv(tmp_path, "german,Haus,,only bangla,\n")
         with pytest.raises(PipelineError, match=r"line 2: missing tip_en"):

@@ -107,4 +107,4 @@ words:
 
 ## Interference tips
 
-`content/interference_tips.csv` columns: `match_type (uid|german|pattern), match, tip_en, tip_bn, tags`. Patterns are regexes over `german` (e.g. `^bekommen$`, `^seit\b`). The pipeline resolves them at build time into `interference_tips(word_uid, tip_en, tip_bn)` so the app never runs regexes. A tip tagged `gender` attaches to nouns only and one tagged `separable` to verbs only (#321): a pattern matches the spelling, and "Every -chen noun is das" is false on *versuchen*.
+`content/interference_tips.csv` columns: `match_type (uid|german|pattern), match, tip_en, tip_bn, tags`, in UTF-8 with or without Excel's BOM (#697). Patterns are regexes over `german` (e.g. `^bekommen$`, `^seit\b`). The pipeline resolves them at build time into `interference_tips(word_uid, tip_en, tip_bn)` so the app never runs regexes. A tip tagged `gender` attaches to nouns only and one tagged `separable` to verbs only (#321): a pattern matches the spelling, and "Every -chen noun is das" is false on *versuchen*.
