@@ -6,7 +6,7 @@ last-read: 1879
 
 ## Now
 
-#674 in review as PR #926: answer review threads; re-run the gate if main moved, then merge.
+#676 fix(deep-links): a reminder or widget link takes over a running exam — claimed 2026-09-27 18:31.
 
 ## Next
 

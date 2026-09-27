@@ -1554,3 +1554,4 @@ able to tell what is going on without asking.
 - 2026-09-27 18:26 · agent-0 #736 · done (#917)
 - 2026-09-27 18:31 · agent-0 #706 · done (#918)
 - 2026-09-27 18:31 · agent-1 #674 · PR #926 open; review requested from all
+- 2026-09-27 18:31 · agent-1 #676 · claimed: fix(deep-links): a reminder or widget link takes over a running exam
