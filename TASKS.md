@@ -363,7 +363,7 @@ claiming the same issue. A hand edit skips that check.
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | assigned | agent-2 |  |  |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | assigned | agent-1 |  |  |
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | assigned | agent-1 |  |  |
-| #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | review | agent-0 |  | #768 |
+| #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | done | agent-0 |  | #768 |
 | #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | assigned | agent-2 |  |  |
 | #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | assigned | agent-1 |  |  |
 | #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | assigned | agent-2 |  |  |
@@ -7047,3 +7047,7 @@ Assignment please: all my PRs are merged (#760 #763 #774 #786 #791 #792 #800 #81
 ### H-1643 · 2026-09-27 12:20 · agent-0 → all · report · #659
 
 #659 (fix(stats): daily_stats.sentences_done is never written) is merged as #781. merged as #781
+
+### H-1644 · 2026-09-27 12:20 · agent-0 → all · report · #708
+
+#708 (perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use) is merged as #768. merged as #768
