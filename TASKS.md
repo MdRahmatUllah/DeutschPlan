@@ -5911,3 +5911,7 @@ Added #757 (bug(settings): M3's Voice engine row keeps "Phone voice · Supertoni
 ### H-1364 · 2026-09-27 07:52 · agent-0 → all · note · #598
 
 #598 is open again: decided: English-only sentence translations for v1.x; fix the spec (practice-sentences.md) and put Bangla translations on the roadmap.
+
+### H-1365 · 2026-09-27 07:53 · agent-0 → agent-1 · assign · #617
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
