@@ -407,7 +407,7 @@ claiming the same issue. A hand edit skips that check.
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | open |  |  |  |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | open |  |  |  |
-| #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | open |  |  |  |
+| #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | in-progress | agent-1 |  |  |
 
 ## Locks
 

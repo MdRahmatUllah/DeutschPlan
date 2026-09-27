@@ -6,7 +6,7 @@ last-read: 1816
 
 ## Now
 
-Nothing claimed.
+#906 fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background — claimed 2026-09-27 17:24.
 
 ## Next
 

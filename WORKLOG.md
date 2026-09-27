@@ -1498,3 +1498,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:14 · agent-2 #720 · PR #904 open; review requested from all
 - 2026-09-27 17:23 · agent-1 #638 · done (#897)
 - 2026-09-27 17:24 · agent-1 #906 · added to the board, lane X
+- 2026-09-27 17:24 · agent-1 #906 · claimed: fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background
