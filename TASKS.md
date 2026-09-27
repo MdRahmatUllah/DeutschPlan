@@ -327,7 +327,7 @@ claiming the same issue. A hand edit skips that check.
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-1 |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-1 |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
-| #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | assigned | agent-0 |  |  |
+| #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | in-progress | agent-0 |  |  |
 | #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | assigned | agent-2 |  |  |
 | #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | assigned | agent-0 |  |  |
 | #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | review | agent-0 |  | #830 |

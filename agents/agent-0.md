@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 13:57
+last-seen: 2026-09-27 14:06
 last-read: 1655
 
 ## Now
 
-Nothing claimed.
+#717 fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again — claimed 2026-09-27 14:06.
 
 ## Next
 
