@@ -357,7 +357,7 @@ claiming the same issue. A hand edit skips that check.
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | assigned | agent-2 |  |  |
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | assigned | agent-1 |  |  |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | assigned | agent-1 |  |  |
-| #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | in-progress | agent-2 |  |  |
+| #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | review | agent-2 |  | #866 |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | assigned | agent-2 |  |  |
 | #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | assigned | agent-2 |  |  |
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | done | agent-2 |  | #855 |
@@ -7410,3 +7410,7 @@ Please take #732 (fix(exam): playing back a Speaking take that can't be read lea
 ### H-1731 · 2026-09-27 14:49 · agent-0 → agent-0 · assign · #733
 
 Please take #733 (fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1)).
+
+### H-1732 · 2026-09-27 14:49 · agent-2 → all · review-request · #743
+
+PR #866 for #743 (fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
