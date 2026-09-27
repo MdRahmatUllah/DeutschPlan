@@ -19,6 +19,6 @@ Grammar topics use the same class on `grammar_state`.
 
 Difficulty's mean reversion (#687 AN-5, the lead's decision): `D' = w7 · D0(Easy) + (1 − w7) · (D − w6 · (rating − 3))`, clamped 1…10, with `D0(Easy) = w4 − w5`. That target is FSRS-5's; canonical FSRS-4.5 reverts towards `w4`, a Good first review's difficulty, and would give the Good chain 4 → 15 → 49 → 146 → 393. The app keeps its target, and with it the chain above, so no learner's schedule moves. Switching to FSRS-4.5's target is a possible later change, best made with the on-device weight fitting below, and would re-pin the chain.
 
-A card with no stability to grow (0, negative or NaN) is scheduled as a first review, whatever its `fsrs_state` (#687 AN-6). No review leaves one; an imported row can. `intervalDays` of a NaN stability is 1 day and of an infinite one 36500, never a throw.
+A card with no stability to grow (0, negative, NaN or infinite) is scheduled as a first review, whatever its `fsrs_state` (#687 AN-6, #863): an infinite one would otherwise be 36500 days out whatever the rating, Again included. No review leaves one; an imported row can. `intervalDays` of a NaN stability is 1 day and of an infinite one 36500, never a throw.
 
 Future: on-device optimisation of weights from `review_log` once ≥ 1,000 reviews exist (not in v1).
