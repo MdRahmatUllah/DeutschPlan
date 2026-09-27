@@ -236,14 +236,33 @@ void main() {
     for (final locale in AppLocalizations.supportedLocales) {
       final l10n = await AppLocalizations.delegate.load(locale);
       expect(l10n.appTitle, isNotEmpty, reason: 'appTitle missing for $locale');
-      expect(
-        l10n.loadingCourse,
-        isNotEmpty,
-        reason: 'loadingCourse missing for $locale',
-      );
       expect(l10n.retry, isNotEmpty, reason: 'retry missing for $locale');
       expect(l10n.undo, isNotEmpty, reason: 'undo missing for $locale');
     }
+  });
+
+  test('#640 every ARB key is read somewhere under lib/', () {
+    final arb = jsonDecode(
+      File('lib/l10n/app_en.arb').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    final source = [
+      for (final file in Directory(
+        'lib',
+      ).listSync(recursive: true).whereType<File>())
+        if (file.path.endsWith('.dart') && !file.path.contains('generated'))
+          file.readAsStringSync(),
+    ].join('\n');
+    final unused = [
+      for (final key in arb.keys.where((k) => !k.startsWith('@')))
+        if (!RegExp('\\.$key\\b').hasMatch(source)) key,
+    ];
+    expect(
+      unused,
+      isEmpty,
+      reason:
+          'Nothing in lib/ reads these: delete them from app_en.arb and '
+          'app_bn.arb',
+    );
   });
 
   test('no user-facing string is hard-coded under lib/', () {
