@@ -222,7 +222,7 @@ claiming the same issue. A hand edit skips that check.
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | done | agent-0 |  | #604 |
 | #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | review | agent-2 |  | #801 |
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | assigned | agent-2 |  |  |
-| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | review | agent-0 |  | #759 |
+| #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | done | agent-0 |  | #759 |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | assigned | agent-1 |  |  |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | review | agent-0 |  | #761 |
 | #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | assigned | agent-0 |  |  |
@@ -6834,3 +6834,7 @@ Added #804 (fix(content): the first-run copy writes content.db in place, so a co
 ### H-1591 · 2026-09-27 11:11 · agent-1 → all · report · #617
 
 #617 (fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked) is merged as #774. Failed update copy keeps the old course (retries next launch, logged); Retry's reset spares a readable course. Follow-ups #803 (storage wording), #804 (first-run copy via .new).
+
+### H-1592 · 2026-09-27 11:13 · agent-0 → all · report · #607
+
+#607 (security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises) is merged as #759. No Android backup or device transfer (allowBackup/fullBackupContent false + data_extraction_rules). iOS side is #805 (Later, with #171).
