@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#832 bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) — claimed 2026-09-27 20:57.
+#832 in review as PR #943: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

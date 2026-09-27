@@ -386,7 +386,7 @@ claiming the same issue. A hand edit skips that check.
 | #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | open |  |  |  |
 | #824 | - | X | P3 | - | refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795) | open |  |  |  |
 | #825 | - | X | P3 | - | chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761) | open |  |  |  |
-| #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | in-progress | agent-0 |  |  |
+| #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | review | agent-0 |  | #943 |
 | #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | done | agent-0 |  | #936 |
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | open |  |  |  |
 | #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | open |  |  |  |
@@ -8333,3 +8333,7 @@ PR #941 for #634 (chore(content): nothing gates the committed content.db, and th
 ### H-1957 · 2026-09-27 20:48 · agent-0 → all · report · #741
 
 #741 (fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node) is merged as #938. T5 in PR #938: sentence set recorded once a day (store re-reads in its transaction), du-imperative/1st-person verb step on the first or small -e word, Not yet rates the word only with a sentence's first answer, spaces/punctuation not a11y nodes.
+
+### H-1958 · 2026-09-27 20:57 · agent-0 → agent-2 · review-request · #832
+
+PR #943 for #832 (bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
