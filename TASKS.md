@@ -367,7 +367,7 @@ claiming the same issue. A hand edit skips that check.
 | #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | done | agent-2 |  | #900 |
 | #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | done | agent-0 |  | #938 |
 | #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | review | agent-2 |  | #962 |
-| #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | assigned | agent-2 |  |  |
+| #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | in-progress | agent-2 |  |  |
 | #753 | SQA | X | P3 | - | bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs" | done | agent-0 |  | #908 |
 | #754 | SQA | X | P3 | - | bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged) | done | agent-2 |  | #939 |
 | #755 | SQA | X | P2 | - | bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message) | review | agent-1 |  | #953 |

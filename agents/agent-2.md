@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-#751 in review as PR #962: answer review threads; re-run the gate if main moved, then merge.
+#752 bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock — claimed 2026-09-27 22:43.
 
 ## Next
 
