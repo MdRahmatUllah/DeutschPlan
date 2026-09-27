@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 12:31
+last-seen: 2026-09-27 12:45
 last-read: 1655
 
 ## Now
 
-#669 fix(search): R2 saves duplicate "my words", and times_seen never moves — claimed 2026-09-27 12:31.
+#669 in review as PR #828: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
