@@ -1,6 +1,8 @@
 @TestOn('vm')
 library;
 
+import 'dart:async';
+
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/me/settings_screen.dart';
@@ -727,12 +729,14 @@ void main() {
       await pumpApp(tester, guards: guardsWith(), at: '/me/settings');
       expect(find.byType(SettingsScreen), findsOneWidget);
 
-      router.push(
-        '/study',
-        extra: const SessionArgs(
-          blocks: <SessionBlock>[
-            SessionBlock(SessionBlockKind.revise, <String>['uid-haus']),
-          ],
+      unawaited(
+        router.push(
+          '/study',
+          extra: const SessionArgs(
+            blocks: <SessionBlock>[
+              SessionBlock(SessionBlockKind.revise, <String>['uid-haus']),
+            ],
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -753,7 +757,7 @@ void main() {
     testWidgets('a modal does not switch the tab under it', (tester) async {
       await pumpApp(tester, guards: guardsWith(), at: '/search');
 
-      router.push('/sentences');
+      unawaited(router.push('/sentences'));
       await tester.pumpAndSettle();
       router.pop();
       await tester.pumpAndSettle();
