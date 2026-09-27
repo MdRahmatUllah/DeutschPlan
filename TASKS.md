@@ -234,7 +234,7 @@ claiming the same issue. A hand edit skips that check.
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | open |  |  |  |
 | #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | assigned | agent-1 |  |  |
 | #618 | - | X | P3 | - | fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history | assigned | agent-0 |  |  |
-| #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | open |  |  |  |
+| #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | assigned | agent-0 |  |  |
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | open |  |  |  |
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | open |  |  |  |
 | #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | open |  |  |  |
@@ -6345,5 +6345,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1473 · 2026-09-27 08:02 · agent-0 → agent-0 · assign · #618
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1474 · 2026-09-27 08:02 · agent-0 → agent-0 · assign · #619
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
