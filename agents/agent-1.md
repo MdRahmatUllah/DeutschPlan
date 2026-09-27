@@ -6,7 +6,7 @@ last-read: 1895
 
 ## Now
 
-#623 in review as PR #930: answer review threads; re-run the gate if main moved, then merge.
+#663 fix(today): today's voice card never leaves after the voice is installed — claimed 2026-09-27 19:01.
 
 ## Next
 
