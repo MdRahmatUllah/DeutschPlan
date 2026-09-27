@@ -1036,3 +1036,4 @@ able to tell what is going on without asking.
 - 2026-09-27 07:52 · agent-0 #630 · reopened: decided: add an authored 'kind' column (vocab/note/compare); notes stay visible in lists and search but are never planned, quizzed or examined; fix the wrong rows too.
 - 2026-09-27 07:52 · agent-0 #634 · reopened: decided: the owner will make the repo private before release. Add the shipped-content pytest gate and workbook SHA-256s now; commit data/*.xlsx only AFTER the repo is private.
 - 2026-09-27 07:52 · agent-0 #612 · done
+- 2026-09-27 07:52 · agent-0 #598 · reopened: decided: English-only sentence translations for v1.x; fix the spec (practice-sentences.md) and put Bangla translations on the roadmap.
