@@ -245,10 +245,12 @@ words:
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "abschwächen"
   "4a21b186e8b3b9f3":
-    why: "#629: the headword is the word the row teaches (its second half); #631: no example the cloze can gap; one that names the word; #921: a sense of its own beside the A2.2 word; the English names it"
+    why: "#629: the headword is the word the row teaches (its second half); #631: no example the cloze can gap; one that names the word; #921: a sense of its own beside the A2.2 word; the English names it, and so do its examples (the cancelled one is A2.2's)"
     german: "ausfallen"
-    example_de_3: "Wegen des Streiks kann der Zug ausfallen."
-    example_en_3: "The train may be cancelled because of the strike."
+    example_de_3: "Das Ergebnis kann schlechter ausfallen als erwartet."
+    example_en_3: "The result may turn out worse than expected."
+    example_de_2: ""
+    example_en_2: ""
     english: "to turn out (well, badly)"
     bangla: "ফল হওয়া"
   "63f8482ffda2bedc":
@@ -2073,9 +2075,11 @@ words:
     english: "offer / special offer / supply"
     bangla: "অফার / সরবরাহ"
   "b44878424056024e":
-    why: "#921: a sense of its own beside the A1.1 word; the English names it"
+    why: "#921: a sense of its own beside the A1.1 word; the English names it, and so do its examples (the other sense's is dropped)"
     english: "play (theatre)"
     bangla: "নাটক"
+    example_de_2: ""
+    example_en_2: ""
   "1211cb287cb8e493":
     why: "#921: a sense of its own beside the A1.1 word; the English names it"
     english: "open-minded (of a person)"
@@ -2143,9 +2147,11 @@ words:
     why: "#921: Neubau, the A2.1 word glossed another way"
     merge_into: "46b811e3ed8afd8e"
   "d219f76f8fa2b4d3":
-    why: "#921: a sense of its own beside the A2.1 word; the English names it"
+    why: "#921: a sense of its own beside the A2.1 word; the English names it, and so do its examples (the other sense's is dropped)"
     english: "to move (a motion, in a meeting)"
     bangla: "প্রস্তাব করা"
+    example_de_2: ""
+    example_en_2: ""
   "7423d5075efb9cbe":
     why: "#921: Gebühr, the A2.1 word glossed another way"
     merge_into: "3f9682d197c30027"
@@ -2180,9 +2186,11 @@ words:
     english: "development / trend"
     bangla: "উন্নয়ন / প্রবণতা"
   "9519719cc844eb3f":
-    why: "#921: a sense of its own beside the A2.1 word; the English names it"
+    why: "#921: a sense of its own beside the A2.1 word; the English names it, and so do its examples (the other sense's is dropped)"
     english: "review (of a book, film)"
     bangla: "সমালোচনা"
+    example_de_2: ""
+    example_en_2: ""
   "6586ee1d573cecce":
     why: "#921: Betreff, the A2.1 word glossed another way"
     merge_into: "2e0d99f9007d2284"
@@ -2364,13 +2372,21 @@ words:
   "91698c130eb54598":
     why: "#921: Widerspruch, the B1.2 word glossed another way"
     merge_into: "6eb3abb75a1f6137"
+  "2aa3b8c4f222cee9":
+    why: "#921: a sense of its own beside the B1.2 word; its examples name it (the customs office is B1.2's)"
+    example_de_2: ""
+    example_en_2: ""
   "fe734e85f137c87b":
-    why: "#921: a sense of its own beside the B1.2 word; the English names it"
+    why: "#921: a sense of its own beside the B1.2 word; the English names it, and so do its examples (the other sense's is dropped)"
     english: "contradiction"
     bangla: "বৈপরীত্য"
+    example_de_2: ""
+    example_en_2: ""
   "5f6f950da203fd7b":
-    why: "#921: a sense of its own beside the B1.2 word; the English names it"
+    why: "#921: a sense of its own beside the B1.2 word; the English names it, and so do its examples (the other sense's is dropped)"
     english: "accurate / apt"
+    example_de_2: ""
+    example_en_2: ""
   "2dbea4bd02db261e":
     why: "#921: sich engagieren, the B1.2 word glossed another way"
     merge_into: "bb93d04544c8cd11"
@@ -2501,9 +2517,11 @@ words:
     english: "resilience / ability to work under pressure"
     bangla: "সহনশীলতা / চাপ সহ্য করার ক্ষমতা"
   "0a7cac7d0abfaf07":
-    why: "#921: a sense of its own beside the B2.2 word; the English names it"
+    why: "#921: a sense of its own beside the B2.2 word; the English names it, and so do its examples (the other sense's is dropped)"
     english: "to coin (a term)"
     bangla: "শব্দ প্রবর্তন করা"
+    example_de_2: ""
+    example_en_2: ""
   "ac7b015a62d910f9":
     why: "#921: sich belaufen auf, the B2.2 word glossed another way"
     merge_into: "6404e4b280e1ea89"

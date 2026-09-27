@@ -156,6 +156,16 @@ class BootstrapFailure {
   /// not retrying, is what opens it.
   final bool newer;
 
+  /// #803: the phone's storage is full: ENOSPC (errno 28, Android and iOS),
+  /// or its message where the code is lost. Freeing space, then Retry, is
+  /// the way out.
+  bool get noSpace {
+    final error = this.error;
+    return error is FileSystemException &&
+        (error.osError?.errorCode == 28 ||
+            '${error.osError?.message}'.contains('No space left'));
+  }
+
   Future<void> dispose() async => db?.close();
 }
 
@@ -173,6 +183,11 @@ class BootstrapFailed extends BootstrapResult {
   const BootstrapFailed(this.failure);
   final BootstrapFailure failure;
 }
+
+/// #803: about what a course install needs, in MB, as the error screen says
+/// it: the bundled course (7.6 MB, 2026-09) and a margin. A test holds the
+/// asset under it.
+const int courseInstallMegabytes = 10;
 
 /// How long the glass capability query may take before bootstrap gives up on
 /// it. A slice of FR-S1-02's 500 ms, not the whole of it.

@@ -10,6 +10,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/synthesis_cache.dart';
 import 'package:sogda/services/model_downloads.dart';
+import 'package:sogda/services/speech_audio.dart';
 import 'package:sogda/services/tts/supertonic_text.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter_onnxruntime/flutter_onnxruntime.dart';
@@ -440,8 +441,11 @@ class JustAudioClipPlayer implements ClipPlayer {
     await _player.stop();
     await _player.setFilePath(clip.path);
     // `play` completes when the clip ends or is stopped; a failure after the
-    // start ends it too.
-    return (ended: _player.play().catchError((Object _) {}));
+    // start ends it too. As speech that ducks the learner's music, and gives
+    // it back after (#623).
+    return (
+      ended: SpeechAudio.play(() => _player.play().catchError((Object _) {})),
+    );
   }
 
   @override

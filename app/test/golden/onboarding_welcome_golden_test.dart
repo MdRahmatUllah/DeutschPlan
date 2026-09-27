@@ -6,6 +6,7 @@ import 'golden_harness.dart';
 void main() {
   goldenTest(
     'onboarding_welcome',
-    builder: (context) => OnboardingWelcomePage(onStart: () {}),
+    builder: (context) =>
+        OnboardingWelcomePage(onStart: () {}, onRestored: () {}),
   );
 }

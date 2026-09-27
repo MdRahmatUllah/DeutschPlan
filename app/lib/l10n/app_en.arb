@@ -54,6 +54,16 @@
   "@bootstrapErrorContent": {
     "description": "Full-screen bootstrap error when content.db could not be copied or attached. FR-S1-03."
   },
+  "bootstrapErrorContentSpace": "There isn't room on this phone for the course. Free about {megabytes} MB, then tap Retry.",
+  "@bootstrapErrorContentSpace": {
+    "description": "Full-screen bootstrap error when the course copy failed because the phone's storage is full (#803). megabytes is about the size of the course. FR-S1-03.",
+    "placeholders": {
+      "megabytes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "bootstrapErrorSettings": "Sogda could not read your settings.",
   "@bootstrapErrorSettings": {
     "description": "Full-screen bootstrap error when the settings table would not load. FR-S1-03."
@@ -370,6 +380,10 @@
   "onboardingWelcomeStart": "Let's start",
   "@onboardingWelcomeStart": {
     "description": "S2 page 1 primary button."
+  },
+  "onboardingRestoreBackup": "Restore a backup",
+  "@onboardingRestoreBackup": {
+    "description": "S2 page 1 link under Let's start: picks a Sogda export and makes it this phone's data (a Replace), then opens Today, skipping the rest of setup. For a learner moving phones (#822)."
   },
   "onboardingPromiseOffline": "Works fully offline · no account, no signal needed",
   "@onboardingPromiseOffline": {
@@ -4567,9 +4581,9 @@
   "@progressNew": {
     "description": "M2 chart legend: the Sun part of a bar."
   },
-  "progressBar": "{when}: {revisions} revisions, {newWords} new",
+  "progressBar": "{when}: {revisions, plural, =1{1 revision} other{{revisions} revisions}}, {newWords} new",
   "@progressBar": {
-    "description": "M2 chart, for screen readers: one bar.",
+    "description": "M2 chart, for screen readers: one bar. The revisions are counted in the singular for one (#853).",
     "placeholders": {
       "when": {
         "type": "String"
@@ -4997,15 +5011,15 @@
   },
   "exportImportNotABackup": "That file isn't a Sogda export.",
   "@exportImportNotABackup": {
-    "description": "M6 import card: the chosen file is not a backup."
+    "description": "M6 import card: the chosen file is not a backup. Also on S2 page 1 under Restore a backup (#822)."
   },
   "exportImportNewer": "That file is from a newer Sogda. Update the app, then import it.",
   "@exportImportNewer": {
-    "description": "M6 import card: FR-M6-02 refuses a file from a newer schema."
+    "description": "M6 import card: FR-M6-02 refuses a file from a newer schema. Also on S2 page 1 under Restore a backup (#822)."
   },
   "exportImportFailed": "The import didn't finish. Nothing on this phone changed.",
   "@exportImportFailed": {
-    "description": "M6 import card: the import failed and was rolled back (FR-M6-04)."
+    "description": "M6 import card: the import failed and was rolled back (FR-M6-04). Also on S2 page 1 under Restore a backup (#822)."
   },
   "exportImportFooter": "Neither needs an account. The file never passes through a server.",
   "@exportImportFooter": {

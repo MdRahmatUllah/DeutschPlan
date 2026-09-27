@@ -327,7 +327,7 @@ void main() {
     ].join('\n');
     final unused = [
       for (final key in arb.keys.where((k) => !k.startsWith('@')))
-        if (!RegExp('\\.$key\\b').hasMatch(source)) key,
+        if (!_reads(source, key)) key,
     ];
     expect(
       unused,
@@ -336,6 +336,15 @@ void main() {
           'Nothing in lib/ reads these: delete them from app_en.arb and '
           'app_bn.arb',
     );
+  });
+
+  test('#825 a key is read through the localizations, not by any member '
+      'of its name', () {
+    expect(_reads('final l10n = x; l10n.done;', 'done'), isTrue);
+    expect(_reads('AppLocalizations.of(context)\n    .undo', 'undo'), isTrue);
+    // `revise.done` is not the ARB's `done`, nor `l10n.doneAll` it.
+    expect(_reads('revise.done + newToday.done', 'done'), isFalse);
+    expect(_reads('l10n.doneAll', 'done'), isFalse);
   });
 
   test('#681 no user-facing string is hard-coded under lib/', () {
@@ -421,3 +430,10 @@ void main() {
     expect(offenders, isEmpty, reason: offenders.join('\n'));
   });
 }
+
+/// Whether [source] reads the ARB's [key] (#640): through the localizations,
+/// `l10n.key` or `AppLocalizations.of(context).key`. Any `.key` would count
+/// `revise.done` as a read of `done` (#816, #825).
+bool _reads(String source, String key) =>
+    RegExp('(?:\\bl10n|AppLocalizations\\.of\\(\\w+\\))\\s*\\.\\s*$key\\b')
+        .hasMatch(source);

@@ -1,5 +1,11 @@
+import 'dart:async';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/features/me/export_import_screen.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/start_report.dart';
@@ -10,16 +16,68 @@ import 'package:material_ui/material_ui.dart';
 /// Three promises and one button. The page writes no setting — it is the only
 /// one of the five that does not, which is why it has no *Skip*: there is
 /// nothing to default.
+///
+/// And *Restore a backup* (#822, the owner's option 3): a learner moving
+/// phones brings their data in before setup writes a setting of its own.
+/// The file replaces this phone's data, as M6's *Replace* does: there is
+/// nothing here yet to keep.
 class OnboardingWelcomePage extends StatefulWidget {
-  const OnboardingWelcomePage({super.key, this.onStart});
+  const OnboardingWelcomePage({super.key, this.onStart, this.onRestored});
 
   final VoidCallback? onStart;
+
+  /// After a restore that brought in a step: Today, skipping the rest of
+  /// setup. A file with none carries on to page 2 ([onStart]). Null hides
+  /// the link: restart setup, where a Replace would take the progress.
+  final VoidCallback? onRestored;
 
   @override
   State<OnboardingWelcomePage> createState() => _OnboardingWelcomePageState();
 }
 
 class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
+  bool _busy = false;
+  String? _error;
+
+  /// The file picked, then imported as the phone's data. Nothing is written
+  /// for a file that isn't a backup, or one from a newer Sogda (FR-M6-02).
+  Future<void> _restore() async {
+    final l10n = AppLocalizations.of(context);
+    final container = ProviderScope.containerOf(context, listen: false);
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    String? error;
+    try {
+      final file = await container.read(backupFilesProvider).pick();
+      if (file == null) return;
+      await importBackup(container, file.json, ImportMode.replace);
+      final enrolled = await container
+          .read(planRepositoryProvider)
+          .hasEnrollment();
+      if (!mounted) return;
+      (enrolled ? widget.onRestored : widget.onStart)?.call();
+    } on ImportException catch (refused) {
+      error = refused.reason == ImportRefusal.newerSchema
+          ? l10n.exportImportNewer
+          : l10n.exportImportNotABackup;
+    } on FormatException {
+      // Not text, or too big to be a backup (#657).
+      error = l10n.exportImportNotABackup;
+    } on Object catch (failed) {
+      debugPrint('restore: $failed');
+      error = l10n.exportImportFailed;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _error = error;
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +95,12 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
       headerArt: const _RisingChart(),
       primaryLabel: l10n.onboardingWelcomeStart,
       onPrimary: widget.onStart,
+      busy: _busy,
+      error: _error,
+      secondaryLabel: widget.onRestored == null
+          ? null
+          : l10n.onboardingRestoreBackup,
+      onSecondary: () => unawaited(_restore()),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

@@ -240,7 +240,9 @@ def read_manifest(path: Path) -> Manifest:
                 f"{path}: every workbook entry needs a 'file:' key, got {entry!r}"
             )
         books.append(_resolve(entry["file"]))
-        lacks = set(entry.get("without") or [])
+        lacks = entry.get("without") or []
+        # `without: collocations` is one field, not a set of letters (#845).
+        lacks = {lacks} if isinstance(lacks, str) else set(lacks)
         if lacks - known:
             raise PipelineError(
                 f"{path}: {entry['file']} `without:` names "
@@ -532,21 +534,24 @@ def check_columns(
     allow_missing: bool = False,
     without: dict[str, set[str]] | None = None,
 ) -> None:
-    """#714: a column one workbook lacks and another has.
+    """#714: a column a workbook lacks.
 
     A renamed header is not read, and nothing else notices: every word of
     that workbook ships without the column (its Bangla, its article), with
-    no error anywhere. So a workbook missing a column another carries stops
+    no error anywhere. So a workbook missing a column the map reads stops
     the build, naming the file, the column and the headers it did not know;
     `--allow-missing-columns` builds anyway. Unknown headers are reported
     either way. A field the workbook's manifest entry lists under
     `without:` is one it is known to lack.
+
+    Every field of the map, not only those another workbook carries: a
+    header renamed in every workbook at once leaves none carrying it (#837).
     """
     without = without or {}
     maps = {WORDS_SHEET: HEADER_MAP, GRAMMAR_SHEET: GRAMMAR_HEADER_MAP}
     problems, warnings = [], []
     for sheet, header_map in maps.items():
-        every = set().union(*(s.columns.get(sheet, set()) for s in sources))
+        every = set(header_map)
         for source in sources:
             unknown = source.unmatched.get(sheet, [])
             if unknown:
@@ -563,8 +568,8 @@ def check_columns(
                 continue
             problem = (
                 f"{source.file}!{sheet} has no "
-                f"{_quoted(header_map[f][0] for f in missing)} column, which "
-                f"another workbook has"
+                f"{_quoted(header_map[f][0] for f in missing)} "
+                f"column{'s' if len(missing) > 1 else ''}"
             )
             if unknown:
                 problem += f" (headers it did not know: {_quoted(unknown)})"

@@ -261,6 +261,11 @@ void main() {
     semantics.dispose();
   });
 
+  test('#853 a bar with one revision says it in the singular', () {
+    expect(l10n.progressBar('Mo', 1, 0), 'Mo: 1 revision, 0 new');
+    expect(l10n.progressBar('Mo', 2, 1), 'Mo: 2 revisions, 1 new');
+  });
+
   testWidgets('iOS: "Me" beside the back chevron', (tester) async {
     tester.view
       ..physicalSize = const Size(1200, 3000)

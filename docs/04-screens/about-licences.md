@@ -4,9 +4,9 @@
 
 **Reached from.** M1 → About; M9 → Licences.
 
-**About layout.** App mark (the app icon, `SgMark.appIcon` at 60 dp: the brand kit's tiles on the Lagoon square, #602); "Version 1.0.0 (build 41) · content 2026.09 · 21 Sep 2026"; **Privacy**: "Your progress stays on this phone. Sogda has no account, no server and no analytics. The internet is used only when you open a web search link or download a model."; **Open-source and model licences** → M8; **Contact** address; **Content**: "5,076 words · 182 grammar topics · 10,553 sentences" (from `meta`).
+**About layout.** App mark (the app icon, `SgMark.appIcon` at 60 dp: the brand kit's tiles on the Lagoon square, #602); "Version 1.0.0 (build 41) · content 2026.09 · 21 Sep 2026"; **Privacy**: "Your progress stays on this phone. Sogda has no account, no server and no analytics. The internet is used only when you open a web search link or download a model."; **Open-source and model licences** → M8; **Contact** address; **Content**: "5,076 words · 182 grammar topics · 10,545 sentences" (from `meta`).
 
-**Licences layout.** Sections Models (Supertonic 3 — OpenRAIL-M; Hy-MT 1.5 (1.8B) — Hy-MT licence), Fonts (Inter, Noto Sans Bengali — OFL 1.1), Native libraries (ONNX Runtime — MIT, with its third-party notices; the Android libraries — Apache-2.0; #610), Packages (from `LicenseRegistry`).
+**Licences layout.** Sections Models (Supertonic 3 — OpenRAIL-M; Hy-MT 1.5 (1.8B) — Hy-MT licence), Fonts (Inter, Noto Sans Bengali — OFL 1.1), Native libraries (ONNX Runtime — MIT, with its third-party notices; the Android libraries — Apache-2.0; #610; desugar_jdk_libs — GPL-2.0 with the Classpath Exception, #848), Packages (from `LicenseRegistry`).
 
 **Functional requirements**
 - FR-M9-01 Version/build from `package_info_plus`; content version and counts from `c.meta`.
@@ -31,6 +31,7 @@
 - **Native libraries** (#610): what ships in the APK that no package's LICENSE covers, so Flutter's registry can't list it.
   - **ONNX Runtime** 1.23.0, the Supertonic voice's engine (`libonnxruntime.so`, from Maven through flutter_onnxruntime, whose own LICENSE covers only the plugin): its MIT licence and its `ThirdPartyNotices.txt`, both from the release commit.
   - **The Android libraries** the plugins pull in: AndroidX (core, WorkManager, browser, preference, media), Jetpack Glance, Kotlin and kotlinx, Gson. All are Apache-2.0, so one entry carries that licence (AndroidX's own `LICENSE.txt`).
+  - **desugar_jdk_libs** 2.1.5 (#848): the build's `coreLibraryDesugaring`, which flutter_local_notifications needs, compiles OpenJDK's `java.time` and other backports into the release DEX. GPL-2.0 with the Classpath Exception, which lets the app link to it on its own terms; the text ships whole, from `google/desugar_jdk_libs` at the commit that prepared 2.1.5.
 - **Collection** is a release step (`release.md`): `tools/licences.py` lists each bundled text's source, and `check` compares them with what the makers publish. It also fails if a package ships no LICENSE file, or if a font family in pubspec's `fonts:` has no licence text (#719).
 - **Packages** come from Flutter's `LicenseRegistry`, each package once, in name order. The registry gives texts, not names, so the line under a package is the licence its text is (MIT, BSD-2-Clause, BSD-3-Clause, Apache-2.0, MPL-2.0, OFL-1.1, ISC), else "Licence".
-- **A licence's text** opens in full in a sheet that scrolls: M8 has no page per licence, so the route table is unchanged.
+- **A licence's text** opens in full in a sheet that scrolls: M8 has no page per licence, so the route table is unchanged. The sheet lays the text out line by line as it scrolls (#849): ONNX Runtime's notices are 327 KB, which as one text were laid out and painted whole on open. A short licence still hugs its text.

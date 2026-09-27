@@ -623,6 +623,71 @@ void main() {
       expect(third.contentVersion, newer);
     });
 
+    test(
+      "#885 FR-S1-03 an update whose copy fails over a course older than "
+      "this build reads fails the content step with the copy's error",
+      () async {
+        final first = await run();
+        await first.dispose();
+
+        // What an older build copied: a course with no `words.kind` (#860).
+        sqlite3.open('${support.path}/${ContentDao.fileName}')
+          ..execute('ALTER TABLE words DROP COLUMN kind')
+          ..close();
+        // A newer course ships and its copy fails.
+        _serveAssets(<String, Uint8List>{
+          ContentUpdater.manifestAsset: Uint8List.fromList(
+            '{"content_version":"202701010000","words":{}}'.codeUnits,
+          ),
+        });
+
+        final result = await bootstrap(
+          openDatabase: openReal,
+          glass: GlassCapability(),
+        );
+        expect(result, isA<BootstrapFailed>());
+        final failure = (result as BootstrapFailed).failure;
+        addTearDown(failure.dispose);
+        expect(failure.step, BootstrapStep.content);
+        expect('${failure.error}', contains('Unable to load asset'));
+      },
+    );
+
+    test('#803 the install size the error screen names holds the course', () {
+      expect(
+        File('assets/db/content.db').lengthSync(),
+        lessThan(courseInstallMegabytes * 1000 * 1000),
+      );
+    });
+
+    test('#803 a full disk is told from other failures', () {
+      BootstrapFailure of(Object error) => BootstrapFailure(
+        step: BootstrapStep.content,
+        error: error,
+        stackTrace: StackTrace.empty,
+        db: null,
+      );
+      expect(
+        of(const FileSystemException('x', 'p', OSError('', 28))).noSpace,
+        isTrue,
+      );
+      expect(
+        of(
+          const FileSystemException(
+            'x',
+            'p',
+            OSError('No space left on device', 0),
+          ),
+        ).noSpace,
+        isTrue,
+      );
+      expect(
+        of(const FileSystemException('x', 'p', OSError('Denied', 13))).noSpace,
+        isFalse,
+      );
+      expect(of(StateError('nope')).noSpace, isFalse);
+    });
+
     test('#617 FR-S1-03 Retry never deletes a course that reads', () async {
       final ready = await run();
       await ready.dispose();
@@ -703,6 +768,40 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Sogda could not install the course.'), findsOneWidget);
+    });
+
+    testWidgets('#803 a course copy that failed for space says storage, in '
+        'English and Bangla', (tester) async {
+      final failure = BootstrapFailure(
+        step: BootstrapStep.content,
+        error: const FileSystemException(
+          'write failed',
+          'content.db.new',
+          OSError('No space left on device', 28),
+        ),
+        stackTrace: StackTrace.current,
+        db: null,
+      );
+      final en = await AppLocalizations.delegate.load(const Locale('en'));
+      final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+      for (final (locale, l10n) in <(Locale, AppLocalizations)>[
+        (const Locale('en'), en),
+        (const Locale('bn'), bn),
+      ]) {
+        await tester.pumpWidget(
+          BootstrapErrorApp(failure: failure, locale: locale),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.text(l10n.bootstrapErrorContentSpace(courseInstallMegabytes)),
+          findsOneWidget,
+        );
+        expect(find.text(l10n.bootstrapErrorContent), findsNothing);
+      }
+      expect(
+        en.bootstrapErrorContentSpace(courseInstallMegabytes),
+        contains('Free about 10 MB'),
+      );
     });
 
     testWidgets('offers Retry', (tester) async {

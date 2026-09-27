@@ -583,4 +583,30 @@ void main() {
       expect(await meanings(), <String>['বাড়ি', 'দরজা', 'street']);
     });
   });
+
+  testWidgets('#853 the level chips are 48 dp targets, not cut by their row, '
+      'and apart', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    final rects = <Rect>[
+      for (final chip in find.byType(SgChip).evaluate())
+        () {
+          final node = tester.getSemantics(find.byWidget(chip.widget));
+          return MatrixUtils.transformRect(
+            node.transform ?? Matrix4.identity(),
+            node.rect,
+          );
+        }(),
+    ];
+    for (final rect in rects) {
+      expect(rect.height, greaterThanOrEqualTo(48));
+    }
+    // The level chips, left to right: no target reaches into the next.
+    final levels = rects.where((rect) => rect.width < 100).toList();
+    expect(levels, hasLength(LevelFilter.values.length));
+    for (var i = 1; i < levels.length; i++) {
+      expect(levels[i].left, greaterThanOrEqualTo(levels[i - 1].right));
+    }
+    semantics.dispose();
+  });
 }

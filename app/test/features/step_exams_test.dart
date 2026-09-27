@@ -9,6 +9,7 @@ import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/core/components/sg_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -77,6 +78,7 @@ void main() {
     StepProgress? progress,
     TodayView? today,
     bool hubPending = false,
+    ThemeData? theme,
   }) async {
     went = null;
     Widget away(GoRouterState state) {
@@ -94,7 +96,7 @@ void main() {
           ),
         ],
         child: MaterialApp.router(
-          theme: AppTheme.light(),
+          theme: theme ?? AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: GoRouter(
@@ -264,6 +266,23 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining(l10n.examHubNoRepeats(3)), findsOneWidget);
+    });
+
+    testWidgets('#853 Start is a 48 dp target, not cut by its card', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, theme: AppTheme.glass());
+      final start = find.ancestor(
+        of: find.descendant(
+          of: card(2),
+          matching: find.text(l10n.examHubStart),
+        ),
+        matching: find.byType(SgButton),
+      );
+      final rect = tester.getSemantics(start).rect;
+      expect(rect.height, greaterThanOrEqualTo(48));
+      semantics.dispose();
     });
 
     testWidgets('Start opens L11 for that mock', (tester) async {

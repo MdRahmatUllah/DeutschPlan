@@ -164,109 +164,117 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
         ? const <StepWord>[]
         : filterWords(words, status: _status, category: _category);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
+    // #815: the banner and the chips scroll away before the words do. Fixed
+    // over an Expanded list, they left it no room at 200 % on a 731 dp phone
+    // (none in Bangla). The list is still built as it scrolls (FR-L2-02).
+    return NestedScrollView(
+      // Its place, and the list's, kept across a trip to another tab.
+      key: PageStorageKey<String>('step-words-page-$code'),
+      headerSliverBuilder: (context, _) => <Widget>[
         if (!widget.step.active)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: StartBanner(
-              message: active == null
-                  ? l10n.stepStartBannerFirst(code)
-                  : l10n.stepStartBanner(active.code, code),
-              onStart: _starting ? null : () => unawaited(_start(active?.code)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: StartBanner(
+                message: active == null
+                    ? l10n.stepStartBannerFirst(code)
+                    : l10n.stepStartBanner(active.code, code),
+                onStart: _starting
+                    ? null
+                    : () => unawaited(_start(active?.code)),
+              ),
             ),
           ),
         // Sized by its chips, not a fixed height: at 200 % text they grow,
         // and a fixed box would cut them (#314).
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Row(
-            children: <Widget>[
-              for (final (filter, label) in <(WordFilter, String)>[
-                (WordFilter.all, l10n.stepFilterAll),
-                (WordFilter.todo, l10n.wordStatusToDo),
-                (WordFilter.learning, l10n.wordStatusLearning),
-                (WordFilter.done, l10n.wordStatusDone),
-              ]) ...<Widget>[
-                SgChip(
-                  label: label,
-                  kind: SgChipKind.filter,
-                  selected: _status == filter,
-                  onTap: () => _filter(filter, _category),
-                ),
-                const SizedBox(width: 8),
-              ],
-              for (final category in categories) ...<Widget>[
-                SgChip(
-                  label: category.name,
-                  kind: SgChipKind.filter,
-                  selected: _category == category.id,
-                  // A second tap lets the category go again.
-                  onTap: () => _filter(
-                    _status,
-                    _category == category.id ? null : category.id,
+        SliverToBoxAdapter(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: Row(
+              children: <Widget>[
+                for (final (filter, label) in <(WordFilter, String)>[
+                  (WordFilter.all, l10n.stepFilterAll),
+                  (WordFilter.todo, l10n.wordStatusToDo),
+                  (WordFilter.learning, l10n.wordStatusLearning),
+                  (WordFilter.done, l10n.wordStatusDone),
+                ]) ...<Widget>[
+                  SgChip(
+                    label: label,
+                    kind: SgChipKind.filter,
+                    selected: _status == filter,
+                    onTap: () => _filter(filter, _category),
                   ),
-                ),
-                const SizedBox(width: 8),
+                  const SizedBox(width: 8),
+                ],
+                for (final category in categories) ...<Widget>[
+                  SgChip(
+                    label: category.name,
+                    kind: SgChipKind.filter,
+                    selected: _category == category.id,
+                    // A second tap lets the category go again.
+                    onTap: () => _filter(
+                      _status,
+                      _category == category.id ? null : category.id,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
               ],
-            ],
+            ),
           ),
         ),
-        Expanded(
-          child: words == null
-              ? wordsState.hasError
-                    ? SgLoadFailed(
-                        message: l10n.learnLoadFailed,
-                        onRetry: () => ref.invalidate(stepWordsProvider(code)),
-                      )
-                    : const SizedBox.expand()
-              : shown.isEmpty
-              ? Center(
-                  child: SgText(
-                    l10n.stepWordsNone,
-                    role: SgTextRole.body,
-                    color: tokens.color.textSecondary,
-                  ),
-                )
-              : WordListPanel(
-                  // FR-L2-02: built as it scrolls, every row the height of
-                  // the first: 64 dp, or more at large text (#314). Past
-                  // 130 % a row stacks and wraps to its own height (#550).
-                  // The key keeps the place across a trip to W1 and back.
-                  child: ListView.builder(
-                    key: PageStorageKey<String>('step-words-$code'),
-                    padding: EdgeInsets.zero,
-                    // Its panel ends at the last row (#282): the extent is
-                    // the prototype's times the count, so nothing more is built.
-                    shrinkWrap: WordListPanel.shrinkWrap(context, shown.length),
-                    prototypeItem: shown.isEmpty || SgScript.large(context)
-                        ? null
-                        : WordRow(
-                            word: shown.first.word,
-                            meaning: shown.first.meaning,
-                            last: false,
-                            onPanel: true,
-                          ),
-                    itemCount: shown.length,
-                    itemBuilder: (context, index) {
-                      final row = shown[index];
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => WordRoute.open(context, row.word.uid),
-                        child: WordRow(
-                          word: row.word,
-                          meaning: row.meaning,
-                          last: index == shown.length - 1,
-                          onPanel: true,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-        ),
       ],
+      body: words == null
+          ? wordsState.hasError
+                ? SgLoadFailed(
+                    message: l10n.learnLoadFailed,
+                    onRetry: () => ref.invalidate(stepWordsProvider(code)),
+                  )
+                : const SizedBox.expand()
+          : shown.isEmpty
+          ? Center(
+              child: SgText(
+                l10n.stepWordsNone,
+                role: SgTextRole.body,
+                color: tokens.color.textSecondary,
+              ),
+            )
+          : WordListPanel(
+              // FR-L2-02: built as it scrolls, every row the height of
+              // the first: 64 dp, or more at large text (#314). Past
+              // 130 % a row stacks and wraps to its own height (#550).
+              // The key keeps the place across a trip to W1 and back.
+              child: ListView.builder(
+                key: PageStorageKey<String>('step-words-$code'),
+                padding: EdgeInsets.zero,
+                // Its panel ends at the last row (#282): the extent is
+                // the prototype's times the count, so nothing more is built.
+                shrinkWrap: WordListPanel.shrinkWrap(context, shown.length),
+                prototypeItem: shown.isEmpty || SgScript.large(context)
+                    ? null
+                    : WordRow(
+                        word: shown.first.word,
+                        meaning: shown.first.meaning,
+                        last: false,
+                        onPanel: true,
+                      ),
+                itemCount: shown.length,
+                itemBuilder: (context, index) {
+                  final row = shown[index];
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => WordRoute.open(context, row.word.uid),
+                    child: WordRow(
+                      word: row.word,
+                      meaning: row.meaning,
+                      last: index == shown.length - 1,
+                      onPanel: true,
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }

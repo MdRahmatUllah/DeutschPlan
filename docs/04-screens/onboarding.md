@@ -4,13 +4,13 @@
 
 **Prototype.** `OnboardingWelcome`, `Onboarding` (meaning language), `OnboardingStart`, `OnboardingPace`, `OnboardingVoice`.
 
-**Reached from.** S1 on first run; M3 → *Restart setup* (keeps progress; only plan settings change). **Leads to.** S3 from page 3; T1 on finish.
+**Reached from.** S1 on first run; M3 → *Restart setup* (keeps progress; only plan settings change). **Leads to.** S3 from page 3; T1 on finish, or after *Restore a backup* on page 1.
 
 **Layout (shared).** Coloured header block per page (Lagoon, Sun, Raspberry, Cobalt, Emerald) with the headline; "Step n of 5" dots; one control group; primary *Continue* pinned bottom; *Back* text button from page 2; *Skip* top-right from page 3.
 
 | Page | Content | Setting written |
 | --- | --- | --- |
-| 1 Welcome | Three points: offline · exam-structured 12 steps · progress stays on the phone. Button *Let's start* | — |
+| 1 Welcome | Three points: offline · exam-structured 12 steps · progress stays on the phone. Button *Let's start*; under it the link *Restore a backup* (#822, below) | — (a restore: the file's) |
 | 2 Meaning language | Cards English / বাংলা / Both with sample `die Wohnung → …`; note "This also sets the app language". The Bangla pronunciation follows: off for English only, on for বাংলা or Both (#527) | `meaning_language`, `ui_language`, `show_pron_bn` |
 | 3 Starting point | 12 step chips in level rows with word counts (A1.1 pre-selected); link *Not sure? Take a 3-minute check* → S3 | chosen step |
 | 4 Daily pace | New words slider 3–30 with live estimate "A1.1 takes about 69 days at 7 words a day"; presets Relaxed 5 · Steady 7 · Intensive 15; revisions stepper (10) with note "Due cards beyond this wait for tomorrow"; weekday chips | `daily_new`, `revise_count`, `study_days_mask` |
@@ -30,6 +30,8 @@
 - **Failed** (a file, or a checksum): *Couldn't download · try again* with *Retry*, which is `ModelDownloads.retry` (what arrived stays). A retry refused for space (`NotEnoughSpace`) leaves *Retry* and says *Needs N MB more space*.
 - **Nothing yet:** *Download now* / *Later*. When the phone lacks the voice's bytes plus the 100 MB margin (`ModelDownloads.shortfallFor`), *Download now* is disabled and greyed, and the card says *Needs N MB more space* (rounded up). A start refused for space after the page looked (`NotEnoughSpace`) checks again and says the same.
 - The card's line says the voice comes over Wi-Fi: "About 400 MB, over Wi-Fi, downloaded once."
+
+**Restore a backup (#822, the owner's decision).** Page 1's link, for a learner moving phones, before setup writes a setting of its own: the system file picker, then the file becomes this phone's data, as M6's *Replace* (`export-import.md`, FR-M6-04) in one transaction, with no confirm (there is nothing on the phone yet to lose). A file with a step opens Today and skips the rest of setup; a file with none carries on to page 2. A file that isn't a Sogda export, or is from a newer Sogda, writes nothing and says so over *Let's start* (M6's words); so does an import that fails. Backing out of the picker does nothing. Restart setup never shows it: there it would replace the learner's progress.
 
 **Business rules.** BR-COURSE-04, BR-PLAN-08.
 
