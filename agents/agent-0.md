@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#679 fix(riverpod): WidgetRef is used after an await on screens the learner can leave (Riverpod 3.4.3 throws) — claimed 2026-09-27 09:35.
+#679 in review as PR #796: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
