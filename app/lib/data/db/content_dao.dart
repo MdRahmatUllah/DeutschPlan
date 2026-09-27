@@ -299,8 +299,9 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// to replace it, and reading the asset means writing it somewhere first,
   /// because SQLite cannot open a Flutter asset in place.
   Future<String> bundledVersion() async {
-    // The manifest first, because it is 255 KB of JSON beside an 8 MB
-    // database and carries the same `content_version` the database does.
+    // The manifest first, because it is 513 KB of JSON beside an 8 MB
+    // database and carries the same `content_version` the database does;
+    // and only its first bytes, where that version is (#710).
     //
     // The probe below reads the authoritative value, but to do it it copies
     // the *whole asset* to a temp file, attaches it, reads one string and
@@ -369,12 +370,13 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
     }
   }
 
+  /// Async (#710): 8 MB written on the UI isolate froze S1's progress line.
   Future<void> _copyAsset(File target) async {
     final bytes = await rootBundle.load(asset);
-    target.parent.createSync(recursive: true);
+    await target.parent.create(recursive: true);
     // flush: the next line opens this file with SQLite, and a buffered write
     // would give it a truncated header.
-    target.writeAsBytesSync(
+    await target.writeAsBytes(
       bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
       flush: true,
     );
@@ -384,9 +386,15 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// read as one.
   Future<String?> _versionFromManifest() async {
     try {
-      final text = await rootBundle.loadString(ContentUpdater.manifestAsset);
+      final data = await rootBundle.load(ContentUpdater.manifestAsset);
+      final bytes = data.buffer.asUint8List(
+        data.offsetInBytes,
+        data.lengthInBytes,
+      );
       final version =
-          (jsonDecode(text) as Map<String, dynamic>)['content_version'];
+          ContentUpdater.versionIn(bytes) ??
+          (jsonDecode(utf8.decode(bytes))
+              as Map<String, dynamic>)['content_version'];
       return version is String && version.isNotEmpty ? version : null;
     } on Object {
       // Missing, truncated, or not the shape expected. The probe answers.

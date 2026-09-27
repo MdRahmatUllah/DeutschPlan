@@ -104,12 +104,15 @@ class ContentUpdater {
     // old version. Comparing against the manifest makes the whole thing
     // re-runnable: the next launch simply does it again, and
     // `replaceWithBundled` is idempotent.
-    final previous = await _readInstalledManifest();
-    final installed = previous?['content_version'] as String? ?? '';
+    //
+    // #710: the versions come from the manifests' first bytes. Each is half a
+    // megabyte of JSON, decoded in full only when there is a diff to take.
+    final installed = await _installedVersion();
 
     final bundled = await _dao.bundledVersion();
     if (bundled.isEmpty || bundled == installed) return null;
 
+    final previous = await _readInstalledManifest();
     await _dao.replaceWithBundled();
     final change = _diff(previous, await _readBundledManifest(), bundled);
 
@@ -251,11 +254,48 @@ class ContentUpdater {
   Future<File> _installedManifest() async =>
       File('${(await getApplicationSupportDirectory()).path}/$manifestFile');
 
+  /// How many bytes of a manifest [versionIn] reads.
+  static const int headBytes = 4096;
+
+  static final RegExp _versionKey = RegExp(
+    r'"content_version"\s*:\s*"([^"\\]+)"',
+  );
+
+  /// `content_version` from the first [headBytes] of a manifest, or null
+  /// (#710).
+  ///
+  /// The pipeline writes the manifest with sorted keys (`write_manifest`), so
+  /// the only keys before it are `boundaries` and `built_at`, a few hundred
+  /// bytes. A launch with no update compares two versions, and reading them
+  /// here spares it two decodes of half a megabyte of JSON.
+  // ponytail: relies on the key being near the top; where it isn't, the
+  // callers decode the whole manifest, as before.
+  static String? versionIn(List<int> bytes) => _versionKey
+      .firstMatch(
+        utf8.decode(
+          bytes.length > headBytes ? bytes.sublist(0, headBytes) : bytes,
+          allowMalformed: true,
+        ),
+      )
+      ?.group(1);
+
+  /// The kept manifest's `content_version`, or '' when there is none.
+  Future<String> _installedVersion() async {
+    final file = await _installedManifest();
+    if (!await file.exists()) return '';
+    final head = await file
+        .openRead(0, headBytes)
+        .fold(<int>[], (bytes, chunk) => bytes..addAll(chunk));
+    return versionIn(head) ??
+        (await _readInstalledManifest())?['content_version'] as String? ??
+        '';
+  }
+
   Future<Map<String, dynamic>?> _readInstalledManifest() async {
     final file = await _installedManifest();
-    if (!file.existsSync()) return null;
+    if (!await file.exists()) return null;
     try {
-      return jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      return jsonDecode(await file.readAsString()) as Map<String, dynamic>;
     } on FormatException {
       // A truncated manifest is a diff nobody can trust, not a crash.
       return null;
@@ -272,8 +312,15 @@ class ContentUpdater {
   }
 
   /// Keeps the bundled manifest as the baseline for the next update.
+  ///
+  /// Written beside it and renamed over it: a copy cut short would keep the
+  /// new version in its first bytes, which is all a launch reads (#710), over
+  /// a diff nobody could take.
   Future<void> _saveInstalledManifest() async {
     final text = await rootBundle.loadString(manifestAsset);
-    (await _installedManifest()).writeAsStringSync(text, flush: true);
+    final kept = await _installedManifest();
+    final incoming = File('${kept.path}.new');
+    await incoming.writeAsString(text, flush: true);
+    await incoming.rename(kept.path);
   }
 }
