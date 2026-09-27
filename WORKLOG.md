@@ -1466,3 +1466,4 @@ able to tell what is going on without asking.
 - 2026-09-27 16:28 · agent-2 #890 · added to the board, lane X
 - 2026-09-27 16:28 · agent-2 #891 · added to the board, lane X
 - 2026-09-27 16:28 · agent-2 #892 · added to the board, lane X
+- 2026-09-27 16:28 · agent-2 #890 · needs the owner's decision: L12's clock while the app is in the background: (a) hold, as #876 built (lenient, like the leave dialog's pause), or (b) count wall time (strict, a call costs exam time). Recommendation: (a), keep as built; exam-runner.md:39 still says it needs your call.

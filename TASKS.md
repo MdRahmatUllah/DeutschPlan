@@ -404,7 +404,7 @@ claiming the same issue. A hand edit skips that check.
 | #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | in-progress | agent-1 |  |  |
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | open |  |  |  |
 | #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | open |  |  |  |
-| #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | open |  |  |  |
+| #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | open |  |  |  |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | open |  |  |  |
 
@@ -7641,3 +7641,7 @@ Added #891 (fix(exam): Speaking's Delete removes the recording before the empty 
 ### H-1786 · 2026-09-27 16:28 · agent-2 → all · note · #892
 
 Added #892 (chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass)) to lane X.
+
+### H-1787 · 2026-09-27 16:28 · agent-2 → owner · decision · #890
+
+L12's clock while the app is in the background: (a) hold, as #876 built (lenient, like the leave dialog's pause), or (b) count wall time (strict, a call costs exam time). Recommendation: (a), keep as built; exam-runner.md:39 still says it needs your call.
