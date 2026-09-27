@@ -102,6 +102,12 @@ WORDS_SHEET = "All Words"
 GRAMMAR_SHEET = "Grammar"
 CATEGORY_SHEET_PREFIX = "C-"
 
+#: How a category tab's title cell begins: "Category: Regional variation:
+#: AT & CH". Excel cuts a sheet name at 31 characters and forbids ':' and
+#: '/' in it, so the tab is "C-Regional variation- AT & CH" and only the
+#: title carries the name the words' Category cells use (#636).
+CATEGORY_TITLE_PREFIX = "Category:"
+
 
 @dataclass
 class Word:
@@ -426,7 +432,8 @@ def _read_grammar(sheet, file_name: str) -> list[GrammarRow]:
 
 
 def _read_categories(book) -> list[Category]:
-    """The `C-…` tabs. The name after the prefix is the category."""
+    """The `C-…` tabs. The name is the title cell's, after `Category:`, or
+    else the tab's after the prefix."""
     categories: list[Category] = []
     for name in book.sheetnames:
         stripped = name.strip()
@@ -439,12 +446,10 @@ def _read_categories(book) -> list[Category]:
                 if isinstance(cell.value, str) and cell.value.strip():
                     description = cell.value.strip()
                     break
-        categories.append(
-            Category(
-                name=stripped[len(CATEGORY_SHEET_PREFIX) :].strip(),
-                description=description,
-            )
-        )
+        name = stripped[len(CATEGORY_SHEET_PREFIX) :].strip()
+        if description and description.startswith(CATEGORY_TITLE_PREFIX):
+            name = description[len(CATEGORY_TITLE_PREFIX) :].strip() or name
+        categories.append(Category(name=name, description=description))
     return categories
 
 

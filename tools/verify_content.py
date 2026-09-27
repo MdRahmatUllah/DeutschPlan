@@ -271,6 +271,29 @@ def check_tips_fit_their_word_class(
     return failures
 
 
+def check_every_category_has_words(db: sqlite3.Connection) -> list[Failure]:
+    """#636: a category no word is in. It is a tab the words' Category cells
+    do not name (the tab name cut at 31 characters, say), so its twin from
+    the cells has no description and the tab's is lost."""
+    rows = [
+        name
+        for (name,) in db.execute(
+            "SELECT name FROM categories c WHERE NOT EXISTS "
+            "(SELECT 1 FROM words w WHERE w.category_id = c.id) ORDER BY id"
+        )
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "categories",
+            f"{len(rows)} categories have no words: {_sample(rows)}. The "
+            f"tab's title cell ('Category: <name>') must spell the name the "
+            f"Category column uses.",
+        )
+    ]
+
+
 def check_no_article_in_german(db: sqlite3.Connection) -> list[Failure]:
     """#287: a noun whose article is still inside `german`, so the headword
     has no gender colour and the Articles quiz never asks it."""
@@ -492,6 +515,7 @@ GATES = (
     check_no_pair_headword,
     check_verb_forms,
     check_articles,
+    check_every_category_has_words,
     check_no_denylisted_terms,
 )
 
