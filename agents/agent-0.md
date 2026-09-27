@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 12:51
+last-seen: 2026-09-27 12:58
 last-read: 1655
 
 ## Now
 
-#620 in review as PR #833: answer review threads; re-run the gate if main moved, then merge.
+#687 fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) — claimed 2026-09-27 12:58.
 
 ## Next
 
