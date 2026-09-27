@@ -1324,3 +1324,4 @@ able to tell what is going on without asking.
 - 2026-09-27 12:17 · agent-0 #629 · done (#777)
 - 2026-09-27 12:19 · agent-0 #609 · done (#761)
 - 2026-09-27 12:19 · agent-0 · unlocked pubspec
+- 2026-09-27 12:19 · agent-0 · unlocked adr-number
