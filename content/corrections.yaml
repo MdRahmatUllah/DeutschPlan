@@ -388,7 +388,7 @@ words:
     why: "#633: a noun carries its article; #631: the example did not name its word"
     article: "der"
     example_de_2: "Statt von Wirtschaftsflüchtlingen spricht man sachlich von Arbeitsmigration."
-    example_en_2: "Instead of 'economic migrants', one speaks factually of labour migration."
+    example_en_2: "Rather than 'economic refugees', the neutral term is 'labour migration'."
   "5118798e663cbc15":
     why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it"
     article: null
@@ -401,8 +401,8 @@ words:
   "e373dabb778f5c12":
     why: "#633: the article made the phrase ungrammatical, and the Articles quiz asked it; #631: the example did not name its word"
     article: null
-    example_de_2: "Wer Unsicherheit kommuniziert, nennt eine Bandbreite statt eines Punktwerts."
-    example_en_2: "Whoever communicates uncertainty gives a range instead of a point estimate."
+    example_de_2: "Wer Unsicherheit kommuniziert, nennt eine Bandbreite statt einer Punktschätzung."
+    example_en_2: "Anyone who communicates uncertainty gives a range rather than a point estimate."
   "69f04f13d5920289":
     why: "#633: a noun phrase is a noun: its article is asked as the noun's"
     pos: "noun"
@@ -678,8 +678,8 @@ words:
     example_en_2: "Artificial intelligence is changing work."
   "ea344495752e906a":
     why: "#631: the example did not name its word"
-    example_de_2: "Die U-Untersuchung U3 ist in der vierten Woche."
-    example_en_2: "The U3 check-up is in the fourth week."
+    example_de_2: "Die U-Untersuchung U3 ist in der vierten bis fünften Lebenswoche."
+    example_en_2: "The U3 check-up is in the baby's fourth to fifth week."
   "66ff7ada283ba172":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Du musst dich beim Essen gut benehmen."
@@ -715,7 +715,7 @@ words:
   "1c0bd279c176acf9":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Das Projekt kann nur gemeinsam gelingen."
-    example_en_3: "The project can only succeed together."
+    example_en_3: "The project can only succeed if we work together."
   "21cfdce3ef9d5881":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Ich möchte zwei Punkte besonders hervorheben."
@@ -738,8 +738,8 @@ words:
     example_en_3: "We have to make sure everyone is informed."
   "fd786dc96edcf85a":
     why: "#631: the example did not name its word"
-    example_de_2: "Er steigt in den Zug."
-    example_en_2: "He gets on the train."
+    example_de_2: "Die Temperaturen steigen auf über 30 Grad."
+    example_en_2: "Temperatures are rising to over 30 degrees."
   "25ce614ae71334b9":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Ich weiß, dass die Stelle Erfahrung voraussetzt."
@@ -762,7 +762,7 @@ words:
     example_en_2: "My grandpa always says: the early bird catches the worm."
   "221ee73b08f0a162":
     why: "#631: the example did not name its word"
-    example_de_2: "Was Hänschen nicht lernt, lernt Hans nimmermehr, sagte meine Oma oft."
+    example_de_2: "„Was Hänschen nicht lernt, lernt Hans nimmermehr“, sagte meine Oma oft."
     example_en_2: "My grandma often said you can't teach an old dog new tricks."
   "7205113593a5eada":
     why: "#631: no example the cloze can gap; one that names the word"
@@ -815,7 +815,7 @@ words:
   "32e49101c0c1018b":
     why: "#631: the example did not name its word"
     example_de_2: "Gemessen am Bruttoinlandsprodukt ist der Anteil gering."
-    example_en_2: "Measured against GDP the share is small."
+    example_en_2: "Measured against GDP, the share is small."
   "6015e941f52ca481":
     why: "#631: the example did not name its word"
     example_de_2: "Die Einwilligung kann jederzeit widerrufen werden."
@@ -879,7 +879,7 @@ words:
   "e6188b53f5f64cf7":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Ich will das Ergebnis nicht vorwegnehmen."
-    example_en_3: "I don't want to anticipate the result."
+    example_en_3: "I don't want to give away the result."
   "af2b2e3fb4fc9f89":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Beide Zeugen wollen den Täter gesehen haben."
@@ -907,7 +907,7 @@ words:
   "6391e2d4e5b11fcb":
     why: "#631: the example did not name its word"
     example_de_2: "Planen Sie bei der Zeiteinteilung zehn Minuten für die Überarbeitung ein."
-    example_en_2: "In your time management, allow ten minutes for revision."
+    example_en_2: "When planning your time, allow ten minutes for revision."
   "103c70b107f779bf":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Die Zahlen sind um Preiseffekte bereinigt."
@@ -967,15 +967,15 @@ words:
   "c36775084aae54a5":
     why: "#631: the example did not name its word"
     example_de_2: "Der Satz „Ausnahmen bestätigen die Regel“ wird gern missbraucht."
-    example_en_2: "The saying 'the exception proves the rule' is readily misused."
+    example_en_2: "The saying 'the exception proves the rule' is often misused."
   "6f6f21ab6b95b7f8":
     why: "#631: the example did not name its word"
-    example_de_2: "Wer so mit Kunden spricht – das geht gar nicht."
+    example_de_2: "So mit Kunden zu sprechen – das geht gar nicht."
     example_en_2: "Talking to customers like that – that's simply not on."
   "4848aa0a2e5dfa1d":
     why: "#631: the example did not name its word"
-    example_de_1: "Die Ellipse „Ich komme morgen, du übermorgen“ spart das zweite Verb."
-    example_en_1: "The ellipsis 'I'm coming tomorrow, you the day after' saves the second verb."
+    example_de_1: "Die Ellipse „Ich komme morgen, du übermorgen“ spart das zweite Verb aus."
+    example_en_1: "The ellipsis 'I'm coming tomorrow, you the day after' omits the second verb."
   "cd18405c9eb5ec2f":
     why: "#631: the example did not name its word"
     example_de_2: "Jede Disziplin pflegt ihre eigene Fachterminologie."
@@ -987,7 +987,7 @@ words:
   "b83539e65df4b2c1":
     why: "#631: the example did not name its word"
     example_de_2: "Hochmut kommt vor dem Fall, heißt es schon in der Bibel."
-    example_en_2: "Pride comes before a fall, as the Bible already says."
+    example_en_2: "Pride comes before a fall, as the Bible says."
   "bd6bdf20e4f799b0":
     why: "#631: the example did not name its word"
     example_de_2: "Kindern sagt man: Lügen haben kurze Beine."
@@ -1003,7 +1003,7 @@ words:
   "9f453b0ef0c33174":
     why: "#631: the example did not name its word"
     example_de_2: "Ein Kurzsatz am Absatzende bricht den Rhythmus und setzt einen Akzent."
-    example_en_2: "A short sentence at the end of a paragraph breaks the rhythm and sets an accent."
+    example_en_2: "A short sentence at the end of a paragraph breaks the rhythm and adds emphasis."
   "87a8bfff48a81a11":
     why: "#631: the example did not name its word"
     example_de_2: "Die Semmel heißt in Berlin Schrippe, in Hamburg Rundstück."
@@ -1047,7 +1047,7 @@ words:
   "7a522ce5f5ea8e98":
     why: "#631: the example did not name its word"
     example_de_2: "Wer zehn Minuten täglich dranbleibt, erreicht in drei Jahren ein neues Sprachniveau."
-    example_en_2: "Whoever sticks with it for ten minutes a day reaches a new level in three years."
+    example_en_2: "If you stick with it for ten minutes a day, you'll reach a new level in three years."
   "fa6c98279278de54":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Mehr hat die Quelle nicht hergegeben."
@@ -1058,8 +1058,8 @@ words:
     example_en_3: "One shouldn't lapse into old patterns."
   "6efd3f58ab3dde72":
     why: "#631: the example did not name its word"
-    example_de_2: "Krass ist seit den 1990ern stabil und nicht mehr nur jugendsprachlich."
-    example_en_2: "'Krass' has been stable since the 1990s and is no longer only youth slang."
+    example_de_2: "Krass ist seit den 1990ern fest etabliert und nicht mehr nur jugendsprachlich."
+    example_en_2: "'Krass' has been firmly established since the 1990s and is no longer just youth slang."
   "c45a26fd7eca2269":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Alle Beteiligten müssen ihre Interessen offenlegen."
@@ -1094,18 +1094,18 @@ words:
     example_en_2: "Within the range no single value is 'the' forecast."
   "b0a8ae6dec926399":
     why: "#631: the example did not name its word"
-    example_de_2: "Die Beitragsanpassung klingt neutral, meint aber fast immer mehr."
-    example_en_2: "'Contribution adjustment' sounds neutral but almost always means more."
+    example_de_2: "Die Beitragsanpassung klingt neutral, meint aber fast immer eine Erhöhung."
+    example_en_2: "'Contribution adjustment' sounds neutral but almost always means an increase."
   "c1c770407d929515":
     why: "#631: the example did not name its word"
     example_de_2: "Die Benrather Linie markiert die Grenze zum Niederdeutschen."
-    example_en_2: "The Benrather line marks the boundary with Low German."
+    example_en_2: "The Benrath line marks the boundary with Low German."
   "ed4f44b2582be654":
     why: "#631: the example did not name its word"
     example_de_2: "Zu den Bewertungskriterien gehören Kohärenz, Wortschatz und Aussprache."
     example_en_2: "The assessment criteria include coherence, vocabulary and pronunciation."
     example_de_1: "Wer die Bewertungskriterien kennt, schreibt gezielter."
-    example_en_1: "Whoever knows the assessment criteria writes more purposefully."
+    example_en_1: "Anyone who knows the assessment criteria writes more purposefully."
   "55ea79f8f0df5478":
     why: "#631: the example did not name its word"
     example_de_2: "Um die Bürokratielast zu messen, wird der Erfüllungsaufwand berechnet."
@@ -1120,8 +1120,8 @@ words:
     example_en_2: "In leadership debates people often say: the fish rots from the head."
   "affb8ef95c07922c":
     why: "#631: the example did not name its word"
-    example_de_2: "Beim Dienst nach Vorschrift ist alles korrekt, aber nichts darüber hinaus."
-    example_en_2: "When working to rule, everything is correct but nothing more."
+    example_de_2: "Beim Dienst nach Vorschrift wird alles korrekt erledigt, aber nichts darüber hinaus."
+    example_en_2: "When working to rule, everything is done correctly, but nothing more."
   "05a12e3ebce0c154":
     why: "#631: the example did not name its word"
     example_de_2: "Der Doppelwumms war Kanzlerdeutsch, das haften blieb."
@@ -1172,20 +1172,20 @@ words:
     example_en_2: "Once their half-life is over, such words seem cringe."
   "aefca736ac10347c":
     why: "#631: the example did not name its word"
-    example_de_1: "Der Kategorische Imperativ sagt: Handle so, dass die Maxime deines Willens Gesetz werden könnte."
-    example_en_1: "The categorical imperative says: act so that the maxim of your will could become law."
+    example_de_1: "Der Kategorische Imperativ sagt: Handle so, dass die Maxime deines Willens ein allgemeines Gesetz werden könnte."
+    example_en_1: "The categorical imperative says: act so that the maxim of your will could become a universal law."
   "05193e6e34a9a02d":
     why: "#631: the example did not name its word"
     example_de_2: "Meine Oma sparte jeden Cent: Kleinvieh macht auch Mist."
     example_en_2: "My grandma saved every cent: every little helps."
   "62bae5e6b1c18fc9":
     why: "#631: the example did not name its word"
-    example_de_2: "Neutraler als Klimakleber ist: Aktivistinnen und Aktivisten der Gruppe X."
-    example_en_2: "More neutral than 'Klimakleber': activists of group X."
+    example_de_2: "Neutraler als „Klimakleber“ ist die Bezeichnung „Klimaaktivisten“."
+    example_en_2: "'Klimaaktivisten' (climate activists) is a more neutral term than 'Klimakleber'."
   "03006936991022d7":
     why: "#631: the example did not name its word"
     example_de_2: "Wer Komplexität reduziert, zahlt dafür einen Preis."
-    example_en_2: "Whoever reduces complexity pays a price for it."
+    example_en_2: "Anyone who reduces complexity pays a price for it."
   "0cf46f07c8bfb1d9":
     why: "#631: the example did not name its word"
     example_de_2: "Viele Wortunterschiede folgen der Mainlinie."
@@ -1263,7 +1263,7 @@ words:
   "8b90a61b90dc36f1":
     why: "#631: the example did not name its word"
     example_de_2: "Der Subventionsabbau scheitert meist an der Verteilungsfrage."
-    example_en_2: "The reduction of subsidies usually fails on the distribution question."
+    example_en_2: "Cutting subsidies usually founders on the question of distribution."
   "6e0a86ac1c71c4fe":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Im schlimmsten Szenario steigen die Preise um zehn Prozent."
@@ -1271,7 +1271,7 @@ words:
   "594b71f6c0c40be6":
     why: "#631: the example did not name its word"
     example_de_2: "Bei der Textumformung ändern sich Register und Adressat, der Inhalt bleibt."
-    example_en_2: "In the transformation task register and audience change, the content stays."
+    example_en_2: "In the transformation task, register and audience change, but the content stays the same."
   "53dd78f52ee977c6":
     why: "#631: the example did not name its word"
     example_de_2: "Ob Umverteilung gerecht ist, ist eine normative Frage."
@@ -1345,7 +1345,7 @@ words:
   "76825b5360f21c79":
     why: "#631: the example did not name its word"
     example_de_2: "Wer eine Metapher nicht durchhält, mischt die Bilder."
-    example_en_2: "Whoever doesn't sustain a metaphor mixes the images."
+    example_en_2: "Anyone who fails to sustain a metaphor ends up mixing images."
   "4fa23ca93c9f3d77":
     why: "#631: the example did not name its word"
     example_de_2: "Flexen ist ein Anglizismus mit deutscher Konjugation."
@@ -1356,20 +1356,20 @@ words:
     example_en_2: "Today 'fürwahr' is only used ironically."
   "2a13e90e3c27d9ce":
     why: "#631: the example did not name its word"
-    example_de_2: "In Norddeutschland ist heuer kaum gebräuchlich."
-    example_en_2: "In northern Germany 'heuer' is hardly used."
+    example_de_2: "Das Wort heuer ist in Norddeutschland kaum gebräuchlich."
+    example_en_2: "In northern Germany the word 'heuer' is hardly used."
   "fb0e2538076c0632":
     why: "#631: the example did not name its word"
     example_de_2: "Im Amt und in der Prüfung sollte man hochdeutsch sprechen."
-    example_en_2: "In offices and exams you should speak standard German."
+    example_en_2: "At public offices and in exams, you should speak standard German."
   "c8c4a9f405361964":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Kann einer Regel Willkür innewohnen?"
     example_en_3: "Can arbitrariness be inherent in a rule?"
   "92b7acaa86a1b1ce":
     why: "#631: the example did not name its word"
-    example_de_2: "In einer plurizentrischen Sprache ist keine Variante „falsches Deutsch“."
-    example_en_2: "In a pluricentric language no variety is 'wrong German'."
+    example_de_2: "Weil Deutsch eine plurizentrische Sprache ist, ist keine Standardvarietät „falsches Deutsch“."
+    example_en_2: "Because German is a pluricentric language, no standard variety is 'wrong German'."
   "787723b03186576d":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Die Stadt will sich des Problems annehmen."
@@ -1390,12 +1390,12 @@ words:
     example_en_2: "The term 'social market economy' has shaped German economic debate since 1948."
   "dcdd08305a43908e":
     why: "#631: the example did not name its word"
-    example_de_1: "Sparsam eingesetzt sind sozusagen und quasi Hecken, im Übermaß Füllwörter."
+    example_de_1: "Sparsam eingesetzt sind sozusagen und quasi Heckenausdrücke, im Übermaß Füllwörter."
     example_en_1: "Used sparingly, 'sozusagen' and 'quasi' are hedges; in excess, fillers."
   "c62502973995a946":
     why: "#631: the example did not name its word"
-    example_de_2: "Sus ist aus dem Spiel „Among Us“ entlehnt."
-    example_en_2: "'Sus' is borrowed from the game Among Us."
+    example_de_2: "Sus wurde durch das Spiel „Among Us“ populär."
+    example_en_2: "'Sus' became popular through the game Among Us."
   "0015074736a38184":
     why: "#631: the example did not name its word"
     example_de_2: "Unter Prüfungsbedingungen heißt: gleiche Uhrzeit, kein Wörterbuch, keine Pause."
@@ -1466,5 +1466,5 @@ words:
     kind: note
   "7b8a1edfef9d030c":
     why: "#631: the example did not name its word"
-    example_de_2: "Der Begriff Entfremdung stammt aus der marxistischen Tradition."
-    example_en_2: "The term 'alienation' comes from the Marxist tradition."
+    example_de_2: "Der Begriff Entfremdung spielt in der marxistischen Tradition eine zentrale Rolle."
+    example_en_2: "The term 'alienation' plays a central role in the Marxist tradition."
