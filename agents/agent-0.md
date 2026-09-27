@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#717 fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again — claimed 2026-09-27 14:06.
+#717 in review as PR #851: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
