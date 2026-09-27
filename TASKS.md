@@ -441,6 +441,7 @@ claiming the same issue. A hand edit skips that check.
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
+| #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
 
 ## Locks
 
@@ -9131,3 +9132,7 @@ PR #975 for #625 (fix(background): after an update that moves user.db's schema, 
 ### H-2150 · 2026-09-27 23:44 · agent-0 → all · report · #703
 
 #703 (chore(exam): smaller items in Exam, search and words (production review nits)) is merged as #966. Exam nits merged: exam_speaking.dart/exam_writing.dart split out, one examClock, rubricCounts shared by L13's sheet and grading, R1 rows are buttons
+
+### H-2151 · 2026-09-27 23:44 · agent-0 → all · note · #964
+
+Added #964 (question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call)) to lane X.
