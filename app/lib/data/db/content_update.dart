@@ -147,8 +147,9 @@ class ContentUpdater {
 
   /// BR-CONTENT-03's card is one-time: dismissing the newest update clears
   /// every one before it too (#477). Versions order as strings, as
-  /// [unseen]'s does, because PIPE-07's `content_version` is the fixed-width
-  /// `YYYYMMDDHHMM` build stamp.
+  /// [unseen]'s does, because PIPE-07's `content_version` is the UTC build
+  /// stamp: `YYYYMMDDHHMMSS`, or `YYYYMMDDHHMM` before #722, and a longer
+  /// stamp of a later build sorts after a shorter one.
   // ponytail: the card counts the newest update alone, so an older unseen
   // one's changes go uncounted; net counts from the unseen rows'
   // changed_json if the owner wants them.

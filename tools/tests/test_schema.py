@@ -199,9 +199,11 @@ class TestMeta:
         version = database.execute(
             "SELECT value FROM meta WHERE key = 'content_version'"
         ).fetchone()[0]
-        # PIPE-07: YYYYMMDDHHMM. The app compares it against the installed
-        # copy, so anything that does not sort is a silent no-update.
-        assert len(version) == 12 and version.isdigit()
+        # PIPE-07: YYYYMMDDHHMMSS (#722). The app compares it against the
+        # installed copy, so anything that does not sort is a silent
+        # no-update; and it sorts after the 12-digit stamps shipped before.
+        assert len(version) == 14 and version.isdigit()
+        assert version > "202609260837"
 
     def test_word_count_matches_the_words_table(self, database):
         stated = int(

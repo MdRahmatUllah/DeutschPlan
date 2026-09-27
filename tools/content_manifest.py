@@ -88,7 +88,6 @@ def _grammar_digest(row) -> str:
 
 def build_manifest(inputs, splits) -> dict:
     """The manifest for one build."""
-    from datetime import datetime, timezone
 
     steps: dict[str, dict[str, int]] = {}
     for word in inputs.words:
@@ -107,7 +106,7 @@ def build_manifest(inputs, splits) -> dict:
         "content_version": inputs.content_version,
         # The same field content.db's meta carries, so the two files describe
         # the build the same way.
-        "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "built_at": inputs.built_at,
         "sources": inputs.sources,
         "counts": {
             "words": len(inputs.words),

@@ -557,6 +557,10 @@ def collect(
     tips: list | None = None,
 ) -> BuildInputs:
     """Flattens the per-workbook records into what the writer takes."""
+    # One clock read for the whole build (#718): meta.built_at, the
+    # manifest's built_at and content_version all come from it, so the two
+    # files can never disagree by the second between two calls.
+    now = datetime.now(timezone.utc).replace(microsecond=0)
     return BuildInputs(
         words=[word for source in sources for word in source.words],
         grammar=[row for source in sources for row in source.grammar],
@@ -564,11 +568,14 @@ def collect(
         splits=splits,
         tips=tips or [],
         sources=[source.file for source in sources],
-        # UTC, the same clock as meta.built_at. The app compares this
-        # string against the installed copy to decide whether to replace
-        # it, so a local clock would let a build in UTC+6 sort above a
-        # later one in CI and the new content would silently not install.
-        content_version=datetime.now(timezone.utc).strftime("%Y%m%d%H%M"),
+        # UTC. The app compares this string against the installed copy to
+        # decide whether to replace it, so a local clock would let a build in
+        # UTC+6 sort above a later one in CI and the new content would
+        # silently not install. To the second (#722): two builds in one
+        # minute were one version, and the second never installed. A
+        # 14-digit stamp still sorts after every 12-digit one before it.
+        content_version=now.strftime("%Y%m%d%H%M%S"),
+        built_at=now.isoformat(),
     )
 
 

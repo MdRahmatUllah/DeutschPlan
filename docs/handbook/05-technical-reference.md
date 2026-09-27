@@ -181,7 +181,7 @@ flowchart LR
   search keys (lower case, article stripped, umlauts folded) byte-identical to
   `domain/text_norm.dart`, shared through `tools/test_vectors.json`; formula
   cells stored as text; examples paired by line; `content_version` is the
-  build time `YYYYMMDDHHMM`; verification fails on a missing column, an empty
+  build time `YYYYMMDDHHMMSS`, read once with `built_at`; verification fails on a missing column, an empty
   step, a word without an example, a uid collision, empty FTS tables or a
   misplaced tip.
 - **Rebuild and verify** (from the repository root, with the workbooks in
