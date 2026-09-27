@@ -234,6 +234,24 @@
       "search_key": "আমি ভালো",
       "search_key_alt": "আমি ভালো",
       "why": "Bangla vowel signs are combining marks and must survive"
+    },
+    {
+      "input": "সময়",
+      "search_key": "সময়",
+      "search_key_alt": "সময়",
+      "why": "a precomposed ya with nukta, as some keyboards type it: NFC decomposes it (a composition exclusion), as content.db stores it (#655)"
+    },
+    {
+      "input": "পড়া",
+      "search_key": "পড়া",
+      "search_key_alt": "পড়া",
+      "why": "a precomposed dda with nukta decomposes too (#655)"
+    },
+    {
+      "input": "আষাঢ়",
+      "search_key": "আষাঢ়",
+      "search_key_alt": "আষাঢ়",
+      "why": "a precomposed ddha with nukta decomposes too (#655)"
     }
   ]
 }

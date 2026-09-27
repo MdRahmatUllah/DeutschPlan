@@ -64,8 +64,8 @@ dart run drift_dev schema generate drift_schemas/ test/db/generated/
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-The first `flutter test` in a new worktree downloads native libraries
-(sqlite3, llama.cpp): it needs the network and several GB, once.
+The first `flutter test` in a new worktree downloads sqlite3's
+native library through its build hook: it needs the network, once.
 `app/assets/db/content.db` is committed, so a first run builds no content. The
 Excel workbooks are not in git; they live in the main checkout's `data/` and
 are copied in only for a content change.
@@ -139,7 +139,8 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    manifest diff reviewed (below).
 3. **Licences.** `python tools/licences.py check`, after `flutter pub get`. It
    fails if a bundled model or font licence differs from its maker's, is
-   missing or has no source, or if a package ships no LICENSE file (which
+   missing or has no source, if a pubspec font family has no licence text
+   (#719), or if a package ships no LICENSE file (which
    Flutter's `LicenseRegistry`, and so M8, would silently leave out).
    `python tools/licences.py update` fetches the texts again.
 4. **Translation stays off.** The release build passes no
@@ -213,9 +214,9 @@ have no `key.properties`, so their builds are debug-signed.
   asked on the first Record), `POST_NOTIFICATIONS` (the reminder, asked when
   switched on), `RECEIVE_BOOT_COMPLETED` (reminders after a restart),
   `INTERNET` and `ACCESS_NETWORK_STATE` (model downloads and their Wi-Fi rule),
-  `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SHORT_SERVICE` and `WAKE_LOCK`
-  (a download carrying on in the background, declared as one the learner
-  started), `VIBRATE` (the reminder).
+  `WAKE_LOCK` (WorkManager carrying a download on in the background), and
+  `VIBRATE` (the reminder). No foreground service, so no foreground-service
+  form (#611); `tools/release_android.py` checks this list.
 
 ### iOS
 
@@ -247,9 +248,11 @@ flowchart LR
   and commit `content.db` and `content_manifest.json` together.
 - **What a learner keeps.** Progress is keyed by word uid,
   `sha1(level|german|pos|english)[:16]`. Editing any other column keeps it.
-  Changing a word's German, part of speech or English makes it a new word: the
-  old one is removed and its progress with it, so prefer other columns, or say
-  so in the release notes.
+  Changing a word's German, part of speech, English or level gives it a new
+  uid: the build links the old uid to the new one when it is the same word, and
+  the app moves the learner's progress along the link on install (PIPE-09). A
+  word gone with nothing to link it to stops the build unless
+  `--allow-removed`; say so in the release notes.
 - **On the phone.** At the first launch of the new version, `bootstrap()`
   compares the bundled `content_version` with the installed one, writes the
   new file beside the old, detaches, swaps and re-attaches it, diffs the kept

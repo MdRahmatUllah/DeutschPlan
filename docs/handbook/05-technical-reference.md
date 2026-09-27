@@ -36,7 +36,7 @@ Dart file under `lib/` imports it at v1.0.1.
 | Localisation | `flutter_localizations`, `intl` | SDK, ^0.20.3 → 0.20.3 | ARB, number formats |
 | Voice | `flutter_tts`, `flutter_onnxruntime`, `just_audio` | ^4.2.5 → 4.2.5, ^1.8.5 → 1.8.5, ^0.10.6 → 0.10.6 | The phone's voice, Supertonic 3, playback (ADR 8) |
 | Recording | `record` | ^7.1.1 → 7.1.1 | The Speaking exam |
-| Translation | `llamadart` | ^0.8.24 → 0.8.24 | Bundles llama.cpp's CPU backend (ADR 27); no Dart code calls it yet, since Hy-MT is off (#154, Later) |
+| Translation | none | — | `llamadart` was removed (ADR 29, #609): Hy-MT is off, so nothing called it; translation returns through #533 |
 | Downloads | `background_downloader` | ^9.6.2 → 9.6.2 | Model downloads |
 | Reminders | `flutter_local_notifications`, `timezone` | ^22.3.1 → 22.3.1, ^0.11.1 → 0.11.1 | The daily reminder |
 | Widget | `home_widget` | ^0.10.0 → 0.10.0 | The snapshot the Glance widget reads |
@@ -52,9 +52,9 @@ Dev dependencies: `build_runner` 2.16.1, `riverpod_generator` 4.0.9,
 `go_router_builder` 4.5.0, `drift_dev` 2.35.0, `flutter_lints` 6.0.0,
 `riverpod_lint` 3.1.9 (a native analyser plugin, ADR 15), `integration_test`;
 `freezed` 4.0.2, `json_serializable` 6.14.1, `mocktail` 1.0.5 and `alchemist`
-0.14.0 are present but unused. `pubspec.yaml` also sets llamadart's
-native-assets `user_defines` so only llama.cpp's CPU backend is bundled (ADR
-27: the arm64 APK went from 159.5 MB to 72.3 MB). The rationale for each
+0.14.0 are present but unused. llamadart, and the native-assets
+`user_defines` that trimmed it to llama.cpp's CPU backend (ADR 27), were
+removed (ADR 29): the arm64 APK went from 159.5 MB to 72.3 MB, then to 51.2 MB. The rationale for each
 choice, and the rejected alternatives, are in
 [`tech-stack.md`](../01-architecture/tech-stack.md).
 
@@ -181,17 +181,21 @@ flowchart LR
   search keys (lower case, article stripped, umlauts folded) byte-identical to
   `domain/text_norm.dart`, shared through `tools/test_vectors.json`; formula
   cells stored as text; examples paired by line; `content_version` is the
-  build time `YYYYMMDDHHMM`; verification fails on a missing column, an empty
-  step, a word without an example, a uid collision, empty FTS tables or a
-  misplaced tip.
+  build time `YYYYMMDDHHMMSS`, read once with `built_at`; verification fails on a missing column, an empty
+  step, a word without an example, a uid collision, empty FTS tables, a
+  misplaced tip or a term of `data/denylist.txt` (#628). A fix to a workbook
+  row goes into `content/corrections.yaml`, never into the workbook.
 - **Rebuild and verify** (from the repository root, with the workbooks in
   `data/`): `python tools/excel_to_sqlite.py`, then
   `python tools/verify_content.py`, then copy `content/build/content.db` and
   `content_manifest.json` into `app/assets/db/`. Review what changed with
   `python tools/content_manifest.py app/assets/db/content_manifest.json content/build/content_manifest.json`,
   and run `flutter test test/db/` from `app/`.
-- Changing a word's `german`, `pos` or `english` changes its uid and resets
-  learners' progress on it ([`adding-content.md`](../05-dev-guide/adding-content.md)).
+- Changing a word's `german`, `pos`, `english` or level changes its uid; the
+  build links the old uid to the new one when it is the same word, and the app
+  moves learners' progress along the link (PIPE-09). A word gone with nothing
+  to link it to stops the build unless `--allow-removed`
+  ([`adding-content.md`](../05-dev-guide/adding-content.md)).
 - `python tools/mirror_content_schema.py` rewrites `content_schema.drift` from
   the pipeline DDL; `content_schema_test` fails if they disagree.
 
@@ -456,6 +460,7 @@ The full table, with each decision's reason and when to revisit it, is
 | 24 | Commit the schema fixtures; gitignore what is derived from them |
 | 25 | `skill_prompts.text` renamed to `prompt` (drift name clash) |
 | 26 | content.db attached by plain path, read-only by construction |
-| 27 | llamadart ships llama.cpp's CPU backend only (159.5 → 72.3 MB) |
+| 27 | llamadart ships llama.cpp's CPU backend only (159.5 → 72.3 MB); superseded by 29 |
+| 29 | llamadart removed while Hy-MT is off (72.3 → 51.2 MB) |
 
 The next free number is 28; take the `adr-number` lock before writing it.

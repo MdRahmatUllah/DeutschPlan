@@ -166,8 +166,8 @@ void main() {
       expect(file.name, 'HY-MT1.5-1.8B-Q4_K_M.gguf');
       expect(
         file.url.toString(),
-        'https://huggingface.co/tencent/HY-MT1.5-1.8B-GGUF/resolve/main/'
-        'HY-MT1.5-1.8B-Q4_K_M.gguf',
+        'https://huggingface.co/tencent/HY-MT1.5-1.8B-GGUF/resolve/'
+        '265b2e615a7dc9b06c435dc878829ad99a512ba2/HY-MT1.5-1.8B-Q4_K_M.gguf',
       );
       expect(variant.isPinned, isTrue, reason: 'its SHA-256 is known');
       expect(variant.bytes, 1133080512, reason: 'about 1.1 GB');

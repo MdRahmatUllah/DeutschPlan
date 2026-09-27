@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/foundation.dart' show debugPrint, immutable;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 
@@ -105,16 +105,30 @@ class ContentUpdater {
     // re-runnable: the next launch simply does it again, and
     // `replaceWithBundled` is idempotent.
     //
-    // #710: the versions come from the manifests' first bytes. Each is half a
-    // megabyte of JSON, decoded in full only when there is a diff to take.
+    // #710: the versions are read with a regex, not a JSON decode. Each
+    // manifest is half a megabyte, decoded in full only when there is a diff
+    // to take.
     final installed = await _installedVersion();
 
     final bundled = await _dao.bundledVersion();
     if (bundled.isEmpty || bundled == installed) return null;
 
     final previous = await _readInstalledManifest();
-    await _dao.replaceWithBundled();
-    final change = _diff(previous, await _readBundledManifest(), bundled);
+    try {
+      await _dao.replaceWithBundled();
+    } on Object catch (error) {
+      debugPrint('content update: $error');
+      // #617: a copy that fails, on a full disk most likely, leaves the old
+      // course attached (`replaceWithBundled`). Nothing is recorded and the
+      // kept manifest stays the old one, so the next launch tries again. The
+      // learner studies the old course meanwhile, rather than meeting an app
+      // that won't open. If the old course did not come back either,
+      // bootstrap's `version()` right after still fails the start.
+      return null;
+    }
+    final current = await _readBundledManifest();
+    await _moveAliased(current);
+    final change = _diff(previous, current, bundled);
 
     await _record(change);
     // Last: until this is written, the update has not happened as far as the
@@ -150,8 +164,9 @@ class ContentUpdater {
 
   /// BR-CONTENT-03's card is one-time: dismissing the newest update clears
   /// every one before it too (#477). Versions order as strings, as
-  /// [unseen]'s does, because PIPE-07's `content_version` is the fixed-width
-  /// `YYYYMMDDHHMM` build stamp.
+  /// [unseen]'s does, because PIPE-07's `content_version` is the UTC build
+  /// stamp: `YYYYMMDDHHMMSS`, or `YYYYMMDDHHMM` before #722, and a longer
+  /// stamp of a later build sorts after a shorter one.
   // ponytail: the card counts the newest update alone, so an older unseen
   // one's changes go uncounted; net counts from the unseen rows'
   // changed_json if the owner wants them.
@@ -191,6 +206,42 @@ class ContentUpdater {
     };
   }
 
+  /// Every user.db column holding a course word's uid.
+  static const List<(String, String)> aliasedColumns = <(String, String)>[
+    ('word_state', 'word_uid'),
+    ('review_log', 'word_uid'),
+    ('plan_items', 'word_uid'),
+    ('sentence_log', 'word_uid'),
+    ('quiz_answers', 'word_uid'),
+    // A word section's ref is the bare uid; grammar, writing and speaking
+    // refs carry `#` or a prefix and never match one.
+    ('exam_answers', 'item_ref'),
+    ('custom_words', 'matched_uid'),
+  ];
+
+  /// PIPE-09 (#648): a word whose uid changed between builds keeps the
+  /// learner's progress. The manifest's `aliases` map each old uid to the one
+  /// the word has now, and every row under an old uid moves to it, in one
+  /// transaction. Re-runnable: once moved, nothing is under the old uid.
+  ///
+  /// OR IGNORE: where a row under the new uid already holds the key, it
+  /// wins, and the old one stays where it was, as it would without the map.
+  Future<void> _moveAliased(Map<String, dynamic>? manifest) async {
+    final aliases = manifest?['aliases'];
+    if (aliases is! Map<String, dynamic> || aliases.isEmpty) return;
+    final json = jsonEncode(aliases);
+    await _db.transaction(() async {
+      for (final (table, column) in aliasedColumns) {
+        await _db.customStatement(
+          'UPDATE OR IGNORE $table SET $column = '
+          '(SELECT value FROM json_each(?1) WHERE key = $column) '
+          'WHERE $column IN (SELECT key FROM json_each(?1))',
+          <Object?>[json],
+        );
+      }
+    });
+  }
+
   ContentChange _diff(
     Map<String, dynamic>? previous,
     Map<String, dynamic>? current,
@@ -213,7 +264,18 @@ class ContentUpdater {
           ),
         ]..sort();
 
-    final before = digests(previous, 'words');
+    // PIPE-09: a word whose uid changed is the same word, changed, not one
+    // removed and one added. `diff` in tools/content_manifest.py does the same.
+    final aliases = digests(current, 'aliases');
+    Map<String, String> follow(Map<String, String> before) => <String, String>{
+      for (final MapEntry(key: uid, value: digest) in before.entries)
+        switch (aliases[uid]) {
+          final String now when !before.containsKey(now) => now,
+          _ => uid,
+        }: digest,
+    };
+
+    final before = follow(digests(previous, 'words'));
     final after = digests(current, 'words');
 
     return ContentChange(
@@ -226,7 +288,7 @@ class ContentUpdater {
       // A kept manifest from before `meanings` compares nothing: no chip,
       // rather than a false one.
       meaning: moved(
-        digests(previous, 'meanings'),
+        follow(digests(previous, 'meanings')),
         digests(current, 'meanings'),
       ),
     );
@@ -254,41 +316,26 @@ class ContentUpdater {
   Future<File> _installedManifest() async =>
       File('${(await getApplicationSupportDirectory()).path}/$manifestFile');
 
-  /// How many bytes of a manifest [versionIn] reads.
-  static const int headBytes = 4096;
-
   static final RegExp _versionKey = RegExp(
     r'"content_version"\s*:\s*"([^"\\]+)"',
   );
 
-  /// `content_version` from the first [headBytes] of a manifest, or null
-  /// (#710).
+  /// A manifest's `content_version`, or null (#710).
   ///
-  /// The pipeline writes the manifest with sorted keys (`write_manifest`), so
-  /// the only keys before it are `boundaries` and `built_at`, a few hundred
-  /// bytes. A launch with no update compares two versions, and reading them
-  /// here spares it two decodes of half a megabyte of JSON.
-  // ponytail: relies on the key being near the top; where it isn't, the
-  // callers decode the whole manifest, as before.
+  /// A regex over the text rather than a JSON decode: a launch with no update
+  /// compares two versions, and this spares it two decodes of half a megabyte
+  /// of JSON. Only the top level has the key (below it are uids and digests).
+  /// The whole text, not a head: since #648 the growing `aliases` map sorts
+  /// before it (`write_manifest` sorts keys).
   static String? versionIn(List<int> bytes) => _versionKey
-      .firstMatch(
-        utf8.decode(
-          bytes.length > headBytes ? bytes.sublist(0, headBytes) : bytes,
-          allowMalformed: true,
-        ),
-      )
+      .firstMatch(utf8.decode(bytes, allowMalformed: true))
       ?.group(1);
 
   /// The kept manifest's `content_version`, or '' when there is none.
   Future<String> _installedVersion() async {
     final file = await _installedManifest();
     if (!await file.exists()) return '';
-    final head = await file
-        .openRead(0, headBytes)
-        .fold(<int>[], (bytes, chunk) => bytes..addAll(chunk));
-    return versionIn(head) ??
-        (await _readInstalledManifest())?['content_version'] as String? ??
-        '';
+    return versionIn(await file.readAsBytes()) ?? '';
   }
 
   Future<Map<String, dynamic>?> _readInstalledManifest() async {

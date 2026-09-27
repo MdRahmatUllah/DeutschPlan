@@ -241,7 +241,7 @@ owner checks cold and warm start on a real phone before each release.
   v1.0.0 passed: size 72.44 MB, cold 3,268 ms, warm 807 ms, frames and search
   within their margins.
 - **Size.** The arm64 APK went from 159.5 MB to 72.3 MB when llama.cpp was cut
-  to its CPU backend (ADR 27). The APK stands in for the one-ABI download
+  to its CPU backend (ADR 27), then to 51.2 MB when llamadart was removed (ADR 29). The APK stands in for the one-ABI download
   Play serves, which is compressed and so smaller. The voice model is
   downloaded separately.
 - **Cold start** is measured to Android's "Fully drawn", which the app
@@ -265,7 +265,7 @@ The Android permissions, as the merged manifest has them:
 | `POST_NOTIFICATIONS` | The daily reminder, and a model download's progress | When the reminder is switched on, or a download starts (Android 13+); a refusal still downloads, without the notification (#501) |
 | `RECEIVE_BOOT_COMPLETED` | Reminders scheduled again after a restart | Not asked (install-time) |
 | `INTERNET`, `ACCESS_NETWORK_STATE` | Model downloads and their Wi-Fi-only rule | Not asked |
-| `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SHORT_SERVICE`, `WAKE_LOCK` | Carrying a model download on while the app is in the background | Not asked |
+| `WAKE_LOCK` | WorkManager carrying a model download or the widget's refresh on in the background; no foreground service (#611) | Not asked |
 | `VIBRATE` | The reminder notification | Not asked |
 
 Reminders use an inexact alarm, so no exact-alarm permission is needed.

@@ -1,0 +1,306 @@
+# Reviewed corrections to the authoring workbooks.
+#
+# The workbooks in data/ are the owner's, and no tool writes them: openpyxl
+# drops their charts (#545). A fix to a row goes here instead, and the
+# pipeline applies it after reading the workbooks and before it computes a
+# uid or writes anything (docs/02-data/content-pipeline.md, "Corrections").
+#
+# Each key is the uid of the row as the workbook has it, in quotes. An entry
+# says `why`, and sets any column the pipeline reads (`german`, `article`,
+# `forms`, `english`, ...), one example line (`example_de_2` is the second
+# German sentence, `example_en_2` its translation), or `delete: true`. A key
+# that matches no row, or more than one, fails the build.
+#
+# This repository is public: an entry holds the new text only, never the text
+# it replaces.
+
+words:
+  "0126d66f2e9f636b":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Hamburg ist größer als Bremen."
+    example_en_2: "Hamburg is bigger than Bremen."
+  "08fbb04243ff5a0b":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Vorläufig bleiben wir in Köln."
+    example_en_2: "For the time being we're staying in Cologne."
+  "09631c5ed9cc6697":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Reserviert für Familie Schmidt."
+    example_en_2: "Reserved for the Schmidt family."
+  "0b4b260be0ff8b13":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Ich fühle mich in Hamburg wohl."
+    example_en_1: "I feel at home in Hamburg."
+  "0d048495aabf0c63":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Meine Ehefrau heißt Maria."
+    example_en_1: "My wife's name is Maria."
+  "0d409777c425c01d":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Die Gemeinde baut eine neue Schule."
+    example_en_1: "The municipality is building a new school."
+  "15da4fc92b828c67":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Mein Arbeitgeber ist die Firma Müller."
+    example_en_1: "My employer is the Müller company."
+  "3490868308ed5cbc":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Ich bin Tom. – Freut mich!"
+    example_en_1: "I'm Tom. – Nice to meet you!"
+  "3cf658a7c29a3354":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Wir wohnen in einem Vorort von Hamburg."
+    example_en_1: "We live in a suburb of Hamburg."
+  "4482b12f689b82f2":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Nächste Ausfahrt Köln."
+    example_en_1: "Next exit Cologne."
+  "50a83f7aa055fd83":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Der Bürgermeister von Hamburg."
+    example_en_1: "The mayor of Hamburg."
+  "5429a4b3f170a42e":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Die Postleitzahl von Berlin-Mitte ist 10115."
+    example_en_1: "The postcode of Berlin-Mitte is 10115."
+  "5e203ec745b25d90":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Ich suche einen Hausarzt in Hamburg."
+    example_en_1: "I'm looking for a GP in Hamburg."
+  "62e3a4cbda200f04":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Hier ist Schmidt. Wer ist am Apparat?"
+    example_en_2: "This is Schmidt. Who is speaking?"
+  "69096a72b1a71bdd":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Ich bin nach Hamburg umgezogen."
+    example_en_2: "I moved to Hamburg."
+  "6d5c5f8aa47da9e0":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Ich heiße Anna."
+    example_en_1: "My name is Anna."
+  "73b81976b00180d0":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Beste Grüße, Anna"
+    example_en_2: "Best regards, Anna"
+  "747ec6fc30ae6225":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Wir haben beschlossen, in Hamburg zu bleiben."
+    example_en_2: "We decided to stay in Hamburg."
+  "79a6f97561839383":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Ich arbeite bei der Firma Müller."
+    example_en_1: "I work at the Müller company."
+  "7b71864c2aeaa901":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Besuch uns mal in Hamburg!"
+    example_en_2: "Come visit us in Hamburg!"
+  "8044e8e68e011a44":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Die Reservierung ist auf den Namen Schmidt."
+    example_en_2: "The reservation is under the name Schmidt."
+  "811f2953ae84f307":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Potsdam liegt bei Berlin."
+    example_en_2: "Potsdam is near Berlin."
+  "861b6760b7ab15c2":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Das Gymnasium in Köln."
+    example_en_2: "The Gymnasium in Cologne."
+  "8f465c9db38681e0":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Wir wohnen in Hamburg."
+    example_en_1: "We live in Hamburg."
+  "8fe54394e71bebb7":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Der Kreis Pinneberg liegt bei Hamburg."
+    example_en_2: "The Pinneberg district is near Hamburg."
+  "92db697969cb1d97":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Partnerin: Maria"
+    example_en_2: "Partner: Maria"
+  "9bdd44607db7bafa":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Ich heiße übrigens Maria."
+    example_en_2: "By the way, my name is Maria."
+  "b37a137a0f2225e7":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Darf ich mich vorstellen? Ich bin Tom."
+    example_en_1: "May I introduce myself? I'm Tom."
+  "b99e111baae8da4b":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Er ist seit 2025 bei der Firma Müller tätig."
+    example_en_2: "He has been working at the Müller company since 2025."
+  "c06dc4990c9ca978":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Hier spricht Anna Schmidt von der Firma Müller."
+    example_en_1: "This is Anna Schmidt from the Müller company speaking."
+  "c5a8b7fde904c499":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Unsere Wohnung liegt in Zone 1."
+    example_en_1: "Our flat is in zone 1."
+  "ca5f0bdcfa56014c":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Mit freundlichen Grüßen, Anna Schmidt"
+    example_en_1: "Kind regards, Anna Schmidt"
+  "ce0e47d73b45299b":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Mein Wohnsitz ist in Hamburg."
+    example_en_1: "My place of residence is in Hamburg."
+  "ce264b06a97c2366":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Letztendlich haben wir uns für Köln entschieden."
+    example_en_2: "In the end we decided on Cologne."
+  "d05c8ff6bd20680a":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Das Bürgerbüro in Köln."
+    example_en_2: "The citizens' office in Cologne."
+  "e116a20b7e6a8828":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Mit freundlichen Grüßen, Dr. Maria Weber"
+    example_en_1: "Kind regards, Dr Maria Weber"
+  "e2af4abab769a372":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Felder um das Dorf."
+    example_en_1: "Fields around the village."
+  "e3ab5e94cad99340":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Wir haben uns für Hamburg entschieden."
+    example_en_1: "We decided on Hamburg."
+  "e58e239bbd2207d4":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Mein Zuhause ist in Hamburg."
+    example_en_2: "My home is in Hamburg."
+  "e771ff15f3cfd886":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Das Dorf liegt in einem großen Landkreis."
+    example_en_1: "The village is in a large district."
+  "ee435348360580f3":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Hallo, ich bin Anna."
+    example_en_1: "Hello, I am Anna."
+  "f0d5a137182933c5":
+    why: "#628: personal details replaced with generic ones"
+    example_de_2: "Potsdam gehört zu Brandenburg."
+    example_en_2: "Potsdam belongs to Brandenburg."
+  "f34fb917f6afb43e":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Viele Grüße, Tom"
+    example_en_1: "Best regards, Tom"
+  "fcaeb842963c6875":
+    why: "#628: personal details replaced with generic ones"
+    example_de_1: "Ich arbeite bei der Firma Müller."
+    example_en_1: "I work at the Müller company."
+  "43c987965e1bafba":
+    why: "#629: one headword; 'nicht bestehen' moves to the synonyms"
+    german: "bestehen"
+    english: "to pass (an exam)"
+    bangla: "উত্তীর্ণ হওয়া"
+    synonyms_register: "↔ nicht bestehen, durchfallen (to fail)"
+  "7351c92b098899b0":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich auszahlen"
+  "51825e3d2a39b75c":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Zustimmung"
+  "34823b5f1da3c7d4":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich rentieren"
+  "f4a9699e72388780":
+    why: "#629: the headword is the word the row teaches, and its article is die"
+    article: "die"
+    german: "Weiterentwicklung"
+  "34e017af35ce6b48":
+    why: "#629: the headword is the word the row teaches, and its article is der"
+    article: "der"
+    german: "Freiwilligendienst"
+  "cfee5d97387744ed":
+    why: "#629: one headword; 'auspendeln' moves to the synonyms, and the forms are einpendeln's"
+    german: "einpendeln"
+    english: "to commute in"
+    forms: "pendelt ein · ist eingependelt"
+    synonyms_register: "↔ auspendeln (to commute out); pendeln; statistics/urban planning term"
+  "d3a45c1419612e91":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "beitragen zu"
+  "5ca8bccd1202630f":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "zum einen … zum anderen"
+  "d56705022cd51823":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Verantwortung tragen"
+  "738822df37581665":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "offenkundig"
+  "b7ac85c15e3e81ed":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "abschwächen"
+  "4a21b186e8b3b9f3":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "ausfallen"
+  "63f8482ffda2bedc":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich auszahlen"
+  "b2a876acba6ac15f":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich fortpflanzen"
+  "c3832c436865527b":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "im Übrigen"
+  "1c6a2a54e16968c8":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "auf den Punkt bringen"
+  "83645608678cc5fc":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "den Überblick behalten"
+  "48ac37fda5d6bcf9":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich andeuten"
+  "73418ec785ac0072":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich als tragfähig erweisen"
+  "15a24d266f0f0a0d":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Nüchternheit"
+  "a761858350e871d7":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Vereinnahmung"
+  "730e60f6c0afd709":
+    why: "#629: the headword is the word the row teaches; its opposite moves to the synonyms"
+    german: "unterminieren"
+    synonyms_register: "untergraben, schwächen; ↔ untermauern (to underpin)"
+  "367cd89e900c96a7":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "schlechterdings"
+  "7cf5b3c5ba5dc21a":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "zu Buche schlagen"
+  "13f333c1713661e1":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "sich fügen"
+  "4c2b750fb9f0949e":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "pauschalisieren"
+  "9b2aa03489eeed16":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    article: "die"
+    german: "Pointe"
+  "147b16e5da09e383":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "dramatisieren"
+  "8197f37f58fb9264":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "Verwendung finden"
+  "82c0f30663dea2de":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "desgleichen"
+  "04d3447a347a8f00":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "folgerichtig"
+  "9e72c9f83642c79a":
+    why: "#629: the headword is the word the row teaches (its second half)"
+    german: "im Trüben fischen"
+  "05a05b8b7b608609":
+    why: "#629: the headword is the word the row teaches, and its article is das"
+    article: "das"
+    german: "Vetorecht"

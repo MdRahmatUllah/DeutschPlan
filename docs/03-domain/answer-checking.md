@@ -9,7 +9,11 @@
 | `checkArticle(given, article)` | Articles | correct · wrong |
 | `checkForm(given, expectedForm)` | Forms quiz | as `checkGerman` without article logic |
 
-Normalisation (`searchKey`, `searchKeyAlt`) is byte-identical to the Python pipeline; `test/domain/text_norm_test.dart` loads `tools/test_vectors.json`.
+Normalisation (`searchKey`, `searchKeyAlt`) is byte-identical to the Python pipeline, which applies NFC: Bangla's precomposed nukta letters (ড় ঢ় য়, as some keyboards type them) key as letter + nukta, as the course stores them (#655); `test/domain/text_norm_test.dart` loads `tools/test_vectors.json`.
+
+Notes and alternatives (#645): `splitMeanings` splits a meaning cell at `/`, `,` and `;` only outside brackets, and `checkMeaning` tries the whole cell as shown and each synonym, each as written and without its bracketed note (`meaningAnswers`, which Search's exact tier uses too, so the two agree). A typed list of several synonyms ("hi / hello", any order) is split the same way: right when each part is one of the cell's, *almost* when each is at least almost, wrong when one isn't (#678). `germanForms` does the same for a German headword or forms cell: its ` / ` alternatives, each side of an in-word slash, with and without the note; only the text outside the note is split, so a word from inside a note is never an answer on its own. The article check (BR-ANS-02) runs per alternative.
+
+Umlauts (#675): German is compared on two keys. The expanded one (ä → ae) decides *correct*, so "Tür", "Tuer" and "Straße"/"Strasse" are right. A match only on the folded key (ä → a) is *almost*: a bare vowel can be another word or form, the very thing a gap fill, a forms item or a listening item tests. Meanings (English, Bangla) keep the folded match as *correct*.
 
 Scoring: correct 1 · almost 0.5 · wrongArticle 0 (feedback names the article) · wrong 0.
 

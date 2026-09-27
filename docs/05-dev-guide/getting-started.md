@@ -61,7 +61,7 @@ Every target runs from the repository root. Without `make`, run the command in t
 | Target | Does | Spelled out |
 | --- | --- | --- |
 | `make content` | Excel → content.db, verified, copied to the asset with its manifest | `python tools/excel_to_sqlite.py`, `python tools/verify_content.py`, then copy `content/build/content.db` and `content_manifest.json` to `app/assets/db/` |
-| `make content-diff` | what changed since the committed asset; run before `make content` | `python tools/content_manifest.py app/assets/db/content_manifest.json content/build/content_manifest.json` |
+| `make content-diff` | what changed since the committed asset, which the build also prints (PIPE-09); after the build, before the copy | `python tools/content_manifest.py app/assets/db/content_manifest.json content/build/content_manifest.json` |
 | `make gen` | the content-schema mirror, the drift migration helpers, then build_runner | the generation block in *First run* |
 | `make gen-watch` | build_runner in watch mode | `dart run build_runner watch --delete-conflicting-outputs` |
 | `make schema-dump` | capture the current schema as a fixture; run after bumping `schemaVersion` (it refuses to overwrite one) | `dart run drift_dev schema dump lib/data/db/app_database.dart drift_schemas/`, then `python tools/trim_schema_fixture.py` |

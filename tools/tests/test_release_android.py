@@ -108,3 +108,97 @@ def test_an_agent_without_the_lock_is_refused(monkeypatch):
     monkeypatch.setattr(release, "holds_device", lambda who: False)
     monkeypatch.setattr(release, "build", lambda: pytest.fail("built without the lock"))
     assert release.main([]) == 2
+
+
+MANIFEST = """<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.sogda.app">
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="de.sogda.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+  <application>
+    <service android:name="androidx.work.impl.foreground.SystemForegroundService" />
+    {service}
+  </application>
+</manifest>
+"""
+RELEASE_MD = """  - **Permissions**, as the merged manifest has them:
+    - `INTERNET`: model downloads.
+    - `WAKE_LOCK`: WorkManager.
+
+  - **Foreground services:** none (`FOREGROUND_SERVICE` is removed).
+"""
+
+
+def test_611_the_merged_permissions_are_the_documented_ones(tmp_path):
+    manifest, docs = tmp_path / "AndroidManifest.xml", tmp_path / "release.md"
+    manifest.write_text(MANIFEST.format(service=""), encoding="utf-8")
+    docs.write_text(RELEASE_MD, encoding="utf-8")
+    assert release.permission_problems(manifest, docs) == []
+
+    docs.write_text(RELEASE_MD.replace("    - `WAKE_LOCK`: WorkManager.\n", "    - `VIBRATE`: the reminder.\n"),
+                    encoding="utf-8")
+    assert release.permission_problems(manifest, docs) == [
+        "WAKE_LOCK: asked for, but not in release.md's list",
+        "VIBRATE: in release.md's list, but not asked for",
+    ]
+
+
+def test_611_a_plugins_own_or_sdk23_permission_is_checked_too(tmp_path):
+    # Only the app's own permission is left out: a plugin's AD_ID (Play asks
+    # about the advertising ID) or a <uses-permission-sdk-23> must be listed.
+    manifest, docs = tmp_path / "AndroidManifest.xml", tmp_path / "release.md"
+    manifest.write_text(MANIFEST.format(service="").replace(
+        "  <application>",
+        '  <uses-permission android:name="com.google.android.gms.permission.AD_ID" />\n'
+        '  <uses-permission-sdk-23 android:name="android.permission.READ_CONTACTS" />\n  <application>'),
+        encoding="utf-8")
+    docs.write_text(RELEASE_MD, encoding="utf-8")
+    assert release.permission_problems(manifest, docs) == [
+        "READ_CONTACTS: asked for, but not in release.md's list",
+        "com.google.android.gms.permission.AD_ID: asked for, but not in release.md's list",
+    ]
+    docs.write_text(RELEASE_MD.replace(
+        "    - `WAKE_LOCK`: WorkManager.\n",
+        "    - `WAKE_LOCK`: WorkManager.\n    - `READ_CONTACTS`: x.\n"
+        "    - `com.google.android.gms.permission.AD_ID`: x.\n"), encoding="utf-8")
+    assert release.permission_problems(manifest, docs) == []
+
+
+def test_611_a_foreground_service_type_fails_the_check(tmp_path):
+    manifest, docs = tmp_path / "AndroidManifest.xml", tmp_path / "release.md"
+    manifest.write_text(MANIFEST.format(service='<service android:name="x.Job" android:foregroundServiceType="dataSync" />'),
+                        encoding="utf-8")
+    docs.write_text(RELEASE_MD, encoding="utf-8")
+    assert release.permission_problems(manifest, docs) == [
+        "x.Job: a foreground-service type, which Play asks to declare"]
+    assert "build it first" in release.permission_problems(tmp_path / "none.xml", docs)[0]
+
+
+def test_611_the_real_release_md_lists_permissions():
+    # The list the check reads is where it expects it, and not empty.
+    listed = release.RELEASE_MD.read_text(encoding="utf-8").split("**Permissions**", 1)[1].split("\n\n", 1)[0]
+    assert "`RECORD_AUDIO`" in listed and "FOREGROUND_SERVICE" not in listed
+
+
+def test_611_permissions_that_differ_fail_the_check(tmp_path, monkeypatch):
+    aab = tmp_path / "app-release.aab"
+    with zipfile.ZipFile(aab, "w") as bundle:
+        bundle.writestr("base/lib/arm64-v8a/libgood.so", elf64([(PT_LOAD, 0x4000)]))
+    monkeypatch.setattr(release, "BUNDLE", aab)
+    monkeypatch.setattr(release, "keytool", lambda: None)
+    monkeypatch.setattr(release, "permission_problems", lambda: [])
+    assert release.main(["--check"]) == 0
+    monkeypatch.setattr(release, "permission_problems", lambda: ["WAKE_LOCK: asked for, but not in release.md's list"])
+    assert release.main(["--check"]) == 1
+
+
+def test_611_the_app_manifest_removes_the_foreground_services():
+    # What the merged manifest loses; the release check proves the result.
+    import xml.etree.ElementTree as ET
+    tools = "{http://schemas.android.com/tools}"
+    root = ET.parse(release.APP / "android" / "app" / "src" / "main" / "AndroidManifest.xml").getroot()
+    removed = {e.get(release.ANDROID + "name") for e in root.iter("uses-permission") if e.get(tools + "node") == "remove"}
+    assert removed == {"android.permission.FOREGROUND_SERVICE", "android.permission.FOREGROUND_SERVICE_SHORT_SERVICE"}
+    untyped = {e.get(release.ANDROID + "name") for e in root.iter("service")
+               if e.get(tools + "remove") == "android:foregroundServiceType"}
+    assert untyped == {"androidx.work.impl.foreground.SystemForegroundService",
+                       "com.bbflight.background_downloader.UIDTJobService"}

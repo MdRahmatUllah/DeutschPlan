@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -22,6 +23,19 @@ import 'package:material_ui/material_ui.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 
+/// Settings whose reload waits for [gate]: an import still finishing.
+class _GatedSettings extends SettingsRepository {
+  _GatedSettings(super.db);
+
+  Completer<void>? gate;
+
+  @override
+  Future<void> reload() async {
+    await gate?.future;
+    return super.reload();
+  }
+}
+
 /// The share sheet and the file picker without a phone.
 class FakeBackupFiles implements BackupFiles {
   /// What the picker hands back; null is backing out of it.
@@ -29,6 +43,9 @@ class FakeBackupFiles implements BackupFiles {
 
   /// A file that isn't text.
   bool unreadable = false;
+
+  /// What the picker throws, for a picker that fails (#657).
+  Object? pickError;
 
   /// Whether the share sheet was used rather than dismissed.
   bool shares = true;
@@ -38,6 +55,7 @@ class FakeBackupFiles implements BackupFiles {
   @override
   Future<PickedBackup?> pick() async {
     if (unreadable) throw const FormatException('not UTF-8');
+    if (pickError case final error?) throw error;
     return picked;
   }
 
@@ -277,6 +295,28 @@ void main() {
       expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
     });
 
+    testWidgets('#657 nor does a picker that fails, rather than doing '
+        'nothing', (tester) async {
+      await pump(tester);
+      files.pickError = StateError('no activity to pick with');
+      await tester.tap(find.text(l10n.exportImportChoose));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+    });
+
+    testWidgets('#657 a file with a value of the wrong type is refused at the '
+        'preview', (tester) async {
+      await pump(tester);
+      final file = jsonDecode(await otherPhone()) as Map<String, Object?>;
+      (file['tables']! as Map<String, Object?>)['settings'] = <Object?>[
+        <String, Object?>{'key': 'study_days_mask', 'value': '0'},
+      ];
+      await choose(tester, jsonEncode(file));
+
+      expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+      expect(find.text(l10n.exportImportDoMerge), findsNothing);
+    });
+
     testWidgets('backing out of the picker keeps the file chosen', (
       tester,
     ) async {
@@ -358,6 +398,43 @@ void main() {
 
       expect(settings.read(SettingKeys.learnerName), 'Nadia');
       expect(heard, contains(SettingKeys.learnerName));
+    });
+
+    testWidgets('#679 Back during the import: Today still lets go of the '
+        'old plan', (tester) async {
+      final gated = _GatedSettings(db);
+      await gated.load();
+      settings = gated;
+      await pump(tester);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(ExportImportScreen)),
+      );
+      final engine = container.listen(planEngineProvider, (_, _) {});
+      addTearDown(engine.close);
+      final before = engine.read();
+
+      final gate = gated.gate = Completer<void>();
+      await choose(tester, await otherPhone());
+      await tester.tap(find.text(l10n.exportImportReplace));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.exportImportDoReplace));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.exportImportReplaceConfirm));
+      await tester.pumpAndSettle();
+      // M6 goes while the import finishes.
+      unawaited(
+        Navigator.of(
+          tester.element(find.byType(ExportImportScreen)),
+        ).pushReplacement(
+          PageRouteBuilder<void>(pageBuilder: (_, _, _) => const SizedBox()),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(ExportImportScreen), findsNothing);
+
+      gate.complete();
+      await tester.pumpAndSettle();
+      expect(engine.read(), isNot(same(before)));
     });
 
     testWidgets('the plan engine Today holds is rebuilt with the file’s '

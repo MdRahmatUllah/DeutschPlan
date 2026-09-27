@@ -23,10 +23,16 @@ Paths are relative to `app/`. A plant whose file is a codegen input (a
 the change affects) sets `"codegen": true` and build_runner runs before and
 after it.
 
-    CAUGHT     the tests failed: good
+    CAUGHT     the tests ran and failed: good
     *MISSED*   the tests passed: strengthen them, then plant again
     COMPILE?   the plant does not compile: rewrite it (it proves nothing)
+    ERROR?     the run failed without a test failing (a bad path, no flutter,
+               a locked DLL): fix the run, it proves nothing (#685)
+    HUNG?      the run timed out: indeterminate, run that plant again
     SKIP       `old` is not in the file exactly once
+
+Before any plant, the same tests run unplanted and must pass: a plant only
+counts against a baseline that is green (#685). Only CAUGHT counts as caught.
 
 This never kills other processes: several agents run tests on this machine at
 once. A stale `flutter_tester` holding this worktree's DLLs is stopped with
@@ -36,6 +42,7 @@ once. A stale `flutter_tester` holding this worktree's DLLs is stopped with
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -43,22 +50,53 @@ from pathlib import Path
 APP = Path(__file__).resolve().parents[1] / "app"
 
 
-def run_tests(tests: list[str], command: list[str] | None = None) -> str:
-    cmd = command or ["flutter", "test", "--timeout", "60s", *tests]
+def run_tests(tests: list[str], command: list[str] | None = None,
+              timeout: float = 1200) -> tuple[int | None, str]:
+    """The run's exit code (None on a timeout) and its output."""
+    if command:
+        cmd = command
+    else:
+        flutter = shutil.which("flutter")
+        if flutter is None:
+            return 127, "flutter is not on PATH"
+        cmd = [flutter, "test", "--timeout", "60s", *tests]
+    proc = subprocess.Popen(cmd, cwd=APP, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                            text=True, encoding="utf-8", errors="replace")
     try:
-        out = subprocess.run(cmd, cwd=APP, capture_output=True, text=True, encoding="utf-8",
-                             errors="replace", shell=sys.platform == "win32", timeout=1200)
-        return out.stdout + out.stderr
+        out, _ = proc.communicate(timeout=timeout)
+        return proc.returncode, out
     except subprocess.TimeoutExpired:
-        return "TIMEOUT"
+        # This run's own process tree only (flutter, its testers): never by
+        # image name, which would kill every agent's tests.
+        if sys.platform == "win32":
+            subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True, check=False)
+        else:
+            proc.kill()
+        proc.communicate()
+        return None, "TIMEOUT"
 
 
-def verdict(output: str) -> str:
-    if output == "TIMEOUT":
-        return "CAUGHT (hung)"
+def verdict(code: int | None, output: str, flutter: bool = True) -> str:
+    if code is None:
+        return "HUNG?"
     if "Compilation failed" in output:  # flutter test: 'Failed to load "...": Compilation failed'
         return "COMPILE?"
-    return "*MISSED*" if "All tests passed!" in output else "CAUGHT"
+    if code == 0:
+        return "*MISSED*"
+    # A custom command's own baseline proved it runs, so any failure is its
+    # tests failing; flutter's must say so, or it is a broken run (#685).
+    if not flutter or "Some tests failed" in output:
+        return "CAUGHT"
+    return "ERROR?"
+
+
+def baseline(tests: list[str], command: list[str] | None = None) -> str | None:
+    """None when the unplanted tests pass, else why they don't (#685)."""
+    code, output = run_tests(tests, command)
+    if code == 0 and (command or "All tests passed!" in output):
+        return None
+    tail = " / ".join(output.strip().splitlines()[-5:])
+    return f"exit {code}: {tail}"
 
 
 def codegen() -> None:
@@ -79,7 +117,7 @@ def plant(entry: dict, tests: list[str], command: list[str] | None = None) -> st
         path.write_bytes(text.replace(entry["old"], entry["new"]).encode("utf-8"))
         if entry.get("codegen"):
             codegen()
-        return verdict(run_tests(entry.get("tests", tests), command))
+        return verdict(*run_tests(entry.get("tests", tests), command), flutter=command is None)
     finally:
         path.write_bytes(original)
         if entry.get("codegen"):
@@ -109,12 +147,18 @@ def main(argv: list[str]) -> int:
         kill_own_testers()
     spec = json.loads(Path(args[0]).read_text(encoding="utf-8"))
     only = set(args[1:])
+    chosen = [entry for entry in spec["plants"] if not only or entry["name"] in only]
+    # The baseline: each distinct test set the chosen plants run, unplanted.
+    for tests in {tuple(entry.get("tests", spec["tests"])) for entry in chosen}:
+        why = baseline(list(tests), spec.get("command"))
+        if why:
+            print(f"baseline failed for {list(tests)}: {why}")
+            print("fix the tests (or the run) before planting: nothing was planted")
+            return 2
     missed = 0
-    for entry in spec["plants"]:
-        if only and entry["name"] not in only:
-            continue
+    for entry in chosen:
         result = plant(entry, spec["tests"], spec.get("command"))
-        missed += result in ("*MISSED*", "COMPILE?") or result.startswith("SKIP")
+        missed += result != "CAUGHT"  # MISSED, COMPILE?, ERROR?, HUNG?, SKIP
         print(f"{result:<14} {entry['name']}", flush=True)
     failures = APP / "test" / "golden" / "failures"
     if failures.exists():

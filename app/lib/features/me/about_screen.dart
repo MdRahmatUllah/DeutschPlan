@@ -39,7 +39,7 @@ final Uri contactUri = Uri.https(
   '/MdRahmatUllah/DeutschPlan/issues/new',
 );
 
-/// `meta.content_version` ("202609251045") as About shows it: "2026.09".
+/// `meta.content_version` ("20260925104512") as About shows it: "2026.09".
 String contentRelease(String version) => version.length >= 6
     ? '${version.substring(0, 4)}.${version.substring(4, 6)}'
     : version;

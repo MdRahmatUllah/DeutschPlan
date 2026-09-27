@@ -34,6 +34,7 @@ import json
 import os
 import random
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -185,7 +186,10 @@ def task_from_issue(issue: int, data: dict, lane: str) -> Task:
     pri = next((label for label in labels if re.fullmatch(r"P\d", label)), "-")
     size = next((label.split(":")[1] for label in labels if label.startswith("size:")), "-")
     ms = ((data.get("milestone") or {}).get("title") or "-").split(" ")[0]
-    deps = re.search(r"## Dependencies\s*\n(.*?)(?:\n## |\n---|\Z)", data.get("body") or "", re.S)
+    # Hand-written issues say "## Dependencies"; the issue forms render
+    # "### Blocked by" (#697 TL-15).
+    deps = re.search(r"(?:## Dependencies|### Blocked by)\s*\n(.*?)(?:\n##|\n---|\Z)",
+                     data.get("body") or "", re.S)
     blocked = sorted({int(n) for n in re.findall(r"#(\d+)", deps.group(1))}) if deps else []
     return Task(issue, ms, lane, pri, size, data["title"], blocked_by=blocked)
 
@@ -329,6 +333,11 @@ def sync(root: Path) -> None:
     if "PLAN.md" in git(root, "status", "--porcelain", "--", "PLAN.md").stdout:
         raise SystemExit(f"{root / 'PLAN.md'} has edits that are not pushed: "
                          f"`git -C {root} commit -am \"plan: ...\"` and push them first")
+    # Committed but not pushed is lost to the reset just the same (#697 TL-6).
+    if git(root, "log", "--oneline", f"origin/{BRANCH}..HEAD", "--", "PLAN.md", check=False).stdout.strip():
+        raise SystemExit(f"{root / 'PLAN.md'} has commits that are not pushed: "
+                         f"`git -C {root} pull --rebase origin {BRANCH}`, then "
+                         f"`git -C {root} push origin HEAD:{BRANCH}`, first")
     git(root, "reset", "--quiet", "--hard", f"origin/{BRANCH}")
     git(root, "clean", "--quiet", "-fd")
 
@@ -347,6 +356,8 @@ def transact(root: Path, agent: str, message: str, change, attempts: int = 8):
             write_field(root, agent, "last-seen", now())
         render_status(root)
         git(root, "add", "-A")
+        if not git(root, "status", "--porcelain").stdout.strip():
+            return result  # nothing changed: nothing to commit or push (#697 TL-7)
         git(root, "commit", "--quiet", "-m", f"{agent}: {message}")
         pushed = git(root, "push", "--quiet", "origin", f"HEAD:{BRANCH}", check=False)
         if pushed.returncode == 0:
@@ -599,10 +610,17 @@ def cmd_agents(root: Path) -> None:
         print(f"{agent}  {'idle' if is_idle(session, seen) else 'ACTIVE'}  last seen {seen}  now: {doing}")
 
 
-def cmd_device(team_root: Path, agent: str, release: bool) -> None:
+def cmd_device(team_root: Path, agent: str, release: bool, refresh: bool = False) -> None:
     """The emulator is one device on one machine: a local lock, not a board one."""
     lock = team_root / ".device.lock"
     owner_file = lock / "owner"
+    if refresh:
+        # A long run (perf.py all) keeps its lock from going stale (#697 TL-5).
+        if not owner_file.exists() or owner_file.read_text(encoding="utf-8").split()[0] != agent:
+            raise Refused("you don't hold the device")
+        os.utime(lock)
+        print("device lock refreshed")
+        return
     if release:
         if owner_file.exists() and owner_file.read_text(encoding="utf-8").split()[0] != agent:
             raise Refused(f"the device is held by {owner_file.read_text(encoding='utf-8').strip()}, not you")
@@ -612,18 +630,39 @@ def cmd_device(team_root: Path, agent: str, release: bool) -> None:
             lock.rmdir()
         print("device released")
         return
-    try:
-        lock.mkdir()  # atomic: exactly one agent gets it
-    except FileExistsError:
-        age = time.time() - lock.stat().st_mtime
-        holder = owner_file.read_text(encoding="utf-8").strip() if owner_file.exists() else "?"
-        if age < DEVICE_LOCK_STALE_SECONDS:
-            raise Refused(f"the device is in use by {holder} ({int(age // 60)} min): do other work and try again") from None
-        print(f"breaking a stale device lock ({holder}, {int(age // 60)} min)")
-        if owner_file.exists():
-            owner_file.unlink()
-        lock.rmdir()
-        lock.mkdir()
+    for _ in range(3):
+        try:
+            lock.mkdir()  # atomic: exactly one agent gets it
+            break
+        except FileExistsError:
+            try:
+                age = time.time() - lock.stat().st_mtime
+                holder = owner_file.read_text(encoding="utf-8").strip() if owner_file.exists() else "?"
+            except FileNotFoundError:
+                continue  # released while we looked: try again
+            if age < DEVICE_LOCK_STALE_SECONDS:
+                raise Refused(f"the device is in use by {holder} ({int(age // 60)} min): do other work and try again") from None
+            print(f"breaking a stale device lock ({holder}, {int(age // 60)} min)")
+            # Renamed aside in one step, so of two agents breaking it only one
+            # wins; the other finds it gone and races for mkdir (#697 TL-5).
+            aside = lock.with_name(f"{lock.name}.stale-{os.getpid()}-{time.time_ns()}")
+            try:
+                os.replace(lock, aside)
+            except OSError:
+                continue
+            if time.time() - aside.stat().st_mtime < DEVICE_LOCK_STALE_SECONDS:
+                # Another agent broke it and took it between our look and our
+                # rename: that fresh lock is theirs, so it goes back.
+                # ponytail: a third agent taking it in that gap still makes two
+                # holders; a PID + heartbeat file if that ever happens.
+                try:
+                    os.rename(aside, lock)
+                except OSError:
+                    pass
+                raise Refused("another agent has just taken the device: do other work and try again")
+            shutil.rmtree(aside, ignore_errors=True)
+    else:
+        raise Refused("the device lock is changing hands: try again")
     owner_file.write_text(f"{agent} {now()}\n", encoding="utf-8")
     print("device held: `team.py device --release` the moment the check is over")
 
@@ -693,7 +732,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("lock"); p.add_argument("resource"); p.add_argument("-m", required=True)
     p = sub.add_parser("unlock"); p.add_argument("resource")
     p = sub.add_parser("add"); p.add_argument("issue", type=int); p.add_argument("--lane", required=True)
-    p = sub.add_parser("device"); p.add_argument("--release", action="store_true")
+    p = sub.add_parser("device"); p.add_argument("--release", action="store_true"); p.add_argument("--refresh", action="store_true")
     args = parser.parse_args(argv)
 
     try:
@@ -727,7 +766,7 @@ def main(argv: list[str] | None = None) -> int:
             case "lock": cmd_lock(root, agent, args.resource, args.m, release=False)
             case "unlock": cmd_lock(root, agent, args.resource, "", release=True)
             case "add": cmd_add(root, agent, args.issue, args.lane)
-            case "device": cmd_device(team_root(), agent, args.release)
+            case "device": cmd_device(team_root(), agent, args.release, args.refresh)
     except Refused as refused:
         print(f"refused: {refused}", file=sys.stderr)
         return 2

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:sogda/core/components/sg_button.dart';
@@ -381,6 +382,37 @@ void main() {
         );
       });
     }
+
+    testWidgets('#679 backing out of M4 right after Download still '
+        'chooses Supertonic', (tester) async {
+      final settings = StubSettings()
+        ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
+      final downloads = FakeDownloads()..startGate = Completer<void>();
+      await pump(
+        tester,
+        modelManagerStub(
+          settings: settings,
+          downloads: downloads,
+          voice: cardOf(voiceEntry, installed: ModelStatus.notDownloaded),
+        ),
+      );
+      await tester.tap(find.text(l10n.modelsDownload('399 MB')));
+      await tester.pump();
+      unawaited(
+        Navigator.of(
+          tester.element(find.byType(ModelManagerScreen)),
+        ).pushReplacement(
+          PageRouteBuilder<void>(pageBuilder: (_, _, _) => const SizedBox()),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(ModelManagerScreen), findsNothing);
+
+      downloads.startGate!.complete();
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.supertonic);
+    });
 
     testWidgets("Hy-MT's Update leaves the voice's engine as it was", (
       tester,

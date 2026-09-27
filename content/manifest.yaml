@@ -13,3 +13,7 @@ workbooks:
   - file: data/German_C2_Tracker.xlsx
 
 tips: content/interference_tips.csv
+
+# Reviewed fixes to the workbooks, applied before anything else reads them.
+# The workbooks themselves are never edited by a tool (#545, #628).
+corrections: content/corrections.yaml

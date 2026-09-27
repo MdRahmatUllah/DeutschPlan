@@ -105,8 +105,8 @@ dart run drift_dev schema generate drift_schemas/ test/db/generated/
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-The first `flutter test` in a new worktree downloads native libraries
-(sqlite3, llama.cpp). That needs the network, takes several GB and is slow
+The first `flutter test` in a new worktree downloads sqlite3's
+native library through its build hook. That needs the network and is slow
 once. `content.db` is committed. The Excel workbooks are not: they live only
 in the main checkout's `data/`. Copy them in only for a content issue.
 
@@ -206,7 +206,7 @@ Run them from your worktree: `python tools/team.py <command>`.
 | `reopen N -m "why"` | A decision was made, or a claim went stale: open it again |
 | `add N --lane X` | Put a new GitHub issue (a follow-up, a bug) on the board |
 | `lock <resource> -m "why"` / `unlock <resource>` | Hold a shared resource (see below) |
-| `device` / `device --release` | Take or give back the emulator. This is a local lock, so it is not on the board. |
+| `device` / `device --release` / `device --refresh` | Take, give back or keep the emulator (a refresh restarts the 45-minute clock for the holder). This is a local lock, so it is not on the board. |
 
 ### Statuses
 
@@ -258,7 +258,8 @@ change):
 
 The **developers' emulator** (`emulator-5558`) has a local lock: `team.py
 device`, held from `flutter build apk` to the last screenshot. It is released
-with `device --release`, and broken automatically after 45 minutes.
+with `device --release`, and broken automatically after 45 minutes; a long
+run keeps it with `device --refresh` (`perf.py` refreshes it between steps).
 `emulator-5554` is agent-3's (SQA) alone, and `tools/device.py` refuses it to
 anyone else.
 
@@ -318,6 +319,8 @@ it once cost a bug.
    - Every plant must be `CAUGHT`.
    - `*MISSED*` means the test is too weak: strengthen it and plant again.
    - `COMPILE?` means the plant is wrong: rewrite it.
+   - `ERROR?` means the run broke without a test failing (a mistyped test path, a locked DLL): fix the run. `HUNG?` means it timed out: plant that one again.
+   - The tests first run unplanted and must pass; if they don't, nothing is planted (#685).
    - Typically 12–22 plants per issue. The PR says how many and which.
 9. **Device check** (Android screens and anything with platform behaviour):
    ```bash

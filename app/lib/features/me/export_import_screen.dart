@@ -97,7 +97,10 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     final PickedBackup? file;
     try {
       file = await files.pick();
-    } on FormatException {
+    } on Object catch (error) {
+      // Not text, too big to be a backup, or the picker failed (#657): the
+      // card says so rather than doing nothing.
+      debugPrint('import pick: $error');
       if (mounted) setState(() => _problem = _Problem.notABackup);
       return;
     }
@@ -111,6 +114,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       problem = error.reason == ImportRefusal.newerSchema
           ? _Problem.newer
           : _Problem.notABackup;
+    } on Object catch (error) {
+      debugPrint('import preview: $error');
+      problem = _Problem.notABackup;
     }
     setState(() {
       _file = file;
@@ -137,6 +143,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     }
     final backups = ref.read(backupRepositoryProvider);
     final settings = ref.read(settingsSourceProvider);
+    // Held, not this screen's ref: Back can close M6 during the import,
+    // and Today must still let go of the old plan (#679).
+    final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _busy = true);
     try {
       await backups.import(file.json, mode: _mode);
@@ -144,7 +153,7 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       // kept alive under Today) and Today's plan were read before the
       // import: the streams follow drift, these don't.
       await settings.reload();
-      ref
+      container
         ..invalidate(planEngineProvider)
         ..invalidate(todayPlanProvider)
         ..invalidate(exportSizeProvider);
