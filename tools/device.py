@@ -54,6 +54,13 @@ def agent() -> str:
     return marker.read_text(encoding="utf-8").strip() if marker.exists() else ""
 
 
+def owner_checkout(root: Path = Path(__file__).resolve().parents[1]) -> bool:
+    """The owner's own checkout: the main one (`.git` a folder, where a
+    worktree has a file) with no agent. It has no device lock to take; an
+    agent's worktree without its marker is not it (#707)."""
+    return not agent() and (root / ".git").is_dir()
+
+
 def pick_serial(serial: str | None, who: str) -> str:
     """The emulator [who] drives: [serial] if given, else theirs."""
     chosen = serial or (SQA_SERIAL if who == SQA_AGENT else DEV_SERIAL)

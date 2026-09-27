@@ -324,8 +324,7 @@ def main(argv: list[str] | None = None) -> int:
     # An APK build takes the lock too (CLAUDE.md), so size needs it as well.
     # The owner's own checkout has no agent and no lock to take (release step
     # 6), as release_android.py (#707).
-    who = device.agent()
-    if who and not holds_device(who):
+    if not device.owner_checkout() and not holds_device(device.agent()):
         print("refused: hold the emulator first: `python tools/team.py device`", file=sys.stderr)
         return 2
 
