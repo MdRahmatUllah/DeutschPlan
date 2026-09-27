@@ -48,15 +48,25 @@ const int typoMinLength = 6;
 /// string holding synonyms separated by `/` or `,`. Any one of them counts,
 /// or the whole cell as shown, with or without a bracketed note
 /// ([meaningAnswers], #645).
+///
+/// Several meanings typed, as a list or a card shows them, in any order ("hi /
+/// hello"), are right when each is one of the cell's, and *almost* when each
+/// is at least almost. One that is not makes the whole answer wrong (#678).
 Verdict checkMeaning(String given, String expected) {
-  final candidates = meaningAnswers(expected);
+  final candidates = meaningAnswers(expected).map(_stripInfinitiveTo).toList();
   if (candidates.isEmpty) return Verdict.wrong;
 
-  return _best(
-    _stripInfinitiveTo(given),
-    candidates.map(_stripInfinitiveTo),
-    german: false,
-  );
+  final whole = _best(_stripInfinitiveTo(given), candidates, german: false);
+  final parts = splitMeanings(given);
+  if (whole == Verdict.correct || parts.length < 2) return whole;
+
+  var listed = Verdict.correct;
+  for (final part in parts) {
+    final verdict = _best(_stripInfinitiveTo(part), candidates, german: false);
+    if (verdict == Verdict.wrong) return whole;
+    if (verdict == Verdict.almost) listed = Verdict.almost;
+  }
+  return listed.score > whole.score ? listed : whole;
 }
 
 /// EN→DE, cloze and forms (BR-ANS-02).
