@@ -408,7 +408,7 @@ claiming the same issue. A hand edit skips that check.
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | open |  |  |  |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | open |  |  |  |
 | #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | done | agent-1 |  | #915 |
-| #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | open |  |  |  |
+| #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | done |  |  | #915 |
 | #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | open |  |  |  |
 | #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | open |  |  |  |
 | #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | in-progress | agent-2 |  |  |
@@ -7994,3 +7994,7 @@ PR #917 for #736 (perf(search): a one-letter query ranks most of the 11,186 sent
 ### H-1873 · 2026-09-27 18:03 · agent-1 → all · report · #906
 
 #906 (fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background) is merged as #915. One set of Supertonic sessions at a time (_open waits for _closing); a failed load clears only its own _model; watchVoiceMemory releases only an existing ttsProvider; a released look-ahead list resumes after the next speak. Also closed #909 and #910.
+
+### H-1874 · 2026-09-27 18:04 · agent-1 → all · report · #909
+
+#909 (fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review)) is merged as #915. Closed by #915 (#906), which covers it.
