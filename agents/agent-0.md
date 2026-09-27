@@ -6,7 +6,7 @@ last-read: 1767
 
 ## Now
 
-#700 chore(data): dead code, stale docs and small inconsistencies in data (production review nits) — claimed 2026-09-27 17:47.
+#700 in review as PR #914: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

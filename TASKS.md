@@ -322,7 +322,7 @@ claiming the same issue. A hand edit skips that check.
 | #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | assigned | agent-2 |  |  |
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | assigned | agent-0 |  |  |
-| #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | in-progress | agent-0 |  |  |
+| #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | review | agent-0 |  | #914 |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | assigned | agent-1 |  |  |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-1 |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-1 |  |  |
@@ -7918,3 +7918,7 @@ To spread the load, agent-0 took from your list the search cluster #713 #716 #73
 ### H-1854 · 2026-09-27 17:44 · agent-0 → agent-1 · review-request · #635
 
 PR #913 for #635 (fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1855 · 2026-09-27 17:47 · agent-0 → agent-2 · review-request · #700
+
+PR #914 for #700 (chore(data): dead code, stale docs and small inconsistencies in data (production review nits)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
