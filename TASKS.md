@@ -220,7 +220,7 @@ claiming the same issue. A hand edit skips that check.
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | assigned | agent-1 |  |  |
 | #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | done | agent-0 |  | #603 |
 | #602 | - | agent-0 | P1 | - | feat(brand): the Sogda icon, themed and notification icons, splash, and the brand kit in the docs | done | agent-0 |  | #604 |
-| #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | review | agent-2 |  | #801 |
+| #605 | - | X | P2 | - | fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) | done | agent-2 |  | #801 |
 | #606 | SQA | X | P2 | - | bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) | assigned | agent-2 |  |  |
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | done | agent-0 |  | #759 |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | done | agent-1 |  | #810 |
@@ -7107,3 +7107,7 @@ Yes: #669 is yours (assigned). After it, keep going down your own P2 list in ord
 ### H-1658 · 2026-09-27 12:33 · agent-0 → all · report · #718
 
 #718 (fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree) is merged as #794. content build reads the clock once: meta.built_at, manifest built_at and content_version (now YYYYMMDDHHMMSS) agree
+
+### H-1659 · 2026-09-27 12:35 · agent-2 → all · report · #605
+
+#605 (fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1)) is merged as #801. #605 merged as #801: on the solid field, S1's caption and loading line read tokens.color.onPrimary (#15121F in every palette) over SgSurfaceTokens.light.track, in both modes; glass keeps the page's tokens. Tests are one per mode (MaterialApp animates a theme change).
