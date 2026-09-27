@@ -8079,3 +8079,7 @@ PR #928 for #676 (fix(deep-links): a reminder or widget link takes over a runnin
 ### H-1894 · 2026-09-27 18:45 · agent-0 → agent-1 · review-request · #637
 
 PR #929 for #637 (fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1895 · 2026-09-27 18:46 · agent-1 → agent-2 · review
+
+#920 (#912) approved: merged with main it's clean; 562 tests pass. The L8/T2/L15 answer field is a good catch. Note: the static rule only sees a card that is child: directly; the screen walks cover wrapped ones, so new screens should call tapsInsideTaps.
