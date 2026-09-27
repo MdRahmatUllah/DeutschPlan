@@ -3,26 +3,33 @@
     python tools/team.py device               # an app build holds the lock
     python tools/release_android.py           # build, then check
     python tools/release_android.py --check   # check the last build only
+    python tools/release_android.py --require-upload-key   # a Play upload
     python tools/team.py device --release
 
 The bundle is `flutter build appbundle --release --obfuscate
 --split-debug-info=build/symbols` (`docs/05-dev-guide/release.md`), at
 `app/build/app/outputs/bundle/release/app-release.aab`. Then:
 
+    libs    libflutter.so and libapp.so are there for each 64-bit ABI, so
+            an empty or half bundle can't pass the 16 KB check (#697 TL-9)
     16 KB   every 64-bit native library in it has its loadable segments
             aligned to 16 KB, as Play requires of apps targeting Android 15+
             (32-bit ones are exempt: no 16 KB device runs them)
     key     the certificate that signed it (`keytool -printcert -jarfile`):
             the owner's upload key, from `app/android/key.properties`, or the
             debug key, which Play refuses
-    symbols Dart's, in `app/build/symbols`, kept with the release (see
-            release.md); the plugins' native ones ride in the bundle
+    symbols Dart's, in `app/build/symbols`, one file per 64-bit ABI,
+            copied to `app/build/release-symbols/<version>/` to keep with the
+            release (see release.md); the plugins' native ones ride in the
+            bundle
     perms   the permissions the merged manifest asks for are exactly the ones
             release.md's Play Console list declares, and no service has a
             foreground-service type (#611)
 
-Exit 1 when a library isn't aligned or the permissions differ. A debug-signed bundle is reported, not
-failed: it is what every build before the owner's keystore is.
+Exit 1 when a library is missing or isn't aligned, the symbols are missing,
+or the permissions differ. A debug-signed bundle is reported, not failed: it
+is what every build before the owner's keystore is; `--require-upload-key`,
+for the build that goes to Play, fails it too.
 """
 
 from __future__ import annotations
@@ -54,6 +61,11 @@ RELEASE_MD = TOOLS.parent / "docs" / "05-dev-guide" / "release.md"
 ANDROID = "{http://schemas.android.com/apk/res/android}"
 ANDROID_STUDIO_KEYTOOL = Path("C:/Program Files/Android/Android Studio/jbr/bin/keytool.exe")
 PAGE = 16 * 1024
+ABIS_64 = ("arm64-v8a", "x86_64")
+REQUIRED_LIBS = ("libflutter.so", "libapp.so")
+# `--split-debug-info` names each ABI's file so.
+SYMBOL_FILES = ("app.android-arm64.symbols", "app.android-x64.symbols")
+KEPT_SYMBOLS = APP / "build" / "release-symbols"
 PT_LOAD = 1
 
 
@@ -118,6 +130,36 @@ def permission_problems(manifest: Path = MANIFEST, release_md: Path = RELEASE_MD
                for e in root.iter("service") if e.get(ANDROID + "foregroundServiceType")])
 
 
+def missing_libs(bundle: Path) -> list[str]:
+    """The Flutter engine and the app's code, for each 64-bit ABI, that
+    [bundle] lacks: with no library at all, the 16 KB check passes on
+    nothing (#697 TL-9)."""
+    with zipfile.ZipFile(bundle) as aab:
+        names = set(aab.namelist())
+    return [f"base/lib/{abi}/{lib}: missing" for abi in ABIS_64 for lib in REQUIRED_LIBS
+            if f"base/lib/{abi}/{lib}" not in names]
+
+
+def missing_symbols(symbols: Path = SYMBOLS) -> list[str]:
+    """Dart's symbol files for the 64-bit ABIs that [symbols] lacks, or an
+    empty one."""
+    return [f"{symbols / name}: missing" for name in SYMBOL_FILES
+            if not (symbols / name).exists() or (symbols / name).stat().st_size == 0]
+
+
+def keep_symbols(version: str, symbols: Path = SYMBOLS, kept: Path = KEPT_SYMBOLS) -> Path:
+    """Copies [symbols] to a folder named for [version], so the next build
+    (or perf.py's) can't overwrite the ones this release needs."""
+    target = kept / version.replace("+", "-")
+    shutil.copytree(symbols, target, dirs_exist_ok=True)
+    return target
+
+
+def app_version(pubspec: Path = APP / "pubspec.yaml") -> str:
+    found = re.search(r"^version:\s*(\S+)", pubspec.read_text(encoding="utf-8"), re.MULTILINE)
+    return found.group(1) if found else "unknown"
+
+
 def keytool() -> str | None:
     """The JDK's keytool: on PATH, under JAVA_HOME, or Android Studio's."""
     java_home = os.environ.get("JAVA_HOME")
@@ -138,8 +180,11 @@ def signer(bundle: Path) -> str | None:
     tool = keytool()
     if tool is None:
         return None
+    # UTF-8, replacing what isn't: a CN with an umlaut must not crash the
+    # check on a cp1252 console (#697 TL-9).
     out = subprocess.run([tool, "-printcert", "-jarfile", str(bundle)],
-                         capture_output=True, text=True).stdout
+                         capture_output=True, text=True, encoding="utf-8",
+                         errors="replace").stdout
     found = re.search(r"^Owner: (.+)$", out, re.MULTILINE)
     return found.group(1).strip() if found else None
 
@@ -164,6 +209,8 @@ def build() -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--check", action="store_true", help="check the last build, don't build")
+    parser.add_argument("--require-upload-key", action="store_true",
+                        help="fail a bundle not signed with the owner's upload key (the one for Play)")
     args = parser.parse_args(argv)
     if not args.check:
         # An agent's app build takes the lock (CLAUDE.md), as perf.py's does.
@@ -177,8 +224,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"no bundle at {BUNDLE}: build it first", file=sys.stderr)
         return 2
 
+    libs = missing_libs(BUNDLE)
     bad = misaligned(BUNDLE)
     print(f"bundle:  {BUNDLE} ({BUNDLE.stat().st_size / 1e6:.1f} MB)")
+    print(f"libs:    {'ok' if not libs else 'FAIL'}")
+    for line in libs:
+        print(f"         {line}")
     print(f"16 KB:   {'ok' if not bad else 'FAIL'}")
     for line in bad:
         print(f"         {line}")
@@ -186,9 +237,17 @@ def main(argv: list[str] | None = None) -> int:
     print(f"perms:   {'ok' if not perms else 'FAIL'}")
     for line in perms:
         print(f"         {line}")
-    print(f"key:     {signed_by(signer(BUNDLE))}")
-    print(f"symbols: {SYMBOLS} (keep with the release)")
-    return 1 if bad or perms else 0
+    owner = signer(BUNDLE)
+    unsigned = args.require_upload_key and (owner is None or "CN=Android Debug" in owner)
+    print(f"key:     {signed_by(owner)}{'  FAIL: --require-upload-key' if unsigned else ''}")
+    lost = missing_symbols()
+    if lost:
+        print("symbols: FAIL")
+        for line in lost:
+            print(f"         {line}")
+    else:
+        print(f"symbols: kept in {keep_symbols(app_version())} (store it privately with the release)")
+    return 1 if libs or bad or perms or lost or unsigned else 0
 
 
 if __name__ == "__main__":

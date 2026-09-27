@@ -309,6 +309,36 @@ void main() {
       expect(shown(tester), (Brightness.dark, SgMode.glass));
     });
 
+    Future<void> choose(WidgetTester tester, ThemeModeSetting setting) async {
+      await ProviderScope.containerOf(tester.element(find.byType(SogdaApp)))
+          .read(themeProvider.notifier)
+          .choose(setting);
+      await settle(tester);
+    }
+
+    testWidgets('#649 Dark chosen on a dark phone, from System, stops the app '
+        'following the phone', (tester) async {
+      // The mode it resolves to is the one System had, so the root never
+      // rebuilt, and it kept ThemeMode.system: the phone going light took the
+      // app with it, despite the explicit Dark.
+      await pumpHost(tester, phone: Brightness.dark);
+      expect(shown(tester), (Brightness.dark, SgMode.dark));
+
+      await choose(tester, ThemeModeSetting.dark);
+      await flip(tester, Brightness.light);
+      expect(shown(tester), (Brightness.dark, SgMode.dark));
+    });
+
+    testWidgets('#649 and System chosen from Light follows it from then on', (
+      tester,
+    ) async {
+      await pumpHost(tester, choose: ThemeModeSetting.light);
+
+      await choose(tester, ThemeModeSetting.system);
+      await flip(tester, Brightness.dark);
+      expect(shown(tester), (Brightness.dark, SgMode.dark));
+    });
+
     testWidgets('an explicit choice is not overridden', (tester) async {
       await pumpHost(tester, choose: ThemeModeSetting.light);
 

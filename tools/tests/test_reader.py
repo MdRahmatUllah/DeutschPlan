@@ -230,17 +230,79 @@ class TestFailures:
         with pytest.raises(PipelineError, match=r"HEADER_MAP"):
             read_workbook(path)
 
-    def test_a_renamed_optional_header_is_not_fatal(
+    def test_714_a_renamed_optional_header_stops_the_build_naming_file_and_header(
         self, books: Path, tmp_path: Path
     ):
-        # Optional means optional: losing the Bangla column must not stop a
-        # build the evening before a release.
-        path = _rename_header(
-            books / "German_C2_Tracker.xlsx", "Bangla meaning", "Bangla?", tmp_path
+        # It used to be read as a blank column: the whole C2 book shipped
+        # without its Bangla, and nothing said so.
+        manifest = _manifest_with(
+            books, tmp_path, "German_C2_Tracker.xlsx",
+            _rename_header(books / "German_C2_Tracker.xlsx", "Bangla meaning", "Bangla meaning (BN)", tmp_path),
         )
-        source = read_workbook(path)
-        assert source.words
-        assert all(w.bangla is None for w in source.words)
+        with pytest.raises(PipelineError) as refused:
+            read_sources(read_manifest(manifest))
+        message = str(refused.value)
+        assert "German_C2_Tracker-rename.xlsx!All Words has no 'Bangla meaning' column" in message
+        assert "'Bangla meaning (BN)'" in message
+
+        # Once, on purpose: the words ship without it.
+        sources = read_sources(read_manifest(manifest), allow_missing_columns=True)
+        assert all(w.bangla is None for w in sources[-1].words)
+
+    def test_714_a_renamed_grammar_header_stops_the_build_too(
+        self, books: Path, tmp_path: Path
+    ):
+        renamed = _rename_header(
+            books / "German_C1_Tracker.xlsx", "Watch out", "Watch-out", tmp_path, "Grammar"
+        )
+        manifest = _manifest_with(books, tmp_path, "German_C1_Tracker.xlsx", renamed)
+        with pytest.raises(PipelineError, match=r"!Grammar has no 'Watch out' column"):
+            read_sources(read_manifest(manifest))
+
+    def test_714_a_column_a_book_never_had_is_listed_in_its_manifest_entry(
+        self, books: Path, tmp_path: Path
+    ):
+        renamed = _rename_header(books / "German_C2_Tracker.xlsx", "Collocations", "Kollokationen", tmp_path)
+        manifest = _manifest_with(books, tmp_path, "German_C2_Tracker.xlsx", renamed)
+        entries = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+        entries["workbooks"][-1]["without"] = ["collocations"]
+        manifest.write_text(yaml.safe_dump(entries), encoding="utf-8")
+        assert read_sources(read_manifest(manifest))
+
+        entries["workbooks"][-1]["without"] = ["Collocations"]
+        manifest.write_text(yaml.safe_dump(entries), encoding="utf-8")
+        with pytest.raises(PipelineError, match="no map reads"):
+            read_manifest(manifest)
+
+    def test_714_a_renamed_pos_header_stops_the_build_even_alone(
+        self, books: Path, tmp_path: Path
+    ):
+        # POS is part of the uid: read as blank, every word of the book would
+        # get a new one and every learner's progress on it would go.
+        path = _rename_header(
+            books / "German_B2_Tracker.xlsx", "POS", "Part of Speech (POS)", tmp_path
+        )
+        with pytest.raises(PipelineError, match=r"HEADER_MAP"):
+            read_workbook(path)
+
+    def test_714_an_unknown_header_is_reported_and_the_trackers_own_are_not(
+        self, books: Path, tmp_path: Path, capsys
+    ):
+        def extra(book):
+            sheet = book["All Words"]
+            for row in sheet.iter_rows(min_row=1, max_row=5):
+                if any(cell.value == "German" for cell in row):
+                    sheet.cell(row=row[0].row, column=len(row) + 1, value="Gender hint")
+                    sheet.cell(row=row[0].row, column=len(row) + 2, value="Status")
+
+        manifest = _manifest_with(
+            books, tmp_path, "German_C2_Tracker.xlsx",
+            _copy_with(books / "German_C2_Tracker.xlsx", tmp_path, extra),
+        )
+        read_sources(read_manifest(manifest))
+        err = capsys.readouterr().err
+        assert "unknown header: German_C2_Tracker-extra.xlsx!All Words: 'Gender hint'" in err
+        assert "'Status'" not in err
 
     def test_a_row_missing_a_required_cell_names_the_row(
         self, books: Path, tmp_path: Path
@@ -322,9 +384,28 @@ def _without_sheet(path: Path, name: str, tmp_path: Path) -> Path:
     return _copy_with(path, tmp_path, drop)
 
 
-def _rename_header(path: Path, old: str, new: str, tmp_path: Path) -> Path:
+def _manifest_with(books: Path, tmp_path: Path, name: str, replacement: Path) -> Path:
+    """A manifest of the four fixture books, [name] replaced."""
+    manifest = tmp_path / "manifest.yaml"
+    manifest.write_text(
+        yaml.safe_dump(
+            {
+                "workbooks": [
+                    {"file": str(replacement if book == name else books / book)}
+                    for book in BOOK_LEVELS
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    return manifest
+
+
+def _rename_header(
+    path: Path, old: str, new: str, tmp_path: Path, sheet: str = "All Words"
+) -> Path:
     def rename(book):
-        for row in book["All Words"].iter_rows(min_row=1, max_row=5):
+        for row in book[sheet].iter_rows(min_row=1, max_row=5):
             for cell in row:
                 if cell.value == old:
                     cell.value = new

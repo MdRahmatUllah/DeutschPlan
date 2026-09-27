@@ -44,6 +44,17 @@ SOURCES = {
         "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/inter/OFL.txt",
     "NotoSansBengali-OFL.txt":
         "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/notosansbengali/OFL.txt",
+    # The native libraries in the APK that no pub package's LICENSE covers
+    # (#610): ONNX Runtime 1.23.0 (flutter_onnxruntime pulls it from Maven,
+    # libonnxruntime.so) with its third-party notices, and the Apache-2.0
+    # Android libraries the plugins pull in (AndroidX, Jetpack Glance,
+    # WorkManager, Kotlin and kotlinx, Gson).
+    "ONNXRuntime-MIT.txt":
+        "https://raw.githubusercontent.com/microsoft/onnxruntime/be835efc56aca19b8e810538ec93c8e150e0fc61/LICENSE",
+    "ONNXRuntime-ThirdPartyNotices.txt":
+        "https://raw.githubusercontent.com/microsoft/onnxruntime/be835efc56aca19b8e810538ec93c8e150e0fc61/ThirdPartyNotices.txt",
+    "AndroidX-Apache-2.0.txt":
+        "https://raw.githubusercontent.com/androidx/androidx/4e64160870c4c38395c2bd8997088991e94295f6/LICENSE.txt",
 }
 
 LICENCE_FILES = ("LICENSE", "LICENCE", "COPYING")

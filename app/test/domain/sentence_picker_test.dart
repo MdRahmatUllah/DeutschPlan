@@ -19,6 +19,14 @@ void main() {
       expect(coverage('Wohnungen zahlen', learned), 1.0);
     });
 
+    test('#654 a learned key shorter than three letters is no stem: "er" '
+        'does not make "erklärt" known', () {
+      const short = <String>{'er', 'an', 'zu', 'wo', 'es'};
+      expect(coverage('erklärt andere zusammen Woche essen', short), 0);
+      // Three letters are a stem, as in the cloze: "hau" is Haus's.
+      expect(coverage('Häuser Haus', <String>{'hau'}), 0.5);
+    });
+
     test('reads umlauts and ß the way the search keys are written', () {
       expect(coverage('groß', learned), 1.0, reason: 'groß → gross');
     });

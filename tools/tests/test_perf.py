@@ -251,9 +251,39 @@ def test_without_the_update_the_baseline_is_left_alone(baseline):
 
 
 def test_even_size_needs_the_device_lock(baseline, monkeypatch):
+    monkeypatch.setattr(perf.device, "agent", lambda: "agent-2")
     monkeypatch.setattr(perf, "holds_device", lambda agent: False)
     monkeypatch.setattr(perf, "measure_size", lambda: pytest.fail("built without the lock"))
     assert perf.main(["size"]) == 2
+
+
+def test_707_the_owners_checkout_measures_without_the_lock(baseline, monkeypatch):
+    # Release step 6 runs in the owner's checkout, which has no agent and so
+    # no lock to hold, as release_android.py.
+    monkeypatch.setattr(perf.device, "owner_checkout", lambda: True)
+    monkeypatch.setattr(perf, "holds_device", lambda agent: pytest.fail("asked for a lock"))
+    assert perf.main(["size"]) == 0
+
+
+def test_707_a_worktree_without_its_marker_still_needs_the_lock(baseline, monkeypatch):
+    # No agent is not the owner: a helper's worktree that `join` never
+    # marked must not drive the shared emulator unlocked.
+    monkeypatch.setattr(perf.device, "agent", lambda: "")
+    monkeypatch.setattr(perf.device, "owner_checkout", lambda: False)
+    monkeypatch.setattr(perf, "holds_device", lambda agent: bool(agent))
+    monkeypatch.setattr(perf, "measure_size", lambda: pytest.fail("built without the lock"))
+    assert perf.main(["size"]) == 2
+
+
+def test_707_only_the_main_checkout_is_the_owners(monkeypatch, tmp_path):
+    (tmp_path / "main" / ".git").mkdir(parents=True)
+    (tmp_path / "worktree").mkdir()
+    (tmp_path / "worktree" / ".git").write_text("gitdir: elsewhere", encoding="utf-8")
+    monkeypatch.setattr(perf.device, "agent", lambda: "")
+    assert perf.device.owner_checkout(tmp_path / "main")
+    assert not perf.device.owner_checkout(tmp_path / "worktree")
+    monkeypatch.setattr(perf.device, "agent", lambda: "agent-2")
+    assert not perf.device.owner_checkout(tmp_path / "main")
 
 
 def test_697_each_step_refreshes_the_device_lock(baseline, monkeypatch):

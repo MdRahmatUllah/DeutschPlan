@@ -1,3 +1,4 @@
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -49,12 +50,18 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final topics = ref.watch(libraryTopicsProvider).value;
+    final topicsState = ref.watch(libraryTopicsProvider);
+    final topics = topicsState.value;
     final today = ref.watch(todayProvider);
 
     final Widget body;
     if (topics == null) {
-      body = const SizedBox.expand();
+      body = topicsState.hasError
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () => ref.invalidate(libraryTopicsProvider),
+            )
+          : const SizedBox.expand();
     } else {
       int count(LibraryFilter filter) =>
           topics.where((topic) => inFilter(filter, topic, today)).length;

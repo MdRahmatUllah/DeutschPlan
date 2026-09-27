@@ -1,3 +1,4 @@
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -46,8 +47,16 @@ class StepGrammarTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final topics = ref.watch(stepTopicsProvider(code)).value;
-    if (topics == null) return const SizedBox.expand();
+    final topicsState = ref.watch(stepTopicsProvider(code));
+    final topics = topicsState.value;
+    if (topics == null) {
+      return topicsState.hasError
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () => ref.invalidate(stepTopicsProvider(code)),
+            )
+          : const SizedBox.expand();
+    }
     final today = ref.watch(todayProvider);
     final due = <String>[
       for (final topic in topics)

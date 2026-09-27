@@ -124,15 +124,23 @@ def plant(entry: dict, tests: list[str], command: list[str] | None = None) -> st
             codegen()
 
 
+def own_pattern(worktree: Path | None = None) -> str:
+    """PowerShell's -like pattern for a tester of [worktree]'s: its
+    `--packages=` names the worktree's own package config, so `agent-1`
+    never matches `agent-1-review` (#697 TL-12), and the main checkout never
+    matches a worktree nested in it (`.claude/worktrees/`)."""
+    here = str(worktree or APP.parent).replace("/", "\\")
+    return f"*--packages={here}\\app\\.dart_tool\\*"
+
+
 def kill_own_testers() -> None:
     """Stop flutter_tester processes whose command line points into this
     worktree — never anyone else's."""
     if sys.platform != "win32":
         return
-    here = str(APP.parent).replace("/", "\\")
     script = (
         "Get-CimInstance Win32_Process -Filter \"Name='flutter_tester.exe'\" | "
-        f"Where-Object {{ $_.CommandLine -like '*{here}*' }} | "
+        f"Where-Object {{ $_.CommandLine -like '{own_pattern()}' }} | "
         "ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"
     )
     subprocess.run(["powershell", "-NoProfile", "-Command", script], capture_output=True, check=False)

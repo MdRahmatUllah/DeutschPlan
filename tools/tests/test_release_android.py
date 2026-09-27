@@ -179,13 +179,28 @@ def test_611_the_real_release_md_lists_permissions():
     assert "`RECORD_AUDIO`" in listed and "FOREGROUND_SERVICE" not in listed
 
 
-def test_611_permissions_that_differ_fail_the_check(tmp_path, monkeypatch):
+def whole_bundle(tmp_path: Path) -> Path:
+    """A bundle with the engine and the app's code for both 64-bit ABIs,
+    aligned to 16 KB."""
     aab = tmp_path / "app-release.aab"
     with zipfile.ZipFile(aab, "w") as bundle:
-        bundle.writestr("base/lib/arm64-v8a/libgood.so", elf64([(PT_LOAD, 0x4000)]))
-    monkeypatch.setattr(release, "BUNDLE", aab)
+        for abi in ("arm64-v8a", "x86_64"):
+            for lib in ("libflutter.so", "libapp.so"):
+                bundle.writestr(f"base/lib/{abi}/{lib}", elf64([(PT_LOAD, 0x4000)]))
+    return aab
+
+
+@pytest.fixture()
+def passing(tmp_path, monkeypatch):
+    """Everything but what a test sets otherwise passes."""
+    monkeypatch.setattr(release, "BUNDLE", whole_bundle(tmp_path))
     monkeypatch.setattr(release, "keytool", lambda: None)
     monkeypatch.setattr(release, "permission_problems", lambda: [])
+    monkeypatch.setattr(release, "missing_symbols", lambda: [])
+    monkeypatch.setattr(release, "keep_symbols", lambda version: tmp_path / "kept")
+
+
+def test_611_permissions_that_differ_fail_the_check(passing, monkeypatch):
     assert release.main(["--check"]) == 0
     monkeypatch.setattr(release, "permission_problems", lambda: ["WAKE_LOCK: asked for, but not in release.md's list"])
     assert release.main(["--check"]) == 1
@@ -202,3 +217,57 @@ def test_611_the_app_manifest_removes_the_foreground_services():
                if e.get(tools + "remove") == "android:foregroundServiceType"}
     assert untyped == {"androidx.work.impl.foreground.SystemForegroundService",
                        "com.bbflight.background_downloader.UIDTJobService"}
+
+
+def test_697_a_bundle_without_the_engine_or_the_app_fails(tmp_path, passing, monkeypatch):
+    # TL-9: with no library at all, the 16 KB check passed on nothing.
+    aab = tmp_path / "half.aab"
+    with zipfile.ZipFile(aab, "w") as bundle:
+        bundle.writestr("base/lib/arm64-v8a/libflutter.so", elf64([(PT_LOAD, 0x4000)]))
+        bundle.writestr("base/dex/classes.dex", b"dex\n")
+    assert release.missing_libs(aab) == [
+        "base/lib/arm64-v8a/libapp.so: missing",
+        "base/lib/x86_64/libflutter.so: missing",
+        "base/lib/x86_64/libapp.so: missing",
+    ]
+    assert release.missing_libs(release.BUNDLE) == []
+    monkeypatch.setattr(release, "BUNDLE", aab)
+    assert release.main(["--check"]) == 1
+
+
+def test_697_the_symbols_are_checked_and_kept_under_the_version(tmp_path):
+    symbols = tmp_path / "symbols"
+    symbols.mkdir()
+    (symbols / "app.android-arm64.symbols").write_bytes(b"dwarf")
+    assert release.missing_symbols(symbols) == [f"{symbols / 'app.android-x64.symbols'}: missing"]
+    (symbols / "app.android-x64.symbols").write_bytes(b"")
+    assert release.missing_symbols(symbols) == [f"{symbols / 'app.android-x64.symbols'}: missing"]
+    (symbols / "app.android-x64.symbols").write_bytes(b"dwarf")
+    assert release.missing_symbols(symbols) == []
+
+    kept = release.keep_symbols("1.0.1+2", symbols, tmp_path / "kept")
+    assert kept == tmp_path / "kept" / "1.0.1-2"
+    assert (kept / "app.android-arm64.symbols").read_bytes() == b"dwarf"
+
+
+def test_697_missing_symbols_fail_the_check(passing, monkeypatch):
+    monkeypatch.setattr(release, "missing_symbols", lambda: ["app.android-x64.symbols: missing"])
+    monkeypatch.setattr(release, "keep_symbols", lambda version: pytest.fail("kept symbols that aren't there"))
+    assert release.main(["--check"]) == 1
+
+
+def test_697_the_app_version_names_the_kept_folder(tmp_path):
+    pubspec = tmp_path / "pubspec.yaml"
+    pubspec.write_text("name: sogda\nversion: 1.0.2+3\n", encoding="utf-8")
+    assert release.app_version(pubspec) == "1.0.2+3"
+
+
+def test_697_require_upload_key_fails_a_debug_or_unsigned_bundle(passing, monkeypatch):
+    assert release.main(["--check"]) == 0
+    monkeypatch.setattr(release, "signer", lambda bundle: "C=US, O=Android, CN=Android Debug")
+    assert release.main(["--check"]) == 0, "reported, not failed, without the flag"
+    assert release.main(["--check", "--require-upload-key"]) == 1
+    monkeypatch.setattr(release, "signer", lambda bundle: None)
+    assert release.main(["--check", "--require-upload-key"]) == 1
+    monkeypatch.setattr(release, "signer", lambda bundle: "CN=Sogda Upload, O=Sogda")
+    assert release.main(["--check", "--require-upload-key"]) == 0

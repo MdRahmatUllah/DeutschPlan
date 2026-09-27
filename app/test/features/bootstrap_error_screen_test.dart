@@ -1,6 +1,8 @@
 @TestOn('vm')
 library;
 
+import 'dart:io' show File;
+
 import 'package:sogda/bootstrap.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
@@ -106,6 +108,29 @@ void main() {
       );
 
       expect(export, findsOneWidget);
+    });
+
+    testWidgets('#619 a user.db that would not open offers its file, and a '
+        "newer build's says to update", (tester) async {
+      await pump(
+        tester,
+        failure: BootstrapFailure(
+          step: BootstrapStep.database,
+          error: 'asked to downgrade',
+          stackTrace: StackTrace.empty,
+          db: null,
+          file: File('user.sqlite'),
+          newer: true,
+        ),
+        onExport: () async => true,
+      );
+
+      expect(find.text(l10n.bootstrapErrorNewerDatabase), findsOneWidget);
+      expect(export, findsNothing);
+      expect(
+        find.widgetWithText(SgButton, l10n.bootstrapShareDataFile),
+        findsOneWidget,
+      );
     });
 
     testWidgets('and is absent when it did not', (tester) async {
