@@ -156,7 +156,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
     hold.close();
     if (!mounted) return;
     if (next.dayDone && next.sentences == 0) {
-      DayCompleteRoute.instead(context);
+      DayCompleteRoute.instead(context, today);
     } else {
       unawaited(Navigator.of(context).maybePop());
     }

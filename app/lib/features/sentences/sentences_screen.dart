@@ -68,9 +68,14 @@ enum SentenceRating {
 /// which `sentence_log` keeps stable for the day, with the ratings so far.
 @riverpod
 class PracticeSentences extends _$PracticeSentences {
+  /// The day T5 opened on, read once: past midnight the list stays the one
+  /// the learner is paging through, and its ratings stay that day's (#660).
+  String? _date;
+
   @override
   Future<List<PracticeSentence>> build() async {
-    final date = ref.watch(todayProvider);
+    final String date = _date ?? ref.read(todayProvider);
+    _date = date;
     final picked = await ref.watch(sentencePickerProvider).forDay(date);
     final ratings = await ref.watch(sentenceStoreProvider).ratings(date);
     final words = ref.watch(wordRepositoryProvider);
@@ -95,7 +100,7 @@ class PracticeSentences extends _$PracticeSentences {
     await ref
         .read(sentenceStoreProvider)
         .rate(
-          ref.read(todayProvider),
+          _date ?? ref.read(todayProvider),
           item.sentence,
           rating.value,
           andThen: rating == SentenceRating.notYet
@@ -124,6 +129,8 @@ class SentencesScreen extends ConsumerStatefulWidget {
 }
 
 class _SentencesScreenState extends ConsumerState<SentencesScreen> {
+  /// The day it opened on, as [PracticeSentences] keeps it (#660).
+  late final String _day = ref.read(todayProvider);
   PageController? _pages;
   int _page = 0;
   bool _leaving = false;
@@ -184,7 +191,7 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
   Future<void> _finish() async {
     if (_leaving) return;
     _leaving = true;
-    final today = ref.read(todayProvider);
+    final today = _day;
     ref.invalidate(studyNextProvider(today));
     // Listened to while it answers: read alone, an auto-disposing provider
     // can go before its future does.
@@ -193,7 +200,7 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
     hold.close();
     if (!mounted) return;
     if (next.dayDone && next.sentences == 0) {
-      DayCompleteRoute.instead(context);
+      DayCompleteRoute.instead(context, today);
     } else {
       unawaited(Navigator.of(context).maybePop());
     }
