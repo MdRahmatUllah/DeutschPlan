@@ -70,8 +70,10 @@ class SgProgressRing extends StatelessWidget {
       label:
           semanticLabel ??
           AppLocalizations.of(context).progressRingLabel(completed, total),
-      value: AppLocalizations.of(context)
-          .digits('${(progress * 100).round()}%'),
+      // Words in place of the count have no percentage to read (#879).
+      value: countLabel != null
+          ? null
+          : AppLocalizations.of(context).digits('${(progress * 100).round()}%'),
       child: ExcludeSemantics(
         child: SizedBox(
           width: size,

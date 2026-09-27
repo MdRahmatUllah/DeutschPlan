@@ -360,7 +360,7 @@ class StudySession extends _$StudySession {
           );
         }
       } else {
-        await _rating.undo();
+        await _rating.undo(expectUid: current.items[last].uid);
       }
       state = AsyncData<StudySessionState>(current.back());
       _shownAt = ref.read(clockProvider)();

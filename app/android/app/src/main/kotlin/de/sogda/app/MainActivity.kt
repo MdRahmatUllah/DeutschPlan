@@ -1,6 +1,8 @@
 package de.sogda.app
 
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.StatFs
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
@@ -38,6 +40,31 @@ class MainActivity : FlutterActivity() {
 
     private var channel: MethodChannel? = null
     private var blurListener: Consumer<Boolean>? = null
+
+    /**
+     * #613: this activity is exported, and Flutter hands any intent's data to
+     * the router as its route, and a `route` extra as the first one. Only
+     * `sogda:` links are the app's. Another app's data is dropped here, before
+     * Flutter reads it, because a scheme-less `/exam/7` could not be told from
+     * the app's own navigation once it reached Dart (`app_router.dart` turns
+     * away the rest).
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ownLinksOnly(intent)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        ownLinksOnly(intent)
+        super.onNewIntent(intent)
+    }
+
+    /** No `route` extra: the first route is the intent's `sogda:` link, if any. */
+    override fun getInitialRoute(): String? = null
+
+    private fun ownLinksOnly(intent: Intent) {
+        if (intent.data != null && intent.data?.scheme != "sogda") intent.data = null
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

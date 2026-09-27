@@ -399,6 +399,24 @@ void main() {
     test('with nothing to undo it says so rather than throwing', () async {
       expect(await rating.undo(), isNull);
     });
+
+    test("#728 an undo for one word leaves another word's rating on top "
+        'alone', () async {
+      await rating.rate(uid, Rating.good, source: ReviewSource.daily);
+      await rating.rate(
+        ContentFixture.tuer,
+        Rating.again,
+        source: ReviewSource.daily,
+      );
+      final tuer = await stateOf(ContentFixture.tuer);
+
+      expect(await rating.undo(expectUid: uid), isNull);
+
+      expect(await logOf(uid), hasLength(1));
+      expect(await logOf(ContentFixture.tuer), hasLength(1));
+      expect((await stateOf(ContentFixture.tuer))!.lapses, tuer!.lapses);
+      expect(await rating.undo(expectUid: ContentFixture.tuer), isNotNull);
+    });
   });
 
   group('BR-STATUS-03 — suspend and resume', () {
