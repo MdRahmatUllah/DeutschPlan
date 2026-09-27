@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 12:58
+last-seen: 2026-09-27 13:04
 last-read: 1655
 
 ## Now
 
-#687 in review as PR #836: answer review threads; re-run the gate if main moved, then merge.
+#610 chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices — claimed 2026-09-27 13:04.
 
 ## Next
 

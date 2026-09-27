@@ -225,7 +225,7 @@ claiming the same issue. A hand edit skips that check.
 | #607 | - | X | P1 | - | security(privacy): Android Auto Backup uploads user.db and the Speaking recordings to Google Drive, against the app's promises | done | agent-0 |  | #759 |
 | #608 | - | X | P2 | - | fix(models): the model manifest downloads from Hugging Face's moving main branch, so one upstream commit makes every download fail its checksum | done | agent-1 |  | #810 |
 | #609 | - | X | P2 | - | chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere) | done | agent-0 |  | #761 |
-| #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | assigned | agent-0 |  |  |
+| #610 | - | X | P2 | - | chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices | in-progress | agent-0 |  |  |
 | #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | done | agent-0 |  | #783 |
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | done |  |  |  |
 | #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | assigned | agent-1 |  |  |
