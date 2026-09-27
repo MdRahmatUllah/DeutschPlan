@@ -90,7 +90,12 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       GoRoute(path: '/sentences', builder: (_, _) => const SentencesScreen()),
       GoRoute(
         path: '/day-complete',
-        builder: (_, _) => const Text('T6 day complete'),
+        builder: (_, state) => Column(
+          children: <Widget>[
+            const Text('T6 day complete'),
+            Text('day ${state.uri.queryParameters['day']}'),
+          ],
+        ),
       ),
     ],
   );
@@ -249,6 +254,25 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
         3,
         2,
       ]);
+    });
+
+    testWidgets('#884 FR-T6-01 finished past midnight, it celebrates the day '
+        'it opened on', (tester) async {
+      var now = DateTime(2026, 9, 21, 23, 55);
+      final container = await pump(tester, planOpen: false, clock: () => now);
+      await answer(tester, l10n.sentencesUnderstood);
+      await answer(tester, l10n.sentencesUnderstood);
+
+      now = DateTime(2026, 9, 22, 0, 5);
+      container.invalidate(todayProvider);
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 60)),
+      );
+      await tester.pumpAndSettle();
+      await answer(tester, l10n.sentencesUnderstood);
+
+      expect(find.text('T6 day complete'), findsOneWidget);
+      expect(find.text('day 2026-09-21'), findsOneWidget);
     });
 
     testWidgets('Partly writes 2', (tester) async {

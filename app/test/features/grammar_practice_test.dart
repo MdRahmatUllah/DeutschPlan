@@ -76,6 +76,7 @@ void main() {
   late List<(String, int, int)> rated;
   late _Rating rating;
   late String? went;
+  late String? wentDay;
   late GoRouter routes;
 
   Future<void> pump(
@@ -84,10 +85,12 @@ void main() {
     List<String> topics = const <String>['g3'],
     bool dayDone = false,
     TextScaler? textScaler,
+    String Function()? today,
   }) async {
     rated = <(String, int, int)>[];
     rating = _Rating(rated);
     went = null;
+    wentDay = null;
     routes = GoRouter(
       initialLocation: '/opener',
       routes: <RouteBase>[
@@ -97,12 +100,23 @@ void main() {
         ),
         GoRoute(
           path: '/practice',
-          builder: (_, _) => GrammarPracticeScreen(topicUids: topics),
+          builder: (_, _) => today == null
+              ? GrammarPracticeScreen(topicUids: topics)
+              // A day that can move, for #884: todayStub's is fixed. Only the
+              // screen's own ref reads it; what it asks is stubbed at the root.
+              : ProviderScope(
+                  overrides: <Override>[
+                    // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
+                    todayProvider.overrideWith((ref) => today()),
+                  ],
+                  child: GrammarPracticeScreen(topicUids: topics),
+                ),
         ),
         GoRoute(
           path: '/day-complete',
           builder: (_, state) {
             went = state.uri.path;
+            wentDay = state.uri.queryParameters['day'];
             return const Scaffold(body: Text('T6'));
           },
         ),
@@ -450,6 +464,29 @@ void main() {
     await tester.pumpAndSettle();
     await tapNext(tester);
     expect(went, '/day-complete');
+  });
+
+  testWidgets('#884 FR-T6-01 finished past midnight, T6 is for the day it '
+      'opened on', (tester) async {
+    var day = '2026-09-21';
+    await pump(
+      tester,
+      items: <GrammarItem>[pick],
+      dayDone: true,
+      today: () => day,
+    );
+    await tester.tap(find.text('Könnten'));
+    await tester.pumpAndSettle();
+
+    day = '2026-09-22';
+    ProviderScope.containerOf(
+      tester.element(find.byType(GrammarPracticeScreen)),
+    ).invalidate(todayProvider);
+    await tester.pumpAndSettle();
+    await tapNext(tester);
+
+    expect(went, '/day-complete');
+    expect(wentDay, '2026-09-21');
   });
 
   testWidgets('Z05 FR-L15-03 a result that fails to save keeps the topic; '
