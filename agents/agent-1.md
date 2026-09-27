@@ -6,7 +6,7 @@ last-read: 1929
 
 ## Now
 
-#755 in review as PR #953: answer review threads; re-run the gate if main moved, then merge.
+#756 bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download — claimed 2026-09-27 21:55.
 
 ## Next
 
