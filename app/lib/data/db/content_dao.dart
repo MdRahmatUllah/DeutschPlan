@@ -54,7 +54,11 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// "teil"), and a capital a noun ("Stimme" is no *stimmen*).
   /// Null for a word the course lacks.
   // ponytail: "Mach die Lampe an." is *machen*, not *anmachen*: a particle
-  // at the clause's end isn't looked for.
+  // at the clause's end isn't looked for. And a noun the course lacks,
+  // opening a sentence, may be read as a verb: "Stille" opens *stillen*,
+  // "Anstoß" *anstoßen* (2 of the 35 first words this step matches in the
+  // course); telling them apart needs the part of speech of a word the
+  // course doesn't have.
   Future<Word?> wordForToken(String token, {bool first = false}) async {
     final key = searchKey(token, stripArticle: false);
     if (key.isEmpty) return null;
