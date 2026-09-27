@@ -22,6 +22,7 @@ import '../services/fake_tts.dart';
 import 'model_manager_fixtures.dart';
 import 'settings_fixtures.dart';
 import '../timing.dart';
+import '../core/semantics_checks.dart';
 
 /// M4 · Model manager — #155.
 void main() {
@@ -768,6 +769,13 @@ void main() {
         );
       },
     );
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, modelManagerStub());
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }
 

@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L1 · Learn — #112.
 void main() {
@@ -285,5 +286,14 @@ void main() {
     await tester.tap(find.text(l10n.learnCategories));
     await tester.pumpAndSettle();
     expect(went, '/learn/categories');
+  });
+
+  testWidgets('#912 no tappable node wraps another but the current tile, '
+      'whose Study is its own', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    // FR-L1-04: the tile opens the step, its Study button the day's session.
+    expect(tapsInsideTaps(tester), <String>[l10n.learnStudy]);
+    semantics.dispose();
   });
 }

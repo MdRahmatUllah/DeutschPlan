@@ -28,6 +28,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../services/fake_tts.dart';
+import '../core/semantics_checks.dart';
 
 /// S2 page 5 · Reminder and voice — #91.
 void main() {
@@ -589,6 +590,13 @@ void main() {
 
       expect(tester.takeException(), isNull);
     });
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }
 

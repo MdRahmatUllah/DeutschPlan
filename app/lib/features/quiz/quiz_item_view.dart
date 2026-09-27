@@ -309,6 +309,7 @@ class _Choice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
+    container: true,
     selected: selected || pressed,
     button: true,
     inMutuallyExclusiveGroup: true,

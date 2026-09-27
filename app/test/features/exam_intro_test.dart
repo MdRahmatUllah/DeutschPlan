@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'exam_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L11 · Exam intro — #129.
 void main() {
@@ -223,5 +224,12 @@ void main() {
       expect(find.text(l10n.examIntroFailed), findsOneWidget);
       expect(went, isNull);
     });
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }

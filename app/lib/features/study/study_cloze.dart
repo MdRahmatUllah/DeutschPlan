@@ -326,52 +326,58 @@ class StudyAnswerField extends StatelessWidget {
       borderRadius: BorderRadius.circular(tokens.shape.button),
       borderSide: BorderSide(color: tokens.color.ink, width: 2),
     );
-    return TextField(
-      controller: controller,
-      autocorrect: false,
-      enableSuggestions: false,
-      textInputAction: TextInputAction.done,
-      scrollPadding: umlautRowBelow
-          ? SgUmlautBar.scrollPadding(
-              context,
-              // Past 130 % the few lines above the keyboard are the
-              // question's, and *Check* may scroll under it: the keyboard's
-              // Done checks too (#564).
-              // ponytail: one threshold, so at 150 % Check goes though it
-              // would still fit under a two-line sentence once T2's top bar
-              // is gone; measure the sentence if 150 % should keep it.
-              below: SgScript.large(context)
-                  ? 0
-                  : 12 + SgButton.minimumTapTarget,
-              // Typing past 130 %, 8 dp of the margin under the keys go to
-              // what is asked: T2's cloze (a three-line one fits a 360 × 640
-              // phone) and L15's gap, which this field also serves (#572).
-              // 12 dp is the keys' floor above the keyboard.
-              margin: typing ? 12 : 20,
-            )
-          : const EdgeInsets.all(20),
-      onSubmitted: (_) => onSubmitted(),
-      style: SgText.styleFor(
-        tokens,
-        SgTextRole.title,
-      ).copyWith(fontWeight: FontWeight.w400),
-      decoration: InputDecoration(
-        hintText: hint ?? l10n.studyClozeHint,
-        // Whole, not cut to one line, as R1's is (#565). But typing past
-        // 130 % the room above the keyboard is the sentence's (#564), and
-        // the gap says what the hint does, as #554 let L8's caption go: one
-        // line there. A screen reader still reads it whole.
-        hintMaxLines: typing ? 1 : 3,
-        maintainHintSize: false,
-        filled: true,
-        fillColor: tokens.surface.cardStrong,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: dense ? 6 : 14,
+    // Its own node (#912): a bare TextField's node took in the question
+    // above it and its speaker, so a screen reader heard the prompt as the
+    // field's label and any tap on the card focused the field.
+    return Semantics(
+      container: true,
+      child: TextField(
+        controller: controller,
+        autocorrect: false,
+        enableSuggestions: false,
+        textInputAction: TextInputAction.done,
+        scrollPadding: umlautRowBelow
+            ? SgUmlautBar.scrollPadding(
+                context,
+                // Past 130 % the few lines above the keyboard are the
+                // question's, and *Check* may scroll under it: the keyboard's
+                // Done checks too (#564).
+                // ponytail: one threshold, so at 150 % Check goes though it
+                // would still fit under a two-line sentence once T2's top bar
+                // is gone; measure the sentence if 150 % should keep it.
+                below: SgScript.large(context)
+                    ? 0
+                    : 12 + SgButton.minimumTapTarget,
+                // Typing past 130 %, 8 dp of the margin under the keys go to
+                // what is asked: T2's cloze (a three-line one fits a 360 × 640
+                // phone) and L15's gap, which this field also serves (#572).
+                // 12 dp is the keys' floor above the keyboard.
+                margin: typing ? 12 : 20,
+              )
+            : const EdgeInsets.all(20),
+        onSubmitted: (_) => onSubmitted(),
+        style: SgText.styleFor(
+          tokens,
+          SgTextRole.title,
+        ).copyWith(fontWeight: FontWeight.w400),
+        decoration: InputDecoration(
+          hintText: hint ?? l10n.studyClozeHint,
+          // Whole, not cut to one line, as R1's is (#565). But typing past
+          // 130 % the room above the keyboard is the sentence's (#564), and
+          // the gap says what the hint does, as #554 let L8's caption go: one
+          // line there. A screen reader still reads it whole.
+          hintMaxLines: typing ? 1 : 3,
+          maintainHintSize: false,
+          filled: true,
+          fillColor: tokens.surface.cardStrong,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: dense ? 6 : 14,
+          ),
+          border: edge,
+          enabledBorder: edge,
+          focusedBorder: edge,
         ),
-        border: edge,
-        enabledBorder: edge,
-        focusedBorder: edge,
       ),
     );
   }

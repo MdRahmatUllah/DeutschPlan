@@ -421,6 +421,7 @@ class MeWordsCard extends StatelessWidget {
     );
 
     return Semantics(
+      container: true,
       button: true,
       child: SgSurface(
         kind: SgSurfaceKind.bar,
@@ -514,6 +515,7 @@ class MeActivityCard extends StatelessWidget {
     }
 
     return Semantics(
+      container: true,
       button: true,
       child: SgSurface(
         kind: SgSurfaceKind.bar,

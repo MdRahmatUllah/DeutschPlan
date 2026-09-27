@@ -509,6 +509,7 @@ class _Neighbour extends StatelessWidget {
     );
     void open() => GrammarTopicRoute.instead(context, topic.uid);
     return Semantics(
+      container: true,
       button: true,
       label: forward
           ? l10n.topicNext(topic.topic.topic)

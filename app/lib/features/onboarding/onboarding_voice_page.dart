@@ -322,6 +322,7 @@ class _TimeButton extends StatelessWidget {
     final tokens = context.tokens;
 
     return Semantics(
+      container: true,
       button: true,
       label: label,
       excludeSemantics: true,

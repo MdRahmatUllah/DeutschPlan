@@ -479,30 +479,35 @@ class _PauseRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SgText(l10n.backlogPause, role: SgTextRole.body, weight: 500),
-              const SizedBox(height: 1),
-              SgText(
-                l10n.backlogPauseNote,
-                role: SgTextRole.caption,
-                color: tokens.color.textSecondary,
-              ),
-            ],
+    // The row is the switch, as a settings row is (#345), and a node of its
+    // own (#912): the toggle merged up into the card, over *Study all*.
+    return Semantics(
+      container: true,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SgText(l10n.backlogPause, role: SgTextRole.body, weight: 500),
+                const SizedBox(height: 1),
+                SgText(
+                  l10n.backlogPauseNote,
+                  role: SgTextRole.caption,
+                  color: tokens.color.textSecondary,
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        AdaptiveSwitch(
-          value: ref.watch(backlogPauseProvider),
-          semanticLabel: l10n.backlogPauseLabel,
-          onChanged: (on) =>
-              unawaited(ref.read(backlogPauseProvider.notifier).set(on: on)),
-        ),
-      ],
+          const SizedBox(width: 12),
+          AdaptiveSwitch(
+            value: ref.watch(backlogPauseProvider),
+            semanticLabel: l10n.backlogPauseLabel,
+            onChanged: (on) =>
+                unawaited(ref.read(backlogPauseProvider.notifier).set(on: on)),
+          ),
+        ],
+      ),
     );
   }
 }

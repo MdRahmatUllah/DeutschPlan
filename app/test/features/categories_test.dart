@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'today_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// L5 · Categories — #120.
 void main() {
@@ -176,6 +177,13 @@ void main() {
             '64 done, 8 learning, 204 to do',
       ),
     );
+    semantics.dispose();
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
     semantics.dispose();
   });
 }

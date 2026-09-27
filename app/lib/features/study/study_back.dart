@@ -261,6 +261,7 @@ class StudyExampleRow extends StatelessWidget {
     final tokens = context.tokens;
     final english = example.english;
     return Semantics(
+      container: true,
       button: true,
       label: AppLocalizations.of(context).studyPlaySentence,
       child: GestureDetector(

@@ -96,6 +96,7 @@ class _Bubble extends StatelessWidget {
     final tokens = context.tokens;
 
     return Semantics(
+      container: true,
       // Read as it appears, and dismissable like any other button.
       liveRegion: true,
       button: true,

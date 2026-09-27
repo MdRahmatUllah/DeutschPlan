@@ -39,6 +39,7 @@ import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
 import '../core/text_clipping.dart';
 import 'word_fixtures.dart';
+import '../core/semantics_checks.dart';
 
 /// W1 · Word detail (#140, spec key R04): `word-detail.md`.
 void main() {
@@ -998,6 +999,13 @@ void main() {
       await pump(tester, chrome: chrome, page: true);
       expectNothingClipped(tester, within: find.byType(AdaptiveBackButton));
     }
+  });
+
+  testWidgets('#912 no tappable node wraps another', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    expect(tapsInsideTaps(tester), isEmpty);
+    semantics.dispose();
   });
 }
 

@@ -376,6 +376,7 @@ class _Question extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Semantics(
+              container: true,
               selected: picked == index,
               button: true,
               inMutuallyExclusiveGroup: true,
