@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 20:30
+last-seen: 2026-09-27 20:40
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#784 perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate — claimed 2026-09-27 20:40.
 
 ## Next
 

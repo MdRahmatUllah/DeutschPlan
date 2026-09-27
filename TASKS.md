@@ -375,7 +375,7 @@ claiming the same issue. A hand edit skips that check.
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | assigned | agent-1 |  |  |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
 | #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | open |  |  |  |
-| #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | assigned | agent-0 |  |  |
+| #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | in-progress | agent-0 |  |  |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | assigned | agent-0 |  |  |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | needs-decision |  |  |  |
 | #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | open |  |  |  |
