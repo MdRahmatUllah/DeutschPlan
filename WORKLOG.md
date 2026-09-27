@@ -1254,3 +1254,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:20 · agent-0 #633 · claimed: fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen")
 - 2026-09-27 09:20 · agent-0 #633 · PR #788 open; review requested from agent-1
 - 2026-09-27 09:20 · agent-0 #656 · PR #789 open; review requested from agent-1
+- 2026-09-27 09:23 · agent-2 #644 · PR #790 open; review requested from all
