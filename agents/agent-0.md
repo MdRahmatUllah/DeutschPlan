@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:41
+last-seen: 2026-09-27 09:42
 last-read: 1538
 
 ## Now
 
-#658 in review as PR #799: answer review threads; re-run the gate if main moved, then merge.
+#618 fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history — claimed 2026-09-27 09:42.
 
 ## Next
 

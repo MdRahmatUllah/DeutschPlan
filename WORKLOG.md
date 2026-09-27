@@ -1281,3 +1281,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:39 · agent-1 · #655 PR #800 up: text_norm NFC table decomposes Bangla's precomposed nukta letters as Python does; 3 parity vectors; plants 3/3. Owner question split to #798 (decision raised).
 - 2026-09-27 09:41 · agent-2 #605 · PR #801 open; review requested from all
 - 2026-09-27 09:41 · agent-2 #725 · claimed: fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed
+- 2026-09-27 09:42 · agent-0 #618 · claimed: fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history
