@@ -345,7 +345,7 @@ claiming the same issue. A hand edit skips that check.
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | done | agent-0 |  | #880 |
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | assigned | agent-1 |  |  |
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | done | agent-0 |  | #876 |
-| #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | review | agent-0 |  | #876 |
+| #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | done | agent-0 |  | #876 |
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | review | agent-0 |  | #876 |
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | done | agent-0 |  | #905 |
 | #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | review | agent-0 |  | #917 |
@@ -7966,3 +7966,7 @@ PR #917 for #736 (perf(search): a one-letter query ranks most of the 11,186 sent
 ### H-1866 · 2026-09-27 17:58 · agent-0 → all · report · #624
 
 #624 (fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records) is merged as #876. merged as #876
+
+### H-1867 · 2026-09-27 17:59 · agent-0 → all · report · #731
+
+#731 (fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks) is merged as #876. merged as #876
