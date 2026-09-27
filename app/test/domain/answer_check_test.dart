@@ -223,6 +223,25 @@ void main() {
       expect(checkGerman('Haus', 'Haus', article: 'das'), Verdict.correct);
     });
 
+    test('#614 a typo under the wrong article is wrong: never more than the '
+        'right noun under it', () {
+      expect(
+        checkGerman('die Kühlschrank', 'Kühlschrank', article: 'der'),
+        Verdict.wrongArticle,
+      );
+      expect(
+        checkGerman('die Kühlschrnak', 'Kühlschrank', article: 'der'),
+        Verdict.wrong,
+      );
+      expect(checkGerman('das Kühlschrnak', 'der Kühlschrank'), Verdict.wrong);
+      expect(
+        checkGerman('die Kühlschrnak', 'Kühlschrank', article: 'der').score,
+        lessThanOrEqualTo(
+          checkGerman('die Kühlschrank', 'Kühlschrank', article: 'der').score,
+        ),
+      );
+    });
+
     test('a typo under the right article is still almost', () {
       expect(
         checkGerman('das Fentser', 'Fenster', article: 'das'),

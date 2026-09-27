@@ -42,7 +42,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 ## Answers
 
 - **BR-ANS-01** DE→EN: any synonym in the `/`- or `,`-separated list counts, and so does the whole cell as shown ("the bill, please"); a separator inside brackets belongs to a note, not the list, and a synonym counts with or without its bracketed note ("to save (a file)" takes "to save", never "a file"); case and a leading "to " are ignored; one-character typos on words ≥ 6 letters are *almost*.
-- **BR-ANS-02** EN→DE: the word with or without its article; any one of the German's ` / ` alternatives, each side of an in-word slash ("hat/ist aufgebrochen"), with or without a bracketed note; umlauts as ä/ae/a, ü/ue/u, ö/oe/o, ß/ss; a wrong article on a correct noun is *wrong article* (counts as wrong for scoring, but the feedback names the article).
+- **BR-ANS-02** EN→DE: the word with or without its article; any one of the German's ` / ` alternatives, each side of an in-word slash ("hat/ist aufgebrochen"), with or without a bracketed note; umlauts as ä/ae/a, ü/ue/u, ö/oe/o, ß/ss; a wrong article on a correct noun is *wrong article* (counts as wrong for scoring, but the feedback names the article); a wrong article on a misspelt noun is just *wrong*, so a typo never scores more than the spelling it got wrong (#614).
 - **BR-ANS-03** Articles quiz: exact match of der/die/das.
 - **BR-ANS-04** *Almost* scores 0.5 in quizzes and exams.
 
