@@ -42,14 +42,45 @@ _INFINITIVE = re.compile(r"e?n$")
 _NOTE = re.compile(r"\s*\([^)]*\)")
 
 
-def cloze_gap(sentence: str, german: str, pos: str | None = None) -> tuple[int, int] | None:
+def cloze_gap(
+    sentence: str, german: str, pos: str | None = None, forms: str | None = None
+) -> tuple[int, int] | None:
     """(start, end) of the gap in [sentence], or None. A headword's bracket
     ("aber (Partikel)", "erheben (Steuern)") is tried with it first, then
-    without it."""
+    without it; then its [forms], unless it is a phrase (#870)."""
     gap = _gap(sentence, german, pos)
     if gap is None and "(" in german:
         gap = _gap(sentence, _NOTE.sub("", german), pos)
+    if gap is None and forms and pos != "phrase":
+        gap = _forms_gap(sentence, forms, verb=pos == "verb")
     return gap
+
+
+def _forms_gap(sentence: str, forms: str, *, verb: bool):
+    """#870: a word's forms, `·`-separated: a verb's 3rd person and Perfekt
+    ("sieht aus · hat ausgesehen"), a noun's plural ("Gäste"), an
+    adjective's comparison ("jünger · am jüngsten"). A 3rd person loses its
+    `t`, so "sieh" finds "siehst"; a verb's with a particle needs it after,
+    "sieht … aus", or joined, "aussieht". "sich", and the auxiliary or "am"
+    that starts a later part, are not the word. Not a phrase's: its "ist"
+    is not the phrase."""
+    tokens = [(m.start(), m.end(), search_key(m.group(0))) for m in _WORD.finditer(sentence)]
+    for index, part in enumerate(forms.split("·")):
+        words = [search_key(w) for w in _WORD.findall(part) if w.lower() != "sich"]
+        if index and words and words[0] in _AUXILIARIES:
+            words = words[1:]
+        if not words or len(words) > (2 if verb else 1):
+            continue
+        head, particle = words[0], words[1] if len(words) == 2 else None
+        stem = head[:-1] if head.endswith("t") and len(head) > MIN_KEY else head
+        for i, (start, end, token) in enumerate(tokens):
+            hit = token == stem if len(stem) < MIN_KEY else token.startswith(stem)
+            # A particle comes after its verb, as in `_find`; or joined to it.
+            if particle and hit:
+                hit = any(t[2] == particle for t in tokens[i + 1 :])
+            if hit or (particle and token.startswith(particle + stem)):
+                return (start, end)
+    return None
 
 
 def _gap(sentence: str, german: str, pos: str | None):
@@ -93,6 +124,12 @@ def _find(tokens, key: str, *, verb: bool, whole: bool = False):
             return (start, end)
     if not verb:
         return None
+    # -eln and -ern verbs drop the e: "ich bügle", "zweifle nicht" (#870).
+    if len(key) > MIN_KEY + 1 and key.endswith(("eln", "ern")):
+        elided = stem[:-2] + stem[-1]
+        for start, end, token in tokens:
+            if token.startswith(elided):
+                return (start, end)
     for particle in PARTICLES:
         if not key.startswith(particle):
             continue
@@ -139,6 +176,6 @@ def examples_without_their_word(words) -> list[str]:
         for word in words
         if word.kind == "vocab"
         for example in word.examples
-        if cloze_gap(example.german, word.german, word.pos) is None
+        if cloze_gap(example.german, word.german, word.pos, word.forms) is None
         and not names_its_word(example.german, word.german, word.forms)
     ]

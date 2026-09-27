@@ -33,7 +33,7 @@ def test_631_the_vector_file_is_populated():
 
 @pytest.mark.parametrize("vector", VECTORS, ids=lambda v: f"{v['german']}: {v['why']}")
 def test_631_the_port_blanks_what_the_app_blanks(vector):
-    gap = cloze_gap(vector["sentence"], vector["german"], vector["pos"])
+    gap = cloze_gap(vector["sentence"], vector["german"], vector["pos"], vector.get("forms"))
     assert (None if gap is None else vector["sentence"][gap[0] : gap[1]]) == vector["gap"]
 
 
@@ -93,9 +93,24 @@ def test_631_the_shipped_course_gaps_every_word_and_names_it_almost_everywhere(t
     without = [
         sentence
         for german, pos, forms, sentence in rows
-        if cloze_gap(sentence, german, pos) is None and not names_its_word(sentence, german, forms)
+        if cloze_gap(sentence, german, pos, forms) is None and not names_its_word(sentence, german, forms)
     ]
     assert len(without) < 30, without
+
+
+def test_870_with_its_forms_the_cloze_gaps_a_strong_verb_and_an_umlaut_plural():
+    db = sqlite3.connect(f"file:{SHIPPED}?mode=ro", uri=True)
+    try:
+        rows = db.execute(
+            "SELECT w.german, w.pos, w.forms, e.german FROM word_examples e "
+            "JOIN words w ON w.uid = e.word_uid"
+        ).fetchall()
+    finally:
+        db.close()
+    verbs = [row for row in rows if row[1] == "verb"]
+    # Before: 653 of 11,270 examples, and 14 % of the verbs'.
+    assert sum(cloze_gap(s, g, p, f) is None for g, p, f, s in rows) < 0.035 * len(rows)
+    assert sum(cloze_gap(s, g, p, f) is None for g, p, f, s in verbs) < 0.03 * len(verbs)
 
 
 def test_631_a_word_no_example_of_which_the_cloze_can_gap_fails_the_gate(tmp_path):
@@ -108,6 +123,19 @@ def test_631_a_word_no_example_of_which_the_cloze_can_gap_fails_the_gate(tmp_pat
     )
     assert [f.gate for f in failures] == ["examples"]
     assert "Rechnung" in failures[0].message
+
+
+def test_870_a_word_the_cloze_gaps_only_by_its_forms_passes_the_gate(tmp_path):
+    assert (
+        gate(
+            tmp_path,
+            [
+                "UPDATE word_examples SET german = 'Er liest die Zeitung.' WHERE word_uid = "
+                "(SELECT uid FROM words WHERE german = 'lesen' AND kind = 'vocab' LIMIT 1)"
+            ],
+        )
+        == []
+    )
 
 
 def test_631_a_note_is_not_held_to_it(tmp_path):

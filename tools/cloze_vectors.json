@@ -1,5 +1,5 @@
 {
-  "note": "FR-T2-10, #631. Both lib/domain/cloze.dart (clozeGap) and tools/cloze.py (cloze_gap) must blank exactly `gap` in `sentence`, or nothing when it is null. The content gates judge the course by the Python port, so a port that drifts passes words the app cannot gap.",
+  "note": "FR-T2-10, #631. Both lib/domain/cloze.dart (clozeGap) and tools/cloze.py (cloze_gap) must blank exactly `gap` in `sentence` (given the word's `forms` where a vector has them, #870), or nothing when it is null. The content gates judge the course by the Python port, so a port that drifts passes words the app cannot gap.",
   "vectors": [
     {"sentence": "Ich habe die Rechnung noch nicht bezahlt.", "german": "Rechnung", "pos": null, "gap": "Rechnung", "why": "the headword itself"},
     {"sentence": "Die Rechnungen liegen hier.", "german": "Rechnung", "pos": null, "gap": "Rechnungen", "why": "an inflected form, by search-key prefix"},
@@ -27,6 +27,20 @@
     {"sentence": "Das ist aber schön!", "german": "aber (Partikel)", "pos": "particle", "gap": "aber", "why": "#631: a bracket is tried without it"},
     {"sentence": "Die Gemeinde will eine neue Steuer erheben.", "german": "erheben (Steuern)", "pos": "verb", "gap": "erheben", "why": "#631: with its bracket first, then without it"},
     {"sentence": "Beim Shadowing spricht man mit.", "german": "Schattensprechen (Shadowing)", "pos": "noun", "gap": "Shadowing", "why": "#631: the bracket first: it may be what the sentence says"},
-    {"sentence": "Ob des Lärms konnte niemand schlafen.", "german": "ob (+ Genitiv)", "pos": "prep", "gap": "Ob", "why": "#631: a short word, once its bracket is gone"}
+    {"sentence": "Ob des Lärms konnte niemand schlafen.", "german": "ob (+ Genitiv)", "pos": "prep", "gap": "Ob", "why": "#631: a short word, once its bracket is gone"},
+    {"sentence": "Er liest die Zeitung.", "german": "lesen", "pos": "verb", "gap": null, "why": "#870: a strong verb's other vowel is not its prefix"},
+    {"sentence": "Er liest die Zeitung.", "german": "lesen", "pos": "verb", "forms": "liest · hat gelesen", "gap": "liest", "why": "#870: its 3rd person, from its forms"},
+    {"sentence": "Siehst du das?", "german": "sehen", "pos": "verb", "forms": "sieht · hat gesehen", "gap": "Siehst", "why": "#870: the 3rd person without its t finds the 2nd"},
+    {"sentence": "Er hat keine Zeit.", "german": "haben", "pos": "verb", "forms": "hat · hat gehabt", "gap": "hat", "why": "#870: a 3rd person too short to lose its t"},
+    {"sentence": "Du siehst müde aus.", "german": "aussehen", "pos": "verb", "forms": "sieht aus · hat ausgesehen", "gap": "siehst", "why": "#870: a separable 3rd person, its particle after it"},
+    {"sentence": "Ich weiß, dass du müde aussiehst.", "german": "aussehen", "pos": "verb", "forms": "sieht aus · hat ausgesehen", "gap": "aussiehst", "why": "#870: a separable 3rd person joined to its particle"},
+    {"sentence": "Siehst du das Haus?", "german": "aussehen", "pos": "verb", "forms": "sieht aus · hat ausgesehen", "gap": null, "why": "#870: without its particle it is another verb"},
+    {"sentence": "Das trägt wenig zur Lösung bei.", "german": "beitragen zu", "pos": "verb", "forms": "trägt bei · hat beigetragen", "gap": "trägt", "why": "#870: a verb with its preposition"},
+    {"sentence": "Den Brief hat sie schon geschrieben.", "german": "schreiben", "pos": "verb", "forms": "schreibt · hat geschrieben", "gap": "geschrieben", "why": "#870: its Perfekt, without the auxiliary"},
+    {"sentence": "Wir haben heute Gäste.", "german": "Gast", "pos": "noun", "forms": "Gäste", "gap": "Gäste", "why": "#870: an umlaut plural"},
+    {"sentence": "Die Nüsse sind gesund.", "german": "Nuss", "pos": "noun", "forms": "Nüsse", "gap": "Nüsse", "why": "#870: an umlaut plural"},
+    {"sentence": "Meine Kollegen sind jünger als ich.", "german": "jung", "pos": "adj", "forms": "jünger · am jüngsten", "gap": "jünger", "why": "#870: a comparative"},
+    {"sentence": "Das ist ganz klar.", "german": "vorhanden sein", "pos": "phrase", "forms": "ist · ist gewesen", "gap": null, "why": "#870: never a phrase's forms: its ist is not the phrase"},
+    {"sentence": "Ich bügle das Hemd.", "german": "bügeln", "pos": "verb", "gap": "bügle", "why": "#870: an -eln verb drops its e"}
   ]
 }

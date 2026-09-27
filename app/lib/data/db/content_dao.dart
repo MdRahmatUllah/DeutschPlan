@@ -132,6 +132,7 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
       step: word.sublevelCode,
       article: word.article,
       pos: word.pos,
+      forms: word.forms,
       register: word.synonymsRegister,
       collocations: word.collocations,
       examples: <CompareExample>[

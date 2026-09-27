@@ -14,6 +14,7 @@ class SentenceCandidate {
     this.english,
     this.headword,
     this.pos,
+    this.forms,
   });
 
   final String wordUid;
@@ -26,11 +27,15 @@ class SentenceCandidate {
   final String? headword;
   final String? pos;
 
+  /// The word's `forms`, which the underline also looks for (#870).
+  final String? forms;
+
   /// T5 underlines the headword: a sentence where it can't be found is not
   /// picked (#325).
   bool get showsHeadword {
     final headword = this.headword;
-    return headword == null || clozeGap(german, headword, pos: pos) != null;
+    return headword == null ||
+        clozeGap(german, headword, pos: pos, forms: forms) != null;
   }
 
   @override

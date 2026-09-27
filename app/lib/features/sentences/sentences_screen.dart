@@ -46,7 +46,12 @@ class PracticeSentence {
     final word = this.word;
     return word == null
         ? null
-        : clozeGap(sentence.german, word.german, pos: word.pos);
+        : clozeGap(
+            sentence.german,
+            word.german,
+            pos: word.pos,
+            forms: word.forms,
+          );
   }
 
   PracticeSentence rated(int rating) =>

@@ -432,6 +432,38 @@ void main() {
       }
     });
 
+    test('#870 Gap fill finds a strong verb by its forms', () {
+      // Five, as Word forms draws four first.
+      final exam = buildExam(
+        ExamPool(
+          step: 'A2.1',
+          level: 'A2',
+          words: <ExamWord>[
+            for (var i = 0; i < 5; i++)
+              ExamWord(
+                word: QuizWord(
+                  uid: 'l$i',
+                  german: 'lesen',
+                  english: 'to read',
+                  step: 'A2.1',
+                  pos: 'verb',
+                  forms: 'liest · hat gelesen',
+                ),
+                examples: const <({String german, String english})>[
+                  (german: 'Er liest die Zeitung.', english: 'He reads.'),
+                ],
+              ),
+          ],
+          topics: const <GrammarSource>[],
+        ),
+        seed: 1,
+      );
+      expect(
+        exam.items.whereType<GapQuestion>().map((gap) => gap.answer),
+        <String>['liest'],
+      );
+    });
+
     test('Gap fill expects the form the sentence uses', () {
       const rechnung = ExamWord(
         word: QuizWord(

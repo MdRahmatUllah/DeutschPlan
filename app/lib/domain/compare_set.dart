@@ -22,6 +22,7 @@ class CompareWord {
     required this.step,
     this.article,
     this.pos,
+    this.forms,
     this.register,
     this.collocations,
     this.examples = const <CompareExample>[],
@@ -35,6 +36,7 @@ class CompareWord {
   final String step;
   final String? article;
   final String? pos;
+  final String? forms;
 
   /// The `synonyms_register` cell.
   final String? register;
@@ -59,6 +61,7 @@ class CompareMember {
     this.article,
     this.uid,
     this.pos,
+    this.forms,
     this.meaning,
     this.register,
     this.withText,
@@ -80,6 +83,9 @@ class CompareMember {
 
   /// Its part of speech, for finding it inflected in a sentence.
   final String? pos;
+
+  /// The resolved word's `forms`, for the same (#870).
+  final String? forms;
   final String? meaning;
 
   /// The register chips: "neutral", "written".
@@ -101,7 +107,8 @@ class CompareMember {
 
   /// Where [text] names this member, inflected or not ("Folgen haben" names
   /// *Folge*): `clozeGap`'s test. Null for nowhere.
-  ClozeGap? gapIn(String text) => clozeGap(text, headword, pos: pos);
+  ClozeGap? gapIn(String text) =>
+      clozeGap(text, headword, pos: pos, forms: forms);
 }
 
 /// FR-W1-06: whether a headword names a near-synonym set W2 compares —
@@ -177,6 +184,7 @@ List<CompareMember> compareMembers(CompareSet set) {
       uid: own?.uid,
       step: own?.step ?? word.step,
       pos: own?.pos ?? word.pos,
+      forms: own?.forms,
       meaning: meanings?[i].trim() ?? own?.english,
       register: _labels(word.register, headword),
       useWhen: _note(word.register, headword),
@@ -208,6 +216,7 @@ List<CompareMember> compareMembers(CompareSet set) {
       uid: member.uid,
       step: member.step,
       pos: member.pos,
+      forms: member.forms,
       meaning: member.meaning,
       register: member.register,
       useWhen: member.useWhen,

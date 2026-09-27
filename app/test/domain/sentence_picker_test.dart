@@ -9,6 +9,19 @@ void main() {
   SentenceCandidate s(String uid, int ord, String german) =>
       SentenceCandidate(wordUid: uid, ord: ord, german: german);
 
+  test("#870 a sentence shows its headword by the word's forms", () {
+    SentenceCandidate liest({String? forms}) => SentenceCandidate(
+      wordUid: 'l',
+      ord: 1,
+      german: 'Er liest die Zeitung.',
+      headword: 'lesen',
+      pos: 'verb',
+      forms: forms,
+    );
+    expect(liest().showsHeadword, isFalse);
+    expect(liest(forms: 'liest · hat gelesen').showsHeadword, isTrue);
+  });
+
   group('coverage', () {
     const learned = <String>{'wohnung', 'gross', 'miete', 'zahlen'};
 

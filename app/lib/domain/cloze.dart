@@ -30,29 +30,82 @@ typedef ClozeGap = ({int start, int end});
 /// with it first, then without it (#631): a particle is a function word in a
 /// phrase, and would never be found.
 ///
+/// Then the word's [forms] (#870), unless it is a phrase, whose "ist" is not
+/// the phrase: a verb's 3rd person and Perfekt ("sieht aus · hat
+/// ausgesehen"), a noun's plural ("Gäste"), an adjective's comparison
+/// ("jünger · am jüngsten"). A 3rd person loses its `t`, so `sieh` finds
+/// "siehst"; a verb's with a particle needs it after, "sieht … aus", or
+/// joined, "aussieht".
+///
 /// `tools/cloze.py` is its Python port, for the content gates;
 /// `tools/cloze_vectors.json` holds them to the same answers.
 ///
-/// ponytail: prefixes, not a stemmer. A strong verb's other vowel (`wächst`
-/// for `wachsen`, `sieht` for `sehen`) is not found; a real lemmatiser if
-/// too many are.
-ClozeGap? clozeGap(String sentence, String german, {String? pos}) =>
+/// ponytail: prefixes and the authored forms, not a stemmer. A Präteritum
+/// (`las` for `lesen`) is not found; a real lemmatiser if too many are.
+ClozeGap? clozeGap(
+  String sentence,
+  String german, {
+  String? pos,
+  String? forms,
+}) =>
     _gap(sentence, german, pos) ??
     (german.contains('(')
         ? _gap(sentence, german.replaceAll(_note, ''), pos)
+        : null) ??
+    (forms != null && pos != 'phrase'
+        ? _formsGap(sentence, forms, verb: pos == 'verb')
         : null);
+
+/// [clozeGap]'s forms (#870). `sich`, and the auxiliary or `am` that starts
+/// a later part, are not the word.
+ClozeGap? _formsGap(String sentence, String forms, {required bool verb}) {
+  final tokens = _tokens(sentence);
+  for (final (index, part) in forms.split('·').indexed) {
+    var words = [
+      for (final match in _word.allMatches(part))
+        if (match[0]!.toLowerCase() != 'sich')
+          searchKey(match[0]!, stripArticle: false),
+    ];
+    if (index > 0 && words.isNotEmpty && _auxiliaries.contains(words.first)) {
+      words = words.sublist(1);
+    }
+    if (words.isEmpty || words.length > (verb ? 2 : 1)) continue;
+    final head = words.first;
+    final particle = words.length == 2 ? words.last : null;
+    final stem = head.endsWith('t') && head.length > minKey
+        ? head.substring(0, head.length - 1)
+        : head;
+    for (final (i, t) in tokens.indexed) {
+      var hit = stem.length < minKey ? t.key == stem : t.key.startsWith(stem);
+      // A particle comes after its verb, as in `_find`; or joined to it.
+      if (particle != null && hit) {
+        hit = tokens.skip(i + 1).any((later) => later.key == particle);
+      }
+      if (hit || (particle != null && t.key.startsWith('$particle$stem'))) {
+        return (start: t.start, end: t.end);
+      }
+    }
+  }
+  return null;
+}
+
+/// A form that names no word: the auxiliary of "hat gegeben", the "am" of
+/// "am besten".
+const Set<String> _auxiliaries = <String>{'hat', 'ist', 'am'};
 
 final RegExp _note = RegExp(r'\s*\([^)]*\)');
 
+List<_Token> _tokens(String sentence) => [
+  for (final match in _word.allMatches(sentence))
+    (
+      start: match.start,
+      end: match.end,
+      key: searchKey(match[0]!, stripArticle: false),
+    ),
+];
+
 ClozeGap? _gap(String sentence, String german, String? pos) {
-  final tokens = [
-    for (final match in _word.allMatches(sentence))
-      (
-        start: match.start,
-        end: match.end,
-        key: searchKey(match[0]!, stripArticle: false),
-      ),
-  ];
+  final tokens = _tokens(sentence);
   final all = [for (final match in _word.allMatches(german)) match[0]!];
   final reflexive = all.length > 1 && all.first.toLowerCase() == 'sich';
   final words = reflexive ? all.sublist(1) : all;
@@ -122,6 +175,14 @@ ClozeGap? _find(
     if (hit) return (start: t.start, end: t.end);
   }
   if (!verb) return null;
+  // -eln and -ern verbs drop the e: "ich bügle", "zweifle nicht" (#870).
+  if (key.length > minKey + 1 && (key.endsWith('eln') || key.endsWith('ern'))) {
+    final elided =
+        '${stem.substring(0, stem.length - 2)}${stem[stem.length - 1]}';
+    for (final t in tokens) {
+      if (t.key.startsWith(elided)) return (start: t.start, end: t.end);
+    }
+  }
   for (final particle in _particles) {
     if (!key.startsWith(particle)) continue;
     final rest = key.substring(particle.length).replaceFirst(_infinitive, '');
