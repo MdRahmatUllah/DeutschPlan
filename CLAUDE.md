@@ -71,7 +71,8 @@ outside `core/theme/`; no Material/Cupertino chrome outside `core/adaptive/`
 content tables; no I/O in `build()`; `DateTime.now()` only via `clockProvider`;
 navigation only through typed routes, their helpers and `context.jumpToTab`;
 keepAlive providers must be listed in `docs/01-architecture/state-management.md`.
-`test/l10n_test.dart` enforces ARB descriptions, bn coverage, no literals.
+`test/l10n_test.dart` enforces ARB descriptions, bn coverage, no literals,
+and no ARB key that nothing under `lib/` reads (#640).
 
 ## Non-negotiables
 
@@ -108,7 +109,7 @@ The owner's rule (2026-09-25): every PR merges on this.
 ```bash
 dart analyze --fatal-infos                         # NO path args (ADR 18)
 dart format --output=none --set-exit-if-changed .
-python -m pytest ../tools/tests -q                 # only if tools/ changed
+python -m pytest ../tools/tests -q                 # only if tools/, content/ or app/assets/db/ changed
 flutter test --timeout 60s <touched test files and their goldens>
 ```
 

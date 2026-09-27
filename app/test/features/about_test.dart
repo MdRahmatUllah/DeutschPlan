@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/me/about_screen.dart';
 import 'package:sogda/features/me/licences_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -161,6 +162,15 @@ void main() {
       File('assets/licences/AndroidX-Apache-2.0.txt').readAsStringSync(),
       contains('Apache License'),
     );
+    // #848: desugar_jdk_libs is compiled into the release DEX.
+    expect(
+      File(nativeLicences.last.asset!).readAsStringSync(),
+      allOf(
+        startsWith('The GNU General Public License (GPL)'),
+        contains('"CLASSPATH" EXCEPTION TO THE GPL'),
+      ),
+      reason: nativeLicences.last.name,
+    );
     // #172: the SDK whose text front end supertonic_text.dart ports.
     expect(
       File('assets/licences/Supertonic-SDK-MIT.txt').readAsStringSync(),
@@ -197,14 +207,58 @@ void main() {
       ],
     );
     for (final licence in <Licence>[...modelLicences, ...fontLicences]) {
-      final asset = licence.asset!;
       await tester.tap(find.text(licence.name));
       await tester.pumpAndSettle();
-      final full = File(asset).readAsStringSync();
-      expect(find.text(full), findsOneWidget, reason: licence.name);
+      await _expectWhole(tester, licence);
       await tester.tapAt(const Offset(10, 10));
       await tester.pumpAndSettle();
     }
+  });
+
+  testWidgets('FR-M8-01 #849 a long licence is built as it scrolls, and '
+      'still shows its first and last lines', (tester) async {
+    await pump(
+      tester,
+      at: '/me/about/licences',
+      more: <Override>[
+        licenceTextProvider.overrideWith(
+          (ref, asset) async => File(asset).readAsStringSync(),
+        ),
+      ],
+    );
+    // A short licence still hugs its text: MIT's 21 lines, in a sheet that
+    // may grow to 1,700 px here.
+    await tester.tap(find.text('Supertonic SDK'));
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(ListView).last).height, lessThan(800));
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+
+    final notices = nativeLicences.singleWhere(
+      (licence) => licence.asset!.endsWith('ThirdPartyNotices.txt'),
+    );
+    await tester.scrollUntilVisible(
+      find.text(notices.name),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text(notices.name));
+    await tester.pumpAndSettle();
+
+    // 327 KB of text, and only a screenful of it laid out: what a frame
+    // costs no longer grows with the licence.
+    final lines = _lines(notices);
+    expect(lines.length, greaterThan(6000));
+    final laidOut = find
+        .descendant(
+          of: find.byType(ListView).last,
+          matching: find.byType(SgText),
+        )
+        .evaluate()
+        .map((element) => (element.widget as SgText).data.length)
+        .fold(0, (sum, length) => sum + length);
+    expect(laidOut, inExclusiveRange(0, 20000));
+    await _expectWhole(tester, notices);
   });
 
   testWidgets("M8's packages, each with its licence's name", (tester) async {
@@ -259,4 +313,25 @@ void main() {
     expect(licenceKind('Mozilla Public License Version 2.0'), 'MPL-2.0');
     expect(licenceKind('Some other terms'), isNull);
   });
+}
+
+/// [licence]'s bundled text, a line each, as the sheet lays it out.
+List<String> _lines(Licence licence) =>
+    File(licence.asset!)
+        .readAsStringSync()
+        .replaceAll('\r\n', '\n')
+        .split('\n');
+
+/// FR-M8-01: the open sheet shows [licence]'s text in full: its first line,
+/// and its last once scrolled to.
+Future<void> _expectWhole(WidgetTester tester, Licence licence) async {
+  final lines = _lines(licence).where((line) => line.trim().isNotEmpty);
+  final sheet = find.byType(ListView).last;
+  expect(find.text(lines.first), findsWidgets, reason: licence.name);
+  await tester.scrollUntilVisible(
+    find.text(lines.last),
+    3000,
+    scrollable: find.descendant(of: sheet, matching: find.byType(Scrollable)),
+  );
+  expect(find.text(lines.last), findsWidgets, reason: licence.name);
 }
