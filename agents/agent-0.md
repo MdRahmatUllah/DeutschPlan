@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#634 chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted — claimed 2026-09-27 20:43.
+#634 in review as PR #941: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

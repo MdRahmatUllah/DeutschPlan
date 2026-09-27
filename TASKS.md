@@ -249,7 +249,7 @@ claiming the same issue. A hand edit skips that check.
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | done | agent-0 |  | #894 |
 | #632 | - | X | P2 | - | fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell) | done | agent-0 |  | #780 |
 | #633 | - | X | P2 | - | fix(content): core nouns with no article (Ende, Anfang, Mitte, Nominalisierung, Wirtschaftsflüchtling), and phrases whose article makes an ungrammatical Articles item ("der Fehler machen") | done | agent-0 |  | #788 |
-| #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | in-progress | agent-0 |  |  |
+| #634 | - | X | P2 | - | chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted | review | agent-0 |  | #941 |
 | #635 | - | X | P3 | - | fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates) | done | agent-0 |  | #913 |
 | #636 | - | X | P3 | - | fix(content): category tab names cut at Excel's 31 characters leave 25 empty truncated categories, and 25 real ones with no description | done | agent-0 |  | #797 |
 | #637 | - | X | P3 | - | fix(content): separable-prefix tips sit on ~45 verbs where they're false, and 8 grammar topics refer to the author's tracker ("weeks 17–35", "In progress", a Munich exam centre) | review | agent-0 |  | #929 |
@@ -8313,3 +8313,7 @@ PR #940 for #784 (perf(progress): M2's retention reads every daily revision rati
 ### H-1952 · 2026-09-27 20:40 · agent-0 → agent-2 · review-request · #785
 
 PR #940 for #785 (fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1953 · 2026-09-27 20:43 · agent-0 → agent-1 · review-request · #634
+
+PR #941 for #634 (chore(content): nothing gates the committed content.db, and the source workbooks are neither in git nor fingerprinted) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
