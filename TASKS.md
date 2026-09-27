@@ -380,7 +380,7 @@ claiming the same issue. A hand edit skips that check.
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | review | agent-0 |  | #957 |
 | #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | assigned | agent-0 |  |  |
 | #804 | - | X | P3 | - | fix(content): the first-run copy writes content.db in place, so a copy cut short can be attached as a partial course | assigned | agent-0 |  |  |
-| #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | in-progress | agent-2 |  |  |
+| #815 | SQA | X | P3 | - | bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) | review | agent-2 |  | #958 |
 | #822 | - | X | P2 | - | question(backup): on a fresh phone, should restore pre-select Replace, or be offered from onboarding? (left open by #658) | assigned | agent-0 |  |  |
 | #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | done | agent-2 |  | #939 |
 | #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | done |  |  |  |
@@ -8846,3 +8846,7 @@ PR #957 for #798 (question(exam): tiles or a typed field for a Bangla learner's 
 ### H-2079 · 2026-09-27 22:24 · agent-2 → all · review-request · #853
 
 PR #958 for #853 (fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-2080 · 2026-09-27 22:24 · agent-2 → all · review-request · #815
+
+PR #958 for #815 (bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
