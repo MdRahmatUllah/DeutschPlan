@@ -9,8 +9,10 @@
 # says `why`, and sets any column the pipeline reads (`german`, `article`,
 # `forms`, `english`, ...), one example line (`example_de_2` is the second
 # German sentence, `example_en_2` its translation), `kind` (vocab, note or
-# compare: PIPE-10's heuristic, overridden), or `delete: true`. A key that
-# matches no row, or more than one, fails the build.
+# compare: PIPE-10's heuristic, overridden), `delete: true`, or
+# `merge_into: "<uid>"`: the row is a duplicate of that one (keyed the same
+# way), which takes its learners' progress and fills its blank cells from it
+# (#635). A key that matches no row, or more than one, fails the build.
 #
 # This repository is public: an entry holds the new text only, never the text
 # it replaces.
@@ -159,7 +161,8 @@ words:
     example_de_2: "Das Bürgerbüro in Köln."
     example_en_2: "The citizens' office in Cologne."
   "e116a20b7e6a8828":
-    why: "#628: personal details replaced with generic ones"
+    why: "#628: personal details replaced with generic ones; #635: Mit freundlichen Grüßen, taught at A1.2 already"
+    merge_into: "ca5f0bdcfa56014c"
     example_de_1: "Mit freundlichen Grüßen, Dr. Maria Weber"
     example_en_1: "Kind regards, Dr Maria Weber"
   "e2af4abab769a372":
@@ -204,7 +207,8 @@ words:
     why: "#629: the headword is the word the row teaches (its second half)"
     german: "sich auszahlen"
   "51825e3d2a39b75c":
-    why: "#629: the headword is the word the row teaches (its second half)"
+    why: "#629: the headword is the word the row teaches (its second half); #635: Zustimmung, taught at B1.2 already"
+    merge_into: "8ce8ebb2ebc51c68"
     german: "Zustimmung"
   "34823b5f1da3c7d4":
     why: "#629: the headword is the word the row teaches (its second half)"
@@ -224,7 +228,8 @@ words:
     forms: "pendelt ein · ist eingependelt"
     synonyms_register: "↔ auspendeln (to commute out); pendeln; statistics/urban planning term"
   "d3a45c1419612e91":
-    why: "#629: the headword is the word the row teaches (its second half)"
+    why: "#629: the headword is the word the row teaches (its second half); #635: beitragen zu, taught at B2.1 already"
+    merge_into: "03d3b9c9df0bc876"
     german: "beitragen zu"
   "5ca8bccd1202630f":
     why: "#629: the headword is the word the row teaches (its second half)"
@@ -244,7 +249,8 @@ words:
     example_de_3: "Wegen des Streiks kann der Zug ausfallen."
     example_en_3: "The train may be cancelled because of the strike."
   "63f8482ffda2bedc":
-    why: "#629: the headword is the word the row teaches (its second half)"
+    why: "#629: the headword is the word the row teaches (its second half); #635: sich auszahlen, taught at B2.2 already"
+    merge_into: "7351c92b098899b0"
     german: "sich auszahlen"
   "b2a876acba6ac15f":
     why: "#629: the headword is the word the row teaches (its second half)"
@@ -817,7 +823,8 @@ words:
     example_de_2: "Gemessen am Bruttoinlandsprodukt ist der Anteil gering."
     example_en_2: "Measured against GDP, the share is small."
   "6015e941f52ca481":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #635: Einwilligung, taught at B2.1 already"
+    merge_into: "7b5f1dd116f7534f"
     example_de_2: "Die Einwilligung kann jederzeit widerrufen werden."
     example_en_2: "Consent can be withdrawn at any time."
   "5a8d180c968fe4c1":
@@ -1061,7 +1068,8 @@ words:
     example_de_2: "Krass ist seit den 1990ern fest etabliert und nicht mehr nur jugendsprachlich."
     example_en_2: "'Krass' has been firmly established since the 1990s and is no longer just youth slang."
   "c45a26fd7eca2269":
-    why: "#631: no example the cloze can gap; one that names the word"
+    why: "#631: no example the cloze can gap; one that names the word; #635: offenlegen, taught at C1.1 already"
+    merge_into: "6f8a13e044ebe7b4"
     example_de_3: "Alle Beteiligten müssen ihre Interessen offenlegen."
     example_en_3: "Everyone involved has to disclose their interests."
   "082ccfe867f8c9b6":
@@ -1273,7 +1281,8 @@ words:
     example_de_2: "Bei der Textumformung ändern sich Register und Adressat, der Inhalt bleibt."
     example_en_2: "In the transformation task, register and audience change, but the content stays the same."
   "53dd78f52ee977c6":
-    why: "#631: the example did not name its word"
+    why: "#631: the example did not name its word; #635: Umverteilung, taught at C1.2 already"
+    merge_into: "834bc10d64cbe59f"
     example_de_2: "Ob Umverteilung gerecht ist, ist eine normative Frage."
     example_en_2: "Whether redistribution is just is a normative question."
   "cba0314f830bf5d5":
@@ -1468,3 +1477,563 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Der Begriff Entfremdung spielt in der marxistischen Tradition eine zentrale Rolle."
     example_en_2: "The term 'alienation' plays a central role in the Marxist tradition."
+  # #635: a word taught twice, in two levels or twice in one, merged into
+  # the row the learner meets first (PIPE-09 moves their progress to it).
+  "24c25c6c5ac8628f":
+    why: "#635: Kunde, the A1.1 word glossed another way"
+    merge_into: "3c4cd4716d5bd6d8"
+  "17c842c347935f37":
+    why: "#635: Kunde, the A1.1 word glossed another way"
+    merge_into: "3c4cd4716d5bd6d8"
+  "4050fba80712efd1":
+    why: "#635: Sehr geehrte Damen und Herren, taught at A1.2 already"
+    merge_into: "eee5123f1d146858"
+  "4eb60d87a8544e2e":
+    why: "#635: Vertrag, taught at A1.2 already"
+    merge_into: "0565555af210e020"
+  "e47979151cc67c89":
+    why: "#635: Note, taught at A1.2 already"
+    merge_into: "8bf355f7d1c37dce"
+  "abe1d5b0a606f8c7":
+    why: "#635: Quittung, taught at A1.2 already"
+    merge_into: "3b32ab2f79ee381c"
+  "0ac2d50433789fee":
+    why: "#635: Hauptstadt, taught at A1.2 already"
+    merge_into: "612e3a901c64583c"
+  "85e754fc83558e84":
+    why: "#635: zuverlässig, taught at A2.1 already"
+    merge_into: "36adf74cd0b4cb07"
+  "c54f6300d02834c4":
+    why: "#635: Vorteil, taught at A2.1 already"
+    merge_into: "d7ed644ef6fbdc77"
+  "9f6fb36787dbb886":
+    why: "#635: Behandlung, taught at A2.1 already"
+    merge_into: "da34c0f170f15c9c"
+  "8567cb2d7d069ef1":
+    why: "#635: Impfung, taught at A2.1 already"
+    merge_into: "b902785e193b7e80"
+  "5ae24ef81c1afb04":
+    why: "#635: Überweisung, taught at A2.1 already"
+    merge_into: "b8e6fe871be546ee"
+  "95b0d01ee2926a49":
+    why: "#635: beantragen, taught at A2.1 already"
+    merge_into: "10a0a415eca1f942"
+  "1d6167ceed766b03":
+    why: "#635: Nachweis, taught at A2.1 already"
+    merge_into: "974628694c36a283"
+  "fc1c431686d9840c":
+    why: "#635: Bundesland, taught at A2.1 already"
+    merge_into: "a0c097ee146eb1bf"
+  "367164f467d6a861":
+    why: "#635: Steuer, taught at A2.1 already"
+    merge_into: "b028797da561c7cd"
+  "541979853cb22848":
+    why: "#635: Kredit, taught at A2.1 already"
+    merge_into: "fdcea9bda97dc795"
+  "b0ed87ac6947c2db":
+    why: "#635: Zinsen, taught at A2.1 already"
+    merge_into: "8d02c7a1c21d8d1b"
+  "6c0f076b41f90ce5":
+    why: "#635: verbessern, the A2.1 word glossed another way"
+    merge_into: "b861c049205fd78b"
+  "e5150d5a371be2d3":
+    why: "#635: Cloud, taught at A2.1 already"
+    merge_into: "e2734887f3168bbd"
+  "fbb220de5ad3c728":
+    why: "#635: digital, taught at A2.1 already"
+    merge_into: "830ba91f4e1fb99e"
+  "a2dc1e0d2c7f2983":
+    why: "#635: Ergebnis, taught at A2.1 already"
+    merge_into: "891fd25b509e520f"
+  "873b3ddcfc341c0e":
+    why: "#635: Ausstellung, taught at A2.1 already"
+    merge_into: "4865b462e81a0c37"
+  "3ed52b9443e1afb8":
+    why: "#635: Kritik, taught at A2.1 already"
+    merge_into: "8cca623ce694526c"
+  "1f87ddeaf9167111":
+    why: "#635: Bildung, taught at A2.1 already"
+    merge_into: "969d247bc913d03d"
+  "b33bdf0d21a2d909":
+    why: "#635: Regierung, taught at A2.1 already"
+    merge_into: "b3458cfa7db37380"
+  "23bad51b9b125c36":
+    why: "#635: Wahl, taught at A2.1 already"
+    merge_into: "c05ad9c228b29fb1"
+  "8aeee29a037d8249":
+    why: "#635: Bescheid geben, taught at A2.1 already"
+    merge_into: "84a42f8cc800b420"
+  "30f53b7d25481a2a":
+    why: "#635: bestätigen, taught at A2.1 already"
+    merge_into: "4471f37feccd4f86"
+  "230de2e41208177c":
+    why: "#635: Abteilung, the A2.1 word glossed another way"
+    merge_into: "4a252839c167f53b"
+  "18a5d2cbcc02e826":
+    why: "#635: Abteilung, taught at A2.1 already"
+    merge_into: "4a252839c167f53b"
+  "ca48a55f5d3476c7":
+    why: "#635: Praktikum, taught at A2.1 already"
+    merge_into: "0b6f8e3480f54499"
+  "cb3ae2b862f30761":
+    why: "#635: Rente, taught at A2.1 already"
+    merge_into: "8a9421d29e5ab678"
+  "26503572e5ce5dea":
+    why: "#635: Unternehmen, taught at A2.1 already"
+    merge_into: "e3708afc6318dac4"
+  "881d935cea2f3c52":
+    why: "#635: Bewegung, taught at A2.1 already"
+    merge_into: "86c078c55309e3cb"
+  "89742ffb41f77a9c":
+    why: "#635: Qualität, taught at A2.2 already"
+    merge_into: "ab3309736244610d"
+  "075221a7152b3176":
+    why: "#635: Staatsangehörigkeit, taught at A2.2 already"
+    merge_into: "e950e16332caef59"
+  "12123a49605f95a7":
+    why: "#635: Wartezeit, taught at A2.2 already"
+    merge_into: "0111a35168e6f0ec"
+  "03fcb3ae651597de":
+    why: "#635: Baustelle, taught at A2.2 already"
+    merge_into: "4715f1a5aa0e224f"
+  "555347ce8bff07bc":
+    why: "#635: Grenze, taught at A2.2 already"
+    merge_into: "9337ca4779de25f4"
+  "e29121b3c0539f69":
+    why: "#635: Verantwortung, taught at A2.2 already"
+    merge_into: "0f34c5f69a326e63"
+  "6e43c60be4ea9651":
+    why: "#635: Bürger, taught at A2.2 already"
+    merge_into: "3a4fab945c3d23a0"
+  "7c1baee581847aa7":
+    why: "#635: Tradition, taught at A2.2 already"
+    merge_into: "f71648461366b539"
+  "e26726bdc423510b":
+    why: "#635: Beschwerde, taught at A2.2 already"
+    merge_into: "8b5868795a202906"
+  "00bb396f1f2efaf5":
+    why: "#635: Roman, taught at A2.2 already"
+    merge_into: "bb70e670153346f8"
+  "d4715997b842c7b3":
+    why: "#635: Motivation, taught at A2.2 already"
+    merge_into: "c501c101c7c934bb"
+  "40657eb54dc065c8":
+    why: "#635: Wissen, taught at A2.2 already"
+    merge_into: "f5cd5ecf1851866a"
+  "fa02d4056aa93651":
+    why: "#635: vergleichen, taught at A2.2 already"
+    merge_into: "5c207d63d7510334"
+  "251e73ad4eb62949":
+    why: "#635: Klimawandel, taught at B1.1 already"
+    merge_into: "0a01d354160cd70f"
+  "67f204890f47d179":
+    why: "#635: Ernährung, taught at B1.1 already"
+    merge_into: "7d3f0e19098177a0"
+  "1af86adf1c23ca4e":
+    why: "#635: Übergabe, taught at B1.1 already"
+    merge_into: "ac9905ceb23289bb"
+  "70d76ad231755f67":
+    why: "#635: Bescheid, taught at B1.1 already"
+    merge_into: "6d175f4590661013"
+  "d9d20a993853a826":
+    why: "#635: erforderlich, taught at B1.1 already"
+    merge_into: "60f38c40fd61205f"
+  "219ed66edfcc0884":
+    why: "#635: Armut, taught at B1.1 already"
+    merge_into: "3869caebe65683cc"
+  "c964e671bf80426c":
+    why: "#635: Bevölkerung, taught at B1.1 already"
+    merge_into: "40f1debe86bcee92"
+  "be35e11be8da3b82":
+    why: "#635: nachhaltig, the B1.1 word glossed another way"
+    merge_into: "d24c7be064ebdeb9"
+  "5f7f05963c5b2cd6":
+    why: "#635: nachhaltig, taught at B1.1 already"
+    merge_into: "d24c7be064ebdeb9"
+  "27031eb492d009fe":
+    why: "#635: Diskriminierung, taught at B1.1 already"
+    merge_into: "06b82c97d02679f7"
+  "10439046b5a17adc":
+    why: "#635: erneuerbar, taught at B1.1 already"
+    merge_into: "42826f5473efca8e"
+  "72f10060ce2e8a86":
+    why: "#635: Publikum, taught at B1.1 already"
+    merge_into: "a83c9b0e6e027a46"
+  "3d816bd40158e9c2":
+    why: "#635: Schlagzeile, taught at B1.1 already"
+    merge_into: "7e451bac36a2f830"
+  "b0aaf4fa497e7359":
+    why: "#635: Schlagzeile, taught at B1.1 already"
+    merge_into: "7e451bac36a2f830"
+  "bfaa1d07f8a7b7be":
+    why: "#635: Meinungsfreiheit, taught at B1.1 already"
+    merge_into: "5b688b5bcac5d5cb"
+  "ab8789d3ddcee651":
+    why: "#635: Stipendium, taught at B1.1 already"
+    merge_into: "2bbacd7572bbdeff"
+  "5fc6d7c3e088b7f2":
+    why: "#635: Solidarität, taught at B1.1 already"
+    merge_into: "ccbf3fdfb0e42dd8"
+  "631974e8a48c6085":
+    why: "#635: Verkehrswende, taught at B1.1 already"
+    merge_into: "2f6a9c57455f5a5a"
+  "0ee2f624aee4fb07":
+    why: "#635: Steuererklärung, taught at B1.1 already"
+    merge_into: "fe2af7bf8046effc"
+  "f4355926ab2281e3":
+    why: "#635: Inflation, taught at B1.1 already"
+    merge_into: "9036af736860a714"
+  "375a9b4257395279":
+    why: "#635: Verlust, taught at B1.1 already"
+    merge_into: "b3dc80f0f370d59e"
+  "8271fe87a89242e6":
+    why: "#635: künstliche Intelligenz, taught at B1.1 already"
+    merge_into: "5da00f1e35bed6b5"
+  "9bb853cb5061580a":
+    why: "#635: Digitalisierung, taught at B1.1 already"
+    merge_into: "1962283d96179274"
+  "624564281708e825":
+    why: "#635: Digitalisierung, taught at B1.1 already"
+    merge_into: "1962283d96179274"
+  "a343a10e5952627e":
+    why: "#635: zusammenfassen, taught at B1.1 already"
+    merge_into: "332a51d05b04cd3f"
+  "dae1f931c5155b0e":
+    why: "#635: zusammenfassen, taught at B1.1 already"
+    merge_into: "332a51d05b04cd3f"
+  "76ce3d992f7c6482":
+    why: "#635: Verwaltung, taught at B1.1 already"
+    merge_into: "6a4891d120a5e7a7"
+  "838045a2e3dc69e0":
+    why: "#635: Integration, taught at B1.1 already"
+    merge_into: "4b9a9c6d520c135a"
+  "5ca48d462c4d0ef0":
+    why: "#635: Bedingung, taught at B1.1 already"
+    merge_into: "540df1dd673012e1"
+  "8cddc2621c4a5476":
+    why: "#635: Kündigungsfrist, taught at B1.1 already"
+    merge_into: "c63d07fb440f52d7"
+  "63a4e51a4f0e8f3d":
+    why: "#635: einerseits … andererseits, taught at B1.1 already"
+    merge_into: "76f1f81e67ba82cc"
+  "2131a15f347eae77":
+    why: "#635: ablehnen, taught at B1.1 already"
+    merge_into: "4e4de8510a0a5679"
+  "9671d1732b565dbd":
+    why: "#635: sich beschweren, taught at B1.1 already"
+    merge_into: "30f4f825abd003d8"
+  "dc8a8f8565191378":
+    why: "#635: vermeiden, taught at B1.1 already"
+    merge_into: "a218104e17476cbd"
+  "241292082d8eb44c":
+    why: "#635: falls, taught at B1.1 already"
+    merge_into: "6faf4b5b8246f10b"
+  "860ce3e0503e5780":
+    why: "#635: je … desto, taught at B1.1 already"
+    merge_into: "3d61ad133ac72cf2"
+  "520e190cf4b6445a":
+    why: "#635: sobald, taught at B1.1 already"
+    merge_into: "e157d9b88b6d40f1"
+  "1e6311829be9b81d":
+    why: "#635: zwar … aber, taught at B1.1 already"
+    merge_into: "1270eee3d0db4648"
+  "f3e7582b1c1d9be7":
+    why: "#635: Diagnose, taught at B1.2 already"
+    merge_into: "cc599a833526e257"
+  "0cdfa0b0eaedb4ed":
+    why: "#635: Nebenwirkung, taught at B1.2 already"
+    merge_into: "6743521b6433b3e7"
+  "60d155a3d4be39dd":
+    why: "#635: Nebenwirkung, taught at B1.2 already"
+    merge_into: "6743521b6433b3e7"
+  "f48dd439e0c59d65":
+    why: "#635: Anrede, taught at B1.2 already"
+    merge_into: "3a50b3ba4604ae25"
+  "d8adff33d053c631":
+    why: "#635: Missverständnis, taught at B1.2 already"
+    merge_into: "7097d76256ecbb51"
+  "f160149ebcfd73bc":
+    why: "#635: Einbürgerung, taught at B1.2 already"
+    merge_into: "40d490b785f2ddb1"
+  "66ed5d5c0124c333":
+    why: "#635: Ehrenamt, taught at B1.2 already"
+    merge_into: "8b5e5413a83276fc"
+  "b9310569115ebbdd":
+    why: "#635: Gewohnheit, taught at B1.2 already"
+    merge_into: "88721cfb44dc040f"
+  "70b8f454fbf9951c":
+    why: "#635: Haftung, taught at B1.2 already"
+    merge_into: "b214e3a85c7434f8"
+  "f34d04fa9b856aeb":
+    why: "#635: Klage, taught at B1.2 already"
+    merge_into: "f4e5c0db26556a9d"
+  "d816d19eceffd28c":
+    why: "#635: Urteil, taught at B1.2 already"
+    merge_into: "b223170dfb5dc837"
+  "6040efe7ca41643e":
+    why: "#635: widerrufen, taught at B1.2 already"
+    merge_into: "21430211cef0b444"
+  "17895a279575a9a6":
+    why: "#635: Widerrufsrecht, taught at B1.2 already"
+    merge_into: "c7a4d0d4bd51a993"
+  "e2dd4547add6c8d2":
+    why: "#635: Enttäuschung, taught at B1.2 already"
+    merge_into: "ba102ff727d1006d"
+  "18b85947f11e1921":
+    why: "#635: Zweifel, taught at B1.2 already"
+    merge_into: "1fec9a563946445f"
+  "dda55fb220103465":
+    why: "#635: Betriebsrat, taught at B1.2 already"
+    merge_into: "0df4a83c55203100"
+  "167c9624f0f29ff9":
+    why: "#635: sich befinden, the B2.1 word glossed another way"
+    merge_into: "994eed7331470e0f"
+  "730d735b493fce97":
+    why: "#635: sich handeln um, the B2.1 word glossed another way"
+    merge_into: "1e6ad67de311c1b2"
+  "f9398c7bd90bc734":
+    why: "#635: sich kümmern um, the B2.1 word glossed another way"
+    merge_into: "227c628fb780291c"
+  "35fbb2f1400e6f1c":
+    why: "#635: sich auswirken auf, the B2.1 word glossed another way"
+    merge_into: "27176a370372d673"
+  "a9b5d68b35820951":
+    why: "#635: sich entscheiden für, the B2.1 word glossed another way"
+    merge_into: "e3ab5e94cad99340"
+  "552183992e638b54":
+    why: "#635: in Kraft treten, taught at B2.1 already"
+    merge_into: "291d5ba9d8413f9a"
+  "9a2bf6596990a363":
+    why: "#635: Rücksicht nehmen auf, taught at B2.1 already"
+    merge_into: "0c7b837c302d5f17"
+  "61a2888c66b2360f":
+    why: "#635: Bezug nehmen auf, taught at B2.1 already"
+    merge_into: "3f39fe52c2262068"
+  "861d2d0d69b188ea":
+    why: "#635: Einfluss nehmen auf, taught at B2.1 already"
+    merge_into: "2f302995086d9ff7"
+  "51f9b8a32b66e3bf":
+    why: "#635: Maßnahmen ergreifen, taught at B2.1 already"
+    merge_into: "65b1ac27cb6f56dc"
+  "b86d21386b40653c":
+    why: "#635: Stellung nehmen zu, taught at B2.1 already"
+    merge_into: "ffc2927d5f6d06ac"
+  "ca4027b44f790f6e":
+    why: "#635: Entwicklung, the B2.1 word glossed another way"
+    merge_into: "54982448a7f87ca6"
+  "5dca5abc7c42ca55":
+    why: "#635: Fachkräftemangel, the B2.1 word glossed another way"
+    merge_into: "48fed5d2d1791747"
+  "56f266c8e1620308":
+    why: "#635: mitteilen, the B2.1 word glossed another way"
+    merge_into: "f8296fbd35487f26"
+  "3b363a1ec897489e":
+    why: "#635: verzichten auf, the B2.1 word glossed another way"
+    merge_into: "c83d6f7d741b921b"
+  "ac6e18d487f15383":
+    why: "#635: Verfahren, the B2.1 word glossed another way"
+    merge_into: "b6c6c828bbcd0ea0"
+  "2f162f97bcd4cc7a":
+    why: "#635: einsparen, the B2.1 word glossed another way"
+    merge_into: "0bea8eeffb4eb9fe"
+  "2c076a0f9cd6985f":
+    why: "#635: hiermit, taught at B2.1 already"
+    merge_into: "ad5952dc934b4e33"
+  "dc7d3f549aed89dc":
+    why: "#635: hiermit, taught at B2.1 already"
+    merge_into: "ad5952dc934b4e33"
+  "d8e6be833f82ee5e":
+    why: "#635: Algorithmus, taught at B2.1 already"
+    merge_into: "633b90666bedef4f"
+  "56ada8564c30c088":
+    why: "#635: Automatisierung, taught at B2.1 already"
+    merge_into: "8964e0d618d0ce9e"
+  "6f4575e1dbb54dbd":
+    why: "#635: vorläufig, the B2.1 word glossed another way"
+    merge_into: "08fbb04243ff5a0b"
+  "307539e69790fe60":
+    why: "#635: widerlegen, taught at B2.1 already"
+    merge_into: "bd2a65ef0a54b33a"
+  "a9cb5fd305790121":
+    why: "#635: Fachliteratur, taught at B2.1 already"
+    merge_into: "e363107752dbbf33"
+  "fa856066e167ba9d":
+    why: "#635: Widerspruch, taught at B2.2 already"
+    merge_into: "fe734e85f137c87b"
+  "3a6af59f48243b83":
+    why: "#635: mit etwas rechnen müssen, the B2.2 word glossed another way"
+    merge_into: "bae0933b0b6f600f"
+  "ae5d9d2237d8f801":
+    why: "#635: kriegen, taught at B2.2 already"
+    merge_into: "b3195ed6ba357fbf"
+  "b13871e75f2e7942":
+    why: "#635: Wert legen auf, taught at B2.2 already"
+    merge_into: "2931547ece2ac20c"
+  "864c708a94e2fa11":
+    why: "#635: sachlich, taught at B2.2 already"
+    merge_into: "18ddd46fd941abdf"
+  "1f6f0009c2e1375c":
+    why: "#635: Belastbarkeit, the B2.2 word glossed another way"
+    merge_into: "ade7bd97967bbdc6"
+  "7eede44f8f2b1c57":
+    why: "#635: zugegebenermaßen, taught at B2.2 already"
+    merge_into: "5d6059d457fe7d3b"
+  "2187f401b08aec9a":
+    why: "#635: geschweige denn, taught at B2.2 already"
+    merge_into: "0f403293a577075a"
+  "70437ac8da5e7ffe":
+    why: "#635: wohingegen, taught at B2.2 already"
+    merge_into: "35e7e34179e9f873"
+  "58a8b3a04b51a680":
+    why: "#635: sich bewähren, the B2.2 word glossed another way"
+    merge_into: "b8d4a8863c1f11fa"
+  "ffac50c0d13c776b":
+    why: "#635: Abstand nehmen von, taught at B2.2 already"
+    merge_into: "af01b421e49c3ea1"
+  "a16ac4d552abc137":
+    why: "#635: das Handtuch werfen, taught at B2.2 already"
+    merge_into: "c7e9e56b1994440a"
+  "a6d1efc5c60c0aab":
+    why: "#635: nicht zuletzt, taught at B2.2 already"
+    merge_into: "daa6cd508e70ae14"
+  "66aa8fabf64411f8":
+    why: "#635: Wahrnehmung, taught at B2.2 already"
+    merge_into: "c6b54b284b2dd818"
+  "0393b096bfcc154a":
+    why: "#635: schlüssig, taught at B2.2 already"
+    merge_into: "0cd01207c424b3bb"
+  "8d6c87bd874bf03b":
+    why: "#635: veranschaulichen, taught at B2.2 already"
+    merge_into: "98329bb44bed5fb5"
+  "3dff2b1518a1f2f1":
+    why: "#635: delegieren, taught at B2.2 already"
+    merge_into: "07bf150c9c183ca0"
+  "a366c8bb5064a5fd":
+    why: "#635: Produktivität, taught at B2.2 already"
+    merge_into: "403cb77931adc061"
+  "0e3b8547043a8441":
+    why: "#635: Rendite, taught at B2.2 already"
+    merge_into: "781358f0f651f593"
+  "6b7cabdf8826cf6a":
+    why: "#635: ausgewogen, taught at B2.2 already"
+    merge_into: "e0cf7f8b2437f69f"
+  "73202ada03000f1b":
+    why: "#635: Berichterstattung, taught at B2.2 already"
+    merge_into: "d57e5cbbde345cc3"
+  "8d3d73c0ffb0f66c":
+    why: "#635: Abkommen, taught at B2.2 already"
+    merge_into: "0aaa8d3d95698857"
+  "4eee4d96b1501cf6":
+    why: "#635: Teilhabe, taught at B2.2 already"
+    merge_into: "2f2b3c4d4c942dcc"
+  "e575b3a6f0b83a1c":
+    why: "#635: Hypothese, taught at B2.2 already"
+    merge_into: "64517d85935f4846"
+  "29ab422d0057174f":
+    why: "#635: personenbezogen, taught at B2.2 already"
+    merge_into: "1c87f59ea1ce5280"
+  "0f2617de3556db7e":
+    why: "#635: Prävention, taught at B2.2 already"
+    merge_into: "6170259ffcf39982"
+  "1c8f9dd83d58aa55":
+    why: "#635: Zuzahlung, taught at B2.2 already"
+    merge_into: "7f66a8b49da2ba81"
+  "6f4a9cbb1e905694":
+    why: "#635: Rechnung tragen, taught at B2.2 already"
+    merge_into: "6d8d2cedc63f3837"
+  "4cf42e096560f106":
+    why: "#635: Rechnung tragen, taught at B2.2 already"
+    merge_into: "6d8d2cedc63f3837"
+  "0fb488e026008012":
+    why: "#635: Öl ins Feuer gießen, taught at B2.2 already"
+    merge_into: "2a2540f09e7dafb7"
+  "e087e4d26122d670":
+    why: "#635: Öl ins Feuer gießen, taught at B2.2 already"
+    merge_into: "2a2540f09e7dafb7"
+  "a90247f9fd478a3d":
+    why: "#635: Zielvereinbarung, taught at B2.2 already"
+    merge_into: "3d75eab7c2075bd5"
+  "f141ee4b11b4e51e":
+    why: "#635: Amtszeit, taught at B2.2 already"
+    merge_into: "e29bd02b0dd6402b"
+  "96d8f82d5bcf0ae2":
+    why: "#635: Kreislaufwirtschaft, taught at B2.2 already"
+    merge_into: "4f8e8fd5066296b1"
+  "d8f15b87a215aa35":
+    why: "#635: abwägen, taught at C1.1 already"
+    merge_into: "bc3f2eae5285b68e"
+  "9882018d5520fdc7":
+    why: "#635: tendenziell, the C1.1 word glossed another way"
+    merge_into: "c1867f94f19313e9"
+  "06aae9a0773a2dcb":
+    why: "#635: Verzerrung, the C1.1 word glossed another way"
+    merge_into: "7785995227dc97bb"
+  "9457fdc9f979e606":
+    why: "#635: Gemeinwohl, the C1.1 word glossed another way"
+    merge_into: "e8f142322a5df1f3"
+  "b77b32bed5f710cf":
+    why: "#635: Priorisierung, the C1.1 word glossed another way"
+    merge_into: "5005bf941ce6a97f"
+  "17d5315c70ad7688":
+    why: "#635: gegenüberstellen, the C1.1 word glossed another way"
+    merge_into: "124db1b63eb0c557"
+  "989a0d6c01efde20":
+    why: "#635: Schnittstelle, the C1.1 word glossed another way"
+    merge_into: "003a45460ac2845f"
+  "dcb149decc7d302b":
+    why: "#635: gehoben, taught at C1.1 already"
+    merge_into: "a0be304500653ed1"
+  "78736ab93c27079e":
+    why: "#635: Nachvollziehbarkeit, the C1.1 word glossed another way"
+    merge_into: "bd14d4d1d246703d"
+  "1728a9d571defbfa":
+    why: "#635: Evidenz, the C1.1 word glossed another way"
+    merge_into: "de24eb47d5af6785"
+  "0b6b787c91c82b55":
+    why: "#635: Resilienz, the C1.1 word glossed another way"
+    merge_into: "b46defd521fc7354"
+  "3a4f62b076881247":
+    why: "#635: Rezeption, the C1.2 word glossed another way"
+    merge_into: "04cea5eedf737806"
+  "7773fa92197b6e8d":
+    why: "#635: Ironie, taught at C1.2 already"
+    merge_into: "c17049a67d7f1a7e"
+  "bd467e5b9a7340c4":
+    why: "#635: Metapher, taught at C1.2 already"
+    merge_into: "65a7a1d22036a87a"
+  "eb448669789b8b09":
+    why: "#635: Deutungshoheit, the C1.2 word glossed another way"
+    merge_into: "4668aba538079fd3"
+  "a334f1c52be38910":
+    why: "#635: Zäsur, the C1.2 word glossed another way"
+    merge_into: "5406ca17f8e8cc81"
+  "8b9ff586150a8857":
+    why: "#635: Zumutbarkeit, the C1.2 word glossed another way"
+    merge_into: "108503f879b5c77b"
+  "6dcd1efb569ffd07":
+    why: "#635: Zuspitzung, the C1.2 word glossed another way"
+    merge_into: "6f0dd594c47cd173"
+  "32a742839fa5d642":
+    why: "#635: zu Buche schlagen, the C1.2 word glossed another way"
+    merge_into: "7cf5b3c5ba5dc21a"
+  "bca266cb4c76c88a":
+    why: "#635: Pointe, taught at C1.2 already"
+    merge_into: "9b2aa03489eeed16"
+  "988ff31c0a4a4506":
+    why: "#635: Pointe, the C1.2 word glossed another way"
+    merge_into: "9b2aa03489eeed16"
+  "37f0f6dbc44eca7f":
+    why: "#635: Maßstäbe setzen, taught at C1.2 already"
+    merge_into: "795ad867c99b736a"
+  "933f320458a1f25e":
+    why: "#635: Operationalisierung, taught at C1.2 already"
+    merge_into: "ce1042e83417cbb6"
+  "6503867f247beb72":
+    why: "#635: obliegen, the C2.1 word glossed another way"
+    merge_into: "5c22f609d21ea086"
+  "13c8554464225ee2":
+    why: "#635: Aporie, the C2.2 word glossed another way"
+    merge_into: "37f892dad95ea742"
+  "fd6c2736b84de9bf":
+    why: "#635: unbeschadet, the C2.2 word glossed another way"
+    merge_into: "16a90963569ffeac"

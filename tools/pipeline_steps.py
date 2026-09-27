@@ -559,6 +559,26 @@ def drop_article_duplicates(words: Sequence) -> tuple[list, list[str]]:
     return kept, warnings
 
 
+def cross_level_duplicates(words: Sequence) -> list[str]:
+    """#635: one word, the same German, part of speech and English, in two
+    or more levels. The uid differs by its level, so nothing else notices,
+    and the learner is taught it again. A line per word, for the report."""
+    groups: dict[tuple[str, ...], list] = {}
+    for word in words:
+        key = (uid_text(word.german),) + tuple(
+            uid_text(getattr(word, name) or "").casefold() for name in ("pos", "english")
+        )
+        groups.setdefault(key, []).append(word)
+    return [
+        f"cross-level duplicate: {group[0].german!r} ({group[0].pos}, "
+        f"{group[0].english!r}) in "
+        + ", ".join(f"{w.level} ({w.source_file} row {w.row})" for w in group)
+        + ": merge_into the first in content/corrections.yaml, unless meant"
+        for group in groups.values()
+        if len({w.level for w in group}) > 1
+    ]
+
+
 def split_articles(words: Sequence) -> int:
     """Moves a typed-in article into `article`. Returns how many moved.
 
@@ -722,7 +742,9 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
 
     [fields] are the columns an entry may set; `example_de_N` and
     `example_en_N` set one line of the example cells, the line after the last
-    adding one; `delete: true` drops the row. Returns the rows kept.
+    adding one; `delete: true` drops the row; `merge_into: <uid>` drops it as
+    a duplicate of that row, which takes its learners' progress (#635).
+    Returns the rows kept.
 
     A key that matches no row, or more than one, fails the build: the workbook
     changed under the correction, and it has to be looked at again.
@@ -734,6 +756,7 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
         by_uid.setdefault(uid_for(word), []).append(word)
 
     dropped: set[int] = set()
+    merges: list[tuple[str, object, str]] = []
     for uid, entry in corrections.items():
         rows = by_uid.get(uid, [])
         if len(rows) != 1:
@@ -749,6 +772,9 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
                 continue
             if field == "delete" and value is True:
                 dropped.add(id(word))
+            elif field == "merge_into":
+                dropped.add(id(word))
+                merges.append((uid, word, str(value)))
             elif example:
                 _set_example(word, example.group(1), int(example.group(2)), value, uid)
             elif field in fields:
@@ -758,7 +784,26 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
                     f"corrections: {uid} sets {field!r}, which is not a "
                     f"column the pipeline reads."
                 )
+    for uid, word, target in merges:
+        rows = by_uid.get(target, [])
+        if len(rows) != 1 or id(rows[0]) in dropped:
+            raise PipelineError(
+                f"corrections: {uid} merges into {target}, which is not one "
+                f"row that stays."
+            )
+        # The uid the row would ship with, its other fixes applied: the one
+        # learners hold (PIPE-09 links it to the row that stays).
+        rows[0].merged_from.append(uid_for(word))
+        for name in MERGE_FILLS:
+            if getattr(rows[0], name) is None:
+                setattr(rows[0], name, getattr(word, name))
     return [word for word in words if id(word) not in dropped]
+
+
+#: What a merged row gives the row that stays, where that one's cell is blank
+#: (#635): the B1 workbook has no Collocations or Synonyms column, and its
+#: words' twins in B2 and C1 do. Not the examples: a C1 sentence on an A2 word.
+MERGE_FILLS = ("article", "forms", "pron_bn", "bangla", "collocations", "synonyms_register")
 
 
 def _set_example(word, language: str, number: int, value: str, uid: str) -> None:

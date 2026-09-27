@@ -36,7 +36,7 @@ their constraints, and the product is built around them:
 
 | Group | What they get | Settings |
 |---|---|---|
-| **Bangla speakers** (first) | Meanings in Bangla, or Bangla and English together; the pronunciation of all 5,433 words in Bangla letters; the app itself in Bangla, with Bangla digits; interference tips (false friends, traps) in Bangla | Meaning language বাংলা or Both; app language বাংলা |
+| **Bangla speakers** (first) | Meanings in Bangla, or Bangla and English together; the pronunciation of all 5,240 words in Bangla letters; the app itself in Bangla, with Bangla digits; interference tips (false friends, traps) in Bangla | Meaning language বাংলা or Both; app language বাংলা |
 | **English speakers** (second) | Meanings and the app in English; the Bangla pronunciation line off by default | Meaning language English |
 
 The meaning language and the app language are separate settings. Setup's
@@ -53,7 +53,7 @@ and Bangla.*
 
 In numbers, at v1.0.1:
 
-- **A complete course.** 12 steps, 5,433 words, 11,270 example sentences,
+- **A complete course.** 12 steps, 5,240 words, 10,883 example sentences,
   182 grammar topics, 159 word categories and 622 interference tips, in one
   read-only database that ships inside the app.
 - **A plan for every day.** Revision scheduled by FSRS-4.5 (target
@@ -124,7 +124,7 @@ What they offer that Sogda does not (and a learner may still want):
   say so. Prep books follow the official formats.
 - **Sync across devices, and iOS.** Sogda moves progress by export
   file, and ships on Android only for now.
-- **Depth at B1.** B1 has 379 words against A1's 1,316 (see *Risks*).
+- **Depth at B1.** B1 has 379 words against A1's 1,315 (see *Risks*).
 
 ## The principles
 
@@ -251,7 +251,7 @@ the product to?
 |---|---|---|---|
 | **Licences** | A model licence can exclude a market (Hy-MT did) | Hy-MT off in every build (ADR 9); `licences.py check` at release | Owner: #533, the replacement translator |
 | **Models hosted by third parties** | The voice downloads from its maker's Hugging Face repository. If the files move, downloads fail until an app update, since the manifest ships in the app | SHA-256 checks; the phone's voice always works as a fallback | Consider mirroring the model files |
-| **Thin B1** | B1 has 379 words (A1 1,316, B2 1,192); `overview.md` marks it "to be expanded" | Mock exams at A1.1–B1.2 reuse a grammar topic or two and say so | New content in the workbooks |
+| **Thin B1** | B1 has 379 words (A1 1,315, B2 1,088); `overview.md` marks it "to be expanded" | Mock exams at A1.1–B1.2 reuse a grammar topic or two and say so | New content in the workbooks |
 | **English-only content parts** | Grammar rules, example translations and category names are in English, even in the Bangla UI (#425) | Meanings, pronunciation, tips and the whole UI are in Bangla | Bangla translations through the workbooks and the pipeline |
 | **One platform** | iOS users can't install it | iOS code paths are built and tested (adaptive chrome, iOS goldens) | A Mac for #171, #161, #398 |
 | **No telemetry** | Crashes and confusion are invisible unless reported | 4,598 Flutter tests (goldens included), a dedicated SQA agent, *Report a problem* | Decide on Play vitals (above) |
