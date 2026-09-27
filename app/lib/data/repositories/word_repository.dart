@@ -503,6 +503,29 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
           );
   }
 
+  /// [find] for many words at once, by uid (#664): T4's rows, read again on
+  /// every change of the tables they come from. The course words are one
+  /// query, not one each.
+  // ponytail: the learner's own words are still found one by one; a backlog
+  // holds a handful at most. One query over custom_words if that changes.
+  Future<Map<String, WordWithState>> findAll(Iterable<String> uids) async {
+    final course = <String>[
+      for (final uid in uids)
+        if (customId(uid) == null) uid,
+    ];
+    final found = <String, WordWithState>{
+      if (course.isNotEmpty)
+        for (final row in await wordsWithStateByUids(_doneAfter, course).get())
+          row.w.uid: _word(row.w, row.s, row.derivedStatus),
+    };
+    for (final uid in uids) {
+      if (customId(uid) case final id?) {
+        if (await _findMine(id) case final mine?) found[uid] = mine;
+      }
+    }
+    return found;
+  }
+
   /// A word of the learner's own in a course word's shape, so T2 serves it
   /// with the card it has (#363): the headword and article, and the meaning
   /// in `english`, which every meaning language shows when there's no Bangla.
