@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-#675 in review as PR #791: answer review threads; re-run the gate if main moved, then merge.
+#614 fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article — claimed 2026-09-27 09:27.
 
 ## Next
 

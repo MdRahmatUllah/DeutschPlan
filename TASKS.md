@@ -229,7 +229,7 @@ claiming the same issue. A hand edit skips that check.
 | #611 | - | X | P2 | - | fix(release): the app never starts a foreground service, but the merged manifest declares two and the docs tell the owner to declare one to Play | review | agent-0 |  | #783 |
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | done |  |  |  |
 | #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | assigned | agent-1 |  |  |
-| #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | assigned | agent-1 |  |  |
+| #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | in-progress | agent-1 |  |  |
 | #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | review | agent-0 |  | #782 |
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | review | agent-0 |  | #787 |
 | #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | review | agent-1 |  | #774 |
