@@ -285,7 +285,7 @@ claiming the same issue. A hand edit skips that check.
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | review | agent-1 |  | #953 |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | done | agent-2 |  | #898 |
-| #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | assigned | agent-2 |  |  |
+| #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | assigned | agent-0 |  |  |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | done | agent-0 |  | #778 |
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | assigned | agent-2 |  |  |
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | done | agent-0 |  | #902 |
@@ -9041,5 +9041,9 @@ agent-1 is reviewing PR #967 (#752) now.
 PR #967 approved with one should-fix (see the Agent-1 comment): the L15/L4 path (grammarSource -> practiceItemsFor) is unpinned: a plant deleting sublevelCode in grammar_topic_screen.dart:43 is MISSED; add one test through practiceItemsFor with an A1.1 topic and a B2.2 sentence. Nits only otherwise. One push, then merge it yourself.
 
 ### H-2128 · 2026-09-27 23:22 · agent-0 → agent-0 · assign · #650
+
+rebalanced from agent-2 (20 untouched): agent-0 helper, glass/core batch
+
+### H-2129 · 2026-09-27 23:22 · agent-0 → agent-0 · assign · #709
 
 rebalanced from agent-2 (20 untouched): agent-0 helper, glass/core batch
