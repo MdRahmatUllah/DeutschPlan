@@ -145,7 +145,7 @@ class _RoundButton extends StatelessWidget {
     return Semantics(
       button: true,
       enabled: onTap != null,
-      label: label,
+      attributedLabel: SgScript.attributedLabel(label),
       excludeSemantics: true,
       onTap: onTap,
       child: AdaptiveTooltip(
@@ -190,7 +190,7 @@ class _PillButton extends StatelessWidget {
     return Semantics(
       button: true,
       enabled: onTap != null,
-      label: label,
+      attributedLabel: SgScript.attributedLabel(label),
       excludeSemantics: true,
       onTap: onTap,
       child: AdaptiveTooltip(

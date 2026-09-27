@@ -121,6 +121,28 @@ abstract final class SgScript {
   /// Bangla tagged bn-BD, and the rest de-DE when it is the course's German
   /// ([german]). Otherwise the rest is the app's own copy, and untagged, so
   /// it is read in the app's language. A soft hyphen is not read.
+  /// [text] as a semantics label, each Bangla run tagged bn-BD as [spans]
+  /// tags it on screen (#743). A control's label is a plain string, and a
+  /// screen reader on an English phone read the Bangla ones with its English
+  /// voice, garbling them. Null for null.
+  static AttributedString? attributedLabel(String? text) {
+    if (text == null) return null;
+    final attributes = <StringAttribute>[];
+    var at = 0;
+    for (final (run, isBengali) in runs(text)) {
+      if (isBengali) {
+        attributes.add(
+          LocaleStringAttribute(
+            range: TextRange(start: at, end: at + run.length),
+            locale: bnBD,
+          ),
+        );
+      }
+      at += run.length;
+    }
+    return AttributedString(text, attributes: attributes);
+  }
+
   static List<TextSpan> spans(
     String text, {
     required TextStyle latin,

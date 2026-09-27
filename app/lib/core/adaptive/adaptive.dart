@@ -339,9 +339,11 @@ class AdaptiveBackButton extends StatelessWidget {
       merge: true,
       child: Semantics(
         button: true,
-        label: cupertinoChrome && label != null
-            ? label
-            : MaterialLocalizations.of(context).backButtonTooltip,
+        attributedLabel: SgScript.attributedLabel(
+          cupertinoChrome && label != null
+              ? label
+              : MaterialLocalizations.of(context).backButtonTooltip,
+        ),
         // 44, the tap target; taller when the iOS label's line is (#404): at
         // 200 % it is 48 dp, and a fixed 44 cut it.
         child: SizedBox(
@@ -574,7 +576,10 @@ class AdaptiveSwitch extends StatelessWidget {
             ),
           );
 
-    return Semantics(label: semanticLabel, child: control);
+    return Semantics(
+      attributedLabel: SgScript.attributedLabel(semanticLabel),
+      child: control,
+    );
   }
 }
 

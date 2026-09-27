@@ -99,7 +99,7 @@ class _Bubble extends StatelessWidget {
       // Read as it appears, and dismissable like any other button.
       liveRegion: true,
       button: true,
-      label: message,
+      attributedLabel: SgScript.attributedLabel(message),
       excludeSemantics: true,
       onTap: onTap,
       child: GestureDetector(
