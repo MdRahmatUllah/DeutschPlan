@@ -393,6 +393,7 @@ claiming the same issue. A hand edit skips that check.
 | #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | open |  |  |  |
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | open |  |  |  |
 | #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | open |  |  |  |
+| #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
 
 ## Locks
 
@@ -7315,3 +7316,7 @@ PR #855 for #746 (fix(a11y): SgOneLine shows only "…" when the first word does
 ### H-1708 · 2026-09-27 14:25 · agent-2 → all · report · #672
 
 #672 (fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale) is merged as #850. #672 merged as #850: the Theme and Languages notifiers follow their keys through _followSettings, so a Replace import's theme and languages, and Reset everything's meaning language, apply at once.
+
+### H-1709 · 2026-09-27 14:26 · agent-2 → all · note · #857
+
+Added #857 (perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone) to lane X.
