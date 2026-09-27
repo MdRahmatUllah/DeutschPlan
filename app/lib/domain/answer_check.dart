@@ -93,17 +93,16 @@ Verdict _checkGermanForm(String given, String german, {String? article}) {
 
   final verdict = _best(givenWord, <String>[expectedWord], german: true);
 
-  // Only when the noun itself is right. A wrong article on a wrong word is
-  // just wrong, and telling the learner about the article would bury the
-  // thing they actually got wrong.
-  if (verdict == Verdict.correct &&
-      expectedArticle.isNotEmpty &&
-      givenArticle.isNotEmpty &&
-      givenArticle != expectedArticle) {
-    return Verdict.wrongArticle;
+  if (expectedArticle.isEmpty ||
+      givenArticle.isEmpty ||
+      givenArticle == expectedArticle) {
+    return verdict;
   }
-
-  return verdict;
+  // A wrong article costs the point (BR-ANS-02). On a right noun the feedback
+  // names the article it wanted. On a misspelt one it is just wrong: a typo
+  // must never score more than the spelling it got wrong (#614), and naming
+  // the article would bury what the learner actually got wrong.
+  return verdict == Verdict.correct ? Verdict.wrongArticle : Verdict.wrong;
 }
 
 /// The articles quiz (BR-ANS-03): exact der/die/das, no typo allowance.
