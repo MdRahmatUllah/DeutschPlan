@@ -26,10 +26,25 @@ typedef ClozeGap = ({int start, int end});
 ///
 /// Null when the sentence has none of these, and the card stays plain.
 ///
+/// A headword's bracket ("aber (Partikel)", "erheben (Steuern)") is tried
+/// with it first, then without it (#631): a particle is a function word in a
+/// phrase, and would never be found.
+///
+/// `tools/cloze.py` is its Python port, for the content gates;
+/// `tools/cloze_vectors.json` holds them to the same answers.
+///
 /// ponytail: prefixes, not a stemmer. A strong verb's other vowel (`wächst`
 /// for `wachsen`, `sieht` for `sehen`) is not found; a real lemmatiser if
 /// too many are.
-ClozeGap? clozeGap(String sentence, String german, {String? pos}) {
+ClozeGap? clozeGap(String sentence, String german, {String? pos}) =>
+    _gap(sentence, german, pos) ??
+    (german.contains('(')
+        ? _gap(sentence, german.replaceAll(_note, ''), pos)
+        : null);
+
+final RegExp _note = RegExp(r'\s*\([^)]*\)');
+
+ClozeGap? _gap(String sentence, String german, String? pos) {
   final tokens = [
     for (final match in _word.allMatches(sentence))
       (
