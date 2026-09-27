@@ -704,8 +704,9 @@ def check_formula_prefixes(
 EXAMPLE_FIELD = r"example_(de|en)_([1-9][0-9]*)"
 
 
-def read_corrections(path) -> dict[str, dict]:
-    """`content/corrections.yaml`'s `words:`: uid -> the fields it changes.
+def read_corrections(path, section: str = "words") -> dict[str, dict]:
+    """`content/corrections.yaml`'s `words:` (or `grammar:`, #637): uid ->
+    the fields it changes.
 
     Every entry says `why`, so the next person to read the file knows what
     the workbook got wrong without opening it.
@@ -722,7 +723,7 @@ def read_corrections(path) -> dict[str, dict]:
             f"content/manifest.yaml; add the file or remove the key."
         )
     raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    entries = raw.get("words") or {}
+    entries = raw.get(section) or {}
     for uid, entry in entries.items():
         # Quoted in the file: an unquoted all-digit uid is a YAML number.
         if not isinstance(uid, str) or not re.fullmatch(r"[0-9a-f]{16}", uid):
@@ -735,6 +736,34 @@ def read_corrections(path) -> dict[str, dict]:
                 f"{path.name}: {uid} needs a `why:` saying what it corrects."
             )
     return entries
+
+
+#: What a `grammar:` correction may set (#637): a topic's text. Not its
+#: level or title, which make its uid, and a new one would lose the
+#: learner's progress on the topic (#808).
+GRAMMAR_CORRECTABLE = ("rule", "example_de", "example_en", "watch_out")
+
+
+def apply_grammar_corrections(rows: Sequence, corrections: dict[str, dict]) -> None:
+    """Applies each `grammar:` correction to the topic whose uid, as built
+    (`grammar_topics.uid`), is its key. A key that matches no topic, or a
+    field that is not the topic's text, fails the build."""
+    by_uid = {row.uid: row for row in rows}
+    for uid, entry in corrections.items():
+        if uid not in by_uid:
+            raise PipelineError(
+                f"corrections: grammar {uid} matches no topic. The workbook "
+                f"changed under it: re-key or delete the entry."
+            )
+        for field, value in entry.items():
+            if field == "why":
+                continue
+            if field not in GRAMMAR_CORRECTABLE:
+                raise PipelineError(
+                    f"corrections: grammar {uid} sets {field!r}; only "
+                    f"{', '.join(GRAMMAR_CORRECTABLE)} can be corrected."
+                )
+            setattr(by_uid[uid], field, value)
 
 
 def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> list:
