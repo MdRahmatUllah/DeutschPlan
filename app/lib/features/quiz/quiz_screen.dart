@@ -20,6 +20,7 @@ import 'package:sogda/features/learn/grammar_practice_screen.dart'
 import 'package:sogda/features/learn/step_quiz.dart';
 import 'package:sogda/features/quiz/quiz_item_view.dart';
 import 'package:sogda/features/quiz/quiz_result_screen.dart';
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -75,6 +76,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
   /// Set once the run is being left, so no second tap races the exit.
   bool _leaving = false;
+
+  /// Set while an answer is being written, so a second tap writes nothing.
+  bool _saving = false;
 
   /// The finished run's attempt: L9 takes the screen's place (#126).
   int? _resultOf;
@@ -135,12 +139,28 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
   Future<void> _submit(String given, {bool timedOut = false}) async {
     final run = _run;
-    if (run == null || _verdict != null) return;
+    if (run == null || _verdict != null || _saving) return;
     if (!timedOut && given.trim().isEmpty) return;
     _tick?.cancel();
     final item = _queue.current;
     final reask = _queue.reasking;
     final verdict = timedOut ? Verdict.wrong : grade(item, given);
+
+    // #647: saved before it is shown or scored. A write that fails keeps the
+    // question, with Retry and Export (#174): a verdict on screen that was
+    // never saved was a score L9 could not match, and a rating FSRS never had.
+    _saving = true;
+    final written = await guardWrite(context, () async {
+      if (reask) {
+        await _service.reasked(run, item);
+      } else {
+        await _service.answer(run, item, given: given.trim(), verdict: verdict);
+      }
+      return true;
+    });
+    _saving = false;
+    if (!written || !mounted) return;
+
     _queue.answered(verdict);
     setState(() {
       _verdict = verdict;
@@ -163,11 +183,6 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         ),
       );
     });
-    if (reask) {
-      await _service.reasked(run, item);
-    } else {
-      await _service.answer(run, item, given: given.trim(), verdict: verdict);
-    }
   }
 
   /// *Next*: the next item, or the run finished and closed.
@@ -184,9 +199,20 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       _startClock();
       return;
     }
+    // #647: a finish that fails keeps the run, with Retry and Export (#174).
+    // Closing the sheet leaves *Next* and back working: stuck on `_leaving`,
+    // both did nothing, and the only way out was to kill the app.
     _leaving = true;
-    await _service.finish(run, points: _points);
-    if (mounted) setState(() => _resultOf = run.attemptId);
+    final written = await guardWrite(context, () async {
+      await _service.finish(run, points: _points);
+      return true;
+    });
+    if (!mounted) return;
+    if (!written) {
+      _leaving = false;
+      return;
+    }
+    setState(() => _resultOf = run.attemptId);
   }
 
   /// FR-L8-04: closing asks first; what was answered is already saved.

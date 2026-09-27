@@ -229,6 +229,93 @@ void main() {
     expect(find.text('opener'), findsOneWidget);
   });
 
+  group('#647 a write that fails keeps the run, with Retry and Export', () {
+    // #174's sheet, closed rather than retried.
+    Future<void> dismiss(WidgetTester tester) async {
+      Navigator.of(tester.element(find.text(l10n.saveAnswerFailed))).pop();
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('FR-L8-02 an answer that was not saved is neither shown nor '
+        'scored, and goes in once the write works', (tester) async {
+      await pump(tester, stub: StubQuizRun(quiz: quizOf(<QuizItem>[haus])));
+      run.writeError = StateError('disk full');
+
+      await answer(tester, 'house');
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+      await dismiss(tester);
+      expect(find.text(l10n.quizCorrect), findsNothing);
+      expect(run.answers, isEmpty);
+
+      run.writeError = null;
+      await tester.tap(find.text(l10n.quizCheck));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.quizCorrect), findsOneWidget);
+      expect(run.answers, [(1, 'house', Verdict.correct)]);
+
+      await next(tester);
+      expect(run.finished, 1, reason: 'scored once, not per attempt');
+    });
+
+    testWidgets('FR-L8-02 a second tap while the answer is being saved '
+        'saves nothing more', (tester) async {
+      await pump(tester, stub: StubQuizRun(quiz: quizOf(<QuizItem>[haus])));
+      await tester.enterText(find.byType(TextField), 'house');
+      await tester.pump();
+      // Both while the first write is still in flight.
+      run.writeGate = Completer<void>();
+      await tester.tap(find.text(l10n.quizCheck));
+      await tester.tap(find.text(l10n.quizCheck));
+      run.writeGate!.complete();
+      await tester.pumpAndSettle();
+      expect(run.answers, [(1, 'house', Verdict.correct)]);
+    });
+
+    testWidgets('FR-L8-04 a finish that fails can be retried into L9', (
+      tester,
+    ) async {
+      await pump(tester, stub: StubQuizRun(quiz: quizOf(<QuizItem>[haus])));
+      await answer(tester, 'house');
+      run.writeError = StateError('disk full');
+
+      await next(tester);
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+      await tester.tap(find.text(l10n.retry));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(l10n.saveAnswerFailed),
+        findsOneWidget,
+        reason: 'still failing: the sheet again',
+      );
+
+      run.writeError = null;
+      await tester.tap(find.text(l10n.retry));
+      await tester.pumpAndSettle();
+      expect(run.finished, 1);
+      expect(find.byType(QuizResultView), findsOneWidget);
+    });
+
+    testWidgets('FR-L8-04 and after a finish that failed, back still leaves', (
+      tester,
+    ) async {
+      // It used to do nothing: `_leaving` stayed set, so close and back
+      // returned early, and the only way out was to kill the app.
+      await pump(tester, stub: StubQuizRun(quiz: quizOf(<QuizItem>[haus])));
+      await answer(tester, 'house');
+      run.writeError = StateError('disk full');
+      await next(tester);
+      await dismiss(tester);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.quizStopTitle), findsOneWidget);
+      await tester.tap(find.text(l10n.quizStop));
+      await tester.pumpAndSettle();
+      expect(find.text('opener'), findsOneWidget);
+      expect(run.finished, isNull);
+    });
+  });
+
   group('FR-L8-04 closing asks first', () {
     testWidgets('Keep going stays; Stop leaves', (tester) async {
       final semantics = tester.ensureSemantics();
