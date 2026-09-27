@@ -9,6 +9,7 @@ import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// What M7's sheet leads to.
@@ -21,7 +22,7 @@ const String resetWord = 'RESET';
 /// M7 · Reset (`reset.md`, the ResetDialog artboards), from M3's Reset row:
 /// a sheet with *Export first* (FR-M7-03), *Reset one step* and *Reset
 /// everything*.
-Future<void> openReset(BuildContext context, WidgetRef ref) async {
+Future<void> openReset(BuildContext context) async {
   final choice = await Adaptive.showSheet<ResetChoice>(
     context: context,
     builder: (sheet) => const _ResetSheet(),
@@ -31,9 +32,9 @@ Future<void> openReset(BuildContext context, WidgetRef ref) async {
     case ResetChoice.exportFirst:
       ExportImportRoute.open(context);
     case ResetChoice.step:
-      await _resetStep(context, ref);
+      await _resetStep(context);
     case ResetChoice.everything:
-      await _resetEverything(context, ref);
+      await _resetEverything(context);
     case null:
       return;
   }
@@ -41,9 +42,12 @@ Future<void> openReset(BuildContext context, WidgetRef ref) async {
 
 /// FR-M7-01: a step picked from those with something to reset, confirmed,
 /// then reset; M3 stays.
-Future<void> _resetStep(BuildContext context, WidgetRef ref) async {
+Future<void> _resetStep(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
-  final reset = ref.read(resetRepositoryProvider);
+  // Held, not M3's ref: Settings can close while the reset runs, and what
+  // follows it must still happen (#679).
+  final container = ProviderScope.containerOf(context, listen: false);
+  final reset = container.read(resetRepositoryProvider);
   final steps = await reset.steps();
   if (!context.mounted) return;
   if (steps.isEmpty) {
@@ -69,15 +73,18 @@ Future<void> _resetStep(BuildContext context, WidgetRef ref) async {
   if (sure != true || !context.mounted) return;
   final List<int> exams;
   try {
-    exams = await reset.resetStep(step.code, today: ref.read(todayProvider));
+    exams = await reset.resetStep(
+      step.code,
+      today: container.read(todayProvider),
+    );
   } on Object {
     if (context.mounted) SgToast.show(context, l10n.resetFailed);
     return;
   }
-  await _dropRecordings(ref, exams);
+  await _dropRecordings(container, exams);
   // The plan engine and Today's plan were read before: the streams follow
   // drift, these don't.
-  ref
+  container
     ..invalidate(planEngineProvider)
     ..invalidate(todayPlanProvider);
   if (context.mounted) SgToast.show(context, l10n.resetStepDone(step.code));
@@ -85,8 +92,11 @@ Future<void> _resetStep(BuildContext context, WidgetRef ref) async {
 
 /// FR-M7-02: the RESET dialog, then user.db as new but for the theme and
 /// the language, the recordings gone, the models kept, and onboarding.
-Future<void> _resetEverything(BuildContext context, WidgetRef ref) async {
+Future<void> _resetEverything(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
+  // Held, not M3's ref and context: the reset runs on if Settings closes,
+  // and onboarding must open after it all the same (#679).
+  final container = ProviderScope.containerOf(context, listen: false);
   final sure = await Adaptive.showTypedConfirm(
     context: context,
     title: l10n.resetEverythingTitle,
@@ -96,20 +106,21 @@ Future<void> _resetEverything(BuildContext context, WidgetRef ref) async {
     cancelLabel: l10n.resetCancel,
   );
   if (sure != true || !context.mounted) return;
+  final router = GoRouter.of(context);
   try {
-    await ref.read(resetRepositoryProvider).resetEverything();
+    await container.read(resetRepositoryProvider).resetEverything();
   } on Object {
     if (context.mounted) SgToast.show(context, l10n.resetFailed);
     return;
   }
-  await _dropRecordings(ref);
+  await _dropRecordings(container);
   // What is kept alive and read before: a setup draft, a session, the plan.
-  ref
+  container
     ..invalidate(planEngineProvider)
     ..invalidate(todayPlanProvider)
     ..invalidate(onboardingProvider)
     ..invalidate(studySessionProvider);
-  if (context.mounted) OnboardingRoute.afterReset(context);
+  OnboardingRoute.afterReset(router);
 }
 
 /// A row of M7's sheets: a title and its note, 48 dp at least.
@@ -257,9 +268,12 @@ class _StepSheet extends StatelessWidget {
 ///
 /// ponytail: a leftover recording is a few hundred KB, cleared by the next
 /// reset or an uninstall; a sweep at start if they ever pile up.
-Future<void> _dropRecordings(WidgetRef ref, [List<int>? exams]) async {
+Future<void> _dropRecordings(
+  ProviderContainer container, [
+  List<int>? exams,
+]) async {
   try {
-    await ref.read(modelRepositoryProvider).deleteRecordings(exams);
+    await container.read(modelRepositoryProvider).deleteRecordings(exams);
   } on Object catch (error) {
     debugPrint('reset: recordings not deleted: $error');
   }

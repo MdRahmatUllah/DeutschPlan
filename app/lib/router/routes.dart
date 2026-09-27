@@ -546,8 +546,8 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
 
   /// M7 · *Reset everything* (#149): setup from its first page, as a first
   /// start has it. Nothing is enrolled any more, so the guard lets it by.
-  static void afterReset(BuildContext context) =>
-      const OnboardingRoute(page: '1').go(context);
+  static void afterReset(GoRouter router) =>
+      router.go(const OnboardingRoute(page: '1').location);
 
   /// Settings → *Restart setup*: page 1 hidden, every page pre-filled with
   /// what the learner has now, and finishing changes the plan but not the
