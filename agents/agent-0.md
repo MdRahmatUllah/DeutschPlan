@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#610 chore(licences): the Licences screen (M8) leaves out ONNX Runtime and the other native Android libraries' notices — claimed 2026-09-27 13:04.
+#610 in review as PR #838: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
