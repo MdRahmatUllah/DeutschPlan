@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#710 perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate — claimed 2026-09-27 09:05.
+#710 in review as PR #778: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

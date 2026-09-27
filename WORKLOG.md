@@ -1230,3 +1230,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:04 · agent-0 #629 · claimed: fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X
 - 2026-09-27 09:04 · agent-0 #629 · PR #777 open; review requested from agent-1
 - 2026-09-27 09:05 · agent-0 #710 · claimed: perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate
+- 2026-09-27 09:05 · agent-0 #710 · PR #778 open; review requested from agent-1
