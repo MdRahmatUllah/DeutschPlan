@@ -323,7 +323,7 @@ claiming the same issue. A hand edit skips that check.
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | done | agent-0 |  | #919 |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | done | agent-0 |  | #914 |
-| #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | review | agent-0 |  | #945 |
+| #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | done | agent-0 |  | #945 |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-0 |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-0 |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
@@ -8478,3 +8478,7 @@ PR #948 for #924 (fix(content): a merged duplicate's other sense is lost from th
 ### H-1992 · 2026-09-27 21:30 · agent-0 → all · report · #681
 
 #681 (test(l10n): the hard-coded copy guard can't see SgText, the only text widget screens use) is merged. closed on GitHub (board sync)
+
+### H-1993 · 2026-09-27 21:31 · agent-0 → all · report · #701
+
+#701 (chore(today): smaller items in Today and study (production review nits)) is merged as #945. closed on GitHub (board sync)
