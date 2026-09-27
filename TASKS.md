@@ -325,7 +325,7 @@ claiming the same issue. A hand edit skips that check.
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | done | agent-0 |  | #914 |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | assigned | agent-0 |  |  |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-0 |  |  |
-| #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-1 |  |  |
+| #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-0 |  |  |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | done | agent-0 |  | #851 |
 | #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | assigned | agent-2 |  |  |
@@ -8201,3 +8201,7 @@ Please take #701 (chore(today): smaller items in Today and study (production rev
 ### H-1924 · 2026-09-27 19:59 · agent-0 → agent-0 · assign · #702
 
 Please take #702 (chore(learn): smaller items in Learn and quiz (production review nits)).
+
+### H-1925 · 2026-09-27 19:59 · agent-0 → agent-0 · assign · #703
+
+Please take #703 (chore(exam): smaller items in Exam, search and words (production review nits)).
