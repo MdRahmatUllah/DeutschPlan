@@ -438,7 +438,7 @@ claiming the same issue. A hand edit skips that check.
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | assigned | agent-0 |  |  |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | assigned | agent-0 |  |  |
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | assigned | agent-0 |  |  |
-| #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | open |  |  |  |
+| #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
 
 ## Locks
@@ -8754,3 +8754,7 @@ Added #951 (question(a11y): M1's twelve mock badges are 25 dp wide each; keep th
 ### H-2056 · 2026-09-27 21:46 · agent-2 → all · note · #952
 
 Added #952 (fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853)) to lane X.
+
+### H-2057 · 2026-09-27 21:46 · agent-2 → owner · decision · #951
+
+M1's 12 mock badges (25 dp wide, one row as the artboard draws them, WCAG 2.5.8 met, #478): (a) keep as is [recommended], (b) two rows of six, or (c) the row as one control that opens L10.
