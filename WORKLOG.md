@@ -1520,3 +1520,4 @@ able to tell what is going on without asking.
 - 2026-09-27 17:41 · agent-0 #750 · assigned to agent-0
 - 2026-09-27 17:44 · agent-0 #635 · claimed: fix(content): the same word is taught 2–3 times, across levels (145 exact duplicates) and within a level (44 near-duplicates)
 - 2026-09-27 17:44 · agent-0 #635 · PR #913 open; review requested from agent-1
+- 2026-09-27 17:47 · agent-0 #700 · claimed: chore(data): dead code, stale docs and small inconsistencies in data (production review nits)

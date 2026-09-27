@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 17:44
+last-seen: 2026-09-27 17:47
 last-read: 1767
 
 ## Now
 
-#635 in review as PR #913: answer review threads; re-run the gate if main moved, then merge.
+#700 chore(data): dead code, stale docs and small inconsistencies in data (production review nits) — claimed 2026-09-27 17:47.
 
 ## Next
 

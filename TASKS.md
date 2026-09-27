@@ -322,7 +322,7 @@ claiming the same issue. A hand edit skips that check.
 | #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | assigned | agent-2 |  |  |
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | assigned | agent-0 |  |  |
-| #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | assigned | agent-0 |  |  |
+| #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | in-progress | agent-0 |  |  |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | assigned | agent-1 |  |  |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-1 |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-1 |  |  |
