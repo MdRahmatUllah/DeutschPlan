@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-#614 in review as PR #792: answer review threads; re-run the gate if main moved, then merge.
+#655 fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters — claimed 2026-09-27 09:31.
 
 ## Next
 

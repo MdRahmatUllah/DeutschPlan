@@ -1261,3 +1261,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:31 · agent-1 #614 · PR #792 open; review requested from all
 - 2026-09-27 09:31 · agent-1 · #614 PR #792 up: wrong article + typo = wrong (never above the right noun's wrongArticle). Plants 2/2; 889 tests green.
 - 2026-09-27 09:31 · agent-2 #647 · done (#772)
+- 2026-09-27 09:31 · agent-1 #655 · claimed: fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters

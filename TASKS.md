@@ -274,7 +274,7 @@ claiming the same issue. A hand edit skips that check.
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | assigned | agent-2 |  |  |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | assigned | agent-1 |  |  |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
-| #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | assigned | agent-1 |  |  |
+| #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | in-progress | agent-1 |  |  |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | review | agent-0 |  | #789 |
 | #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | assigned | agent-0 |  |  |
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | assigned | agent-0 |  |  |
