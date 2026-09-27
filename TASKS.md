@@ -237,7 +237,7 @@ claiming the same issue. A hand edit skips that check.
 | #619 | - | X | P3 | - | fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file | assigned | agent-0 |  |  |
 | #620 | - | X | P3 | - | fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace | assigned | agent-0 |  |  |
 | #621 | - | X | P3 | - | fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) | assigned | agent-0 |  |  |
-| #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | open |  |  |  |
+| #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | assigned | agent-0 |  |  |
 | #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | assigned | agent-1 |  |  |
 | #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | assigned | agent-2 |  |  |
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | assigned | agent-2 |  |  |
@@ -6389,5 +6389,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1484 · 2026-09-27 08:03 · agent-0 → agent-0 · assign · #723
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1485 · 2026-09-27 08:03 · agent-0 → agent-0 · assign · #622
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
