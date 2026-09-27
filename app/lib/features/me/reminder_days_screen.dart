@@ -21,7 +21,8 @@ import 'package:material_ui/material_ui.dart';
 
 /// M5 · Study days & reminder (`reminder-days.md`, the ReminderDays
 /// artboards): the week's study days, the reminder and its time, *Only when
-/// there is something to do*, and tonight's text as the task would write it.
+/// there is something to do*, and the reminder's text as the task would write
+/// it.
 class ReminderDaysScreen extends ConsumerStatefulWidget {
   const ReminderDaysScreen({super.key});
 
@@ -232,7 +233,7 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
   }
 }
 
-/// FR-M5-03: tonight's notification, from the composer `reminder_compose`
+/// FR-M5-03: the reminder's notification, from the composer `reminder_compose`
 /// uses, over today's plan.
 class _Preview extends ConsumerWidget {
   const _Preview({required this.time, required this.onlyWhenDue});
