@@ -1565,3 +1565,4 @@ able to tell what is going on without asking.
 - 2026-09-27 18:45 · agent-0 #637 · PR #929 open; review requested from agent-1
 - 2026-09-27 18:47 · agent-1 · locked pubspec: #623: audio_session as a direct dependency (already transitive via just_audio, 0.2.4)
 - 2026-09-27 18:47 · agent-1 #623 · claimed: fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast
+- 2026-09-27 18:56 · agent-2 #720 · done (#904)
