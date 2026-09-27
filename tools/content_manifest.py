@@ -304,7 +304,9 @@ def diff(previous: dict, current: dict) -> ContentDiff:
     only in the old one, and not linked to a new one by the current
     manifest's `aliases` (PIPE-09), is *removed*, and its `word_state` is
     kept — plan generation joins to `c.words`, so the word simply stops
-    appearing.
+    appearing. A uid linked into one the previous course already had is a
+    duplicate merged into the word that stays (PIPE-12): the learner lost
+    nothing, so it is neither removed nor added (#922).
     """
     for name, manifest in (("previous", previous), ("current", current)):
         if manifest.get("format") != MANIFEST_FORMAT:
@@ -342,11 +344,14 @@ def diff(previous: dict, current: dict) -> ContentDiff:
 
 
 def _follow(digests: dict[str, str], aliases: dict[str, str]) -> dict[str, str]:
-    """[digests] under the uids their words carry now."""
+    """[digests] under the uids their words carry now; without a merged
+    duplicate, whose word was in [digests] already (#922)."""
     moved: dict[str, str] = {}
     for uid, digest in digests.items():
         new = aliases.get(uid)
-        moved[new if new and new not in digests else uid] = digest
+        if new in digests:
+            continue
+        moved[new or uid] = digest
     return moved
 
 

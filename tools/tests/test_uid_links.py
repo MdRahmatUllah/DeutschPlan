@@ -112,9 +112,9 @@ def test_648_a_linked_word_is_changed_not_removed_and_added():
     assert result.meaning == ["new"]
 
 
-def test_648_a_word_linked_into_one_that_stays_is_still_removed():
-    # A duplicate merged into the row that stays: the learner's rows move
-    # where they can, and the card still counts one word gone.
+def test_922_a_word_linked_into_one_that_stays_is_not_removed():
+    # A duplicate merged into the row that stays (#635): the learner's rows
+    # move to it and no word is gone, so the card does not count one.
     words = {"dup": "x", "kept": "y"}
     result = diff(
         {"format": MANIFEST_FORMAT, "content_version": "1", "words": words},
@@ -125,7 +125,7 @@ def test_648_a_word_linked_into_one_that_stays_is_still_removed():
             "aliases": {"dup": "kept"},
         },
     )
-    assert (result.removed, result.changed) == (["dup"], [])
+    assert (result.added, result.removed, result.changed) == ([], [], [])
 
 
 def test_648_the_uid_is_the_same_for_an_nfd_paste_and_extra_spaces():

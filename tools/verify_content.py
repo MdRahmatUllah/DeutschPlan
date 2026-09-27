@@ -210,6 +210,59 @@ def check_no_same_level_duplicates(db: sqlite3.Connection) -> list[Failure]:
     ]
 
 
+#: A German word and part of speech taught in two levels on purpose, each
+#: level a sense of its own that its English names (#921). A native or
+#: teaching reviewer signs this list off.
+SENSES = frozenset(
+    {
+        ("billig", "adj"),  # cheap; shoddy, facile (pejorative)
+        ("Stück", "noun"),  # piece; play (theatre)
+        ("offen", "adj"),  # open; open-minded (of a person)
+        ("Kunde", "noun"),  # der Kunde, customer; die Kunde, tidings
+        ("Viertel", "noun"),  # quarter; neighbourhood
+        ("beantragen", "verb"),  # to apply for; to move (a motion)
+        ("Zertifikat", "noun"),  # certificate; emissions allowance
+        ("Besprechung", "noun"),  # meeting; review (of a book, film)
+        ("Rezeption", "noun"),  # reception desk; reception of a work
+        ("sich entspannen", "verb"),  # to relax; to ease (of a situation)
+        ("abnehmen", "verb"),  # to lose weight; to decrease
+        ("ausfallen", "verb"),  # to be cancelled; to turn out
+        ("Zoll", "noun"),  # customs; customs duty, tariff
+        ("Widerspruch", "noun"),  # objection; contradiction
+        ("zutreffend", "adj"),  # applicable; accurate
+        ("Belastbarkeit", "noun"),  # resilience; robustness (of data)
+        ("prägen", "verb"),  # to shape; to coin (a term)
+        ("Aufklärung", "noun"),  # informed consent briefing; the Enlightenment
+    }
+)
+
+
+def check_no_cross_level_duplicates(db: sqlite3.Connection) -> list[Failure]:
+    """#921: the same German and part of speech in two levels, the English
+    worded differently ("Bedeutung: meaning / significance" in A1, "meaning /
+    importance" in B2): a new-word slot spent on a word the learner has.
+    PIPE-12's build report lists the ones glossed alike."""
+    rows = [
+        f"{german} ({pos}: {levels})"
+        for german, pos, levels in db.execute(
+            "SELECT german, pos, group_concat(DISTINCT level_code) FROM words "
+            "GROUP BY german, pos HAVING COUNT(DISTINCT level_code) > 1 ORDER BY german"
+        )
+        if (german, pos) not in SENSES
+    ]
+    if not rows:
+        return []
+    return [
+        Failure(
+            "duplicates",
+            f"{len(rows)} words are taught in two levels: {_sample(rows)}. "
+            f"Merge the later row into the first in content/corrections.yaml "
+            f"(merge_into); a sense of its own goes in SENSES in "
+            f"{Path(__file__).name}, its English naming that sense.",
+        )
+    ]
+
+
 def check_fts_is_populated(db: sqlite3.Connection) -> list[Failure]:
     """Gate 5: an empty FTS table.
 
@@ -604,6 +657,7 @@ GATES = (
     check_every_word_has_an_example,
     check_no_uid_collision,
     check_no_same_level_duplicates,
+    check_no_cross_level_duplicates,
     check_fts_is_populated,
     check_tips_fit_their_word_class,
     check_no_article_in_german,
