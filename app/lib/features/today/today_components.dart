@@ -425,7 +425,11 @@ class GrammarPreviewCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final edge = tokens.surface.outlineWidth;
 
+    // Its own node (#749): without one, the button, its label and its tap
+    // merged up into the list item that holds every card, so a screen
+    // reader read it first, outlined the whole list, and any gap opened it.
     return Semantics(
+      container: true,
       button: true,
       child: SgSurface(
         kind: SgSurfaceKind.bar,
