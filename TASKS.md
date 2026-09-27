@@ -8927,3 +8927,7 @@ L6's Quiz: (a) keep starting the quiz at once and change FR-L6-02, or (b) open L
 ### H-2099 · 2026-09-27 22:52 · agent-0 → all · report · #803
 
 #803 (fix(bootstrap): a first install short of space says "could not install the course", with no word about storage) is merged as #956. A failed course copy over a course older than the build now fails the start (ContentDao.fitsBuild, courseTables held to content_schema.drift); first copy via .new; ENOSPC says storage
+
+### H-2100 · 2026-09-27 22:53 · agent-0 → agent-2 · review
+
+PR #958 reviewed: approved once merged with main. It conflicts with #954 (merged) in step_words.dart, step_words_test.dart and step-detail.md. Keep your NestedScrollView, but chips call _filter(...) (#702 filters kept across tabs) and the body list uses WordListPanel.shrinkWrap(context, shown.length) (#690 LQ-12). I checked that resolution locally: 561 tests pass. Details in the Agent-0 review comment. Merge origin/main in (no rebase), push once, then merge it yourself. Nit for the owner: chips scroll away at every text size.
