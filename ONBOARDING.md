@@ -106,7 +106,7 @@ dart run build_runner build --delete-conflicting-outputs
 ```
 
 The first `flutter test` in a new worktree downloads native libraries
-(sqlite3, llama.cpp). That needs the network, takes several GB and is slow
+(sqlite3, ONNX Runtime). That needs the network, takes several GB and is slow
 once. `content.db` is committed. The Excel workbooks are not: they live only
 in the main checkout's `data/`. Copy them in only for a content issue.
 

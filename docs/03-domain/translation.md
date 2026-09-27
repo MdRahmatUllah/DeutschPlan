@@ -1,6 +1,6 @@
 # On-device translation (optional)
 
-`services/translation/hy_mt_translator.dart` using `llamadart` (llama.cpp, GGUF) — off by default (`mt_enabled = 0`).
+`services/translation/hy_mt_translator.dart` using a llama.cpp binding (GGUF; `llamadart` was removed while Hy-MT is off, ADR 29) — off by default (`mt_enabled = 0`).
 
 - Model: Hy-MT1.5-1.8B, one build: Q4_K_M (`HY-MT1.5-1.8B-Q4_K_M.gguf`, ~1.1 GB, from `tencent/HY-MT1.5-1.8B-GGUF`), the owner's choice (#409). The repo publishes Q6_K and Q8_0 too, and no 1.25- or 2-bit build. It is downloaded via `background_downloader` to `<appSupport>/models/hymt/`, checksum-verified, Wi-Fi-only switch.
 - Prompt: the model's documented translation template with source/target language names; DE→EN, DE→BN, EN→DE. Max 256 tokens, greedy decoding, run in an isolate; results cached in `translation_cache`. It runs on the CPU: the app bundles llama.cpp's CPU backend only (ADR 27), so `ModelParams.preferredBackend` stays `auto` (the CPU on Android) or `cpu`.
