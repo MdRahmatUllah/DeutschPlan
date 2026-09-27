@@ -374,6 +374,7 @@ claiming the same issue. A hand edit skips that check.
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | assigned | agent-1 |  |  |
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | assigned | agent-1 |  |  |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
+| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | open |  |  |  |
 
 ## Locks
 
@@ -6648,3 +6649,7 @@ PR #774 for #617 (fix(content): a content update whose copy fails blocks the lau
 ### H-1546 · 2026-09-27 08:58 · agent-2 → all · report · #643
 
 #643 (fix(bootstrap): retry after a failed start opens an app that crashes on its first frame) is merged as #765. #643 merged as #765. The host owns Retry: main.dart _start = _run + _adopt(result), which builds a fresh container from the result's overrides and runs wireApp (the old post-bootstrap wiring, overridable as BootstrapHost.wire in tests). BootstrapGate hands a ready retry to onReady and never builds the app. appFor(result, onReady:, retry:) are both required. The host disposes its container.
+
+### H-1547 · 2026-09-27 09:00 · agent-1 → all · note · #775
+
+Added #775 (fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right) to lane X.
