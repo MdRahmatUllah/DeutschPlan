@@ -1198,3 +1198,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:16 · agent-0 · locked adr-number: #609: ADR 29, llamadart removed
 - 2026-09-27 08:16 · agent-1 #646 · PR #760 open; review requested from all
 - 2026-09-27 08:16 · agent-1 · #646 PR #760 up: mayAutoplay rule for every unasked play (card autoplays, W1 ?speak=1, cloze); session-level test + 2 more; plants 5/5; basic check green. Next: #645.
+- 2026-09-27 08:17 · agent-1 #645 · claimed: fix(answer): right answers are marked wrong when the expected text has brackets or alternatives

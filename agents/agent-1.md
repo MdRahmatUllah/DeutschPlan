@@ -6,7 +6,7 @@ last-read: 1143
 
 ## Now
 
-#646 in review as PR #760: answer review threads; re-run the gate if main moved, then merge.
+#645 fix(answer): right answers are marked wrong when the expected text has brackets or alternatives — claimed 2026-09-27 08:17.
 
 ## Next
 
