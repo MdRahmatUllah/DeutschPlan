@@ -1768,3 +1768,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:40 · agent-0 #863 · PR #961 open; review requested from agent-2
 - 2026-09-27 22:43 · agent-2 #751 · PR #962 open; review requested from all
 - 2026-09-27 22:43 · agent-2 #752 · claimed: bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock
+- 2026-09-27 22:48 · agent-0 #798 · done (#957)
