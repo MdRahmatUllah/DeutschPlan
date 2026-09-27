@@ -1737,3 +1737,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:58 · agent-0 #798 · assigned to agent-0
 - 2026-09-27 22:03 · agent-1 #747 · claimed: fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed
 - 2026-09-27 22:08 · agent-2 #821 · done (#939)
+- 2026-09-27 22:08 · agent-2 #754 · done (#939)
