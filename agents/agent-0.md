@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 13:48
+last-seen: 2026-09-27 13:49
 last-read: 1655
 
 ## Now
 
-Nothing claimed.
+#621 fix(data): smaller persistence gaps (deferred transactions across two connections, a wiped update diff, due counts that include removed words) — claimed 2026-09-27 13:49.
 
 ## Next
 
