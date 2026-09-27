@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-#891 in review as PR #931: answer review threads; re-run the gate if main moved, then merge.
+#606 bug(today): finishing setup on a day switched off opens a rest day with "Start here · today's words are ready" over "All done — see you tomorrow" (nothing to study on day 1) — claimed 2026-09-27 19:56.
 
 ## Next
 
