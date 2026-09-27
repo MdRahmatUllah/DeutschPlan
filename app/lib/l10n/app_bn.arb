@@ -860,7 +860,7 @@
   "reminderDaysTime": "সময়",
   "reminderDaysOnlyWhenDue": "শুধু যখন কিছু করার আছে",
   "reminderDaysOnlyWhenDueNote": "শেষ হওয়া দিন আর বিশ্রামের দিনে বাদ যায়",
-  "reminderDaysTonight": "আজ রাতের লেখা",
+  "reminderDaysTonight": "রিমাইন্ডারের লেখা",
   "reminderDaysFrom": "{app} · {time}",
   "reminderDaysNothing": "আজ কিছু করার নেই, তাই রিমাইন্ডার নেই।",
   "reminderDaysRestToday": "আজ বিশ্রামের দিন: রিমাইন্ডার নেই।",

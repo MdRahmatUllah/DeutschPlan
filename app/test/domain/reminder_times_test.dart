@@ -18,6 +18,33 @@ void main() {
     expect(evening, hasLength(7));
   });
 
+  test('#751 BR-PLAN-08 today follows the days it was planned with', () {
+    // Monday switched off today: today keeps its reminder, from tomorrow the
+    // new days apply (Tue and Wed only here).
+    final off = reminderTimes(
+      now: DateTime(2026, 9, 21, 8),
+      hour: 19,
+      minute: 30,
+      studyDaysMask: 2 | 4,
+      todayMask: 127,
+    );
+    expect(off.first, DateTime(2026, 9, 21, 19, 30));
+    expect(off.skip(1).map((d) => d.weekday), <int>[
+      DateTime.tuesday,
+      DateTime.wednesday,
+    ]);
+
+    // Monday switched on over a rest day: none today, Mondays from next week.
+    final on = reminderTimes(
+      now: DateTime(2026, 9, 21, 8),
+      hour: 19,
+      minute: 30,
+      studyDaysMask: 127,
+      todayMask: 2,
+    );
+    expect(on.first, DateTime(2026, 9, 22, 19, 30));
+  });
+
   test('study days only: Monday the lowest bit', () {
     // Mon, Wed, Fri.
     final days = at(DateTime(2026, 9, 21, 8), mask: 1 | 4 | 16);
