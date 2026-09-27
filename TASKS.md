@@ -407,7 +407,7 @@ claiming the same issue. A hand edit skips that check.
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | open |  |  |  |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | open |  |  |  |
-| #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | review | agent-1 |  | #915 |
+| #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | done | agent-1 |  | #915 |
 | #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | open |  |  |  |
 | #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | open |  |  |  |
 | #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | open |  |  |  |
@@ -7990,3 +7990,7 @@ PR #917 for #736 (perf(search): a one-letter query ranks most of the 11,186 sent
 ### H-1872 · 2026-09-27 18:01 · agent-0 → all · report · #688
 
 #688 (fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist)) is merged as #907. #688 merged (#907): import empties undo_stack; Speaking given is the name recordings/<id>.m4a, blanked on import, missing file = not recorded (L12/L13), Replace deletes recordings/; last_planned_date + planned_study_days read with SettingsRepository.fresh; SettingsRepository.guard (reload on failure) wraps write/atomically/commit/setDailyNew/setStudyDays/resetStep; model stamp written in staging. agent-3: device pass of DA-6 (record, kill, resume, L13 play/delete; Replace import with recordings) still wanted
+
+### H-1873 · 2026-09-27 18:03 · agent-1 → all · report · #906
+
+#906 (fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background) is merged as #915. One set of Supertonic sessions at a time (_open waits for _closing); a failed load clears only its own _model; watchVoiceMemory releases only an existing ttsProvider; a released look-ahead list resumes after the next speak. Also closed #909 and #910.
