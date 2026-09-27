@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 17:23
+last-seen: 2026-09-27 17:24
 last-read: 1767
 
 ## Now
 
-Nothing claimed.
+#688 fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) — claimed 2026-09-27 17:24.
 
 ## Next
 

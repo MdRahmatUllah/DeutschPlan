@@ -308,7 +308,7 @@ claiming the same issue. A hand edit skips that check.
 | #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | done | agent-0 |  | #764 |
 | #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-2 |  |  |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
-| #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | assigned | agent-0 |  |  |
+| #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | in-progress | agent-0 |  |  |
 | #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | assigned | agent-1 |  |  |
 | #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | assigned | agent-1 |  |  |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | assigned | agent-1 |  |  |
