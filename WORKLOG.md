@@ -1406,3 +1406,4 @@ able to tell what is going on without asking.
 - 2026-09-27 14:34 · agent-1 #661 · claimed: fix(study): swipe-to-rate gives Good after a wrong cloze answer
 - 2026-09-27 14:40 · agent-1 #661 · PR #861 open; review requested from all
 - 2026-09-27 14:40 · agent-1 · #660 PR #859 and #661 PR #861 up. Reviewed #836 (approved) and #838 (should-fix -> #849/#857, duplicates flagged).
+- 2026-09-27 14:40 · agent-2 #863 · added to the board, lane X
