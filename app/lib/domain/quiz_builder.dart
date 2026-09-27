@@ -95,6 +95,9 @@ class QuizWord {
   /// A phrase with no article of its own: a leading "Das" or "den" is one of
   /// its words, typed like the rest (`checkGerman`'s phrase, #687 AN-10).
   bool get isPhrase => pos == 'phrase' && article == null;
+
+  /// This word as an EN → DE answer.
+  GermanAnswer get answer => (german: headword, phrase: isPhrase);
 }
 
 /// What the builder needs from the database. Pure Dart, like the plan
@@ -108,6 +111,10 @@ abstract interface class QuizStore {
 
   /// W2's set word [uid] with its members' words; null for none.
   Future<CompareSet?> compareSet(String uid);
+
+  /// The course's words by meaning cell, English or Bangla, for the cells
+  /// two words or more share: EN → DE's other right answers (#832).
+  Future<Map<String, List<QuizWord>>> sharedMeanings();
 }
 
 /// One question.
@@ -122,6 +129,7 @@ class QuizItem {
     this.form,
     this.hint,
     this.phrase = false,
+    this.also = const <GermanAnswer>[],
   });
 
   /// 1-based, as `quiz_answers.ord`.
@@ -155,6 +163,10 @@ class QuizItem {
   /// EN → DE and listening: [expected] is a phrase whose leading article-like
   /// word is typed like the rest ([QuizWord.isPhrase]).
   final bool phrase;
+
+  /// EN → DE: the course's other words whose meaning cell is [prompt], each
+  /// as right as [expected] ("you": du, dich, Sie; #832).
+  final List<GermanAnswer> also;
 
   /// Whether the runner asks with the tiles rather than a field: DE →
   /// বাংলা, since typing Bangla needs a Bangla keyboard, which a learner of
@@ -249,6 +261,7 @@ class QuizBuilder {
       random: random,
     );
 
+    final shared = await _store.sharedMeanings();
     final pools = <String, List<QuizWord>>{};
     Future<List<QuizWord>> poolFor(String step) async =>
         pools[step] ??= await _store.stepWords(step);
@@ -265,6 +278,7 @@ class QuizBuilder {
           asked,
           random,
           () async => <QuizWord>[...await poolFor(word.step), ...learned],
+          shared,
         ),
       );
     }
@@ -283,6 +297,7 @@ class QuizBuilder {
     QuizDirection direction,
     Random random,
     Future<List<QuizWord>> Function() pool,
+    Map<String, List<QuizWord>> shared,
   ) async {
     Future<List<String>> tiles(String Function(QuizWord) value) async {
       final wrong = distractors(word, await pool(), value, random);
@@ -315,15 +330,17 @@ class QuizBuilder {
         final bangla =
             !meanings.contains(QuizDirection.deEn) &&
             (word.bangla ?? '').trim().isNotEmpty;
+        final prompt = bangla ? word.bangla! : word.english;
         return QuizItem(
           ord: ord,
           wordUid: word.uid,
           direction: direction,
-          prompt: bangla ? word.bangla! : word.english,
+          prompt: prompt,
           expected: word.headword,
           options: await tiles((w) => w.headword),
           hint: meanings.length == 2 ? word.bangla : null,
           phrase: word.isPhrase,
+          also: otherAnswers(word, prompt, shared),
         );
       case QuizDirection.articles:
         return QuizItem(
@@ -375,6 +392,7 @@ Verdict grade(QuizItem item, String given) => switch (item.direction) {
     given,
     item.expected,
     phrase: item.phrase,
+    also: item.also,
   ),
   QuizDirection.articles => checkArticle(given, item.expected),
   QuizDirection.forms => checkForm(given, item.expected),
@@ -382,6 +400,18 @@ Verdict grade(QuizItem item, String given) => switch (item.direction) {
     given == item.expected ? Verdict.correct : Verdict.wrong,
   QuizDirection.mixed => throw StateError('an item has its own direction'),
 };
+
+/// EN → DE's other right answers when [word] is asked by [prompt]: the
+/// course's other words whose meaning cell it is, from
+/// [QuizStore.sharedMeanings] (#832).
+List<GermanAnswer> otherAnswers(
+  QuizWord word,
+  String prompt,
+  Map<String, List<QuizWord>> shared,
+) => <GermanAnswer>[
+  for (final other in shared[prompt] ?? const <QuizWord>[])
+    if (other.uid != word.uid) other.answer,
+];
 
 /// The directions a mixed quiz rotates through, in order.
 const List<QuizDirection> rotation = <QuizDirection>[
@@ -535,12 +565,7 @@ List<String> distractors(
 }
 
 /// [w]'s meanings as a synonym check compares them: lower case, no "to ".
-Set<String> _meanings(QuizWord w) => <String>{
-  for (final m in splitMeanings(w.english))
-    m.toLowerCase().replaceFirst(_infinitiveTo, ''),
-};
-
-final RegExp _infinitiveTo = RegExp(r'^to\s+');
+Set<String> _meanings(QuizWord w) => senses(w.english);
 
 /// Whether [a] (whose [meanings] are given) and [b] would both be right: a
 /// meaning they share, or one named in the other's synonyms cell.

@@ -817,6 +817,43 @@ void main() {
       }
     });
 
+    test('#832 BR-ANS-02 EN → DE takes every course word the prompt means: '
+        '"you" is du, dich or Sie', () async {
+      QuizWord you(String uid, String german) => QuizWord(
+        uid: uid,
+        german: german,
+        english: 'you',
+        step: 'A1.1',
+        pos: 'pron',
+        bangla: 'তুমি $uid',
+      );
+      final du = you('du', 'du');
+      final asked = (await build(
+        <QuizWord>[du],
+        pool: <QuizWord>[du, you('dich', 'dich'), you('sie', 'Sie'), ...twelve],
+        direction: QuizDirection.enDe,
+        length: 1,
+      )).items.single;
+      expect(asked.also.map((a) => a.german), <String>['dich', 'Sie']);
+      expect(grade(asked, 'du'), Verdict.correct);
+      expect(grade(asked, 'dich'), Verdict.correct);
+      expect(grade(asked, 'Sie'), Verdict.correct);
+      expect(grade(asked, 'dir'), Verdict.wrong);
+
+      final inBangla = (await build(
+        <QuizWord>[du],
+        pool: <QuizWord>[du, you('dich', 'dich'), ...twelve],
+        direction: QuizDirection.enDe,
+        length: 1,
+        meanings: const <QuizDirection>{QuizDirection.deBn},
+      )).items.single;
+      expect(
+        inBangla.also,
+        isEmpty,
+        reason: 'asked in Bangla, a cell no other word has',
+      );
+    });
+
     test('BR-ANS-03 articles are exact; a form allows a typo', () {
       expect(
         grade(item(QuizDirection.articles, 'die'), 'die'),
@@ -848,6 +885,18 @@ class _Store implements QuizStore {
   /// No sets: `compare_set_test.dart` builds compare quizzes.
   @override
   Future<CompareSet?> compareSet(String uid) async => null;
+
+  /// As the course's: the pool's words by the meaning cells two share.
+  @override
+  Future<Map<String, List<QuizWord>>> sharedMeanings() async {
+    final shared = <String, List<QuizWord>>{};
+    for (final word in _pool) {
+      for (final cell in <String>{word.english, ?word.bangla}) {
+        (shared[cell] ??= <QuizWord>[]).add(word);
+      }
+    }
+    return shared..removeWhere((_, words) => words.length < 2);
+  }
 }
 
 extension on QuizWord {

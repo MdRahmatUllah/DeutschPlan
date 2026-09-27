@@ -15,14 +15,14 @@ import 'package:sogda/domain/text_norm.dart';
 /// The verdict [given] earns on a question item; null for Writing and
 /// Speaking, which have no single right answer.
 Verdict? verdictFor(ExamItem item, String given) => switch (item) {
-  WordQuestion(:final section, :final expected, :final phrase) =>
+  WordQuestion(:final section, :final expected, :final phrase, :final also) =>
     switch (section) {
       ExamSection.vocabulary => checkMeaning(given, expected),
       ExamSection.articles => checkArticle(given, expected),
       ExamSection.wordForms => checkForm(given, expected),
       // Reverse and Listening: the headword, article optional; a phrase
       // typed whole (#687 AN-10).
-      _ => checkGerman(given, expected, phrase: phrase),
+      _ => checkGerman(given, expected, phrase: phrase, also: also),
     },
   GapQuestion(:final answer) => checkGerman(given, answer),
   GrammarQuestion(:final item, :final expected) => switch (item) {
