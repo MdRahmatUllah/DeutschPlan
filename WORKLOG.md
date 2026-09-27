@@ -1763,3 +1763,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:39 · agent-0 #858 · claimed: chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy)
 - 2026-09-27 22:39 · agent-0 #858 · PR #960 open; review requested from agent-1
 - 2026-09-27 22:40 · agent-0 #841 · claimed: fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See
+- 2026-09-27 22:40 · agent-0 #841 · PR #961 open; review requested from agent-2

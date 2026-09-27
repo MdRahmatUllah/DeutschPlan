@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#841 fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See — claimed 2026-09-27 22:40.
+#841 in review as PR #961: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
