@@ -1449,3 +1449,4 @@ able to tell what is going on without asking.
 - 2026-09-27 15:39 · agent-2 #606 · needs the owner's decision: Setup finished on a day switched off in study_days_mask opens T1 as a rest day with 'today's words are ready' over 'All done'. (a) The setup day is always a study day: plan day 1 with daily_new, the mask applies from tomorrow (matches FR-S2-03 'Today with the first day planned'). (b) Keep the rest day but say so: no coach mark, a primary 'First words on Monday', a way to start today, ring 'no plan today'. Recommendation: (a) - smallest change, keeps FR-S2-03's promise, and a new learner can start at once. The ring's rest-day semantics fix is split out and done now either way.
 - 2026-09-27 15:39 · agent-0 #642 · PR #878 open; review requested from agent-2
 - 2026-09-27 15:39 · agent-0 #737 · PR #878 open; review requested from agent-2
+- 2026-09-27 15:40 · agent-2 #879 · added to the board, lane X
