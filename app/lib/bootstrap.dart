@@ -208,10 +208,11 @@ Future<BootstrapResult> bootstrap({
   // error screen offer *Export progress* for a database that never opened —
   // a button that cannot do what it says.
   AppDatabase? opened;
+  AppDatabase? created;
   var step = BootstrapStep.database;
 
   try {
-    final db = (openDatabase ?? AppDatabase.open)();
+    final db = created = (openDatabase ?? AppDatabase.open)();
     // The first statement is what actually opens the file and runs the
     // migration; constructing the object does not. Failing here rather than
     // on the first screen's query is the whole point.
@@ -282,6 +283,9 @@ Future<BootstrapResult> bootstrap({
     );
   } on Object catch (error, stackTrace) {
     watch.stop();
+    // #619: one that never opened is closed before its file is offered, so
+    // no connection of ours is left to checkpoint the file mid-share.
+    if (opened == null) await _closeQuietly(created);
     final file = opened == null ? await _userDbFile() : null;
     return BootstrapFailed(
       BootstrapFailure(
@@ -296,6 +300,16 @@ Future<BootstrapResult> bootstrap({
                 AppDatabase.latestSchemaVersion,
       ),
     );
+  }
+}
+
+/// Closes a database that failed to open. Bounded, and never throws, as
+/// [bootstrap] never does: the error screen must still come up.
+Future<void> _closeQuietly(AppDatabase? db) async {
+  try {
+    await db?.close().timeout(const Duration(seconds: 2));
+  } on Object {
+    // Left open: the file is still offered, as it was before #619.
   }
 }
 

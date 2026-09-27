@@ -355,9 +355,14 @@ void main() {
 
     group('#619 a user.db that will not open offers the file itself', () {
       File userDb() => File('${support.path}/${AppDatabase.fileName}');
+      late _Closes closes;
+      setUp(() => closes = _Closes());
       AppDatabase openUserDb() => AppDatabase(
         DatabaseConnection(
-          NativeDatabase(userDb(), setup: configureConnection),
+          NativeDatabase(
+            userDb(),
+            setup: configureConnection,
+          ).interceptWith(closes),
         ),
       );
 
@@ -377,6 +382,13 @@ void main() {
         expect(failure.canExport, isFalse);
         expect(failure.file?.path, userDb().path);
         expect(failure.newer, isTrue);
+        expect(
+          closes.count,
+          1,
+          reason:
+              'closed before its file is offered, so no connection of '
+              'ours checkpoints it mid-share',
+        );
       });
 
       test('a corrupt one is offered too, and is not called newer', () async {
@@ -1051,4 +1063,15 @@ class _FakePathProvider extends PathProviderPlatform
 
   @override
   Future<String?> getApplicationDocumentsPath() async => support.path;
+}
+
+/// Counts the closes of the connection it wraps (#619).
+class _Closes extends QueryInterceptor {
+  int count = 0;
+
+  @override
+  Future<void> close(QueryExecutor inner) {
+    count++;
+    return inner.close();
+  }
 }
