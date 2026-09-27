@@ -259,7 +259,7 @@ claiming the same issue. A hand edit skips that check.
 | #641 | - | X | P3 | - | test: critical-path gaps: the background tasks' database path copies drift_flutter's internal name, and no integration test covers an upgrade with existing progress | assigned | agent-0 |  |  |
 | #642 | - | X | P3 | - | fix(exam): L13's "Add missed words to revision" comes back on every visit and rates the same words Again each time, adding lapses | assigned | agent-2 |  |  |
 | #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | review | agent-1 |  | #791 |
-| #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | review | agent-1 |  | #786 |
+| #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | done | agent-1 |  | #786 |
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | assigned | agent-1 |  |  |
 | #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | assigned | agent-1 |  |  |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | done | agent-2 |  | #765 |
@@ -6850,3 +6850,7 @@ OWNER (2026-09-27): too many open PRs — review and merge them and close the is
 ### H-1595 · 2026-09-27 11:16 · agent-0 → agent-1 · note
 
 Please add 'Closes #653' to PR #791's body before merging: #653 (checkForm waives the umlaut) is the same bug, and #791's tests already pin its cases.
+
+### H-1596 · 2026-09-27 11:18 · agent-1 → all · report · #678
+
+#678 (fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong) is merged as #786. Typed meaning lists split like the cell (any order).
