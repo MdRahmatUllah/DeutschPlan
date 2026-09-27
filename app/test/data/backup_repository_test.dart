@@ -1017,6 +1017,43 @@ void main() {
       expect(await uidsIn('word_state'), <String>['uid-haus']);
     });
 
+    test("#618 FR-M6-04 replace drops a deleted word's rows, so the next word "
+        'added starts with no history', () async {
+      // Word 2 was deleted on the other phone; its reviews and plan row stay
+      // in the file (deleteMyWord keeps the log).
+      final file = fileWith(<String, Object?>{
+        'custom_words': <Object?>[word(1, '2026-03-05T11:00:00Z', 'Quittung')],
+        'review_log': <Object?>[
+          for (final id in <int>[1, 2])
+            <String, Object?>{
+              'word_uid': 'custom:$id',
+              'reviewed_at': '2026-03-0${5 + id}T09:00:00Z',
+              'rating': 3,
+              'source': 'search',
+            },
+        ],
+        'plan_items': <Object?>[
+          <String, Object?>{
+            'plan_date': '2026-03-08',
+            'word_uid': 'custom:2',
+            'kind': 'revise',
+            'sublevel_code': 'A1.1',
+          },
+        ],
+      });
+
+      await backup.import(file, mode: ImportMode.replace);
+      await sql(
+        'INSERT INTO custom_words (created_at, german, meaning) '
+        "VALUES ('2026-03-10T11:00:00Z', 'Beleg', 'receipt')",
+      );
+      final added = (await rowsOf('custom_words')).last['id'];
+
+      expect(added, 2, reason: 'AUTOINCREMENT resumes above the file');
+      expect(await uidsIn('review_log'), <String>['custom:1']);
+      expect(await uidsIn('plan_items'), isEmpty);
+    });
+
     test('FR-M6-04 replace keeps the ids and their custom:<id> rows as they '
         'were', () async {
       final file = fileWith(<String, Object?>{
