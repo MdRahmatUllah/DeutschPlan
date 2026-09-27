@@ -6,7 +6,7 @@ last-read: 1929
 
 ## Now
 
-#756 in review as PR #953: answer review threads; re-run the gate if main moved, then merge.
+#757 bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts — claimed 2026-09-27 21:55.
 
 ## Next
 
