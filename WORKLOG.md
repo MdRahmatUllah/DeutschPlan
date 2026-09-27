@@ -1775,3 +1775,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:52 · agent-0 #804 · done (#956)
 - 2026-09-27 22:52 · agent-0 #803 · done (#956)
 - 2026-09-27 22:55 · agent-1 #623 · done (#930)
+- 2026-09-27 22:55 · agent-1 · unlocked pubspec
