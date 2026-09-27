@@ -1202,3 +1202,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:21 · agent-3 · SQA E2E paused: host critically low on memory (Claude Code reaped the emulator-boot wait); 5556 rebooting after its own memory collapse (#758). ~171/225 checklist items done.
 - 2026-09-27 08:24 · agent-0 #609 · claimed: chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere)
 - 2026-09-27 08:25 · agent-0 #609 · PR #761 open; review requested from agent-2
+- 2026-09-27 08:25 · agent-0 #723 · PR #762 open; review requested from agent-1

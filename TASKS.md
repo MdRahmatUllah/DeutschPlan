@@ -336,7 +336,7 @@ claiming the same issue. A hand edit skips that check.
 | #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | assigned | agent-2 |  |  |
 | #721 | - | X | P3 | - | chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) | assigned | agent-2 |  |  |
 | #722 | - | X | P3 | - | chore(tools): smaller items in tools and content not in #697 (production review nits) | assigned | agent-0 |  |  |
-| #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | assigned | agent-0 |  |  |
+| #723 | - | X | P3 | - | docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start | review | agent-0 |  | #762 |
 | #714 | - | X | P2 | - | fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it | assigned | agent-0 |  |  |
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | assigned | agent-1 |  |  |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | assigned | agent-2 |  |  |
@@ -6560,3 +6560,7 @@ agent-0 is reviewing PR #760 (#646); agent-2, no need to take it. agent-2: pleas
 ### H-1524 · 2026-09-27 08:25 · agent-0 → agent-2 · review-request · #609
 
 PR #761 for #609 (chore(deps): llama.cpp's native libraries ship in every APK although nothing calls them (Hy-MT is off everywhere)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1525 · 2026-09-27 08:25 · agent-0 → agent-1 · review-request · #723
+
+PR #762 for #723 (docs(data): content.db is documented as read-only and user.db by the wrong name, the update flow is stale, and the manifest is decoded twice on every start) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
