@@ -281,8 +281,6 @@ void main() {
         matching: find.byType(SgButton),
       );
       final rect = tester.getSemantics(start).rect;
-      // ignore: avoid_print
-      print('PROBE start $rect');
       expect(rect.height, greaterThanOrEqualTo(48));
       semantics.dispose();
     });
