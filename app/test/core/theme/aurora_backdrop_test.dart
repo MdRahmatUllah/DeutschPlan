@@ -45,6 +45,25 @@ void main() {
   bool isDrifting(WidgetTester tester) =>
       within(AnimatedBuilder).evaluate().isNotEmpty;
 
+  /// Whether anything asks for a frame within [time]. The test's clock is
+  /// fake: `delayed` moves it on and fires the timers due, drawing nothing,
+  /// and sleeps not at all.
+  Future<bool> asksForFrameIn(WidgetTester tester, Duration time) async {
+    await tester.binding.delayed(time);
+    return tester.binding.hasScheduledFrame;
+  }
+
+  /// Where the leading blob has drifted to.
+  Offset lead(WidgetTester tester) {
+    final moved = within(Transform);
+    if (moved.evaluate().isEmpty) return Offset.zero;
+    final shift = tester
+        .widget<Transform>(moved.first)
+        .transform
+        .getTranslation();
+    return Offset(shift.x, shift.y);
+  }
+
   group('the blobs match the artboard', () {
     test('there are four, at the documented radii', () {
       expect(AuroraBlob.defaults, hasLength(4));
@@ -125,15 +144,37 @@ void main() {
 
     testWidgets('backgrounding holds it still', (tester) async {
       await pump(tester);
-      expect(isDrifting(tester), isTrue);
+      await tester.pump(const Duration(seconds: 1));
+      final before = lead(tester);
 
+      // In the background the engine draws nothing, so what shows the drift
+      // stopped is where the blobs are when the app comes back.
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
-      await tester.pump();
-      expect(isDrifting(tester), isFalse);
-
+      await tester.pump(const Duration(seconds: 2));
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pump();
+
       expect(isDrifting(tester), isTrue);
+      expect(lead(tester), before, reason: 'it drifted in the background');
+    });
+
+    testWidgets('#709: a screen under another holds its drift', (tester) async {
+      // A tab in the background or a page pushed over it: a ticker there is
+      // muted, and so is the drift.
+      await tester.pumpWidget(
+        GlassCapabilityScope(
+          notifier: GlassCapability.always(),
+          child: MaterialApp(
+            theme: AppTheme.glass(),
+            home: const TickerMode(
+              enabled: false,
+              child: AuroraBackdrop(child: SizedBox.expand()),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(await asksForFrameIn(tester, const Duration(seconds: 1)), isFalse);
     });
 
     testWidgets('a still backdrop still paints its blobs', (tester) async {
@@ -146,52 +187,110 @@ void main() {
   testWidgets('the aurora schedules no frames when nothing is moving', (
     tester,
   ) async {
-    // A live ticker keeps the engine scheduling frames. Running four of them
-    // for a widget that paints nothing is battery for nothing — and light and
-    // dark are the modes most people use.
-    //
-    // Measured against a tree with no backdrop at all, in a fresh tree each
-    // time, because swapping the theme in place adds the theme transition's
-    // own ticker to the count.
-    Future<int> tickers({
-      required ThemeData theme,
-      required bool backdrop,
-    }) async {
+    // Frames asked for a widget that paints nothing are battery for nothing
+    // — and light and dark are the modes most people use. In a fresh tree
+    // each time, because swapping the theme in place adds the theme
+    // transition's own frames.
+    Future<bool> asksForFrames(ThemeData theme) async {
       await tester.pumpWidget(
         GlassCapabilityScope(
-          key: ValueKey('${theme.hashCode}-$backdrop'),
+          key: ValueKey(theme.hashCode),
           notifier: GlassCapability.always(),
           child: MaterialApp(
             theme: theme,
-            home: backdrop
-                ? const AuroraBackdrop(child: SizedBox.expand())
-                : const SizedBox.expand(),
+            home: const AuroraBackdrop(child: SizedBox.expand()),
           ),
         ),
       );
-      await tester.pump();
-      return tester.binding.transientCallbackCount;
+      await tester.pumpAndSettle();
+      return asksForFrameIn(tester, const Duration(seconds: 1));
     }
 
-    final lightBaseline = await tickers(
-      theme: AppTheme.light(),
-      backdrop: false,
-    );
     expect(
-      await tickers(theme: AppTheme.light(), backdrop: true),
-      lightBaseline,
+      await asksForFrames(AppTheme.light()),
+      isFalse,
       reason: 'light paints no aurora, so it must schedule no aurora frames',
     );
-
-    final glassBaseline = await tickers(
-      theme: AppTheme.glass(),
-      backdrop: false,
-    );
+    expect(await asksForFrames(AppTheme.dark()), isFalse);
     expect(
-      await tickers(theme: AppTheme.glass(), backdrop: true),
-      greaterThan(glassBaseline),
+      await asksForFrames(AppTheme.glass()),
+      isTrue,
       reason: 'under glass it does drift, so it must schedule frames',
     );
+  });
+
+  testWidgets('#709: the drift steps 15 times a second, and asks for no '
+      'frame between two steps', (tester) async {
+    // Each frame the aurora moves in, every glass panel on screen blurs
+    // again. A ticker asked for 60 a second while the learner only reads.
+    await pump(tester);
+    expect(
+      await asksForFrameIn(tester, const Duration(milliseconds: 10)),
+      isFalse,
+      reason: 'nothing moved, so nothing needs drawing',
+    );
+    expect(
+      await asksForFrameIn(tester, AuroraBackdrop.step),
+      isTrue,
+      reason: 'a step',
+    );
+
+    // A second of frames at 60 fps: the blobs move in 15 of them.
+    var moves = 0;
+    var last = lead(tester);
+    for (var frame = 0; frame < 60; frame++) {
+      await tester.pump(const Duration(microseconds: 16667));
+      if (lead(tester) != last) moves++;
+      last = lead(tester);
+    }
+    expect(moves, inInclusiveRange(14, 16));
+  });
+
+  testWidgets('#709: a drift step repaints the blobs, not the screen', (
+    tester,
+  ) async {
+    final screen = _CountingPainter();
+    await tester.pumpWidget(
+      GlassCapabilityScope(
+        notifier: GlassCapability.always(),
+        child: MaterialApp(
+          theme: AppTheme.glass(),
+          home: AuroraBackdrop(
+            child: CustomPaint(painter: screen, size: Size.infinite),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    final painted = screen.paints;
+    final start = lead(tester);
+
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+    expect(lead(tester), isNot(start), reason: 'it drifted');
+    expect(screen.paints, painted);
+  });
+
+  testWidgets('#698: the number of blobs can change', (tester) async {
+    // It held one controller per blob, made once, so a longer list ran off
+    // the end of them.
+    Future<void> blobs(List<AuroraBlob> blobs) async {
+      await tester.pumpWidget(
+        GlassCapabilityScope(
+          notifier: GlassCapability.always(),
+          child: MaterialApp(
+            theme: AppTheme.glass(),
+            home: AuroraBackdrop(blobs: blobs, child: const SizedBox.expand()),
+          ),
+        ),
+      );
+      await tester.pump(AuroraBackdrop.step);
+    }
+
+    await blobs(AuroraBlob.defaults.take(2).toList());
+    await blobs(AuroraBlob.defaults);
+    expect(tester.takeException(), isNull);
+    expect(within(CustomPaint), findsNWidgets(4));
   });
 
   group('outside glass', () {
@@ -231,10 +330,22 @@ void main() {
     });
   });
 
-  testWidgets('each blob is its own repaint boundary', (tester) async {
+  testWidgets('each blob is its own repaint boundary, and so is the screen', (
+    tester,
+  ) async {
     // The gradients are rasterised once and only translated; without the
     // boundary each frame would repaint four large radial shaders.
     await pump(tester);
-    expect(within(RepaintBoundary), findsNWidgets(4));
+    expect(within(RepaintBoundary), findsNWidgets(5));
   });
+}
+
+class _CountingPainter extends CustomPainter {
+  int paints = 0;
+
+  @override
+  void paint(Canvas canvas, Size size) => paints++;
+
+  @override
+  bool shouldRepaint(_CountingPainter old) => false;
 }
