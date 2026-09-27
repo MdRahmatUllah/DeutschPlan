@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 20:15
+last-seen: 2026-09-27 20:18
 last-read: 1870
 
 ## Now
 
-#637 in review as PR #929: answer review threads; re-run the gate if main moved, then merge.
+#622 bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 — claimed 2026-09-27 20:18.
 
 ## Next
 
