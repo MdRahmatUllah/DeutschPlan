@@ -296,7 +296,7 @@ claiming the same issue. A hand edit skips that check.
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | open |  |  |  |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | open |  |  |  |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | open |  |  |  |
-| #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | open |  |  |  |
+| #673 | - | X | P2 | - | fix(models): a voice download can be queued twice | assigned | agent-1 |  |  |
 | #674 | - | X | P2 | - | fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns) | open |  |  |  |
 | #676 | - | X | P2 | - | fix(deep-links): a reminder or widget link takes over a running exam | open |  |  |  |
 | #677 | - | X | P2 | - | fix(errors): async errors render blank screens, often with no way out | open |  |  |  |
@@ -5981,5 +5981,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1382 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #663
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1383 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #673
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
