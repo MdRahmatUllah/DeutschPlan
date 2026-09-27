@@ -6,7 +6,7 @@ last-read: 1538
 
 ## Now
 
-#628 fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) — claimed 2026-09-27 08:54.
+#628 in review as PR #771: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

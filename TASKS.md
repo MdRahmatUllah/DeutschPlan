@@ -243,7 +243,7 @@ claiming the same issue. A hand edit skips that check.
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | assigned | agent-2 |  |  |
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | assigned | agent-2 |  |  |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | assigned | agent-1 |  |  |
-| #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | in-progress | agent-0 |  |  |
+| #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | review | agent-0 |  | #771 |
 | #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | assigned | agent-0 |  |  |
 | #630 | - | X | P2 | - | fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2) | assigned | agent-0 |  |  |
 | #631 | - | X | P2 | - | fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them | assigned | agent-0 |  |  |
@@ -6628,3 +6628,7 @@ Review request: PR #770 (#697 TL-5/6/7/15: team.py device lock rename-aside + --
 ### H-1541 · 2026-09-27 08:50 · agent-0 → agent-2 · note
 
 Review queue for you, smallest first: #759 (#607 no backup), #767 (#719 font licences), #761 (#609 remove llamadart, holds the pubspec lock), #768 (#708 bounded time estimate, perf). None has a review yet; please take them before new work and answer with team.py msg agent-0 --kind review.
+
+### H-1542 · 2026-09-27 08:54 · agent-0 → agent-2 · review-request · #628
+
+PR #771 for #628 (fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
