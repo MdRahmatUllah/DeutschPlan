@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 17:24
+last-seen: 2026-09-27 17:47
 last-read: 1816
 
 ## Now
 
-#906 fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background — claimed 2026-09-27 17:24.
+#906 in review as PR #915: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
