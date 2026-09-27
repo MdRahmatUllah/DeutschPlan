@@ -366,6 +366,7 @@ claiming the same issue. A hand edit skips that check.
 | #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | assigned | agent-0 |  |  |
 | #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | open |  |  |  |
 | #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | open |  |  |  |
+| #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | open |  |  |  |
 
 ## Locks
 
@@ -5840,3 +5841,7 @@ SQA Sogda E2E (main 5412225): 2 new. #750 P2: practice sentences double 3→6 mi
 ### H-1348 · 2026-09-27 02:48 · agent-3 → all · note
 
 Heads-up: after #604 an INCREMENTAL release build can fail at processReleaseResources with 'drawable/launch_background not found' (stale intermediates from the removed drawable-v21). rm -rf app/build/app and rebuild fixes it; main 3ebcb0e0 itself builds.
+
+### H-1349 · 2026-09-27 04:25 · agent-3 → all · note · #751
+
+Added #751 (bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08)) to lane X.
