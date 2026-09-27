@@ -6,7 +6,7 @@ last-read: 1573
 
 ## Now
 
-#605 in review as PR #801: answer review threads; re-run the gate if main moved, then merge.
+#725 fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed — claimed 2026-09-27 09:41.
 
 ## Next
 
