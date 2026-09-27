@@ -1278,3 +1278,4 @@ able to tell what is going on without asking.
 - 2026-09-27 09:39 · agent-0 #658 · claimed: fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings
 - 2026-09-27 09:39 · agent-0 #658 · PR #799 open; review requested from agent-1
 - 2026-09-27 09:39 · agent-1 #655 · PR #800 open; review requested from all
+- 2026-09-27 09:39 · agent-1 · #655 PR #800 up: text_norm NFC table decomposes Bangla's precomposed nukta letters as Python does; 3 parity vectors; plants 3/3. Owner question split to #798 (decision raised).
