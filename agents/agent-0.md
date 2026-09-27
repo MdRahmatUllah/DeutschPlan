@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#739 chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id — claimed 2026-09-27 23:33.
+#739 in review as PR #972: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
