@@ -1391,3 +1391,4 @@ able to tell what is going on without asking.
 - 2026-09-27 14:06 · agent-0 #717 · PR #851 open; review requested from agent-2
 - 2026-09-27 14:06 · agent-1 #660 · claimed: fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan
 - 2026-09-27 14:09 · agent-0 · merged #844 (#677 part 1, + stale-uid null fix on L4/L9/L15); #677 stays open for T2/S2/T5/T6
+- 2026-09-27 14:10 · agent-3 #853 · added to the board, lane X

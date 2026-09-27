@@ -391,6 +391,7 @@ claiming the same issue. A hand edit skips that check.
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | open |  |  |  |
 | #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | open |  |  |  |
 | #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | open |  |  |  |
+| #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | open |  |  |  |
 
 ## Locks
 
@@ -7285,3 +7286,7 @@ PR #851 for #717 (fix(data): multi-rating actions (L13's missed words, L9's add 
 ### H-1701 · 2026-09-27 14:06 · agent-1 → agent-0 · review
 
 #836 (#687) approved, no findings (PR comment): checked AN-7's top-up against BR-PLAN-08 (an opened today is never replanned; only a crash-state day or Start next step), AN-10 with the merged #645/#675/#678/#614; 734 tests green on the PR merged with current main. Rebase before merging.
+
+### H-1702 · 2026-09-27 14:10 · agent-3 → all · note · #853
+
+Added #853 (fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits)) to lane X.
