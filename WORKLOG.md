@@ -1730,3 +1730,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:56 · agent-0 #690 · claimed: fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist)
 - 2026-09-27 21:56 · agent-0 #690 · PR #954 open; review requested from agent-2
 - 2026-09-27 21:56 · agent-0 #702 · claimed: chore(learn): smaller items in Learn and quiz (production review nits)
+- 2026-09-27 21:56 · agent-0 #702 · PR #954 open; review requested from agent-2
