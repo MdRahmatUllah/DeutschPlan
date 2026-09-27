@@ -14,7 +14,7 @@
 3. Word card (`StudyCard`): 6 px gender bar; step chip; front = article + headword (display), caption "Nomen · die Rechnung, -en · /রেশনুং/", 56 dp speaker; hint "Hear it, think of the meaning, then reveal."; back = meanings (per `meaning_language`), with an *Updated* chip over them for a meaning a course update changed in the last 7 days (BR-CONTENT-02, #451; the chip W1's header wears), examples with mini play, collocations (⟶), register (≈), interference tip callout if any. The cloze card (FR-T2-10) has no *Updated* chip: once checked it shows the word in its gap and the rating bar, not the meanings.
 4. Bottom action area (thumb zone): before reveal *Show meaning*; after reveal the rating bar Again 1 d · Hard 3 d · Good 8 d · Easy 21 d (intervals from FSRS preview). New words add *I know it* and *Skip → backlog* above the bar.
 
-**Session queue.** Built once from the plan (`SessionArgs.blocks`): Revise items → New items → Grammar due (each grammar topic inserted as an `L15` practice set inline) . Position and per-card results are persisted in `studySession` notifier state and mirrored to the DB after each card, so backgrounding or a crash resumes at the same card.
+**Session queue.** Built once from the plan (`SessionArgs.blocks`): Revise items → New items → Grammar due. The grammar topics are not cards: once the words are done, L15 practises them on its own screen, in the session's place. Position and per-card results are persisted in `studySession` notifier state and mirrored to the DB after each card, so backgrounding or a crash resumes at the same card.
 
 A word of the learner's own (`custom:<id>`, #363) comes as a revision like any word. Its chip says *My word* instead of a step, its back shows the meaning and its own example, and *open word details* opens R2 on it (`add-word.md`).
 
@@ -23,14 +23,16 @@ A word suspended mid-session (W1 opened from the overflow) stays in the queue it
 **Functional requirements**
 - FR-T2-01 Tapping the card or *Show meaning* MUST reveal; auto-play rules per `03-domain/tts.md`.
 - FR-T2-02 Rating MUST write one transaction (plan engine `rate`) and advance; a 4 s snackbar *Undo* MUST revert it fully.
+  - The card that completes the day keeps its *Undo* too: T6 comes once the bar has gone (4 s, or when a screen reader's user closes it). Taken, the session is back on that card (#689 TD-9).
+  - A rating, *I know it* or *Skip* acts on the card it came from. A swipe on a card still leaving (its exit animation) writes nothing, rather than rating the card come in its place (#689 TD-10).
 - FR-T2-03 *Skip → backlog* MUST leave the item open (BR-PLAN-06) and show "Moved {word} to the backlog · Undo".
 - FR-T2-04 *I know it* MUST rate Easy (BR-STATUS-04).
 - FR-T2-05 Interval previews MUST be computed with the card's current FSRS state on reveal.
-- FR-T2-06 Between blocks a 1 s banner ("Neue Wörter · {category}") MUST play; block order is fixed.
+- FR-T2-06 Between blocks a 1 s banner ("Neue Wörter · {category}") MUST play; block order is fixed. The banner is German in every UI language and a screen reader reads it in a German voice, as Today's greeting (#162); with a category, which the course names in English, it keeps the app's voice (#689 TD-12).
 - FR-T2-07 Closing MUST NOT prompt; progress is per card. Reopening from Today shows "Continue · n left".
   - A session reopened (or continued) counts what the day already has behind each block: 4 of 15 new words done, it opens at "New today · 5 / 15", with the strip filled to there. The day's planned words of the block no longer open are its done ones, however the session was opened (#345).
 - FR-T2-08 Optional swipe-to-rate (left Again, right Good) only when `swipe_to_rate = 1`. Not after a wrong cloze answer, when the bar offers only Again and Hard (#345): a right swipe would be Good (#661).
-- FR-T2-09 Long-press the headword copies it; long-press the speaker plays at 0.75×.
+- FR-T2-09 Long-press the headword copies it; long-press the speaker plays at 0.75×. The overflow's speeds are in the UI language's digits: "০.৭৫×" in Bangla (#425, #689 TD-15).
 - FR-T2-10 Cloze cards replace the front for words with `card_mode = cloze` (see states doc). **Typing at large text** (#564, as L8's #554 and L15's #557): past 130 % with the keyboard up, the field, its umlaut row and *Check* filled the room above it and the sentence went under the top bar. The top bar gives up its row (close, "Revise · 4 / 10", the menu) until the keyboard goes, and the field no longer scrolls to keep *Check* in view. *Check* is a scroll away, and the keyboard's Done checks the answer as well. The sentence, its translation, the field and the umlaut row then show above the keyboard. Past 130 % the sentence and its translation are also a role smaller (#572, the rule of #571: reduce first, then scroll), the gaps around the field close (14 → 6, 6 → 2 dp), the field's padding closes (dense, as L8's), and the margin under the umlaut keys is 12 dp, not 20; so on a 360 × 640 phone with a 280 dp keyboard a three-line sentence (about 37 letters) shows whole at 200 % (66 dp under the top before). A longer one scrolls, field first, as L8's and L12's do (#573): the field and its umlaut row stay in view, and a drag shows the sentence while the field keeps the keyboard. At 130 % and below nothing changes.
 
 **Business rules.** BR-FSRS-01/02/06, BR-PLAN-06, BR-STATUS-04.

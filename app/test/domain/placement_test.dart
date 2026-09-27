@@ -217,6 +217,55 @@ void main() {
       }
     });
 
+    test('#680 FR-S3-02 a meaning item never offers a synonym of the answer: '
+        'Hallo is not asked beside "good day / hello"', () {
+      PlacementWord hi(String german, String english) => PlacementWord(
+        uid: german,
+        german: german,
+        english: english,
+        pos: 'interj',
+      );
+      final pool = <PlacementWord>[
+        hi('Hallo', 'hello / hi'),
+        hi('Guten Tag', 'good day / hello'),
+        hi('Servus', 'Hi'),
+        hi('Tschüss', 'bye'),
+        hi('Danke', 'thanks'),
+        hi('Bitte', 'please'),
+        hi('Ja', 'yes'),
+        hi('Nein', 'no'),
+      ];
+      Set<String> senses(String cell) => <String>{
+        for (final sense in cell.split(RegExp(r'\s*/\s*'))) sense.toLowerCase(),
+      };
+      var asked = 0;
+      for (var seed = 1; seed <= 30; seed++) {
+        final session = PlacementSession(steps: steps, seed: seed);
+        for (var i = 0; i < pool.length; i++) {
+          final item = session.next(pool);
+          if (item == null) break;
+          final answer = senses(item.options[item.answer]);
+          for (final (n, option) in item.options.indexed) {
+            if (n == item.answer) continue;
+            expect(
+              senses(option).intersection(answer),
+              isEmpty,
+              reason: 'seed $seed: $option beside ${item.word.german}',
+            );
+          }
+          if (<String>{
+            'Hallo',
+            'Guten Tag',
+            'Servus',
+          }.contains(item.word.german)) {
+            asked++;
+          }
+          session.answer(item, correct: true);
+        }
+      }
+      expect(asked, greaterThan(0), reason: 'the greetings were asked');
+    });
+
     test('and a gap never offers the answer in another case', () {
       // Built so the third item — the gap turn — can only be "Morgen", and
       // so that were "morgen" allowed as a wrong option it would have to be

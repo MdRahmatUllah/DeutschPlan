@@ -374,6 +374,42 @@ void main() {
       expect(checkForm('', ''), Verdict.wrong);
       expect(checkForm('!', '?'), Verdict.wrong, reason: 'keys to nothing');
     });
+
+    test('#832 another word the prompt means is right; a near miss or a '
+        'wrong article is judged against the word asked', () {
+      const also = <GermanAnswer>[
+        (german: 'die Ärztin', phrase: false),
+        (german: 'Das stimmt nicht', phrase: true),
+      ];
+      expect(checkGerman('Ärztin', 'der Arzt', also: also), Verdict.correct);
+      expect(
+        checkGerman('die Ärztin', 'der Arzt', also: also),
+        Verdict.correct,
+      );
+      expect(
+        checkGerman('der Ärztin', 'der Arzt', also: also),
+        Verdict.wrong,
+        reason: "not a wrong article: the feedback would name der Arzt's",
+      );
+      expect(
+        checkGerman('die Arztin', 'der Arzt', also: also),
+        Verdict.wrong,
+        reason: 'almost Ärztin, but Arzt was asked',
+      );
+      expect(
+        checkGerman('die Arzt', 'der Arzt', also: also),
+        Verdict.wrongArticle,
+      );
+      expect(
+        checkGerman('stimmt nicht', 'der Arzt', also: also),
+        Verdict.wrong,
+        reason: 'an other phrase is typed whole too (#687)',
+      );
+      expect(
+        checkGerman('das stimmt nicht', 'der Arzt', also: also),
+        Verdict.correct,
+      );
+    });
   });
 
   group('BR-ANS-03 — the articles quiz', () {
@@ -468,6 +504,11 @@ void main() {
       checkMeaning('\u09AA\u09DC\u09BE', '\u09AA\u09A1\u09BC\u09BE'),
       Verdict.correct,
     );
+  });
+
+  test('#680 senses: the synonyms of a cell, lower case, without "to "', () {
+    expect(senses('To go / walk, Hello'), <String>{'go', 'walk', 'hello'});
+    expect(senses('stop (bus/tram)'), <String>{'stop (bus/tram)'});
   });
 
   group('splitMeanings', () {

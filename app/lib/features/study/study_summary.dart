@@ -203,7 +203,8 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
           ),
         ),
       ),
-      SgText(l10n.summaryTitle, role: SgTextRole.headline),
+      // German in every UI language, and read so (#689 TD-12).
+      SgText(l10n.summaryTitle, role: SgTextRole.headline, german: true),
       const SizedBox(height: 2),
       SgText(
         l10n.summaryStats(cards, minutes),
@@ -321,7 +322,9 @@ class _StudySummarySheetState extends ConsumerState<StudySummarySheet> {
 
 /// T3's presentation: the scrim over the faded session and the sheet rising
 /// from the foot. Laid over the screen rather than pushed as a route, so the
-/// undo bar of the last card stays above it and its *Undo* still works.
+/// undo bar of the last card stays above it and its *Undo* still works. Modal
+/// to a screen reader too: the session under it is out of reach, as it is
+/// to a finger (#689 TD-13).
 class StudySummaryOverlay extends StatelessWidget {
   const StudySummaryOverlay({required this.child, super.key});
 
@@ -331,29 +334,31 @@ class StudySummaryOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final still = MediaQuery.disableAnimationsOf(context);
-    return TweenAnimationBuilder<double>(
-      tween: Tween<double>(begin: 0, end: 1),
-      duration: still ? Duration.zero : tokens.motion.standard,
-      curve: Curves.easeOutCubic,
-      builder: (context, t, sheet) => Stack(
-        children: <Widget>[
-          Positioned.fill(
-            child: ColoredBox(
-              color: tokens.surface.scrim.withValues(
-                alpha: tokens.surface.scrim.a * t,
+    return BlockSemantics(
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(begin: 0, end: 1),
+        duration: still ? Duration.zero : tokens.motion.standard,
+        curve: Curves.easeOutCubic,
+        builder: (context, t, sheet) => Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: ColoredBox(
+                color: tokens.surface.scrim.withValues(
+                  alpha: tokens.surface.scrim.a * t,
+                ),
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: FractionalTranslation(
-              translation: Offset(0, 1 - t),
-              child: sheet,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: FractionalTranslation(
+                translation: Offset(0, 1 - t),
+                child: sheet,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

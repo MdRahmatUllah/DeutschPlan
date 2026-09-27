@@ -9,6 +9,7 @@ library;
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:sogda/domain/answer_check.dart' show GermanAnswer;
 import 'package:sogda/domain/cloze.dart';
 import 'package:sogda/domain/exam_grading.dart' show sameTargetFamily;
 import 'package:sogda/domain/grammar_item_generator.dart';
@@ -161,6 +162,7 @@ class ExamPool {
     this.categories = const <int, String>{},
     this.connectors = const <String>[],
     this.course,
+    this.sharedMeanings = const <String, List<QuizWord>>{},
   });
 
   /// `A1.1`, and its level `A1`.
@@ -182,6 +184,10 @@ class ExamPool {
 
   /// What the grammar items check their forms against (#330).
   final CourseText? course;
+
+  /// Reverse's other right answers: the course's words by the meaning cells
+  /// they share (`QuizStore.sharedMeanings`, #832).
+  final Map<String, List<QuizWord>> sharedMeanings;
 }
 
 /// One mock: its items in paper order (`exam_answers.ord` is the position
@@ -284,6 +290,11 @@ sealed class ExamItem {
           _ => null,
         },
         phrase: json['phrase'] == true,
+        also: <GermanAnswer>[
+          for (final other in json['also'] as List<Object?>? ?? const [])
+            if (other case {'german': final String german})
+              (german: german, phrase: other['phrase'] == true),
+        ],
       ),
     };
   }
@@ -301,6 +312,7 @@ final class WordQuestion extends ExamItem {
     required this.expected,
     this.form,
     this.phrase = false,
+    this.also = const <GermanAnswer>[],
   });
 
   final String prompt;
@@ -313,6 +325,10 @@ final class WordQuestion extends ExamItem {
   /// before it has none, and grades as it did.
   final bool phrase;
 
+  /// Reverse: the course's other words whose meaning cell is [prompt], each
+  /// as right as [expected] (#832). A paper written before it has none.
+  final List<GermanAnswer> also;
+
   @override
   List<String>? get options => section == ExamSection.articles
       ? const <String>['der', 'die', 'das']
@@ -323,6 +339,14 @@ final class WordQuestion extends ExamItem {
     'prompt': prompt,
     if (form != null) 'form': form!.name,
     if (phrase) 'phrase': true,
+    if (also.isNotEmpty)
+      'also': <Map<String, Object?>>[
+        for (final other in also)
+          <String, Object?>{
+            'german': other.german,
+            if (other.phrase) 'phrase': true,
+          },
+      ],
   };
 }
 
@@ -721,7 +745,13 @@ Exam buildExam(
             n,
             (w) => w.word.uid,
           ))
-            _wordQuestion(section, w.word, bangla, randoms[s]!),
+            _wordQuestion(
+              section,
+              w.word,
+              bangla,
+              randoms[s]!,
+              pool.sharedMeanings,
+            ),
         ],
       };
     }
@@ -750,6 +780,7 @@ WordQuestion _wordQuestion(
   QuizWord word,
   bool bangla,
   Random random,
+  Map<String, List<QuizWord>> shared,
 ) {
   final meaning = bangla && (word.bangla ?? '').trim().isNotEmpty
       ? word.bangla!
@@ -769,6 +800,7 @@ WordQuestion _wordQuestion(
         prompt: meaning,
         expected: word.headword,
         phrase: word.isPhrase,
+        also: otherAnswers(word, meaning, shared),
       );
     case ExamSection.articles:
       return WordQuestion(

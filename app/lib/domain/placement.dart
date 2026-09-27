@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:sogda/domain/answer_check.dart' show senses;
+
 /// S3 · the placement check, as pure Dart. `docs/04-screens/placement.md`.
 ///
 /// FR-S3-01: start at A1.1; two right in a row move up a step, two wrong in
@@ -248,9 +250,15 @@ class PlacementSession {
     String shown(PlacementWord w) =>
         kind == PlacementKind.gap ? w.german : _meaningOf(w);
     final target = shown(word);
+    final meanings = senses(target);
     // Not the answer again under another uid, and — in a gap — not the
     // answer spelt with another case, which would look the same on screen.
-    bool distinct(String text) => text.toLowerCase() != target.toLowerCase();
+    // Nor, for a meaning, one that shares a synonym with the answer: "good
+    // day / hello" is right for Hallo's "hello / hi" too (#680).
+    bool distinct(String text) =>
+        text.toLowerCase() != target.toLowerCase() &&
+        (kind == PlacementKind.gap ||
+            senses(text).intersection(meanings).isEmpty);
     final same = pool
         .where((w) => w.uid != word.uid && w.pos == word.pos)
         .map(shown)
