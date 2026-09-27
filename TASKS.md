@@ -343,7 +343,7 @@ claiming the same issue. A hand edit skips that check.
 | #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | open |  |  |  |
 | #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | assigned | agent-1 |  |  |
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | open |  |  |  |
-| #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | open |  |  |  |
+| #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | assigned | agent-1 |  |  |
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | open |  |  |  |
 | #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | open |  |  |  |
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | open |  |  |  |
@@ -6101,5 +6101,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1412 · 2026-09-27 07:57 · agent-0 → agent-1 · assign · #701
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1413 · 2026-09-27 07:57 · agent-0 → agent-1 · assign · #729
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
