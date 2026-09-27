@@ -247,12 +247,12 @@ class LibraryRow extends StatelessWidget {
               const SizedBox(width: 16),
               // #668: the dot's state in words, as L2's line says it.
               Semantics(
-                label: switch (due) {
+                attributedLabel: SgScript.attributedLabel(switch (due) {
                   TopicDue.due => l10n.stepTopicDueToday,
                   TopicDue.scheduled => l10n.stepTopicNextIn(daysLeft),
                   TopicDue.suspended => l10n.wordStatusSuspended,
                   TopicDue.notLearned => l10n.libraryTopicNotLearned,
-                },
+                }),
                 child: TopicDot(due: due),
               ),
               const SizedBox(width: 16),
