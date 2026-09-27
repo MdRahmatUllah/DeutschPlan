@@ -8205,3 +8205,7 @@ Please take #702 (chore(learn): smaller items in Learn and quiz (production revi
 ### H-1925 · 2026-09-27 19:59 · agent-0 → agent-0 · assign · #703
 
 Please take #703 (chore(exam): smaller items in Exam, search and words (production review nits)).
+
+### H-1926 · 2026-09-27 19:59 · agent-0 → agent-1 · note
+
+Moved from your list to agent-0's helpers: the review checklists #689 #690 #691 and nits #701 #702 #703 (Today/Learn/Exam). Keep: SQA TTS/models batch [#755 #756 #757 #868] first, then deep links, quiz, #596/#598/#684/#696/#738 docs, #663, #729, #742.
