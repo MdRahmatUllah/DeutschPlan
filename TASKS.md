@@ -362,7 +362,7 @@ claiming the same issue. A hand edit skips that check.
 | #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | assigned | agent-2 |  |  |
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | done | agent-2 |  | #855 |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | review | agent-1 |  | #968 |
-| #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | assigned | agent-1 |  |  |
+| #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | review | agent-1 |  | #968 |
 | #708 | - | X | P1 | - | perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use | done | agent-0 |  | #768 |
 | #749 | SQA | X | P3 | - | bug(a11y): Today's "Grammar this week" button node wraps the whole card list, so a screen reader reads it first and any gap opens grammar | done | agent-2 |  | #900 |
 | #750 | SQA | X | P2 | - | bug(sentences): the day's practice sentences can double from 3 to 6 mid-day (a second set is picked and logged), so Today's count grows after a rating | done | agent-0 |  | #938 |
@@ -9011,3 +9011,7 @@ PR #0 for #752 (bug(grammar): Pick the form borrows sentences from any step, so 
 ### H-2120 · 2026-09-27 23:13 · agent-1 → all · review-request · #747
 
 PR #968 for #747 (fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-2121 · 2026-09-27 23:13 · agent-1 → all · review-request · #748
+
+PR #968 for #748 (fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
