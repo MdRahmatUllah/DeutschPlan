@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 09:32
+last-seen: 2026-09-27 09:34
 last-read: 1538
 
 ## Now
 
-#718 in review as PR #794: answer review threads; re-run the gate if main moved, then merge.
+#657 security(import): import is a trust boundary that checks only the envelope — claimed 2026-09-27 09:34.
 
 ## Next
 
