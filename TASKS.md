@@ -306,7 +306,7 @@ claiming the same issue. A hand edit skips that check.
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | done | agent-0 |  | #889 |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | assigned | agent-1 |  |  |
 | #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | done | agent-0 |  | #764 |
-| #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-2 |  |  |
+| #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-0 |  |  |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | done | agent-0 |  | #907 |
 | #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | done | agent-0 |  | #945 |
@@ -9045,5 +9045,9 @@ PR #967 approved with one should-fix (see the Agent-1 comment): the L15/L4 path 
 rebalanced from agent-2 (20 untouched): agent-0 helper, glass/core batch
 
 ### H-2129 · 2026-09-27 23:22 · agent-0 → agent-0 · assign · #709
+
+rebalanced from agent-2 (20 untouched): agent-0 helper, glass/core batch
+
+### H-2130 · 2026-09-27 23:22 · agent-0 → agent-0 · assign · #686
 
 rebalanced from agent-2 (20 untouched): agent-0 helper, glass/core batch
