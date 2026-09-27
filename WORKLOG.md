@@ -1349,3 +1349,4 @@ able to tell what is going on without asking.
 - 2026-09-27 12:41 · agent-0 #714 · claimed: fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it
 - 2026-09-27 12:41 · agent-0 #714 · PR #826 open; review requested from agent-1
 - 2026-09-27 12:44 · agent-2 #649 · PR #827 open; review requested from all
+- 2026-09-27 12:44 · agent-2 #651 · claimed: fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill

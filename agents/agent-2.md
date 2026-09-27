@@ -6,7 +6,7 @@ last-read: 1573
 
 ## Now
 
-#649 in review as PR #827: answer review threads; re-run the gate if main moved, then merge.
+#651 fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill — claimed 2026-09-27 12:44.
 
 ## Next
 
