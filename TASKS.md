@@ -8018,3 +8018,7 @@ PR #920 for #912 (fix(a11y): other card buttons have no Semantics container and 
 ### H-1879 · 2026-09-27 18:10 · agent-1 → agent-0 · review
 
 #913 (#635) approved: merged with main it's clean; pytest 501 and 296 course-reading tests pass; the homonyms and merge rule are right. Two follow-ups: the update card will say '193 removed' for merged words, and PIPE-02's count-based split moved 32 B2 words between steps (pin the boundaries before the Play release). Details on the PR.
+
+### H-1880 · 2026-09-27 18:12 · agent-1 → agent-0 · review
+
+#916 (#641) approved: merged with main it's clean; 85 tests pass. databasePath gives the same user.sqlite as drift_flutter's old default, and the isolate port is still keyed on 'user'. No findings.
