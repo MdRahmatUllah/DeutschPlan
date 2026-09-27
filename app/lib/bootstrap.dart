@@ -282,12 +282,17 @@ Future<BootstrapResult> bootstrap({
 
 /// Deletes the installed course so the next [bootstrap] copies it again.
 ///
-/// What *Retry* on the error screen does when the failure was [
-/// BootstrapStep.content]: a half-written or corrupt copy is the likeliest
+/// What *Retry* on the error screen does when the failure was
+/// [BootstrapStep.content]: a half-written or corrupt copy is the likeliest
 /// cause, and retrying against the same bad file would fail the same way for
 /// ever. The learner's data is in user.db and is not touched.
+///
+/// Never a course that still reads (#617): then something else failed, and
+/// deleting it would only have the next start copy it again, or fail for
+/// the space the copy needs.
 Future<void> resetInstalledContent({Directory? support}) async {
   final root = support ?? await getApplicationSupportDirectory();
+  if (ContentDao.readable(File('${root.path}/${ContentDao.fileName}'))) return;
   for (final name in <String>[
     ContentDao.fileName,
     ContentUpdater.manifestFile,

@@ -110,7 +110,17 @@ class ContentUpdater {
     final bundled = await _dao.bundledVersion();
     if (bundled.isEmpty || bundled == installed) return null;
 
-    await _dao.replaceWithBundled();
+    try {
+      await _dao.replaceWithBundled();
+    } on Object {
+      // #617: a copy that fails, on a full disk most likely, leaves the old
+      // course attached (`replaceWithBundled`). Nothing is recorded and the
+      // kept manifest stays the old one, so the next launch tries again. The
+      // learner studies the old course meanwhile, rather than meeting an app
+      // that won't open. If the old course did not come back either,
+      // bootstrap's `version()` right after still fails the start.
+      return null;
+    }
     final change = _diff(previous, await _readBundledManifest(), bundled);
 
     await _record(change);

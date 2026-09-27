@@ -154,6 +154,39 @@ void main() {
         reason: 'the course was detached and never came back',
       );
     });
+
+    test('#617 and a failed copy leaves no partial file behind', () async {
+      await dao.attach();
+      // What a copy cut short, on a full disk, would have left.
+      final incoming = File('${(await dao.installedFile()).path}.new')
+        ..writeAsBytesSync(<int>[1, 2, 3]);
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMessageHandler('flutter/assets', (_) async => null);
+
+      await expectLater(dao.replaceWithBundled(), throwsA(anything));
+      expect(incoming.existsSync(), isFalse);
+    });
+  });
+
+  group('#617 whether a course reads', () {
+    test('an installed one does', () async {
+      await dao.attach();
+      expect(ContentDao.readable(await dao.installedFile()), isTrue);
+    });
+
+    test('a missing, truncated or foreign file does not', () {
+      final file = File('${support.path}/other.db');
+      expect(ContentDao.readable(file), isFalse, reason: 'missing');
+
+      file.writeAsBytesSync(assetBytes.sublist(0, assetBytes.length ~/ 3));
+      expect(ContentDao.readable(file), isFalse, reason: 'truncated');
+
+      file.deleteSync();
+      sqlite3.open(file.path)
+        ..execute('CREATE TABLE t (x)')
+        ..close();
+      expect(ContentDao.readable(file), isFalse, reason: 'no meta');
+    });
   });
 }
 

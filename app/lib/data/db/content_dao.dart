@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'package:sogda/data/db/content_update.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
+import 'package:sqlite3/sqlite3.dart' show OpenMode, sqlite3;
 
 part 'content_dao.g.dart';
 
@@ -280,6 +281,31 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
     );
   }
 
+  /// Whether [file] reads as a course: it opens, passes SQLite's quick check,
+  /// and `meta` holds its version. Asked before deleting one (#617): a course
+  /// that reads is never the reason a start failed.
+  static bool readable(File file) {
+    if (!file.existsSync()) return false;
+    try {
+      final db = sqlite3.open(file.path, mode: OpenMode.readOnly);
+      try {
+        final check = db.select('PRAGMA quick_check');
+        final meta = db.select(
+          "SELECT value FROM meta WHERE key = 'content_version'",
+        );
+        return check.length == 1 &&
+            check.first.values.first == 'ok' &&
+            meta.isNotEmpty &&
+            '${meta.first['value'] ?? ''}'.isNotEmpty;
+      } finally {
+        db.close();
+      }
+    } on Object {
+      // Not a database, or not the course's shape: it does not read.
+      return false;
+    }
+  }
+
   /// `meta.content_version` of the attached copy.
   Future<String> version() async {
     final row = await contentMeta('content_version').getSingleOrNull();
@@ -359,7 +385,14 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
     final installed = await installedFile();
     final incoming = File('${installed.path}.new');
 
-    await _copyAsset(incoming);
+    try {
+      await _copyAsset(incoming);
+    } on Object {
+      // A copy that fails part-way, on a full disk most likely, leaves a
+      // partial file that nothing will ever read (#617).
+      if (incoming.existsSync()) incoming.deleteSync();
+      rethrow;
+    }
     await detach();
     try {
       incoming.renameSync(installed.path);

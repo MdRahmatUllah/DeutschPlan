@@ -96,7 +96,8 @@ Startup is `main()` and `bootstrap()` (`app/lib/main.dart`,
    `appDatabaseProvider` and `settingsProvider`) or `BootstrapFailed` (with the
    step that failed and the database if it opened). A failure shows FR-S1-03's
    error screen, with *Retry* (a content failure deletes the installed copy
-   first) and, when the database opened, *Export progress*.
+   first, unless it still reads, #617) and, when the database opened,
+   *Export progress*.
 5. On success `main` builds a `ProviderContainer` from the overrides, then
    starts the reminders and background tasks (`startReminders`), the widget
    snapshot (`followWidget`), the model download manager
