@@ -1,3 +1,4 @@
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -46,11 +47,17 @@ class CategoriesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final categories = ref.watch(categoriesProvider).value;
+    final categoriesState = ref.watch(categoriesProvider);
+    final categories = categoriesState.value;
 
     final Widget body;
     if (categories == null) {
-      body = const SizedBox.expand();
+      body = categoriesState.hasError
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () => ref.invalidate(categoriesProvider),
+            )
+          : const SizedBox.expand();
     } else {
       final rows = (categories.length + 1) ~/ 2;
       body = ListView.builder(

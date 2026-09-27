@@ -134,12 +134,19 @@ class BacklogScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final rows = ref.watch(backlogProvider).value;
+    final rowsState = ref.watch(backlogProvider);
+    final rows = rowsState.value;
     return AdaptiveScaffold(
       backgroundColor: tokens.surface.paper,
-      body: rows == null
-          ? const SizedBox.shrink()
-          : _Backlog(rows: rows, today: ref.watch(todayProvider)),
+      body: rows != null
+          ? _Backlog(rows: rows, today: ref.watch(todayProvider))
+          : rowsState.hasError
+          ? SgLoadFailed(
+              message: AppLocalizations.of(context).todayLoadFailed,
+              onRetry: () => ref.invalidate(backlogProvider),
+              onBack: () => Navigator.of(context).maybePop(),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

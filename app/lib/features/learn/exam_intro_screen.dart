@@ -120,13 +120,20 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final intro = ref.watch(examIntroProvider(widget.step, widget.seed)).value;
+    final introState = ref.watch(examIntroProvider(widget.step, widget.seed));
+    final intro = introState.value;
     final busy = ref.watch(examStartProvider);
     final title = l10n.examIntroTitle(widget.step, widget.seed);
 
     final Widget body;
     if (intro == null) {
-      body = const SizedBox.expand();
+      body = introState.hasError
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () =>
+                  ref.invalidate(examIntroProvider(widget.step, widget.seed)),
+            )
+          : const SizedBox.expand();
     } else {
       final timer = _timer ?? intro.timer;
       final best = intro.best;

@@ -313,7 +313,7 @@ In `app/lib/core/`; screens reuse these rather than drawing their own.
 | `SgChip` (step, status, filter, streak, webLink), `SgPill` | `components/` | Chips and pills |
 | `SgProgressRing`, `SgSegmentedBar` | `components/sg_progress_ring.dart` | Today's ring, progress bars |
 | `SgRatingBar` | `components/sg_rating_bar.dart` | Again, Hard, Good, Easy with their intervals |
-| `SgUmlautBar`, `SgCallout`, `SgErrorPanel`, `SgVerdictRow`, `SgToast`, `SgUndo` | `components/sg_feedback.dart` | The umlaut keys under a German field, callouts, the error panel with Retry, verdicts, toasts and undo |
+| `SgUmlautBar`, `SgCallout`, `SgErrorPanel`, `SgLoadFailed`, `SgVerdictRow`, `SgToast`, `SgUndo` | `components/sg_feedback.dart` | The umlaut keys under a German field, callouts, the error panel with Retry (and, centred where a screen's read failed, `SgLoadFailed`), verdicts, toasts and undo |
 | `SgSlider`, `SgStepper`, `SgSpeakerButton`, `SgCoachMark` | `components/` | Settings controls, the speaker with its three states, the one-time coach mark |
 | `Adaptive*` | `adaptive/adaptive.dart` | All platform chrome ([chapter 4](04-architecture.md#adaptive-chrome)) |
 

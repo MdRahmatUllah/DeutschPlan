@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -82,15 +83,34 @@ class GrammarTopicScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
-    final topic = ref.watch(grammarTopicProvider(uid)).value;
-    final step = topic == null
+    final topicState = ref.watch(grammarTopicProvider(uid));
+    final topic = topicState.value;
+    final stepState = topic == null
         ? null
-        : ref.watch(stepTopicsProvider(topic.topic.sublevelCode)).value;
+        : ref.watch(stepTopicsProvider(topic.topic.sublevelCode));
+    final step = stepState?.value;
     final course = ref.watch(grammarCourseProvider).value;
 
-    final body = topic == null || step == null
-        ? const SizedBox.expand()
-        : _Topic(topic: topic, step: step, course: course);
+    final Widget body;
+    if (topic != null && step != null) {
+      body = _Topic(topic: topic, step: step, course: course);
+    } else if (topicState.hasError ||
+        (stepState?.hasError ?? false) ||
+        // A stale uid: read, but no such topic (#677).
+        (topicState.hasValue && topic == null)) {
+      body = SgLoadFailed(
+        message: AppLocalizations.of(context).learnLoadFailed,
+        onRetry: () {
+          ref.invalidate(grammarTopicProvider(uid));
+          if (topic != null) {
+            ref.invalidate(stepTopicsProvider(topic.topic.sublevelCode));
+          }
+        },
+        onBack: () => Navigator.of(context).maybePop(),
+      );
+    } else {
+      body = const SizedBox.expand();
+    }
 
     final scaffold = AdaptiveScaffold(
       backgroundColor: tokens.isGlass

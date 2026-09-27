@@ -104,12 +104,21 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final result = ref.watch(quizResultProvider(widget.attemptId)).value;
+    final resultState = ref.watch(quizResultProvider(widget.attemptId));
+    final result = resultState.value;
     final close = Navigator.of(context).pop;
 
     final Widget content;
     if (result == null) {
-      content = const SizedBox.expand();
+      // An attempt that isn't there reads as null: no blank page either.
+      content = resultState.hasError || resultState.hasValue
+          ? SgLoadFailed(
+              message: l10n.learnLoadFailed,
+              onRetry: () =>
+                  ref.invalidate(quizResultProvider(widget.attemptId)),
+              onBack: close,
+            )
+          : const SizedBox.expand();
     } else {
       final attempt = result.attempt;
       final share = attempt.maxPoints == 0
