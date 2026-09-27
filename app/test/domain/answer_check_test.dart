@@ -186,16 +186,56 @@ void main() {
       expect(checkGerman('das Haus', 'das Haus'), Verdict.correct);
     });
 
-    test('ä, ae and a are all accepted', () {
-      for (final given in <String>['Tür', 'Tuer', 'Tur']) {
-        expect(checkGerman(given, 'Tür'), Verdict.correct, reason: given);
+    test('#675 ä and ae are right, a bare a is almost', () {
+      for (final (umlaut, typed, bare) in const <(String, String, String)>[
+        ('Tür', 'Tuer', 'Tur'),
+        ('schön', 'schoen', 'schon'),
+        ('Mädchen', 'Maedchen', 'Madchen'),
+        ('Straße', 'Strasse', 'Strasse'),
+      ]) {
+        expect(checkGerman(umlaut, umlaut), Verdict.correct, reason: umlaut);
+        expect(checkGerman(typed, umlaut), Verdict.correct, reason: typed);
+        if (bare != typed) {
+          expect(checkGerman(bare, umlaut), Verdict.almost, reason: bare);
+        }
       }
-      for (final given in <String>['schön', 'schoen', 'schon']) {
-        expect(checkGerman(given, 'schön'), Verdict.correct, reason: given);
+    });
+
+    test('#675 a meaning keeps the lenient match: it tests no German form', () {
+      expect(checkMeaning('doner kebab', 'döner kebab'), Verdict.correct);
+    });
+
+    test('#675 a minimal pair the umlaut makes is never right', () {
+      // The other word or form: the thing a gap fill, a forms item or a
+      // listening item tests.
+      for (final (given, expected) in const <(String, String)>[
+        ('hatte', 'hätte'),
+        ('wurde', 'würde'),
+        ('konnte', 'könnte'),
+        ('schon', 'schön'),
+        ('zahlen', 'zählen'),
+        ('schön', 'schon'),
+      ]) {
+        expect(
+          checkGerman(given, expected),
+          isNot(Verdict.correct),
+          reason: '$given for $expected',
+        );
       }
-      for (final given in <String>['Mädchen', 'Maedchen', 'Madchen']) {
-        expect(checkGerman(given, 'Mädchen'), Verdict.correct, reason: given);
+      for (final (given, expected) in const <(String, String)>[
+        ('Mutter', 'Mütter'),
+        ('Bruder', 'Brüder'),
+        ('Apfel', 'Äpfel'),
+        ('alter', 'älter'),
+      ]) {
+        expect(
+          checkForm(given, expected),
+          isNot(Verdict.correct),
+          reason: '$given for $expected',
+        );
       }
+      expect(checkGerman('haette', 'hätte'), Verdict.correct);
+      expect(checkForm('Muetter', 'Mütter'), Verdict.correct);
     });
 
     test('ß and ss are the same word', () {
@@ -269,7 +309,7 @@ void main() {
       // five-letter word. Measuring that would forgive a typo BR-ANS-01 does
       // not: the rule is six *letters*.
       expect(checkGerman('Bäuem', 'Bäume'), Verdict.wrong);
-      expect(checkGerman('Baume', 'Bäume'), Verdict.correct, reason: 'ä/a');
+      expect(checkGerman('Baume', 'Bäume'), Verdict.almost, reason: 'ä/a');
       expect(checkGerman('Blüemn', 'Blümen'), Verdict.almost, reason: 'six');
     });
 

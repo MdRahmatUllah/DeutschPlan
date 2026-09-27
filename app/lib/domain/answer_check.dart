@@ -251,16 +251,17 @@ Verdict _compare(String given, String expected, {required bool german}) {
 
   if (key.isEmpty || expectedKey.isEmpty) return Verdict.wrong;
 
-  // Two keys, because BR-ANS-02 accepts ä, ae and a alike: "Tür" and "Tuer"
-  // meet on the expanded key, "Tur" on the folded one.
-  //
-  // Each key against its own kind. Comparing them crosswise as well turns out
-  // to accept nothing extra — the folded key is a coarsening of the expanded
-  // one for exactly these letters, so `alt == alt` already covers it; I
-  // checked against a list of German pairs and found none that distinguishes
-  // the two. Written this way because it is the rule, not because it is
-  // stricter.
-  if (key == expectedKey || alt == expectedAlt) return Verdict.correct;
+  // Two keys: "Tür" and "Tuer" meet on the expanded key, "Tur" only on the
+  // folded one. The folded key is a coarsening of the expanded one for
+  // exactly the umlauts, so comparing crosswise adds nothing.
+  if (key == expectedKey) return Verdict.correct;
+
+  // BR-ANS-02: "ae" is the umlaut typed without its key, and right. A bare
+  // vowel may be another word or form, the very thing a question can test:
+  // "hatte" for "hätte", "Mutter" for "Mütter", "schon" for "schön". So in
+  // German it is *almost*: the feedback shows the umlaut, and a different form
+  // is never marked right (#675).
+  if (alt == expectedAlt) return german ? Verdict.almost : Verdict.correct;
 
   // Both spellings get a shot at the typo — a learner typing "Baeuem" for
   // "Bäume" is one character out on the expanded key and two on the folded
