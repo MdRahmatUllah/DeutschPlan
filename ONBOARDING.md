@@ -437,7 +437,7 @@ app/lib/
 
 **The rules `app/test/architecture_test.dart` enforces** (so you don't have to guess):
 1. `package:material_ui/material_ui.dart` / `cupertino_ui`, never `package:flutter/material.dart` or `cupertino.dart`.
-2. `lib/domain/` is pure Dart.
+2. `lib/domain/` is pure Dart: no Flutter, drift, plugin or `dart:io`, and nothing of the app's outside `domain/` (`package:sogda/core/`, `data/`…, or a `../` import).
 3. Raw colours (`Color(0x…)`, `Colors.x`) only inside `core/theme/`. Escape hatch: `// ponytail: allow-raw-colour`.
 4. Chrome only through the adaptive wrappers. Everywhere else these are banned, with their replacements:
 
@@ -450,18 +450,22 @@ app/lib/
    | `showModalBottomSheet(` | `Adaptive.showSheet` |
    | `AlertDialog(` | `Adaptive.showConfirm` |
    | `showTimePicker(` | `Adaptive.showTimePickerFor` |
-   | `FilledButton`, `ElevatedButton`, `OutlinedButton`, `TextButton(` | `SgButton` (and its kinds) |
+   | `FilledButton`, `ElevatedButton`, `OutlinedButton`, `TextButton(`, `TextButton.icon(` | `SgButton` (and its kinds) |
    | `Chip(`, `ActionChip(`, `FilterChip(` | `SgChip` |
+   | `showDialog(`, `Dialog(`, `Dialog.fullscreen(`, `SimpleDialog(`, `showGeneralDialog(` | `Adaptive.showConfirm` or `Adaptive.showPane` |
+   | `IconButton` (any constructor) | an Adaptive or Sg control |
+   | `SnackBar(` | `SgToast` |
 
-   The Cupertino equivalents are banned too. Escape hatch: `// ponytail: allow-chrome`.
+   The Cupertino equivalents are banned too, and `main.dart` is read like any other file. A `TextField` is allowed: the SDK's follows the platform, and ours are drawn from the tokens. Escape hatch: `// ponytail: allow-chrome` on the line, or ending the comment just above it (`dart format` moves a comment after an opening bracket).
 5. drift only in `lib/data/`.
-6. Nothing writes to the course tables (words, grammar_topics, categories, …).
-7. No I/O in a widget's `build()`.
-8. keepAlive providers in `app_providers.dart` must be listed in `docs/01-architecture/state-management.md`'s Provider map.
-9. Navigation outside `lib/router/` uses the typed routes, their `open`/`instead` helpers, or `context.jumpToTab(route)`. No inline paths, no `SomeRoute().push(context)`.
-10. `main.dart` keeps `runApp(const ProviderScope`.
-11. Use `appLocalizationsDelegates` from `main.dart`.
-12. `DateTime.now()` only through `clockProvider` (except in a short allow-list).
+6. Text is `SgText` (`SgOneLine`, `SgHeadword`, `SgRuns`), never a raw `Text(`, `Text.rich(` or `RichText(`, outside `core/typography/` and `core/adaptive/`. Escape hatch: `// ponytail: allow-raw-text`, placed as `allow-chrome` is.
+7. Nothing writes to the course tables (words, grammar_topics, categories, meta, …): not in SQL (`OR IGNORE` and `OR REPLACE` included, in any `.drift` file), and not through drift's API (`into(db.words)`, `update(…)`, `batch.insertAll(…)`).
+8. No I/O in a widget's `build()`.
+9. keepAlive providers anywhere under `lib/` must be listed in `docs/01-architecture/state-management.md`'s Provider map, and the reverse.
+10. Navigation outside `lib/router/` uses the typed routes, their `open`/`instead` helpers, or `context.jumpToTab(route)`. No inline paths (either quote, `go`/`push`/`replace`/`pushReplacement`), no route names (`goNamed`…), no `SomeRoute().push(context)` (or `.go`, `.replace`, `.pushReplacement`).
+11. `main.dart` keeps `runApp(const ProviderScope`.
+12. Use `appLocalizationsDelegates` from `main.dart`.
+13. `DateTime.now()`, the tear-off `DateTime.now` and `DateTime.timestamp()` only through `clockProvider` (except in a short allow-list).
 
 **State (Riverpod 3, codegen only)**
 - Declare providers with `@riverpod` / `@Riverpod(keepAlive: true)` and `part 'x.g.dart'`. They are generated as `xProvider`.

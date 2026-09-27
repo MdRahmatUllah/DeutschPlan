@@ -155,6 +155,8 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
                   ),
                   semanticsLabel: text,
                 );
+                // Its gap is a WidgetSpan, and SgRuns takes TextSpans only
+                // (#695 TS-4). ponytail: allow-raw-text
                 return Text.rich(
                   TextSpan(
                     style: line,
