@@ -1,20 +1,25 @@
 import 'dart:async';
 
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 
 /// #623: the app's own sounds, Supertonic's clips and Speaking's playback,
 /// share the phone's audio as the phone's voice does. A word ducks the
 /// learner's music while it plays and gives it back after. just_audio's
 /// default session is music with `AUDIOFOCUS_GAIN`, taken on every play and
 /// never given back, so a one-second word paused Spotify for good.
-// ponytail: `speech()` is iOS's playback category; Speaking's recorder sets
-// its own. iOS is Later (v1 scope): check the two together there.
+// ponytail: iOS ducks others and lets them back on deactivation below, but
+// `speech()` is its playback category and Speaking's recorder sets its own.
+// iOS is Later (v1 scope): check the two together on a phone there.
 abstract final class SpeechAudio {
   /// Speech, ducking what else plays: what `flutter_tts` asks for too.
   static final AudioSessionConfiguration configuration =
       const AudioSessionConfiguration.speech().copyWith(
         androidAudioFocusGainType:
             AndroidAudioFocusGainType.gainTransientMayDuck,
+        avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.duckOthers,
+        avAudioSessionSetActiveOptions:
+            AVAudioSessionSetActiveOptions.notifyOthersOnDeactivation,
       );
 
   static Future<AudioSession>? _session;
@@ -33,7 +38,14 @@ abstract final class SpeechAudio {
   /// gives the focus back once it, and any play started after it, has ended.
   /// Completes as [play]'s future does.
   static Future<void> play(Future<void> Function() play) async {
-    await _ready();
+    try {
+      await _ready();
+    } on Object catch (error) {
+      // The word plays all the same, as before #623, and the next play asks
+      // again: a failure kept would silence the voice for the whole run.
+      _session = null;
+      debugPrint('audio session: $error');
+    }
     final ended = play();
     _focus.playing(ended);
     return ended;
@@ -54,7 +66,9 @@ class FocusRelease {
     final mine = ++_plays;
     unawaited(
       ended.catchError((Object _) {}).whenComplete(() {
-        if (mine == _plays) unawaited(_release());
+        if (mine == _plays) {
+          unawaited(_release().catchError((Object _) {}));
+        }
       }),
     );
   }

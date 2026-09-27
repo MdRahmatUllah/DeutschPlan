@@ -87,6 +87,10 @@ class PlatformExamRecorder implements ExamRecorder {
 
   @override
   Future<void> play(String path) async {
+    // A finished take leaves `playing` true, and `play` would return at once,
+    // before asking for the focus: the replay under the learner's music, at
+    // full volume (#623).
+    await _player.stop();
     await _player.setFilePath(path);
     // Ducks the learner's music, and gives it back after (#623).
     await SpeechAudio.play(_player.play);

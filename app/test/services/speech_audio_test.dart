@@ -33,6 +33,41 @@ void main() {
     }
   });
 
+  test("#623 Speaking's replay stops the finished take before it loads the "
+      'next, or play returns before asking for the focus', () {
+    final recorder = File('lib/services/exam_recorder.dart').readAsStringSync();
+    expect(
+      RegExp(r'await _player\.stop\(\);\s*await _player\.setFilePath')
+          .hasMatch(recorder),
+      isTrue,
+    );
+  });
+
+  test('#623 a session that fails to configure: the word plays all the '
+      'same, and the next play asks again', () async {
+    // No audio_session plugin here: configuring it fails, as it might on a
+    // phone.
+    var played = 0;
+    await SpeechAudio.play(() async => played++);
+    await SpeechAudio.play(() async => played++);
+    expect(played, 2);
+  });
+
+  test('#623 on iOS it ducks others and lets them back', () {
+    expect(
+      SpeechAudio.configuration.avAudioSessionCategoryOptions,
+      AVAudioSessionCategoryOptions.duckOthers,
+    );
+  });
+
+  test("#623 a give-back that fails is no error of the play's", () async {
+    final focus = FocusRelease(() async => throw StateError('no session'));
+    final play = Completer<void>();
+    focus.playing(play.future);
+    play.complete();
+    await pumpEventQueue();
+  });
+
   group('#623 FocusRelease', () {
     late int released;
     late FocusRelease focus;
