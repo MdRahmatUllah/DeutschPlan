@@ -117,6 +117,10 @@ const double sentenceJitter = 0.05;
 /// Share of [sentence]'s tokens longer than two letters whose search key is
 /// a learned word's key or starts with one — "Wohnungen" counts for
 /// "Wohnung".
+///
+/// A stem is the cloze's (#842): four letters at least and no function
+/// word, so "sie" is no stem of "sieben", "man" of "Mann", nor "sich" of
+/// "sicher". A shorter key counts only as the whole word.
 double coverage(String sentence, Set<String> learned) {
   final tokens = <String>[
     for (final match in _word.allMatches(sentence))
@@ -126,12 +130,14 @@ double coverage(String sentence, Set<String> learned) {
   // The token's prefixes looked up in the set, longest first: the same rule
   // as "starts with a learned key", at the token's length rather than the
   // vocabulary's — thousands of keys by the end of the course. A prefix
-  // never shorter than [minKey], as the cloze has it: A1.1's "er", "an" and
-  // "zu" would otherwise make "erklärt", "andere" and "zusammen" known, and
-  // most of any German text with them (#654).
+  // longer than [minKey], as the cloze has it: A1.1's "er", "an" and "zu"
+  // would otherwise make "erklärt", "andere" and "zusammen" known, and most
+  // of any German text with them (#654), and "sie" "sieben" (#842).
   bool known(String token) {
-    for (var end = token.length; end >= minKey; end--) {
-      if (learned.contains(token.substring(0, end))) return true;
+    if (learned.contains(token)) return true;
+    for (var end = token.length - 1; end > minKey; end--) {
+      final stem = token.substring(0, end);
+      if (learned.contains(stem) && !functionWords.contains(stem)) return true;
     }
     return false;
   }

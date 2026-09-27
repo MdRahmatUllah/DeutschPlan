@@ -139,19 +139,34 @@ Stream<List<MyWord>> myWords(Ref ref) =>
 /// The learner's own word [german] already is, if any, other than [except]:
 /// keyed as the exact tier keys a word, so "Quarkbrotchen" finds the
 /// "Quarkbrötchen" saved from it. R1's no-results page offers to open it
-/// rather than add it twice (#396), and R2 won't save it again (#669).
-MyWord? savedAs(Iterable<MyWord>? words, String german, {int? except}) {
+/// rather than add it twice (#396), and R2 shows it (#669). The one that is
+/// [sameWord] with [article] comes first.
+MyWord? savedAs(
+  Iterable<MyWord>? words,
+  String german, {
+  String? article,
+  int? except,
+}) {
   final key = searchKey(german);
   if (key.isEmpty) return null;
   final alt = searchKeyAlt(german);
-  return words
-      ?.where(
-        (word) =>
-            word.id != except &&
-            (searchKey(word.german) == key || searchKeyAlt(word.german) == alt),
-      )
-      .firstOrNull;
+  final like = <MyWord>[
+    for (final word in words ?? const <MyWord>[])
+      if (word.id != except &&
+          (searchKey(word.german) == key || searchKeyAlt(word.german) == alt))
+        word,
+  ];
+  return like.where((word) => sameWord(word, german, article)).firstOrNull ??
+      like.firstOrNull;
 }
+
+/// Whether [word] is [german] with [article] itself, not only like it
+/// (#841): the same search key, so "Tuer" is Tür but "schon" is not schön,
+/// and the same article, so die See is not der See. R2 won't save it again
+/// (#669); one only like it is shown, and saved if the learner wants.
+bool sameWord(MyWord word, String german, String? article) =>
+    searchKey(word.german) == searchKey(german) &&
+    (word.article ?? '') == (article ?? '');
 
 /// R1 · Search (`search.md`, Search artboards): the Raspberry header with
 /// its field, the web row, and the results grouped as BR-SEARCH-01 orders
