@@ -12,7 +12,7 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/features/exam/exam_question_view.dart'
-    show ExamRubricTick, examRubricLines;
+    show ExamRubricTick, examClock, examRubricLines;
 import 'package:sogda/features/exam/exam_review_screen.dart';
 import 'package:sogda/features/learn/step_exams.dart' show examSectionName;
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -246,7 +246,7 @@ class _Result extends StatelessWidget {
       l10n.examResultLine(
         attempt.sublevelCode,
         attempt.seed,
-        l10n.digits(_clock(attempt.durationSec)),
+        l10n.digits(examClock(attempt.durationSec)),
       ),
       if (previous != null)
         l10n.examResultCompare(
@@ -362,10 +362,6 @@ String _signed(double delta) => delta > 0
     : delta < 0
     ? '−${_points(-delta)}'
     : '±0';
-
-/// "18:41", the time the paper ran.
-String _clock(int seconds) =>
-    '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
 
 /// The block on the result's colour: close, the badge, the score, the pass
 /// mark on its bar, and the line.

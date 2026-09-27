@@ -10,9 +10,12 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_run_service.dart';
-import 'package:sogda/domain/exam_generator.dart' show ExamSection, WritingTask;
+import 'package:sogda/domain/exam_generator.dart'
+    show ExamSection, SpeakingTask, WritingTask;
 import 'package:sogda/features/exam/exam_navigator_sheet.dart';
 import 'package:sogda/features/exam/exam_question_view.dart';
+import 'package:sogda/features/exam/exam_speaking.dart';
+import 'package:sogda/features/exam/exam_writing.dart';
 import 'package:sogda/features/learn/step_exams.dart'
     show examMinutes, examSectionName;
 import 'package:sogda/features/study/write_guard.dart';
@@ -321,7 +324,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       for (final (i, q) in questions.indexed)
         if (examNumbered(q.item)) i,
     ];
-    final left = _timed ? _clock(_left) : null;
+    final left = _timed ? examClock(_left) : null;
     final pick = await Adaptive.showSheet<NavChoice>(
       context: context,
       builder: (_) => ExamNavigatorSheet(
@@ -601,40 +604,56 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
               children: <Widget>[
-                ExamQuestionView(
-                  key: ValueKey<int>(questions[_at].ord),
-                  item: item,
-                  // Past 130 % only, not `cramped`: a short phone at 100 %
-                  // collapses the band (#571) but keeps what is asked at
-                  // its size, which fits there (#573).
-                  typingLarge: SgScript.largeTyping(context),
-                  given: _given[_at],
-                  field: _field,
-                  countPinned: typing && item is WritingTask,
-                  onGiven: (value) => _record(value, at: at),
-                  onRecording: (stop) => _stopRecording = stop,
-                  rubric: _rubrics[at],
-                  onRubric: (ticks) => unawaited(_rubric(at, ticks)),
-                  retakesLeft:
-                      ExamSpeaking.retakes - (_retakes[questions[at].ord] ?? 0),
-                  onRetake: () => _change(
-                    () => _retakes.update(
-                      questions[at].ord,
-                      (n) => n + 1,
-                      ifAbsent: () => 1,
+                switch (item) {
+                  WritingTask() => ExamWriting(
+                    key: ValueKey<int>(questions[at].ord),
+                    task: item,
+                    field: _field,
+                    countPinned: typing,
+                    typingLarge: SgScript.largeTyping(context),
+                  ),
+                  SpeakingTask() => ExamSpeaking(
+                    key: ValueKey<int>(questions[at].ord),
+                    task: item,
+                    given: _given[at],
+                    onGiven: (value) => _record(value, at: at),
+                    onRecording: (stop) => _stopRecording = stop,
+                    rubric: _rubrics[at],
+                    onRubric: (ticks) => unawaited(_rubric(at, ticks)),
+                    retakesLeft:
+                        ExamSpeaking.retakes -
+                        (_retakes[questions[at].ord] ?? 0),
+                    onRetake: () => _change(
+                      () => _retakes.update(
+                        questions[at].ord,
+                        (n) => n + 1,
+                        ifAbsent: () => 1,
+                      ),
+                    ),
+                    recordingPath: () =>
+                        _service.recordingPath(widget.attemptId),
+                    onDiscard: (path) => _discard(at, path),
+                  ),
+                  _ => ExamQuestionView(
+                    key: ValueKey<int>(questions[at].ord),
+                    item: item,
+                    // Past 130 % only, not `cramped`: a short phone at 100 %
+                    // collapses the band (#571) but keeps what is asked at
+                    // its size, which fits there (#573).
+                    typingLarge: SgScript.largeTyping(context),
+                    given: _given[at],
+                    field: _field,
+                    onGiven: (value) => _record(value, at: at),
+                    plays: _plays[questions[_at].ord] ?? 0,
+                    onPlay: () => setState(
+                      () => _plays.update(
+                        questions[_at].ord,
+                        (n) => n + 1,
+                        ifAbsent: () => 1,
+                      ),
                     ),
                   ),
-                  recordingPath: () => _service.recordingPath(widget.attemptId),
-                  onDiscard: (path) => _discard(at, path),
-                  plays: _plays[questions[_at].ord] ?? 0,
-                  onPlay: () => setState(
-                    () => _plays.update(
-                      questions[_at].ord,
-                      (n) => n + 1,
-                      ifAbsent: () => 1,
-                    ),
-                  ),
-                ),
+                },
                 // #554: typing at large text, the room above the keyboard is
                 // the question's, and the buttons scroll under the field.
                 if (cramped && item is! WritingTask)
@@ -731,10 +750,6 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
 /// if that is too often.
 const double shortRoom = 360;
 
-/// "14:32".
-String _clock(int seconds) =>
-    '${seconds ~/ 60}:${'${seconds % 60}'.padLeft(2, '0')}';
-
 /// The time left, in [ink] on whatever it sits on: the band, or the bar
 /// above the keyboard while the band is collapsed (#560).
 class _Clock extends StatelessWidget {
@@ -766,7 +781,7 @@ class _Clock extends StatelessWidget {
           widthFactor: 1,
           heightFactor: 1,
           child: SgText(
-            l10n.digits(_clock(seconds)),
+            l10n.digits(examClock(seconds)),
             role: SgTextRole.body,
             weight: 700,
             color: coral ? tokens.color.ink : ink,
