@@ -347,6 +347,21 @@ void main() {
     expect(find.text(l10n.examResultSectionPoints('0', 4)), findsOneWidget);
   });
 
+  testWidgets('FR-L12S-04 #891 from L13, a delete whose write fails asks, '
+      'and Retry deletes it', (tester) async {
+    await pump(tester, with_: StubExamResult()..failDelete = true);
+    await tap(tester, l10n.examSectionSpeaking);
+    await tap(tester, l10n.examSpeakingDelete);
+    await tap(tester, l10n.examSpeakingDelete);
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    expect(stub.deleted, isEmpty);
+
+    stub.failDelete = false;
+    await tap(tester, l10n.retry);
+    expect(find.text(l10n.saveAnswerFailed), findsNothing);
+    expect(stub.deleted, <int>[42]);
+  });
+
   testWidgets('FR-L13-02 a failed add can be tried again', (tester) async {
     await pump(tester, with_: StubExamResult()..failAdd = true);
     await tap(tester, l10n.examResultAddMissed(9));

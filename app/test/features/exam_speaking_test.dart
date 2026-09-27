@@ -563,6 +563,34 @@ void main() {
     expect(find.text(l10n.examSpeakingReady), findsOneWidget);
   });
 
+  testWidgets('FR-L12S-04 #891 a delete whose write fails, its sheet closed, '
+      'keeps the take and its file', (tester) async {
+    await pump(
+      tester,
+      items: const <ExamItem>[artboardSpeaking],
+      given: <int, String>{1: path},
+    );
+    run.failWrites = true;
+    await tester.tap(find.text(l10n.examSpeakingDelete));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    Navigator.of(tester.element(find.text(l10n.saveAnswerFailed))).pop();
+    await tester.pumpAndSettle();
+
+    // The answer still points at the file, and the file is still there.
+    expect(run.discarded, isEmpty);
+    expect(find.text(l10n.examSpeakingDelete), findsOneWidget);
+    expect(find.text(l10n.examSpeakingReady), findsNothing);
+
+    // Written this time, the file goes after it.
+    run.failWrites = false;
+    await tester.tap(find.text(l10n.examSpeakingDelete));
+    await tester.pumpAndSettle();
+    expect(run.answers.last, (1, null));
+    expect(run.discarded, <String>[path]);
+    expect(find.text(l10n.examSpeakingReady), findsOneWidget);
+  });
+
   testWidgets("FR-L12S-04 #731 delete clears the take's ticks", (tester) async {
     final semantics = tester.ensureSemantics();
     await pump(
