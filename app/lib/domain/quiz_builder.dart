@@ -331,6 +331,7 @@ class QuizBuilder {
             !meanings.contains(QuizDirection.deEn) &&
             (word.bangla ?? '').trim().isNotEmpty;
         final prompt = bangla ? word.bangla! : word.english;
+        final hint = meanings.length == 2 ? word.bangla : null;
         return QuizItem(
           ord: ord,
           wordUid: word.uid,
@@ -338,9 +339,9 @@ class QuizBuilder {
           prompt: prompt,
           expected: word.headword,
           options: await tiles((w) => w.headword),
-          hint: meanings.length == 2 ? word.bangla : null,
+          hint: hint,
           phrase: word.isPhrase,
-          also: otherAnswers(word, prompt, shared),
+          also: otherAnswers(word, prompt, shared, hint: hint),
         );
       case QuizDirection.articles:
         return QuizItem(
@@ -403,14 +404,17 @@ Verdict grade(QuizItem item, String given) => switch (item.direction) {
 
 /// EN → DE's other right answers when [word] is asked by [prompt]: the
 /// course's other words whose meaning cell it is, from
-/// [QuizStore.sharedMeanings] (#832).
+/// [QuizStore.sharedMeanings] (#832). Under a Bangla [hint] ("both"), only
+/// those whose Bangla it is too: "you" over তুমি is du, not Sie.
 List<GermanAnswer> otherAnswers(
   QuizWord word,
   String prompt,
-  Map<String, List<QuizWord>> shared,
-) => <GermanAnswer>[
+  Map<String, List<QuizWord>> shared, {
+  String? hint,
+}) => <GermanAnswer>[
   for (final other in shared[prompt] ?? const <QuizWord>[])
-    if (other.uid != word.uid) other.answer,
+    if (other.uid != word.uid && (hint == null || other.bangla == hint))
+      other.answer,
 ];
 
 /// The directions a mixed quiz rotates through, in order.

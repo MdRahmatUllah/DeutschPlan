@@ -114,6 +114,23 @@ void main() {
     expect(queue.current.phrase, isTrue);
   });
 
+  test('#832 BR-ANS-02 a re-asked EN → DE item still takes the other words '
+      'its prompt means', () {
+    final queue = QuizQueue(<QuizItem>[
+      const QuizItem(
+        ord: 1,
+        wordUid: 'du',
+        direction: QuizDirection.enDe,
+        prompt: 'you',
+        expected: 'du',
+        options: <String>['du', 'ich', 'er', 'wir'],
+        also: <GermanAnswer>[(german: 'dich', phrase: false)],
+      ),
+    ])..answered(Verdict.wrong);
+    expect(queue.next(), isTrue);
+    expect(grade(queue.current, 'dich'), Verdict.correct);
+  });
+
   test('an empty quiz has nothing to move to', () {
     expect(QuizQueue(const <QuizItem>[]).next(), isFalse);
   });

@@ -852,6 +852,35 @@ void main() {
         isEmpty,
         reason: 'asked in Bangla, a cell no other word has',
       );
+
+      final both = (await build(
+        <QuizWord>[du],
+        pool: <QuizWord>[
+          du,
+          you('dich', 'dich'),
+          const QuizWord(
+            uid: 'dein',
+            german: 'dein',
+            english: 'you',
+            step: 'A1.1',
+            pos: 'pron',
+            bangla: 'তুমি du',
+          ),
+          ...twelve,
+        ],
+        direction: QuizDirection.enDe,
+        length: 1,
+        meanings: const <QuizDirection>{
+          QuizDirection.deEn,
+          QuizDirection.deBn,
+        },
+      )).items.single;
+      expect((both.prompt, both.hint), ('you', 'তুমি du'));
+      expect(
+        both.also.map((a) => a.german),
+        <String>['dein'],
+        reason: 'the Bangla under "you" says which you: not dich',
+      );
     });
 
     test('BR-ANS-03 articles are exact; a form allows a typo', () {
