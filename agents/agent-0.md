@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#707 chore(tools): smaller items in tools (production review nits) — claimed 2026-09-27 12:48.
+#707 in review as PR #830: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

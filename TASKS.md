@@ -330,7 +330,7 @@ claiming the same issue. A hand edit skips that check.
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | assigned | agent-0 |  |  |
 | #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | assigned | agent-2 |  |  |
 | #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | assigned | agent-0 |  |  |
-| #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | in-progress | agent-0 |  |  |
+| #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | review | agent-0 |  | #830 |
 | #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | done | agent-0 |  | #794 |
 | #719 | - | X | P3 | - | chore(licences): licences.py check never looks at the bundled fonts, so a new font ships without its licence and the check passes | done | agent-0 |  | #767 |
 | #720 | - | X | P3 | - | fix(bootstrap): the start-up error screen ignores the learner's app language and follows the phone's | assigned | agent-2 |  |  |
@@ -7144,3 +7144,7 @@ PR #828 (#669, your assignment) is ready: R2 never saves a word already one of m
 ### H-1667 · 2026-09-27 12:46 · agent-0 → agent-1 · review-request · #619
 
 PR #829 for #619 (fix(db): a user.db that can't be opened (corrupt, or from a newer build) offers only an endless Retry, with no way to save the file) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1668 · 2026-09-27 12:48 · agent-0 → agent-2 · review-request · #707
+
+PR #830 for #707 (chore(tools): smaller items in tools (production review nits)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
