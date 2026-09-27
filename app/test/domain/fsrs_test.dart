@@ -404,6 +404,24 @@ void main() {
       }
     });
 
+    test('#863 an infinite one is fresh too: Again is 1 day, Good a first '
+        "review's", () {
+      final later = start.add(const Duration(days: 3));
+      final card = CardState(
+        stability: double.infinity,
+        difficulty: 5,
+        reps: 4,
+        lapses: 1,
+        state: FsrsState.review,
+        lastReview: start,
+      );
+      final fresh = fsrs.review(const CardState(), Rating.good, later);
+      expect(fsrs.review(card, Rating.again, later).scheduledDays, 1);
+      expect(fsrs.review(card, Rating.good, later).scheduledDays, 4);
+      expect(fresh.scheduledDays, 4);
+      expect(fsrs.preview(card, later), <int>[1, 1, 4, 14]);
+    });
+
     test('intervalDays and retrievability never throw or give NaN', () {
       expect(fsrs.intervalDays(double.nan), 1);
       expect(fsrs.intervalDays(double.infinity), Fsrs.maxInterval);

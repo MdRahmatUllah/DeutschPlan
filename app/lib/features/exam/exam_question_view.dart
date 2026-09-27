@@ -35,7 +35,8 @@ bool examNumbered(ExamItem item) =>
 
 /// Whether [item] is answered by typing, into the runner's field.
 bool examTyped(ExamItem item) => switch (item) {
-  WordQuestion(:final section) => section != ExamSection.articles,
+  WordQuestion(:final section, :final tiles) =>
+    section != ExamSection.articles && tiles.isEmpty,
   GapQuestion() => true,
   GrammarQuestion(:final item) => item is GapFill,
   WritingTask() => true,
@@ -157,7 +158,7 @@ class ExamQuestionView extends ConsumerWidget {
       String? hint,
       Widget answer,
     ) = switch (item) {
-      WordQuestion(:final section, :final prompt, :final form) =>
+      WordQuestion(:final section, :final prompt, :final form, :final tiles) =>
         switch (section) {
           ExamSection.articles => (
             l10n.examRunAskArticle,
@@ -226,8 +227,11 @@ class ExamQuestionView extends ConsumerWidget {
               const SizedBox(width: 14),
               speaker(prompt),
             ]),
-            null,
-            _Field(field: field, onGiven: onGiven),
+            tiles.isEmpty ? null : l10n.examRunTapOne,
+            // #798: a Bangla meaning is tapped, as L8's DE → বাংলা.
+            tiles.isEmpty
+                ? _Field(field: field, onGiven: onGiven)
+                : ChoiceTiles(options: tiles, picked: given, onPick: onGiven),
           ),
         },
       GapQuestion(:final before, :final after, :final translation) => (

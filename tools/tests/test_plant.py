@@ -119,3 +119,14 @@ def test_697_kill_own_testers_matches_this_worktree_only():
     main = plant.own_pattern(Path("F:/appDevs/deutschplan"))
     assert fnmatch.fnmatchcase(tester(r"F:\appDevs\deutschplan"), main)
     assert not fnmatch.fnmatchcase(tester(r"F:\appDevs\deutschplan\.claude\worktrees\agent-a0f"), main)
+
+
+def test_814_a_program_not_on_path_fails_the_run_instead_of_crashing():
+    assert plant.run_tests([], ["no-such-tool-685", "test"]) == (127, "no-such-tool-685 is not on PATH")
+
+
+@pytest.mark.skipif(plant.shutil.which("dart") is None, reason="dart is not on PATH")
+def test_814_a_custom_command_naming_dart_runs_on_windows():
+    # dart is a .bat on Windows, which a bare Popen can't start.
+    code, _ = plant.run_tests([], ["dart", "--version"])
+    assert code == 0

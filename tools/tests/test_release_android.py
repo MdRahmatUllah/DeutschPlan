@@ -180,10 +180,12 @@ def test_611_the_real_release_md_lists_permissions():
 
 
 def whole_bundle(tmp_path: Path) -> Path:
-    """A bundle with the engine and the app's code for both 64-bit ABIs,
-    aligned to 16 KB."""
+    """A bundle with the engine and the app's code for every ABI, the
+    64-bit ones aligned to 16 KB."""
     aab = tmp_path / "app-release.aab"
     with zipfile.ZipFile(aab, "w") as bundle:
+        for lib in ("libflutter.so", "libapp.so"):
+            bundle.writestr(f"base/lib/armeabi-v7a/{lib}", elf32([(PT_LOAD, 0x1000)]))
         for abi in ("arm64-v8a", "x86_64"):
             for lib in ("libflutter.so", "libapp.so"):
                 bundle.writestr(f"base/lib/{abi}/{lib}", elf64([(PT_LOAD, 0x4000)]))
@@ -226,6 +228,8 @@ def test_697_a_bundle_without_the_engine_or_the_app_fails(tmp_path, passing, mon
         bundle.writestr("base/lib/arm64-v8a/libflutter.so", elf64([(PT_LOAD, 0x4000)]))
         bundle.writestr("base/dex/classes.dex", b"dex\n")
     assert release.missing_libs(aab) == [
+        "base/lib/armeabi-v7a/libflutter.so: missing",
+        "base/lib/armeabi-v7a/libapp.so: missing",
         "base/lib/arm64-v8a/libapp.so: missing",
         "base/lib/x86_64/libflutter.so: missing",
         "base/lib/x86_64/libapp.so: missing",
@@ -238,6 +242,7 @@ def test_697_a_bundle_without_the_engine_or_the_app_fails(tmp_path, passing, mon
 def test_697_the_symbols_are_checked_and_kept_under_the_version(tmp_path):
     symbols = tmp_path / "symbols"
     symbols.mkdir()
+    (symbols / "app.android-arm.symbols").write_bytes(b"dwarf")
     (symbols / "app.android-arm64.symbols").write_bytes(b"dwarf")
     assert release.missing_symbols(symbols) == [f"{symbols / 'app.android-x64.symbols'}: missing"]
     (symbols / "app.android-x64.symbols").write_bytes(b"")
@@ -271,3 +276,42 @@ def test_697_require_upload_key_fails_a_debug_or_unsigned_bundle(passing, monkey
     assert release.main(["--check", "--require-upload-key"]) == 1
     monkeypatch.setattr(release, "signer", lambda bundle: "CN=Sogda Upload, O=Sogda")
     assert release.main(["--check", "--require-upload-key"]) == 0
+
+
+def test_858_32_bit_arm_ships_so_its_libraries_and_symbols_are_checked(tmp_path):
+    # No ABI filter: armeabi-v7a is in the bundle, and its crashes need
+    # app.android-arm.symbols to be read.
+    aab = tmp_path / "no-arm.aab"
+    with zipfile.ZipFile(aab, "w") as bundle:
+        for abi in ("arm64-v8a", "x86_64"):
+            for lib in ("libflutter.so", "libapp.so"):
+                bundle.writestr(f"base/lib/{abi}/{lib}", elf64([(PT_LOAD, 0x4000)]))
+    assert release.missing_libs(aab) == [
+        "base/lib/armeabi-v7a/libflutter.so: missing",
+        "base/lib/armeabi-v7a/libapp.so: missing",
+    ]
+    symbols = tmp_path / "symbols"
+    symbols.mkdir()
+    for name in ("app.android-arm64.symbols", "app.android-x64.symbols"):
+        (symbols / name).write_bytes(b"dwarf")
+    assert release.missing_symbols(symbols) == [f"{symbols / 'app.android-arm.symbols'}: missing"]
+
+
+def test_858_the_symbols_are_kept_only_when_every_check_passes(passing, monkeypatch):
+    kept = []
+    monkeypatch.setattr(release, "keep_symbols", lambda version: kept.append(version))
+    monkeypatch.setattr(release, "permission_problems", lambda: ["WAKE_LOCK: asked for, but not in release.md's list"])
+    assert release.main(["--check"]) == 1
+    assert kept == []
+    monkeypatch.setattr(release, "permission_problems", lambda: [])
+    assert release.main(["--check"]) == 0
+    assert len(kept) == 1
+
+
+def test_845_the_assets_db_readme_stays_out_of_the_bundle():
+    # #707 names the two files: declaring the folder ships its README too.
+    import yaml
+    pubspec = yaml.safe_load((release.APP / "pubspec.yaml").read_text(encoding="utf-8"))
+    assets = pubspec["flutter"]["assets"]
+    assert "assets/db/" not in assets and "assets/db" not in assets
+    assert {"assets/db/content.db", "assets/db/content_manifest.json"} <= set(assets)

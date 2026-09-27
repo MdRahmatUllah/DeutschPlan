@@ -95,6 +95,8 @@ class OnboardingShell extends StatelessWidget {
     this.headerArt,
     this.busy = false,
     this.error,
+    this.secondaryLabel,
+    this.onSecondary,
   });
 
   final OnboardingPage page;
@@ -121,6 +123,11 @@ class OnboardingShell extends StatelessWidget {
 
   /// Why the last finish did not, shown over the primary action.
   final String? error;
+
+  /// A link under the primary action where page 1 has no *Back*: *Restore a
+  /// backup* (#822).
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +170,14 @@ class OnboardingShell extends StatelessWidget {
                 const SizedBox(height: 8),
               ],
               SgButton(label: primaryLabel, onPressed: busy ? null : onPrimary),
+              if (secondaryLabel case final label?) ...<Widget>[
+                const SizedBox(height: 8),
+                SgButton(
+                  label: label,
+                  onPressed: busy ? null : onSecondary,
+                  kind: SgButtonKind.text,
+                ),
+              ],
               if (page.hasBack) ...<Widget>[
                 const SizedBox(height: 8),
                 // A link at the start edge, as the artboard draws it — not a

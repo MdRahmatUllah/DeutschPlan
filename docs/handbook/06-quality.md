@@ -117,7 +117,10 @@ rule is broken, so the rules don't depend on review:
 - every supported locale resolves every key;
 - no user-facing string is hard-coded under `lib/` (in `Text(…)`, `tooltip:`,
   `label:`, `hintText:`, `semanticsLabel:`; escape hatch
-  `// ponytail: allow-literal`), and a shared component words nothing itself.
+  `// ponytail: allow-literal`), and a shared component words nothing itself;
+- every key is read somewhere under `lib/`, as `l10n.<key>` or
+  `AppLocalizations.of(context).<key>` (#640): a key goes
+  in with the code that reads it, and out of both ARBs with the last one.
 
 ## Tests that read the docs
 
@@ -315,6 +318,10 @@ The emulator is not a mid-range phone: it catches regressions, and the
 absolute budgets (cold start under 1.5 s, warm under 500 ms, 16 ms frames) are
 reported, not enforced, except search's. The owner times cold and warm start
 on a real phone before each release. `--update-baseline` records new numbers.
+`--profile year` measures frames and start again on a learner with a year
+behind them (#818: about 13,500 ratings seeded by
+`app/integration_test/year_profile.dart`), whose metrics are `year.<metric>`
+with baselines of their own.
 
 ## The content pipeline's checks
 

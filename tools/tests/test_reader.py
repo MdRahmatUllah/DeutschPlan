@@ -274,6 +274,49 @@ class TestFailures:
         with pytest.raises(PipelineError, match="no map reads"):
             read_manifest(manifest)
 
+    def test_837_a_header_renamed_in_every_book_at_once_stops_the_build(
+        self, books: Path, tmp_path: Path
+    ):
+        # A find-and-replace across the four trackers leaves no book carrying
+        # the column, so comparing the books found nothing missing.
+        renamed = {
+            name: _rename_header(books / name, "Bangla meaning", "Bangla (BN)", tmp_path)
+            for name in BOOK_LEVELS
+        }
+        manifest = tmp_path / "manifest.yaml"
+        entries = {"workbooks": [{"file": str(renamed[name])} for name in BOOK_LEVELS]}
+        manifest.write_text(yaml.safe_dump(entries), encoding="utf-8")
+        with pytest.raises(PipelineError, match=r"has no 'Bangla meaning' column"):
+            read_sources(read_manifest(manifest))
+
+        # A column no book ever had is listed for each of them, and builds.
+        for entry in entries["workbooks"]:
+            entry["without"] = ["bangla"]
+        manifest.write_text(yaml.safe_dump(entries), encoding="utf-8")
+        assert all(w.bangla is None for s in read_sources(read_manifest(manifest)) for w in s.words)
+
+    def test_845_without_takes_one_field_as_a_string_and_the_error_counts_columns(
+        self, books: Path, tmp_path: Path
+    ):
+        def two(book):
+            for row in book["All Words"].iter_rows(min_row=1, max_row=5):
+                for cell in row:
+                    if cell.value in ("Collocations", "Synonyms / register"):
+                        cell.value = f"{cell.value} (old)"
+
+        manifest = _manifest_with(
+            books, tmp_path, "German_C2_Tracker.xlsx",
+            _copy_with(books / "German_C2_Tracker.xlsx", tmp_path, two),
+        )
+        with pytest.raises(PipelineError, match=r"has no 'Collocations', 'Synonyms / register' columns"):
+            read_sources(read_manifest(manifest))
+
+        # `without: collocations`, not a set of its letters.
+        entries = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+        entries["workbooks"][-1]["without"] = "collocations"
+        manifest.write_text(yaml.safe_dump(entries), encoding="utf-8")
+        assert read_manifest(manifest).without["German_C2_Tracker-two.xlsx"] == {"collocations"}
+
     def test_714_a_renamed_pos_header_stops_the_build_even_alone(
         self, books: Path, tmp_path: Path
     ):

@@ -146,11 +146,13 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
 4. **Translation stays off.** The release build passes no
    `--dart-define=ENABLE_HYMT_DOWNLOAD` (ADR 9, #173). Changing that needs a
    new ADR 9 entry first.
-5. **The bundle.** `python tools/release_android.py --require-upload-key`, with
-   the device lock held (an app build takes it). It fails on a missing engine or
-   app library, a misaligned one, a permission release.md doesn't list, a debug
-   or unsigned bundle, or missing Dart symbols, which it otherwise keeps in
-   `app/build/release-symbols/<version>/` (#697):
+5. **The bundle.** `python tools/release_android.py --require-upload-key` (in an
+   agent's worktree with the device lock held: an app build takes it; the
+   owner's checkout has none to take). It fails on a missing engine or app
+   library for any of the three ABIs, a misaligned one, a permission
+   release.md doesn't list, a debug or unsigned bundle, or missing Dart
+   symbols (32-bit ARM's too), which it keeps in
+   `app/build/release-symbols/<version>/` once every check passes (#697, #858):
    - it builds `flutter build appbundle --release --obfuscate --split-debug-info=build/symbols`
      into `app/build/app/outputs/bundle/release/app-release.aab`;
    - **16 KB:** it reads the ELF headers of every 64-bit native library in the
@@ -159,9 +161,10 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    - **key:** it says which certificate signed the bundle;
    - `--check` checks the last build without building. On 2026-09-26 it passed
      with AGP 9.1, and the bundle was 272 MB with all four ABIs.
-6. **Performance.** `python tools/perf.py all` under the device lock, against
-   the baselines, then the owner times cold and warm start by hand on a real
-   mid-range phone.
+6. **Performance.** `python tools/perf.py all`, then `all --profile year` (a
+   year of study, #818), against the baselines; the owner's checkout takes no
+   lock, and perf.py refuses while an agent holds the emulator (#845). Then the
+   owner times cold and warm start by hand on a real mid-range phone.
 7. **Tag and notes.** The release commit bumps `pubspec.yaml`, adds the
    `CHANGELOG.md` entry, and updates *What's new* in English and Bangla in
    `store-listing.md` (`tools/tests/test_store_listing.py` reads the version
@@ -268,8 +271,10 @@ flowchart LR
 - **user.db migrations** ship the same way: a new schema version migrates the
   learner's file on the first open, in one transaction, followed by a foreign
   key check. A failure there shows the start-up error screen (FR-S1-03) with
-  *Retry*, never a blank screen; *Export progress* is offered only when the
-  database opened.
+  *Retry*, never a blank screen; *Export progress* is offered when the
+  database opened, and *Share your data file* when it didn't: it shares
+  `user.sqlite` with its `-wal`, so the learner's progress can still leave the
+  phone (#619).
 
 ## Troubleshooting
 

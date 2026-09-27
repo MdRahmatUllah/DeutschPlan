@@ -272,6 +272,8 @@ void main() {
     testWidgets('typed again, it says so with Open and Log it, and neither '
         'Save saves it twice', (tester) async {
       await pump(tester, german: 'Brötchen', seed: saved, edit: false);
+      await tester.tap(find.bySemanticsLabel('das'));
+      await tester.pump();
       await enter(tester, l10n.addWordMeaning, 'bread roll');
       expect(find.textContaining(l10n.searchNoneMine), findsOneWidget);
       expect(find.text(l10n.addWordOpen), findsOneWidget);
@@ -284,6 +286,100 @@ void main() {
     ) async {
       await pump(tester, german: 'brotchen', seed: saved, edit: false);
       expect(find.textContaining(l10n.searchNoneMine), findsOneWidget);
+    });
+
+    /// [german] saved (with [article]), and then what [seed] saves; R2 over
+    /// [typed] with [picked].
+    Future<void> beside(
+      WidgetTester tester, {
+      required String german,
+      String? article,
+      required String typed,
+      String? picked,
+      Future<int> Function()? seed,
+    }) async {
+      await pump(
+        tester,
+        german: typed,
+        edit: false,
+        seed: () async {
+          final id = await db
+              .into(db.customWords)
+              .insert(
+                CustomWordsCompanion.insert(
+                  createdAt: '2026-09-20T10:00:00Z',
+                  german: german,
+                  meaning: 'saved',
+                  article: Value(article),
+                ),
+              );
+          return await seed?.call() ?? id;
+        },
+      );
+      if (picked != null) {
+        await tester.tap(find.bySemanticsLabel(picked));
+        await tester.pump();
+      }
+      await enter(tester, l10n.addWordMeaning, 'new');
+    }
+
+    for (final (saved, article, typed, picked)
+        in <(String, String?, String, String?)>[
+          ('schon', null, 'schön', null),
+          ('zahlen', null, 'zählen', null),
+          ('See', 'der', 'See', 'die'),
+          ('Leiter', 'der', 'Leiter', 'die'),
+        ]) {
+      testWidgets('#841 ${[?picked, typed].join(' ')} beside '
+          '${[?article, saved].join(' ')}: shown, and saved', (tester) async {
+        await beside(
+          tester,
+          german: saved,
+          article: article,
+          typed: typed,
+          picked: picked,
+        );
+        expect(find.textContaining(l10n.searchNoneMine), findsOneWidget);
+        expect(button(tester, l10n.addWordSave).onPressed, isNotNull);
+        expect(button(tester, l10n.addWordSaveRevise).onPressed, isNotNull);
+        await tester.tap(find.text(l10n.addWordSave));
+        await settle(tester);
+        expect(await mine(tester), hasLength(2));
+      });
+    }
+
+    testWidgets('#841 the same word is still refused: its key, spelt either '
+        'way, and its article', (tester) async {
+      await beside(
+        tester,
+        german: 'Tür',
+        article: 'die',
+        typed: 'Tuer',
+        picked: 'die',
+      );
+      expect(button(tester, l10n.addWordSave).onPressed, isNull);
+      expect(button(tester, l10n.addWordSaveRevise).onPressed, isNull);
+    });
+
+    testWidgets('#841 with schön and schon both saved, schön is refused', (
+      tester,
+    ) async {
+      // My words list the newest first: schon, then schön.
+      await beside(
+        tester,
+        german: 'schön',
+        typed: 'schön',
+        seed: () => db
+            .into(db.customWords)
+            .insert(
+              CustomWordsCompanion.insert(
+                createdAt: '2026-09-21T10:00:00Z',
+                german: 'schon',
+                meaning: 'already',
+              ),
+            ),
+      );
+      expect(button(tester, l10n.addWordSave).onPressed, isNull);
     });
 
     testWidgets('Log it counts one more sighting of it, and saves no second '

@@ -914,6 +914,29 @@ void main() {
     });
   });
 
+  testWidgets('#798 FR-L12-01 a Bangla meaning is a tile, written at once, '
+      'with no field', (tester) async {
+    await pump(
+      tester,
+      stub: StubExamRun(
+        items: <ExamItem>[banglaVocabulary, artboardPaper()[10]],
+        given: <int, String>{},
+      ),
+    );
+    expect(find.byType(TextField), findsNothing);
+    expect(find.text(l10n.examRunTapOne), findsOneWidget);
+    for (final tile in banglaVocabulary.tiles) {
+      expect(find.text(tile), findsOneWidget);
+    }
+    await tap(tester, 'রান্নাঘর');
+    expect(run.answers, [(1, 'রান্নাঘর')]);
+    await tap(tester, 'ফ্ল্যাট / বাসা');
+    expect(run.answers.last, (1, 'ফ্ল্যাট / বাসা'));
+    // Moving on writes no typed answer over the tap.
+    await tap(tester, l10n.examRunNext);
+    expect(run.answers, [(1, 'রান্নাঘর'), (1, 'ফ্ল্যাট / বাসা')]);
+  });
+
   testWidgets('FR-L12-06 a Listening word plays once and replays twice', (
     tester,
   ) async {

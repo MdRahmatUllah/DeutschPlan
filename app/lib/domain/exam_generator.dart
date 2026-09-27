@@ -290,6 +290,11 @@ sealed class ExamItem {
           _ => null,
         },
         phrase: json['phrase'] == true,
+        tiles: switch (row.options) {
+          final String options when section != ExamSection.articles =>
+            (jsonDecode(options) as List<Object?>).cast<String>(),
+          _ => const <String>[],
+        },
         also: <GermanAnswer>[
           for (final other in json['also'] as List<Object?>? ?? const [])
             if (other case {'german': final String german})
@@ -300,10 +305,10 @@ sealed class ExamItem {
   }
 }
 
-/// Vocabulary (the headword; its meaning typed), Reverse (the meaning; the
-/// headword typed, article optional), Articles (the noun; der/die/das
-/// tapped), Word forms (the word and [form]; the form typed) and Listening
-/// (the headword played; typed).
+/// Vocabulary (the headword; its meaning typed, or a Bangla one's [tiles]
+/// tapped), Reverse (the meaning; the headword typed, article optional),
+/// Articles (the noun; der/die/das tapped), Word forms (the word and [form];
+/// the form typed) and Listening (the headword played; typed).
 final class WordQuestion extends ExamItem {
   const WordQuestion(
     super.section,
@@ -313,6 +318,7 @@ final class WordQuestion extends ExamItem {
     this.form,
     this.phrase = false,
     this.also = const <GermanAnswer>[],
+    this.tiles = const <String>[],
   });
 
   final String prompt;
@@ -329,10 +335,17 @@ final class WordQuestion extends ExamItem {
   /// as right as [expected] (#832). A paper written before it has none.
   final List<GermanAnswer> also;
 
+  /// Vocabulary with a Bangla meaning: [expected] and three distractors, as
+  /// the quiz's DE → বাংলা tiles (#798), tapped and scored exactly. Empty
+  /// for a typed item. Kept in `options_json`, so a retake has the same.
+  final List<String> tiles;
+
   @override
   List<String>? get options => section == ExamSection.articles
       ? const <String>['der', 'die', 'das']
-      : null;
+      : tiles.isEmpty
+      ? null
+      : tiles;
 
   @override
   Map<String, Object?> get _prompt => <String, Object?>{
@@ -641,6 +654,7 @@ Exam buildExam(
   }
 
   final words = pool.words;
+  final tilePool = <QuizWord>[for (final w in words) w.word];
   final byCategory = <int, List<ExamWord>>{};
   for (final w in words) {
     if (w.category != null) (byCategory[w.category!] ??= <ExamWord>[]).add(w);
@@ -751,6 +765,10 @@ Exam buildExam(
               bangla,
               randoms[s]!,
               pool.sharedMeanings,
+              tilePool,
+              // Its own seed, so the tiles leave the paper's draws as they
+              // were, and the same paper always has the same tiles.
+              Random(practiceSeed(w.word.uid, 'mock $s')),
             ),
         ],
       };
@@ -781,17 +799,34 @@ WordQuestion _wordQuestion(
   bool bangla,
   Random random,
   Map<String, List<QuizWord>> shared,
+  List<QuizWord> tilePool,
+  Random tileRandom,
 ) {
-  final meaning = bangla && (word.bangla ?? '').trim().isNotEmpty
-      ? word.bangla!
-      : word.english;
+  final inBangla = bangla && (word.bangla ?? '').trim().isNotEmpty;
+  final meaning = inBangla ? word.bangla! : word.english;
   switch (section) {
     case ExamSection.vocabulary:
+      // #798: a Bangla meaning is picked from the quiz's DE → বাংলা tiles,
+      // since a learner of German can't be assumed a Bangla keyboard; typed
+      // when the step has too few distractors, as the quiz's is.
+      final tiles = <String>[];
+      if (inBangla) {
+        final wrong = distractors(
+          word,
+          tilePool,
+          (w) => w.bangla ?? '',
+          tileRandom,
+        );
+        if (wrong.length == 3) {
+          tiles.addAll(<String>[meaning, ...wrong]..shuffle(tileRandom));
+        }
+      }
       return WordQuestion(
         section,
         word.uid,
         prompt: word.headword,
         expected: meaning,
+        tiles: tiles,
       );
     case ExamSection.reverse:
       return WordQuestion(
