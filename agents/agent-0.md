@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#911 in review as PR #979: answer review threads; re-run the gate if main moved, then merge.
+#867 fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) — claimed 2026-09-27 23:59.
 
 ## Next
 
