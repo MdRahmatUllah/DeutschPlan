@@ -1,4 +1,7 @@
+import 'dart:ui' show LocaleStringAttribute;
+
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/learn/grammar_library_screen.dart';
 import 'package:sogda/features/learn/learn_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -35,7 +38,7 @@ void main() {
   late String? went;
   late GoRouter routes;
 
-  Future<void> pump(WidgetTester tester) async {
+  Future<void> pump(WidgetTester tester, {Locale? locale}) async {
     went = null;
     routes = GoRouter(
       routes: <RouteBase>[
@@ -54,6 +57,7 @@ void main() {
         overrides: todayStub(),
         child: MaterialApp.router(
           theme: AppTheme.light(),
+          locale: locale,
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
           routerConfig: routes,
@@ -108,6 +112,32 @@ void main() {
     expect(
       said('Dativ nach Präpositionen'),
       endsWith(l10n.libraryTopicNotLearned),
+    );
+    semantics.dispose();
+  });
+
+  testWidgets("#668 in Bangla the dot's words carry their bn-BD tag", (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, locale: const Locale('bn'));
+    final row = find.byWidgetPredicate(
+      (widget) =>
+          widget is LibraryRow &&
+          widget.topic.topic.topic == 'Dativ nach Präpositionen',
+    );
+    final words = AppLocalizations.of(tester.element(row))
+        .libraryTopicNotLearned;
+    final label = tester.getSemantics(row).getSemanticsData().attributedLabel;
+    expect(label.string, endsWith(words));
+    expect(
+      label.attributes.whereType<LocaleStringAttribute>().where(
+        (tag) =>
+            tag.locale == SgScript.bnBD &&
+            tag.range.start <= label.string.length - words.length &&
+            tag.range.end == label.string.length,
+      ),
+      isNotEmpty,
     );
     semantics.dispose();
   });
