@@ -11,6 +11,8 @@
 
 Normalisation (`searchKey`, `searchKeyAlt`) is byte-identical to the Python pipeline; `test/domain/text_norm_test.dart` loads `tools/test_vectors.json`.
 
+Notes and alternatives (#645): `splitMeanings` splits a meaning cell at `/`, `,` and `;` only outside brackets, and `checkMeaning` tries the whole cell as shown and each synonym, each as written and without its bracketed note (`meaningAnswers`, which Search's exact tier uses too, so the two agree). `germanForms` does the same for a German headword or forms cell: its ` / ` alternatives, each side of an in-word slash, with and without the note; only the text outside the note is split, so a word from inside a note is never an answer on its own. The article check (BR-ANS-02) runs per alternative.
+
 Scoring: correct 1 · almost 0.5 · wrongArticle 0 (feedback names the article) · wrong 0.
 
 Umlaut helper row (ä ö ü ß, long-press ß → ẞ) is a shared widget `UmlautBar` attached to every German text field. Where it sits under its field (R2's German, T2's cloze and grammar practice's answers), the field's `scrollPadding` (`SgUmlautBar.scrollPadding`) makes a focused field scroll up with the whole row, and what follows it (R2's next field, *Check*), above the keyboard, except past 130 %, where *Check* may scroll under the keyboard and the keyboard's Done checks (#564). Flutter's default 20 dp left the keys cut at the keyboard's edge (#396, #515). It reserves the keys' own height (`SgUmlautBar.rowHeight`: 44 dp, or their text's line once taller): scaling 44 by the text's growth had reserved 79 dp for a 49 dp row at 200 % (#572). Typing past 130 %, the margin under the keys is 12 dp, not 20, on T2's cloze and L15's gap, which share the answer field (#572). L8 and L12 pin the row above the keyboard instead.

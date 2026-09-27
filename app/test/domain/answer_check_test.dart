@@ -370,6 +370,114 @@ void main() {
     test('keeps a single meaning whole', () {
       expect(splitMeanings('to look after'), <String>['to look after']);
     });
+
+    test('#645 never splits inside brackets: they hold one note', () {
+      expect(splitMeanings('stop (bus/tram), halt'), <String>[
+        'stop (bus/tram)',
+        'halt',
+      ]);
+      expect(splitMeanings('drugstore (dm, Rossmann)'), <String>[
+        'drugstore (dm, Rossmann)',
+      ]);
+    });
+  });
+
+  group('#645 notes in brackets and alternatives', () {
+    test('BR-ANS-01 a meaning counts with or without its note', () {
+      for (final (given, expected) in const <(String, String)>[
+        ('to save', 'to save (a file)'),
+        ('save', 'to save (a file)'),
+        ('to save a file', 'to save (a file)'),
+        ('deposit', 'deposit (on bottles)'),
+        ('turn', 'to turn (off)'),
+        ('to change', 'to change (trains)'),
+        ('stop', 'stop (bus/tram)'),
+        ('drugstore', 'drugstore (dm, Rossmann)'),
+        ('to miss', 'to miss (a train, an event)'),
+        ('সাজানো', 'সাজানো (ঘর)'),
+      ]) {
+        expect(
+          checkMeaning(given, expected),
+          Verdict.correct,
+          reason: '$given for $expected',
+        );
+      }
+    });
+
+    test('BR-ANS-01 the whole cell, typed as shown, counts', () {
+      // "Zahlen, bitte!": a phrase with a comma is not two synonyms, and the
+      // learner who types exactly what the card says is right.
+      expect(
+        checkMeaning('the bill, please', 'the bill, please'),
+        Verdict.correct,
+      );
+      expect(
+        checkMeaning('the bill please', 'the bill, please'),
+        Verdict.correct,
+      );
+    });
+
+    test('BR-ANS-01 and a word from inside the note is not the meaning', () {
+      for (final (given, expected) in const <(String, String)>[
+        ('tram', 'stop (bus/tram)'),
+        ('bus', 'stop (bus/tram)'),
+        ('Rossmann', 'drugstore (dm, Rossmann)'),
+        ('an event', 'to miss (a train, an event)'),
+      ]) {
+        expect(
+          checkMeaning(given, expected),
+          Verdict.wrong,
+          reason: '$given for $expected',
+        );
+      }
+    });
+
+    test('BR-ANS-02 any one German alternative counts, not a mix', () {
+      expect(checkGerman('etwa', 'circa / etwa / rund'), Verdict.correct);
+      expect(checkGerman('prima', 'prima / super / klasse'), Verdict.correct);
+      expect(checkGerman('klasse', 'prima / super / klasse'), Verdict.correct);
+      expect(
+        checkGerman('super klasse', 'prima / super / klasse'),
+        isNot(Verdict.correct),
+      );
+    });
+
+    test('BR-ANS-02 and a German note may be left out, never answered '
+        'alone', () {
+      expect(checkGerman('denn', 'denn (Partikel)'), Verdict.correct);
+      expect(checkGerman('sollen', 'sollen (Hörensagen)'), Verdict.correct);
+      expect(checkGerman('Tram', 'Haltestelle (Bus / Tram)'), Verdict.wrong);
+      expect(
+        checkGerman('Haltestelle', 'Haltestelle (Bus / Tram)'),
+        Verdict.correct,
+      );
+    });
+
+    test('BR-ANS-02 each alternative keeps its own article', () {
+      expect(checkGerman('das Auto', 'der Wagen / das Auto'), Verdict.correct);
+      expect(
+        checkGerman('die Auto', 'der Wagen / das Auto'),
+        Verdict.wrongArticle,
+      );
+      expect(
+        checkGerman('die Straße', 'Straße (Weg)', article: 'die'),
+        Verdict.correct,
+      );
+    });
+
+    test('a forms cell takes each side of its slash, and leaves out its '
+        'note', () {
+      expect(
+        checkForm('hat aufgebrochen', 'hat/ist aufgebrochen'),
+        Verdict.correct,
+      );
+      expect(
+        checkForm('ist aufgebrochen', 'hat/ist aufgebrochen'),
+        Verdict.correct,
+      );
+      expect(checkForm('hat', 'hat/ist aufgebrochen'), Verdict.wrong);
+      expect(checkForm('hat gehabt', 'hat gehabt (hatte)'), Verdict.correct);
+    });
   });
 
   group('punctuation and spacing the learner did not mean', () {
