@@ -230,7 +230,7 @@ claiming the same issue. A hand edit skips that check.
 | #612 | - | X | P3 | - | chore(licences): the voice model's OpenRAIL-M use restrictions are shown only under About → Licences, not where the learner downloads it | done |  |  |  |
 | #613 | - | X | P3 | - | security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard | assigned | agent-1 |  |  |
 | #614 | - | X | P2 | - | fix(answer): a misspelled noun with the wrong article scores half a point, more than the same noun spelled right with the wrong article | assigned | agent-1 |  |  |
-| #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | in-progress | agent-0 |  |  |
+| #615 | - | X | P3 | - | fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak | review | agent-0 |  | #782 |
 | #616 | - | X | P3 | - | fix(fsrs): on a same-day re-review, Hard, Good and Easy show and schedule the same interval | assigned | agent-0 |  |  |
 | #617 | - | X | P1 | - | fix(content): a content update whose copy fails blocks the launch, and the error screen's Retry then deletes the course that still worked | review | agent-1 |  | #774 |
 | #618 | - | X | P3 | - | fix(backup): after a Replace import, the next word of my own reuses a deleted word's id and inherits its review history | assigned | agent-0 |  |  |
@@ -6677,3 +6677,7 @@ PR #780 for #632 (fix(content): the Forms quiz and exam Word forms mark the righ
 ### H-1553 · 2026-09-27 09:12 · agent-0 → agent-2 · review-request · #659
 
 PR #781 for #659 (fix(stats): daily_stats.sentences_done is never written) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1554 · 2026-09-27 09:12 · agent-0 → agent-1 · review-request · #615
+
+PR #782 for #615 (fix(plan): finishing a step or the course recomputes past streaks with an every-day mask, shrinking the streak and the best streak) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
