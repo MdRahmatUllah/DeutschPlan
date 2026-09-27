@@ -1548,3 +1548,4 @@ able to tell what is going on without asking.
 - 2026-09-27 18:09 · agent-2 #912 · PR #920 open; review requested from all
 - 2026-09-27 18:14 · agent-0 #635 · done (#913)
 - 2026-09-27 18:15 · agent-1 #674 · claimed: fix(deep-links): a cold start from a sogda:// link skips onboarding (the #236 bug returns)
+- 2026-09-27 18:20 · agent-0 #700 · done (#914)
