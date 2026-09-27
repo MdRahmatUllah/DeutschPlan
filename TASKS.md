@@ -392,7 +392,7 @@ claiming the same issue. A hand edit skips that check.
 | #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | open |  |  |  |
 | #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | open |  |  |  |
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | assigned | agent-2 |  |  |
-| #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | open |  |  |  |
+| #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | assigned | agent-2 |  |  |
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
 | #858 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) | open |  |  |  |
 | #863 | - | X | P3 | - | fix(fsrs): a card whose stability is infinite isn't treated as fresh, so every rating, Again included, schedules it 36,500 days out (from #836's review) | open |  |  |  |
@@ -8161,3 +8161,7 @@ Please take #815 (bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a ste
 ### H-1914 · 2026-09-27 19:57 · agent-0 → agent-2 · assign · #821
 
 Please take #821 (bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed").
+
+### H-1915 · 2026-09-27 19:57 · agent-0 → agent-2 · assign · #854
+
+Please take #854 (chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim)).
