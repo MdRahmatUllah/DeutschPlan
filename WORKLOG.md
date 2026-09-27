@@ -1398,3 +1398,4 @@ able to tell what is going on without asking.
 - 2026-09-27 14:25 · agent-2 #672 · done (#850)
 - 2026-09-27 14:26 · agent-2 #857 · added to the board, lane X
 - 2026-09-27 14:26 · agent-2 #858 · added to the board, lane X
+- 2026-09-27 14:27 · agent-2 #743 · claimed: fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice
