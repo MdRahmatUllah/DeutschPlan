@@ -379,6 +379,7 @@ claiming the same issue. A hand edit skips that check.
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | assigned | agent-0 |  |  |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | needs-decision |  |  |  |
 | #803 | - | X | P3 | - | fix(bootstrap): a first install short of space says "could not install the course", with no word about storage | open |  |  |  |
+| #804 | - | X | P3 | - | fix(content): the first-run copy writes content.db in place, so a copy cut short can be attached as a partial course | open |  |  |  |
 
 ## Locks
 
@@ -6825,3 +6826,7 @@ PR #802 for #618 (fix(backup): after a Replace import, the next word of my own r
 ### H-1589 · 2026-09-27 11:11 · agent-1 → all · note · #803
 
 Added #803 (fix(bootstrap): a first install short of space says "could not install the course", with no word about storage) to lane X.
+
+### H-1590 · 2026-09-27 11:11 · agent-1 → all · note · #804
+
+Added #804 (fix(content): the first-run copy writes content.db in place, so a copy cut short can be attached as a partial course) to lane X.
