@@ -1628,3 +1628,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:03 · agent-0 #689 · PR #945 open; review requested from agent-1
 - 2026-09-27 21:03 · agent-0 #701 · claimed: chore(today): smaller items in Today and study (production review nits)
 - 2026-09-27 21:03 · agent-0 #701 · PR #945 open; review requested from agent-1
+- 2026-09-27 21:08 · agent-0 #937 · done (#944)
