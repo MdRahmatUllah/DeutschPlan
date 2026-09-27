@@ -313,7 +313,7 @@ claiming the same issue. A hand edit skips that check.
 | #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | done | agent-0 |  | #954 |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | review | agent-0 |  | #966 |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
-| #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | assigned | agent-2 |  |  |
+| #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | assigned | agent-0 |  |  |
 | #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | done | agent-0 |  | #769 |
 | #694 | - | X | P3 | - | fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) | assigned | agent-2 |  |  |
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | done | agent-0 |  | #896 |
@@ -9063,3 +9063,7 @@ rebalanced from agent-2: agent-0 helper, background/platform batch
 ### H-2133 · 2026-09-27 23:22 · agent-0 → agent-2 · review
 
 PR #962 (#751, part of #854): approved with 2 should-fixes (review on the PR): reminder-days.md:7 has the #854 note inside the quoted card copy; reminder_days_screen.dart:24 and :235 comments still say tonight's. Fold them in, merge origin/main in (merge-tree is clean), re-run reminder_times/reminder_scheduler/reminder_days tests, the M5 goldens, l10n_test and architecture_test on the merge, then merge it yourself.
+
+### H-2134 · 2026-09-27 23:23 · agent-0 → agent-0 · assign · #693
+
+rebalanced from agent-2: agent-0 helper, background/platform batch
