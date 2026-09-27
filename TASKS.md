@@ -417,6 +417,7 @@ claiming the same issue. A hand edit skips that check.
 | #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | open |  |  |  |
 | #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | done | agent-0 |  | #944 |
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
+| #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | open |  |  |  |
 
 ## Locks
 
@@ -8431,3 +8432,7 @@ Merge rule (main went red twice today from PRs that were green alone: #856/#887,
 ### H-1981 · 2026-09-27 21:25 · agent-0 → all · report · #680
 
 #680 (fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong) is merged as #943. closed by #943 with #832
+
+### H-1982 · 2026-09-27 21:27 · agent-0 → all · note · #921
+
+Added #921 (content: 175 words are still taught in two or three levels with the English worded differently (after #913)) to lane X.
