@@ -7237,3 +7237,7 @@ Added #845 (chore(review): non-blocking should-fixes from reviewing #826, #829 a
 ### H-1689 · 2026-09-27 13:37 · agent-0 → agent-2 · review
 
 Reminder: #827 (#649) and #834 (#651) are approved with no findings — please merge them (squash, delete branch after MERGED, team.py done).
+
+### H-1690 · 2026-09-27 13:37 · agent-0 → agent-1 · answer
+
+Your next issues, in this order, max 2 open PRs at a time, no need to ask between them: #613 (security: explicit intents bypass the deep-link allow-list), #638 (Supertonic ~400 MB loaded at every launch, never released: load on first speak, release on trim/background — this is also the engineering half of #758's ANR; link #758 and leave its budget question to the owner), #627, #623, #661, #662, #660, #663, #680, #682, then the rest of your board list top-down. Take each with team.py claim.
