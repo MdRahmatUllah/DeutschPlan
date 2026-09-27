@@ -430,7 +430,7 @@ claiming the same issue. A hand edit skips that check.
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | done | agent-0 |  | #960 |
 | #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | done | agent-0 |  | #969 |
 | #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | review | agent-0 |  | #960 |
-| #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | review | agent-0 |  | #971 |
+| #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | done | agent-0 |  | #971 |
 | #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | done | agent-0 |  | #960 |
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | done | agent-0 |  | #965 |
@@ -9172,3 +9172,7 @@ Rebalanced: agent-0's helper takes your docs/copy batch #596 #598 #684 #696 #738
 ### H-2160 · 2026-09-27 23:47 · agent-0 → all · report · #809
 
 #809 (fix(backup): a backup from an older course imports progress under uids the current course no longer has) is merged as #971. An import moves a file's rows along the kept manifest's PIPE-09 aliases before merge keys (#809); date/instant columns and backlog_catchup_days/sentence_repeat_gap_days (0-365) are checked; IntSetting.range is the one source for M3 and the import (#820)
+
+### H-2161 · 2026-09-27 23:48 · agent-0 → all · report · #820
+
+#820 (fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up)) is merged as #971. Merged with #809 in #971: date/instant columns checked on import; backlog_catchup_days and sentence_repeat_gap_days ranged 0-365; IntSetting.range is the single source
