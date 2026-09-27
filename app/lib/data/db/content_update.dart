@@ -265,14 +265,14 @@ class ContentUpdater {
         ]..sort();
 
     // PIPE-09: a word whose uid changed is the same word, changed, not one
-    // removed and one added. `diff` in tools/content_manifest.py does the same.
+    // removed and one added. A duplicate merged into a word [before] already
+    // had (PIPE-12) is neither: its progress moved to that word, and the
+    // learner lost nothing (#922). `diff` in tools/content_manifest.py does
+    // the same.
     final aliases = digests(current, 'aliases');
     Map<String, String> follow(Map<String, String> before) => <String, String>{
       for (final MapEntry(key: uid, value: digest) in before.entries)
-        switch (aliases[uid]) {
-          final String now when !before.containsKey(now) => now,
-          _ => uid,
-        }: digest,
+        if (!before.containsKey(aliases[uid])) aliases[uid] ?? uid: digest,
     };
 
     final before = follow(digests(previous, 'words'));

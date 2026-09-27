@@ -174,6 +174,19 @@ class _Plan extends ConsumerWidget {
         : ([Rect? origin]) => onStudy(open, view.date, origin);
     final step = view.step;
     final grammar = view.grammar;
+    // A section card's one block (FR-T1-04), grown from [card]; nothing open,
+    // no tap.
+    VoidCallback? block(
+      BuildContext card,
+      SessionBlockKind kind,
+      List<String> uids,
+    ) => uids.isEmpty
+        ? null
+        : () => onStudy(
+            <SessionBlock>[SessionBlock(kind, uids)],
+            view.date,
+            originOf(card),
+          );
 
     final tomorrow = view.tomorrow;
     // TodayDone: the blocks collapse into one row, and tomorrow appears.
@@ -187,15 +200,7 @@ class _Plan extends ConsumerWidget {
             title: l10n.todayRevise(view.revise.total),
             subtitle: l10n.todayReviseOptional(view.revise.open),
             trailing: SectionTrailing.open,
-            onTap: view.openRevise.isEmpty
-                ? null
-                : () => onStudy(
-                    <SessionBlock>[
-                      SessionBlock(SessionBlockKind.revise, view.openRevise),
-                    ],
-                    view.date,
-                    originOf(card),
-                  ),
+            onTap: block(card, SessionBlockKind.revise, view.openRevise),
           ),
         ),
       if (view.sentences.total > 0)
@@ -230,18 +235,7 @@ class _Plan extends ConsumerWidget {
                 trailing: _trailing(view.revise),
                 progress: view.revise,
                 ringColour: tokens.color.primary,
-                onTap: view.openRevise.isEmpty
-                    ? null
-                    : () => onStudy(
-                        <SessionBlock>[
-                          SessionBlock(
-                            SessionBlockKind.revise,
-                            view.openRevise,
-                          ),
-                        ],
-                        view.date,
-                        originOf(card),
-                      ),
+                onTap: block(card, SessionBlockKind.revise, view.openRevise),
               ),
             ),
             if (view.newToday.total > 0)
@@ -259,18 +253,7 @@ class _Plan extends ConsumerWidget {
                   trailing: _trailing(view.newToday),
                   progress: view.newToday,
                   ringColour: tokens.color.accent,
-                  onTap: view.openNew.isEmpty
-                      ? null
-                      : () => onStudy(
-                          <SessionBlock>[
-                            SessionBlock(
-                              SessionBlockKind.newWords,
-                              view.openNew,
-                            ),
-                          ],
-                          view.date,
-                          originOf(card),
-                        ),
+                  onTap: block(card, SessionBlockKind.newWords, view.openNew),
                 ),
               ),
             if (view.backlog > 0)

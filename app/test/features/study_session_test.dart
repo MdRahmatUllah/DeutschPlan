@@ -6,6 +6,7 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -440,6 +441,29 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       );
     });
 
+    testWidgets(
+      '#689 TD-12 FR-T2-06 the banner is German, read in a German '
+      "voice; with a category, which the course names in English, the app's",
+      (tester) async {
+        final container = await pump(tester);
+        SgText banner(String text) => tester.widget<SgText>(
+          find.byWidgetPredicate(
+            (widget) => widget is SgText && widget.data == text,
+          ),
+        );
+        expect(banner(l10n.studyBannerRevise).german, isTrue);
+
+        container
+            .read(studySessionProvider(args).notifier)
+            .advance(CardOutcome.good);
+        await tester.pump();
+        await tester.pump();
+        expect(banner(l10n.studyBannerNewCategory('Wohnen')).german, isFalse);
+        await tester.pump(StudyScreen.bannerTime);
+        await tester.pumpAndSettle();
+      },
+    );
+
     testWidgets('and a card inside a block does not', (tester) async {
       final container = await pump(tester);
       final notifier = container.read(studySessionProvider(args).notifier)
@@ -533,6 +557,36 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       await tester.pumpAndSettle();
       expect(settings.read(SettingKeys.ttsSpeed), 0.75);
     });
+  });
+
+  testWidgets("#689 TD-15 FR-T2-09 the menu's speeds are in Bangla digits "
+      'in Bangla', (tester) async {
+    await tester.runAsync(open);
+    addTearDown(
+      () => tester.runAsync(() async {
+        await settings.dispose();
+        await db.close();
+      }),
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: overrides(),
+        child: MaterialApp(
+          theme: AppTheme.light(),
+          locale: const Locale('bn'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: const Scaffold(
+            body: StudyMenu(item: StudyItem(SessionBlockKind.revise, strasse)),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('০.৭৫×'), findsOneWidget);
+    expect(find.text('১×'), findsOneWidget);
+    expect(find.text('১.২৫×'), findsOneWidget);
+    expect(find.text('0.75×'), findsNothing);
   });
 
   test('a report is a pre-filled issue on the project', () {

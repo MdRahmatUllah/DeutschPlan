@@ -32,8 +32,8 @@ Future<bool> dayCompleteFirst(Ref ref, String day) =>
 /// T6 · Day complete (`day-complete.md`): a short, genuine reward. The ring
 /// completes and an ink check draws itself, twenty paper-cut pieces fall
 /// once, "Tag geschafft!", the day's words and minutes, the streak, and
-/// tomorrow — then back to Today on a tap or after four seconds. No share
-/// prompts, ads or upsells (FR-T6-03).
+/// tomorrow — then back to Today on a tap or after four seconds (under a
+/// screen reader, on a tap only). No share prompts, ads or upsells (FR-T6-03).
 class DayCompleteScreen extends ConsumerStatefulWidget {
   const DayCompleteScreen({super.key, this.day});
 
@@ -51,6 +51,7 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _play = AnimationController(vsync: this);
   Timer? _back;
+  bool _started = false;
   bool _left = false;
 
   @override
@@ -69,13 +70,18 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
   }
 
   void _start() {
-    if (_back != null) return;
+    if (_started) return;
+    _started = true;
     final still = MediaQuery.disableAnimationsOf(context);
     _play
       ..duration = context.tokens.motion.celebrate
       ..value = still ? 1 : 0;
     if (!still) unawaited(_play.forward());
-    _back = Timer(DayCompleteScreen.stay, _leave);
+    // A screen reader's user leaves on *Back to Today*, when they have read
+    // it: no time limit (WCAG 2.2.1), as SgUndo's bar has none (#689 TD-13).
+    if (!MediaQuery.accessibleNavigationOf(context)) {
+      _back = Timer(DayCompleteScreen.stay, _leave);
+    }
   }
 
   @override
@@ -231,6 +237,9 @@ class _Reward extends StatelessWidget {
                   // German at display size: at 200 % it breaks at a syllable,
                   // not at a letter (#165).
                   allowBreaks: true,
+                  // German in every UI language, read in a German voice, as
+                  // Today's "Tag geschafft" is (#162, #689 TD-12).
+                  german: true,
                 ),
                 const SizedBox(height: 16),
                 SgText(

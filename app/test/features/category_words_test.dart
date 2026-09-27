@@ -543,7 +543,20 @@ void main() {
       );
     });
 
-    test('meanings in English by default', () async {
+    test('#689 TD-15 both meanings by default, Both being the default: one '
+        'line, as the widget has it', () async {
+      expect(await meanings(), <String>[
+        'house · বাড়ি',
+        'door · দরজা',
+        'street · রাস্তা',
+      ]);
+    });
+
+    test('in English when the learner reads English', () async {
+      await settings.write(
+        SettingKeys.meaningLanguage,
+        MeaningLanguage.english,
+      );
       expect(await meanings(), <String>['house', 'door', 'street']);
     });
 

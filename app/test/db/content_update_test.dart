@@ -670,6 +670,22 @@ void main() {
       expect(change.meaning, <String>[home]);
     });
 
+    test('#922 a duplicate merged into a word the course had is not counted '
+        'removed: its progress moved to that word', () async {
+      publish(
+        course(
+          version: '202602020000',
+          removeWord: true,
+          aliases: <String, String>{ContentFixture.tuer: ContentFixture.haus},
+        ),
+      );
+      final change = (await updater.runIfNeeded())!;
+
+      expect(change.removed, isEmpty);
+      expect(change.added, isEmpty);
+      expect(change.changed, isEmpty);
+    });
+
     test(
       'a row already under the new uid wins, and the old one is kept',
       () async {

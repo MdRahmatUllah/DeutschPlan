@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/domain/compare_set.dart';
 import 'package:sogda/domain/placement.dart';
+import 'package:sogda/domain/quiz_builder.dart' show QuizWord;
 import 'package:sogda/domain/text_norm.dart' show searchKey;
 import 'package:drift/drift.dart';
 
@@ -132,6 +133,39 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   }();
 
   Future<Map<String, String>>? _formIndex;
+
+  /// EN → DE's other right answers (#832): the course's words by meaning
+  /// cell, English or Bangla, for each cell two words or more share — "you"
+  /// is du, dich and Sie. A cell is compared as written. Built once per DAO.
+  Future<Map<String, List<QuizWord>>> sharedMeanings() => _shared ??= () async {
+    final rows = await customSelect(
+      'SELECT uid, sublevel_code, article, german, pos, english, bangla '
+      "FROM words WHERE kind = 'vocab' AND (english IN (SELECT english "
+      "FROM words WHERE kind = 'vocab' GROUP BY english HAVING COUNT(*) > 1) "
+      "OR bangla IN (SELECT bangla FROM words WHERE kind = 'vocab' "
+      'AND bangla IS NOT NULL GROUP BY bangla HAVING COUNT(*) > 1)) '
+      'ORDER BY seq',
+      readsFrom: <ResultSetImplementation<Object, Object>>{words},
+    ).get();
+    final shared = <String, List<QuizWord>>{};
+    for (final row in rows) {
+      final word = QuizWord(
+        uid: row.read<String>('uid'),
+        german: row.read<String>('german'),
+        english: row.read<String>('english'),
+        step: row.read<String>('sublevel_code'),
+        article: row.readNullable<String>('article'),
+        pos: row.readNullable<String>('pos'),
+        bangla: row.readNullable<String>('bangla'),
+      );
+      for (final cell in <String>{word.english, ?word.bangla}) {
+        (shared[cell] ??= <QuizWord>[]).add(word);
+      }
+    }
+    return shared..removeWhere((_, words) => words.length < 2);
+  }();
+
+  Future<Map<String, List<QuizWord>>>? _shared;
 
   /// W2 (#142): the set word [uid], and the course word each of its members
   /// is (FR-W2-01) — its own search key, the set's step first, then the

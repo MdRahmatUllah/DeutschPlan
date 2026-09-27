@@ -259,10 +259,15 @@ class GrammarRatingService {
 
   /// FR-L15-03: a finished run, rated as a whole (BR-FSRS-05: all right
   /// Good, one wrong Hard, more Again), scheduled and logged.
+  ///
+  /// [startedAt] is when the run's first item showed: the time since is the
+  /// day's study time (#785, FR-M2-03), capped at five minutes an item as a
+  /// card is, so a phone left on the table isn't an hour of grammar.
   Future<void> ratePractice(
     String uid, {
     required int items,
     required int correct,
+    DateTime? startedAt,
   }) async {
     final now = _now();
     final result = PracticeResult(
@@ -283,6 +288,9 @@ class GrammarRatingService {
       reps: next.reps,
       lapses: next.lapses,
       today: planDate(now),
+      seconds: startedAt == null
+          ? 0
+          : now.difference(startedAt).inSeconds.clamp(0, 300 * items),
     );
   }
 

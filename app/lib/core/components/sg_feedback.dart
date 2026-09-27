@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:sogda/core/adaptive/adaptive.dart';
@@ -518,8 +519,8 @@ extension on SgVerdictRow {
 /// shadow, and the action in [SgPalette.inverseLink].
 ///
 /// One at a time: a queue of bars is a queue the learner cannot use, because
-/// the older ones expire while they read.
-void _showInverse(
+/// the older ones expire while they read. Completes as the bar goes, with why.
+Future<SnackBarClosedReason> _showInverse(
   BuildContext context, {
   required String message,
   required Duration duration,
@@ -527,31 +528,32 @@ void _showInverse(
   double lift = 0,
 }) {
   final tokens = context.tokens;
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(
-      // SgToast is this wrapper (#695 TS-4). ponytail: allow-chrome
-      SnackBar(
-        duration: duration,
-        // A bar with an action persists by default; ours time out (#319,
-        // FR-T2-02's 4 s), except for a screen-reader user, who needs the
-        // time to reach it (WCAG 2.2.1), as Flutter's own rule has it.
-        persist: MediaQuery.accessibleNavigationOf(context),
-        backgroundColor: tokens.color.ink,
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.fromLTRB(16, 0, 16, 10 + lift),
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.shape.chip),
+  final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+  return messenger
+      .showSnackBar(
+        // SgToast is this wrapper (#695 TS-4). ponytail: allow-chrome
+        SnackBar(
+          duration: duration,
+          // A bar with an action persists by default; ours time out (#319,
+          // FR-T2-02's 4 s), except for a screen-reader user, who needs the
+          // time to reach it (WCAG 2.2.1), as Flutter's own rule has it.
+          persist: MediaQuery.accessibleNavigationOf(context),
+          backgroundColor: tokens.color.ink,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.fromLTRB(16, 0, 16, 10 + lift),
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(tokens.shape.chip),
+          ),
+          content: SgText(
+            message,
+            role: SgTextRole.body,
+            color: tokens.surface.paper,
+          ),
+          action: action,
         ),
-        content: SgText(
-          message,
-          role: SgTextRole.body,
-          color: tokens.surface.paper,
-        ),
-        action: action,
-      ),
-    );
+      )
+      .closed;
 }
 
 /// A short note that something happened: "Copied".
@@ -576,12 +578,14 @@ abstract final class SgToast {
             textColor: context.tokens.color.inverseLink,
             onPressed: onAction,
           );
-    _showInverse(
-      context,
-      message: message,
-      duration: action == null ? duration : SgUndo.duration,
-      lift: lift,
-      action: action,
+    unawaited(
+      _showInverse(
+        context,
+        message: message,
+        duration: action == null ? duration : SgUndo.duration,
+        lift: lift,
+        action: action,
+      ),
     );
   }
 }
@@ -599,22 +603,22 @@ abstract final class SgUndo {
   ///
   /// [lift] floats it clear of a screen's thumb zone: the StudyNew artboard
   /// holds it 128 px up, above *Show meaning*, rather than over it.
-  static void show(
+  ///
+  /// Completes as the bar goes: true when its *Undo* was taken (#689 TD-9).
+  static Future<bool> show(
     BuildContext context, {
     required String message,
     required VoidCallback onUndo,
     double lift = 0,
-  }) {
-    _showInverse(
-      context,
-      message: message,
-      duration: duration,
-      lift: lift,
-      action: SnackBarAction(
-        label: AppLocalizations.of(context).undo,
-        textColor: context.tokens.color.inverseLink,
-        onPressed: onUndo,
-      ),
-    );
-  }
+  }) => _showInverse(
+    context,
+    message: message,
+    duration: duration,
+    lift: lift,
+    action: SnackBarAction(
+      label: AppLocalizations.of(context).undo,
+      textColor: context.tokens.color.inverseLink,
+      onPressed: onUndo,
+    ),
+  ).then((reason) => reason == SnackBarClosedReason.action);
 }

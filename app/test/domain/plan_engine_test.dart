@@ -1644,6 +1644,29 @@ void main() {
       expect(store.measuredFor, <PlanDate>[monday, addDays(monday, 1)]);
     });
 
+    test("BR-PLAN-09 #817 tomorrow's preview is not remembered: tomorrow "
+        'reads the evening studied after it', () async {
+      store.measured = const MeasuredSeconds(sessions: 6, newWord: 10);
+      final engine = engineWith();
+      final tuesday = addDays(monday, 1);
+      final preview = await engine.previewDay(tuesday);
+      expect(
+        await engine.estimate(preview, remember: false),
+        const Duration(seconds: 45 * 7),
+        reason: 'six sessions: the defaults',
+      );
+
+      // The evening: a seventh session before Tuesday.
+      store.measured = const MeasuredSeconds(sessions: 7, newWord: 10);
+      final plan = await engine.openDay(tuesday);
+
+      expect(
+        await engine.estimate(plan),
+        Duration(seconds: 10 * plan.newToday.length),
+      );
+      expect(store.measuredFor, <PlanDate>[tuesday, tuesday]);
+    });
+
     test('BR-PLAN-09 #708 and a read that failed is asked again', () async {
       store.measured = const MeasuredSeconds(sessions: 7, newWord: 10);
       store.measureError = StateError('disk I/O error');

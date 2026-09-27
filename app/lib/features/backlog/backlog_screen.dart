@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
@@ -12,6 +13,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_engine.dart'
     show PlanDate, daysBetween, parsePlanDate;
+import 'package:sogda/features/study/study_back.dart' show meaningLine;
 import 'package:sogda/features/study/study_card.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -50,9 +52,9 @@ class Backlog extends _$Backlog {
   @override
   Stream<List<BacklogWord>> build() {
     final words = ref.watch(wordRepositoryProvider);
-    final bangla =
-        ref.watch(settingsProvider).read(SettingKeys.meaningLanguage) ==
-        MeaningLanguage.bangla;
+    final meaning = ref
+        .watch(settingsProvider)
+        .read(SettingKeys.meaningLanguage);
     return ref
         .watch(planRepositoryProvider)
         .watchBacklogWithStates(ref.watch(todayProvider))
@@ -68,24 +70,27 @@ class Backlog extends _$Backlog {
                 (
                   planDate: row.planDate,
                   word: word,
-                  // English where the course has no Bangla.
-                  meaning: bangla
-                      ? word.word.bangla ?? word.word.english
-                      : word.word.english,
+                  meaning: meaningLine(word.word, meaning),
                 ),
           ];
         });
   }
 
+  /// The words with an action still being written: a second tap, from the
+  /// iOS trailing buttons or a screen reader's actions, writes nothing (#689
+  /// TD-7).
+  final Set<String> _busy = <String>{};
+
   /// FR-T4-04: *Mark known*, *Suspend* or *Remove from course* (suspend and
   /// complete the plan row). Returns the action's *Undo*, bound to the
   /// services read here: its bar outlives T4, and this notifier with it
-  /// (#679).
-  Future<Future<void> Function()> act(
+  /// (#679). Null when the word's last action is still being written.
+  Future<Future<void> Function()?> act(
     BacklogAction action,
     BacklogWord row,
   ) async {
     final uid = row.word.word.uid;
+    if (!_busy.add(uid)) return null;
     // Suspending a suspended word changes nothing, so its *Undo* must not
     // resume it (#728).
     final wasSuspended = row.word.isSuspended;
@@ -98,18 +103,22 @@ class Backlog extends _$Backlog {
       kind: PlanKind.newWord,
       at: at?.toIso8601String(),
     );
-    switch (action) {
-      case BacklogAction.known:
-        await rating.markKnown(
-          uid,
-          planDate: row.planDate,
-          kind: PlanKind.newWord,
-        );
-      case BacklogAction.suspended:
-        await rating.suspend(uid);
-      case BacklogAction.removed:
-        await rating.suspend(uid);
-        await complete(at: clock().toUtc());
+    try {
+      switch (action) {
+        case BacklogAction.known:
+          await rating.markKnown(
+            uid,
+            planDate: row.planDate,
+            kind: PlanKind.newWord,
+          );
+        case BacklogAction.suspended:
+          await rating.suspend(uid);
+        case BacklogAction.removed:
+          await rating.suspend(uid);
+          await complete(at: clock().toUtc());
+      }
+    } finally {
+      _busy.remove(uid);
     }
     return () async {
       switch (action) {
@@ -342,9 +351,14 @@ class _Backlog extends ConsumerWidget {
                       ),
                     ),
                     // Held to the row's 40, as before: only the day's line,
-                    // wrapping in Bangla at 200 %, makes the row taller.
+                    // wrapping in Bangla at 200 %, makes the row taller. But
+                    // never under the 48 dp (44 pt) a finger needs: a target
+                    // takes no taps past its parent's box (#689 TD-14).
                     SizedBox(
-                      height: SgScript.grow(context, 40),
+                      height: math.max(
+                        SgScript.grow(context, 40),
+                        AdaptiveTapTarget.minimumOf(context).height,
+                      ),
                       child: SgButton(
                         label: l10n.backlogStudyDay,
                         kind: SgButtonKind.text,
@@ -570,15 +584,17 @@ class BacklogRow extends ConsumerWidget {
     final notifier = ref.read(backlogProvider.notifier);
     final name = spokenForm(row.word.word);
     final undo = await notifier.act(action, row);
-    if (!context.mounted) return;
-    SgUndo.show(
-      context,
-      message: switch (action) {
-        BacklogAction.known => l10n.studyKnown(name),
-        BacklogAction.suspended => l10n.backlogSuspended(name),
-        BacklogAction.removed => l10n.backlogRemoved(name),
-      },
-      onUndo: () => unawaited(undo()),
+    if (undo == null || !context.mounted) return;
+    unawaited(
+      SgUndo.show(
+        context,
+        message: switch (action) {
+          BacklogAction.known => l10n.studyKnown(name),
+          BacklogAction.suspended => l10n.backlogSuspended(name),
+          BacklogAction.removed => l10n.backlogRemoved(name),
+        },
+        onUndo: () => unawaited(undo()),
+      ),
     );
   }
 
@@ -665,7 +681,7 @@ class _TrailingActionsState extends State<_TrailingActions> {
                     child: Container(
                       width: _TrailingActions.width,
                       alignment: Alignment.center,
-                      // Oat, Sun and Lagoon: no red, even for Remove
+                      // Lagoon, Sun and Oat: no red, even for Remove
                       // (FR-T4-05).
                       color: switch (i) {
                         0 => tokens.color.primary,

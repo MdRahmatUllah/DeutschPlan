@@ -338,7 +338,8 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
 
     testWidgets('each row: its meaning and its status', (tester) async {
       await pump(tester);
-      expect(find.text('house'), findsOneWidget);
+      // #689 TD-15: Both, the default, is both, as W1 and T2 show it.
+      expect(find.text('house · বাড়ি'), findsOneWidget);
       expect(find.text(l10n.wordStatusToDo), findsNWidgets(3));
     });
 
@@ -422,6 +423,24 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await tester.pumpAndSettle();
       expect(find.text('T2 $today backlog $haus,$tuer'), findsOneWidget);
     });
+
+    for (final (chrome, side) in <(AdaptiveChrome, int)>[
+      (AdaptiveChrome.material, 48),
+      (AdaptiveChrome.cupertino, 44),
+    ]) {
+      testWidgets('#689 TD-14 Study this day is a $side dp target to a '
+          'finger (${chrome.name}), not the 40 of the day row', (tester) async {
+        await pump(tester, chrome: chrome);
+        for (final button in tester.widgetList<SgButton>(
+          find.widgetWithText(SgButton, l10n.backlogStudyDay),
+        )) {
+          expect(
+            tester.getSize(find.byWidget(button)).height,
+            greaterThanOrEqualTo(side),
+          );
+        }
+      });
+    }
 
     group('the session', () {
       late ProviderContainer container;
@@ -522,6 +541,31 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         isTrue,
       );
     });
+  });
+
+  test('#689 TD-7 FR-T4-04 a second tap while the first is written does '
+      'nothing: one rating, one Undo', () async {
+    spoken = <String>[];
+    await open();
+    final container = ProviderContainer(overrides: overrides());
+    addTearDown(() async {
+      container.dispose();
+      await settings.dispose();
+      await db.close();
+    });
+    container.listen(backlogProvider, (_, _) {});
+    final row = (await container.read(backlogProvider.future))
+        .firstWhere((row) => row.word.uid == haus);
+    final notifier = container.read(backlogProvider.notifier);
+
+    final first = notifier.act(BacklogAction.known, row);
+    final second = notifier.act(BacklogAction.known, row);
+    expect(await second, isNull);
+    expect(await first, isNotNull);
+    final log = await db.customSelect('SELECT word_uid FROM review_log').get();
+    expect(log.map((r) => r.data['word_uid']), <String>[haus]);
+    // Written, the word takes an action again.
+    expect(await notifier.act(BacklogAction.suspended, row), isNotNull);
   });
 
   group('FR-T4-04 row actions', () {

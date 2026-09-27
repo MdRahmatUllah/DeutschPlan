@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -110,7 +112,9 @@ Future<TodayView> todayView(Ref ref) async {
   final open = await changes;
   // FR-T5-01: the day's sentences, picked once and kept in sentence_log.
   final sentences = await picker.forDay(date);
-  final rated = await rating;
+  // No more than the day has: a content update can take away a sentence
+  // already rated, and 21 / 20 would never be done (#689 TD-11).
+  final rated = math.min(await rating, sentences.length);
   final openSentences = sentences.length - rated;
   List<String> stillOpen(PlanKind kind, List<String> planned) => <String>[
     for (final uid in planned)
@@ -247,7 +251,7 @@ Future<TodayView> todayView(Ref ref) async {
       revise: ahead.revise.length,
       newWords: ahead.newToday.length,
       grammar: ahead.grammarDue.length,
-      estimate: await engine.estimate(ahead),
+      estimate: await engine.estimate(ahead, remember: false),
       category: await content.mainCategory(ahead.newToday),
       restDay: !ahead.isStudyDay,
     ),

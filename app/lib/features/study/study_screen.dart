@@ -20,6 +20,8 @@ import 'package:sogda/features/study/study_rating.dart';
 import 'package:sogda/features/study/study_session.dart';
 import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/study/write_guard.dart';
+import 'package:sogda/features/me/about_screen.dart' show contactUri;
+import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -225,7 +227,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final l10n = AppLocalizations.of(context);
     return _withUndo(
       item,
-      known ? notifier.knewIt : notifier.skip,
+      () => known ? notifier.knewIt(card: item) : notifier.skip(card: item),
       (name) => known ? l10n.studyKnown(name) : l10n.studySkipped(name),
     );
   }
@@ -248,7 +250,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     };
     return _withUndo(
       item,
-      () => notifier.rate(rating),
+      () => notifier.rate(rating, card: item),
       (name) => l10n.studyRated(name, label),
     );
   }
@@ -265,11 +267,33 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final notifier = ref.read(studySessionProvider(widget.args).notifier);
     final word = ref.read(studyWordProvider(item.uid)).value?.word;
     if (!await guardWrite(context, write) || !mounted) return;
-    SgUndo.show(
+    _undoBar = SgUndo.show(
       context,
       message: message(word == null ? item.uid : spokenForm(word)),
       lift: StudyFrontActions.clearanceOf(context),
       onUndo: () => unawaited(guardWrite(context, notifier.undo)),
+    );
+  }
+
+  /// The last card's *Undo* bar: true once it has gone with its *Undo*
+  /// taken.
+  Future<bool>? _undoBar;
+
+  /// [go], once the last card's *Undo* has had its time (#689 TD-9): T6
+  /// replaces this screen, and the bar with it. Taken, the session is back on
+  /// that card, and stays. Closed on the way out, there is nowhere to go.
+  void _afterUndo(VoidCallback go) {
+    final bar = _undoBar;
+    if (bar == null) return go();
+    unawaited(
+      bar.then((undone) {
+        if (!mounted || !(ModalRoute.isCurrentOf(context) ?? true)) return;
+        if (undone) {
+          _leaving = false;
+        } else {
+          go();
+        }
+      }),
     );
   }
 
@@ -326,7 +350,11 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             : () => _step(StudyNextStep.grammar, session),
       );
     } else if (dayComplete) {
-      _once(() => _leave(() => DayCompleteRoute.instead(context, date!)));
+      _once(
+        () => _afterUndo(
+          () => _leave(() => DayCompleteRoute.instead(context, date!)),
+        ),
+      );
     }
     if (session != null && _bannered == null && session.startsBlock) {
       // The first block's banner, once the queue has been built.
@@ -358,6 +386,10 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
           };
     final item = session?.current;
     final revealed = session?.revealed ?? false;
+    // The New block's banner: "Neue Wörter · Daily routine".
+    final category = item?.kind == SessionBlockKind.newWords
+        ? ref.watch(studyCategoryProvider(widget.args)).value
+        : null;
     // A word met for the first time: today's new, or the backlog's.
     final fresh =
         item?.kind == SessionBlockKind.newWords ||
@@ -446,9 +478,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                     kind: item.kind,
                     label: switch (item.kind) {
                       SessionBlockKind.revise => l10n.studyBannerRevise,
-                      SessionBlockKind.newWords => switch (ref
-                          .watch(studyCategoryProvider(widget.args))
-                          .value) {
+                      SessionBlockKind.newWords => switch (category) {
                         final category? => l10n.studyBannerNewCategory(
                           category,
                         ),
@@ -457,6 +487,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                       SessionBlockKind.grammar => l10n.studyBannerGrammar,
                       SessionBlockKind.backlog => l10n.studyBannerBacklog,
                     },
+                    // ponytail: the course's categories are English, so
+                    // "Neue Wörter · Daily routine" keeps the app's voice.
+                    german: category == null,
                   ),
               ],
             ),
@@ -687,11 +720,16 @@ class _BlockBanner extends StatelessWidget {
     required this.visible,
     required this.kind,
     required this.label,
+    required this.german,
   });
 
   final bool visible;
   final SessionBlockKind kind;
   final String label;
+
+  /// "Wiederholen", "Neue Wörter": German in every UI language, and read so
+  /// (#689 TD-12).
+  final bool german;
 
   @override
   Widget build(BuildContext context) {
@@ -743,6 +781,7 @@ class _BlockBanner extends StatelessWidget {
                         color: kind == SessionBlockKind.grammar
                             ? tokens.color.ink
                             : tokens.color.onAccent,
+                        german: german,
                       ),
                     ),
                   ),
@@ -756,9 +795,9 @@ class _BlockBanner extends StatelessWidget {
   }
 }
 
-/// The card slot: the word card, front and back (#101, #102); the new-word
-/// card and the cloze card follow (#103, #104). A grammar set shows its topic
-/// until L15 exists.
+/// The card slot: the word card, front and back (#101, #102), the new-word
+/// card (#103) and the cloze card (#104). A grammar topic has no card here:
+/// L15 practises it on its own screen.
 class StudyCardSlot extends ConsumerWidget {
   const StudyCardSlot({
     required this.item,
@@ -828,11 +867,10 @@ class StudyMenu extends ConsumerStatefulWidget {
 
   final StudyItem item;
 
-  /// Where a report goes: a new issue on the project, filled in.
-  static Uri reportUri(StudyItem item) => Uri.https(
-    'github.com',
-    '/MdRahmatUllah/DeutschPlan/issues/new',
-    <String, String>{
+  /// Where a report goes: M9's *Contact*, a new issue on the project, filled
+  /// in with the card.
+  static Uri reportUri(StudyItem item) => contactUri.replace(
+    queryParameters: <String, String>{
       'title': 'Problem with ${item.kind.name} card ${item.uid}',
       'body':
           'Card: ${item.uid} (${item.kind.name})\n\n'
@@ -845,15 +883,15 @@ class StudyMenu extends ConsumerStatefulWidget {
 }
 
 class _StudyMenuState extends ConsumerState<StudyMenu> {
-  static final Map<double, String> _speeds = <double, String>{
-    0.75: '0.75×',
-    1.0: '1×',
-    1.25: '1.25×',
-  };
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // "০.৭৫×" in Bangla (#425, #689 TD-15).
+    final speeds = <double, String>{
+      0.75: l10n.digits('0.75×'),
+      1.0: l10n.digits('1×'),
+      1.25: l10n.digits('1.25×'),
+    };
     final settings = ref.watch(settingsProvider);
     final autoplay = settings.read(SettingKeys.autoplayHeadword);
     final speed = settings.read(SettingKeys.ttsSpeed);
@@ -875,7 +913,7 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
                 semanticLabel: l10n.studyMenuAutoplay,
                 onChanged: (on) async {
                   await settings.write(SettingKeys.autoplayHeadword, on);
-                  setState(() {});
+                  if (mounted) setState(() {});
                 },
               ),
             ],
@@ -884,11 +922,11 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
           SgText(l10n.studyMenuSpeed, role: SgTextRole.body),
           const SizedBox(height: 8),
           AdaptiveSegmented<double>(
-            segments: _speeds,
-            value: _speeds.containsKey(speed) ? speed : 1.0,
+            segments: speeds,
+            value: speeds.containsKey(speed) ? speed : 1.0,
             onChanged: (value) async {
               await settings.write(SettingKeys.ttsSpeed, value);
-              setState(() {});
+              if (mounted) setState(() {});
             },
           ),
           const SizedBox(height: 8),
