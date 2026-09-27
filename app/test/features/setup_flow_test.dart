@@ -194,6 +194,22 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
       expect(plan.newToday, hasLength(7));
     });
 
+    test('#606 BR-PLAN-01 on a day switched off, day 1 is still planned and '
+        'Today is a study day', () async {
+      // The owner's call (a): the setup day studies whatever the mask, and
+      // the mask applies from tomorrow. Today, a Monday, switched off.
+      draft()
+        ..setDailyNew(7)
+        ..toggleStudyDay(DateTime.monday);
+
+      await flow().finish();
+
+      expect(await plannedToday('new'), 7);
+      final plan = await container.read(todayPlanProvider.future);
+      expect(plan.isStudyDay, isTrue);
+      expect(plan.newToday, hasLength(7));
+    });
+
     test('and leaves the draft for the route to clear', () async {
       // Cleared here, the page still on screen would redraw with the
       // defaults for a frame before Today arrived (route_guards_test holds
