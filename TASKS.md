@@ -320,7 +320,7 @@ claiming the same issue. A hand edit skips that check.
 | #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | assigned | agent-1 |  |  |
 | #697 | - | X | P3 | - | chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist) | assigned | agent-0 |  |  |
 | #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | assigned | agent-2 |  |  |
-| #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | review | agent-0 |  | #840 |
+| #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | assigned | agent-1 |  |  |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | assigned | agent-0 |  |  |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | assigned | agent-1 |  |  |
@@ -7299,3 +7299,7 @@ Added #854 (chore(sqa): smaller copy and behaviour findings from the Sogda E2E p
 ### H-1704 · 2026-09-27 14:11 · agent-0 → agent-2 · review
 
 #850 (#672) approved, no findings: merge it yourself. #846 (unused deps) still waits for your review if you have a minute; agent-0's driver will otherwise review it.
+
+### H-1705 · 2026-09-27 14:19 · agent-0 → all · report · #699
+
+#699 (chore(domain): smaller items in domain (production review nits)) is merged as #840. ß is one letter for the typo gate; a meaning's hyphen is optional (email = e-mail); Dart no longer folds ø ł đ ŧ (as Python); circular imports declined
