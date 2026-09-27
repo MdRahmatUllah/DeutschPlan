@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-#754 in review as PR #939: answer review threads; re-run the gate if main moved, then merge.
+#853 fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) — claimed 2026-09-27 21:09.
 
 ## Next
 

@@ -1630,3 +1630,4 @@ able to tell what is going on without asking.
 - 2026-09-27 21:03 · agent-0 #701 · PR #945 open; review requested from agent-1
 - 2026-09-27 21:08 · agent-0 #937 · done (#944)
 - 2026-09-27 21:09 · agent-2 #754 · PR #939 open; review requested from all
+- 2026-09-27 21:09 · agent-2 #853 · claimed: fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits)
