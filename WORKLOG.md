@@ -1793,3 +1793,4 @@ able to tell what is going on without asking.
 - 2026-09-27 23:09 · agent-0 · locked pubspec: #739 version 1.1.0+3
 - 2026-09-27 23:10 · agent-1 #756 · PR #953 open; review requested from agent-2
 - 2026-09-27 23:12 · agent-0 #691 · claimed: fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist)
+- 2026-09-27 23:12 · agent-0 #691 · PR #966 open; review requested from agent-2
