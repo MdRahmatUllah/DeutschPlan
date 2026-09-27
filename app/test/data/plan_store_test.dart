@@ -824,6 +824,7 @@ VALUES (?, ?, ?, ?, ?)
     test('nobody has enrolled on a fresh install', () async {
       expect(await store.hasEverEnrolled(), isFalse);
       expect(await store.lastCompletedStep(), isNull);
+      expect(await store.lastCompletedMask(), isNull);
     });
 
     test('an open step is not a completed one', () async {
@@ -846,10 +847,15 @@ VALUES (?, ?, ?, ?, ?)
       await enroll(
         step: 'A1.2',
         startedOn: '2026-02-01',
+        mask: 0x1F,
         completedOn: '2026-03-01',
       );
 
       expect(await store.lastCompletedStep(), 'A1.2');
+      expect(await store.lastCompletedMask(), (
+        on: '2026-03-01',
+        mask: 0x1F,
+      ), reason: '#615: its close and its study days');
     });
 
     test('and ties on the day break by when the step started', () async {

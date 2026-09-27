@@ -616,20 +616,31 @@ SELECT practised_at AS at FROM grammar_practice_log ORDER BY practised_at
   /// day — which happens when a catch-up run burns through a short step —
   /// still resolve to the later one.
   @override
-  Future<String?> lastCompletedStep() async {
-    final rows = await _db
-        .customSelect(
-          '''
-SELECT sublevel_code AS code
+  Future<String?> lastCompletedStep() async =>
+      (await _lastCompleted())?.read<String>('code');
+
+  /// #615: the same enrollment's close and mask.
+  @override
+  Future<({PlanDate on, int mask})?> lastCompletedMask() async {
+    final row = await _lastCompleted();
+    return row == null
+        ? null
+        : (
+            on: row.read<String>('completed_on'),
+            mask: row.read<int>('study_days_mask'),
+          );
+  }
+
+  Future<QueryRow?> _lastCompleted() => _db
+      .customSelect(
+        '''
+SELECT sublevel_code AS code, completed_on, study_days_mask
 FROM enrollments
 WHERE completed_on IS NOT NULL
 ORDER BY completed_on DESC, started_on DESC
 LIMIT 1
 ''',
-          readsFrom: <ResultSetImplementation<Object, Object>>{_db.enrollments},
-        )
-        .get();
-
-    return rows.isEmpty ? null : rows.first.read<String>('code');
-  }
+        readsFrom: <ResultSetImplementation<Object, Object>>{_db.enrollments},
+      )
+      .getSingleOrNull();
 }

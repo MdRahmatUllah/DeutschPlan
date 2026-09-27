@@ -1359,6 +1359,68 @@ void main() {
       expect(await engineWith().streak(addDays(monday, 1)), 2);
     });
 
+    for (final (why, autoAdvance, course) in <(String, bool, List<String>)>[
+      ('a step ends with auto-advance off', false, <String>['A1.1', 'A1.2']),
+      ('the course ends', true, <String>['A1.1']),
+    ]) {
+      test('#615 BR-PLAN-01 FR-M2-02 when $why, the streak and the best one '
+          'keep the Mon–Fri days', () async {
+        // Two Mon–Fri weeks, weekends rested; the third Monday, studied, is
+        // the one the step runs out on.
+        store
+          ..enrollment = const ActiveStep(
+            sublevelCode: 'A1.1',
+            startedOn: monday,
+            dailyNew: 7,
+            studyDaysMask: 0x1F,
+          )
+          ..course = course
+          ..wordsByStep = <String, List<String>>{'A1.1': <String>[]}
+          ..active = <PlanDate>{
+            for (final day in <int>[0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14])
+              addDays(monday, day),
+          };
+        final today = addDays(monday, 14);
+        store.lastPlanned = addDays(today, -1);
+        final engine = engineWith(autoAdvance: autoAdvance);
+        expect(await engine.streak(today), 11);
+        expect(await engine.bestStreak(today), 11);
+
+        await engine.openDay(today);
+        expect(store.enrollment, isNull, reason: 'the step closed today');
+        expect(await engine.streak(today), 11);
+        expect(await engine.bestStreak(today), 11);
+
+        // After the close every day is planned as a study day (#457): Tue–Fri
+        // studied, the Saturday missed ends the streak.
+        store.active.addAll(<PlanDate>[
+          for (var day = 15; day <= 18; day++) addDays(monday, day),
+        ]);
+        expect(await engine.streak(addDays(monday, 20)), 0);
+        expect(await engine.bestStreak(addDays(monday, 20)), 15);
+      });
+    }
+
+    test('#615 #377 with no step open, a day before a change keeps the mask '
+        'it had', () async {
+      // Every day in the first week, Mon–Fri from the second; the step closed
+      // on the second Sunday. The first weekend, missed, was study days.
+      store
+        ..enrollment = null
+        ..closed = (on: addDays(monday, 13), mask: 0x1F)
+        ..masks = <MaskSpan>[
+          (from: '', mask: PlanEngine.allDays),
+          (from: addDays(monday, 7), mask: 0x1F),
+        ]
+        ..active = <PlanDate>{
+          for (final day in <int>[0, 1, 2, 3, 4, 7, 8, 9, 10, 11])
+            addDays(monday, day),
+        };
+      final today = addDays(monday, 14);
+      expect(await engineWith().streak(today), 5);
+      expect(await engineWith().bestStreak(today), 5);
+    });
+
     test('the schedule check divides by the enrolment pace', () async {
       // Not the setting: BR-PLAN-08 freezes the pace per enrolment, and these
       // days were planned at whatever it was then.
@@ -1601,8 +1663,17 @@ class FakeStore implements PlanStore {
   @override
   Future<void> completeStep(String sublevelCode, PlanDate on) async {
     completed.add('$sublevelCode@$on');
-    if (enrollment?.sublevelCode == sublevelCode) enrollment = null;
+    if (enrollment case final step? when step.sublevelCode == sublevelCode) {
+      closed = (on: on, mask: step.studyDaysMask);
+      enrollment = null;
+    }
   }
+
+  /// #615: the last step closed, as [lastCompletedMask] reads it.
+  ({PlanDate on, int mask})? closed;
+
+  @override
+  Future<({PlanDate on, int mask})?> lastCompletedMask() async => closed;
 
   @override
   Future<void> enroll(ActiveStep step) async {
