@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-27 15:23
+last-seen: 2026-09-27 15:49
 last-read: 1751
 
 ## Now
 
-#613 security(deep-links): an explicit intent from another app can open any route, bypassing the deep-link allow-list and the exam's leave guard — claimed 2026-09-27 15:23.
+#613 in review as PR #882: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
