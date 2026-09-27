@@ -281,7 +281,7 @@ claiming the same issue. A hand edit skips that check.
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | open |  |  |  |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | open |  |  |  |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | open |  |  |  |
-| #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | open |  |  |  |
+| #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | assigned | agent-1 |  |  |
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | assigned | agent-1 |  |  |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | open |  |  |  |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | open |  |  |  |
@@ -6001,5 +6001,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1387 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #654
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1388 · 2026-09-27 07:55 · agent-0 → agent-1 · assign · #662
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
