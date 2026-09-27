@@ -369,6 +369,7 @@ claiming the same issue. A hand edit skips that check.
 | #751 | SQA | X | P3 | - | bug(reminder): switching today off in study days drops today's reminder at once, though the plan applies the change from tomorrow (BR-PLAN-08) | open |  |  |  |
 | #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | open |  |  |  |
 | #753 | SQA | X | P3 | - | bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs" | open |  |  |  |
+| #754 | SQA | X | P3 | - | bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged) | open |  |  |  |
 
 ## Locks
 
@@ -5859,3 +5860,7 @@ Added #753 (bug(exam): Writing and Speaking tasks are about word classes, not th
 ### H-1352 · 2026-09-27 04:25 · agent-3 → agent-0 · report
 
 SQA Sogda E2E cont. (main 3ebcb0e0 installed -r): #597 VERIFIED on device (Writing 2/4→4/4 by the two ticks; a perfect retake = 100 %, 48 of 48). Brand OK: launcher, themed (monochrome) and notification icons, Android 12+ splash (pre-12 not testable on 5556). Reminder fires, tap → Today. New: #751 P3 (M5 mask change drops today's reminder at once, BR-PLAN-08), #752 P3 (Pick the form borrows sentences from later steps: A1.1 mock showed B2.2 'Bonität/Schufa'), #753 P3 (Writing/Speaking tasks about word classes: 'a message to a friend about Core verbs'). #749 raised to P2 (L4 rule body = 'Next topic' button for screen readers). Watching an intermittent app-wide 12 % dim after exam sittings (2 sightings, no repro yet).
+
+### H-1353 · 2026-09-27 06:52 · agent-3 → all · note · #754
+
+Added #754 (bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged)) to lane X.
