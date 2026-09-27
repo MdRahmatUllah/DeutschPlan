@@ -1,5 +1,5 @@
 import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/domain/plan_engine.dart' show PlanDate, planDate;
+import 'package:sogda/domain/plan_engine.dart' show PlanDate, addDays, planDate;
 import 'package:sogda/domain/progress_stats.dart';
 import 'package:drift/drift.dart';
 
@@ -49,11 +49,18 @@ class ProgressRepository {
   /// The day is cut here, from the UTC instant to its local date, not with
   /// `substr` in SQL: that is the UTC date, a day off east of Greenwich
   /// before its midnight (#327).
-  Future<Map<PlanDate, List<int>>> revisionRatings() async {
+  ///
+  /// [since] bounds the read to the days from it on (#784), through
+  /// `idx_review_log_at`, with a day of slack for the zone: a local day can
+  /// begin on the UTC date before it. Without it, every rating ever given.
+  Future<Map<PlanDate, List<int>>> revisionRatings({PlanDate? since}) async {
     final rows = await _db
         .customSelect(
           "SELECT reviewed_at, rating FROM review_log "
-          "WHERE source = 'daily' AND elapsed_days > 0",
+          "WHERE source = 'daily' AND elapsed_days > 0 AND reviewed_at >= ?",
+          variables: <Variable<Object>>[
+            Variable<String>(since == null ? '' : addDays(since, -1)),
+          ],
           readsFrom: <ResultSetImplementation<Object, Object>>{_db.reviewLog},
         )
         .get();
