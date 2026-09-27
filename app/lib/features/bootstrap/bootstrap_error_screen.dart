@@ -136,6 +136,8 @@ class BootstrapErrorScreen extends StatelessWidget {
     BootstrapStep.database when failure.newer =>
       l10n.bootstrapErrorNewerDatabase,
     BootstrapStep.database => l10n.bootstrapErrorDatabase,
+    BootstrapStep.content when failure.noSpace =>
+      l10n.bootstrapErrorContentSpace(courseInstallMegabytes),
     BootstrapStep.content => l10n.bootstrapErrorContent,
     BootstrapStep.settings => l10n.bootstrapErrorSettings,
   };

@@ -53,7 +53,7 @@ and Bangla.*
 
 In numbers, at v1.0.1:
 
-- **A complete course.** 12 steps, 5,076 words, 10,553 example sentences,
+- **A complete course.** 12 steps, 5,076 words, 10,545 example sentences,
   182 grammar topics, 159 word categories and 622 interference tips, in one
   read-only database that ships inside the app.
 - **A plan for every day.** Revision scheduled by FSRS-4.5 (target

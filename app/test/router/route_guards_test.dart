@@ -681,6 +681,21 @@ void main() {
       expect(find.byType(PlacementScreen), findsOneWidget);
     });
 
+    testWidgets('#822 page 1 offers Restore a backup, but not in restart '
+        'setup, where it would replace progress', (tester) async {
+      await pumpApp(tester, guards: guardsWith(), at: '/onboarding/1');
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(OnboardingWelcomePage)),
+      );
+      expect(find.text(l10n.onboardingRestoreBackup), findsOneWidget);
+
+      // Page 1 in restart setup: only a bad link reaches it.
+      router.go('/onboarding/1?restart=true');
+      await tester.pumpAndSettle();
+      expect(find.byType(OnboardingWelcomePage), findsOneWidget);
+      expect(find.text(l10n.onboardingRestoreBackup), findsNothing);
+    });
+
     testWidgets("Back from its first page leaves setup", (tester) async {
       await pumpApp(
         tester,
