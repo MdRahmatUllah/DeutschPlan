@@ -64,8 +64,8 @@ dart run drift_dev schema generate drift_schemas/ test/db/generated/
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-The first `flutter test` in a new worktree downloads native libraries
-(sqlite3, llama.cpp): it needs the network and several GB, once.
+The first `flutter test` in a new worktree downloads sqlite3's
+native library through its build hook: it needs the network, once.
 `app/assets/db/content.db` is committed, so a first run builds no content. The
 Excel workbooks are not in git; they live in the main checkout's `data/` and
 are copied in only for a content change.

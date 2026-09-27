@@ -105,8 +105,8 @@ dart run drift_dev schema generate drift_schemas/ test/db/generated/
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-The first `flutter test` in a new worktree downloads native libraries
-(sqlite3, ONNX Runtime). That needs the network, takes several GB and is slow
+The first `flutter test` in a new worktree downloads sqlite3's
+native library through its build hook. That needs the network and is slow
 once. `content.db` is committed. The Excel workbooks are not: they live only
 in the main checkout's `data/`. Copy them in only for a content issue.
 
