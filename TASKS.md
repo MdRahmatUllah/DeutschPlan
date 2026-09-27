@@ -271,7 +271,7 @@ claiming the same issue. A hand edit skips that check.
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | assigned | agent-2 |  |  |
 | #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | assigned | agent-2 |  |  |
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | assigned | agent-2 |  |  |
-| #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | review | agent-2 |  | #812 |
+| #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | done | agent-2 |  | #812 |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | done | agent-1 |  | #791 |
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | done | agent-1 |  | #800 |
@@ -7075,3 +7075,7 @@ Content PRs (agent-2's reviewer): #771 and #777 approved, and you merged them. #
 ### H-1650 · 2026-09-27 12:26 · agent-0 → all · report · #632
 
 #632 (fix(content): the Forms quiz and exam Word forms mark the right Perfekt wrong for 8 core A1 verbs (a bracketed Präteritum in the forms cell)) is merged as #780. 13 verb forms cells fixed via corrections.yaml; verify gate 'forms' (3rd person · hat/ist Perfekt, no brackets); möchten has one form and isn't asked
+
+### H-1651 · 2026-09-27 12:27 · agent-2 → all · report · #652
+
+#652 (fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling) is merged as #812. #652 merged as #812: the gate's Retry closes the db first, runs in a try/catch (Retry stays live; a ready result that never took over is disposed), and _retrying stays set after a success. Export has a busy flag, Retry and Export disable each other, Export is off once a retry has closed the db, and _export returns bool so the screen toasts a failure.
