@@ -248,7 +248,17 @@ def uid_for(word, *, suffix: int | None = None) -> str:
 
 def _uid_part(word, name: str) -> str:
     value = getattr(word, name, None)
-    return "" if value is None else str(value)
+    return "" if value is None else uid_text(str(value))
+
+
+def uid_text(value: str) -> str:
+    """#648: one spelling per word. NFC, and runs of whitespace as one space.
+
+    An NFD paste of "Tür" or a double space is the same word to the learner,
+    and hashing it as another would orphan their progress over an edit nobody
+    can see. No uid on main changed when this came in (5,593 words).
+    """
+    return " ".join(unicodedata.normalize("NFC", value).split())
 
 
 def assign_uids(words: Sequence) -> list[str]:
@@ -511,7 +521,8 @@ def _typed_article(word):
 def _uid_key(word, german: str) -> tuple[str, ...]:
     """The fields the uid is made of, with `german` in place of the cell."""
     return tuple(
-        german if name == "german" else _uid_part(word, name) for name in UID_FIELDS
+        uid_text(german) if name == "german" else _uid_part(word, name)
+        for name in UID_FIELDS
     )
 
 

@@ -20,7 +20,7 @@ Score "16 / 20", "80% · 4 min 12 s · Standard · DE → EN"; "Mistakes · 4 ·
 
 **Functional requirements**
 - FR-L8-01 Quiz built by `QuizBuilder` with a seed stored in `quiz_attempts`.
-- FR-L8-02 Every answer graded by `answer_check` and rated into FSRS (BR-FSRS-03, source `quiz`); answers persisted per item.
+- FR-L8-02 Every answer graded by `answer_check` and rated into FSRS (BR-FSRS-03, source `quiz`); answers persisted per item. An answer is saved before its verdict shows or counts. A write that fails (an answer, the finish, L9's *Add mistakes to revision*) brings up the write-error sheet with *Retry* and *Export progress* (#174), and closing it leaves the question, the run and back working (#647).
 - FR-L8-03 Wrong items re-asked once at the end (BR-QUIZ-01); the re-ask result does not change the score.
 - FR-L8-04 Close asks "Stop quiz? Your answers so far are saved to revision".
 - FR-L8-05 Timer (when on) auto-submits an empty answer as wrong at 0.

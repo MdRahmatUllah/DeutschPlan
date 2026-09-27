@@ -186,16 +186,56 @@ void main() {
       expect(checkGerman('das Haus', 'das Haus'), Verdict.correct);
     });
 
-    test('ä, ae and a are all accepted', () {
-      for (final given in <String>['Tür', 'Tuer', 'Tur']) {
-        expect(checkGerman(given, 'Tür'), Verdict.correct, reason: given);
+    test('#675 ä and ae are right, a bare a is almost', () {
+      for (final (umlaut, typed, bare) in const <(String, String, String)>[
+        ('Tür', 'Tuer', 'Tur'),
+        ('schön', 'schoen', 'schon'),
+        ('Mädchen', 'Maedchen', 'Madchen'),
+        ('Straße', 'Strasse', 'Strasse'),
+      ]) {
+        expect(checkGerman(umlaut, umlaut), Verdict.correct, reason: umlaut);
+        expect(checkGerman(typed, umlaut), Verdict.correct, reason: typed);
+        if (bare != typed) {
+          expect(checkGerman(bare, umlaut), Verdict.almost, reason: bare);
+        }
       }
-      for (final given in <String>['schön', 'schoen', 'schon']) {
-        expect(checkGerman(given, 'schön'), Verdict.correct, reason: given);
+    });
+
+    test('#675 a meaning keeps the lenient match: it tests no German form', () {
+      expect(checkMeaning('doner kebab', 'döner kebab'), Verdict.correct);
+    });
+
+    test('#675 a minimal pair the umlaut makes is never right', () {
+      // The other word or form: the thing a gap fill, a forms item or a
+      // listening item tests.
+      for (final (given, expected) in const <(String, String)>[
+        ('hatte', 'hätte'),
+        ('wurde', 'würde'),
+        ('konnte', 'könnte'),
+        ('schon', 'schön'),
+        ('zahlen', 'zählen'),
+        ('schön', 'schon'),
+      ]) {
+        expect(
+          checkGerman(given, expected),
+          isNot(Verdict.correct),
+          reason: '$given for $expected',
+        );
       }
-      for (final given in <String>['Mädchen', 'Maedchen', 'Madchen']) {
-        expect(checkGerman(given, 'Mädchen'), Verdict.correct, reason: given);
+      for (final (given, expected) in const <(String, String)>[
+        ('Mutter', 'Mütter'),
+        ('Bruder', 'Brüder'),
+        ('Apfel', 'Äpfel'),
+        ('alter', 'älter'),
+      ]) {
+        expect(
+          checkForm(given, expected),
+          isNot(Verdict.correct),
+          reason: '$given for $expected',
+        );
       }
+      expect(checkGerman('haette', 'hätte'), Verdict.correct);
+      expect(checkForm('Muetter', 'Mütter'), Verdict.correct);
     });
 
     test('ß and ss are the same word', () {
@@ -221,6 +261,25 @@ void main() {
       // BR-ANS-02 accepts the word without it. Only a *stated* wrong one
       // counts against the learner.
       expect(checkGerman('Haus', 'Haus', article: 'das'), Verdict.correct);
+    });
+
+    test('#614 a typo under the wrong article is wrong: never more than the '
+        'right noun under it', () {
+      expect(
+        checkGerman('die Kühlschrank', 'Kühlschrank', article: 'der'),
+        Verdict.wrongArticle,
+      );
+      expect(
+        checkGerman('die Kühlschrnak', 'Kühlschrank', article: 'der'),
+        Verdict.wrong,
+      );
+      expect(checkGerman('das Kühlschrnak', 'der Kühlschrank'), Verdict.wrong);
+      expect(
+        checkGerman('die Kühlschrnak', 'Kühlschrank', article: 'der').score,
+        lessThanOrEqualTo(
+          checkGerman('die Kühlschrank', 'Kühlschrank', article: 'der').score,
+        ),
+      );
     });
 
     test('a typo under the right article is still almost', () {
@@ -250,7 +309,7 @@ void main() {
       // five-letter word. Measuring that would forgive a typo BR-ANS-01 does
       // not: the rule is six *letters*.
       expect(checkGerman('Bäuem', 'Bäume'), Verdict.wrong);
-      expect(checkGerman('Baume', 'Bäume'), Verdict.correct, reason: 'ä/a');
+      expect(checkGerman('Baume', 'Bäume'), Verdict.almost, reason: 'ä/a');
       expect(checkGerman('Blüemn', 'Blümen'), Verdict.almost, reason: 'six');
     });
 
@@ -369,6 +428,138 @@ void main() {
 
     test('keeps a single meaning whole', () {
       expect(splitMeanings('to look after'), <String>['to look after']);
+    });
+
+    test('#645 never splits inside brackets: they hold one note', () {
+      expect(splitMeanings('stop (bus/tram), halt'), <String>[
+        'stop (bus/tram)',
+        'halt',
+      ]);
+      expect(splitMeanings('drugstore (dm, Rossmann)'), <String>[
+        'drugstore (dm, Rossmann)',
+      ]);
+    });
+  });
+
+  group('#678 BR-ANS-01 several meanings typed', () {
+    test('as the card shows them, or in any order, are right', () {
+      expect(checkMeaning('hello / hi', 'hello / hi'), Verdict.correct);
+      expect(
+        checkMeaning('to go, to walk', 'to go / to walk'),
+        Verdict.correct,
+      );
+      expect(checkMeaning('hi / hello', 'hello / hi'), Verdict.correct);
+      expect(checkMeaning('walk; go', 'to go / to walk'), Verdict.correct);
+    });
+
+    test('with one of them misspelt, almost', () {
+      expect(
+        checkMeaning('grasp / understnad', 'understand / grasp'),
+        Verdict.almost,
+      );
+    });
+
+    test('and with one that is not the meaning, wrong', () {
+      expect(checkMeaning('hello / bye', 'hello / hi'), Verdict.wrong);
+      expect(checkMeaning('house, garden', 'house / home'), Verdict.wrong);
+    });
+  });
+
+  group('#645 notes in brackets and alternatives', () {
+    test('BR-ANS-01 a meaning counts with or without its note', () {
+      for (final (given, expected) in const <(String, String)>[
+        ('to save', 'to save (a file)'),
+        ('save', 'to save (a file)'),
+        ('to save a file', 'to save (a file)'),
+        ('deposit', 'deposit (on bottles)'),
+        ('turn', 'to turn (off)'),
+        ('to change', 'to change (trains)'),
+        ('stop', 'stop (bus/tram)'),
+        ('drugstore', 'drugstore (dm, Rossmann)'),
+        ('to miss', 'to miss (a train, an event)'),
+        ('সাজানো', 'সাজানো (ঘর)'),
+      ]) {
+        expect(
+          checkMeaning(given, expected),
+          Verdict.correct,
+          reason: '$given for $expected',
+        );
+      }
+    });
+
+    test('BR-ANS-01 the whole cell, typed as shown, counts', () {
+      // "Zahlen, bitte!": a phrase with a comma is not two synonyms, and the
+      // learner who types exactly what the card says is right.
+      expect(
+        checkMeaning('the bill, please', 'the bill, please'),
+        Verdict.correct,
+      );
+      expect(
+        checkMeaning('the bill please', 'the bill, please'),
+        Verdict.correct,
+      );
+    });
+
+    test('BR-ANS-01 and a word from inside the note is not the meaning', () {
+      for (final (given, expected) in const <(String, String)>[
+        ('tram', 'stop (bus/tram)'),
+        ('bus', 'stop (bus/tram)'),
+        ('Rossmann', 'drugstore (dm, Rossmann)'),
+        ('an event', 'to miss (a train, an event)'),
+      ]) {
+        expect(
+          checkMeaning(given, expected),
+          Verdict.wrong,
+          reason: '$given for $expected',
+        );
+      }
+    });
+
+    test('BR-ANS-02 any one German alternative counts, not a mix', () {
+      expect(checkGerman('etwa', 'circa / etwa / rund'), Verdict.correct);
+      expect(checkGerman('prima', 'prima / super / klasse'), Verdict.correct);
+      expect(checkGerman('klasse', 'prima / super / klasse'), Verdict.correct);
+      expect(
+        checkGerman('super klasse', 'prima / super / klasse'),
+        isNot(Verdict.correct),
+      );
+    });
+
+    test('BR-ANS-02 and a German note may be left out, never answered '
+        'alone', () {
+      expect(checkGerman('denn', 'denn (Partikel)'), Verdict.correct);
+      expect(checkGerman('sollen', 'sollen (Hörensagen)'), Verdict.correct);
+      expect(checkGerman('Tram', 'Haltestelle (Bus / Tram)'), Verdict.wrong);
+      expect(
+        checkGerman('Haltestelle', 'Haltestelle (Bus / Tram)'),
+        Verdict.correct,
+      );
+    });
+
+    test('BR-ANS-02 each alternative keeps its own article', () {
+      expect(checkGerman('das Auto', 'der Wagen / das Auto'), Verdict.correct);
+      expect(
+        checkGerman('die Auto', 'der Wagen / das Auto'),
+        Verdict.wrongArticle,
+      );
+      expect(
+        checkGerman('die Straße', 'Straße (Weg)', article: 'die'),
+        Verdict.correct,
+      );
+    });
+
+    test('a forms cell takes each side of its slash, and leaves out its '
+        'note', () {
+      expect(
+        checkForm('hat aufgebrochen', 'hat/ist aufgebrochen'),
+        Verdict.correct,
+      );
+      expect(
+        checkForm('ist aufgebrochen', 'hat/ist aufgebrochen'),
+        Verdict.correct,
+      );
+      expect(checkForm('hat', 'hat/ist aufgebrochen'), Verdict.wrong);
+      expect(checkForm('hat gehabt', 'hat gehabt (hatte)'), Verdict.correct);
     });
   });
 

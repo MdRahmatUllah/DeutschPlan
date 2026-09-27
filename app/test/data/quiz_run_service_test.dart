@@ -210,6 +210,62 @@ void main() {
     expect(await service.result(99), isNull);
   });
 
+  /// Every `review_log` insert fails once [allowed] rows are there: a full
+  /// disk half way through a write.
+  Future<void> failRatingsAfter(int allowed) => db.customStatement(
+    'CREATE TEMP TRIGGER fail_rating BEFORE INSERT ON review_log '
+    'WHEN (SELECT count(*) FROM review_log) >= $allowed '
+    "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+  );
+
+  test('FR-L8-02 #647 an answer whose rating fails saves nothing, so the '
+      "write-error sheet's Retry is safe", () async {
+    final run = await start();
+    await failRatingsAfter(0);
+
+    await expectLater(
+      service.answer(
+        run,
+        run.quiz.items.first,
+        given: 'x',
+        verdict: Verdict.wrong,
+      ),
+      throwsA(anything),
+    );
+
+    final answers = await exams.watchQuizAnswers(run.attemptId!).first;
+    expect(answers.first.given, isNull, reason: 'rolled back with the rating');
+    expect(await db.select(db.reviewLog).get(), isEmpty);
+  });
+
+  test('FR-L9-01 #647 Add mistakes to revision that fails half way saves '
+      'nothing, so Retry rates no almost twice', () async {
+    final mistakes = <({String uid, String? verdict})>[
+      (uid: ContentFixture.haus, verdict: 'almost'),
+      (uid: ContentFixture.strasse, verdict: 'almost'),
+    ];
+    await failRatingsAfter(1);
+
+    await expectLater(
+      service.addToRevision(mistakes, today: '2026-09-21'),
+      throwsA(anything),
+    );
+    expect(
+      await db.select(db.reviewLog).get(),
+      isEmpty,
+      reason: 'the first rating rolled back with the second',
+    );
+
+    await db.customStatement('DROP TRIGGER fail_rating');
+    await service.addToRevision(mistakes, today: '2026-09-21');
+    final log = await db.select(db.reviewLog).get();
+    expect(
+      [for (final r in log) r.wordUid],
+      [ContentFixture.haus, ContentFixture.strasse],
+      reason: 'each once',
+    );
+  });
+
   test('FR-L9-01 BR-FSRS-03 Add mistakes to revision: an almost rated '
       'Again, a wrong not twice, both due tomorrow, those only', () async {
     Future<String?> due(String uid) async => (await (db.select(

@@ -181,7 +181,7 @@ flowchart LR
   search keys (lower case, article stripped, umlauts folded) byte-identical to
   `domain/text_norm.dart`, shared through `tools/test_vectors.json`; formula
   cells stored as text; examples paired by line; `content_version` is the
-  build time `YYYYMMDDHHMM`; verification fails on a missing column, an empty
+  build time `YYYYMMDDHHMMSS`, read once with `built_at`; verification fails on a missing column, an empty
   step, a word without an example, a uid collision, empty FTS tables or a
   misplaced tip.
 - **Rebuild and verify** (from the repository root, with the workbooks in
@@ -190,8 +190,11 @@ flowchart LR
   `content_manifest.json` into `app/assets/db/`. Review what changed with
   `python tools/content_manifest.py app/assets/db/content_manifest.json content/build/content_manifest.json`,
   and run `flutter test test/db/` from `app/`.
-- Changing a word's `german`, `pos` or `english` changes its uid and resets
-  learners' progress on it ([`adding-content.md`](../05-dev-guide/adding-content.md)).
+- Changing a word's `german`, `pos`, `english` or level changes its uid; the
+  build links the old uid to the new one when it is the same word, and the app
+  moves learners' progress along the link (PIPE-09). A word gone with nothing
+  to link it to stops the build unless `--allow-removed`
+  ([`adding-content.md`](../05-dev-guide/adding-content.md)).
 - `python tools/mirror_content_schema.py` rewrites `content_schema.drift` from
   the pipeline DDL; `content_schema_test` fails if they disagree.
 
