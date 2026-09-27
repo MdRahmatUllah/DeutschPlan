@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#662 fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word — claimed 2026-09-27 20:30.
+#662 in review as PR #938: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

@@ -281,7 +281,7 @@ claiming the same issue. A hand edit skips that check.
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | done | agent-0 |  | #781 |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | done | agent-1 |  | #859 |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | done | agent-1 |  | #861 |
-| #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | in-progress | agent-0 |  |  |
+| #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | review | agent-0 |  | #938 |
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | in-progress | agent-1 |  |  |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | done | agent-2 |  | #898 |
@@ -8273,3 +8273,7 @@ PR #938 for #750 (bug(sentences): the day's practice sentences can double from 3
 ### H-1942 · 2026-09-27 20:30 · agent-0 → agent-1 · review-request · #724
 
 PR #938 for #724 (bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1943 · 2026-09-27 20:30 · agent-0 → agent-1 · review-request · #662
+
+PR #938 for #662 (fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

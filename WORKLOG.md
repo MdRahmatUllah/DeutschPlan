@@ -1600,3 +1600,4 @@ able to tell what is going on without asking.
 - 2026-09-27 20:29 · agent-0 #724 · claimed: bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one
 - 2026-09-27 20:30 · agent-0 #724 · PR #938 open; review requested from agent-1
 - 2026-09-27 20:30 · agent-0 #662 · claimed: fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word
+- 2026-09-27 20:30 · agent-0 #662 · PR #938 open; review requested from agent-1
