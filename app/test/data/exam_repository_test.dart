@@ -421,6 +421,7 @@ void main() {
       source: 'stepLearned',
       sourceRef: 'A1.1',
       seed: 7,
+      length: count,
       questions: <QuizQuestion>[
         for (var ord = 1; ord <= count; ord++)
           QuizQuestion(

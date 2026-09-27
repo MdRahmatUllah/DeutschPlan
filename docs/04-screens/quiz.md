@@ -19,7 +19,8 @@ Full-screen modal; top bar close · "Standard · DE → EN" · "7 / 20" · progr
 Score "16 / 20", "80% · 4 min 12 s · Standard · DE → EN"; "Mistakes · 4 · re-asked once at the end" list ("die Kaution — you wrote: die Kausion", "der Vermieter — you wrote: die Vermieter · article"); buttons *Retry mistakes · 4*, *Add mistakes to revision*, *Done*. Result block colour: Lime ≥ 80 %, Sun 50–79 %, Coral < 50 %.
 
 **Functional requirements**
-- FR-L8-01 Quiz built by `QuizBuilder` with a seed stored in `quiz_attempts`.
+- FR-L8-01 Quiz built by `QuizBuilder` with a seed stored in `quiz_attempts`, and the length asked for (#690 LQ-7).
+  - With nothing to ask, L8 says so: "No learned words to quiz here yet" for a meaning quiz, and for Forms, Articles, listening or compare, whose words must fit the kind, "None of the learned words here can be quizzed this way yet" (#690 LQ-10). Its header then has no "0 / 0", nor while the quiz loads (#702).
 - FR-L8-02 Every answer graded by `answer_check` and rated into FSRS (BR-FSRS-03, source `quiz`); answers persisted per item. An answer is saved before its verdict shows or counts. A write that fails (an answer, the finish, L9's *Add mistakes to revision*) brings up the write-error sheet with *Retry* and *Export progress* (#174), and closing it leaves the question, the run and back working (#647).
 - FR-L8-03 Wrong items re-asked once at the end (BR-QUIZ-01); the re-ask result does not change the score.
 - FR-L8-04 Close asks "Stop quiz? Your answers so far are saved to revision".

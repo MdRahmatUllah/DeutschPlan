@@ -8,6 +8,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/features/quiz/quiz_names.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -55,9 +56,17 @@ void main() {
     started = null;
     final routes = GoRouter(
       routes: <RouteBase>[
-        GoRoute(
-          path: '/',
-          builder: (_, _) => StepDetailScreen(code: code, tab: StepTab.quiz),
+        // As the app has it: L2 in a tab's own navigator, L8 over the shell
+        // on the root one (#690 LQ-15).
+        ShellRoute(
+          builder: (_, _, child) => child,
+          routes: <RouteBase>[
+            GoRoute(
+              path: '/',
+              builder: (_, _) =>
+                  StepDetailScreen(code: code, tab: StepTab.quiz),
+            ),
+          ],
         ),
         GoRoute(
           path: '/quiz',
@@ -103,6 +112,17 @@ void main() {
     await tester.tap(find.text(l10n.quizForms));
     await tester.pumpAndSettle();
     expect(started!.direction, 'forms');
+  });
+
+  testWidgets('#690 LQ-15 a second tap, the quiz already on its way, starts '
+      'no second one', (tester) async {
+    await pump(tester);
+    final tab = tester.element(find.text(l10n.quizStandard));
+    QuizRoute.open(tab, stepQuiz('A2.1', length: 20));
+    await tester.pump();
+    QuizRoute.open(tab, stepQuiz('A2.1', length: 20));
+    await tester.pumpAndSettle();
+    expect(find.text('L8', skipOffstage: false), findsOneWidget);
   });
 
   testWidgets('Custom opens the custom quiz sheet', (tester) async {
@@ -161,6 +181,31 @@ void main() {
     testWidgets('a length no tile has is a Custom one', (tester) async {
       await card(tester, 15, 'articles');
       expect(find.text('Custom · Articles · Sun 20 Sep'), findsOneWidget);
+    });
+
+    testWidgets('#690 LQ-6 in Bangla its badge has Bangla digits, as the '
+        'line beside it', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          locale: const Locale('bn'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: const Scaffold(
+            body: LastQuizCard(
+              quiz: (
+                score: 16,
+                outOf: 20,
+                length: 20,
+                direction: 'deEn',
+                finishedAt: '2026-09-20T19:05:00',
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(find.text('১৬'), findsOneWidget);
+      expect(find.text('16'), findsNothing);
     });
 
     testWidgets('Quick and Long by their length', (tester) async {

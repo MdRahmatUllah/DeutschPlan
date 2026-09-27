@@ -94,16 +94,19 @@ void main() {
     today: '2026-09-21',
   );
 
-  test('FR-L8-01 the attempt stores its seed and every question', () async {
+  test('FR-L8-01 #690 LQ-7 the attempt stores its seed, the length asked '
+      'for and every question', () async {
     final run = await start();
     final attempt = await (db.select(
       db.quizAttempts,
     )..where((a) => a.id.equals(run.attemptId!))).getSingle();
+    // Ten asked for, two learned words to ask: still a Quick 10.
     expect(
       (attempt.seed, attempt.direction, attempt.source, attempt.length),
-      (42, 'enDe', 'allLearned', 2),
+      (42, 'enDe', 'allLearned', 10),
     );
     final answers = await quizAnswers(run.attemptId!);
+    expect(answers, hasLength(2));
     expect(
       [for (final a in answers) (a.ord, a.wordUid, a.expected)],
       [for (final i in run.quiz.items) (i.ord, i.wordUid, i.expected)],
@@ -336,6 +339,7 @@ void main() {
       source: 'compareSet',
       sourceRef: 'set',
       seed: 1,
+      length: 3,
       questions: <QuizQuestion>[
         for (var ord = 1; ord <= 3; ord++)
           QuizQuestion(

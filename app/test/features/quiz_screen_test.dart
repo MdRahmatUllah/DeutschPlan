@@ -355,7 +355,8 @@ void main() {
       final semantics = tester.ensureSemantics();
       await pump(tester, stub: StubQuizRun(quiz: quizOf(const <QuizItem>[])));
       expect(find.text(l10n.quizEmpty), findsOneWidget);
-      expect(find.text('0 / 0'), findsOneWidget);
+      // #702: nothing to count, and no "0 / 0" either.
+      expect(find.text('0 / 0'), findsNothing);
       await tester.tap(close());
       await tester.pumpAndSettle();
       expect(find.text(l10n.quizStopTitle), findsNothing);
@@ -363,6 +364,25 @@ void main() {
       semantics.dispose();
     });
   });
+
+  for (final direction in <String>['forms', 'articles', 'listening']) {
+    testWidgets('#690 LQ-10 an empty $direction quiz says none of the learned '
+        'words fits it, not that none is learned', (tester) async {
+      await pump(
+        tester,
+        args: QuizArgs(
+          direction: direction,
+          source: 'stepLearned',
+          sourceRef: 'A2.1',
+          seed: 7,
+          length: 20,
+        ),
+        stub: StubQuizRun(quiz: quizOf(const <QuizItem>[])),
+      );
+      expect(find.text(l10n.quizEmptyKind), findsOneWidget);
+      expect(find.text(l10n.quizEmpty), findsNothing);
+    });
+  }
 
   group('FR-L8-05 the timer', () {
     const timed = QuizArgs(
