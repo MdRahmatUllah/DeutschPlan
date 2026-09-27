@@ -1,6 +1,19 @@
 # Changelog
 
-Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pubspec.yaml`'s; each entry lands in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
+Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pubspec.yaml`'s; each entry is dated in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
+
+## [1.1.0] — not yet tagged
+
+The first build as Sogda (`de.sogda.app`), and the production review's fixes.
+
+### Changed
+- The app is Sogda: a new name, application id, icon, themed and notification icons, and splash (ADR 28).
+- 5,076 words to learn: each word is taught once, and lesson notes and comparisons are listed, never studied.
+- A smaller download: the arm64 APK went from 72.3 to 51.2 MB (ADR 29).
+- Setup offers *Restore a backup* on its first page.
+
+### Fixed
+- About a hundred fixes from the production review: answers graded more fairly, a mock exam that keeps every answer through interruptions, backup and import checked and merged correctly, progress kept across content updates, deep links that never take over a running exam, screen-reader labels in Bangla, and no screen left hanging on a failed read.
 
 ## [1.0.1] — 2026-09-26
 
