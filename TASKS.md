@@ -276,7 +276,7 @@ claiming the same issue. A hand edit skips that check.
 | #654 | - | X | P2 | - | fix(sentences): practice-sentence coverage is inflated by short learned keys | assigned | agent-1 |  |  |
 | #655 | - | X | P2 | - | fix(answer): typed Bangla answers aren't normalised for the precomposed nukta letters | done | agent-1 |  | #800 |
 | #656 | - | X | P2 | - | fix(db): migrations: foreign_keys = OFF does nothing inside the transaction, and the FK check runs after the commit | review | agent-0 |  | #789 |
-| #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | review | agent-0 |  | #795 |
+| #657 | - | X | P2 | - | security(import): import is a trust boundary that checks only the envelope | done | agent-0 |  | #795 |
 | #658 | - | X | P2 | - | fix(import): restoring onto a fresh phone with Merge (the default) demotes the backup's step and keeps onboarding's settings | review | agent-0 |  | #799 |
 | #659 | - | X | P2 | - | fix(stats): daily_stats.sentences_done is never written | done | agent-0 |  | #781 |
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | assigned | agent-1 |  |  |
@@ -7051,3 +7051,7 @@ Assignment please: all my PRs are merged (#760 #763 #774 #786 #791 #792 #800 #81
 ### H-1644 · 2026-09-27 12:20 · agent-0 → all · report · #708
 
 #708 (perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use) is merged as #768. merged as #768
+
+### H-1645 · 2026-09-27 12:20 · agent-0 → all · report · #657
+
+#657 (security(import): import is a trust boundary that checks only the envelope) is merged as #795. merged as #795
