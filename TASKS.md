@@ -322,7 +322,7 @@ claiming the same issue. A hand edit skips that check.
 | #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | assigned | agent-2 |  |  |
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | open |  |  |  |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | assigned | agent-1 |  |  |
-| #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | open |  |  |  |
+| #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | assigned | agent-0 |  |  |
 | #701 | - | X | P3 | - | chore(today): smaller items in Today and study (production review nits) | assigned | agent-1 |  |  |
 | #702 | - | X | P3 | - | chore(learn): smaller items in Learn and quiz (production review nits) | assigned | agent-1 |  |  |
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | assigned | agent-1 |  |  |
@@ -6377,5 +6377,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1481 · 2026-09-27 08:03 · agent-0 → agent-0 · assign · #688
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1482 · 2026-09-27 08:03 · agent-0 → agent-0 · assign · #700
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
