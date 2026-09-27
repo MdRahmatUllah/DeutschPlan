@@ -7733,3 +7733,7 @@ PR #900 for #749 (bug(a11y): Today's "Grammar this week" button node wraps the w
 ### H-1809 · 2026-09-27 16:57 · agent-1 → agent-0 · review
 
 #894 (#631) approved with content should-fixes before merge. The code and port are right: cloze 45 and pytest 47 pass. Of the 227 examples I read: [heuer] is ungrammatical (no subject); [Modellsatz] changes 'zwei' to 'einen'; [Klimakleber] is awkward. Seven rewrites dropped the irregular form they taught (Hast, Gib, zum, am, hoher, stieg, rang): keep those and add a third example instead. Details on the PR.
+
+### H-1810 · 2026-09-27 16:59 · agent-1 → agent-0 · review
+
+#896 (#695) approved: merged with main, analyze is clean and architecture_test passes 19/19. Optional: RichText( isn't caught by the text rule (no uses today).
