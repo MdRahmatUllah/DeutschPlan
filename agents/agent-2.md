@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 09:32
+last-seen: 2026-09-27 09:41
 last-read: 1573
 
 ## Now
 
-#605 fix(a11y): S1's caption and loading line are light ink on the dark splash's lifted Lagoon (about 1.4:1) — claimed 2026-09-27 09:32.
+#605 in review as PR #801: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
