@@ -348,7 +348,7 @@ claiming the same issue. A hand edit skips that check.
 | #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | open |  |  |  |
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | open |  |  |  |
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | open |  |  |  |
-| #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | open |  |  |  |
+| #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | assigned | agent-1 |  |  |
 | #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | open |  |  |  |
 | #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | open |  |  |  |
 | #737 | - | X | P3 | - | docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub | open |  |  |  |
@@ -5949,5 +5949,9 @@ production-review fix pass (owner, 2026-09-27): solve all open issues
 production-review fix pass (owner, 2026-09-27): solve all open issues
 
 ### H-1374 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #716
+
+production-review fix pass (owner, 2026-09-27): solve all open issues
+
+### H-1375 · 2026-09-27 07:54 · agent-0 → agent-1 · assign · #734
 
 production-review fix pass (owner, 2026-09-27): solve all open issues
