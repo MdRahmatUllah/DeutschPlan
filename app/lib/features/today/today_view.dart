@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_stats.dart' show dayDone;
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -361,7 +362,8 @@ class TodayView {
   /// TodayDone: a study day whose plan is all done. A day with nothing
   /// planned — new words paused, nothing due, a finished step — is not "Tag
   /// geschafft": nothing was done on it.
-  bool get isDone => isStudyDay && total > 0 && left == 0;
+  bool get isDone =>
+      dayDone(isStudyDay: isStudyDay, planned: total, open: left);
 
   /// The words studied today: TodayDone's "17 words".
   int get words => revise.total + newToday.total;

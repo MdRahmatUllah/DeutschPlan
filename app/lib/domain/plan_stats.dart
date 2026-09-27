@@ -206,6 +206,16 @@ List<int> gapSeconds(List<DateTime> instants) {
   return gaps;
 }
 
+/// "Tag geschafft": T1's TodayDone and T6's day complete, one predicate
+/// (#942, the owner's (a)). A study day with something planned, all of it
+/// done: *Revise anyway* on a rest day, or a backlog session on a day with
+/// nothing planned, isn't a finished day.
+bool dayDone({
+  required bool isStudyDay,
+  required int planned,
+  required int open,
+}) => isStudyDay && planned > 0 && open == 0;
+
 /// BR-PLAN-10: computed, never stored.
 ///
 /// Stored would mean a second truth that drifts the moment a rating is undone.
