@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-27 12:37
+last-seen: 2026-09-27 12:44
 last-read: 1573
 
 ## Now
 
-#649 fix(theme): choosing Light or Dark while on System can leave the app following the phone — claimed 2026-09-27 12:37.
+#649 in review as PR #827: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
