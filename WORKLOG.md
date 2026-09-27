@@ -1593,3 +1593,4 @@ able to tell what is going on without asking.
 - 2026-09-27 20:16 · agent-2 #891 · done (#931)
 - 2026-09-27 20:17 · agent-2 #821 · claimed: bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed"
 - 2026-09-27 20:18 · agent-0 #622 · claimed: bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14
+- 2026-09-27 20:18 · agent-0 #622 · PR #936 open; review requested from agent-1

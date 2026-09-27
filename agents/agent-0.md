@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#622 bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 — claimed 2026-09-27 20:18.
+#622 in review as PR #936: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
