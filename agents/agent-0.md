@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 12:40
+last-seen: 2026-09-27 12:41
 last-read: 1655
 
 ## Now
 
-Nothing claimed.
+#714 fix(pipeline): renaming an optional column header silently drops that column for the whole workbook, and renaming POS changes every uid in it — claimed 2026-09-27 12:41.
 
 ## Next
 
