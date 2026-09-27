@@ -27,6 +27,9 @@ class FakeWidgets implements WidgetStore {
   /// A store that can't be written, as a phone without the plugin.
   bool fails = false;
 
+  /// Whether a widget is on the home screen (#711).
+  bool onHome = true;
+
   Map<String, Object?> get last =>
       jsonDecode(saved.last) as Map<String, Object?>;
 
@@ -35,6 +38,9 @@ class FakeWidgets implements WidgetStore {
     if (fails) throw StateError('no widget store');
     saved.add(snapshot);
   }
+
+  @override
+  Future<bool> placed() async => onHome;
 }
 
 /// #159: the home-screen widget's snapshot, and the word of the day.
@@ -398,37 +404,74 @@ void main() {
   // The redraw is a platform call the device check can't repeat on every
   // change: without it the widget keeps the last snapshot until the launcher
   // asks again.
-  test(
-    'FR-X1-01 #160 on Android the store saves, then redraws the widget',
-    () async {
+  group('the store on home_widget', () {
+    final calls = <MethodCall>[];
+    // What the store holds, and the widgets on the home screen.
+    String? stored;
+    var pinned = <Map<String, Object?>>[];
+
+    setUp(() {
       TestWidgetsFlutterBinding.ensureInitialized();
       const channel = MethodChannel('home_widget');
       final messenger =
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-      final calls = <MethodCall>[];
+      calls.clear();
+      stored = null;
+      pinned = <Map<String, Object?>>[];
       messenger.setMockMethodCallHandler(channel, (call) async {
         calls.add(call);
-        return true;
+        return switch (call.method) {
+          'getWidgetData' => stored,
+          'getInstalledWidgets' => pinned,
+          _ => true,
+        };
       });
       addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    });
+
+    test(
+      'FR-X1-01 #160 on Android the store saves, then redraws the widget',
+      () async {
+        await const HomeWidgetStore().save('{"date":"2026-09-21"}');
+
+        expect(calls.map((call) => call.method), <String>[
+          'getWidgetData',
+          'saveWidgetData',
+          'updateWidget',
+        ]);
+        expect(calls[1].arguments, <String, Object?>{
+          'id': HomeWidgetStore.key,
+          'data': '{"date":"2026-09-21"}',
+        });
+        expect(
+          (calls.last.arguments
+              as Map<Object?, Object?>)['qualifiedAndroidName'],
+          HomeWidgetStore.androidReceiver,
+        );
+      },
+      testOn: '!ios',
+    );
+
+    test('#711 an unchanged snapshot is neither written nor redrawn', () async {
+      stored = '{"date":"2026-09-21"}';
 
       await const HomeWidgetStore().save('{"date":"2026-09-21"}');
 
-      expect(calls.map((call) => call.method), <String>[
-        'saveWidgetData',
-        'updateWidget',
-      ]);
-      expect(calls.first.arguments, <String, Object?>{
-        'id': HomeWidgetStore.key,
-        'data': '{"date":"2026-09-21"}',
-      });
-      expect(
-        (calls.last.arguments as Map<Object?, Object?>)['qualifiedAndroidName'],
-        HomeWidgetStore.androidReceiver,
-      );
-    },
-    testOn: '!ios',
-  );
+      expect(calls.map((call) => call.method), <String>['getWidgetData']);
+    });
+
+    test('#711 placed: a widget pinned on the home screen', () async {
+      expect(await const HomeWidgetStore().placed(), isFalse);
+
+      pinned = <Map<String, Object?>>[
+        <String, Object?>{
+          'widgetId': 7,
+          'androidClassName': HomeWidgetStore.androidReceiver,
+        },
+      ];
+      expect(await const HomeWidgetStore().placed(), isTrue);
+    });
+  });
 
   group('#601 the names the native side must share', () {
     test(
