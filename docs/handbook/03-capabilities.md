@@ -265,7 +265,7 @@ The Android permissions, as the merged manifest has them:
 | `POST_NOTIFICATIONS` | The daily reminder, and a model download's progress | When the reminder is switched on, or a download starts (Android 13+); a refusal still downloads, without the notification (#501) |
 | `RECEIVE_BOOT_COMPLETED` | Reminders scheduled again after a restart | Not asked (install-time) |
 | `INTERNET`, `ACCESS_NETWORK_STATE` | Model downloads and their Wi-Fi-only rule | Not asked |
-| `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SHORT_SERVICE`, `WAKE_LOCK` | Carrying a model download on while the app is in the background | Not asked |
+| `WAKE_LOCK` | WorkManager carrying a model download or the widget's refresh on in the background; no foreground service (#611) | Not asked |
 | `VIBRATE` | The reminder notification | Not asked |
 
 Reminders use an inexact alarm, so no exact-alarm permission is needed.

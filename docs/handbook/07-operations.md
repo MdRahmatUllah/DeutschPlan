@@ -214,9 +214,9 @@ have no `key.properties`, so their builds are debug-signed.
   asked on the first Record), `POST_NOTIFICATIONS` (the reminder, asked when
   switched on), `RECEIVE_BOOT_COMPLETED` (reminders after a restart),
   `INTERNET` and `ACCESS_NETWORK_STATE` (model downloads and their Wi-Fi rule),
-  `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SHORT_SERVICE` and `WAKE_LOCK`
-  (a download carrying on in the background, declared as one the learner
-  started), `VIBRATE` (the reminder).
+  `WAKE_LOCK` (WorkManager carrying a download on in the background), and
+  `VIBRATE` (the reminder). No foreground service, so no foreground-service
+  form (#611); `tools/release_android.py` checks this list.
 
 ### iOS
 

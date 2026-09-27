@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- The model downloads (FR-S2-06, model-manager.md). Debug and profile
          builds add INTERNET on their own, which is why its absence here went
          unnoticed: a release build could not fetch a byte. -->
@@ -11,6 +12,14 @@
     <!-- The mock exam's Speaking answer (FR-L12S-01): asked when the learner
          first taps Record, never before. The recording stays on the phone. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- No foreground service (#611). WorkManager and background_downloader
+         declare them, but the app never starts one: a download's tasks keep
+         the default priority (never expedited, never a user-initiated job)
+         and no Config.runInForeground is set, so WorkManager carries them
+         on and pauses/resumes them. Without these, Play asks for no
+         foreground-service declaration. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" tools:node="remove"/>
     <!-- enableOnBackInvokedCallback is predictive back (navigation.md).
          Without it Android 13+ runs the legacy back handler and the swipe
          shows no preview of where it is going, however the Flutter side is
@@ -91,6 +100,11 @@
             <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
         </intent-filter>
     </receiver>
+    <!-- Kept declared, with no foreground-service type (#611). -->
+    <service android:name="androidx.work.impl.foreground.SystemForegroundService"
+        tools:remove="android:foregroundServiceType"/>
+    <service android:name="com.bbflight.background_downloader.UIDTJobService"
+        tools:remove="android:foregroundServiceType"/>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

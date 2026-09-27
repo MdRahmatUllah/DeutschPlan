@@ -17,8 +17,11 @@ The bundle is `flutter build appbundle --release --obfuscate
             debug key, which Play refuses
     symbols Dart's, in `app/build/symbols`, kept with the release (see
             release.md); the plugins' native ones ride in the bundle
+    perms   the permissions the merged manifest asks for are exactly the ones
+            release.md's Play Console list declares, and no service has a
+            foreground-service type (#611)
 
-Exit 1 when a library isn't aligned. A debug-signed bundle is reported, not
+Exit 1 when a library isn't aligned or the permissions differ. A debug-signed bundle is reported, not
 failed: it is what every build before the owner's keystore is.
 """
 
@@ -32,6 +35,7 @@ import struct
 import subprocess
 import sys
 import zipfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parent
@@ -42,6 +46,12 @@ from smoke import holds_device  # noqa: E402
 APP = TOOLS.parent / "app"
 BUNDLE = APP / "build" / "app" / "outputs" / "bundle" / "release" / "app-release.aab"
 SYMBOLS = APP / "build" / "symbols"
+# The manifest packaged into the bundle, as plain XML (the bundle's own copy
+# is protobuf).
+MANIFEST = (APP / "build" / "app" / "intermediates" / "packaged_manifests" / "release"
+            / "processReleaseManifestForPackage" / "AndroidManifest.xml")
+RELEASE_MD = TOOLS.parent / "docs" / "05-dev-guide" / "release.md"
+ANDROID = "{http://schemas.android.com/apk/res/android}"
 ANDROID_STUDIO_KEYTOOL = Path("C:/Program Files/Android/Android Studio/jbr/bin/keytool.exe")
 PAGE = 16 * 1024
 PT_LOAD = 1
@@ -86,6 +96,26 @@ def misaligned(bundle: Path) -> list[str]:
             if under:
                 found.append(f"{name}: segments aligned to {min(under)} bytes")
     return found
+
+
+def permission_problems(manifest: Path = MANIFEST, release_md: Path = RELEASE_MD) -> list[str]:
+    """Where the merged manifest's permissions and release.md's Play Console
+    list differ, and any service with a foreground-service type. A platform
+    permission is listed by its short name (`WAKE_LOCK`), any other by its
+    full one (`com.google.android.gms.permission.AD_ID`)."""
+    if not manifest.exists():
+        return [f"no merged manifest at {manifest}: build it first"]
+    root = ET.parse(manifest).getroot()
+    own = root.get("package", "") + "."
+    asked = {e.get(ANDROID + "name").removeprefix("android.permission.")
+             for tag in ("uses-permission", "uses-permission-sdk-23") for e in root.iter(tag)}
+    asked = {name for name in asked if not name.startswith(own)}  # not the app's own
+    listed = release_md.read_text(encoding="utf-8").split("**Permissions**", 1)[1].split("\n\n", 1)[0]
+    documented = set(re.findall(r"`((?:[a-z0-9_]+\.)*[A-Z][A-Z0-9_]+)`", listed))
+    return ([f"{name}: asked for, but not in release.md's list" for name in sorted(asked - documented)]
+            + [f"{name}: in release.md's list, but not asked for" for name in sorted(documented - asked)]
+            + [f"{e.get(ANDROID + 'name')}: a foreground-service type, which Play asks to declare"
+               for e in root.iter("service") if e.get(ANDROID + "foregroundServiceType")])
 
 
 def keytool() -> str | None:
@@ -152,9 +182,13 @@ def main(argv: list[str] | None = None) -> int:
     print(f"16 KB:   {'ok' if not bad else 'FAIL'}")
     for line in bad:
         print(f"         {line}")
+    perms = permission_problems()
+    print(f"perms:   {'ok' if not perms else 'FAIL'}")
+    for line in perms:
+        print(f"         {line}")
     print(f"key:     {signed_by(signer(BUNDLE))}")
     print(f"symbols: {SYMBOLS} (keep with the release)")
-    return 1 if bad else 0
+    return 1 if bad or perms else 0
 
 
 if __name__ == "__main__":
