@@ -437,7 +437,7 @@ claiming the same issue. A hand edit skips that check.
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | done | agent-0 |  | #965 |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | assigned | agent-0 |  |  |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | assigned | agent-0 |  |  |
-| #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | in-progress | agent-0 |  |  |
+| #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | review | agent-0 |  | #978 |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
@@ -9204,3 +9204,7 @@ PR #977 for #705 (chore(platform): smaller items in platform and routing (produc
 ### H-2168 · 2026-09-27 23:55 · agent-0 → agent-1 · review-request · #807
 
 PR #978 for #807 (fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2169 · 2026-09-27 23:56 · agent-0 → agent-1 · review-request · #923
+
+PR #978 for #923 (fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

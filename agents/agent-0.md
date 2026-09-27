@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#923 fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) — claimed 2026-09-27 23:56.
+#923 in review as PR #978: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
