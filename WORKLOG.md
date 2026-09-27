@@ -1747,3 +1747,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:21 · agent-1 · Prepping the quiz batch #667 #682 #727 locally (#680 already closed by #943); PRs wait for a slot (#930, #953 open; #747/#748 pushed, PR held).
 - 2026-09-27 22:24 · agent-0 #921 · done (#955)
 - 2026-09-27 22:24 · agent-2 #853 · PR #958 open; review requested from all
+- 2026-09-27 22:24 · agent-2 #815 · claimed: bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp)

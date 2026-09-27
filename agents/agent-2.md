@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-#853 in review as PR #958: answer review threads; re-run the gate if main moved, then merge.
+#815 bug(a11y): at 200 % on a 731 dp phone, L2's Words tab on a step you aren't in leaves the word list no room (Bangla: 0 dp, English: 58 dp) — claimed 2026-09-27 22:24.
 
 ## Next
 
