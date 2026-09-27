@@ -425,8 +425,9 @@ void main() {
       expect(run.answers, isEmpty);
     });
 
-    testWidgets('#727 FR-L8-05 the clock holds while the app is away: back, '
-        'the question is still open with the seconds it had', (tester) async {
+    testWidgets('#727 #949 FR-L8-05 the clock holds while the app is away: '
+        'back, the question is still open with the seconds it had, neither '
+        'failed nor rated', (tester) async {
       await pump(tester, args: timed);
       await tester.pump(const Duration(seconds: 5));
       expect(find.text(l10n.quizSecondsLeft(10)), findsOneWidget);
@@ -452,6 +453,7 @@ void main() {
       expect(find.text(l10n.quizSecondsLeft(10)), findsOneWidget);
       await tester.pump(const Duration(seconds: 1));
       expect(find.text(l10n.quizSecondsLeft(9)), findsOneWidget);
+      expect(run.answers, isEmpty, reason: 'nor on return');
     });
 
     testWidgets('auto-submits an empty answer as wrong at 0', (tester) async {

@@ -397,6 +397,7 @@
   "stepStartedAllIntroduced": "{date} শুরু · সব শব্দ শুরু হয়েছে",
   "stepNotStarted": "শুরু হয়নি · দিনে {pace}টি শব্দে প্রায় {days} দিন",
   "stepCompleted": "{date} শেষ · রিভিশন চলবে",
+  "stepLeft": "{date}-এ ছেড়েছেন",
   "stepCompletedPassed": "{date} শেষ · মক {mock} পাস · রিভিশন চলবে",
   "stepTabWords": "শব্দ",
   "stepTabGrammar": "ব্যাকরণ",

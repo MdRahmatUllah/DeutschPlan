@@ -24,7 +24,7 @@ Score "16 / 20", "80% · 4 min 12 s · Standard · DE → EN"; "Mistakes · 4 ·
 - FR-L8-02 Every answer graded by `answer_check` and rated into FSRS (BR-FSRS-03, source `quiz`); answers persisted per item. An answer is saved before its verdict shows or counts. A write that fails (an answer, the finish, L9's *Add mistakes to revision*) brings up the write-error sheet with *Retry* and *Export progress* (#174), and closing it leaves the question, the run and back working (#647).
 - FR-L8-03 Wrong items re-asked once at the end (BR-QUIZ-01); the re-ask result does not change the score.
 - FR-L8-04 Close asks "Stop quiz? Your answers so far are saved to revision".
-- FR-L8-05 Timer (when on) auto-submits an empty answer as wrong at 0. It holds while the app is hidden, as while *Close* asks, and goes on from the seconds left on return: a learner who read a message came back to a question failed and rated Again (#727).
+- FR-L8-05 Timer (when on) auto-submits an empty answer as wrong at 0. It holds while the app is hidden, as while *Close* asks, and goes on from the seconds left on return: a learner who read a message came back to a question failed and rated Again (#727). A question left while the app is away is neither failed nor rated (the owner, 2026-09-27, #949).
 - A Forms superlative ("Superlative of alt") is the course's "am ältesten"; the form without the *am* the prompt never names, "ältesten", is *almost*: it counts, and the feedback shows the whole form (#682).
 - FR-L9-01 *Retry mistakes* builds a new quiz from the mistake uids; *Add mistakes to revision* sets their `due = tomorrow` explicitly.
 
