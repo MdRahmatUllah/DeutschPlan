@@ -345,7 +345,7 @@ claiming the same issue. A hand edit skips that check.
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | assigned | agent-0 |  |  |
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | assigned | agent-1 |  |  |
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | review | agent-0 |  | #876 |
-| #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | assigned | agent-0 |  |  |
+| #731 | - | X | P3 | - | fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks | review | agent-0 |  | #876 |
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | assigned | agent-0 |  |  |
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | assigned | agent-0 |  |  |
 | #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | assigned | agent-1 |  |  |
@@ -7516,3 +7516,7 @@ PR #876 for #670 (fix(exam): L12 doesn't handle the app going to the background)
 ### H-1757 · 2026-09-27 15:30 · agent-0 → agent-1 · review-request · #624
 
 PR #876 for #624 (fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-1758 · 2026-09-27 15:30 · agent-0 → agent-1 · review-request · #731
+
+PR #876 for #731 (fix(exam): Speaking's one retake comes back when the learner leaves the question and returns, and Delete keeps the old take's rubric ticks) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
