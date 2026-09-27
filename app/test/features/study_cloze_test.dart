@@ -15,6 +15,7 @@ import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/study/study_card.dart';
 import 'package:sogda/features/study/study_cloze.dart';
 import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/study/study_motion.dart' show StudySwipeToRate;
 import 'package:sogda/features/study/study_session.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
@@ -325,6 +326,30 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     expect(offered(tester, l10n.ratingGood), isFalse);
     expect(offered(tester, l10n.ratingEasy), isFalse);
   });
+
+  for (final (answered, swipes) in const <(String, bool)>[
+    ('Haus', false),
+    ('Straße', true),
+  ]) {
+    testWidgets('#661 FR-T2-08 with swipe-to-rate on, "$answered" leaves the '
+        'swipe ${swipes ? 'on' : 'off: a right swipe would be Good'}', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tester.runAsync(
+        () => settings.write(SettingKeys.swipeToRate, true),
+      );
+      await answer(tester, answered);
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<StudySwipeToRate>(find.byType(StudySwipeToRate)).enabled,
+        swipes,
+      );
+    });
+  }
 
   testWidgets('#345 almost: all four offered', (tester) async {
     await pump(tester);

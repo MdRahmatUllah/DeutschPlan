@@ -419,8 +419,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                         curve: Curves.easeOut,
                         child: SingleChildScrollView(
                           child: StudySwipeToRate(
+                            // Not after a wrong cloze answer: a right swipe
+                            // is Good, and then only Again and Hard are
+                            // offered (#345, #661). The bar still is.
                             enabled:
                                 revealed &&
+                                !session.missed &&
                                 item.kind != SessionBlockKind.grammar &&
                                 ref
                                     .watch(settingsProvider)
