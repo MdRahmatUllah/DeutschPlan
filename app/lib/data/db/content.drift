@@ -11,7 +11,7 @@ import 'content_schema.drift';
 -- and SQLite resolves it: `main` (user.db) has no table of that name, so the
 -- search falls through to the attached database.
 --
--- That resolution is load-bearing. `content_attach_test.dart` asserts no table
+-- That resolution is load-bearing. `content_dao_test.dart` asserts no table
 -- name exists in both schemas, because a `words` table added to user.db would
 -- silently capture every one of these queries.
 

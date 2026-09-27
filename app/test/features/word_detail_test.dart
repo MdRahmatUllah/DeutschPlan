@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -907,7 +906,7 @@ void main() {
   group('R04 over the database', () {
     testWidgets('the course\'s examples and tip; the status follows a '
         'rating while the sheet is open', (tester) async {
-      final directory = Directory.systemTemp.createTempSync('sogda_w1');
+      final directory = tempDir('sogda_w1');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       final db = AppDatabase.memory();
       await tester.runAsync(

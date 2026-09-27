@@ -10,6 +10,8 @@ import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../db/content_fixture.dart' show tempDir;
+
 /// L12's data over a real database (#130).
 void main() {
   late AppDatabase db;
@@ -26,10 +28,7 @@ void main() {
       exams,
       settings,
       () => DateTime.utc(2026, 9, 21, 19),
-      ModelRepository(
-        settings,
-        support: Directory.systemTemp.createTempSync('sg_recordings'),
-      ),
+      ModelRepository(settings, support: tempDir('sg_recordings')),
     );
   });
 

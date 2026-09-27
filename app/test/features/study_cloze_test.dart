@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_rating_bar.dart';
@@ -53,7 +51,7 @@ void main() {
     bool chosen = false,
   }) async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('sg_cloze');
+    final directory = tempDir('sg_cloze');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

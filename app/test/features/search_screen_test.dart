@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:ui' show SemanticsAction;
 
 import 'package:sogda/core/components/sg_chip.dart';
@@ -75,7 +74,7 @@ void main() {
     opened = <Uri>[];
     await tester.runAsync(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('sg_search');
+      final directory = tempDir('sg_search');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

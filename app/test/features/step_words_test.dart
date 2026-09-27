@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -323,7 +321,7 @@ void main() {
   test("the category chips: the step's categories, the biggest first", () async {
     final db = AppDatabase.memory();
     addTearDown(db.close);
-    final directory = Directory.systemTemp.createTempSync('sg_categories');
+    final directory = tempDir('sg_categories');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
@@ -373,7 +371,7 @@ void main() {
     late SettingsRepository settings;
     await tester.runAsync(() async {
       db = AppDatabase.memory();
-      final directory = Directory.systemTemp.createTempSync('sg_words');
+      final directory = tempDir('sg_words');
       final content = ContentFixture.write('${directory.path}/content.db');
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

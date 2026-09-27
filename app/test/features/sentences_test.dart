@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -45,7 +43,7 @@ void main() {
   /// so the day is not complete.
   Future<void> open({bool planOpen = true, String? rated}) async {
     db = AppDatabase.memory();
-    final directory = Directory.systemTemp.createTempSync('sg_sentences');
+    final directory = tempDir('sg_sentences');
     final content = ContentFixture.write('${directory.path}/content.db');
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",

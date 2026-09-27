@@ -5,12 +5,37 @@ import 'package:sqlite3/sqlite3.dart';
 /// The bundled course, copied once per test process, for a test that
 /// ATTACHes it (#331). `flutter test` runs files in parallel processes, and
 /// two of them committing with the same file attached fail now and then
-/// with "database is locked". The copy is 8 MB and left in the temp folder.
-File realContent() => _realContent ??= () {
-  final dir = Directory.systemTemp.createTempSync('sogda_course');
-  return File('assets/db/content.db').copySync('${dir.path}/content.db');
-}();
+/// with "database is locked". The copy is 8 MB, in a [tempDir].
+File realContent() =>
+    _realContent ??= File('assets/db/content.db')
+        .copySync('${tempDir('sogda_course').path}/content.db');
 File? _realContent;
+
+/// A temp directory that [deleteTempDirs] deletes once the test file is done
+/// (#695). A test's own `addTearDown` would run before the `db.close` it
+/// registered earlier, and Windows won't delete a file that's still attached.
+Directory tempDir(String prefix) {
+  final dir = Directory.systemTemp.createTempSync(prefix);
+  _temps.add(dir);
+  return dir;
+}
+
+final _temps = <Directory>[];
+
+/// Deletes every [tempDir], [realContent]'s copy with them.
+/// `flutter_test_config.dart` runs it after a file's last test, when its
+/// databases are closed.
+void deleteTempDirs() {
+  _realContent = null;
+  for (final dir in _temps) {
+    try {
+      dir.deleteSync(recursive: true);
+    } on FileSystemException {
+      // A database a test left open still holds its file on Windows.
+    }
+  }
+  _temps.clear();
+}
 
 /// Builds a content.db for tests, from the same DDL the pipeline uses.
 ///
