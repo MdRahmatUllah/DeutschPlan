@@ -77,10 +77,10 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     await settings.write(SettingKeys.autoplayHeadword, false);
   }
 
-  List<Override> overrides() => <Override>[
+  List<Override> overrides({FakeTts? tts}) => <Override>[
     appDatabaseProvider.overrideWithValue(db),
     settingsProvider.overrideWithValue(settings),
-    fakeVoice(FakeTts()),
+    fakeVoice(tts ?? FakeTts()),
     clockProvider.overrideWithValue(() => now),
   ];
 
@@ -269,8 +269,15 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     Future<ProviderContainer> pump(
       WidgetTester tester, {
       List<Override> extra = const <Override>[],
+      FakeTts? tts,
+      bool autoplay = false,
     }) async {
       await tester.runAsync(open);
+      if (autoplay) {
+        await tester.runAsync(
+          () => settings.write(SettingKeys.autoplayHeadword, true),
+        );
+      }
       addTearDown(
         () => tester.runAsync(() async {
           await settings.dispose();
@@ -279,7 +286,10 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
       );
       await tester.pumpWidget(
         ProviderScope(
-          overrides: <Override>[...overrides(), ...extra],
+          overrides: <Override>[
+            ...overrides(tts: tts),
+            ...extra,
+          ],
           child: MaterialApp(
             theme: AppTheme.light(),
             localizationsDelegates: appLocalizationsDelegates,
@@ -417,6 +427,57 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
         strasse,
       );
       expect(await tester.runAsync(log), isEmpty);
+    });
+
+    testWidgets('#646 FR-T2-02 with no German voice and autoplay on, the next '
+        "card's autoplay leaves the Undo alone", (tester) async {
+      final container = await pump(
+        tester,
+        tts: FakeTts(voice: false),
+        autoplay: true,
+      );
+      await reveal(tester);
+
+      await tester.runAsync(() async {
+        await tester.tap(find.text(l10n.ratingGood));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      // The first card's autoplay said so, at the session's start: that toast
+      // leaves first, then the Undo comes in.
+      await tester.pump();
+      for (var frame = 0; frame < 4; frame++) {
+        await tester.pump(const Duration(milliseconds: 250));
+      }
+      expect(
+        container.read(studySessionProvider(args)).value?.current?.uid,
+        haus,
+      );
+      // Each card is a new widget. The next one's autoplay knows there is no
+      // voice, so it adds no "no voice" toast to replace the Undo, then or
+      // later in its 4 s.
+      for (final _ in <void>[null, null, null]) {
+        expect(find.text(l10n.speakerNoVoice), findsNothing);
+        expect(
+          find.text(l10n.studyRated('die Straße', l10n.ratingGood)),
+          findsOneWidget,
+        );
+        expect(find.text(l10n.undo).hitTestable(), findsOneWidget);
+        await tester.pump(const Duration(milliseconds: 750));
+      }
+
+      // And it still works. Tapped outside runAsync: the bar's exit then
+      // finishes in the test's own clock, not after the test.
+      await tester.tap(find.text(l10n.undo));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        container.read(studySessionProvider(args)).value?.current?.uid,
+        strasse,
+      );
+      // The card back, its autoplay stays quiet too.
+      expect(find.text(l10n.speakerNoVoice), findsNothing);
     });
 
     testWidgets('#165 FR-T2-02 at 200 % text the Undo bar still clears the '

@@ -132,6 +132,7 @@ void main() {
       bool broken = false,
       VoidCallback? onReveal,
       Set<String> updated = const <String>{},
+      bool voice = true,
     }) async {
       await tester.runAsync(() async {
         db = AppDatabase.memory();
@@ -147,7 +148,7 @@ void main() {
           await db.close();
         }),
       );
-      tts = FakeTts();
+      tts = FakeTts(voice: voice);
       turned = ValueNotifier<bool>(revealed);
       addTearDown(turned.dispose);
       final shown = word ?? rechnung;
@@ -379,6 +380,17 @@ void main() {
           .markNeedsBuild();
       await tester.pumpAndSettle();
       expect(tts.said, hasLength(1));
+    });
+
+    testWidgets('#646 V01 and with no German voice known, the reveal plays '
+        'nothing and says nothing: a toast would replace the Undo', (
+      tester,
+    ) async {
+      await pump(tester, revealed: false, autoplayExample: true, voice: false);
+      turned.value = true;
+      await tester.pumpAndSettle();
+      expect(tts.said, isEmpty);
+      expect(find.text(l10n.speakerNoVoice), findsNothing);
     });
 
     testWidgets('and a failed example query just means no autoplay', (

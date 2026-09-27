@@ -312,7 +312,9 @@ class _WordDetailViewState extends ConsumerState<WordDetailView> {
       if (word == null || _spoken) return;
       _spoken = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) unawaited(say(ref, context, spokenForm(word)));
+        if (mounted && mayAutoplay(ref)) {
+          unawaited(say(ref, context, spokenForm(word)));
+        }
       });
     }, fireImmediately: true);
   }

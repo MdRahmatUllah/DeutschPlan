@@ -83,11 +83,8 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
     final verdict = checkGerman(_answer.text, _expected);
     setState(() => _verdict = verdict);
     // The autoplay stays quiet once the phone is known to have no German
-    // voice: T2's front card has already said so once this session. A tap on
-    // play still explains, every time (accessibility-performance.md).
-    if (verdict.isRight && ref.read(ttsAvailableProvider).value != false) {
-      _play();
-    }
+    // voice: a tap on play still explains, every time.
+    if (verdict.isRight && mayAutoplay(ref)) _play();
     widget.onChecked(verdict);
   }
 

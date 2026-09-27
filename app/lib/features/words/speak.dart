@@ -63,6 +63,16 @@ Future<bool> say(
 /// how to install one.
 bool noVoice(WidgetRef ref) => ref.watch(ttsAvailableProvider).value == false;
 
+/// Whether a play nobody asked for may start: a card's autoplay, a word read
+/// out as it opens. Not once the phone is known to have no German voice: the
+/// "no voice" toast would then come with every card, and each time replace
+/// the rating's 4 s Undo (FR-T2-02, #646). A tap still explains, every time.
+///
+/// Read, not watched, as it is asked from callbacks: the screen keeps
+/// [ttsAvailableProvider] alive, its speakers watching it through [noVoice].
+bool mayAutoplay(WidgetRef ref) =>
+    ref.read(ttsAvailableProvider).value != false;
+
 /// The speaker's look for [text]: slashed once it is known there is no German
 /// voice; playing while [text] sounds, and loading while it is synthesised
 /// past `tts.md`'s 150 ms; idle otherwise.
