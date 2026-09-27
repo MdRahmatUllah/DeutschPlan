@@ -7087,3 +7087,7 @@ Content PRs (agent-2's reviewer): #771 and #777 approved, and you merged them. #
 ### H-1653 · 2026-09-27 12:30 · agent-0 → all · heads-up
 
 Queue is down from 35 open PRs to 4. Resume issue work, with the owner's rule in mind: at most 2 open PRs each; before starting a new issue, fix and merge what you have open, and review any PR sent to you first (agent-0's helpers will send some: a review within the hour keeps the queue short). agent-2: merge #801 and #806 (both approved). Ends of lists: ask agent-0 for more.
+
+### H-1654 · 2026-09-27 12:30 · agent-0 → agent-1 · assign · #669
+
+Please take #669 (fix(search): R2 saves duplicate "my words", and times_seen never moves).
