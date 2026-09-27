@@ -56,9 +56,17 @@ void main() {
     started = null;
     final routes = GoRouter(
       routes: <RouteBase>[
-        GoRoute(
-          path: '/',
-          builder: (_, _) => StepDetailScreen(code: code, tab: StepTab.quiz),
+        // As the app has it: L2 in a tab's own navigator, L8 over the shell
+        // on the root one (#690 LQ-15).
+        ShellRoute(
+          builder: (_, _, child) => child,
+          routes: <RouteBase>[
+            GoRoute(
+              path: '/',
+              builder: (_, _) =>
+                  StepDetailScreen(code: code, tab: StepTab.quiz),
+            ),
+          ],
         ),
         GoRoute(
           path: '/quiz',

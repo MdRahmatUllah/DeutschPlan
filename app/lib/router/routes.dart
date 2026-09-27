@@ -886,7 +886,14 @@ class QuizRoute extends GoRouteData with $QuizRoute {
   /// quiz already on its way over [context]'s page, pushes no second L8 and
   /// writes no second attempt (#690 LQ-15).
   static void open(BuildContext context, QuizArgs args) {
-    if (ModalRoute.isCurrentOf(context) == false) return;
+    // L2 and L6 sit in the Learn tab's navigator, where their page stays
+    // current under an L8 on the root one: every navigator up is asked.
+    for (BuildContext? at = context; at != null;) {
+      final route = ModalRoute.of(at);
+      if (route == null) break;
+      if (!route.isCurrent) return;
+      at = route.navigator?.context;
+    }
     unawaited(context.push<void>(const QuizRoute().location, extra: args));
   }
 

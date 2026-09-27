@@ -44,10 +44,16 @@ void main() {
     addTearDown(tester.view.reset);
     final routes = GoRouter(
       routes: <RouteBase>[
-        GoRoute(
-          path: '/',
-          builder: (_, _) =>
-              const StepDetailScreen(code: 'A2.1', tab: StepTab.quiz),
+        // As the app has it: L2 in a tab's navigator, L7 and L8 on the root.
+        ShellRoute(
+          builder: (_, _, child) => child,
+          routes: <RouteBase>[
+            GoRoute(
+              path: '/',
+              builder: (_, _) =>
+                  const StepDetailScreen(code: 'A2.1', tab: StepTab.quiz),
+            ),
+          ],
         ),
         GoRoute(
           path: '/quiz',
