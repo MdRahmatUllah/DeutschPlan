@@ -1760,3 +1760,4 @@ able to tell what is going on without asking.
 - 2026-09-27 22:39 · agent-0 #818 · PR #960 open; review requested from agent-1
 - 2026-09-27 22:39 · agent-0 #845 · claimed: chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock)
 - 2026-09-27 22:39 · agent-0 #845 · PR #960 open; review requested from agent-1
+- 2026-09-27 22:39 · agent-0 #858 · claimed: chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy)
