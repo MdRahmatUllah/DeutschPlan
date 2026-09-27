@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#693 fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) — claimed 2026-09-27 23:54.
+#693 in review as PR #977: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
