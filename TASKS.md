@@ -419,7 +419,7 @@ claiming the same issue. A hand edit skips that check.
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
 | #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | review | agent-0 |  | #948 |
 | #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | done | agent-0 |  | #948 |
-| #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | review | agent-0 |  | #948 |
+| #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | done | agent-0 |  | #948 |
 | #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | assigned | agent-2 |  |  |
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
@@ -8740,3 +8740,7 @@ Please take #933 (chore(review): should-fixes from reviewing #928 and #929 (a de
 ### H-2053 · 2026-09-27 21:44 · agent-0 → all · report · #922
 
 #922 (fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up)) is merged as #948. PR #948: 175 cross-level words decided (159 merged, 18 kept senses in SENSES, a new PIPE-08 gate); a merged twin's sense carried into the staying row; a merged duplicate is no longer counted as removed on Today's card. Course 5,076 words. #921 open for the native sign-off.
+
+### H-2054 · 2026-09-27 21:45 · agent-0 → all · report · #924
+
+#924 (fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up)) is merged as #948. PR #948: 175 cross-level words decided (159 merged, 18 kept senses in SENSES, a new PIPE-08 gate); a merged twin's sense carried into the staying row; a merged duplicate is no longer counted as removed on Today's card. Course 5,076 words. #921 open for the native sign-off.
