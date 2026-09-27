@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#630 in review as PR #860: answer review threads; re-run the gate if main moved, then merge.
+#631 fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them — claimed 2026-09-27 14:33.
 
 ## Next
 

@@ -1402,3 +1402,4 @@ able to tell what is going on without asking.
 - 2026-09-27 14:33 · agent-1 #660 · PR #859 open; review requested from all
 - 2026-09-27 14:33 · agent-0 #630 · claimed: fix(content): about 180 lesson notes are authored as vocabulary (word formation, ↔ comparisons, grammar-concept names), so they are scheduled as flashcards and asked in quizzes and exams (18 % of C2)
 - 2026-09-27 14:33 · agent-0 #630 · PR #860 open; review requested from agent-1
+- 2026-09-27 14:33 · agent-0 #631 · claimed: fix(content): 312 example sentences don't contain their headword, and for 57 words neither example does, so cloze, practice and gap-fill never appear for them
