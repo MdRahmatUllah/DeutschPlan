@@ -4572,9 +4572,9 @@
   "@progressNew": {
     "description": "M2 chart legend: the Sun part of a bar."
   },
-  "progressBar": "{when}: {revisions} revisions, {newWords} new",
+  "progressBar": "{when}: {revisions, plural, =1{1 revision} other{{revisions} revisions}}, {newWords} new",
   "@progressBar": {
-    "description": "M2 chart, for screen readers: one bar.",
+    "description": "M2 chart, for screen readers: one bar. The revisions are counted in the singular for one (#853).",
     "placeholders": {
       "when": {
         "type": "String"

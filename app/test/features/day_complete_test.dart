@@ -14,6 +14,7 @@ import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -139,6 +140,24 @@ void main() {
     expect(find.text(l10n.dayCompleteTomorrow(12, 7)), findsOneWidget);
     await tester.pump(DayCompleteScreen.stay);
     await tester.pumpAndSettle();
+  });
+
+  testWidgets('#853 the ring reads the count of the day, not "1 of 1"', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    await tester.pump(const Duration(milliseconds: 1300));
+    final day = artboardDone();
+    expect(day.total, greaterThan(1));
+    // The reward reads as one: the ring first.
+    expect(
+      tester.getSemantics(find.byType(SgProgressRing)).label,
+      startsWith(l10n.todayRing(day.completed, day.total)),
+    );
+    await tester.pump(DayCompleteScreen.stay);
+    await tester.pumpAndSettle();
+    semantics.dispose();
   });
 
   testWidgets('FR-T6-01 shown, it is marked for the day', (tester) async {

@@ -411,4 +411,33 @@ void main() {
     expect(tapsInsideTaps(tester), isEmpty);
     semantics.dispose();
   });
+
+  testWidgets('#853 the chips read row by row, as they wrap', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    // As drawn: top to bottom, and left to right within a row.
+    final chips = <(Rect, String)>[
+      for (final element in find.byType(SgChip).evaluate())
+        (
+          tester.getRect(find.byWidget(element.widget)),
+          (element.widget as SgChip).label,
+        ),
+    ];
+    final drawn = <String>[
+      for (final (_, label)
+          in chips.toList()..sort((a, b) {
+            final dy = a.$1.center.dy - b.$1.center.dy;
+            return dy.abs() > 4
+                ? dy.sign.toInt()
+                : a.$1.left.compareTo(b.$1.left);
+          }))
+        label,
+    ];
+    final read = readingOrder(
+      tester,
+      find.byType(QuizSetupSheet),
+    ).where(drawn.contains).toList();
+    expect(read, drawn);
+    semantics.dispose();
+  });
 }

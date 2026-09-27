@@ -664,7 +664,9 @@ class _Results extends StatelessWidget {
   }
 }
 
-/// A row of chips that scrolls sideways: 12 above, 4 below, 16 at the sides.
+/// A row of chips that scrolls sideways: 8 above and below, so a 32 dp
+/// chip's 48 dp target fits inside the scroll view, which cuts what reaches
+/// past it (#853); 16 at the sides.
 class _Chips extends StatelessWidget {
   const _Chips({required this.children});
 
@@ -673,7 +675,7 @@ class _Chips extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
     scrollDirection: Axis.horizontal,
-    padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
     child: Row(
       children: <Widget>[
         for (final (index, chip) in children.indexed) ...<Widget>[
@@ -911,9 +913,11 @@ class _Idle extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+            // 16 between rows: rows whose 48 dp targets overlap read as
+            // one, column by column (#853).
             child: Wrap(
               spacing: 8,
-              runSpacing: 8,
+              runSpacing: 16,
               children: <Widget>[
                 for (final term in recent)
                   SgChip(

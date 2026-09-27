@@ -202,11 +202,17 @@ class _Reward extends StatelessWidget {
                     child: Stack(
                       alignment: Alignment.center,
                       children: <Widget>[
-                        const SgProgressRing(
+                        // Drawn full; read as the day's count, as T1's ring
+                        // reads, not "1 of 1" whatever the day held (#853).
+                        SgProgressRing(
                           completed: 1,
                           total: 1,
                           size: 140,
                           showCount: false,
+                          semanticLabel: l10n.todayRing(
+                            view.completed,
+                            view.total,
+                          ),
                         ),
                         // The ink check draws itself once the ring is full.
                         AnimatedBuilder(

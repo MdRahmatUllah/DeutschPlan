@@ -1,5 +1,6 @@
 import 'dart:ui' show LocaleStringAttribute;
 
+import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/learn/grammar_library_screen.dart';
@@ -79,6 +80,18 @@ void main() {
         );
     return bands.single.code;
   }
+
+  testWidgets('#853 each filter chip is a 48 dp target, not cut by its row', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    for (final chip in find.byType(SgChip).evaluate().take(3)) {
+      final rect = tester.getSemantics(find.byWidget(chip.widget)).rect;
+      expect(rect.height, greaterThanOrEqualTo(48));
+    }
+    semantics.dispose();
+  });
 
   testWidgets('the chips carry live counts', (tester) async {
     await pump(tester);
