@@ -55,7 +55,7 @@ void main() {
       return result;
     }
 
-    test('#239 grows 4, 15, 50, 150, 409, as fsrs-scheduler.md says', () {
+    test('#239 #687 AN-5 grows 4, 15, 50, 150, 409, as fsrs-scheduler.md says', () {
       // `fsrs-scheduler.md` used to state 4 -> 16 -> 53 -> 157 -> 420. This
       // implementation gives 4 -> 15 -> 50 -> 150 -> 409, and I could not
       // find a formulation that produces the documented figures: I swept 36
@@ -355,6 +355,59 @@ void main() {
           expect(state.difficulty, inInclusiveRange(1.0, 10.0));
         }
       }
+    });
+
+    test('#687 AN-5 BR-FSRS-01 a Good reverts towards w4 − w5, not w4', () {
+      // FSRS-5's target, kept: it is what gives the #239 chain. FSRS-4.5's,
+      // w4, would give 4 → 15 → 49 → 146 → 393.
+      final w = Fsrs.defaultWeights;
+      final card = CardState(
+        stability: 10,
+        difficulty: 8,
+        reps: 3,
+        state: FsrsState.review,
+        lastReview: start,
+      );
+      final next = fsrs.review(
+        card,
+        Rating.good,
+        start.add(const Duration(days: 10)),
+      );
+      expect(
+        next.difficulty,
+        closeTo(w[7] * (w[4] - w[5]) + (1 - w[7]) * 8, 1e-9),
+      );
+    });
+  });
+
+  group('#687 AN-6 a card with no stability to grow', () {
+    test('is scheduled as a first review, not a throw', () {
+      final later = start.add(const Duration(days: 3));
+      for (final stability in <double>[0, -1, double.nan]) {
+        final card = CardState(
+          stability: stability,
+          difficulty: 5,
+          reps: 4,
+          lapses: 1,
+          state: FsrsState.review,
+          lastReview: start,
+        );
+        expect(fsrs.preview(card, later), <int>[
+          1,
+          1,
+          4,
+          14,
+        ], reason: '$stability');
+        final next = fsrs.review(card, Rating.again, later);
+        expect(next.lapses, 1, reason: 'a first review is no lapse');
+        expect(next.reps, 5);
+      }
+    });
+
+    test('intervalDays and retrievability never throw or give NaN', () {
+      expect(fsrs.intervalDays(double.nan), 1);
+      expect(fsrs.intervalDays(double.infinity), Fsrs.maxInterval);
+      expect(fsrs.retrievability(3, double.nan), 0);
     });
   });
 

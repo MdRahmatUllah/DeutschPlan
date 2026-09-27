@@ -46,6 +46,7 @@ class QuizQueue {
           options: <String>[...item.options.skip(1), item.options.first],
           form: item.form,
           hint: item.hint,
+          phrase: item.phrase,
         );
 
   /// Moves to the next item; false when there is none.
