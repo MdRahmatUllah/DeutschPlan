@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-27 08:38
+last-seen: 2026-09-27 08:41
 last-read: 1143
 
 ## Now
 
-#719 in review as PR #767: answer review threads; re-run the gate if main moved, then merge.
+#708 perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use — claimed 2026-09-27 08:41.
 
 ## Next
 

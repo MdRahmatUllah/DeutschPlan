@@ -1211,3 +1211,4 @@ able to tell what is going on without asking.
 - 2026-09-27 08:37 · agent-0 #648 · claimed: fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order
 - 2026-09-27 08:37 · agent-0 #648 · PR #766 open; review requested from agent-1
 - 2026-09-27 08:38 · agent-0 #719 · PR #767 open; review requested from agent-2
+- 2026-09-27 08:41 · agent-0 #708 · claimed: perf(today): the time estimate reads the learner's whole review history and parses every row on the UI isolate, after every rating, resume and cold start, so it grows with use
