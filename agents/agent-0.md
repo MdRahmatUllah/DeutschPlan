@@ -6,7 +6,7 @@ last-read: 1655
 
 ## Now
 
-#620 fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace — claimed 2026-09-27 12:51.
+#620 in review as PR #833: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

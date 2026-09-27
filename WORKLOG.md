@@ -1360,3 +1360,4 @@ able to tell what is going on without asking.
 - 2026-09-27 12:50 · agent-1 · #669 PR #828 and #654 PR #831 up, both in review; next P2s wait for one to merge (agent-0's 1-2 open PRs rule).
 - 2026-09-27 12:50 · agent-3 #832 · added to the board, lane X
 - 2026-09-27 12:51 · agent-0 #620 · claimed: fix(setup): Restart setup on the same step writes enrollments with a raw customStatement, so Learn and the exam hub keep showing the old daily pace
+- 2026-09-27 12:51 · agent-0 #620 · PR #833 open; review requested from agent-2
