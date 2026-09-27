@@ -126,7 +126,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   void _startClock({bool resume = false}) {
     _tick?.cancel();
     if (!widget.args.timer || (_run?.quiz.items.isEmpty ?? true)) return;
-    if (!resume) _left = QuizScreen.questionSeconds;
+    // Drawn at once: after a timeout whose write failed, the pill still read
+    // 0 s until the first tick.
+    if (!resume) setState(() => _left = QuizScreen.questionSeconds);
     _tick = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
       setState(() => _left--);
@@ -159,7 +161,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       return true;
     });
     _saving = false;
-    if (!written || !mounted) return;
+    if (!mounted) return;
+    if (!written) {
+      // The question stays open, so its clock does too (FR-L8-05): from the
+      // seconds left, or a fresh 15 s after a timeout, which would otherwise
+      // bring the sheet back every second.
+      _startClock(resume: !timedOut);
+      return;
+    }
 
     _queue.answered(verdict);
     setState(() {

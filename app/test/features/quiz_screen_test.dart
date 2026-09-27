@@ -373,6 +373,37 @@ void main() {
       timer: true,
     );
 
+    testWidgets('FR-L8-05 #647 after an answer that failed to save, the '
+        'clock carries on from the seconds left', (tester) async {
+      await pump(tester, args: timed);
+      await tester.pump(const Duration(seconds: 5));
+      run.writeError = StateError('disk full');
+      await tester.enterText(find.byType(TextField), 'word 1');
+      await tester.pump();
+      await tester.tap(find.text(l10n.quizCheck));
+      await tester.pumpAndSettle();
+      Navigator.of(tester.element(find.text(l10n.saveAnswerFailed))).pop();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.quizSecondsLeft(10)), findsOneWidget);
+
+      run.writeError = null;
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pumpAndSettle();
+      expect(run.answers, [(1, '', Verdict.wrong)], reason: 'it ran out');
+    });
+
+    testWidgets('FR-L8-05 #647 and after a timeout that failed to save, a '
+        'fresh 15 s, not the sheet again every second', (tester) async {
+      await pump(tester, args: timed);
+      run.writeError = StateError('disk full');
+      await tester.pump(const Duration(seconds: 15));
+      await tester.pumpAndSettle();
+      Navigator.of(tester.element(find.text(l10n.saveAnswerFailed))).pop();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.quizSecondsLeft(15)), findsOneWidget);
+      expect(run.answers, isEmpty);
+    });
+
     testWidgets('auto-submits an empty answer as wrong at 0', (tester) async {
       await pump(tester, args: timed);
       expect(find.text(l10n.quizSecondsLeft(15)), findsOneWidget);
