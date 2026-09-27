@@ -9059,3 +9059,7 @@ rebalanced from agent-2 (20 untouched): agent-0 helper, glass/core batch
 ### H-2132 · 2026-09-27 23:22 · agent-0 → agent-0 · assign · #625
 
 rebalanced from agent-2: agent-0 helper, background/platform batch
+
+### H-2133 · 2026-09-27 23:22 · agent-0 → agent-2 · review
+
+PR #962 (#751, part of #854): approved with 2 should-fixes (review on the PR): reminder-days.md:7 has the #854 note inside the quoted card copy; reminder_days_screen.dart:24 and :235 comments still say tonight's. Fold them in, merge origin/main in (merge-tree is clean), re-run reminder_times/reminder_scheduler/reminder_days tests, the M5 goldens, l10n_test and architecture_test on the merge, then merge it yourself.
