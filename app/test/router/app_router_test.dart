@@ -10,9 +10,12 @@ import 'package:sogda/features/today/today_screen.dart';
 
 import '../features/today_fixtures.dart';
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/features/day_complete/day_complete_screen.dart'
+    show dayCompleteFirstProvider;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -90,6 +93,13 @@ void main() {
             (ref) async => const <CourseStep>[
               (code: 'A1.1', levelCode: 'A1', wordCount: 12),
             ],
+          ),
+          // T6's claim, still being read: T6 stays where the table puts it.
+          // With no database it would fail, and a T6 that can't tell goes
+          // straight on to Today (#677), so the path would look unreachable.
+          // Never answered, so no celebration timer outlives the test.
+          dayCompleteFirstProvider.overrideWith(
+            (ref, day) => Completer<bool>().future,
           ),
         ],
         child: MaterialApp.router(
