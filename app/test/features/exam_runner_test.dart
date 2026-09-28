@@ -298,6 +298,16 @@ void main() {
       expect(run.times, [(10, 0)]);
     });
 
+    testWidgets('#694 CC-3 FR-L12-03 a time write that fails loses no '
+        'second: the next tick writes them with its own', (tester) async {
+      await pump(tester);
+      run.failTimes = 1;
+      await tester.pump(const Duration(seconds: 10));
+      expect(run.times, isEmpty);
+      await tester.pump(const Duration(seconds: 1));
+      expect(run.times, [(11, 0)]);
+    });
+
     testWidgets('at 0:00 the exam submits itself', (tester) async {
       await pump(
         tester,

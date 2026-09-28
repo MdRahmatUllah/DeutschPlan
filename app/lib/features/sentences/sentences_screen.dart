@@ -206,19 +206,7 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
   Future<void> _finish() async {
     if (_leaving) return;
     _leaving = true;
-    final today = _day;
-    ref.invalidate(studyNextProvider(today));
-    // Listened to while it answers: read alone, an auto-disposing provider
-    // can go before its future does.
-    final hold = ref.listenManual(studyNextProvider(today), (_, _) {});
-    final next = await ref.read(studyNextProvider(today).future);
-    hold.close();
-    if (!mounted) return;
-    if (next.dayDone && next.sentences == 0) {
-      DayCompleteRoute.instead(context, today);
-    } else {
-      unawaited(Navigator.of(context).maybePop());
-    }
+    await leaveSession(context, ref, _day);
   }
 
   @override

@@ -110,6 +110,9 @@ class StubExamResult implements ExamResultService {
   /// Makes *Delete recording* throw, as a failed write would (#891).
   bool failDelete = false;
 
+  /// Makes a rubric tick's write throw (#694).
+  bool failRubric = false;
+
   /// How many times the result was read: a Retry reads it again (#725).
   int reads = 0;
 
@@ -121,6 +124,7 @@ class StubExamResult implements ExamResultService {
 
   @override
   Future<void> rubric(int attemptId, int ord, List<bool> ticks) async {
+    if (failRubric) throw StateError('disk full');
     rubrics.add((ord, ticks));
     // Graded again as the repository would: a point a tick.
     final rows = <ExamResultRow>[
