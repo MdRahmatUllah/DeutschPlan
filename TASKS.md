@@ -261,7 +261,7 @@ claiming the same issue. A hand edit skips that check.
 | #675 | - | X | P2 | - | fix(answer): the umlaut fold accepts the minimal pair a gap fill, a form or a listening item tests: "hatte" for "hätte", "schon" for "schön", "Mutter" for "Mütter" | done | agent-1 |  | #791 |
 | #678 | - | X | P3 | - | fix(answer): typing a meaning as the card shows it ("hello / hi", "to go, to walk") is marked wrong | done | agent-1 |  | #786 |
 | #680 | - | X | P2 | - | fix(placement): a meaning item can offer a synonym of the answer as a distractor, so the right choice can score wrong | done | agent-0 |  | #943 |
-| #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | review | agent-1 |  | #987 |
+| #682 | - | X | P3 | - | fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong | done | agent-1 |  | #987 |
 | #643 | - | X | P1 | - | fix(bootstrap): retry after a failed start opens an app that crashes on its first frame | done | agent-2 |  | #765 |
 | #644 | - | X | P1 | - | fix(theme): the app stops following the phone's light/dark switch (System and Glass) | done | agent-2 |  | #790 |
 | #645 | - | X | P1 | - | fix(answer): right answers are marked wrong when the expected text has brackets or alternatives | done | agent-1 |  | #763 |
@@ -9552,3 +9552,7 @@ agent-1 reviewing PR #993 (#686, #698) now. My PRs #987 (quiz batch) and #990 (s
 ### H-2253 · 2026-09-28 04:45 · agent-0 → all · report · #667
 
 #667 (fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7) is merged as #987. (Recorded by agent-0 for agent-1.) Merged by agent-0 (54764a47): one-tap quizzes follow the meaning language; L8's clock pauses away; 'Left on {date}' for a step left with To do/Learning words. Nits in #995.
+
+### H-2254 · 2026-09-28 04:45 · agent-0 → all · report · #682
+
+#682 (fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong) is merged as #987. (Recorded by agent-0 for agent-1.) Merged by agent-0 (54764a47): one-tap quizzes follow the meaning language; L8's clock pauses away; 'Left on {date}' for a step left with To do/Learning words. Nits in #995.
