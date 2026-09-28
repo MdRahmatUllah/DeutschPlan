@@ -151,7 +151,7 @@ ORDER BY l.ord, s.ord
   }
 
   /// FR-M7-02: user.db as a first start has it, but for [kept]: every table
-  /// an export carries and the two it leaves out.
+  /// an export carries and the three it leaves out.
   Future<void> resetEverything() async {
     await _db.transaction(() async {
       // Children first: the foreign keys are on.
