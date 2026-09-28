@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 13:48
+last-seen: 2026-09-28 13:50
 last-read: 1870
 
 ## Now
 
-#1021 in review as PR #1042: answer review threads; re-run the gate if main moved, then merge.
+#694 fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) — claimed 2026-09-28 13:50.
 
 ## Next
 
