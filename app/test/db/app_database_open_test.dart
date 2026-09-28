@@ -7,7 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/services/background_tasks.dart';
 
 import 'content_fixture.dart';
@@ -69,11 +68,6 @@ void main() {
     await app.fileSchemaVersion();
     await app.close();
     ContentFixture.write('${storage.path}/content.db');
-    // And the manifest the app's start keeps beside it, this build's: an
-    // older one is a course the next start updates, which a task leaves
-    // alone (#1018).
-    File(ContentUpdater.manifestAsset)
-        .copySync('${storage.path}/${ContentUpdater.manifestFile}');
 
     var ran = false;
     await withBackgroundDatabase((_) async => ran = true);

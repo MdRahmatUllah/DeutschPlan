@@ -224,6 +224,11 @@ class ModelState {
 /// shows its Translation group, by it (#513).
 const bool enableHymtDownload = bool.fromEnvironment('ENABLE_HYMT_DOWNLOAD');
 
+/// Whether this build offers [modelId]'s download (FR-M4-04): M4's buttons,
+/// and `ModelDownloads`, which refuses any other (#692 ME-3).
+bool offered(String modelId) =>
+    modelId != ModelRepository.translationModel || enableHymtDownload;
+
 /// Where models live on disk, and what makes one usable.
 ///
 /// The download itself is `background_downloader`'s job (FR-M4-01) and the
