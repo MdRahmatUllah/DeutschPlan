@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_brand.dart';
 import 'package:sogda/core/typography/app_fonts.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// The Sogda mark: variant A of the brand kit (`docs/sogda-brand-kit/`, #602),
 /// two letter tiles, the "a" the learner knows behind and the new language's

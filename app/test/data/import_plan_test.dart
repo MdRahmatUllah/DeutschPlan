@@ -4,6 +4,9 @@ library;
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:drift/drift.dart' hide isNull, isNotNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
@@ -11,9 +14,6 @@ import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/setup_repository.dart';
 import 'package:sogda/domain/plan_engine.dart';
-import 'package:drift/drift.dart' hide isNull, isNotNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../db/content_fixture.dart';
@@ -35,7 +35,7 @@ void main() {
   final phones = <_Phone>[];
 
   setUp(() {
-    directory = Directory.systemTemp.createTempSync('sogda_import_plan');
+    directory = tempDir('sogda_import_plan');
     content = ContentFixture.write('${directory.path}/content.db').file;
     final raw = sqlite.sqlite3.open(content.path);
     try {
@@ -60,11 +60,6 @@ VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
       await phone.close();
     }
     phones.clear();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<_Phone> setUpPhone(PlanDate on, {int mask = allDays}) async {

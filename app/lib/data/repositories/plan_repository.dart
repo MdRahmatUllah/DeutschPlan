@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/plan_store.dart' show inCourse;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/plan_store.dart' show inCourse;
 
 /// What a rating does to a word's scheduling.
 ///
@@ -487,6 +487,35 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
   Future<DailyStat?> statsFor(String day) => (_db.select(
     _db.dailyStats,
   )..where((t) => t.day.equals(day))).getSingleOrNull();
+
+  /// The words studied on [day], the day's "17 words" (TodayDone, T6):
+  /// each rated in a session, today's plan or the backlog's, or marked
+  /// known, once however often — as the day's minutes count those
+  /// sessions (#1004). A new word skipped to the backlog wasn't studied
+  /// (#729); a quiz's or a sentence's rating isn't a session's.
+  Stream<int> watchWordsStudiedOn(String day) {
+    // `reviewed_at` is UTC; the day is the learner's, midnight to midnight.
+    final [year, month, date] = <int>[
+      for (final part in day.split('-')) int.parse(part),
+    ];
+    return _db
+        .customSelect(
+          'SELECT COUNT(DISTINCT word_uid) AS n FROM review_log '
+          "WHERE source IN ('daily', 'known') "
+          'AND reviewed_at >= ?1 AND reviewed_at < ?2',
+          variables: <Variable<Object>>[
+            Variable<String>(
+              DateTime(year, month, date).toUtc().toIso8601String(),
+            ),
+            Variable<String>(
+              DateTime(year, month, date + 1).toUtc().toIso8601String(),
+            ),
+          ],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.reviewLog},
+        )
+        .watchSingle()
+        .map((row) => row.read<int>('n'));
+  }
 
   /// M1's activity: how many items were practised on each day, as it changes
   /// — the heat-map's cells (FR-M1-02) and the header's days studied.

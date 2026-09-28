@@ -2,20 +2,24 @@
 library;
 
 import 'dart:async';
-
-import 'package:sogda/features/exam/exam_runner_screen.dart';
-import 'package:sogda/features/sentences/sentences_screen.dart';
-import 'package:sogda/features/today/today_screen.dart';
-
-import '../features/today_fixtures.dart';
-import '../services/fake_tts.dart';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'dart:io';
 
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/features/sentences/sentences_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/app_router.dart';
@@ -23,16 +27,9 @@ import 'package:sogda/router/app_shell.dart';
 import 'package:sogda/router/deep_links.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter/services.dart';
-import 'package:sogda/features/learn/step_detail_screen.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/features/words/word_detail_screen.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
+
+import '../features/today_fixtures.dart';
+import '../services/fake_tts.dart';
 
 /// Deep links — #70.
 ///

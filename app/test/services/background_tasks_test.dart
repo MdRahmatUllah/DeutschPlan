@@ -1,5 +1,13 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' show DatabaseConnection;
+import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show Locale;
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -10,20 +18,12 @@ import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
-import 'package:drift/drift.dart' show DatabaseConnection;
-import 'package:drift/native.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show Locale;
-import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart' show sqlite3;
 
 import '../data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
-import 'widget_snapshot_test.dart' show FakeWidgets;
 import '../db/content_fixture.dart';
 import '../features/today_fixtures.dart';
+import 'widget_snapshot_test.dart' show FakeWidgets;
 
 /// #158: the background tasks of `notifications-widget.md`.
 void main() {
@@ -87,14 +87,12 @@ void main() {
     late File file;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_schema');
+      directory = tempDir('sogda_schema');
       file = File('${directory.path}/user.sqlite');
       final db = AppDatabase(DatabaseConnection(NativeDatabase(file)));
       await db.customSelect('SELECT 1').get();
       await db.close();
     });
-
-    tearDown(() => directory.deleteSync(recursive: true));
 
     test("a file at this build's schema is opened", () {
       expect(atCurrentSchema(file), isTrue);
@@ -130,7 +128,7 @@ void main() {
 
     setUp(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
-      support = Directory.systemTemp.createTempSync('sogda_skip');
+      support = tempDir('sogda_skip');
       PathProviderPlatform.instance = _Support(support.path);
       work = FakeWork();
       ran.clear();
@@ -142,15 +140,6 @@ void main() {
       );
       await db.customSelect('SELECT 1').get();
       await db.close();
-    });
-
-    tearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases the file a moment after close(); the OS clears
-        // its temp directory.
-      }
     });
 
     test('user.db left at the old schema for the app', () async {
@@ -235,7 +224,7 @@ void main() {
     );
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_tasks');
+      directory = tempDir('sogda_tasks');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(
@@ -258,7 +247,6 @@ void main() {
     tearDown(() async {
       await settings.dispose();
       await db.close();
-      directory.deleteSync(recursive: true);
     });
 
     test("plan_pregenerate opens today's plan", () async {

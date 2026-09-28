@@ -1,15 +1,15 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/main.dart';
 import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/main.dart';
 import 'package:sogda/services/background_tasks.dart' show reminderBodyProvider;
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
 
 import 'data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
 import 'features/today_fixtures.dart' show artboardToday;

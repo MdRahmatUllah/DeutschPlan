@@ -3,15 +3,15 @@ library;
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 
@@ -29,7 +29,7 @@ void main() {
   late WordRepository words;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_words');
+    directory = tempDir('sogda_words');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
@@ -45,11 +45,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   /// Writes a state row through drift's API, not with `customStatement`.

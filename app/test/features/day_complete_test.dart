@@ -1,7 +1,13 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
@@ -14,12 +20,6 @@ import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:sogda/core/components/sg_progress_ring.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
@@ -142,11 +142,9 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('#729 FR-T6-01 a new word skipped to the backlog is not a '
-      'word studied: 17 done for the plan, 7 of them skipped, 10 words', (
-    tester,
-  ) async {
-    await pump(tester, view: artboardDone(newSkipped: 7));
+  testWidgets("#729 #1004 FR-T6-01 the words studied, not the plan's "
+      'done: 17 done for the plan, 10 studied', (tester) async {
+    await pump(tester, view: artboardDone(words: 10));
     await tester.pump(const Duration(milliseconds: 1300));
 
     expect(find.text(l10n.dayCompleteStats(10, 12)), findsOneWidget);

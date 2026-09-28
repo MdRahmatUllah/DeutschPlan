@@ -1,6 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:record/record.dart'
+    show AudioInterruptionMode, AudioRecorder, RecordConfig;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
@@ -10,14 +17,8 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/exam_recorder.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:record/record.dart'
-    show AudioInterruptionMode, AudioRecorder, RecordConfig;
 
+import '../db/content_fixture.dart' show tempDir;
 import 'exam_run_fixtures.dart';
 
 /// A question after Speaking, so *Next* moves on from it.
@@ -350,8 +351,7 @@ void main() {
 
     test('#691 EX-5 FR-L12S-02 a take records beside the recording and '
         'replaces it once it stops; one that fails leaves it whole', () async {
-      final folder = Directory.systemTemp.createTempSync('sg_take');
-      addTearDown(() => folder.deleteSync(recursive: true));
+      final folder = tempDir('sg_take');
       final kept = File('${folder.path}/7.m4a')..writeAsStringSync('kept');
       final plugin = _Plugin();
       final recorder = PlatformExamRecorder(recorder: plugin);

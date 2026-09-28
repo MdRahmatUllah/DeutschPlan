@@ -1,3 +1,4 @@
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
@@ -5,7 +6,6 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// S2's five pages, and the frame they share. `docs/04-screens/onboarding.md`.
 ///
@@ -186,7 +186,7 @@ class OnboardingShell extends StatelessWidget {
                   alignment: AlignmentDirectional.centerStart,
                   child: SgButton(
                     label: l10n.back,
-                    onPressed: onBack,
+                    onPressed: busy ? null : onBack,
                     kind: SgButtonKind.text,
                     expand: false,
                   ),
@@ -198,16 +198,22 @@ class OnboardingShell extends StatelessWidget {
       ],
     );
 
-    return AdaptiveScaffold(
-      backgroundColor: tokens.isGlass
-          ? tokens.surface.paper.withValues(alpha: 0)
-          : tokens.surface.paper,
-      body: tokens.isGlass
-          ? AuroraBackdrop(
-              leading: page.headerColour(tokens),
-              child: SafeArea(top: false, child: body),
-            )
-          : SafeArea(top: false, child: body),
+    // #692 ME-5: while setup finishes, nothing leaves the page, the system
+    // back and iOS's swipe included: a page left mid-commit came back
+    // enrolled, and its Skip or another step committed again.
+    return PopScope(
+      canPop: !busy,
+      child: AdaptiveScaffold(
+        backgroundColor: tokens.isGlass
+            ? tokens.surface.paper.withValues(alpha: 0)
+            : tokens.surface.paper,
+        body: tokens.isGlass
+            ? AuroraBackdrop(
+                leading: page.headerColour(tokens),
+                child: SafeArea(top: false, child: body),
+              )
+            : SafeArea(top: false, child: body),
+      ),
     );
   }
 }

@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -8,16 +11,13 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/domain/plan_engine.dart' show PlanKind;
+import 'package:sogda/domain/plan_stats.dart' show dayDone;
 import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/features/study/study_card.dart';
 import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/study/study_session.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:sogda/domain/plan_stats.dart' show dayDone;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'study_summary.g.dart';
 

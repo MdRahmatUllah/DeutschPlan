@@ -5,6 +5,11 @@ import 'dart:async';
 import 'dart:io' show FileSystemException;
 
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoDatePicker;
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
@@ -21,14 +26,9 @@ import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
-import '../services/fake_tts.dart';
 import '../core/semantics_checks.dart';
+import '../services/fake_tts.dart';
 
 /// S2 page 5 · Reminder and voice — #91.
 void main() {

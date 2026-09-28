@@ -1,6 +1,6 @@
-import 'package:sogda/features/onboarding/onboarding_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
 
 /// S2's draft — `onboarding.md`: "`OnboardingNotifier` holds draft values".
 void main() {

@@ -1,6 +1,10 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
@@ -19,15 +23,10 @@ import 'package:sogda/features/onboarding/placement_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
-import '../services/fake_tts.dart';
-
-import '../domain/placement_test.dart' show wordFor;
 import '../core/semantics_checks.dart';
+import '../domain/placement_test.dart' show wordFor;
+import '../services/fake_tts.dart';
 
 /// S3 · the placement check on screen — #93. The walk itself is
 /// `placement_test.dart`'s; this is the screen around it.
@@ -124,6 +123,20 @@ void main() {
     await tester.pump();
     await tester.pump();
   }
+
+  testWidgets('#692 ME-12 a step whose words cannot be read ends the check, '
+      'back to page 3 with nothing chosen, not a Next greyed out for good', (
+    tester,
+  ) async {
+    await pump(tester);
+    dao.fail = true;
+
+    // Right answers walk up a step, whose words are read then.
+    for (var i = 0; i < 6 && done.isEmpty; i++) {
+      await answer(tester, right: true);
+    }
+    expect(done, <String?>[null]);
+  });
 
   /// A check that settles on A2.2 after nine answers.
   Future<void> finish(WidgetTester tester, {SgMode mode = SgMode.light}) async {
@@ -497,8 +510,12 @@ class _PoolDao extends ContentDao {
 
   final List<String> asked = <String>[];
 
+  /// Every read from now on fails, as a broken content.db would.
+  bool fail = false;
+
   @override
   Future<List<PlacementWord>> placementPool(String step) async {
+    if (fail) throw StateError('no words for $step');
     asked.add(step);
     return <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];
   }

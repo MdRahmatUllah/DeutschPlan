@@ -1,6 +1,10 @@
 import 'dart:async' show unawaited;
 import 'dart:io' show File, Platform;
 
+import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter_riverpod/flutter_riverpod.dart'
+    show ProviderSubscription;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -14,10 +18,6 @@ import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
 import 'package:sogda/services/widget_snapshot.dart';
-import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    show ProviderSubscription;
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:workmanager/workmanager.dart';
 
 part 'background_tasks.g.dart';

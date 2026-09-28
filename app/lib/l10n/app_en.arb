@@ -8,6 +8,10 @@
   "@splashPreparing": {
     "description": "S1 splash caption under the wordmark. The full artboard string, including the note that the wait only happens once. See docs/04-screens/splash.md."
   },
+  "splashUpdating": "Updating the course…",
+  "@splashUpdating": {
+    "description": "S1 splash caption under the wordmark while an app update copies its new course in, in place of splashPreparing's 'first start only' (the owner's decision on #686). See docs/04-screens/splash.md."
+  },
   "retry": "Retry",
   "@retry": {
     "description": "Button on the shared ErrorPanel that re-runs the failed operation. See docs/01-architecture/state-management.md."
@@ -5752,6 +5756,24 @@
         "example": "2026.09"
       }
     }
+  },
+  "aboutVersionAppOnly": "Version {version} (build {build})",
+  "@aboutVersionAppOnly": {
+    "description": "M9's version line when the course's facts can't be read (#692 ME-13): the app's own version, alone.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      },
+      "build": {
+        "type": "String",
+        "example": "41"
+      }
+    }
+  },
+  "webOpenFailed": "Couldn't open the page. Is there a browser on this phone?",
+  "@webOpenFailed": {
+    "description": "Toast when a web link (M9's Contact) can't be opened, for example with no browser installed (#692 ME-13)."
   },
   "aboutPrivacy": "Privacy",
   "@aboutPrivacy": {

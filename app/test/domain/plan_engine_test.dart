@@ -1,9 +1,9 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/domain/fsrs.dart';
 import 'package:sogda/domain/plan_engine.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// The plan engine — #76, #77, BR-PLAN-01…10, BR-COURSE-04/05.
 ///

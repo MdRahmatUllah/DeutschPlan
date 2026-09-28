@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_mark.dart';
@@ -16,8 +18,6 @@ import 'package:sogda/features/onboarding/onboarding_pace_page.dart'
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/background_tasks.dart' show reminderBodyProvider;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// M5 · Study days & reminder (`reminder-days.md`, the ReminderDays
 /// artboards): the week's study days, the reminder and its time, *Only when

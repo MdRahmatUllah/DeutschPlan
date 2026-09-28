@@ -1,17 +1,18 @@
 import 'dart:async';
-
 import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/tts/system_tts.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
-import 'package:flutter/services.dart' show PlatformException;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+
+import '../db/content_fixture.dart' show tempDir;
 
 /// The seams S2 page 5 stands on (#91). The page's own tests fake these;
 /// these are the real ones, with only the plugin behind each faked.
@@ -25,7 +26,7 @@ void main() {
     late _FakeDownloader downloader;
 
     setUp(() async {
-      support = Directory.systemTemp.createTempSync('sogda_models');
+      support = tempDir('sogda_models');
       final db = AppDatabase.memory();
       addTearDown(db.close);
       settings = SettingsRepository(db);
@@ -68,14 +69,6 @@ void main() {
         ),
       );
       downloader = _FakeDownloader();
-    });
-
-    tearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows lets go of the directory a moment later.
-      }
     });
 
     test("queues every file of the voice, from the manifest", () async {

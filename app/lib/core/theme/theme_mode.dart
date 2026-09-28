@@ -1,6 +1,6 @@
+import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:material_ui/material_ui.dart' show Brightness;
 
 /// Turns the stored `theme_mode` into the mode the theme actually renders.
 ///

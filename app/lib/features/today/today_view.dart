@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:sogda/domain/plan_engine.dart';
-import 'package:sogda/domain/plan_stats.dart' show dayDone;
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_stats.dart' show dayDone;
 
 /// How far one block of today's plan has got.
 @immutable
@@ -253,7 +253,7 @@ class TodayView {
     required this.courseDay,
     required this.stepWords,
     this.grammarDone = 0,
-    this.newSkipped = 0,
+    this.words = 0,
     this.sentences = BlockProgress.none,
     this.isStudyDay = true,
     this.minutes = 0,
@@ -277,9 +277,10 @@ class TodayView {
   final BlockProgress revise;
   final BlockProgress newToday;
 
-  /// Of [newToday]'s done, the ones skipped to the backlog and not studied
-  /// since (#729): done for the plan, not studied.
-  final int newSkipped;
+  /// The words studied today: TodayDone's and T6's "17 words". Each rated
+  /// in a session, today's plan or the backlog's, or marked known, once
+  /// (#1004); a new word skipped to the backlog wasn't studied (#729).
+  final int words;
 
   /// The words a Revise or New session would show: the block's open ones.
   final List<String> openRevise;
@@ -369,10 +370,6 @@ class TodayView {
   /// geschafft": nothing was done on it.
   bool get isDone =>
       dayDone(isStudyDay: isStudyDay, planned: total, open: left);
-
-  /// The words studied today: TodayDone's and T6's "17 words". A new word
-  /// skipped to the backlog is done for the plan, but wasn't studied (#729).
-  int get words => revise.done + newToday.done - newSkipped;
 
   /// "Revision starts tomorrow" rather than "nothing due": nothing can be due
   /// on the first day, and saying so explains the empty card.

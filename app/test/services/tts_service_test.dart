@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/services/tts/tts_engine.dart';
-import 'package:sogda/main.dart' show watchVoiceMemory;
-import 'package:sogda/services/tts/tts_service.dart';
 import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/main.dart' show watchVoiceMemory;
+import 'package:sogda/services/tts/tts_engine.dart';
+import 'package:sogda/services/tts/tts_service.dart';
 
 import 'fake_tts.dart';
 

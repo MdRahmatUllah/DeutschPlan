@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -14,15 +18,11 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/notification_permission.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// The phone's permission dialog, answered.
 class FakePermission implements NotificationPermission {
@@ -60,7 +60,7 @@ void main() {
   });
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_m5');
+    directory = tempDir('sogda_m5');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase.memory();
     await db.customStatement(
@@ -78,7 +78,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    directory.deleteSync(recursive: true);
   });
 
   Future<int> enrolledMask() async =>

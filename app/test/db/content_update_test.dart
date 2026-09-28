@@ -4,10 +4,6 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/data/db/content_update.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +12,10 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 import 'content_fixture.dart';
@@ -149,7 +149,7 @@ void main() {
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    support = Directory.systemTemp.createTempSync('sogda_update');
+    support = tempDir('sogda_update');
     PathProviderPlatform.instance = _TempPaths(support.path);
 
     publish(course(version: '202601010000'));
@@ -169,11 +169,6 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler('flutter/assets', null);
     await db.close();
-    try {
-      support.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   test('an update with nothing to report is not shown', () async {

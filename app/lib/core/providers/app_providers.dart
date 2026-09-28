@@ -20,23 +20,20 @@ library;
 
 import 'dart:async';
 
-import 'package:sogda/data/repositories/sentence_store.dart';
-import 'package:sogda/domain/sentence_picker.dart';
-import 'package:sogda/data/db/content_update.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:material_ui/material_ui.dart' show Brightness;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/theme_mode.dart';
-import 'package:sogda/domain/fsrs.dart';
-import 'package:sogda/domain/plan_engine.dart';
-import 'package:sogda/domain/quiz_builder.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/data/repositories/exam_run_service.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
-import 'package:sogda/data/repositories/synthesis_cache.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/progress_repository.dart';
@@ -45,23 +42,27 @@ import 'package:sogda/data/repositories/quiz_store.dart';
 import 'package:sogda/data/repositories/rating_service.dart';
 import 'package:sogda/data/repositories/reset_repository.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/sentence_store.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/setup_repository.dart';
+import 'package:sogda/data/repositories/synthesis_cache.dart';
+import 'package:sogda/data/repositories/translation_repository.dart';
+import 'package:sogda/data/repositories/word_actions.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
-import 'package:sogda/services/exam_recorder.dart';
+import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/quiz_builder.dart';
+import 'package:sogda/domain/sentence_picker.dart';
 import 'package:sogda/services/device_storage.dart';
+import 'package:sogda/services/exam_recorder.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
+import 'package:sogda/services/translation/translator.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
 import 'package:sogda/services/tts/system_tts.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:sogda/services/tts/tts_service.dart';
-import 'package:sogda/data/repositories/translation_repository.dart';
-import 'package:sogda/data/repositories/word_actions.dart';
-import 'package:sogda/services/translation/translator.dart';
-import 'package:material_ui/material_ui.dart' show Brightness;
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'app_providers.g.dart';
@@ -385,12 +386,20 @@ TranslationRepository translationRepository(Ref ref) => TranslationRepository(
 
 /// Opens a web page in an in-app browser tab: R1's Duden · DWDS · Wiktionary
 /// · Linguee · Google chips (FR-R1-06). The app makes no request of its own
-/// (BR-PRIV-01); the browser does, because the learner tapped.
+/// (BR-PRIV-01); the browser does, because the learner tapped. False when
+/// it couldn't: `launchUrl` throws on a phone with no browser, and every
+/// link goes through here (#692 ME-13).
 typedef OpenWeb = Future<bool> Function(Uri page);
 
 @riverpod
-OpenWeb openWeb(Ref ref) =>
-    (page) => launchUrl(page, mode: LaunchMode.inAppBrowserView);
+OpenWeb openWeb(Ref ref) => (page) async {
+  try {
+    return await launchUrl(page, mode: LaunchMode.inAppBrowserView);
+  } on Object catch (error) {
+    debugPrint('web: $error');
+    return false;
+  }
+};
 
 /// The phone's German voice: S2's preview (FR-S2-06) and `tts.md`'s fallback.
 /// Kept alive because the plugin reports playback to one instance only.

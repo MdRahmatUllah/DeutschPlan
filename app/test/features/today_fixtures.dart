@@ -1,10 +1,9 @@
-import 'package:sogda/domain/grammar_item_generator.dart';
-import 'package:sogda/features/search/add_word_screen.dart';
-import 'package:sogda/features/search/search_screen.dart';
-import 'package:sogda/features/sentences/sentences_screen.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
 import 'package:sogda/features/learn/category_words_screen.dart';
@@ -12,12 +11,13 @@ import 'package:sogda/features/learn/grammar_library_screen.dart';
 import 'package:sogda/features/learn/grammar_topic_screen.dart';
 import 'package:sogda/features/learn/step_grammar.dart';
 import 'package:sogda/features/learn/step_quiz.dart';
-import 'package:sogda/features/quiz/quiz_setup_sheet.dart';
 import 'package:sogda/features/learn/step_words.dart';
-import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/features/quiz/quiz_setup_sheet.dart';
+import 'package:sogda/features/search/add_word_screen.dart';
+import 'package:sogda/features/search/search_screen.dart';
+import 'package:sogda/features/sentences/sentences_screen.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/today/today_view.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
 
 import 'compare_fixtures.dart';
 import 'exam_fixtures.dart';
@@ -75,13 +75,13 @@ TodayView artboardToday({
 TodayView artboardDone({
   int backlog = 0,
   TomorrowPreview? tomorrow,
-  int newSkipped = 0,
+  int words = 17,
 }) => TodayView(
   date: '2026-09-21',
   hour: 19,
   revise: const BlockProgress(done: 10, total: 10),
   newToday: const BlockProgress(done: 7, total: 7),
-  newSkipped: newSkipped,
+  words: words,
   openRevise: const <String>[],
   openNew: const <String>[],
   grammarDue: const <String>[],

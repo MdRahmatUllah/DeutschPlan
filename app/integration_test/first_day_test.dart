@@ -1,13 +1,13 @@
 // #169, flow 1 of 2: a fresh install, set up, studies its first day and is
 // told the day is done. Run by `tools/smoke.py`, which uninstalls first.
 
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/today/today_components.dart';
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 
 import 'smoke.dart';
 

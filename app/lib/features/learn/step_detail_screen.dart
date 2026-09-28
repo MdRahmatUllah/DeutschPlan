@@ -1,5 +1,8 @@
 import 'dart:math' as math;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
@@ -19,9 +22,6 @@ import 'package:sogda/features/learn/step_words.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// L2 · Step detail (`docs/04-screens/step-detail.md`, `StepDetail-android.html`):
 /// everything in one step. A Sun header — the code, its level, words and
@@ -263,10 +263,10 @@ String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
     if (step.passedSeed case final mock?) {
       return l10n.stepCompletedPassed(day(completed), mock);
     }
-    // #950 (the owner): an enrollment's end is "Completed" only once every
-    // word is Done; before that the step was left, as *Start* on another
-    // step leaves it (FR-L2-03).
-    return step.todo + step.learning == 0
+    // #950, #1012 (the owner): a step the plan finished is completed, words
+    // still Learning and all; one with words never met was left part-way, as
+    // *Start* on another step leaves it (FR-L2-03).
+    return step.todo == 0
         ? l10n.stepCompleted(day(completed))
         : l10n.stepLeft(day(completed));
   }
