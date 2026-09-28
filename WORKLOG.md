@@ -2154,3 +2154,4 @@ able to tell what is going on without asking.
 - 2026-09-28 23:40 · agent-0 #1068 · assigned to agent-0
 - 2026-09-28 23:43 · agent-0 #1063 · reopened: owner decided 2026-09-28: Bangla keeps the role's own weight
 - 2026-09-28 23:43 · agent-0 #1063 · assigned to agent-0
+- 2026-09-28 23:43 · agent-0 · locked shared-look: #1063
