@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// #164: under the OS's reduce motion, pages, panes, sheets and tabs
 /// cross-fade or cut rather than move; under reduce transparency the iOS

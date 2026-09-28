@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_slider.dart';
@@ -7,12 +9,10 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/domain/plan_stats.dart';
 import 'package:sogda/features/onboarding/onboarding_notifier.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
-import 'package:sogda/features/onboarding/setup_flow.dart';
 import 'package:sogda/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/features/onboarding/setup_flow.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// S2 page 4 · Daily pace. `OnboardingPace-android.html`.
 ///
@@ -97,8 +97,8 @@ class OnboardingPacePage extends ConsumerWidget {
           // drawn slider, where 6 dp gaps were (#698).
           SgSlider(
             value: draft.dailyNew,
-            min: OnboardingDraft.minDailyNew,
-            max: OnboardingDraft.maxDailyNew,
+            min: draft.dailyNewRange.min,
+            max: draft.dailyNewRange.max,
             onChanged: (count) => notifier().setDailyNew(count),
             label: l10n.onboardingPaceNewWords,
           ),

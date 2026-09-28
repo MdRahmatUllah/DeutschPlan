@@ -1,6 +1,6 @@
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:material_ui/material_ui.dart';
 
 // A quiz's names and colours, for L2's last quiz card, L7, L8 and L9: the
 // quiz's own, not the Learn tab's (#702).

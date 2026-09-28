@@ -1,6 +1,13 @@
 import 'dart:convert';
 import 'dart:ui' show SemanticsAction;
 
+import 'package:drift/drift.dart' show Value;
+import 'package:flutter/rendering.dart' show RenderEditable, RenderParagraph;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -21,20 +28,13 @@ import 'package:sogda/main.dart'
 import 'package:sogda/router/app_router.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:drift/drift.dart' show Value;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/rendering.dart' show RenderEditable, RenderParagraph;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
 import 'search_fixtures.dart';
 import 'today_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// R1 · Search results (#137, spec key R01): `search.md` and the engine's
 /// `03-domain/search.md`.

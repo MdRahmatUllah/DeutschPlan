@@ -581,6 +581,27 @@ void main() {
     );
   });
 
+  test('#892 a test makes its temp folders with tempDir, the one way', () {
+    // A raw systemTemp folder is deleted by its own tearDown, or never.
+    final raw = RegExp(r'systemTemp\s*\.\s*createTemp');
+    final offenders = <String>[
+      for (final file in <File>[
+        ..._dartFilesIn('test'),
+        ..._dartFilesIn('integration_test'),
+      ])
+        if (_rel(file) != 'test/db/content_fixture.dart' &&
+            raw.hasMatch(file.readAsStringSync()))
+          _rel(file),
+    ];
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          "use tempDir (test/db/content_fixture.dart): deleteTempDirs "
+          "deletes its folders once the file's tests are done",
+    );
+  });
+
   test('every MaterialApp takes the app delegates, not the generated ones', () {
     // gen_l10n's `AppLocalizations.localizationsDelegates` names
     // flutter_localizations' Material and Cupertino delegates, which localise

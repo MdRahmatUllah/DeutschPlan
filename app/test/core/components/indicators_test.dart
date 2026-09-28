@@ -1,3 +1,5 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
@@ -5,8 +7,6 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// Geometry from the Foundations artboard: the ring is a 120 unit box with
 /// radius 54 and stroke 12; the segmented bar is 8 dp with 2 dp gaps; the

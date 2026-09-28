@@ -1,6 +1,9 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter/services.dart' show MethodChannel;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -10,12 +13,9 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:sogda/services/start_report.dart';
-import 'package:flutter/services.dart' show MethodChannel;
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:sogda/services/start_report.dart';
 
 /// S2 · the onboarding shell and page 1 — #87.
 ///
@@ -363,6 +363,33 @@ void main() {
       expect(primary.onPressed, isNull);
       expect(skip.onPressed, isNull);
       expect(find.text('It went wrong'), findsOneWidget);
+    });
+
+    testWidgets('#692 ME-5 while finishing, Back is off too, and the '
+        'system back waits', (tester) async {
+      var back = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: OnboardingShell(
+            page: OnboardingPage.dailyPace,
+            headline: 'A headline',
+            primaryLabel: 'Continue',
+            onPrimary: () {},
+            onBack: () => back++,
+            busy: true,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.widgetWithText(SgButton, l10n.back));
+      await tester.pump();
+      expect(back, 0);
+      expect(tester.widget<PopScope>(find.byType(PopScope)).canPop, isFalse);
     });
 
     testWidgets('the primary action calls back', (tester) async {

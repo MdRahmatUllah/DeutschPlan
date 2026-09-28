@@ -3,12 +3,12 @@ library;
 
 import 'dart:io';
 
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
 
 import '../db/content_fixture.dart';
 
@@ -25,7 +25,7 @@ void main() {
   late PlanRepository plan;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_plan_repo');
+    directory = tempDir('sogda_plan_repo');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     // The course, as the app has it: the backlog's reads skip a course word
@@ -38,11 +38,6 @@ void main() {
 
   tearDown(() async {
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   const today = '2026-03-04';

@@ -1,10 +1,10 @@
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
-import 'package:flutter/services.dart' show LogicalKeyboardKey;
-import 'package:material_ui/material_ui.dart';
 
 /// A whole-number slider in the Paper & Ink treatment.
 ///
@@ -118,22 +118,24 @@ class _SgSliderState extends State<SgSlider> {
         // #877: the label and the values tagged bn-BD where they are
         // Bangla, as #743 tags every control: in bn the values are Bangla
         // digits ("৫"), which TalkBack on an English phone garbled too.
+        // A step each way, landing inside the range from a value outside
+        // it (restart setup's pace beyond page 4's, #1011 ME-4); none past
+        // an end.
+        final up = value < max ? (value + 1).clamp(min, max) : null;
+        final down = value > min ? (value - 1).clamp(min, max) : null;
+
         return Semantics(
           slider: true,
           attributedLabel: SgScript.attributedLabel(label),
           attributedValue: SgScript.attributedLabel(said(value)),
-          attributedIncreasedValue: value < max
-              ? SgScript.attributedLabel(said(value + 1))
-              : null,
-          attributedDecreasedValue: value > min
-              ? SgScript.attributedLabel(said(value - 1))
-              : null,
-          onIncrease: changed != null && value < max
-              ? () => step(value + 1)
-              : null,
-          onDecrease: changed != null && value > min
-              ? () => step(value - 1)
-              : null,
+          attributedIncreasedValue: up == null
+              ? null
+              : SgScript.attributedLabel(said(up)),
+          attributedDecreasedValue: down == null
+              ? null
+              : SgScript.attributedLabel(said(down)),
+          onIncrease: changed != null && up != null ? () => step(up) : null,
+          onDecrease: changed != null && down != null ? () => step(down) : null,
           // #1007: a keyboard's arrows move it a step each way, as a screen
           // reader's increase and decrease do. Held at the ends rather than
           // passed on, so an arrow never moves the focus off it; up and down
@@ -170,12 +172,12 @@ class _SgSliderState extends State<SgSlider> {
                         const SingleActivator(
                           LogicalKeyboardKey.arrowRight,
                         ): () {
-                          if (value < max) step(value + 1);
+                          if (up != null) step(up);
                         },
                         const SingleActivator(
                           LogicalKeyboardKey.arrowLeft,
                         ): () {
-                          if (value > min) step(value - 1);
+                          if (down != null) step(down);
                         },
                       },
                 child: SizedBox(
@@ -184,8 +186,7 @@ class _SgSliderState extends State<SgSlider> {
                   child: CustomPaint(
                     painter: _SliderPainter(
                       // Clamped: a value outside the range never draws off the
-                      // track (#692 ME-4 drew one at 155 %; the range itself
-                      // waits for the owner).
+                      // track (#692 ME-4 drew one at 155 %).
                       fraction: ((value - min) / (max - min)).clamp(0.0, 1.0),
                       rail: tokens.surface.track,
                       fill: tokens.color.primary,

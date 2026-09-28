@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:sogda/core/theme/sg_brand.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_brand.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 
 /// The brand kit's colours (#602): the kit's own table, and the palette the
 /// app's screens were drawn in, so the mark and the screens around it agree.

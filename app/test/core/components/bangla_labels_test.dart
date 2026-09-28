@@ -1,18 +1,18 @@
 import 'dart:ui' show LocaleStringAttribute, Tristate;
 
+import 'package:flutter/rendering.dart' show SemanticsNode;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
-import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/components/sg_slider.dart';
+import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter/rendering.dart' show SemanticsNode;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../text_clipping.dart';
 

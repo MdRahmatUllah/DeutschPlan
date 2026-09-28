@@ -56,6 +56,7 @@ Everything except web-search links and model downloads works in airplane mode. T
 | Cold start to Today | < 1.5 s on a mid-range 2022 Android phone. It ends at Android's "Fully drawn", which the app reports once Today shows its plan, or setup its first page on a first run (#462); the first frame is only the splash |
 | Warm start | < 500 ms |
 | Card transition after rating | < 16 ms/frame; DB write off the UI isolate |
+| First open after a long gap (BR-PLAN-05) | The catch-up plans on drift's isolate: no UI-isolate slice over 16 ms for 30 missed days at 50 new words a day (`catch_up_test.dart`, #994; ~0.9 s in all on the host, waiting, not blocking) |
 | Glass list scroll | 60 fps with one `BackdropFilter` per list panel |
 | Search | < 50 ms per keystroke after 120 ms debounce |
 | App size | Play's one-CPU-type download, ONNX Runtime included, at most 3 % over its baseline, measured by its stand-in, the arm64-v8a split APK (51.2 MB on 2026-09-27, after llamadart's removal: ADR 29; 72.3 MB before), until `bundletool get-size`; models downloaded separately |

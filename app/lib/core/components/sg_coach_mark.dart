@@ -1,7 +1,7 @@
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 
 /// A one-line hint pointing at a control, in the Paper & Ink treatment: a Sun
 /// bubble with an ink edge and the hard shadow, and a notch towards what it

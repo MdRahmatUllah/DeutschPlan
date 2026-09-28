@@ -25,7 +25,7 @@ Score "16 / 20", "80% · 4 min 12 s · Standard · DE → EN"; "Mistakes · 4 ·
 - FR-L8-03 Wrong items re-asked once at the end (BR-QUIZ-01); the re-ask result does not change the score.
 - FR-L8-04 Close asks "Stop quiz? Your answers so far are saved to revision".
 - FR-L8-05 Timer (when on) auto-submits an empty answer as wrong at 0. It holds while the app is hidden, as while *Close* asks, and goes on from the seconds left on return: a learner who read a message came back to a question failed and rated Again (#727). A question left while the app is away is neither failed nor rated (the owner, 2026-09-27, #949).
-- A Forms superlative ("Superlative of alt") is the course's "am ältesten"; the form without the *am* the prompt never names, "ältesten", is *almost*: it counts, and the feedback shows the whole form (#682).
+- A Forms superlative ("Superlative of alt") is the course's "am ältesten"; the form without the *am* the prompt never names, "ältesten", is *almost*: it counts, and the feedback shows the whole form (#682). Only the stem as written ("aeltesten" too, BR-ANS-02): a typo or a bare umlaut on top of the missing *am* is two faults, and wrong (#995).
 - FR-L9-01 *Retry mistakes* builds a new quiz from the mistake uids; *Add mistakes to revision* sets their `due = tomorrow` explicitly.
 
 **Tests.** FR-L8-02 rating mapping; FR-L8-03 re-ask queue; golden runner per item type.

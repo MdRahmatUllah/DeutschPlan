@@ -1,10 +1,10 @@
+import 'package:flutter/rendering.dart' show RenderParagraph;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/quiz/quiz_item_view.dart';
-import 'package:flutter/rendering.dart' show RenderParagraph;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../core/text_clipping.dart';
 

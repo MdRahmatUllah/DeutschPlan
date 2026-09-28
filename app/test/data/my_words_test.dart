@@ -3,6 +3,9 @@ library;
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
@@ -17,9 +20,6 @@ import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart' hide PlanKind;
 import 'package:sogda/domain/quiz_builder.dart' show QuizSource;
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 
@@ -48,7 +48,7 @@ void main() {
 
   setUp(() async {
     now = DateTime(2026, 3, 2, 9);
-    directory = Directory.systemTemp.createTempSync('sogda_my_words');
+    directory = tempDir('sogda_my_words');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
@@ -73,11 +73,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<WordStateData?> state(int id) => (db.select(

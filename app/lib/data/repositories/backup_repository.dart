@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:isolate';
 
+import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart' show immutable;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_update.dart' show ContentUpdater;
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -9,8 +11,6 @@ import 'package:sogda/data/repositories/word_repository.dart'
 import 'package:sogda/domain/exam_generator.dart' show ExamSection;
 import 'package:sogda/domain/fsrs.dart' show Fsrs;
 import 'package:sogda/domain/plan_engine.dart' show PlanDate, addDays;
-import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart' show immutable;
 
 /// How an import combines with what is already on the phone. FR-M6-03/04.
 enum ImportMode {
