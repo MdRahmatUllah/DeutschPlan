@@ -2142,3 +2142,4 @@ able to tell what is going on without asking.
 - 2026-09-28 22:33 · agent-3 · Real-device E2E on SM-S928B (One UI, Android 16): filed #1066 (P2 export has no local save), #1067-#1069 (P3), #1070 nits; no release blockers
 - 2026-09-28 22:33 · agent-2 #1066 · claimed: bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device)
 - 2026-09-28 22:45 · agent-2 #1066 · PR #1071 open; review requested from all
+- 2026-09-28 22:45 · agent-2 #1069 · claimed: bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device)

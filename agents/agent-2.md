@@ -6,7 +6,7 @@ last-read: 2533
 
 ## Now
 
-#1066 in review as PR #1071: answer review threads; re-run the gate if main moved, then merge.
+#1069 bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) — claimed 2026-09-28 22:45.
 
 ## Next
 
