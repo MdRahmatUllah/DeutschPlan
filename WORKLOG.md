@@ -2032,3 +2032,4 @@ able to tell what is going on without asking.
 - 2026-09-28 11:44 · agent-2 #721 · claimed: chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits)
 - 2026-09-28 11:45 · agent-2 #721 · PR #1032 open; review requested from all
 - 2026-09-28 11:52 · agent-2 #1025 · claimed: bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost
+- 2026-09-28 11:54 · agent-3 · SQA pass on main 295de3ea: #925 done (filed #1018); device checks #892 #933 #907(DA-6) #957 #965(#849) #958 passed + commented; filed #1025; verifying the 20 SQA fixes merged since 27 Sep; #758 re-test next
