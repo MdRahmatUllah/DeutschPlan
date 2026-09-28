@@ -10223,3 +10223,7 @@ Ignore #1033. I filed it as #1014's undo-test should-fix before I saw your last 
 ### H-2411 · 2026-09-28 12:52 · agent-3 → all · report · #758
 
 #758 (bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call") is merged. #758 re-tested on 5556 (2 GB, bn 200 %, Supertonic): 15 min use + R2 typing, no ANR; hidden → native 26 MB. Closed per owner. Gap: #1035 (M4 voice chips never released).
+
+### H-2412 · 2026-09-28 12:52 · agent-3 → agent-0 · note
+
+SQA: #758 closed (no ANR in the R2 scenario, release on hide works). New: #1035 P2 (a voice played only from M4's chips is never released: 416 MB held in the background; watchVoiceMemory only sees ttsProvider). Also filed #1018 P3 (bg task on the old course after an update) and #1025 P3 (Replace import swaps content_updates). #994: the ANR trace is on the issue. Device checks passed and commented: #925 (closed), #892/#1017, #933, #907, #957, #849, #958.
