@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:flutter/foundation.dart'
+    show debugDefaultTargetPlatformOverride;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -315,6 +317,38 @@ void main() {
       expect(mid.spacing.all, a.spacing.all);
       expect(mid.shape.card, a.shape.card);
       expect(mid.motion.quick, a.motion.quick);
+    });
+
+    final themes = <String, (ThemeData Function(), SgTokens)>{
+      'light': (AppTheme.light, SgTokens.light()),
+      'dark': (AppTheme.dark, SgTokens.dark()),
+      'glass': (AppTheme.glass, SgTokens.glass()),
+      'glass dark': (() => AppTheme.glass(dark: true), SgTokens.glassDark()),
+    };
+
+    test('#698 each theme is built once, not on every SogdaApp build', () {
+      for (final MapEntry(key: name, value: (theme, _)) in themes.entries) {
+        expect(theme(), same(theme()), reason: name);
+      }
+      expect(AppTheme.glass(dark: true), isNot(same(AppTheme.glass())));
+    });
+
+    test('#698 once per platform: a platform override still reaches the '
+        "theme, as iOS's chrome is chosen from it", () {
+      expect(AppTheme.light().platform, TargetPlatform.android);
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      for (final MapEntry(key: name, value: (theme, _)) in themes.entries) {
+        expect(theme().platform, TargetPlatform.iOS, reason: name);
+      }
+    });
+
+    test("#698 the scheme's error is the wrong-answer text colour, 4.5:1 as "
+        'text, not the Coral fill at 3.0:1', () {
+      for (final MapEntry(key: name, value: (theme, tokens))
+          in themes.entries) {
+        expect(theme().colorScheme.error, tokens.color.wrongText, reason: name);
+      }
     });
   });
 }

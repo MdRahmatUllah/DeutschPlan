@@ -1,4 +1,5 @@
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
@@ -69,12 +70,19 @@ class SgSlider extends StatelessWidget {
           if (next != value) changed?.call(next);
         }
 
+        // #877: the label and the values tagged bn-BD where they are
+        // Bangla, as #743 tags every control: in bn the values are Bangla
+        // digits ("৫"), which TalkBack on an English phone garbled too.
         return Semantics(
           slider: true,
-          label: label,
-          value: said(value),
-          increasedValue: value < max ? said(value + 1) : null,
-          decreasedValue: value > min ? said(value - 1) : null,
+          attributedLabel: SgScript.attributedLabel(label),
+          attributedValue: SgScript.attributedLabel(said(value)),
+          attributedIncreasedValue: value < max
+              ? SgScript.attributedLabel(said(value + 1))
+              : null,
+          attributedDecreasedValue: value > min
+              ? SgScript.attributedLabel(said(value - 1))
+              : null,
           onIncrease: changed != null && value < max
               ? () => changed(value + 1)
               : null,

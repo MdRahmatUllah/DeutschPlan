@@ -8,6 +8,7 @@ import 'package:sogda/features/me/progress_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/data/repositories/word_repository.dart' show StepProgress;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -31,6 +32,7 @@ void main() {
     WidgetTester tester, {
     ProgressView? view,
     Future<ProgressView> Function(ProgressRange range)? load,
+    List<StepProgress>? steps,
   }) async {
     asked = <ProgressRange>[];
     went = '';
@@ -46,7 +48,7 @@ void main() {
             return load?.call(range) ?? view ?? artboardProgress();
           }),
           stepProgressProvider.overrideWith(
-            (ref) => Stream.value(artboardProgressSteps()),
+            (ref) => Stream.value(steps ?? artboardProgressSteps()),
           ),
         ],
         child: MaterialApp.router(
@@ -255,6 +257,39 @@ void main() {
     expect(
       find.bySemanticsLabel(
         RegExp(RegExp.escape(l10n.progressBar(l10n.weekdayShortMon, 11, 6))),
+      ),
+      findsOneWidget,
+    );
+    semantics.dispose();
+  });
+
+  testWidgets('#854 By step counts To do as L2 and M1 do: not suspended or '
+      'removed words', (tester) async {
+    final semantics = tester.ensureSemantics();
+    // 637 words: 563 done, 8 learning, 64 to do, and 2 suspended.
+    final a11 = artboardProgressSteps().first;
+    await pump(
+      tester,
+      steps: <StepProgress>[
+        StepProgress(
+          code: 'A1.1',
+          levelCode: 'A1',
+          words: 637,
+          todo: 64,
+          learning: 8,
+          done: 563,
+          grammar: a11.grammar,
+          grammarLearned: a11.grammarLearned,
+          unlocked: false,
+          startedOn: '2026-06-01',
+          dailyNew: 7,
+          studyDaysMask: 127,
+        ),
+      ],
+    );
+    expect(
+      find.bySemanticsLabel(
+        RegExp(RegExp.escape(l10n.progressBarLabel(563, 8, 64))),
       ),
       findsOneWidget,
     );
