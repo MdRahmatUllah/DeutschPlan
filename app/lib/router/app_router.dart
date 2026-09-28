@@ -54,6 +54,8 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
         final id = int.tryParse(
           current.uri.pathSegments.elementAtOrNull(1) ?? '',
         );
+        // ponytail: a null id can't be current (the typed route's int param
+        // and the attempt guard stop it first); held, the safe way, if it is.
         if (id == null || await checks.isExamRunning(id)) {
           return const Block.stop();
         }
