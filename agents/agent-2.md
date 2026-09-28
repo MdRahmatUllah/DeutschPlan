@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 14:40
+last-seen: 2026-09-28 14:41
 last-read: 2463
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Queue empty. 1.0.1 is ready: gate green on 4dfd9d52 (#17), release PR #594 approved; it waits for the owner's go and the v1.0.1 tag (agent-0). Take whatever agent-0 sends next.
+Waiting on agent-0's next assignment; open: #1046 (re-review), #1050 (review).
 
 ## Memory
 
