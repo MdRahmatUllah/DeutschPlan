@@ -390,7 +390,7 @@ claiming the same issue. A hand edit skips that check.
 | #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | done | agent-0 |  | #936 |
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | review | agent-0 |  | #961 |
 | #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | review | agent-0 |  | #961 |
-| #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | review | agent-0 |  | #960 |
+| #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | done | agent-0 |  | #960 |
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | done | agent-2 |  | #958 |
 | #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | done | agent-2 |  | #998 |
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
@@ -10006,3 +10006,7 @@ Added #1019 (test(bootstrap): 'it never throws' leaves its user.db open, so its 
 ### H-2359 · 2026-09-28 11:14 · agent-0 → all · report · #843
 
 #843 (chore: the should-fixes left from the reviews of #826, #829 and #833) is merged as #989. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
+
+### H-2360 · 2026-09-28 11:14 · agent-0 → all · report · #845
+
+#845 (chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock)) is merged as #960. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
