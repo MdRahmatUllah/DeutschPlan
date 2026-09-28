@@ -185,6 +185,24 @@ void main() {
       expect(answers.first.given, 'das Haus');
     });
 
+    test('#935 FR-L12-04 running: while it is sat, not once submitted or '
+        'left, nor for an id that is not there', () async {
+      final sat = await begin();
+      expect(await exams.running(sat), isTrue);
+
+      await exams.finish(
+        attemptId: sat,
+        finishedAt: '2026-03-04T10:00:00Z',
+        score: const ExamScore(scorePoints: 30, maxPoints: 48, passed: true),
+      );
+      expect(await exams.running(sat), isFalse);
+
+      final left = await begin(seed: 2);
+      await exams.abandon(left);
+      expect(await exams.running(left), isFalse);
+      expect(await exams.running(999), isFalse);
+    });
+
     test('another step is another exam', () async {
       await begin();
       expect(await resumable('A1.2'), isNull);
