@@ -12,6 +12,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/search/search_screen.dart';
+import 'package:sogda/features/words/compare_screen.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -346,6 +347,54 @@ void main() {
     expect(
       find.descendant(of: row, matching: find.byType(WordStatusChip)),
       findsNothing,
+    );
+  });
+
+  testWidgets("FR-R1-01 FR-W2 #738 a set entry's row opens W2 (Compare), "
+      'any other row W1', (tester) async {
+    await pump(
+      tester,
+      routed: true,
+      extra: <Override>[
+        searchResultsProvider.overrideWith(
+          (ref, args) => Stream.value(
+            SearchView(
+              words: <SearchRow>[
+                searchRow(
+                  'set',
+                  german: 'sparsam / geizig',
+                  meaning: 'thrifty vs. stingy',
+                  tier: SearchTier.exact,
+                  kind: 'compare',
+                ),
+                searchRow(
+                  ContentFixture.haus,
+                  german: 'Haus',
+                  article: 'das',
+                  meaning: 'house',
+                  tier: SearchTier.exact,
+                ),
+              ],
+              sentences: const <SentenceHit>[],
+            ),
+          ),
+        ),
+      ],
+    );
+    await type(tester, 'sparsam');
+    await tester.tap(find.text('sparsam / geizig', findRichText: true));
+    await settle(tester);
+    expect(tester.widget<CompareScreen>(find.byType(CompareScreen)).uid, 'set');
+    expect(find.byType(WordDetailView), findsNothing);
+
+    router!.go('/search');
+    await settle(tester);
+    await tester.tap(find.text('das Haus', findRichText: true));
+    await settle(tester);
+    expect(find.byType(CompareScreen), findsNothing);
+    expect(
+      tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+      ContentFixture.haus,
     );
   });
 

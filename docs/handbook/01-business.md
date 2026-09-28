@@ -36,7 +36,7 @@ their constraints, and the product is built around them:
 
 | Group | What they get | Settings |
 |---|---|---|
-| **Bangla speakers** (first) | Meanings in Bangla, or Bangla and English together; the pronunciation of all 5,076 words in Bangla letters; the app itself in Bangla, with Bangla digits; interference tips (false friends, traps) in Bangla | Meaning language বাংলা or Both; app language বাংলা |
+| **Bangla speakers** (first) | Meanings in Bangla, or Bangla and English together; the pronunciation of all 5,069 words in Bangla letters; the app itself in Bangla, with Bangla digits; interference tips (false friends, traps) in Bangla | Meaning language বাংলা or Both; app language বাংলা |
 | **English speakers** (second) | Meanings and the app in English; the Bangla pronunciation line off by default | Meaning language English |
 
 The meaning language and the app language are separate settings. Setup's
@@ -53,7 +53,7 @@ and Bangla.*
 
 In numbers, at v1.0.1:
 
-- **A complete course.** 12 steps, 5,076 words, 10,545 example sentences,
+- **A complete course.** 12 steps, 5,069 words, 10,545 example sentences,
   182 grammar topics, 159 word categories and 622 interference tips, in one
   read-only database that ships inside the app.
 - **A plan for every day.** Revision scheduled by FSRS-4.5 (target

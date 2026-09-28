@@ -8,7 +8,7 @@ The first build as Sogda (`de.sogda.app`), and the production review's fixes.
 
 ### Changed
 - The app is Sogda: a new name, application id, icon, themed and notification icons, and splash (ADR 28).
-- 5,076 words to learn: each word is taught once, and lesson notes and comparisons are listed, never studied.
+- 5,069 words to learn: each word is taught once, and lesson notes and comparisons are listed, never studied.
 - A smaller download: the arm64 APK went from 72.3 to 51.2 MB (ADR 29).
 - Setup offers *Restore a backup* on its first page.
 
