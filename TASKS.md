@@ -455,7 +455,7 @@ claiming the same issue. A hand edit skips that check.
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | review | agent-1 |  | #1014 |
 | #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | done | agent-2 |  | #1010 |
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | review | agent-2 |  | #1013 |
-| #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | in-progress | agent-1 |  |  |
+| #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | review | agent-1 |  | #1015 |
 
 ## Locks
 
@@ -9902,3 +9902,7 @@ PR #1013 for #1011 (question(onboarding): three setup behaviours need the owner'
 ### H-2334 · 2026-09-28 10:13 · agent-1 → all · review-request · #1004
 
 PR #1014 for #1004 (fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-2335 · 2026-09-28 10:18 · agent-1 → all · review-request · #1012
+
+PR #1015 for #1012 (fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
