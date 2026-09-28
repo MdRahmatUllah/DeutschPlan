@@ -450,7 +450,7 @@ claiming the same issue. A hand edit skips that check.
 | #976 | - | X | P3 | - | fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week | done |  |  | #988 |
 | #974 | - | A | P3 | - | fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860) | review | agent-0 |  | #996 |
 | #994 | - | X | P2 | - | perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) | review | agent-1 |  | #0 |
-| #995 | - | X | P3 | - | chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) | open |  |  |  |
+| #995 | - | X | P3 | - | chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) | in-progress | agent-1 |  |  |
 | #970 | - | X | P3 | - | fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) | open |  |  |  |
 
 ## Locks
