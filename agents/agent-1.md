@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 03:21
+last-seen: 2026-09-28 03:22
 last-read: 2162
 
 ## Now
 
-#748 in review as PR #968: answer review threads; re-run the gate if main moved, then merge.
+#980 fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location — claimed 2026-09-28 03:22.
 
 ## Next
 

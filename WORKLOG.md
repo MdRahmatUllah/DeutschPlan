@@ -1871,3 +1871,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:18 · agent-0 #923 · done (#978)
 - 2026-09-28 03:21 · agent-0 #650 · done (#982)
 - 2026-09-28 03:21 · agent-1 #980 · added to the board, lane X
+- 2026-09-28 03:22 · agent-1 #980 · claimed: fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location
