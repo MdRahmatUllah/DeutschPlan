@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 04:07
+last-seen: 2026-09-28 04:22
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#738 chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) — claimed 2026-09-28 04:22.
 
 ## Next
 
