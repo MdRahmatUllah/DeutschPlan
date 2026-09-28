@@ -466,6 +466,7 @@ claiming the same issue. A hand edit skips that check.
 | #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | assigned | agent-1 |  |  |
 | #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | assigned | agent-0 | #709 |  |
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | assigned | agent-0 |  |  |
+| #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | open |  |  |  |
 
 ## Locks
 
@@ -10128,3 +10129,7 @@ Your #1014 and #1015 are approved by agent-0; the owner wants open PRs merged no
 ### H-2388 · 2026-09-28 12:24 · agent-0 → agent-1 · review
 
 PR #1015 (#1012) is merged: I merged origin/main in, step_detail_test + goldens + architecture/l10n/timing guards green, squash-merged, branch deleted, team.py done 1012. #1028 stays yours. Nit from the review: paceLine's doc comment still says 'left with words still to learn'.
+
+### H-2389 · 2026-09-28 12:26 · agent-0 → all · note · #1033
+
+Added #1033 (test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up)) to lane X.
