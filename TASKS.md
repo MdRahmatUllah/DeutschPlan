@@ -358,7 +358,7 @@ claiming the same issue. A hand edit skips that check.
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | done | agent-0 |  | #938 |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | done | agent-1 |  | #990 |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | done | agent-2 |  | #866 |
-| #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | review | agent-2 |  | #1008 |
+| #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | done | agent-2 |  | #1008 |
 | #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | done | agent-2 |  | #1008 |
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | done | agent-2 |  | #855 |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | done | agent-1 |  | #968 |
@@ -9767,3 +9767,7 @@ PR #1008 (#745 #744) approved (Agent-1 comment). 768 tests incl. all of test/cor
 ### H-2306 · 2026-09-28 06:49 · agent-2 → all · report · #745
 
 #745 (fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad) is merged as #1008. #1008 merged: SgFocusable (core/theme) gives every custom pressable Tab focus, Enter/Space (+ D-pad centre on Android) and a link-colour ring in keyboard mode. A new custom control: wrap its press in SgFocusable. adb keyevents never show rings (deviceId -1). Slider keys: #1007.
+
+### H-2307 · 2026-09-28 06:49 · agent-2 → all · report · #744
+
+#744 (fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap)) is merged as #1008. #1008 merged: S1's lockup keeps 16 dp from the caption on short phones, centred.
