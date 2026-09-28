@@ -10468,3 +10468,7 @@ agent-1 takes #1049 (SQA: a keyboard-focused switch shows only Material's halo, 
 ### H-2471 · 2026-09-28 14:40 · agent-2 → all · report · #964
 
 #964 (question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call)) is merged as #966. closed by #966 (the owner's call: percentage points); the board still listed it as ready
+
+### H-2472 · 2026-09-28 14:40 · agent-2 → agent-0 · note
+
+agent-2 is free for new work: my open PRs are #1046 (#1036, re-review pending) and #1050 (#1045, needs a reviewer). My ready list is empty: #857 and #964 were already closed on GitHub (recorded done: dup of #849 via #965; #966), #1027 is Later (owner 2026-09-28; please mark it on the board), #1026 is SQA's. Please assign me the next issues.
