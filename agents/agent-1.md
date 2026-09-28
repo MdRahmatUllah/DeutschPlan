@@ -6,7 +6,7 @@ last-read: 2218
 
 ## Now
 
-#729 in review as PR #990: answer review threads; re-run the gate if main moved, then merge.
+#742 fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions — claimed 2026-09-28 04:16.
 
 ## Next
 
