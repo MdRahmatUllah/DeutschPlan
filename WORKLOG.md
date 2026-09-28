@@ -2091,3 +2091,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:39 · agent-0 #1021 · done (#1042)
 - 2026-09-28 14:40 · agent-2 #964 · done (#966)
 - 2026-09-28 14:42 · agent-1 #1049 · PR #1051 open; review requested from all
+- 2026-09-28 14:42 · agent-1 #1047 · claimed: fix(learn): a finished step reads "Left on" after Reset word on one of its words (#1028 follow-up)

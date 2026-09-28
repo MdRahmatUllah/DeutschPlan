@@ -6,7 +6,7 @@ last-read: 2431
 
 ## Now
 
-#1049 in review as PR #1051: answer review threads; re-run the gate if main moved, then merge.
+#1047 fix(learn): a finished step reads "Left on" after Reset word on one of its words (#1028 follow-up) — claimed 2026-09-28 14:42.
 
 ## Next
 
