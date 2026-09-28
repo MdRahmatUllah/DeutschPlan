@@ -2027,3 +2027,4 @@ able to tell what is going on without asking.
 - 2026-09-28 11:33 · agent-0 #1030 · assigned to agent-0
 - 2026-09-28 11:33 · agent-0 #1031 · added to the board, lane X
 - 2026-09-28 11:33 · agent-0 #1031 · assigned to agent-0
+- 2026-09-28 11:44 · agent-2 #704 · claimed: chore(me): smaller items in Me and onboarding (production review nits)

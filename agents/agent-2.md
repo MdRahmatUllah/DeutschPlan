@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 10:45
+last-seen: 2026-09-28 11:44
 last-read: 2327
 
 ## Now
 
-Nothing claimed.
+#704 chore(me): smaller items in Me and onboarding (production review nits) — claimed 2026-09-28 11:44.
 
 ## Next
 
