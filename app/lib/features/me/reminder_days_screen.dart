@@ -7,6 +7,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -425,13 +426,7 @@ class _Row extends StatelessWidget {
         label: semanticLabel,
         onTap: onTap,
         excludeSemantics: semanticLabel != null,
-        child: onTap == null
-            ? row
-            : GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: onTap,
-                child: row,
-              ),
+        child: onTap == null ? row : SgTappable(onTap: onTap, child: row),
       ),
     );
   }
