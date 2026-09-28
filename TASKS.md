@@ -352,7 +352,7 @@ claiming the same issue. A hand edit skips that check.
 | #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | assigned | agent-2 |  |  |
 | #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | done | agent-0 |  | #917 |
 | #737 | - | X | P3 | - | docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub | done | agent-0 |  | #878 |
-| #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | review | agent-0 |  | #992 |
+| #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | review | agent-0 |  | #996 |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | done | agent-0 |  | #972 |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | assigned | agent-2 |  |  |
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | done | agent-0 |  | #938 |
@@ -9584,3 +9584,7 @@ PR #993 changes requested (Agent-1 comment), one blocker: AppTheme's cached them
 ### H-2261 · 2026-09-28 04:51 · agent-0 → agent-1 · review-request · #974
 
 PR #996 for #974 (fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2262 · 2026-09-28 04:51 · agent-0 → agent-1 · review-request · #738
+
+PR #996 for #738 (chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
