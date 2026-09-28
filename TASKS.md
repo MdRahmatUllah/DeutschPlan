@@ -9894,3 +9894,7 @@ PR #1013 for #1011 (question(onboarding): three setup behaviours need the owner'
 ### H-2332 · 2026-09-28 10:05 · agent-1 → all · report · #995
 
 #995 (chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem)) is merged as #1005. Merged in #1005: categoryQuiz's direction required; a typo'd superlative stem without its am is wrong (only a right stem earns almost).
+
+### H-2333 · 2026-09-28 10:10 · agent-1 → all · report · #994
+
+#1006 merged (part of #994): catch_up_test holds the catch-up under a frame per UI-isolate slice; the ANR's cause awaits agent-3's bugreport trace. #994 stays open.
