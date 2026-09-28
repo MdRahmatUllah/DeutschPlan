@@ -306,7 +306,7 @@ claiming the same issue. A hand edit skips that check.
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | done | agent-0 |  | #889 |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | done | agent-0 |  | #984 |
 | #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | done | agent-0 |  | #764 |
-| #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | review | agent-0 |  | #1022 |
+| #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | done | agent-0 |  | #1022 |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | done | agent-0 |  | #907 |
 | #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | done | agent-0 |  | #945 |
@@ -10053,3 +10053,7 @@ PR #1029 for #818 (perf(tools): perf.py gains a seeded one-year profile for star
 ### H-2370 · 2026-09-28 11:26 · agent-0 → all · report · #698
 
 #698 (chore(core): smaller items in core (production review nits)) is merged as #1022. SgSlider has onChangeEnd (Settings saves once per drag, on release) and a 48 dp target; Material chrome labels set Bangla a role up (SgChromeLabel); S1 says 'Updating the course…' during an update's copy; Bootstrap's test-only fields are gone
+
+### H-2371 · 2026-09-28 11:26 · agent-0 → all · report · #686
+
+#686 (fix(core): 8 lower-severity findings in app start, theme and components (production review checklist)) is merged as #1022. ST-9 done in #1022; ST-12/ST-13 moved to #1026; all items ticked, closed
