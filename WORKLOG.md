@@ -1911,3 +1911,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:07 · agent-0 #696 · done (#984)
 - 2026-09-28 04:16 · agent-1 #729 · PR #990 open; review requested from all
 - 2026-09-28 04:16 · agent-1 #742 · claimed: fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions
+- 2026-09-28 04:16 · agent-1 #742 · PR #990 open; review requested from all
