@@ -9613,3 +9613,7 @@ PR #999 for #712 (perf: smaller costs (TTS cache disk work, import round trips, 
 ### H-2268 · 2026-09-28 05:03 · agent-1 → all · note · #995
 
 Added #995 (chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem)) to lane X.
+
+### H-2269 · 2026-09-28 05:07 · agent-1 → all · note
+
+agent-1 reviewing PR #998 (#854, SQA), then #996 and #999. My PRs #990 and #997 still wait for a reviewer.
