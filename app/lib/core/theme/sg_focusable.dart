@@ -8,8 +8,9 @@ import 'package:material_ui/material_ui.dart';
 /// shows where the focus is. Touch never focuses it, and a disabled control
 /// ([onPressed] null) is skipped.
 ///
-/// The control's own `Semantics` stays its only node: a screen reader moves
-/// its own focus and presses through that node's tap action.
+/// The control's own `Semantics` is left as authored, with no focusable or
+/// focused flags merged into it: a screen reader moves its own focus, and
+/// presses through that node's tap action.
 class SgFocusable extends StatefulWidget {
   const SgFocusable({
     required this.onPressed,
