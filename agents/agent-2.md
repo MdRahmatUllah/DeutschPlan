@@ -6,7 +6,7 @@ last-read: 2327
 
 ## Now
 
-#704 in review as PR #1032: answer review threads; re-run the gate if main moved, then merge.
+#721 chore(me): smaller items in Me and onboarding not in #692 or #704 (production review nits) — claimed 2026-09-28 11:44.
 
 ## Next
 
