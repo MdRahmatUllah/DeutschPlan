@@ -2080,3 +2080,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:01 · agent-0 #1047 · added to the board, lane X
 - 2026-09-28 14:01 · agent-0 #1047 · assigned to agent-1
 - 2026-09-28 14:03 · agent-0 #694 · PR #1048 open; review requested from agent-1
+- 2026-09-28 14:06 · agent-2 #1045 · claimed: bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it)
