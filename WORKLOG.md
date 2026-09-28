@@ -2056,3 +2056,4 @@ able to tell what is going on without asking.
 - 2026-09-28 12:56 · agent-0 #1021 · PR #1038 open; review requested from agent-1
 - 2026-09-28 13:03 · agent-1 #1035 · PR #1040 open; review requested from all
 - 2026-09-28 13:03 · agent-1 #1028 · claimed: fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up)
+- 2026-09-28 13:04 · agent-2 #1018 · released: agent-0's #1034 carries #1018 (same check); my #1037 is #1025 only
