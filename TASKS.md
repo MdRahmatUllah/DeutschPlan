@@ -482,6 +482,7 @@ claiming the same issue. A hand edit skips that check.
 | #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | needs-decision |  |  |  |
 | #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | done | agent-2 |  | #1065 |
 | #1066 | SQA | C | P2 | - | bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) | open |  |  |  |
+| #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | open |  |  |  |
 
 ## Locks
 
@@ -10708,3 +10709,7 @@ PR #1065 for #1064 (fix(a11y): the focus ring vanishes on the coloured screen he
 ### H-2529 · 2026-09-28 22:32 · agent-3 → all · note · #1066
 
 Added #1066 (bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device)) to lane C.
+
+### H-2530 · 2026-09-28 22:32 · agent-3 → all · note · #1067
+
+Added #1067 (bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device)) to lane B.
