@@ -4,7 +4,7 @@
 
 **Prototype.** `Search` (results for "Straße"), `SearchIdle`, `SearchNone` ("Wohnungsgeberbestätigung").
 
-**Reached from.** Search tab; search icon on L2/L6 (pre-filtered). **Leads to.** W1 (row), W2 (compare rows), R2 (*Add a word I found* / *Add "…" as my word*), in-app browser (web chips).
+**Reached from.** Search tab; search icon on L2/L6 (pre-filtered). **Leads to.** W1 (row), W2 (the row of a set entry W2 compares, FR-W1-06: "sparsam / geizig"; #738), R2 (*Add a word I found* / *Add "…" as my word*), in-app browser (web chips).
 
 **Layout.** Raspberry header with the search field "Search German, English or Bangla" (clear button; removable filter chip when pre-filtered). Web row (when a query exists): Duden · DWDS · Wiktionary · Linguee · Google chips. Results grouped: **Exact match · 1**, **Starts with · 2**, **Similar words · 1**, **In sentences · 5** (sentence with the query highlighted, translation, "die Straße · A1.1"). Rows: article-coloured headword, meaning, step chip, status chip, play icon. Past 130 % text a row stacks: the headword and meaning whole, the chips and play icon on a line under them (#550).
 

@@ -473,7 +473,7 @@ downloaded models survive a full reset. Spec: [`reset.md`](../04-screens/reset.m
 
 ### About & privacy · M9 and licences · M8
 
-The version, the course's content version and counts (5,076 words, 182
+The version, the course's content version and counts (5,069 words, 182
 grammar topics, 10,545 sentences), the privacy statement, a *Contact* link to
 the project's GitHub issues, and the licences: the Supertonic model and SDK,
 Hy-MT's, the fonts, and every package, each in full. Spec:

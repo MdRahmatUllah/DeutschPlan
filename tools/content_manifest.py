@@ -19,7 +19,7 @@ import difflib
 import hashlib
 import json
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from pipeline_steps import PipelineError, uid_text
@@ -168,6 +168,9 @@ class PreviousBuild:
     words: dict[str, WordKey]
     grammar: dict[str, WordKey]
     manifest: dict | None
+    #: #970: each grammar topic's step as shipped, by uid ("A1.2"), whose
+    #: split the next build keeps.
+    grammar_steps: dict[str, str] = field(default_factory=dict)
 
     @property
     def boundaries(self) -> dict[str, int]:
@@ -191,14 +194,15 @@ def previous_build(directory: Path) -> PreviousBuild:
             "SELECT uid, level_code, german, pos, english FROM words"
         ).fetchall()
         grammar = connection.execute(
-            "SELECT uid, level_code, topic FROM grammar_topics"
+            "SELECT uid, level_code, topic, sublevel_code FROM grammar_topics"
         ).fetchall()
     finally:
         connection.close()
     return PreviousBuild(
         {uid: word_key(*rest) for uid, *rest in words},
-        {uid: grammar_key(*rest) for uid, *rest in grammar},
+        {uid: grammar_key(level, topic) for uid, level, topic, _ in grammar},
         read_manifest(manifest),
+        {uid: step for uid, *_, step in grammar},
     )
 
 

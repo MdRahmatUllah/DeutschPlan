@@ -6,7 +6,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 
 - **BR-COURSE-01** The course has 6 CEFR levels and 12 steps: `A1.1, A1.2, A2.1, A2.2, B1.1, B1.2, B2.1, B2.2, C1.1, C1.2, C2.1, C2.2`, in that fixed order.
 - **BR-COURSE-02** A word belongs to exactly one step. Its level comes from the workbook's `Level` column; its step is assigned by the content pipeline at the week boundary nearest the middle of the level, and once the course has shipped that boundary stays, so a content update never moves a word between steps unless the build is told to (#923; see `02-data/content-pipeline.md`).
-- **BR-COURSE-03** Grammar topics are split between X.1 and X.2 by count, keeping teaching order.
+- **BR-COURSE-03** Grammar topics are split between X.1 and X.2 by count, keeping teaching order, and once the course has shipped each topic stays in its step, so a content update never moves a topic between steps unless the build is told to (#970; see `02-data/content-pipeline.md`).
 - **BR-COURSE-04** A learner can browse any step at any time. Studying (new words) happens only in the *active* step. Exactly one step is active at a time.
 - **BR-COURSE-05** Auto-advance (default on): when every word of the active step has been planned, the next step becomes active at once, and the day the step ran out on is filled from it at the same pace (#687). With auto-advance off, Today shows "Step complete" and offers *Start next step*.
 

@@ -5,6 +5,7 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_coach_mark.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -103,6 +104,69 @@ void main() {
       );
     }
   }
+
+  testWidgets('#1007 SgSlider: Tab reaches it, the arrows move it a step '
+      'each way, and it holds at its ends with the focus kept', (tester) async {
+    var value = 5;
+    await pump(
+      tester,
+      StatefulBuilder(
+        builder: (context, setState) => SizedBox(
+          width: 300,
+          child: SgSlider(
+            value: value,
+            min: 4,
+            max: 6,
+            label: 'Pace',
+            onChanged: (next) => setState(() => value = next),
+          ),
+        ),
+      ),
+    );
+    bool onSlider() =>
+        FocusManager.instance.primaryFocus?.context
+            ?.findAncestorWidgetOfExactType<SgSlider>() !=
+        null;
+    Future<void> press(LogicalKeyboardKey key) async {
+      await tester.sendKeyEvent(key);
+      await tester.pump();
+    }
+
+    await press(LogicalKeyboardKey.tab);
+    expect(onSlider(), isTrue);
+    await press(LogicalKeyboardKey.arrowRight);
+    expect(value, 6);
+    await press(LogicalKeyboardKey.arrowRight);
+    expect(value, 6, reason: 'held at the top');
+    expect(onSlider(), isTrue, reason: 'the arrow kept the focus');
+    await press(LogicalKeyboardKey.arrowLeft);
+    await press(LogicalKeyboardKey.arrowLeft);
+    await press(LogicalKeyboardKey.arrowLeft);
+    expect(value, 4, reason: 'held at the bottom');
+    expect(onSlider(), isTrue);
+  });
+
+  testWidgets('#1007 a slider nobody can move is not a Tab stop', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const SizedBox(
+        width: 300,
+        child: SgSlider(
+          value: 5,
+          min: 4,
+          max: 6,
+          label: 'Pace',
+          onChanged: null,
+        ),
+      ),
+    );
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    expect(FocusManager.instance.primaryFocus, isA<FocusScopeNode>());
+  });
 
   testWidgets('#745 an umlaut key: Tab reaches it, Enter types it', (
     tester,
