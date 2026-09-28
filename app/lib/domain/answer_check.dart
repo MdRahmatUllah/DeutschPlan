@@ -178,10 +178,12 @@ Verdict checkForm(String given, String expectedForm) {
   final verdict = _best(given, germanForms(expectedForm), german: true);
   final form = expectedForm.trim();
   if (verdict != Verdict.wrong || !form.startsWith('am ')) return verdict;
+  // #682: the stem alone is *almost*, "am" being its one fault: a typo on
+  // top of it is two, and wrong (#995).
   return _best(given, germanForms(form.substring(3)), german: true) ==
-          Verdict.wrong
-      ? Verdict.wrong
-      : Verdict.almost;
+          Verdict.correct
+      ? Verdict.almost
+      : Verdict.wrong;
 }
 
 /// The synonyms in an authored meaning column, in order.

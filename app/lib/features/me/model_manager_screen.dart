@@ -887,7 +887,7 @@ class _VoicesState extends ConsumerState<_Voices> {
           const SizedBox(height: 6),
           Wrap(
             spacing: 8,
-            runSpacing: 8,
+            runSpacing: AdaptiveTapTarget.runSpacing(32),
             children: <Widget>[
               for (final voice in SupertonicTts.voices.keys)
                 SgChip(

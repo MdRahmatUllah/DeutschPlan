@@ -3,6 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// What a [SgSurface] is being drawn as.
 ///
@@ -150,16 +151,20 @@ class _SgSurfaceState extends State<SgSurface> {
 
     final tappable = widget.onTap == null
         ? surface
-        : GestureDetector(
-            onTap: widget.onTap,
-            // Driven here rather than left to the caller: a panel that takes an
-            // onTap and never collapses its shadow is the affordance quietly
-            // missing, and every tappable panel would re-implement this.
-            onTapDown: (_) => _press(true),
-            onTapUp: (_) => _press(false),
-            onTapCancel: () => _press(false),
-            behavior: HitTestBehavior.opaque,
-            child: surface,
+        : SgFocusable(
+            onPressed: widget.onTap,
+            radius: borderRadius,
+            child: GestureDetector(
+              onTap: widget.onTap,
+              // Driven here rather than left to the caller: a panel that takes an
+              // onTap and never collapses its shadow is the affordance quietly
+              // missing, and every tappable panel would re-implement this.
+              onTapDown: (_) => _press(true),
+              onTapUp: (_) => _press(false),
+              onTapCancel: () => _press(false),
+              behavior: HitTestBehavior.opaque,
+              child: surface,
+            ),
           );
 
     // The Transform is always present, with a zero offset when idle. Adding or

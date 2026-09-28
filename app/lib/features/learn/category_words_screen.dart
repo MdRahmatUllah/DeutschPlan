@@ -6,14 +6,14 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/features/quiz/quiz_setup_sheet.dart'
-    show meaningDirection;
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
 import 'package:sogda/features/learn/step_quiz.dart';
 import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/quiz/quiz_setup_sheet.dart'
+    show meaningDirection;
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -56,7 +56,7 @@ enum LevelFilter {
 
 /// FR-L6-02: the quiz L6's *Quiz* starts, from the category's learned words,
 /// in the learner's meaning direction (#667).
-QuizArgs categoryQuiz(int id, {String direction = 'deEn'}) => QuizArgs(
+QuizArgs categoryQuiz(int id, {required String direction}) => QuizArgs(
   direction: direction,
   source: 'category',
   sourceRef: '$id',

@@ -175,7 +175,9 @@ def assign_sublevels(
     return splits
 
 
-def split_grammar(rows: Sequence) -> None:
+def split_grammar(
+    rows: Sequence, shipped: dict[str, str] | None = None
+) -> list[str]:
     """BR-COURSE-03: grammar splits by count, keeping teaching order.
 
     By count and not by the word boundary, because the two are authored
@@ -188,18 +190,64 @@ def split_grammar(rows: Sequence) -> None:
 
     It deliberately takes no splits: passing them in would say grammar
     consults the word boundary, which is the thing this must not do.
+
+    [shipped] is the committed course's step of each topic, by uid (#970).
+    Once a level has shipped, X.2 starts at its first topic, in teaching
+    order, that shipped in X.2, so a topic added or dropped moves no other
+    topic between steps under learners (the first X.2 topic dropped
+    included: the next one that shipped there takes over). A level none of
+    whose X.2 topics is left splits by count. A split that would still move
+    a shipped topic (a level reordered: a shipped X.2 topic put before X.1
+    ones) or leave X.1 with no topics stops the build, naming each move, as
+    a word boundary does. Returns a line for each level whose kept split is
+    not the one by count.
     """
+    shipped = shipped or {}
+    kept: list[str] = []
     for level in LEVELS:
         of_level = [r for r in rows if getattr(r, "level", None) == level]
         if not of_level:
             continue
         half = (len(of_level) + 1) // 2  # the odd topic goes to X.1
-        for index, row in enumerate(of_level):
-            row.sublevel_code = (
-                f"{level}.1" if index < half else f"{level}.2"
+        second = f"{level}.2"
+        start = next(
+            (
+                index
+                for index, row in enumerate(of_level)
+                if shipped.get(row.uid) == second
+            ),
+            half,
+        )
+        steps = [f"{level}.1" if i < start else second for i in range(len(of_level))]
+        moved = [
+            f"grammar topic moved: {row.topic!r} {shipped[row.uid]} -> {step}"
+            for row, step in zip(of_level, steps)
+            if shipped.get(row.uid, step) != step
+        ]
+        if moved or start == 0:
+            what = (
+                f"move {len(moved)} topic(s) between steps under learners"
+                if moved
+                else f"leave {level}.1 with no topics"
             )
+            raise SplitError(
+                "".join(f"{line}\n" for line in moved)
+                + f"{level}'s shipped grammar split would {what} (#970). Keep "
+                f"the shipped topics in their order, or rerun with "
+                f"--move-boundaries to split the level anew."
+            )
+        if start != half:
+            kept.append(
+                f"grammar boundary kept: {second} starts at topic {start + 1} "
+                f"of {len(of_level)}, {of_level[start].topic!r}, as shipped; "
+                f"split anew it would start at topic {half + 1} "
+                f"(--move-boundaries)"
+            )
+        for index, (row, step) in enumerate(zip(of_level, steps)):
+            row.sublevel_code = step
             row.level_code = level
             row.seq = index + 1
+    return kept
 
 
 def resolve_grammar_levels(rows: Iterable, fallback: str) -> None:
