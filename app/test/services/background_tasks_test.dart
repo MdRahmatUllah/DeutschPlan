@@ -11,6 +11,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/today/today_providers.dart';
@@ -164,6 +165,38 @@ void main() {
         work.queued[BackgroundTask.planPregenerate],
         const Duration(days: 1),
       );
+    });
+
+    /// The course on disk, installed at [version].
+    void course(String? version) {
+      ContentFixture.write('${support.path}/${ContentDao.fileName}');
+      File('${support.path}/${ContentUpdater.manifestFile}')
+          .writeAsStringSync('{"content_version":"$version"}');
+    }
+
+    test('#1018 a course older than this build, left for the app', () async {
+      // After an update, before the app's next start installs the new one.
+      course(ContentFixture.version);
+
+      await skip(BackgroundTask.planPregenerate);
+
+      expect(ran, isEmpty);
+      expect(
+        work.queued[BackgroundTask.planPregenerate],
+        const Duration(days: 1),
+      );
+    });
+
+    test("#1018 this build's course: the task runs", () async {
+      course(
+        ContentUpdater.versionIn(
+          File(ContentUpdater.manifestAsset).readAsBytesSync(),
+        ),
+      );
+
+      await skip(BackgroundTask.planPregenerate);
+
+      expect(ran, <BackgroundTask>[BackgroundTask.planPregenerate]);
     });
 
     test('the other tasks queue nothing: the app and plan_pregenerate do '

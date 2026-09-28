@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/reminder_scheduler.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -307,7 +308,8 @@ bool atCurrentSchema(File file) =>
 /// streams don't hear what a task writes, which is only `openDay`'s rows,
 /// and the app's own `openDay` finds them.
 ///
-/// False when [run] never ran: user.db not at this schema, or no course.
+/// False when [run] never ran: user.db not at this schema, no course, or a
+/// course older than this build.
 Future<bool> withBackgroundDatabase(
   Future<void> Function(ProviderContainer container) run,
 ) async {
@@ -320,6 +322,15 @@ Future<bool> withBackgroundDatabase(
     final content = ContentDao(db);
     // Never started: installing the course is the app's first start's job.
     if (!(await content.installedFile()).existsSync()) return false;
+    // #1018: nor is installing an update's. Until the app's next start the
+    // course on disk is the old build's, which may lack a column this
+    // build reads (`no such column: w.kind`).
+    if (!await ContentUpdater(db, content).current()) {
+      debugPrint(
+        "background: the course is not this build's; left for the app",
+      );
+      return false;
+    }
     await content.attach();
     final settings = SettingsRepository(db);
     await settings.load();

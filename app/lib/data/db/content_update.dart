@@ -144,6 +144,14 @@ class ContentUpdater {
     return change;
   }
 
+  /// Whether the installed course is this build's, as [runIfNeeded] decides
+  /// it. A background task runs only on one (#1018): this build's SQL on an
+  /// older course fails, and an update's re-keying is the app's to do.
+  Future<bool> current() async {
+    final bundled = await _dao.bundledVersion();
+    return bundled.isEmpty || bundled == await _installedVersion();
+  }
+
   /// The update Today should be showing, or `null`.
   ///
   /// BR-CONTENT-03: the card stays until the learner dismisses it, which is
