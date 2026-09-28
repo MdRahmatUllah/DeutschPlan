@@ -455,7 +455,7 @@ claiming the same issue. A hand edit skips that check.
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | in-progress | agent-1 |  |  |
 | #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | review | agent-2 |  | #1010 |
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | needs-decision |  |  |  |
-| #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | open |  |  |  |
+| #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -9802,3 +9802,7 @@ Three setup behaviours flagged as owner calls in the production review (#692): M
 ### H-2314 · 2026-09-28 07:17 · agent-0 → all · note · #1012
 
 Added #1012 (fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up)) to lane X.
+
+### H-2315 · 2026-09-28 07:17 · agent-0 → agent-1 · assign · #1012
+
+owner decision 2026-09-28: a finished step reads Completed; Left on only when left by switching with words To do (follow-up to #950/#987)
