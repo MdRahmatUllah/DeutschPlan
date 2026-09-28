@@ -95,3 +95,39 @@ class _Key extends Intent {
 
   final ShortcutActivator activator;
 }
+
+/// #1021: a screen's own tap target (a row, a link, a chip of its own), as a
+/// [GestureDetector]'s tap, reachable and pressed by keys through
+/// [SgFocusable]. Screens use this, not a bare detector: `architecture_test`
+/// holds them to it. [radius] is the target's drawn corners, a row's none.
+class SgPressable extends StatelessWidget {
+  const SgPressable({
+    required this.onTap,
+    required this.child,
+    this.behavior,
+    this.onLongPress,
+    this.excludeFromSemantics = false,
+    this.radius = BorderRadius.zero,
+    super.key,
+  });
+
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+  final HitTestBehavior? behavior;
+  final bool excludeFromSemantics;
+  final BorderRadius radius;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => SgFocusable(
+    onPressed: onTap,
+    radius: radius,
+    child: GestureDetector(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      behavior: behavior,
+      excludeFromSemantics: excludeFromSemantics,
+      child: child,
+    ),
+  );
+}

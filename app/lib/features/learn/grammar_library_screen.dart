@@ -6,6 +6,7 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
@@ -225,7 +226,7 @@ class LibraryRow extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         // Pushed over the library, so back returns here.
         onTap: () => GrammarTopicRoute.open(context, topic.uid),

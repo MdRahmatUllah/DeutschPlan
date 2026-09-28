@@ -9,6 +9,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -626,7 +627,7 @@ class _TopBar extends StatelessWidget {
           onTap: onTap,
           child: AdaptiveTooltip(
             message: semantic,
-            child: GestureDetector(
+            child: SgPressable(
               onTap: onTap,
               behavior: HitTestBehavior.opaque,
               child: SizedBox.square(

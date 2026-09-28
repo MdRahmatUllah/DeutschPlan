@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -236,7 +237,7 @@ class _Row extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () => showLicence(context, licence),
         child: DecoratedBox(

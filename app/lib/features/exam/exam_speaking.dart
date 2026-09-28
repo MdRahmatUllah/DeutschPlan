@@ -7,6 +7,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -566,7 +567,7 @@ class _RoundButton extends StatelessWidget {
       onTap: onTap,
       child: AdaptiveTooltip(
         message: label,
-        child: GestureDetector(
+        child: SgPressable(
           onTap: onTap,
           child: Container(
             width: 56,

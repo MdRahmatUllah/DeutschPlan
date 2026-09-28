@@ -4,6 +4,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/domain/plan_stats.dart';
@@ -241,7 +242,7 @@ class StudyDayToggle extends StatelessWidget {
         label: full,
         excludeSemantics: true,
         onTap: onTap,
-        child: GestureDetector(
+        child: SgPressable(
           onTap: onTap,
           behavior: HitTestBehavior.opaque,
           child: Container(

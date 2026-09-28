@@ -9,6 +9,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -278,7 +279,7 @@ class _Score extends StatelessWidget {
               excludeSemantics: true,
               child: AdaptiveTooltip(
                 message: closeLabel,
-                child: GestureDetector(
+                child: SgPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: onClose,
                   // The artboards: a back arrow on Android, a cross on iOS.

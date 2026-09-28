@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -387,7 +388,7 @@ class _Example extends ConsumerWidget {
             label: l10n.topicPlay(german),
             child: AdaptiveTooltip(
               message: l10n.topicPlay(german),
-              child: GestureDetector(
+              child: SgPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => unawaited(say(ref, context, german)),
                 child: SizedBox(
@@ -517,7 +518,7 @@ class _Neighbour extends StatelessWidget {
           : l10n.topicPrevious(topic.topic.topic),
       onTap: open,
       excludeSemantics: true,
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         onTap: open,
         child: SizedBox(

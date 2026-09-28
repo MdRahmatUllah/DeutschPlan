@@ -5,6 +5,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -164,7 +165,7 @@ class ProgressRingCard extends StatelessWidget {
               child: Semantics(
                 button: onStart != null,
                 onTap: onStart,
-                child: GestureDetector(
+                child: SgPressable(
                   onTap: onStart,
                   behavior: HitTestBehavior.opaque,
                   // Tweens from 0 on open, and on to the new count after a
@@ -225,7 +226,7 @@ class ProgressRingCard extends StatelessWidget {
                     ),
                     Semantics(
                       link: true,
-                      child: GestureDetector(
+                      child: SgPressable(
                         onTap: onStudyDays,
                         behavior: HitTestBehavior.opaque,
                         // A caption drawn, a 48 dp (44 pt) target touched:
@@ -913,7 +914,7 @@ class _IconAction extends StatelessWidget {
       onTap: onTap,
       child: AdaptiveTooltip(
         message: label,
-        child: GestureDetector(
+        child: SgPressable(
           onTap: onTap,
           behavior: HitTestBehavior.opaque,
           child: SizedBox.square(

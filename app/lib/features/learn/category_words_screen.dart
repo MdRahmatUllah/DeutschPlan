@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
@@ -192,7 +193,7 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
                       itemCount: shown.length,
                       itemBuilder: (context, index) {
                         final row = shown[index];
-                        return GestureDetector(
+                        return SgPressable(
                           behavior: HitTestBehavior.opaque,
                           onTap: () => WordRoute.open(context, row.word.uid),
                           child: WordRow(

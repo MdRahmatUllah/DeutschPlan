@@ -7,6 +7,7 @@ import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -637,7 +638,7 @@ class SettingsScreen extends ConsumerWidget {
                         container: true,
                         button: true,
                         selected: value == current,
-                        child: GestureDetector(
+                        child: SgPressable(
                           behavior: HitTestBehavior.opaque,
                           onTap: () => Navigator.of(sheet).pop(value),
                           child: ConstrainedBox(
@@ -864,7 +865,7 @@ class _Row extends StatelessWidget {
       button: onTap != null,
       child: tap == null
           ? row
-          : GestureDetector(
+          : SgPressable(
               behavior: HitTestBehavior.opaque,
               // A switch row's tap is its switch's, which a screen reader
               // already has.

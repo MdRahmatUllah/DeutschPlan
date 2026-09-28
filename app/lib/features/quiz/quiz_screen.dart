@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -598,7 +599,7 @@ class _Feedback extends ConsumerWidget {
             child: ExcludeSemantics(
               child: AdaptiveTooltip(
                 message: l10n.quizPlay,
-                child: GestureDetector(
+                child: SgPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => unawaited(say(ref, context, heard)),
                   child: SizedBox.square(
@@ -650,7 +651,7 @@ class _CheckKey extends StatelessWidget {
       child: ExcludeSemantics(
         child: AdaptiveTooltip(
           message: l10n.quizCheck,
-          child: GestureDetector(
+          child: SgPressable(
             behavior: HitTestBehavior.opaque,
             onTap: onTap,
             child: DecoratedBox(

@@ -10,6 +10,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -615,7 +616,7 @@ class BacklogRow extends ConsumerWidget {
         CustomSemanticsAction(label: l10n.backlogRemove): () =>
             unawaited(_run(context, ref, BacklogAction.removed)),
       },
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () => WordRoute.open(context, row.word.uid),
         onLongPress: () => unawaited(_actions(context, ref)),
@@ -685,6 +686,8 @@ class _TrailingActionsState extends State<_TrailingActions> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 for (final (i, (label, run)) in widget.actions.indexed)
+                  // keyboard: the row's semantics actions and the Material menu offer
+                  // these; iOS's strip shows only once swiped (iOS is Later).
                   GestureDetector(
                     onTap: () {
                       setState(() => _open = 0);

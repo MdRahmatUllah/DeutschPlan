@@ -29,6 +29,7 @@ import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
 
+import '../core/keys.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import 'settings_fixtures.dart';
@@ -386,6 +387,18 @@ void main() {
     await pump(tester);
     await tester.tap(row('Mietvertrag'));
     await tester.pumpAndSettle();
+    expect(
+      tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+      'cat-4',
+    );
+  });
+
+  testWidgets('#1021 a row: Tab reaches it, and Enter opens its word', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tabTo(tester, row('Mietvertrag'));
+    await enter(tester);
     expect(
       tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
       'cat-4',

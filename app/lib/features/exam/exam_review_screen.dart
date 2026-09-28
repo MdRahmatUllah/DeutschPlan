@@ -7,6 +7,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -412,7 +413,7 @@ class _Example extends StatelessWidget {
       button: true,
       label: l10n.studyPlaySentence,
       onTap: onPlay,
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         onTap: onPlay,
         child: ConstrainedBox(
@@ -469,7 +470,7 @@ class _Link extends StatelessWidget {
       label: label,
       onTap: onTap,
       excludeSemantics: true,
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: ConstrainedBox(

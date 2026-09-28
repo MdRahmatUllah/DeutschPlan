@@ -203,6 +203,50 @@ void main() {
     );
   });
 
+  test('#1021 a screen tap target is reachable by keys: SgPressable, or a '
+      'note naming the focusable control that does the same', () {
+    // WCAG 2.1.1: a bare GestureDetector's tap is a finger's only; a
+    // keyboard or a D-pad never reaches it. SgPressable puts it under
+    // SgFocusable. One that is only a finger's shortcut for a control that
+    // is focusable says so in a `// keyboard:` comment just above.
+    final detector = RegExp(r'GestureDetector\(');
+    final tap = RegExp(r'\bonTap:\s*(?!null\b)');
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib/features')) {
+      final source = file.readAsStringSync();
+      for (final match in detector.allMatches(source)) {
+        var depth = 0;
+        var end = match.end - 1;
+        do {
+          final char = source[end];
+          if (char == '(') depth++;
+          if (char == ')') depth--;
+          end++;
+        } while (depth > 0);
+        final head = source.substring(match.end, end).split('child:').first;
+        if (!tap.hasMatch(head)) continue;
+        final above = source.substring(0, match.start).split('\n');
+        var noted = above.last.contains('keyboard:');
+        for (
+          var k = above.length - 2;
+          !noted && k >= 0 && above[k].trimLeft().startsWith('//');
+          k--
+        ) {
+          noted = above[k].contains('keyboard:');
+        }
+        if (!noted) offenders.add('${_rel(file)}:${above.length}');
+      }
+    }
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'a tap target of its own is SgPressable; a finger shortcut for a '
+          'focusable control says which in a // keyboard: comment above '
+          'it:\n${offenders.join('\n')}',
+    );
+  });
+
   test('#695 TS-4 text is SgText, never a raw Text', () {
     // A raw Text (or RichText) has no role, no Bangla fallback, no German
     // voice and no syllable breaks: what SgText, SgOneLine, SgHeadword and

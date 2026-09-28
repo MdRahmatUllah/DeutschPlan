@@ -14,6 +14,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 
+import '../core/keys.dart';
 import '../core/semantics_checks.dart';
 import 'me_fixtures.dart';
 
@@ -515,6 +516,16 @@ void main() {
       testWidgets('opens $path', (tester) async {
         await pump(tester);
         await tapAndSettle(tester, find.text(label()));
+
+        expect(went, path);
+      });
+
+      testWidgets('#1021 Tab reaches it, and Enter opens $path', (
+        tester,
+      ) async {
+        await pump(tester);
+        await tabTo(tester, find.text(label()));
+        await enter(tester);
 
         expect(went, path);
       });

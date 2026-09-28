@@ -298,6 +298,8 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     );
 
     // *Show meaning* is the labelled way to turn it; the tap is a shortcut.
+    // keyboard: *Show meaning* reveals it too; the card's tap is a
+    // finger's shortcut.
     return GestureDetector(
       onTap: widget.revealed ? null : widget.onReveal,
       excludeFromSemantics: true,

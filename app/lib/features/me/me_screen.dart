@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -299,7 +300,7 @@ class MeHeader extends StatelessWidget {
                     hint: l10n.meEditName,
                     onTap: onEditName,
                     excludeSemantics: true,
-                    child: GestureDetector(
+                    child: SgPressable(
                       behavior: HitTestBehavior.opaque,
                       onTap: onEditName,
                       child: ConstrainedBox(
@@ -806,7 +807,7 @@ class _Badge extends StatelessWidget {
       label: l10n.meBadge(step.code, state),
       onTap: onTap,
       excludeSemantics: true,
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: SizedBox(
@@ -871,7 +872,7 @@ class _Links extends StatelessWidget {
             Semantics(
               container: true,
               button: true,
-              child: GestureDetector(
+              child: SgPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => context.jumpToTab(route),
                 child: ConstrainedBox(

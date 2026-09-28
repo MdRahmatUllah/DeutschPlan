@@ -115,6 +115,8 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
         ? const SizedBox.expand()
         : _Reward(view: view, play: _play, still: still, onBack: _leave);
 
+    // keyboard: *Back to Today* below does the same; a tap anywhere is a
+    // finger's shortcut.
     final page = GestureDetector(
       // Tap anywhere: back to Today.
       behavior: HitTestBehavior.opaque,

@@ -12,6 +12,7 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -497,7 +498,7 @@ class _Header extends StatelessWidget {
                             excludeSemantics: true,
                             child: AdaptiveTooltip(
                               message: l10n.searchClear,
-                              child: GestureDetector(
+                              child: SgPressable(
                                 behavior: HitTestBehavior.opaque,
                                 onTap: onClear,
                                 child: SizedBox(
@@ -659,7 +660,7 @@ class _Results extends StatelessWidget {
             Semantics(
               container: true,
               button: true,
-              child: GestureDetector(
+              child: SgPressable(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   onUse();
@@ -833,7 +834,7 @@ class _SentenceRow extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () {
           onUse();
@@ -1037,7 +1038,7 @@ class _MyWordRow extends StatelessWidget {
       child: Semantics(
         button: true,
         onTap: () => EditCustomWordRoute.open(context, word.id),
-        child: GestureDetector(
+        child: SgPressable(
           behavior: HitTestBehavior.opaque,
           onTap: () => EditCustomWordRoute.open(context, word.id),
           child: Container(

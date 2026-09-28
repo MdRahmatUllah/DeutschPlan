@@ -5,6 +5,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
@@ -235,7 +236,7 @@ class StudyPlayButton extends ConsumerWidget {
         label: label,
         child: AdaptiveTooltip(
           message: label,
-          child: GestureDetector(
+          child: SgPressable(
             onTap: tap,
             behavior: HitTestBehavior.opaque,
             // 32 dp drawn, 48 dp tall to hit, and the gap after it part of the
@@ -272,7 +273,7 @@ class StudyExampleRow extends StatelessWidget {
       container: true,
       button: true,
       label: AppLocalizations.of(context).studyPlaySentence,
-      child: GestureDetector(
+      child: SgPressable(
         onTap: onPlay,
         behavior: HitTestBehavior.opaque,
         child: Row(

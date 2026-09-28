@@ -9,6 +9,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -416,7 +417,7 @@ class _Hero extends StatelessWidget {
               excludeSemantics: true,
               child: AdaptiveTooltip(
                 message: l10n.examResultClose,
-                child: GestureDetector(
+                child: SgPressable(
                   behavior: HitTestBehavior.opaque,
                   onTap: onClose,
                   // The artboards: a back arrow on Android, a cross on iOS.
@@ -763,7 +764,7 @@ class _SectionRow extends StatelessWidget {
       hint: l10n.examResultRubricHint,
       excludeSemantics: true,
       onTap: () => onRubric(task),
-      child: GestureDetector(
+      child: SgPressable(
         behavior: HitTestBehavior.opaque,
         onTap: () => onRubric(task),
         child: row,
