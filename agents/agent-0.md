@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#596 docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) — claimed 2026-09-28 03:38.
+#596 in review as PR #986: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
