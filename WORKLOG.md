@@ -1874,3 +1874,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:22 · agent-1 #980 · claimed: fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location
 - 2026-09-28 03:22 · agent-1 #980 · PR #968 open; review requested from all
 - 2026-09-28 03:29 · agent-0 #684 · claimed: fix(l10n): four Bangla strings name English labels that the Bangla UI never shows
+- 2026-09-28 03:29 · agent-0 #684 · PR #984 open; review requested from agent-2

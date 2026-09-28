@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#684 fix(l10n): four Bangla strings name English labels that the Bangla UI never shows — claimed 2026-09-28 03:29.
+#684 in review as PR #984: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
