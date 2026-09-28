@@ -120,6 +120,25 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// the Tencent licence's exclusions.
   final bool Function(String modelId) _offered;
 
+  /// #1036 (#692 ME-3): a download this build doesn't offer, left in flight
+  /// by a build that did (a record, a task the system killed, files half
+  /// there), is cancelled, its records deleted and its staging cleared, so
+  /// the downloader's restart can't resume it and nothing of it lands. The
+  /// model is then not downloaded or, with files that landed before, ready
+  /// with *Delete*.
+  Future<void> _dropUnoffered() async {
+    final groups = <String>{
+      for (final record in await _downloader.database.allRecords())
+        record.group,
+    };
+    for (final group in groups.where((group) => !_offered(group))) {
+      await _downloader.cancelAll(group: group);
+      await _downloader.database.deleteAllRecords(group: group);
+      final staging = await _models.stagingFor(group);
+      if (staging.existsSync()) staging.deleteSync(recursive: true);
+    }
+  }
+
   void _refuseUnoffered(String modelId) {
     if (!_offered(modelId)) {
       throw StateError('$modelId is not offered in this build (FR-M4-04)');
@@ -178,6 +197,8 @@ class BackgroundModelDownloads implements ModelDownloads {
       ],
     );
     _updates = _downloader.updates.listen((update) => unawaited(_on(update)));
+    // Before the downloader queues anything again (#1036).
+    await _dropUnoffered();
     // The downloader's own record: a task the system or the learner killed
     // is scheduled again, and one that finished while the app was away says
     // so now.
@@ -413,6 +434,9 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   Future<void> _on(TaskUpdate update) async {
     final modelId = update.task.group;
+    // #1036: a download this build doesn't offer never lands, whatever
+    // reports on it late.
+    if (!_offered(modelId)) return;
     final files = _files.putIfAbsent(modelId, () => <String, _File>{});
     final name = update.task.filename;
     final before = files[name];

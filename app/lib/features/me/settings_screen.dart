@@ -788,8 +788,6 @@ class _Group extends StatelessWidget {
   }
 }
 
-/// One setting: its name, a line under it, and its control — or, for a row
-/// that opens something, the value and a chevron.
 /// #704: Restart setup reads the learner's values before it pushes its
 /// page, and a second tap in between pushed a second. Held until that page is
 /// up. (Reset's sheet needs none: a second tap opens no second sheet.)
@@ -808,6 +806,8 @@ Future<void> _restart(BuildContext context) async {
   }
 }
 
+/// One setting: its name, a line under it, and its control — or, for a row
+/// that opens something, the value and a chevron.
 class _Row extends StatelessWidget {
   const _Row({
     required this.title,
