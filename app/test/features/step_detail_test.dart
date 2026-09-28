@@ -100,16 +100,26 @@ void main() {
       );
     });
 
-    test('#950 FR-L2-01 a step left with words To do or Learning was left, '
-        'not completed, unless its exam passed', () {
+    test('#950 #1012 FR-L2-01 a step left by switching with words To do was '
+        'left; one the plan finished is completed, words Learning and all', () {
       expect(
         paceLine(l10n, en, step(completedOn: '2026-09-27')),
         'Left on 27 Sep',
+        reason: '296 words never met',
       );
       expect(
         paceLine(l10n, en, step(completedOn: '2026-09-27', todo: 0)),
-        'Left on 27 Sep',
+        'Completed 27 Sep · revision continues',
         reason: 'every word met, 60 still learning',
+      );
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', todo: 0, learning: 0),
+        ),
+        'Completed 27 Sep · revision continues',
+        reason: 'all Done',
       );
       expect(
         paceLine(l10n, en, step(completedOn: '2026-09-27', passedSeed: 2)),
