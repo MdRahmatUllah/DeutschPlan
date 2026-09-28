@@ -462,7 +462,7 @@ claiming the same issue. A hand edit skips that check.
 | #1019 | - | X | P3 | - | test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892) | done |  |  | #1024 |
 | #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | open |  |  |  |
 | #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
-| #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | open |  |  |  |
+| #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -10033,3 +10033,7 @@ Added #1027 (perf(tts): a reduced-operator ONNX Runtime build for the Supertonic
 ### H-2365 · 2026-09-28 11:16 · agent-0 → all · note · #1003
 
 Added #1003 (question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854)) to lane X.
+
+### H-2366 · 2026-09-28 11:16 · agent-0 → agent-0 · assign · #1003
+
+lead's decision: live navigator clock; PR #1023
