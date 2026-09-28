@@ -126,12 +126,9 @@ class SetupRepository {
         // A different step. `idx_one_active_enrollment` allows one open
         // enrollment, so the old one closes first — `completed_on` is the
         // schema's only way to say "no longer active", and backup import
-        // closes a surplus one the same way.
-        if (active != null) {
-          await (_db.update(_db.enrollments)
-                ..where((e) => e.sublevelCode.equals(active)))
-              .write(EnrollmentsCompanion(completedOn: Value(today)));
-        }
+        // closes a surplus one the same way. The plan store's writer, so one
+        // writer closes a step (#843).
+        if (active != null) await _store.completeStep(active, today);
         await _store.enroll(
           ActiveStep(
             sublevelCode: choice.step,
