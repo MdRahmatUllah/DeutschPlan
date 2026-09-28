@@ -719,8 +719,8 @@ class _Group extends StatelessWidget {
             ),
           ),
           if (cupertino)
-            // ponytail: a blur per group under glass, past the budget of
-            // three; #34's shared backdrop is the fix for every list.
+            // Under glass the groups in the list share the screen's one
+            // read of the backdrop (#709).
             SgSurface(
               kind: SgSurfaceKind.bar,
               radius: 12,

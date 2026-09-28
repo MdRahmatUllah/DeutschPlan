@@ -1,6 +1,8 @@
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:flutter/rendering.dart' show BackdropFilterLayer;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -416,4 +418,125 @@ void main() {
     await tester.pumpAndSettle();
     expect(decorationOf(tester).boxShadow, hasLength(1));
   });
+
+  group('#709: the screen reads its backdrop once for its list', () {
+    /// The key each blur on screen reads its backdrop with: null is a read of
+    /// its own.
+    List<BackdropKey?> reads(WidgetTester tester) => <BackdropKey?>[
+      for (final layer in tester.layers)
+        if (layer is BackdropFilterLayer) layer.backdropKey,
+    ];
+
+    /// How many times the engine reads the backdrop: once per shared key,
+    /// and once for each blur that has none.
+    int passes(List<BackdropKey?> keys) =>
+        keys.where((key) => key == null).length + keys.nonNulls.toSet().length;
+
+    Future<void> screen(WidgetTester tester, Widget body) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.glass(),
+          home: MediaQuery(
+            data: const MediaQueryData(disableAnimations: true),
+            child: AuroraBackdrop(child: body),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    const card = SgSurface(child: SizedBox(height: 60));
+    const bar = SgSurface(kind: SgSurfaceKind.bar, child: SizedBox(height: 60));
+    final tint = SgSurface(
+      kind: SgSurfaceKind.tint(SgPalette.light.accent),
+      radius: 0,
+      child: const SizedBox(height: 80),
+    );
+
+    testWidgets('a header, cards and bars in a list: one read', (tester) async {
+      // L1, Today and Me: a tinted header, then the list's panels.
+      await screen(
+        tester,
+        ListView(children: <Widget>[tint, card, bar, card, bar, card, bar]),
+      );
+      expect(reads(tester), hasLength(7), reason: 'every panel still blurs');
+      expect(passes(reads(tester)), 1);
+    });
+
+    testWidgets('a bar outside the list reads its own: the list scrolls '
+        'under it', (tester) async {
+      await screen(
+        tester,
+        Column(
+          children: <Widget>[
+            bar,
+            Expanded(child: ListView(children: const <Widget>[card, card])),
+          ],
+        ),
+      );
+      expect(passes(reads(tester)), 2);
+    });
+
+    testWidgets('a panel inside a panel reads its own: the shared read has '
+        'not got the outer panel in it', (tester) async {
+      await screen(
+        tester,
+        ListView(
+          children: const <Widget>[
+            SgSurface(
+              child: Padding(padding: EdgeInsets.all(8), child: bar),
+            ),
+            card,
+          ],
+        ),
+      );
+      expect(reads(tester), hasLength(3));
+      expect(passes(reads(tester)), 2);
+    });
+
+    testWidgets('a band pinned over the rows reads its own', (tester) async {
+      // L3's level bands stay at the top while the rows scroll under them.
+      await screen(
+        tester,
+        CustomScrollView(
+          slivers: <Widget>[
+            SliverPersistentHeader(pinned: true, delegate: _Band(tint)),
+            SliverList.list(children: const <Widget>[card, card, card]),
+          ],
+        ),
+      );
+      expect(reads(tester), hasLength(4));
+      expect(passes(reads(tester)), 2);
+    });
+
+    testWidgets('a sheet, with no aurora of its own, blurs as before', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.glass(),
+          home: ListView(children: const <Widget>[card, card]),
+        ),
+      );
+      expect(reads(tester), <BackdropKey?>[null, null]);
+    });
+  });
+}
+
+class _Band extends SliverPersistentHeaderDelegate {
+  const _Band(this.child);
+
+  final Widget child;
+
+  @override
+  double get minExtent => 80;
+
+  @override
+  double get maxExtent => 80;
+
+  @override
+  Widget build(BuildContext context, double shrink, bool overlaps) => child;
+
+  @override
+  bool shouldRebuild(_Band old) => false;
 }

@@ -180,7 +180,7 @@ flowchart LR
   another has (a renamed header) stops the build, unless the manifest lists it
   under `without:` or `--allow-missing-columns` is passed (#714). The rules are PIPE-01 to
   PIPE-08: level from the word's own cell; each level split into X.1 and X.2 at
-  the week nearest the middle; `uid = sha1(level|german|pos|english)[:16]`;
+  the week nearest the middle, kept once shipped (#923); `uid = sha1(level|german|pos|english)[:16]`;
   search keys (lower case, article stripped, umlauts folded) byte-identical to
   `domain/text_norm.dart`, shared through `tools/test_vectors.json`; formula
   cells stored as text; examples paired by line; `content_version` is the
@@ -196,8 +196,10 @@ flowchart LR
   and run `flutter test test/db/` from `app/`.
 - Changing a word's `german`, `pos`, `english` or level changes its uid; the
   build links the old uid to the new one when it is the same word, and the app
-  moves learners' progress along the link (PIPE-09). A word gone with nothing
-  to link it to stops the build unless `--allow-removed`
+  moves learners' progress along the link (PIPE-09); a grammar topic's the
+  same (#808). A wrong link is refused, and a missing one pinned, under
+  `links:` in `content/corrections.yaml` (#807). A word or topic gone with
+  nothing to link it to stops the build unless `--allow-removed`
   ([`adding-content.md`](../05-dev-guide/adding-content.md)).
 - `python tools/mirror_content_schema.py` rewrites `content_schema.drift` from
   the pipeline DDL; `content_schema_test` fails if they disagree.

@@ -76,6 +76,23 @@ void main() {
     },
   );
 
+  test('#693 SV-6 a reminder already past when it is scheduled is left out, '
+      'and the rest of the week still goes in', () async {
+    await PlatformReminderNotifications().schedule(
+      <DateTime>[DateTime(2000, 1, 3, 19, 30), DateTime(2100, 1, 4, 19, 30)],
+      (title: 'Time for German', body: '', channel: 'Reminder'),
+    );
+
+    expect(
+      <Object?>[
+        for (final call in calls)
+          if (call.method == 'zonedSchedule')
+            (call.arguments as Map<Object?, Object?>)['id'],
+      ],
+      <int>[21000104],
+    );
+  });
+
   test('#602 its small icon is the tiles drawable the app ships, white on '
       'transparent, and kept in a shrunk release build', () async {
     await PlatformReminderNotifications().init((_) {});

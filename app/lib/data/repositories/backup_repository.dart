@@ -367,10 +367,14 @@ WHERE kind = 'new' AND completed_at IS NULL
 
     final columns = await _columnsOf(table);
     final child = _childOf[table];
-    // #809: the column naming a course word, and the file's keys, which a
-    // row moved to its word's uid now must not take (below).
+    // #809: the column naming a course word, or a grammar topic (#808), and
+    // the file's keys, which a row moved to its uid now must not take (below).
     final aliased = <String, String>{
-      for (final (name, column) in ContentUpdater.aliasedColumns) name: column,
+      for (final (name, column) in [
+        ...ContentUpdater.aliasedColumns,
+        ...ContentUpdater.aliasedGrammarColumns,
+      ])
+        name: column,
     }[table];
     final taken = <String>{for (final row in rows) _keyOf(table, row)};
     // Merged words of the learner's own get fresh ids, as attempts do; a
@@ -459,6 +463,15 @@ WHERE kind = 'new' AND completed_at IS NULL
         if (!rowKeys[table]!.contains(aliased) ||
             taken.add(_keyOf(table, moved))) {
           mapped[aliased] = now;
+        }
+      }
+      // #808: an exam's grammar ref, `<topic uid>#<n>`, moves with its topic
+      // and keeps its `#<n>`, as on an update. The key is (attempt, ord).
+      if (mapped['item_ref'] case final String ref
+          when table == 'exam_answers' && ref.contains('#')) {
+        final hash = ref.indexOf('#');
+        if (aliases[ref.substring(0, hash)] case final now?) {
+          mapped['item_ref'] = '$now${ref.substring(hash)}';
         }
       }
 
