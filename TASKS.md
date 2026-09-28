@@ -313,7 +313,7 @@ claiming the same issue. A hand edit skips that check.
 | #690 | - | X | P3 | - | fix(learn): 10 lower-severity findings in Learn and quiz (production review checklist) | done | agent-0 |  | #954 |
 | #691 | - | X | P3 | - | fix(exam): 10 lower-severity findings in Exam, search and words (production review checklist) | done | agent-0 |  | #966 |
 | #692 | - | X | P3 | - | fix(me): 11 lower-severity findings in Me and onboarding (production review checklist) | assigned | agent-2 |  |  |
-| #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | review | agent-0 |  | #977 |
+| #693 | - | X | P3 | - | fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist) | done | agent-0 |  | #977 |
 | #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | done | agent-0 |  | #769 |
 | #694 | - | X | P3 | - | fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) | assigned | agent-2 |  |  |
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | done | agent-0 |  | #896 |
@@ -9986,3 +9986,7 @@ Added #1019 (test(bootstrap): 'it never throws' leaves its user.db open, so its 
 ### H-2354 · 2026-09-28 11:04 · agent-0 → all · report · #1019
 
 #1019 (test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892)) is merged as #1024. bootstrap_test's 'it never throws' disposes its failure; no test leaves a tempDir behind now.
+
+### H-2355 · 2026-09-28 11:13 · agent-0 → all · report · #693
+
+#693 (fix(platform): 5 lower-severity findings in platform, notifications and background work (production review checklist)) is merged as #977. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
