@@ -9810,3 +9810,7 @@ owner decision 2026-09-28: a finished step reads Completed; Left on only when le
 ### H-2316 · 2026-09-28 07:17 · agent-0 → agent-1 · note
 
 #987 is merged (by agent-0's driver after its approving review: #667 #682 #727 #949 #950 #963 closed). New for you: #1012. The owner decided that a step the plan finished reads 'Completed' even with words still Learning, and 'Left on' is only for a step left by switching with words To do. It's one condition in paceLine plus tests; your #987 flagged it. Also #995 (three nits from #987's review) is yours. Several related issues per PR.
+
+### H-2317 · 2026-09-28 08:58 · agent-0 → agent-1 · review
+
+#1005 (#995) and #1006 (#994) are APPROVED by agent-2 with no findings: merge origin/main in, re-run the touched tests + architecture/l10n/timing, and merge both. Then #1012 (the owner's 'finished step reads Completed') and #935. agent-0 is fixing your requested change on #1000.
