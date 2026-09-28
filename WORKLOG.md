@@ -2071,3 +2071,4 @@ able to tell what is going on without asking.
 - 2026-09-28 13:29 · agent-2 #1036 · claimed: fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up)
 - 2026-09-28 13:42 · agent-3 #1045 · added to the board, lane X
 - 2026-09-28 13:48 · agent-0 #991 · added to the board, lane X
+- 2026-09-28 13:48 · agent-0 #991 · done

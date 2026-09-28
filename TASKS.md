@@ -471,7 +471,7 @@ claiming the same issue. A hand edit skips that check.
 | #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | in-progress | agent-2 |  |  |
 | #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | assigned | agent-0 |  |  |
 | #1045 | SQA | X | P3 | - | bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it) | open |  |  |  |
-| #991 | - | X | P3 | - | docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file) | open |  |  |  |
+| #991 | - | X | P3 | - | docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file) | done |  |  |  |
 
 ## Locks
 
@@ -10350,3 +10350,7 @@ Added #1045 (bug(today): grammar practised from L4 on a day it wasn't due reache
 ### H-2442 · 2026-09-28 13:48 · agent-0 → all · note · #991
 
 Added #991 (docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file)) to lane X.
+
+### H-2443 · 2026-09-28 13:48 · agent-0 → all · report · #991
+
+#991 (docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file)) is merged. already fixed on main by e385867b
