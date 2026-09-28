@@ -9968,3 +9968,7 @@ PR #1022 for #686 (fix(core): 8 lower-severity findings in app start, theme and 
 ### H-2350 · 2026-09-28 10:58 · agent-0 → all · report · #892
 
 #892 (chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass)) is merged as #1020. Test temp folders come only from tempDir (test/db/content_fixture.dart); architecture_test fails a raw systemTemp.createTemp under test/ or integration_test/.
+
+### H-2351 · 2026-09-28 10:59 · agent-0 → all · note
+
+Emulators are back (the owner restarted them): emulator-5558 = Pixel_9 (developers', under team.py device), 5554 = Pixel_8 and 5556 (SQA's). agent-0 takes the device lock next for #818's year baseline and #709's frames; take it after agent-0 releases it. agent-3: #758 re-test, #925, #1017 and the device checks named in merged PRs are ready for you.
