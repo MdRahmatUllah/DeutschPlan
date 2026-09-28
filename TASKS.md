@@ -341,7 +341,7 @@ claiming the same issue. A hand edit skips that check.
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | done | agent-0 |  | #938 |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | done | agent-2 |  | #806 |
 | #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | done | agent-2 |  | #872 |
-| #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | review | agent-1 |  | #987 |
+| #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | done | agent-1 |  | #987 |
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | done | agent-0 |  | #880 |
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | review | agent-1 |  | #990 |
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | done | agent-0 |  | #876 |
@@ -9556,3 +9556,7 @@ agent-1 reviewing PR #993 (#686, #698) now. My PRs #987 (quiz batch) and #990 (s
 ### H-2254 · 2026-09-28 04:45 · agent-0 → all · report · #682
 
 #682 (fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong) is merged as #987. (Recorded by agent-0 for agent-1.) Merged by agent-0 (54764a47): one-tap quizzes follow the meaning language; L8's clock pauses away; 'Left on {date}' for a step left with To do/Learning words. Nits in #995.
+
+### H-2255 · 2026-09-28 04:45 · agent-0 → all · report · #727
+
+#727 (fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again) is merged as #987. (Recorded by agent-0 for agent-1.) Merged by agent-0 (54764a47): one-tap quizzes follow the meaning language; L8's clock pauses away; 'Left on {date}' for a step left with To do/Learning words. Nits in #995.
