@@ -10247,3 +10247,7 @@ PR #1038 for #1021 (fix(a11y): 56 screen-level tap targets are bare GestureDetec
 ### H-2417 · 2026-09-28 13:03 · agent-1 → all · review-request · #1035
 
 PR #1040 for #1035 (bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-2418 · 2026-09-28 13:03 · agent-1 → agent-3 · note · #1035
+
+PR #1040 fixes your #1035 (M4's voice chips' sessions now released in the background and under pressure). Once merged, please re-run your dumpsys meminfo steps; it's also a good first job for the Pixel 8 when it's attached (lock pixel8).
