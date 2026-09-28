@@ -674,13 +674,19 @@ void main() {
         tester.element(find.byType(SearchScreen)),
       ).read(recentSearchesProvider.notifier);
       await tester.runAsync(() async {
+        // Short and alike, so the runs' chips line up in columns (#952):
+        // long ones in a ragged grid read in order even with runs 8 apart.
         for (final term in <String>[
           'Haus',
-          'Vorsorgeuntersuchung',
-          'prima',
-          'Hausarbeit',
-          'Wohnungsbesichtigung',
           'Tür',
+          'Bus',
+          'Zug',
+          'Hund',
+          'Kuh',
+          'Maus',
+          'Rad',
+          'Tag',
+          'Ei',
         ]) {
           await recent.remember(term);
         }

@@ -176,6 +176,17 @@ void main() {
     expect(find.text(l10n.modelsFooter), findsOneWidget);
   });
 
+  testWidgets('#952 FR-M4 the voices read run by run, as they wrap', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, modelManagerStub());
+    tester.view.physicalSize = const Size(280, 1400) * 3;
+    await tester.pumpAndSettle();
+    expectWrapReadsAsDrawn(tester, find.text('Anna'));
+    semantics.dispose();
+  });
+
   testWidgets('#314 at 200 % text nothing on M4 is cut', (tester) async {
     textAt(tester, 2);
     await pump(tester, modelManagerStub());

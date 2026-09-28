@@ -941,7 +941,7 @@ class _Idle extends ConsumerWidget {
             // one, column by column (#853).
             child: Wrap(
               spacing: 8,
-              runSpacing: 16,
+              runSpacing: AdaptiveTapTarget.runSpacing(32),
               children: <Widget>[
                 for (final term in recent)
                   SgChip(
@@ -1144,7 +1144,7 @@ class _NoResults extends ConsumerWidget {
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(44),
           children: <Widget>[
             for (final source in WebSource.values)
               SgChip(
