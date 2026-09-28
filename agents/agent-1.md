@@ -6,7 +6,7 @@ last-read: 2200
 
 ## Now
 
-#727 in review as PR #987: answer review threads; re-run the gate if main moved, then merge.
+#949 fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision) — claimed 2026-09-28 03:40.
 
 ## Next
 
