@@ -1914,3 +1914,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:16 · agent-1 #742 · PR #990 open; review requested from all
 - 2026-09-28 04:22 · agent-0 #738 · claimed: chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits)
 - 2026-09-28 04:22 · agent-0 #738 · PR #992 open; review requested from agent-2
+- 2026-09-28 04:23 · agent-0 #596 · done (#986)
