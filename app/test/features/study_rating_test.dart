@@ -735,4 +735,7 @@ class _SharedFiles implements BackupFiles {
     shared.add((name: name, json: json));
     return true;
   }
+
+  @override
+  Future<bool> save(String name, String json) async => false;
 }

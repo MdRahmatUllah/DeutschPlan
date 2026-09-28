@@ -116,9 +116,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
   ImportMode _mode = ImportMode.merge;
   bool _busy = false;
 
-  /// FR-M6-01: the file to the share sheet, and the day remembered once the
-  /// learner sent it somewhere.
-  Future<void> _export() async {
+  /// FR-M6-01: the file to the share sheet, or saved on the phone (#1066),
+  /// and the day remembered once the learner sent or saved it.
+  Future<void> _export({bool save = false}) async {
     if (_busy) return;
     final l10n = AppLocalizations.of(context);
     final backups = ref.read(backupRepositoryProvider);
@@ -131,7 +131,8 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       final json = await backups.exportJson(
         contentVersion: await content.version(),
       );
-      if (await files.share(ExportImportScreen.fileName(now), json)) {
+      final name = ExportImportScreen.fileName(now);
+      if (await (save ? files.save(name, json) : files.share(name, json))) {
         await settings.write(SettingKeys.lastExport, now);
       }
     } on Object catch (error) {
@@ -259,6 +260,13 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
                     : l10n.exportImportExportSized(_size(l10n, size)),
                 drawnHeight: 48,
                 onPressed: _busy ? null : () => unawaited(_export()),
+              ),
+              // #1066: a copy on the phone itself, where the share sheet
+              // has no local target (One UI).
+              SgButton(
+                label: l10n.exportImportSave,
+                kind: SgButtonKind.secondary,
+                onPressed: _busy ? null : () => unawaited(_export(save: true)),
               ),
               _Caption(
                 last == null
