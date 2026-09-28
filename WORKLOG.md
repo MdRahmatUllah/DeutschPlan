@@ -2039,3 +2039,4 @@ able to tell what is going on without asking.
 - 2026-09-28 12:26 · agent-0 #1033 · added to the board, lane X
 - 2026-09-28 12:26 · agent-0 #1033 · assigned to agent-1
 - 2026-09-28 12:27 · agent-2 · #1025+#1018 committed locally on feat/1025-1018-course-updates (content_updates excluded from backup; background task skips a course the build hasn't installed); 1029 tests, 2/2 plants. Opens when #1009 or #1032 merges. Reviewed #1023, #1029.
+- 2026-09-28 12:28 · agent-1 #1004 · done (#1014)
