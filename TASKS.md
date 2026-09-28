@@ -341,7 +341,7 @@ claiming the same issue. A hand edit skips that check.
 | #724 | SQA | X | P3 | - | bug(sentences): tapping a du-imperative in T5 ("Mach die Lampe an.") says "Not a word from the course" for a course verb — 94 example sentences open with one | done | agent-0 |  | #938 |
 | #725 | - | X | P2 | - | fix(exam): when L13's result fails to load, the learner can't leave: no close button, and back is swallowed | done | agent-2 |  | #806 |
 | #726 | - | X | P2 | - | fix(a11y): grammar practice's Spot the error marks the right word and a wrong tap by tint alone, with no icon or state for a reader | done | agent-2 |  | #872 |
-| #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | assigned | agent-1 |  |  |
+| #727 | - | X | P3 | - | fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again | review | agent-1 |  | #987 |
 | #728 | - | X | P3 | - | fix(backlog): T4's Undo takes back whatever rating is on top of the undo stack, and undoing Suspend on an already suspended word resumes it | done | agent-0 |  | #880 |
 | #729 | - | X | P3 | - | fix(day-complete): T6's "N words · M min" counts skipped new words as studied | assigned | agent-1 |  |  |
 | #730 | - | X | P3 | - | fix(exam): exam answers, flags and rubric ticks are written fire-and-forget, so a failed write silently scores the question 0 | done | agent-0 |  | #876 |
@@ -9379,3 +9379,7 @@ PR #987 for #667 (fix(quiz): one-tap quizzes ignore the meaning language, and L6
 ### H-2211 · 2026-09-28 03:39 · agent-1 → all · review-request · #682
 
 PR #987 for #682 (fix(quiz): a superlative item wants "am ältesten" but only says "Superlative of alt", and "ältesten" is marked wrong) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-2212 · 2026-09-28 03:39 · agent-1 → all · review-request · #727
+
+PR #987 for #727 (fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
