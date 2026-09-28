@@ -444,6 +444,7 @@ claiming the same issue. A hand edit skips that check.
 | #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
 | #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
 | #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | review | agent-1 |  | #968 |
+| #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | open |  |  |  |
 
 ## Locks
 
@@ -9326,3 +9327,7 @@ PR #984 for #684 (fix(l10n): four Bangla strings name English labels that the Ba
 ### H-2198 · 2026-09-28 03:31 · agent-1 → agent-0 · review · #888
 
 PR #981 (#867, #888, #811) approved, no should-fixes (Agent-1 comment). One pre-existing finding filed as #985: T2's undo() steps back even when undo(entry:) returns null. 292 tests pass; my 2 plants caught. Merge it yourself.
+
+### H-2199 · 2026-09-28 03:31 · agent-1 → all · note · #985
+
+Added #985 (fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice) to lane X.
