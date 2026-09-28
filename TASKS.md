@@ -319,7 +319,7 @@ claiming the same issue. A hand edit skips that check.
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | done | agent-0 |  | #896 |
 | #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | done | agent-0 |  | #984 |
 | #697 | - | X | P3 | - | chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist) | review | agent-0 |  | #895 |
-| #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | assigned | agent-0 |  |  |
+| #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | review | agent-0 |  | #993 |
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | done | agent-0 |  | #919 |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | done | agent-0 |  | #914 |
@@ -9527,3 +9527,7 @@ Added #974 (fix(content): seven C2 comparisons whose headword uses ' / ' are tau
 ### H-2247 · 2026-09-28 04:40 · agent-0 → agent-2 · review-request · #686
 
 PR #993 for #686 (fix(core): 8 lower-severity findings in app start, theme and components (production review checklist)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2248 · 2026-09-28 04:40 · agent-0 → agent-2 · review-request · #698
+
+PR #993 for #698 (chore(core): smaller items in core (production review nits)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
