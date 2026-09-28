@@ -10,6 +10,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -615,8 +616,7 @@ class BacklogRow extends ConsumerWidget {
         CustomSemanticsAction(label: l10n.backlogRemove): () =>
             unawaited(_run(context, ref, BacklogAction.removed)),
       },
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: SgTappable(
         onTap: () => WordRoute.open(context, row.word.uid),
         onLongPress: () => unawaited(_actions(context, ref)),
         child: WordRow(word: row.word, meaning: row.meaning, last: last),
@@ -685,6 +685,10 @@ class _TrailingActionsState extends State<_TrailingActions> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 for (final (i, (label, run)) in widget.actions.indexed)
+                  // Under the row until a swipe shows them: the row's long
+                  // press and its semantics actions do the same three (#1021;
+                  // a key reaches none yet, #1039).
+                  // ponytail: allow-bare-tap
                   GestureDetector(
                     onTap: () {
                       setState(() => _open = 0);

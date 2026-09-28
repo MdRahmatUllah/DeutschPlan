@@ -115,8 +115,9 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
         ? const SizedBox.expand()
         : _Reward(view: view, play: _play, still: still, onBack: _leave);
 
+    // Tap anywhere: back to Today, a shortcut. *Back to Today* is the Tab
+    // stop that does it (#1021). ponytail: allow-bare-tap
     final page = GestureDetector(
-      // Tap anywhere: back to Today.
       behavior: HitTestBehavior.opaque,
       onTap: ready ? _leave : null,
       child: Stack(
