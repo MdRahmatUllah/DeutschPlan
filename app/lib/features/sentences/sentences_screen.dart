@@ -313,7 +313,7 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
           if (list == null && listState.hasError)
             Expanded(
               child: SgLoadFailed(
-                message: l10n.todayLoadFailed,
+                message: l10n.sentencesLoadFailed,
                 onRetry: () => ref.invalidate(practiceSentencesProvider),
               ),
             ),

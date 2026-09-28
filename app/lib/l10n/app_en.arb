@@ -76,6 +76,10 @@
   "@bootstrapShareDataFile": {
     "description": "Action on the bootstrap error screen when user.db would not open (corrupt, or from a newer build): shares the raw database file so the learner's progress is not lost. Stands where Export progress does. FR-S1-03, #619."
   },
+  "bootstrapShareFailed": "Your data file wasn't shared. Try again.",
+  "@bootstrapShareFailed": {
+    "description": "Toast on the bootstrap error screen when Share your data file didn't hand the file over (#843); Export progress's failure says exportImportExportFailed."
+  },
   "exportProgress": "Export progress",
   "@exportProgress": {
     "description": "Action on the bootstrap error screen and on Export / import. Writes everything the learner has done to a JSON file. FR-S1-03, FR-M6-01."
@@ -1931,6 +1935,10 @@
   "@backlogPauseNote": {
     "description": "T4 switch note."
   },
+  "backlogLoadFailed": "Your backlog did not load",
+  "@backlogLoadFailed": {
+    "description": "T4's error panel title, when the backlog's read fails; Retry and Back sit under it (#677, #858)."
+  },
   "backlogPauseLabel": "Pause new words until the backlog is clear",
   "@backlogPauseLabel": {
     "description": "T4 switch, for screen readers."
@@ -2344,6 +2352,10 @@
   "sentencesHint": "Tap any word for its meaning. “Not yet” brings the word back sooner.",
   "@sentencesHint": {
     "description": "T5 hint above the answers."
+  },
+  "sentencesLoadFailed": "Today's sentences did not load",
+  "@sentencesLoadFailed": {
+    "description": "T5's error panel title, when the day's sentences can't be read; Retry sits under it (#677, #886)."
   },
   "sentencesAsk": "Did you understand it?",
   "@sentencesAsk": {

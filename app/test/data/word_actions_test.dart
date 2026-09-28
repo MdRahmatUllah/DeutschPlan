@@ -213,6 +213,23 @@ void main() {
       expect(await open(), isEmpty);
     });
 
+    test('#888 FR-W1-04 Undo leaves a later rating of the same word alone: '
+        'nothing changes', () async {
+      await planned(today);
+      final undo = await actions.markKnown(uid, today: today);
+      // An L8 answer on it, under the bar a screen reader keeps.
+      await rating.rate(uid, Rating.again, source: ReviewSource.quiz);
+      final quizzed = await state();
+
+      await undo();
+      expect(
+        (await db.select(db.reviewLog).get()).map((row) => row.source),
+        <String>['known', 'quiz'],
+      );
+      expect(await state(), quizzed);
+      expect((await plan()).single.completedAt, isNotNull);
+    });
+
     test('#717 a failure closing the older rows saves nothing: no rating, '
         'and every row still open', () async {
       await planned('2026-02-27');

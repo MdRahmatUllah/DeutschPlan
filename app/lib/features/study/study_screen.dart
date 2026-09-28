@@ -820,7 +820,12 @@ class StudyCardSlot extends ConsumerWidget {
         : ref.watch(studyWordProvider(item.uid));
     final studied = studiedState?.value;
     final word = studied?.word;
-    if (studied == null && (studiedState?.hasError ?? false)) {
+    // #677: a read that failed. #886: or one that found nothing, a stale uid
+    // (a word of my own deleted mid-session): the thumb zone is gone either
+    // way, and a blank card left only Close.
+    if (studied == null &&
+        studiedState != null &&
+        (studiedState.hasError || studiedState.hasValue)) {
       return SgLoadFailed(
         message: AppLocalizations.of(context).wordLoadFailed,
         onRetry: () => ref.invalidate(studyWordProvider(item.uid)),

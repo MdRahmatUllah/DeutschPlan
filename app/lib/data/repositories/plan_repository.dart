@@ -87,7 +87,10 @@ class PlanRepository {
   /// The undo entry is pushed **inside** the transaction and carries the
   /// state as it was before — so if the transaction rolls back there is no
   /// undo for something that never happened.
-  Future<void> rate({
+  ///
+  /// Returns the undo entry's id: the one an *Undo* of this rating passes
+  /// back to [undo] (#888).
+  Future<int> rate({
     required String uid,
     required int rating,
     required ScheduledState next,
@@ -171,7 +174,7 @@ class PlanRepository {
       seconds: seconds,
     );
 
-    await _pushUndo(
+    return _pushUndo(
       uid: uid,
       before: before,
       reviewedAt: reviewedAt,
@@ -193,22 +196,22 @@ class PlanRepository {
   ///
   /// Returns the uid that was undone, or `null` when there is nothing to undo.
   ///
-  /// [expectUid] is the word the caller's *Undo* is for. When the top entry
-  /// is another word's — a rating made since, on a screen with no *Undo* of
-  /// its own — nothing changes and `null` comes back (#728).
-  Future<String?> undo({String? expectUid}) => _db.transaction(() async {
-    final entry =
+  /// [entry] is the rating the caller's *Undo* is for, as [rate] returned
+  /// it. When the top entry is another — a rating made since, on a screen
+  /// with no *Undo* of its own, of another word (#728) or the same one
+  /// (#888) — nothing changes and `null` comes back.
+  Future<String?> undo({int? entry}) => _db.transaction(() async {
+    final top =
         await (_db.select(_db.undoStack)
               ..orderBy(<OrderClauseGenerator<UndoStack>>[
                 (t) => OrderingTerm.desc(t.id),
               ])
               ..limit(1))
             .getSingleOrNull();
-    if (entry == null) return null;
+    if (top == null || (entry != null && top.id != entry)) return null;
 
-    final payload = jsonDecode(entry.payloadJson) as Map<String, dynamic>;
+    final payload = jsonDecode(top.payloadJson) as Map<String, dynamic>;
     final uid = payload['word_uid'] as String;
-    if (expectUid != null && uid != expectUid) return null;
     final before = payload['word_state'] as Map<String, dynamic>?;
 
     if (before == null) {
@@ -269,7 +272,7 @@ class PlanRepository {
       seconds: -(payload['seconds'] as int? ?? 0),
     );
 
-    await (_db.delete(_db.undoStack)..where((t) => t.id.equals(entry.id))).go();
+    await (_db.delete(_db.undoStack)..where((t) => t.id.equals(top.id))).go();
     return uid;
   });
 
@@ -529,7 +532,7 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
     _db.markTablesUpdated(<TableInfo<Table, Object?>>{_db.dailyStats});
   }
 
-  Future<void> _pushUndo({
+  Future<int> _pushUndo({
     required String uid,
     required WordStateData? before,
     required String reviewedAt,
@@ -540,7 +543,7 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
     required int seconds,
     required int skipped,
   }) async {
-    await _db
+    final id = await _db
         .into(_db.undoStack)
         .insert(
           UndoStackCompanion.insert(
@@ -582,5 +585,6 @@ WHERE due IS NOT NULL AND due <= ?1 AND status != 'suspended'
       <Object?>[undoDepth],
     );
     _db.markTablesUpdated(<TableInfo<Table, Object?>>{_db.undoStack});
+    return id;
   }
 }
