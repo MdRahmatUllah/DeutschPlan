@@ -333,6 +333,23 @@ void main() {
       expect(find.text(l10n.onboardingSupertonicDeferred), findsOneWidget);
     });
 
+    testWidgets("#704 a download that won't fit asks for no notifications", (
+      tester,
+    ) async {
+      await pump(tester);
+      // The space went since the page looked.
+      downloads.short = 50000000;
+
+      await tester.tap(
+        find.widgetWithText(SgButton, l10n.onboardingSupertonicDownload),
+      );
+      await tester.pump();
+      await tester.pump();
+
+      expect(permission.asked, 0);
+      expect(downloads.started, isEmpty);
+    });
+
     testWidgets('#428 and waits disabled until the phone has been asked: an '
         'installed voice is never fetched in the moment before Ready', (
       tester,
@@ -606,6 +623,9 @@ class _FakePermission implements NotificationPermission {
   final bool allowed;
   final bool throws;
   int asked = 0;
+
+  @override
+  Future<bool> granted() async => allowed;
 
   @override
   Future<bool> request() async {

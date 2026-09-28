@@ -75,13 +75,13 @@ TodayView artboardToday({
 TodayView artboardDone({
   int backlog = 0,
   TomorrowPreview? tomorrow,
-  int newSkipped = 0,
+  int words = 17,
 }) => TodayView(
   date: '2026-09-21',
   hour: 19,
   revise: const BlockProgress(done: 10, total: 10),
   newToday: const BlockProgress(done: 7, total: 7),
-  newSkipped: newSkipped,
+  words: words,
   openRevise: const <String>[],
   openNew: const <String>[],
   grammarDue: const <String>[],

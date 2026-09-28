@@ -102,15 +102,29 @@ class BackgroundModelDownloads implements ModelDownloads {
     DeviceStorage? storage,
     this._wifiGrace = const Duration(seconds: 2),
     DownloadNotice? notice,
+    bool Function(String modelId)? isOffered,
   ]) : _downloader = downloader ?? FileDownloader(),
        _storage = storage ?? const PlatformDeviceStorage(),
-       _notice = notice ?? const PlatformDownloadNotice();
+       _notice = notice ?? const PlatformDownloadNotice(),
+       _offered = isOffered ?? offered;
 
   final ModelRepository _models;
   final SettingsRepository _settings;
   final FileDownloader _downloader;
   final DeviceStorage _storage;
   final DownloadNotice _notice;
+
+  /// FR-M4-04's gate, here and not only on M4's buttons (#692 ME-3): a
+  /// download this build doesn't offer is refused, whatever asks for it,
+  /// files or a record left by a build with the flag on included. ADR 9 and
+  /// the Tencent licence's exclusions.
+  final bool Function(String modelId) _offered;
+
+  void _refuseUnoffered(String modelId) {
+    if (!_offered(modelId)) {
+      throw StateError('$modelId is not offered in this build (FR-M4-04)');
+    }
+  }
 
   /// The one notification every model file shares.
   static const String notificationGroup = 'models';
@@ -203,6 +217,7 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// that fails.
   @override
   Future<void> start(String modelId) async {
+    _refuseUnoffered(modelId);
     if (_starting.contains(modelId) || _inFlight(modelId)) return;
     _starting.add(modelId);
     try {
@@ -340,11 +355,13 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   @override
   Future<void> resume(String modelId) async {
+    _refuseUnoffered(modelId);
     await _downloader.resumeAll(group: modelId);
   }
 
   @override
   Future<void> retry(String modelId) async {
+    _refuseUnoffered(modelId);
     final files = _files[modelId];
     if (files == null) {
       // A checksum failed (verifying forgets the files), or nothing is known:
