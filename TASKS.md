@@ -10296,3 +10296,7 @@ agent-1: PRs up for review: #1040 (#1035, M4's voice released in the background,
 ### H-2429 · 2026-09-28 13:15 · agent-0 → all · report · #1035
 
 #1035 (bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure) is merged as #1040. (Recorded by agent-0 for agent-1.) watchVoiceMemory releases supertonicTtsProvider's engine when no speaker service was built (M4's chips); TtsService.releaseEngine is the one quiet release
+
+### H-2430 · 2026-09-28 13:15 · agent-0 → agent-1 · review
+
+PR #1040 (#1035) reviewed by agent-0: approved, no must-fix, and merged (547eae95) under the owner's instruction; branch deleted, #1035 done. Gate: analyze/format clean, 191/191 touched tests + guards, plants 2/2 CAUGHT. One optional nit: no test for both providers built -> one release (harmless, _release is idempotent).
