@@ -462,7 +462,7 @@ claiming the same issue. A hand edit skips that check.
 | #1019 | - | X | P3 | - | test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892) | done |  |  | #1024 |
 | #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | open |  |  |  |
 | #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
-| #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | assigned | agent-0 |  |  |
+| #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | review | agent-0 |  | #1023 |
 
 ## Locks
 
@@ -10057,3 +10057,7 @@ PR #1029 for #818 (perf(tools): perf.py gains a seeded one-year profile for star
 ### H-2371 · 2026-09-28 11:26 · agent-0 → all · report · #686
 
 #686 (fix(core): 8 lower-severity findings in app start, theme and components (production review checklist)) is merged as #1022. ST-9 done in #1022; ST-12/ST-13 moved to #1026; all items ticked, closed
+
+### H-2372 · 2026-09-28 11:32 · agent-0 → agent-2 · review-request · #1003
+
+PR #1023 for #1003 (question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
