@@ -14,6 +14,7 @@ import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/study/study_session.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/domain/plan_stats.dart' show dayDone;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -59,9 +60,8 @@ Future<StudyNext> studyNext(Ref ref, String date) async {
       if (open.contains((kind.wire, uid))) uid,
   ];
   // A rest day offers no grammar, as Today shows none (BR-PLAN-02).
-  final grammar = await ref.watch(planEngineProvider).studyDayOn(date)
-      ? await plans.grammarDueOn(date)
-      : const <String>[];
+  final studyDay = await ref.watch(planEngineProvider).studyDayOn(date);
+  final grammar = studyDay ? await plans.grammarDueOn(date) : const <String>[];
   final picked = await ref.watch(sentencePickerProvider).forDay(date);
   final rated = await ref.watch(sentenceStoreProvider).rated(date);
   final revise = await left(PlanKind.revise);
@@ -72,13 +72,20 @@ Future<StudyNext> studyNext(Ref ref, String date) async {
     grammar: grammar,
     sentences: math.max(0, picked.length - rated),
     backlog: (await plans.backlogBefore(date)).length,
-    // BR-PLAN-10 counts the grammar due, as Today's "Tag geschafft" does.
-    // The rows read, not every open one: a word a content update removed
-    // keeps its row but can't be studied, and must not hold the day open.
+    // T1's "Tag geschafft", one predicate (#942): a study day with something
+    // planned, all done. The rows read, not every open one: a word a content
+    // update removed keeps its row but can't be studied, and must not hold
+    // the day open. Sentences, their callers count.
     dayDone:
-        revise.isEmpty &&
-        newWords.isEmpty &&
-        grammar.isEmpty &&
+        dayDone(
+          isStudyDay: studyDay,
+          planned:
+              (await plans.plannedOn(date, PlanKind.revise)).length +
+              (await plans.plannedOn(date, PlanKind.newWord)).length +
+              (studyDay ? (await plans.grammarOfDay(date)).length : 0) +
+              picked.length,
+          open: revise.length + newWords.length + grammar.length,
+        ) &&
         !await ref.watch(planRepositoryProvider).dayCompleteShown(date),
   );
 }
