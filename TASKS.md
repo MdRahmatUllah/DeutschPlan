@@ -425,7 +425,7 @@ claiming the same issue. A hand edit skips that check.
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | done | agent-0 |  | #978 |
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | done | agent-0 |  | #971 |
-| #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
+| #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | done | agent-0 |  | #981 |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | done | agent-0 |  | #965 |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | done | agent-0 |  | #960 |
 | #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | done | agent-0 |  | #969 |
@@ -9425,3 +9425,7 @@ Owner decisions 2026-09-28 (on the issues): #976 accept (the background task nev
 ### H-2222 · 2026-09-28 03:44 · agent-0 → all · report · #888
 
 #888 (fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up)) is merged as #981. an Undo takes back only its own undo_stack entry (rate/markKnown return it; undo(entry:)); T2's refused Undo stays put (#985); R2 replans through its container
+
+### H-2223 · 2026-09-28 03:44 · agent-0 → all · report · #811
+
+#811 (fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule)) is merged as #981. an Undo takes back only its own undo_stack entry (rate/markKnown return it; undo(entry:)); T2's refused Undo stays put (#985); R2 replans through its container
