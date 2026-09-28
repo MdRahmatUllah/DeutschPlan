@@ -384,6 +384,22 @@ void main() {
       expect(find.text(l10n.exportImportDoMerge), findsNothing);
     });
 
+    testWidgets('#721 each file chosen starts on Merge, not on the last '
+        "file's Replace", (tester) async {
+      await pump(tester);
+      await choose(tester, await otherPhone());
+      await tester.tap(find.text(l10n.exportImportReplace));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.exportImportDoReplace), findsOneWidget);
+
+      files.picked = (name: 'sogda-2026-09-21.json', json: await otherPhone());
+      await tester.tap(find.text(l10n.exportImportChooseOther));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.exportImportDoMerge), findsOneWidget);
+      expect(find.text(l10n.exportImportDoReplace), findsNothing);
+    });
+
     testWidgets('backing out of the picker keeps the file chosen', (
       tester,
     ) async {

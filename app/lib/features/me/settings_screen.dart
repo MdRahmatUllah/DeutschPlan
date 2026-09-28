@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
@@ -18,9 +20,9 @@ import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:intl/intl.dart';
 
 part 'settings_screen.g.dart';
 
@@ -522,7 +524,7 @@ class SettingsScreen extends ConsumerWidget {
               _Row(
                 title: l10n.settingsRestart,
                 subtitle: l10n.settingsRestartNote,
-                onTap: () => OnboardingRoute.restartSetup(context),
+                onTap: () => unawaited(_restart(context)),
               ),
             ],
           ),
@@ -566,6 +568,8 @@ class SettingsScreen extends ConsumerWidget {
         if (mask & (1 << day) != 0) day,
     ];
     // 1 January 2024 was a Monday: the locale's own short weekday names.
+    // Not M5's chip names ("Mo", "বৃহঃ"), which are as short as a chip is
+    // narrow: a line of text reads "Mon–Sat" (#704, declined).
     final weekday = DateFormat.E(Localizations.localeOf(context).toString());
     String name(int day) => weekday.format(DateTime(2024, 1, 1 + day));
 
@@ -737,6 +741,24 @@ class _Group extends StatelessWidget {
 
 /// One setting: its name, a line under it, and its control — or, for a row
 /// that opens something, the value and a chevron.
+/// #704: Restart setup reads the learner's values before it pushes its
+/// page, and a second tap in between pushed a second. Held until that page is
+/// up. (Reset's sheet needs none: a second tap opens no second sheet.)
+bool _restarting = false;
+
+Future<void> _restart(BuildContext context) async {
+  if (_restarting) return;
+  _restarting = true;
+  try {
+    await OnboardingRoute.restartSetup(context);
+  } finally {
+    // Until the page it pushed is up: go_router builds it on the next
+    // frame, and M3 is the current route until then.
+    await WidgetsBinding.instance.endOfFrame;
+    _restarting = false;
+  }
+}
+
 class _Row extends StatelessWidget {
   const _Row({
     required this.title,

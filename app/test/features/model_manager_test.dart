@@ -335,6 +335,21 @@ void main() {
       expect(models.deleted, isEmpty);
     });
 
+    testWidgets("#721 a delete whose files won't go says so, and the card "
+        'is read again', (tester) async {
+      final models = FakeModels()..deleteFails = true;
+      await pump(tester, modelManagerStub(models: models));
+      await tester.tap(find.text(l10n.modelsDelete('399 MB')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.modelsDeleteConfirm));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text(l10n.modelsDeleteFailed), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+    });
+
     testWidgets('then deletes the model, which turns off what used it, and '
         'the voice lets go of its sessions', (tester) async {
       final settings = StubSettings();

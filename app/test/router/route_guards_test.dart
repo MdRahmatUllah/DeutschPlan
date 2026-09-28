@@ -633,6 +633,30 @@ void main() {
       expect(find.byType(OnboardingWelcomePage), findsNothing);
     });
 
+    testWidgets("#704 two taps on Settings' Restart setup in one frame "
+        'begin it once', (tester) async {
+      // Tall enough for all of M3, its last rows above the tab bar.
+      tester.view
+        ..physicalSize = const Size(1200, 6000)
+        ..devicePixelRatio = 2;
+      addTearDown(tester.view.reset);
+      await pumpApp(
+        tester,
+        guards: guardsWith(enrolled: true),
+        at: '/me/settings',
+      );
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(SettingsScreen)),
+      );
+
+      await tester.tap(find.text(l10n.settingsRestart));
+      await tester.tap(find.text(l10n.settingsRestart));
+      await tester.pumpAndSettle();
+
+      expect(flowLog, <String>['restart']);
+      expect(find.byType(OnboardingMeaningPage), findsOneWidget);
+    });
+
     testWidgets('while a plain link to setup still goes to Today', (
       tester,
     ) async {

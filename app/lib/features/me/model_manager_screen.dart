@@ -609,16 +609,23 @@ class _ModelCardView extends ConsumerWidget {
       destructive: true,
     );
     if (confirmed != true) return;
-    await container.read(modelRepositoryProvider).delete(card.entry);
-    // With `tts_engine` now the phone's, nothing would ask Supertonic again:
-    // asked once, it finds its model gone and lets go of its ~400 MB of
-    // sessions and its clips.
-    if (_isVoice) await container.read(supertonicTtsProvider).isAvailable();
-    container
-      ..invalidate(modelCardProvider(card.entry.id))
-      ..invalidate(phoneSpaceProvider)
-      // Today's voice card and M3's row: a delete is no download (#757).
-      ..invalidate(voiceInstalledProvider);
+    try {
+      await container.read(modelRepositoryProvider).delete(card.entry);
+      // With `tts_engine` now the phone's, nothing would ask Supertonic
+      // again: asked once, it finds its model gone and lets go of its
+      // ~400 MB of sessions and its clips.
+      if (_isVoice) await container.read(supertonicTtsProvider).isAvailable();
+    } on Object catch (error) {
+      // #721: said, not silent; the card below shows what is left.
+      debugPrint('model delete: $error');
+      if (context.mounted) SgToast.show(context, l10n.modelsDeleteFailed);
+    } finally {
+      container
+        ..invalidate(modelCardProvider(card.entry.id))
+        ..invalidate(phoneSpaceProvider)
+        // Today's voice card and M3's row: a delete is no download (#757).
+        ..invalidate(voiceInstalledProvider);
+    }
   }
 
   /// *Check for update*: the manifest the app carries is read again, and a

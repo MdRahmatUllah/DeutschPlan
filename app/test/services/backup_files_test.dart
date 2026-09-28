@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/services/backup_files.dart';
@@ -29,5 +30,22 @@ void main() {
 
     await expectLater(readCapped(big(), cap: 25), throwsFormatException);
     expect(chunks, 3);
+  });
+
+  test("#704 an export's copy replaces the one before, rather than piling "
+      'up in the cache', () async {
+    final temporary = Directory.systemTemp.createTempSync('sg_exports');
+    addTearDown(() => temporary.deleteSync(recursive: true));
+
+    await exportCopy(temporary, 'sogda-2026-09-20.json', '{"a": 1}');
+    final last = await exportCopy(temporary, 'sogda-2026-09-21.json', '{}');
+
+    expect(
+      Directory('${temporary.path}/exports')
+          .listSync()
+          .map((entry) => entry.uri.pathSegments.last),
+      <String>['sogda-2026-09-21.json'],
+    );
+    expect(last.readAsStringSync(), '{}');
   });
 }

@@ -172,9 +172,13 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// the queueing worked; the bytes arrive long after this returns.
   Future<bool> downloadVoice() async {
     if (state.voice == VoiceOffer.started) return true;
-    await askToNotifyDownload(ref.read(notificationPermissionProvider));
+    final downloads = ref.read(modelDownloadsProvider);
     try {
-      await ref.read(modelDownloadsProvider).start(supertonic);
+      // #704: a download that won't fit is refused before the phone is
+      // asked to let it notify.
+      if (await downloads.shortfallFor(supertonic) > 0) return false;
+      await askToNotifyDownload(ref.read(notificationPermissionProvider));
+      await downloads.start(supertonic);
     } on Object {
       return false;
     }
