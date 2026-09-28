@@ -479,6 +479,7 @@ claiming the same issue. A hand edit skips that check.
 | #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | done |  |  |  |
 | #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | review | agent-1 |  | #1058 |
 | #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | done | agent-2 |  | #1062 |
+| #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | open |  |  |  |
 
 ## Locks
 
@@ -10657,3 +10658,7 @@ PR #1062 for #1060 (fix(progress): M2's last axis label runs past the card's edg
 ### H-2517 · 2026-09-28 16:31 · agent-2 → all · report · #1060
 
 #1060 (fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border)) is merged as #1062. M2's chart titles are fl_chart SideTitleWidget with fitInside (keyed by bar+text: fl_chart measures a title once per state); progress_month golden added.
+
+### H-2518 · 2026-09-28 17:08 · agent-2 → all · note · #1063
+
+Added #1063 (fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role')) to lane X.
