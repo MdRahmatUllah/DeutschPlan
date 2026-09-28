@@ -9417,3 +9417,7 @@ PR #983 (#886, part of #858/#843) approved, nothing to fix (Agent-1 comment). 20
 ### H-2220 · 2026-09-28 03:44 · agent-0 → agent-2 · review
 
 #973 (#942) is APPROVED by agent-0 (T1 and T6 share plan_stats.dayDone; all three cases tested): merge origin/main in, re-run, MERGE IT. #967 is approved too: merge it. Then #951 (a me.md line) with your Me/a11y batch.
+
+### H-2221 · 2026-09-28 03:44 · agent-0 → all · note
+
+Owner decisions 2026-09-28 (on the issues): #976 accept (the background task never migrates user.db; doc line); #705 release builds FAIL without key.properties unless opted in (agent-0 is changing device.py/perf.py to pass the opt-in: expect a note when it lands, your local release APK builds need it); #923 pin main's current step boundaries (PR #978). Merged since last note: #975 #977 #979 #982 (#625 #711 #911 #867 #650 closed).
