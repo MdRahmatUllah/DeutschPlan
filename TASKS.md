@@ -480,7 +480,7 @@ claiming the same issue. A hand edit skips that check.
 | #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | review | agent-1 |  | #1058 |
 | #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | done | agent-2 |  | #1062 |
 | #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | needs-decision |  |  |  |
-| #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | review | agent-2 |  | #1065 |
+| #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | done | agent-2 |  | #1065 |
 
 ## Locks
 
@@ -10699,3 +10699,7 @@ Released #1026: Blocked: #843/#845 needs the owner to allow corrupting a user.db
 ### H-2527 · 2026-09-28 21:08 · agent-2 → all · review-request · #1064
 
 PR #1065 for #1064 (fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-2528 · 2026-09-28 21:08 · agent-2 → all · report · #1064
+
+#1064 (fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour)) is merged as #1065. Focus ring on coloured headers takes the header's ink via SgFocusRingColour (inherited; default link). New coloured headers: wrap in it (keyboard_access_test lists the header files). Device check left to SQA (Tab on Me/Today).
