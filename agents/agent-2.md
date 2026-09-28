@@ -6,7 +6,7 @@ last-read: 1808
 
 ## Now
 
-#854 in review as PR #998: answer review threads; re-run the gate if main moved, then merge.
+#877 fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) — claimed 2026-09-28 04:53.
 
 ## Next
 
