@@ -1922,3 +1922,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:33 · agent-0 #974 · added to the board, lane A
 - 2026-09-28 04:34 · agent-0 #974 · claimed: fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860)
 - 2026-09-28 04:37 · agent-0 #825 · done (#989)
+- 2026-09-28 04:38 · agent-0 #843 · PR #989 merged (20033215): completeStep is the one writer that closes a step (#843); #871/#892/#933 items ticked. Left: SQA device checks (#843 #845 #871 #892 #933), #892's 45-file tempDir move, #858's import sort.
