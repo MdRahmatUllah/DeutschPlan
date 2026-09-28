@@ -312,6 +312,30 @@ def test_818_a_year_metric_takes_its_fresh_twins_margin_and_budget():
     assert not perf.report({"year.start.cold_ms": 1400}, doc)
 
 
+def test_818_the_discarded_first_start_may_outlast_am_start(monkeypatch):
+    """After the seed, the first launch took 14.5 s to its first frame and
+    `am start -W` stopped waiting. It is not measured, so it doesn't stop the run."""
+    timeout = AM_START.replace("Status: ok", "Status: timeout").replace("COLD", "UNKNOWN (-1)").replace("TotalTime: 812\n", "")
+    colds = [timeout]
+
+    class Dev:
+        def run(self, *args):
+            pass
+
+        def install(self, apk):
+            return True
+
+        def sh(self, *args):
+            if args[:2] == ("am", "start"):
+                return (colds.pop() if colds else AM_START) if "-S" in args else AM_START.replace("COLD", "HOT")
+            return {"dumpsys": ACTIVITIES, "logcat": LOGCAT if "-d" in args else ""}.get(args[0], "")
+
+    monkeypatch.setattr(perf, "seed_year", lambda dev: None)
+    monkeypatch.setattr(perf.time, "sleep", lambda seconds: None)
+    assert perf.measure_start(Dev(), build=False, year=True) == {"start.cold_ms": 1634, "start.warm_ms": 812}
+    assert not colds
+
+
 @pytest.fixture
 def measured(baseline, monkeypatch):
     """Which measurements ran, and with which profile; no device, no build."""
