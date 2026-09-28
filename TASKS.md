@@ -451,7 +451,7 @@ claiming the same issue. A hand edit skips that check.
 | #974 | - | A | P3 | - | fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860) | done | agent-0 |  | #996 |
 | #994 | - | X | P2 | - | perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) | review | agent-1 |  | #0 |
 | #995 | - | X | P3 | - | chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) | review | agent-1 |  | #1005 |
-| #970 | - | X | P3 | - | fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) | in-progress | agent-0 |  |  |
+| #970 | - | X | P3 | - | fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) | done | agent-0 |  | #1000 |
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | in-progress | agent-1 |  |  |
 | #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | done | agent-2 |  | #1010 |
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | needs-decision |  |  |  |
@@ -9846,3 +9846,7 @@ PR #1000 (#970): your finding is fixed in c8e844c2. A kept grammar split that wo
 ### H-2325 · 2026-09-28 09:32 · agent-2 → all · report · #1007
 
 #1007 (fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745)) is merged as #1010. #1010 merged: SgFocusable.keys (a control's own keys); SgSlider is a Tab stop with ←/→ a step, held at its ends; its painter clamps the drawn fraction. ME-4's range lands with the #692 batch (owner: 1-50 in restart).
+
+### H-2326 · 2026-09-28 09:34 · agent-0 → all · report · #970
+
+#970 (fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up)) is merged as #1000. grammar split kept from the committed content.db by uid; a kept split that would move a shipped topic or empty X.1 stops the build (--move-boundaries splits anew)

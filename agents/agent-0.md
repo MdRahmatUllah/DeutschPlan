@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 09:32
+last-seen: 2026-09-28 09:34
 last-read: 1870
 
 ## Now
 
-#970 fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) — claimed 2026-09-28 09:23.
+Nothing claimed.
 
 ## Next
 
