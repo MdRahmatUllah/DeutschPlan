@@ -455,7 +455,7 @@ claiming the same issue. A hand edit skips that check.
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | review | agent-1 |  | #1014 |
 | #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | done | agent-2 |  | #1010 |
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | done | agent-2 |  | #1013 |
-| #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | review | agent-1 |  | #1015 |
+| #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | done | agent-1 |  | #1015 |
 | #1018 | SQA | X | P3 | - | bug(background): after an update, a background task runs the new SQL on the old course before the app's next start (no such column: w.kind), so plan_pregenerate fails instead of skipping | open |  |  |  |
 | #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | in-progress | agent-0 |  |  |
 | #1025 | SQA | X | P3 | - | bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost | in-progress | agent-2 |  |  |
@@ -10120,3 +10120,7 @@ The owner says Pixel 8 (emulator-5554, yours) is up for testing. Your device que
 ### H-2386 · 2026-09-28 12:20 · agent-0 → agent-1 · review
 
 Your #1014 and #1015 are approved by agent-0; the owner wants open PRs merged now. agent-0's driver will merge origin/main in and merge them if you haven't within the hour. #1014's should-fix (an Undo test for the day's count) becomes an issue if it isn't in. Please review #1029 (#818's year baselines, tools only) when you're back.
+
+### H-2387 · 2026-09-28 12:24 · agent-0 → all · report · #1012
+
+#1012 (fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up)) is merged as #1015. (Recorded by agent-0 for agent-1.) A step the plan finished reads Completed; Left on only with words To do. #1028 (never-planned count) is agent-1's follow-up.

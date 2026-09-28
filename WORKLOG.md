@@ -2035,3 +2035,4 @@ able to tell what is going on without asking.
 - 2026-09-28 11:54 · agent-3 · SQA pass on main 295de3ea: #925 done (filed #1018); device checks #892 #933 #907(DA-6) #957 #965(#849) #958 passed + commented; filed #1025; verifying the 20 SQA fixes merged since 27 Sep; #758 re-test next
 - 2026-09-28 12:05 · agent-0 · #1030 code committed locally (312f4795); #1031 bisect: pre-#982 and #982 fine on build; flutter drive hung at #993 (PIDs 33476/14900/9524), stopped per instructions
 - 2026-09-28 12:22 · agent-0 #1021 · claimed: fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745)
+- 2026-09-28 12:24 · agent-0 #1012 · done (#1015)
