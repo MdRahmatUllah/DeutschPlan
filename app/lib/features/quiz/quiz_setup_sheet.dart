@@ -174,7 +174,11 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
         // 16 between rows: a 32 dp chip's 48 dp target reaches 8 past it,
         // and rows whose targets overlap read as one, column by column
         // (#853).
-        Wrap(spacing: 8, runSpacing: 16, children: chips),
+        Wrap(
+          spacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(32),
+          children: chips,
+        ),
       ],
     );
 
