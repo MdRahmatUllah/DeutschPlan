@@ -2081,3 +2081,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:01 · agent-0 #1047 · assigned to agent-1
 - 2026-09-28 14:03 · agent-0 #694 · PR #1048 open; review requested from agent-1
 - 2026-09-28 14:06 · agent-2 #1045 · claimed: bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it)
+- 2026-09-28 14:08 · agent-0 #1021 · part 1 merged: #1038 (SgTappable on the learning screens, lighter SgFocusable); #1042 (part 2) retargeted to main, awaits agent-2's review and closes #1021
