@@ -261,6 +261,10 @@ class StudySession extends _$StudySession {
   /// One write at a time: a double tap must not rate a word twice.
   bool _busy = false;
 
+  /// Each rated card's undo entry, by its position: its *Undo* takes back
+  /// that rating, and not one made of the word since, elsewhere (#888).
+  final Map<int, int> _entries = <int, int>{};
+
   /// When the current card came up, for the time a rating records.
   DateTime? _shownAt;
 
@@ -289,7 +293,7 @@ class StudySession extends _$StudySession {
   Future<bool> rate(Rating rating, {StudyItem? card}) =>
       _act(card, (item) async {
         final row = _row(item);
-        await _rating.rate(
+        _entries[state.value!.position] = await _rating.rate(
           item.uid,
           rating,
           source: ReviewSource.daily,
@@ -329,7 +333,11 @@ class StudySession extends _$StudySession {
   /// its plan row and moves on.
   Future<bool> knewIt({StudyItem? card}) => _act(card, (item) async {
     final row = _row(item);
-    await _rating.markKnown(item.uid, planDate: row.date, kind: row.kind);
+    _entries[state.value!.position] = await _rating.markKnown(
+      item.uid,
+      planDate: row.date,
+      kind: row.kind,
+    );
     advance(CardOutcome.knewIt);
   });
 
@@ -345,8 +353,8 @@ class StudySession extends _$StudySession {
   });
 
   /// The *Undo* of [knewIt] or [skip]: the write taken back and the card
-  /// asked again. False when there was nothing to take back, or a write was
-  /// still in flight.
+  /// asked again. False when there was nothing to take back, a rating was
+  /// made since (#888), or a write was still in flight.
   Future<bool> undo() async {
     final current = state.value;
     if (current == null || current.position == 0 || _busy) return false;
@@ -365,8 +373,10 @@ class StudySession extends _$StudySession {
             skipped: false,
           );
         }
-      } else {
-        await _rating.undo(expectUid: current.items[last].uid);
+      } else if (_entries[last] case final entry?) {
+        // A rating made since is on top: it stays, and so does this one, so
+        // the card is not asked again (#728, #888).
+        if (await _rating.undo(entry: entry) == null) return false;
       }
       state = AsyncData<StudySessionState>(current.back());
       _shownAt = ref.read(clockProvider)();

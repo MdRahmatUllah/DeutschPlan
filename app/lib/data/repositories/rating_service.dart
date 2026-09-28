@@ -40,7 +40,9 @@ class RatingService {
   /// format, and writes the lot in one transaction. [planDate] and [kind] mark
   /// the plan row complete when the rating came from the daily plan; a rating
   /// from Search or a quiz leaves them null and completes nothing.
-  Future<void> rate(
+  ///
+  /// Returns its undo entry, for its *Undo* to pass to [undo] (#888).
+  Future<int> rate(
     String uid,
     Rating rating, {
     required ReviewSource source,
@@ -54,7 +56,7 @@ class RatingService {
     final before = await _stateOf(uid);
     final next = _scheduler().review(_cardStateOf(before), rating, now.toUtc());
 
-    await _plan.rate(
+    return _plan.rate(
       uid: uid,
       rating: rating.value,
       next: ScheduledState(
@@ -112,14 +114,13 @@ class RatingService {
   /// a word sitting in today's plan. Without it the row stays open and the
   /// word turns up in tomorrow's backlog after the learner has just said they
   /// know it.
-  Future<void> markKnown(String uid, {String? planDate, PlanKind? kind}) =>
-      rate(
-        uid,
-        Rating.easy,
-        source: ReviewSource.known,
-        planDate: planDate,
-        kind: kind,
-      );
+  Future<int> markKnown(String uid, {String? planDate, PlanKind? kind}) => rate(
+    uid,
+    Rating.easy,
+    source: ReviewSource.known,
+    planDate: planDate,
+    kind: kind,
+  );
 
   /// BR-STATUS-03. The FSRS state is untouched: resuming picks up the
   /// schedule, it does not restart it.
@@ -130,8 +131,8 @@ class RatingService {
   Future<void> resume(String uid) => _words.resume(uid);
 
   /// Undoes the most recent rating, or returns null if there is nothing to
-  /// undo — or, with [expectUid], if the most recent is another word's.
-  Future<String?> undo({String? expectUid}) => _plan.undo(expectUid: expectUid);
+  /// undo — or, with [entry], if the most recent is not that rating (#888).
+  Future<String?> undo({int? entry}) => _plan.undo(entry: entry);
 
   /// The FSRS view of a stored row.
   ///

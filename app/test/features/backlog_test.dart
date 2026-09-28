@@ -703,6 +703,30 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await tester.pumpAndSettle();
     });
 
+    testWidgets("#888 Mark known's Undo leaves a later rating of the same "
+        'word alone', (tester) async {
+      await pump(tester);
+      await longPress(tester, l10n.backlogMarkKnown);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(BacklogScreen)),
+      );
+      await tester.runAsync(
+        () => container
+            .read(ratingServiceProvider)
+            .rate(haus, Rating.again, source: ReviewSource.quiz),
+      );
+
+      await tester.tap(find.text(l10n.undo));
+      await settle(tester);
+      final log = await tester.runAsync(
+        () =>
+            db.customSelect('SELECT source FROM review_log ORDER BY id').get(),
+      );
+      expect(log!.map((r) => r.data['source']), <String>['known', 'quiz']);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('Remove from course suspends it and completes its row', (
       tester,
     ) async {
