@@ -6,7 +6,7 @@ last-read: 2397
 
 ## Now
 
-#1035 in review as PR #1040: answer review threads; re-run the gate if main moved, then merge.
+#1028 fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) — claimed 2026-09-28 13:03.
 
 ## Next
 
