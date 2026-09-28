@@ -96,8 +96,8 @@ class OnboardingPacePage extends ConsumerWidget {
           const SizedBox(height: 6),
           SgSlider(
             value: draft.dailyNew,
-            min: draft.dailyNewRange.min,
-            max: draft.dailyNewRange.max,
+            min: OnboardingDraft.minDailyNew,
+            max: OnboardingDraft.maxDailyNew,
             onChanged: (count) => notifier().setDailyNew(count),
             label: l10n.onboardingPaceNewWords,
           ),

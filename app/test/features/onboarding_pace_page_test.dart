@@ -156,27 +156,6 @@ void main() {
       expect(draft().dailyNew, 30);
     });
 
-    testWidgets('#692 ME-4 restart setup with a pace of 45: the slider '
-        "covers Settings' 1–50, and a nudge is 46, not 30", (tester) async {
-      await pump(tester);
-      container
-          .read(onboardingProvider.notifier)
-          .prefill(
-            step: 'A1.1',
-            dailyNew: 45,
-            reviseCount: 10,
-            studyDaysMask: 127,
-            reminderOn: false,
-            reminderTime: (hour: 19, minute: 30),
-          );
-      await tester.pump();
-
-      final slider = tester.widget<SgSlider>(find.byType(SgSlider));
-      expect(<int>[slider.min, slider.value, slider.max], <int>[1, 45, 50]);
-      slider.onChanged!(46);
-      expect(draft().dailyNew, 46);
-    });
-
     testWidgets('and the presets are Relaxed 5, Steady 7, Intensive 15', (
       tester,
     ) async {

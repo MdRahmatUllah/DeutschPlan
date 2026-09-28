@@ -126,7 +126,8 @@ class SgSlider extends StatelessWidget {
                 child: CustomPaint(
                   painter: _SliderPainter(
                     // Clamped: a value outside the range never draws off the
-                    // track (#692 ME-4).
+                    // track (#692 ME-4 drew one at 155 %; the range itself
+                    // waits for the owner).
                     fraction: ((value - min) / (max - min)).clamp(0.0, 1.0),
                     rail: tokens.surface.track,
                     fill: tokens.color.primary,

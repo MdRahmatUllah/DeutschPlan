@@ -44,12 +44,6 @@ class OnboardingDraft {
   static const int minDailyNew = 3;
   static const int maxDailyNew = 30;
 
-  /// Page 4's slider's range: 3–30 in first setup; in restart setup,
-  /// Settings' 1–50, where the learner's pace may already be (#692 ME-4).
-  ({int min, int max}) get dailyNewRange => restart
-      ? SettingKeys.dailyNew.range!
-      : (min: minDailyNew, max: maxDailyNew);
-
   /// Page 4's stepper, over the range Settings gives `revise_count`.
   static const int minReviseCount = 0;
   static const int maxReviseCount = 100;
@@ -151,9 +145,12 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// Page 3, or S3's suggestion when the learner comes back from it.
   void chooseStep(String code) => state = state.copyWith(step: code);
 
-  /// Page 4's slider and presets, held to its range.
+  /// Page 4's slider and presets, held to 3–30.
   void setDailyNew(int count) => state = state.copyWith(
-    dailyNew: count.clamp(state.dailyNewRange.min, state.dailyNewRange.max),
+    dailyNew: count.clamp(
+      OnboardingDraft.minDailyNew,
+      OnboardingDraft.maxDailyNew,
+    ),
   );
 
   /// Page 4's stepper, held to 0–100.
