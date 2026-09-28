@@ -18,9 +18,11 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/setup_repository.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart'
     show MaskSpan, addDays, decodeMaskHistory, planDate;
 import 'package:sogda/features/today/today_providers.dart';
@@ -148,6 +150,21 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
       expect(view.words, 4, reason: 'r1, b1, Haus and r2');
     },
   );
+
+  test('#1004 an Undo takes its word back out of the count', () async {
+    final rating = container.read(ratingServiceProvider);
+    final entry = await rating.rate(
+      'r2',
+      Rating.good,
+      source: ReviewSource.daily,
+    );
+    await pumpEventQueue();
+    expect((await container.read(todayViewProvider.future)).words, 1);
+
+    await rating.undo(entry: entry);
+    await pumpEventQueue();
+    expect((await container.read(todayViewProvider.future)).words, 0);
+  });
 
   test('FR-T1-01 it renders from the persisted plan', () async {
     final view = await container.read(todayViewProvider.future);
