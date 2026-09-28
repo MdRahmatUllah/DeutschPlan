@@ -2087,3 +2087,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:21 · agent-2 #1045 · PR #1050 open; review requested from all
 - 2026-09-28 14:31 · agent-1 #1049 · claimed: fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer)
 - 2026-09-28 14:38 · agent-2 #857 · claimed: perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone
+- 2026-09-28 14:39 · agent-2 #857 · done (#965)

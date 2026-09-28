@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 14:38
+last-seen: 2026-09-28 14:39
 last-read: 2463
 
 ## Now
 
-#857 perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone — claimed 2026-09-28 14:38.
+Nothing claimed.
 
 ## Next
 
