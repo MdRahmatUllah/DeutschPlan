@@ -186,7 +186,7 @@ class OnboardingShell extends StatelessWidget {
                   alignment: AlignmentDirectional.centerStart,
                   child: SgButton(
                     label: l10n.back,
-                    onPressed: onBack,
+                    onPressed: busy ? null : onBack,
                     kind: SgButtonKind.text,
                     expand: false,
                   ),
@@ -198,16 +198,22 @@ class OnboardingShell extends StatelessWidget {
       ],
     );
 
-    return AdaptiveScaffold(
-      backgroundColor: tokens.isGlass
-          ? tokens.surface.paper.withValues(alpha: 0)
-          : tokens.surface.paper,
-      body: tokens.isGlass
-          ? AuroraBackdrop(
-              leading: page.headerColour(tokens),
-              child: SafeArea(top: false, child: body),
-            )
-          : SafeArea(top: false, child: body),
+    // #692 ME-5: while setup finishes, nothing leaves the page, the system
+    // back and iOS's swipe included: a page left mid-commit came back
+    // enrolled, and its Skip or another step committed again.
+    return PopScope(
+      canPop: !busy,
+      child: AdaptiveScaffold(
+        backgroundColor: tokens.isGlass
+            ? tokens.surface.paper.withValues(alpha: 0)
+            : tokens.surface.paper,
+        body: tokens.isGlass
+            ? AuroraBackdrop(
+                leading: page.headerColour(tokens),
+                child: SafeArea(top: false, child: body),
+              )
+            : SafeArea(top: false, child: body),
+      ),
     );
   }
 }

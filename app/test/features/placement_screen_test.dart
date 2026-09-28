@@ -125,6 +125,20 @@ void main() {
     await tester.pump();
   }
 
+  testWidgets('#692 ME-12 a step whose words cannot be read ends the check, '
+      'back to page 3 with nothing chosen, not a Next greyed out for good', (
+    tester,
+  ) async {
+    await pump(tester);
+    dao.fail = true;
+
+    // Right answers walk up a step, whose words are read then.
+    for (var i = 0; i < 6 && done.isEmpty; i++) {
+      await answer(tester, right: true);
+    }
+    expect(done, <String?>[null]);
+  });
+
   /// A check that settles on A2.2 after nine answers.
   Future<void> finish(WidgetTester tester, {SgMode mode = SgMode.light}) async {
     await pump(tester, mode: mode);
@@ -497,8 +511,12 @@ class _PoolDao extends ContentDao {
 
   final List<String> asked = <String>[];
 
+  /// Every read from now on fails, as a broken content.db would.
+  bool fail = false;
+
   @override
   Future<List<PlacementWord>> placementPool(String step) async {
+    if (fail) throw StateError('no words for $step');
     asked.add(step);
     return <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];
   }
