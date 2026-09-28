@@ -9,7 +9,7 @@
 **Licences layout.** Sections Models (Supertonic 3 — OpenRAIL-M; Hy-MT 1.5 (1.8B) — Hy-MT licence), Fonts (Inter, Noto Sans Bengali — OFL 1.1), Native libraries (ONNX Runtime — MIT, with its third-party notices; the Android libraries — Apache-2.0; #610; desugar_jdk_libs — GPL-2.0 with the Classpath Exception, #848), Packages (from `LicenseRegistry`).
 
 **Functional requirements**
-- FR-M9-01 Version/build from `package_info_plus`; content version and counts from `c.meta`.
+- FR-M9-01 Version/build from `package_info_plus`; content version and counts from `c.meta`. The app's version shows on its own ("Version 1.0.0 (build 41)") when the course's facts can't be read (#692 ME-13).
 - FR-M8-01 Model, font and native-library licence texts are bundled as assets and shown in full.
 
 **Tests.** counts equal the content manifest.
@@ -21,7 +21,7 @@
   - The course's release is `meta.content_version` cut to year and month (`20260925104512` → 2026.09).
   - The date is `meta.built_at`, written as M1 writes a day.
 - **The counts.** `meta` keeps only the word count, so `ContentDao.facts()` counts `words`, `grammar_topics` and `word_examples`, as the pipeline's manifest does. A test holds them equal to `content_manifest.json` (FR-M9-01).
-- **Contact** opens the project's new-issue page on GitHub: the report's destination (#100), since the app has no server or address. An address is the owner's to give (the artboard's is `hello@[YOUR DOMAIN]`).
+- **Contact** opens the project's new-issue page on GitHub: the report's destination (#100), since the app has no server or address. An address is the owner's to give (the artboard's is `hello@[YOUR DOMAIN]`). A phone that can't open it (no browser) gets a toast saying so, not silence: every web link goes through `openWebProvider`, which answers false rather than throwing (#692 ME-13).
 - **Content** leads nowhere. The artboard draws a chevron, but the spec gives no destination, so the row shows no chevron.
 - **Models** (FR-M8-01): the licences are bundled unchanged, as their makers publish them (only git's line endings differ), in `assets/licences/`:
   - Supertonic 3 is under the BigScience OpenRAIL-M licence (`Supertone/supertonic-3`).

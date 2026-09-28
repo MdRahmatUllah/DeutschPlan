@@ -14,6 +14,6 @@ Result: "Your result — 18 of 20 correct", suggested step in a large chip, one-
 - FR-S3-01 Adaptive: start at A1.1; two consecutive correct → next step; two consecutive wrong → previous step; 20 items max; stop early after 8 items if the level is stable for 3 items.
 - FR-S3-02 Items are sampled from content with a fixed seed per session; distractors from the same POS. A meaning item's distractor never shares a synonym with the answer (`senses`: split at `/`, `,` and `;`, lower case, without "to "), so "good day / hello" is never a wrong option beside *Hallo*'s "hello / hi" (#680).
 - FR-S3-03 Nothing is written to `word_state`; the result only pre-selects the step (BR-COURSE-04).
-- FR-S3-04 Abandoning (close) returns to page 3 with no changes.
+- FR-S3-04 Abandoning (close) returns to page 3 with no changes. So does a step whose words can't be read, rather than leaving *Next* greyed out (#692 ME-12).
 
 **Tests.** Unit: level walk with scripted answers; widget: close discards.
