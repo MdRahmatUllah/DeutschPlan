@@ -252,6 +252,7 @@ class TodayView {
     required this.courseDay,
     required this.stepWords,
     this.grammarDone = 0,
+    this.newSkipped = 0,
     this.sentences = BlockProgress.none,
     this.isStudyDay = true,
     this.minutes = 0,
@@ -274,6 +275,10 @@ class TodayView {
 
   final BlockProgress revise;
   final BlockProgress newToday;
+
+  /// Of [newToday]'s done, the ones skipped to the backlog and not studied
+  /// since (#729): done for the plan, not studied.
+  final int newSkipped;
 
   /// The words a Revise or New session would show: the block's open ones.
   final List<String> openRevise;
@@ -363,8 +368,9 @@ class TodayView {
   /// geschafft": nothing was done on it.
   bool get isDone => isStudyDay && total > 0 && left == 0;
 
-  /// The words studied today: TodayDone's "17 words".
-  int get words => revise.total + newToday.total;
+  /// The words studied today: TodayDone's and T6's "17 words". A new word
+  /// skipped to the backlog is done for the plan, but wasn't studied (#729).
+  int get words => revise.done + newToday.done - newSkipped;
 
   /// "Revision starts tomorrow" rather than "nothing due": nothing can be due
   /// on the first day, and saying so explains the empty card.
