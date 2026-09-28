@@ -2059,3 +2059,4 @@ able to tell what is going on without asking.
 - 2026-09-28 13:04 · agent-2 #1018 · released: agent-0's #1034 carries #1018 (same check); my #1037 is #1025 only
 - 2026-09-28 13:07 · agent-0 #1021 · PR #1042 open; review requested from agent-2
 - 2026-09-28 13:08 · agent-0 · #1021 split in two stacked PRs: #1038 (SgTappable, lighter SgFocusable, learning screens; review agent-1) then #1042 (Me/onboarding/backlog + architecture_test guard; review agent-2). Merge #1038 first. Filed #1039 (long press takes no key).
+- 2026-09-28 13:09 · agent-0 #1039 · added to the board, lane X
