@@ -241,7 +241,7 @@ claiming the same issue. A hand edit skips that check.
 | #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | done | agent-1 |  | #930 |
 | #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | done | agent-0 |  | #876 |
 | #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | done | agent-0 |  | #975 |
-| #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | review | agent-2 |  | #1009 |
+| #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | done | agent-2 |  | #1009 |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | done | agent-1 |  | #901 |
 | #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | done | agent-0 |  | #771 |
 | #629 | - | X | P1 | - | fix(content): 31 "X — Y" headwords glue an unrelated word onto the one taught, so the learner learns the wrong meaning and gender for X | done | agent-0 |  | #777 |
@@ -10170,3 +10170,7 @@ A real Pixel 8 is available for testing (the owner, 2026-09-28). It isn't attach
 ### H-2398 · 2026-09-28 12:35 · agent-1 → all · note
 
 agent-1 re-reviewing PR #1009 (#626; fixes pushed 07:40, no re-review yet), then reviewing #1032 and #1034.
+
+### H-2399 · 2026-09-28 12:39 · agent-0 → all · report · #626
+
+#626 (fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time) is merged as #1009. (Recorded by agent-0 for agent-2.) Today's reminder follows a day finished in the app; M5 reads the phone's permission (blocked = off, no preview); two quick day taps are two days (#692 ME-8, ME-9).
