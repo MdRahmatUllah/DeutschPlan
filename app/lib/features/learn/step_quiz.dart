@@ -24,8 +24,8 @@ part 'step_quiz.g.dart';
 Stream<LastQuiz?> lastStepQuiz(Ref ref, String code) =>
     ref.watch(examRepositoryProvider).watchLastStepQuiz(code);
 
-/// The quiz a tile starts (FR-L2-04): from this step's learned words,
-/// DE → EN unless it is *Forms*.
+/// The quiz a tile starts (FR-L2-04): from this step's learned words, in
+/// the learner's meaning direction unless it is *Forms* (#667).
 QuizArgs stepQuiz(
   String code, {
   required int length,
@@ -57,9 +57,13 @@ class StepQuizTab extends ConsumerWidget {
     final open = learned >= minimumLearned;
     final last = ref.watch(lastStepQuizProvider(step.code)).value;
 
-    void start(int length, [String direction = 'deEn']) => QuizRoute.open(
+    void start(int length, [String? direction]) => QuizRoute.open(
       context,
-      stepQuiz(step.code, length: length, direction: direction),
+      stepQuiz(
+        step.code,
+        length: length,
+        direction: direction ?? meaningDirection(ref).name,
+      ),
     );
 
     final lengths = <(String, int)>[

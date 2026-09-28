@@ -122,6 +122,30 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     }
   });
 
+  test("#729 a new word skipped to the backlog is done for the plan, but "
+      "not a word studied", () async {
+    final view = await container.read(todayViewProvider.future);
+
+    // Tür skipped, Haus still open; r1 revised, r2 still open.
+    expect(view.newToday.done, 1, reason: 'skipped: nothing waits on it');
+    expect(view.newSkipped, 1);
+    expect(view.words, 1, reason: 'r1 alone was studied');
+  });
+
+  test('#729 and one skipped, then studied from the backlog the same day, '
+      'was studied', () async {
+    await db.customUpdate(
+      "UPDATE plan_items SET completed_at = '2026-09-21T07:30:00' "
+      "WHERE word_uid = '${ContentFixture.tuer}'",
+      updates: <drift.TableInfo<drift.Table, Object?>>{db.planItems},
+    );
+    await pumpEventQueue();
+    final view = await container.read(todayViewProvider.future);
+
+    expect(view.newSkipped, 0);
+    expect(view.words, 2, reason: 'r1 and Tür');
+  });
+
   test('FR-T1-01 it renders from the persisted plan', () async {
     final view = await container.read(todayViewProvider.future);
 

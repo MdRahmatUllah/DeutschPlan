@@ -6,7 +6,6 @@ import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, immutable;
 import 'package:flutter/rendering.dart'
     show BoxHitTestResult, MatrixUtils, RenderProxyBox;
 import 'package:flutter/semantics.dart' show SemanticsConfiguration;
@@ -671,20 +670,31 @@ class AdaptiveTabBar<T extends Object> extends StatefulWidget {
 }
 
 class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
-    with SingleTickerProviderStateMixin {
-  late final TabController _controller = _StillTabController(
+    with TickerProviderStateMixin {
+  late TabController _controller = _newController();
+
+  /// A controller's length is fixed, so a bar whose tabs change count gets a
+  /// new one (#698).
+  TabController _newController() => _StillTabController(
     length: widget.tabs.length,
-    initialIndex: _index,
+    initialIndex: math.max(_index, 0),
     vsync: this,
     still: () => mounted && MediaQuery.disableAnimationsOf(context),
   );
 
+  /// -1 for a value not among the tabs, which moves nothing (#698).
   int get _index => widget.tabs.keys.toList().indexOf(widget.value);
 
   @override
   void didUpdateWidget(AdaptiveTabBar<T> old) {
     super.didUpdateWidget(old);
-    if (_controller.index != _index) _controller.animateTo(_index);
+    if (_controller.length != widget.tabs.length) {
+      // TabBar lets go of a disposed controller itself.
+      _controller.dispose();
+      _controller = _newController();
+    } else if (_index >= 0 && _controller.index != _index) {
+      _controller.animateTo(_index);
+    }
   }
 
   @override
@@ -692,9 +702,6 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
     _controller.dispose();
     super.dispose();
   }
-
-  static bool _large(BuildContext context) =>
-      MediaQuery.textScalerOf(context).scale(14) > 14 * 1.3;
 
   @override
   Widget build(BuildContext context) {
@@ -724,8 +731,8 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
         // fixed tabs faded them to "Word", "Gram" (#314): they scroll instead.
         // ponytail: a threshold, not a measurement; measure the labels if a
         // bar with other labels or counts needs it.
-        isScrollable: _large(context),
-        tabAlignment: _large(context) ? TabAlignment.start : null,
+        isScrollable: SgScript.large(context),
+        tabAlignment: SgScript.large(context) ? TabAlignment.start : null,
         labelColor: tokens.color.ink,
         unselectedLabelColor: tokens.color.textSecondary,
         // 14 on the artboard, between the label and body roles.
@@ -804,7 +811,9 @@ abstract final class Adaptive {
         ),
         child: SgSurface(
           kind: SgSurfaceKind.cardStrong,
-          radius: tokens.shape.sheet,
+          // Its foot is the screen's: the page showed through two rounded
+          // corners there (#686 ST-8).
+          borderRadius: tokens.shape.sheetRadius,
           child: SafeArea(top: false, child: builder(sheetContext)),
         ),
       ),
@@ -921,19 +930,33 @@ abstract final class Adaptive {
     final tokens = context.tokens;
 
     if (context.isCupertino) {
+      // The app's font, as the typed confirm sets it: the system's has no
+      // Bangla, and "বাতিল" was tofu (#432, #698).
+      final font = _appFont(tokens);
       return cupertino.showCupertinoDialog<bool>(
         context: context,
         builder: (dialogContext) => cupertino.CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(message),
+          title: SgText(
+            title,
+            role: SgTextRole.body,
+            weight: 600,
+            textAlign: TextAlign.center,
+          ),
+          content: SgText(
+            message,
+            role: SgTextRole.caption,
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
             cupertino.CupertinoDialogAction(
               onPressed: () => Navigator.of(dialogContext).pop(false),
+              textStyle: font,
               child: Text(cancelLabel),
             ),
             cupertino.CupertinoDialogAction(
               isDestructiveAction: destructive,
               onPressed: () => Navigator.of(dialogContext).pop(true),
+              textStyle: font,
               child: Text(confirmLabel),
             ),
           ],
@@ -1004,14 +1027,10 @@ abstract final class Adaptive {
       return showTimePicker(context: context, initialTime: initial);
     }
 
-    final today = DateTime.now();
-    var picked = DateTime(
-      today.year,
-      today.month,
-      today.day,
-      initial.hour,
-      initial.minute,
-    );
+    // The wheel shows an hour and a minute; the day under them is one no
+    // clock changes on, not today: on a spring-forward day 02:30 became 03:30
+    // (#686 ST-14).
+    var picked = DateTime(2000, 1, 15, initial.hour, initial.minute);
 
     final confirmed = await cupertino.showCupertinoModalPopup<bool>(
       context: context,
@@ -1019,7 +1038,7 @@ abstract final class Adaptive {
         height: 280,
         child: SgSurface(
           kind: SgSurfaceKind.cardStrong,
-          radius: sheetContext.tokens.shape.sheet,
+          borderRadius: sheetContext.tokens.shape.sheetRadius,
           child: SafeArea(
             top: false,
             child: Column(
@@ -1028,7 +1047,11 @@ abstract final class Adaptive {
                   child: cupertino.CupertinoDatePicker(
                     mode: cupertino.CupertinoDatePickerMode.time,
                     initialDateTime: picked,
-                    use24hFormat: true,
+                    // The phone's own 12- or 24-hour setting, as Android's
+                    // dialog follows it (#686 ST-14).
+                    use24hFormat: MediaQuery.alwaysUse24HourFormatOf(
+                      sheetContext,
+                    ),
                     onDateTimeChanged: (value) => picked = value,
                   ),
                 ),
@@ -1135,6 +1158,9 @@ class AdaptiveNavBar extends StatelessWidget {
             : tokens.surface.card,
         activeColor: tokens.color.ink,
         inactiveColor: tokens.color.textSecondary,
+        // ponytail: iOS's items take a plain label, so its Bangla isn't
+        // tagged bn-BD as Android's tabs are (#877); iOS is Later (v1 is
+        // Android-only). Wrap the icon and label ourselves on iOS's pass.
         items: <cupertino.BottomNavigationBarItem>[
           for (final destination in destinations)
             cupertino.BottomNavigationBarItem(
@@ -1175,15 +1201,31 @@ class AdaptiveNavBar extends StatelessWidget {
         // re-tap behaviour depends on hearing it, so this is wired directly.
         onDestinationSelected: onSelected,
         destinations: <Widget>[
-          for (final destination in destinations)
-            NavigationDestination(
-              icon: Icon(destination.icon, color: tokens.color.ink),
-              // On the bright pill, the ink made for its colour.
-              selectedIcon: Icon(
-                destination.selectedIcon,
-                color: destination.onColour ?? tokens.color.onPrimary,
+          for (final (i, destination) in destinations.indexed)
+            // #877: the tab read as Material reads it ("আজ", "Tab 1 of 4"),
+            // but with its Bangla tagged bn-BD, as #743 tags every other
+            // control's: Material builds the node from a plain string, so
+            // TalkBack on an English phone read the Bangla with its English
+            // voice. Its own node, so the destination's is left out, with
+            // the selection and the tap it carried.
+            Semantics(
+              container: true,
+              selected: i == currentIndex,
+              attributedLabel: SgScript.attributedLabel(
+                '${destination.label}\n'
+                '${MaterialLocalizations.of(context).tabLabel(tabIndex: i + 1, tabCount: destinations.length)}',
               ),
-              label: destination.label,
+              onTap: () => onSelected(i),
+              excludeSemantics: true,
+              child: NavigationDestination(
+                icon: Icon(destination.icon, color: tokens.color.ink),
+                // On the bright pill, the ink made for its colour.
+                selectedIcon: Icon(
+                  destination.selectedIcon,
+                  color: destination.onColour ?? tokens.color.onPrimary,
+                ),
+                label: destination.label,
+              ),
             ),
         ],
       ),
@@ -1219,9 +1261,16 @@ class AdaptiveRefresh extends StatelessWidget {
   }
 }
 
-/// The platform the app would pick with no override, for diagnostics.
-AdaptiveChrome get defaultChrome =>
-    AdaptiveChrome.forPlatform(defaultTargetPlatform);
+/// The app's font for an iOS alert's actions, not the system's: the
+/// artboards draw the alert in it, as every SgText is, with its Bangla behind
+/// it — "বাতিল" was tofu (#432). An action keeps its own colour and size.
+TextStyle _appFont(SgTokens tokens) {
+  final app = SgText.styleFor(tokens, SgTextRole.body);
+  return TextStyle(
+    fontFamily: app.fontFamily,
+    fontFamilyFallback: app.fontFamilyFallback,
+  );
+}
 
 /// [Adaptive.showTypedConfirm]'s dialog: the platform's alert with a field.
 class _TypedConfirm extends StatefulWidget {
@@ -1257,14 +1306,7 @@ class _TypedConfirmState extends State<_TypedConfirm> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    // The app's font, not the system's: the artboards draw the alert in it,
-    // as every SgText is, with its Bangla behind it — "বাতিল" was tofu
-    // (#432). The action keeps its own colour and size.
-    final app = SgText.styleFor(tokens, SgTextRole.body);
-    final font = TextStyle(
-      fontFamily: app.fontFamily,
-      fontFamilyFallback: app.fontFamilyFallback,
-    );
+    final font = _appFont(tokens);
     final typed = ValueListenableBuilder<TextEditingValue>(
       valueListenable: _typed,
       builder: (context, value, _) {

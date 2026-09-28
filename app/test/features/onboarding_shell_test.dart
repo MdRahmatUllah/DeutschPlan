@@ -256,7 +256,9 @@ void main() {
       final pips = tester
           .widgetList<Container>(
             find.descendant(
-              of: find.bySemanticsLabel(l10n.onboardingStepOf(3, 5)).last,
+              of: find.byWidgetPredicate(
+                (widget) => widget.runtimeType.toString() == '_StepDots',
+              ),
               matching: find.byType(Container),
             ),
           )
@@ -444,18 +446,13 @@ void main() {
       }
     });
 
-    testWidgets('the dots announce the step rather than five anonymous pips', (
-      tester,
-    ) async {
-      // Two nodes carry it: the header's "Step 3 of 5" text, and the row of
-      // dots, which labels itself and hides its five children. Asserting the
-      // count rather than `findsOneWidget` is what makes the second one
-      // required — otherwise the header alone would satisfy the finder.
+    testWidgets('#740 the step is read once: the header says it, the dots are '
+        'drawn only', (tester) async {
       final handle = tester.ensureSemantics();
       await pumpShell(tester, page: OnboardingPage.startingPoint);
 
       final label = l10n.onboardingStepOf(3, OnboardingPage.count);
-      expect(find.bySemanticsLabel(label), findsNWidgets(2));
+      expect(find.bySemanticsLabel(label), findsOneWidget);
 
       handle.dispose();
     });

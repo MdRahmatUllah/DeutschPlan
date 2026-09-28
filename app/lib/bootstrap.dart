@@ -111,7 +111,10 @@ class Bootstrap {
     settingsProvider.overrideWithValue(settings),
   ];
 
+  /// Also the glass capability's frame watchdog: a retry's result that the
+  /// app never took over kept listening to every frame (#686 ST-9).
   Future<void> dispose() async {
+    glass.dispose();
     await settings.dispose();
     await db.close();
   }
@@ -197,7 +200,8 @@ const Duration glassTimeout = Duration(milliseconds: 150);
 ///
 /// Open user.db (creating the schema if absent) · copy content.db when the
 /// version differs · attach it · load settings · resolve the theme. All of it
-/// before `runApp`, so nothing here is ever waiting behind a frame.
+/// before the app's first frame, so nothing here is ever waiting behind one:
+/// `main` runs the app first, and S1 shows while this runs.
 ///
 /// It does not throw. A failure comes back as [BootstrapFailed] carrying the
 /// step and whatever opened, because the error screen has to offer *Retry* and
@@ -272,6 +276,19 @@ Future<BootstrapResult> bootstrap({
     final setting = settings.read(SettingKeys.themeMode);
     final mode = setting.resolve(platformBrightness);
 
+    // `splash.md`: S1 "leads to S2 (no enrollment) · T1". The guards only
+    // send an *enrolled* learner away from onboarding; nothing sent a new
+    // one to it, so a fresh install opened on an empty Today and the learner
+    // never saw setup at all.
+    final router = buildRouter(
+      initialLocation: await plan.hasEnrollment()
+          ? '/today'
+          : const OnboardingRoute(page: '1').location,
+      guards: RouteGuards.of(exams: ExamRepository(db), plan: plan),
+    );
+
+    // After the enrolment read and the router: they are the start's too
+    // (#686 ST-9).
     watch.stop();
     return BootstrapReady(
       Bootstrap(
@@ -279,16 +296,7 @@ Future<BootstrapResult> bootstrap({
         content: content,
         settings: settings,
         glass: capability,
-        // `splash.md`: S1 "leads to S2 (no enrollment) · T1". The guards only
-        // send an *enrolled* learner away from onboarding; nothing sent a new
-        // one to it, so a fresh install opened on an empty Today and the
-        // learner never saw setup at all.
-        router: buildRouter(
-          initialLocation: await plan.hasEnrollment()
-              ? '/today'
-              : const OnboardingRoute(page: '1').location,
-          guards: RouteGuards.of(exams: ExamRepository(db), plan: plan),
-        ),
+        router: router,
         contentVersion: version,
         contentChange: change,
         themeMode: mode,

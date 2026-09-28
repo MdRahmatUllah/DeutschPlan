@@ -175,7 +175,7 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
 | Word categories | 159 |
 | Interference tips | 622, in English and Bangla |
 | Words with an article | 2,750 |
-| `content.db` | About 8 MB, content version `202609260837`, compiled from four workbooks |
+| `content.db` | About 6 MB (its search tables an index of the words, not a copy, #712), content version `202609260837`, compiled from four workbooks |
 
 The counts come from `content.db` itself; a test ties the About screen's
 counts to the pipeline's manifest (FR-M9-01).

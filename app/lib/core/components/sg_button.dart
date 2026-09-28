@@ -2,6 +2,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// The three button weights the Foundations artboard defines.
 enum SgButtonKind {
@@ -97,6 +98,20 @@ class _SgButtonState extends State<SgButton> {
   bool _down = false;
 
   bool get _enabled => widget.onPressed != null;
+
+  /// A button disabled mid-press is raised here: it came back enabled still
+  /// down, without its shadow. Its gesture goes with the callback, and
+  /// cancels only once the tree is locked, too late for a setState (#686
+  /// ST-10).
+  @override
+  void didUpdateWidget(SgButton old) {
+    super.didUpdateWidget(old);
+    if (!_enabled) _down = false;
+  }
+
+  void _press(bool down) {
+    if (_down != down) setState(() => _down = down);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,19 +240,23 @@ class _SgButtonState extends State<SgButton> {
         button: true,
         enabled: _enabled,
         attributedLabel: SgScript.attributedLabel(widget.label),
-        child: GestureDetector(
-          onTap: widget.onPressed,
-          onTapDown: _enabled ? (_) => setState(() => _down = true) : null,
-          onTapUp: _enabled ? (_) => setState(() => _down = false) : null,
-          onTapCancel: _enabled ? () => setState(() => _down = false) : null,
-          behavior: HitTestBehavior.opaque,
-          // Always present so the tree shape does not change on press, which
-          // would drop the gesture — the same trap SgSurface hit in #188.
-          child: Transform.translate(
-            offset: _down && _enabled && !context.tokens.isGlass
-                ? tokens.surface.shadowOffset
-                : Offset.zero,
-            child: ExcludeSemantics(child: button),
+        child: SgFocusable(
+          onPressed: widget.onPressed,
+          radius: BorderRadius.circular(tokens.shape.button),
+          child: GestureDetector(
+            onTap: widget.onPressed,
+            onTapDown: _enabled ? (_) => _press(true) : null,
+            onTapUp: _enabled ? (_) => _press(false) : null,
+            onTapCancel: _enabled ? () => _press(false) : null,
+            behavior: HitTestBehavior.opaque,
+            // Always present so the tree shape does not change on press, which
+            // would drop the gesture — the same trap SgSurface hit in #188.
+            child: Transform.translate(
+              offset: _down && _enabled && !context.tokens.isGlass
+                  ? tokens.surface.shadowOffset
+                  : Offset.zero,
+              child: ExcludeSemantics(child: button),
+            ),
           ),
         ),
       ),

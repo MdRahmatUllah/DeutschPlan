@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
@@ -18,6 +19,10 @@ import 'package:path_provider/path_provider.dart';
 ///
 /// Eviction is by last read, not last write: a word the learner keeps tapping
 /// stays, however long ago it was first synthesised.
+///
+/// A tenth goes at a time (#712): past [capacity], the oldest go down to
+/// nine tenths of it, so the folder is listed and each clip's age read once
+/// in twenty new clips, not on every one.
 class SynthesisCache {
   SynthesisCache({this.support, this.capacity = 200, this.version = ''});
 
@@ -32,6 +37,10 @@ class SynthesisCache {
   final String version;
 
   Future<Directory>? _directory;
+
+  /// The clips on disk, as [write] last counted them: listed on the first
+  /// write, then kept (#712). Null again after a [clear].
+  int? _held;
 
   /// The clips' folder, emptied first if it holds another [version]'s.
   Future<Directory> directory() => _directory ??= () async {
@@ -108,10 +117,15 @@ class SynthesisCache {
     required Uint8List bytes,
   }) async {
     final file = await fileFor(text, voice: voice, speed: speed);
-    file.parent.createSync(recursive: true);
-    File('${file.parent.path}/$_stamp').writeAsStringSync(version);
+    if (_held == null) {
+      file.parent.createSync(recursive: true);
+      File('${file.parent.path}/$_stamp').writeAsStringSync(version);
+    }
     await file.writeAsBytes(bytes, flush: true);
-    await _evict();
+    // A write follows a miss, so it is one more; a count that is off (a clip
+    // deleted as unplayable) is set right by the next eviction's listing.
+    final held = _held = _held == null ? await count() : _held! + 1;
+    if (held > capacity) await _evict();
     return file;
   }
 
@@ -130,28 +144,41 @@ class SynthesisCache {
   /// with the old voice is not the voice the learner just chose.
   Future<void> clear() async {
     final directory = await this.directory();
+    _held = null;
     if (directory.existsSync()) directory.deleteSync(recursive: true);
   }
 
   Future<List<File>> _clips() async {
     final directory = await this.directory();
-    if (!directory.existsSync()) return const <File>[];
+    if (!await directory.exists()) return const <File>[];
     return <File>[
-      for (final entity in directory.listSync())
+      await for (final entity in directory.list())
         if (entity is File && entity.path.endsWith('.wav')) entity,
     ];
   }
 
+  /// The oldest read go, down to nine tenths of [capacity]. Asynchronous
+  /// (#712): the ages of 200 clips are read off the UI isolate.
   Future<void> _evict() async {
     final clips = await _clips();
-    if (clips.length <= capacity) return;
+    if (clips.length <= capacity) {
+      _held = clips.length;
+      return;
+    }
+    final keep = _held = capacity - math.max(1, capacity ~/ 10);
 
     // Each clip's age read once, not twice for each comparison of the sort.
-    final aged = <(File, DateTime)>[
-      for (final clip in clips) (clip, clip.statSync().modified),
-    ]..sort((a, b) => a.$2.compareTo(b.$2));
-    for (final (clip, _) in aged.take(clips.length - capacity)) {
-      if (clip.existsSync()) clip.deleteSync();
+    final aged = await Future.wait(<Future<(File, DateTime)>>[
+      for (final clip in clips)
+        clip.stat().then((stat) => (clip, stat.modified)),
+    ]);
+    aged.sort((a, b) => a.$2.compareTo(b.$2));
+    for (final (clip, _) in aged.take(clips.length - keep)) {
+      try {
+        await clip.delete();
+      } on FileSystemException {
+        // Gone already: a clip that couldn't be played is deleted by its speak.
+      }
     }
   }
 }

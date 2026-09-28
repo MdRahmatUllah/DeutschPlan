@@ -142,6 +142,18 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('#729 FR-T6-01 a new word skipped to the backlog is not a '
+      'word studied: 17 done for the plan, 7 of them skipped, 10 words', (
+    tester,
+  ) async {
+    await pump(tester, view: artboardDone(newSkipped: 7));
+    await tester.pump(const Duration(milliseconds: 1300));
+
+    expect(find.text(l10n.dayCompleteStats(10, 12)), findsOneWidget);
+    await tester.pump(DayCompleteScreen.stay);
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('#853 the ring reads the count of the day, not "1 of 1"', (
     tester,
   ) async {

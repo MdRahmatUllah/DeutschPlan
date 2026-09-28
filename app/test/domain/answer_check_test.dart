@@ -247,6 +247,17 @@ void main() {
       expect(checkForm('Muetter', 'Mütter'), Verdict.correct);
     });
 
+    test('#682 a superlative without the am the prompt never named: almost, '
+        'and a wrong one still wrong', () {
+      expect(checkForm('am ältesten', 'am ältesten'), Verdict.correct);
+      expect(checkForm('ältesten', 'am ältesten'), Verdict.almost);
+      expect(checkForm('aeltesten', 'am ältesten'), Verdict.almost);
+      expect(checkForm('am jüngsten', 'am ältesten'), Verdict.wrong);
+      expect(checkForm('jüngsten', 'am ältesten'), Verdict.wrong);
+      // Only "am": another form's first word is not optional.
+      expect(checkForm('aufgebrochen', 'ist aufgebrochen'), Verdict.wrong);
+    });
+
     test('#699 BR-ANS-01 ß is one letter for the typo gate, not two', () {
       // Five letters: one out is a different word ("Grüße"), not a typo.
       expect(checkGerman('Grüße', 'Größe'), Verdict.wrong);

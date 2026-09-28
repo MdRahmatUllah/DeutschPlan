@@ -64,10 +64,16 @@ class SplashScreen extends StatelessWidget {
         children: <Widget>[
           Opacity(opacity: 0, child: caption),
           Expanded(
-            child: Center(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: SplashLockup(showProgress: showProgress),
+            // 16 dp clear of the caption on a phone too short for the
+            // lockup, and as much above, so the centre stays the screen's
+            // (#744).
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: SplashLockup(showProgress: showProgress),
+                ),
               ),
             ),
           ),

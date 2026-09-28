@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:sqlite3/sqlite3.dart';
 
 /// The bundled course, copied once per test process, for a test that
@@ -31,7 +32,9 @@ void deleteTempDirs() {
     try {
       dir.deleteSync(recursive: true);
     } on FileSystemException {
-      // A database a test left open still holds its file on Windows.
+      // A database a test left open still holds its file on Windows: named,
+      // so a leak doesn't go unnoticed (#892).
+      debugPrint('tempDir left behind: ${dir.path}');
     }
   }
   _temps.clear();
@@ -139,12 +142,10 @@ class ContentFixture {
         ('word_count', '3'),
         ('sublevel_week_boundaries', '{"A1.2": 4}');
 
-      INSERT INTO words_fts (uid, german, english, bangla, search_key)
-        SELECT uid, german, english, bangla, search_key FROM words;
-      INSERT INTO words_trigram (uid, german, english, search_key)
-        SELECT uid, german, english, search_key FROM words;
-      INSERT INTO examples_fts (word_uid, german, english)
-        SELECT word_uid, german, english FROM word_examples;
+      -- Indexed as the pipeline does: external content, rebuilt (#712).
+      INSERT INTO words_fts (words_fts) VALUES ('rebuild');
+      INSERT INTO words_trigram (words_trigram) VALUES ('rebuild');
+      INSERT INTO examples_fts (examples_fts) VALUES ('rebuild');
     ''');
   }
 

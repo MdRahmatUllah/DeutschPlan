@@ -48,7 +48,18 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
     onEnter: (context, current, next, router) async {
       if (!arrival(next.uri)) return const Allow();
       final top = current.uri.path;
-      if (!interruptible(top)) return const Block.stop();
+      // #935: only while the attempt runs. Its results (L13) and review
+      // (L14) are the same route, with nothing a link could cost them.
+      if (!interruptible(top)) {
+        final id = int.tryParse(
+          current.uri.pathSegments.elementAtOrNull(1) ?? '',
+        );
+        // ponytail: a null id can't be current (the typed route's int param
+        // and the attempt guard stop it first); held, the safe way, if it is.
+        if (id == null || await checks.isExamRunning(id)) {
+          return const Block.stop();
+        }
+      }
       if (top.startsWith('/onboarding') && !await checks.isEnrolled()) {
         return const Block.stop();
       }
@@ -65,8 +76,9 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
       // any intent's data over as the route, so another app's `x://h/exam/7`
       // would otherwise match the table by its path.
       if (arrival(state.uri)) {
-        // A running exam, or setup under way, never gets here: [onEnter] has
-        // blocked the arrival.
+        // A running exam, or setup with nobody enrolled, never gets here:
+        // [onEnter] has blocked the arrival. *Restart setup* (enrolled) is
+        // not held, so its arrival does (#933).
         //
         // #674: with nobody enrolled there is nothing to link into. A cold
         // start from a link (the widget, placed before the first launch)

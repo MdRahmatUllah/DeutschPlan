@@ -138,6 +138,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
     String at = '/today/backlog',
     Locale? locale,
     TextScaler? textScaler,
+    ThemeData? theme,
     // Tuesday's rows moved to this day instead (#821).
     String? firstDay,
   }) async {
@@ -170,7 +171,7 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         child: AdaptiveChromeScope(
           chrome: chrome,
           child: MaterialApp.router(
-            theme: AppTheme.light(),
+            theme: theme ?? AppTheme.light(),
             localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: supportedLocales,
             locale: locale,
@@ -214,13 +215,16 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expect(find.byType(BacklogEmpty), findsOneWidget);
       expect(find.text(l10n.backlogEmptyTitle), findsOneWidget);
       expect(find.text(l10n.backlogEmptyBody), findsOneWidget);
+      // The tray's own paint: its button draws a focus ring too (#745).
       final tray = tester.widget<CustomPaint>(
         find.descendant(
           of: find.byType(BacklogEmpty),
-          matching: find.byType(CustomPaint),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is CustomPaint && widget.painter is EmptyTrayPainter,
+          ),
         ),
       );
-      expect(tray.painter, isA<EmptyTrayPainter>());
       expect((tray.painter! as EmptyTrayPainter).tick, SgPalette.light.easy);
       // The headline is the screen's name alone: no count, no study.
       expect(find.text(l10n.backlogTitle), findsNWidgets(2));
@@ -769,6 +773,41 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await tester.pump(const Duration(seconds: 5));
       await tester.pumpAndSettle();
     });
+
+    // #735: read off what is drawn, so an ink that isn't its fill's own is
+    // caught; dark is where Remove's went unreadable.
+    for (final (name, theme) in <(String, ThemeData)>[
+      ('light', AppTheme.light()),
+      ('dark', AppTheme.dark()),
+    ]) {
+      testWidgets('#735 on iOS each swipe action reads at 4.5:1 on its fill '
+          '($name)', (tester) async {
+        await pump(tester, chrome: AdaptiveChrome.cupertino, theme: theme);
+        for (final label in <String>[
+          l10n.backlogMarkKnown,
+          l10n.backlogSuspend,
+          l10n.backlogRemove,
+        ]) {
+          final text = find.text(label).first;
+          final ink = tester.widget<Text>(text).style!.color!;
+          final fill = tester
+              .widget<Container>(
+                find.ancestor(of: text, matching: find.byType(Container)).first,
+              )
+              .color!;
+          expect(fill.a, 1, reason: '$label: an opaque fill');
+          final (x, y) = (
+            ink.computeLuminance() + 0.05,
+            fill.computeLuminance() + 0.05,
+          );
+          expect(
+            x > y ? x / y : y / x,
+            greaterThanOrEqualTo(4.5),
+            reason: label,
+          );
+        }
+      });
+    }
   });
 
   for (final chrome in AdaptiveChrome.values) {
@@ -875,6 +914,35 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       );
       expect(say('2026-09-14', 'bn'), isNot(contains('14')));
     });
+  });
+
+  testWidgets('#854 in Bangla at 200 % on a 411 dp phone, Study this day '
+      'keeps inside the 16 dp gutter', (tester) async {
+    tester.view
+      ..physicalSize = const Size(411, 731) * 3
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await pump(
+      tester,
+      locale: const Locale('bn'),
+      textScaler: const TextScaler.linear(2),
+    );
+    final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+    final button = find.byWidgetPredicate(
+      (widget) => widget is SgButton && widget.label == bn.backlogStudyDay,
+      skipOffstage: false,
+    );
+    await tester.dragUntilVisible(
+      button.first,
+      find.byType(Scrollable).first,
+      const Offset(0, -150),
+    );
+    await tester.pumpAndSettle();
+    final label = find
+        .descendant(of: button.first, matching: find.byType(RichText))
+        .first;
+    expect(tester.getRect(label).right, lessThanOrEqualTo(411 - 16));
+    expect(tester.takeException(), isNull);
   });
 }
 
