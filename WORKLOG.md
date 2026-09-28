@@ -1963,3 +1963,4 @@ able to tell what is going on without asking.
 - 2026-09-28 05:59 · agent-2 · #745: SgFocusable (FocusableActionDetector + link ring) on SgButton/SgChip/SgSurface/stepper/rating bar/speaker/umlaut keys/coach mark; keyboard_access_test 43 pass, plants 11/11 caught; foundations_focus golden; full goldens+features running. Slider split to #1007.
 - 2026-09-28 06:03 · agent-2 #877 · done (#1001)
 - 2026-09-28 06:03 · agent-2 #740 · done (#1001)
+- 2026-09-28 06:03 · agent-2 #735 · done (#1001)
