@@ -197,7 +197,7 @@ String _when(BuildContext context, ProgressRange range, PlanDate start) {
       DateTime.saturday => l10n.weekdayShortSat,
       _ => l10n.weekdayShortSun,
     },
-    ProgressRange.month => DateFormat.MMMd(locale).format(date),
+    ProgressRange.month => DateFormat('d MMM', locale).format(date),
     ProgressRange.all => DateFormat.MMM(locale).format(date),
   };
 }

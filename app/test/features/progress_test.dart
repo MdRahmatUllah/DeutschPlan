@@ -296,6 +296,23 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets("#1055 a month's bars name their days day first, as the rest "
+      'of the app: "21 Sep", not "Sep 21"', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    await tester.tap(find.text(l10n.progressMonth));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.bySemanticsLabel(
+        RegExp(RegExp.escape(l10n.progressBar('21 Sep', 11, 6))),
+      ),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel(RegExp('Sep 21')), findsNothing);
+    semantics.dispose();
+  });
+
   test('#853 a bar with one revision says it in the singular', () {
     expect(l10n.progressBar('Mo', 1, 0), 'Mo: 1 revision, 0 new');
     expect(l10n.progressBar('Mo', 2, 1), 'Mo: 2 revisions, 1 new');
