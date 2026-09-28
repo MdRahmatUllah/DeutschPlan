@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 05:37
+last-seen: 2026-09-28 05:40
 last-read: 2281
 
 ## Now
 
-#994 perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) — claimed 2026-09-28 04:53.
+Nothing claimed.
 
 ## Next
 
