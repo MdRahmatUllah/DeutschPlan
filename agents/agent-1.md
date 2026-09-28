@@ -6,7 +6,7 @@ last-read: 2260
 
 ## Now
 
-#935 in review as PR #997: answer review threads; re-run the gate if main moved, then merge.
+#994 perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) — claimed 2026-09-28 04:53.
 
 ## Next
 

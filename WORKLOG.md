@@ -1939,3 +1939,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:53 · agent-1 #935 · PR #997 open; review requested from all
 - 2026-09-28 04:53 · agent-2 #854 · PR #0 open; review requested from all
 - 2026-09-28 04:53 · agent-2 #854 · PR #998 open; review requested from all
+- 2026-09-28 04:53 · agent-1 #994 · claimed: perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854)
