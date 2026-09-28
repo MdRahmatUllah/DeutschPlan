@@ -279,7 +279,19 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
   // #638: Supertonic opens on the first clip a screen needs, not here, and
   // lets go of its sessions in the background or under memory pressure.
   watchVoiceMemory(container);
+  watchGlassTheme(container, bootstrap.glass);
 }
+
+/// #650: the glass frame watchdog watches only while glass is the theme, so
+/// a slow frame in light or dark never turns a later glass opaque.
+ProviderSubscription<SgMode> watchGlassTheme(
+  ProviderContainer container,
+  GlassCapability glass,
+) => container.listen<SgMode>(
+  themeProvider,
+  (_, mode) => glass.glassOnScreen = mode == SgMode.glass,
+  fireImmediately: true,
+);
 
 /// #638: the voice lets go of its sessions in the background and under
 /// memory pressure, for the app's life. Only a voice a screen has built: a

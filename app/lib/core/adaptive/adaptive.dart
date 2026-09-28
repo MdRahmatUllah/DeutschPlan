@@ -272,10 +272,9 @@ class _StatusStripState extends State<_StatusStrip> {
             left: 0,
             right: 0,
             height: top,
-            // ponytail: under glass one more BackdropFilter over the tab bar's
-            // and the cards'; theming.md's three-layer budget holds only while
-            // few blurred panels are on screen. The shared backdrop (#34) is
-            // the fix for all of them.
+            // Under glass a blur of its own, not the screen's shared read
+            // (#709): it lies over the list scrolled under it, and the shared
+            // read is taken at the list's first panel, before the rest.
             child: tokens.isGlass
                 ? SgSurface(
                     kind: SgSurfaceKind.tint(widget.colour),

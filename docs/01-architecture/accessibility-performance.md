@@ -69,7 +69,7 @@ How it is measured (#167): `python tools/perf.py all` on the developers' emulato
 - Size: the arm64-v8a APK of `flutter build apk --release --split-per-abi`, standing in for the one-ABI download Play serves from the bundle, which is compressed and so smaller: the APK stores its native libraries uncompressed.
 - Supertonic's first audio is measured by #430's work, not here.
 
-Glass budget: max three blur layers on screen (header, one panel, tab bar); sheets blur over the scrim, not over other glass.
+Glass budget: max three blur layers on screen (header, one panel, tab bar); sheets blur over the scrim, not over other glass. The panels in a screen's list count as one (#709): `AuroraBackdrop` puts the screen in a `BackdropGroup`, and `SgSurface` in a scroll view uses `BackdropFilter.grouped`, so the engine reads the backdrop once for all of them, and blurs it once when their blurs are equal (theming.md, *Aurora backdrop*). `sg_surface_test.dart` counts the reads in the layer tree. The aurora steps 15 times a second rather than asking for a frame every vsync. Not measured yet: perf_test does not fling L1 or Today, and the frame cost of the shared read is a device's to confirm (#709).
 
 ## Error and edge states
 

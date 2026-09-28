@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -80,6 +81,13 @@ extension AuroraRoleColour on AuroraRole {
 /// invalidates, so the gradients are rasterised once and only a transform
 /// changes per frame. That is what makes four large radial gradients affordable
 /// under a scrolling list.
+///
+/// #709: every drift step makes each glass panel on screen blur again, so the
+/// drift steps [stepsPerSecond] times a second, not at 60 fps; a step is under
+/// half a dp, too little to see. The screen sits in a `RepaintBoundary` of its
+/// own, so a step repaints the blobs and not the screen, and in a
+/// [BackdropGroup], so its panels in a list share one read of the backdrop
+/// (`SgSurface`).
 class AuroraBackdrop extends StatefulWidget {
   const AuroraBackdrop({
     required this.child,
@@ -105,6 +113,14 @@ class AuroraBackdrop extends StatefulWidget {
   static const Duration minimumPeriod = Duration(seconds: 18);
   static const Duration maximumPeriod = Duration(seconds: 24);
 
+  /// How often the drift moves while it runs (#709).
+  static const int stepsPerSecond = 15;
+
+  /// The time between two steps.
+  static const Duration step = Duration(
+    microseconds: Duration.microsecondsPerSecond ~/ stepsPerSecond,
+  );
+
   static Duration periodFor(int index, int count) {
     if (count <= 1) return minimumPeriod;
     final span = maximumPeriod.inMilliseconds - minimumPeriod.inMilliseconds;
@@ -119,21 +135,27 @@ class AuroraBackdrop extends StatefulWidget {
 }
 
 class _AuroraBackdropState extends State<AuroraBackdrop>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
-  late List<AnimationController> _controllers;
+    with WidgetsBindingObserver {
+  /// How far the drift has run. A step at a time, and kept through a pause,
+  /// so the blobs go on from where they stopped.
+  final ValueNotifier<Duration> _elapsed = ValueNotifier<Duration>(
+    Duration.zero,
+  );
+
+  /// Steps the drift while it runs. A timer, not a ticker: a ticker asks for
+  /// a frame every vsync whether anything moved or not (#709).
+  Timer? _drift;
+
+  /// The screen's panels share this one (`SgSurface`). Held, so a rebuild
+  /// does not hand every panel a new key.
+  final BackdropKey _backdropKey = BackdropKey();
+
   bool _backgrounded = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _controllers = <AnimationController>[
-      for (var i = 0; i < widget.blobs.length; i++)
-        AnimationController(
-          vsync: this,
-          duration: AuroraBackdrop.periodFor(i, widget.blobs.length),
-        ),
-    ];
   }
 
   @override
@@ -143,15 +165,14 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
     final backgrounded = state != AppLifecycleState.resumed;
     if (backgrounded == _backgrounded) return;
     setState(() => _backgrounded = backgrounded);
-    _syncControllers();
+    _syncDrift();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
+    _drift?.cancel();
+    _elapsed.dispose();
     super.dispose();
   }
 
@@ -162,36 +183,40 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
       !GlassCapabilityScope.blurAllowed(context);
 
   /// True only when there is something moving to look at. Outside glass the
-  /// widget paints nothing, so a running ticker would be 60 fps of frame
-  /// scheduling for an invisible animation — battery for nothing in the two
-  /// modes most people use.
-  bool get _shouldDrift => context.tokens.isGlass && !_still;
+  /// widget paints nothing, so a running drift would be frames scheduled for
+  /// an invisible animation — battery for nothing in the two modes most
+  /// people use. A screen under another one (a tab in the background, a page
+  /// pushed over it) is muted as a ticker would be.
+  bool get _shouldDrift =>
+      context.tokens.isGlass && !_still && TickerMode.valuesOf(context).enabled;
 
   /// Driven from the lifecycle hooks rather than from `build`: starting and
-  /// stopping a ticker is a side-effect, and `build` runs for reasons that have
+  /// stopping a timer is a side-effect, and `build` runs for reasons that have
   /// nothing to do with the aurora.
-  void _syncControllers() {
-    final drift = _shouldDrift;
-    for (final controller in _controllers) {
-      if (!drift) {
-        if (controller.isAnimating) controller.stop();
-      } else if (!controller.isAnimating) {
-        controller.repeat();
-      }
+  void _syncDrift() {
+    if (!_shouldDrift) {
+      _drift?.cancel();
+      _drift = null;
+    } else {
+      _drift ??= Timer.periodic(
+        AuroraBackdrop.step,
+        (_) => _elapsed.value += AuroraBackdrop.step,
+      );
     }
   }
 
   @override
   void didChangeDependencies() {
-    // The theme, the MediaQuery and the capability scope all arrive here.
+    // The theme, the MediaQuery, the ticker mode and the capability scope all
+    // arrive here.
     super.didChangeDependencies();
-    _syncControllers();
+    _syncDrift();
   }
 
   @override
   void didUpdateWidget(AuroraBackdrop oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _syncControllers();
+    _syncDrift();
   }
 
   @override
@@ -201,6 +226,7 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
     // Outside glass there is no aurora at all — the solid modes have paper.
     if (!tokens.isGlass) return widget.child;
 
+    final count = widget.blobs.length;
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
@@ -208,14 +234,18 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
         for (final (index, blob) in widget.blobs.indexed)
           _DriftingBlob(
             blob: blob,
-            controller: _controllers[index],
+            elapsed: _elapsed,
+            period: AuroraBackdrop.periodFor(index, count),
             still: _still,
             colour: index == 0 && widget.leading != null
                 ? widget.leading!
                 : blob.role.from(tokens.color),
             peak: tokens.surface.auroraOpacity,
           ),
-        widget.child,
+        BackdropGroup(
+          backdropKey: _backdropKey,
+          child: RepaintBoundary(child: widget.child),
+        ),
       ],
     );
   }
@@ -224,21 +254,25 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
 class _DriftingBlob extends StatelessWidget {
   const _DriftingBlob({
     required this.blob,
-    required this.controller,
+    required this.elapsed,
+    required this.period,
     required this.still,
     required this.colour,
     required this.peak,
   });
 
   final AuroraBlob blob;
-  final AnimationController controller;
+  final ValueNotifier<Duration> elapsed;
+
+  /// One loop of this blob's circle.
+  final Duration period;
   final bool still;
   final Color colour;
   final double peak;
 
   @override
   Widget build(BuildContext context) {
-    // The painted layer is built once; only the offset below changes per frame,
+    // The painted layer is built once; only the offset below changes per step,
     // so the gradient is rasterised once and reused.
     final painted = RepaintBoundary(
       child: CustomPaint(
@@ -250,9 +284,10 @@ class _DriftingBlob extends StatelessWidget {
     if (still) return painted;
 
     return AnimatedBuilder(
-      animation: controller,
+      animation: elapsed,
       builder: (context, child) {
-        final angle = controller.value * 2 * math.pi;
+        final angle =
+            elapsed.value.inMicroseconds / period.inMicroseconds * 2 * math.pi;
         return Transform.translate(
           offset: Offset(
             math.cos(angle) * AuroraBackdrop.travel,
