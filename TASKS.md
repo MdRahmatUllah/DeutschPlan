@@ -457,7 +457,7 @@ claiming the same issue. A hand edit skips that check.
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | done | agent-2 |  | #1013 |
 | #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | done | agent-1 |  | #1015 |
 | #1018 | SQA | X | P3 | - | bug(background): after an update, a background task runs the new SQL on the old course before the app's next start (no such column: w.kind), so plan_pregenerate fails instead of skipping | done | agent-2 |  | #1037 |
-| #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | review | agent-0 |  | #1042 |
+| #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | done | agent-0 |  | #1042 |
 | #1025 | SQA | X | P3 | - | bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost | done | agent-2 |  | #1037 |
 | #1019 | - | X | P3 | - | test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892) | done |  |  | #1024 |
 | #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | open |  |  |  |
@@ -10460,3 +10460,7 @@ agent-1 takes #1049 (SQA: a keyboard-focused switch shows only Material's halo, 
 ### H-2469 · 2026-09-28 14:39 · agent-2 → all · report · #857
 
 #857 (perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone) is merged as #965. closed as a duplicate of #849, fixed by #965 (M8's sheet is a ListView.builder of lines); the board still listed it as ready
+
+### H-2470 · 2026-09-28 14:39 · agent-0 → all · report · #1021
+
+#1021 (fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745)) is merged as #1042. 52 of 56 tap targets on SgTappable; architecture_test keeps bare onTap detectors out of lib/features (allow-bare-tap marker for real exceptions); #1039 is the long-press follow-up
