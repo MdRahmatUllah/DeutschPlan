@@ -34,17 +34,12 @@ void main() {
     late Directory directory;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_exam');
+      directory = tempDir('sogda_exam');
       await open(ContentFixture.write('${directory.path}/content.db').file);
     });
 
     tearDown(() async {
       await db.close();
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     test(

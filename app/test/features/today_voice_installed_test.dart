@@ -13,6 +13,8 @@ import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/services/model_downloads.dart';
 
+import '../db/content_fixture.dart' show tempDir;
+
 /// #473 · FR-T1-06: Today's voice card reads the installed voice the way M4
 /// does, over a real [ModelRepository]: a voice downloaded, checked and
 /// activated is installed, though its staging folder is gone.
@@ -40,7 +42,7 @@ void main() {
   );
 
   setUp(() async {
-    support = Directory.systemTemp.createTempSync('sogda_voice');
+    support = tempDir('sogda_voice');
     db = AppDatabase.memory();
     settings = SettingsRepository(db);
     await settings.load();
@@ -69,11 +71,6 @@ void main() {
     container.dispose();
     await settings.dispose();
     await db.close();
-    try {
-      support.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   test('#473 FR-T1-06 no voice on the phone: not installed', () async {

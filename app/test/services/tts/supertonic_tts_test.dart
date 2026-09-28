@@ -18,6 +18,7 @@ import 'package:sogda/services/tts/supertonic_tts.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:sogda/services/tts/tts_service.dart' show VoiceRelease;
 
+import '../../db/content_fixture.dart' show tempDir;
 import '../../timing.dart';
 
 /// `SupertonicTts` (#152): the engine over a fake voice and player, and the
@@ -121,7 +122,7 @@ void main() {
     final style = styleOf(1);
 
     setUp(() async {
-      support = Directory.systemTemp.createTempSync('sg_supertonic');
+      support = tempDir('sg_supertonic');
       final db = AppDatabase.memory();
       addTearDown(db.close);
       settings = SettingsRepository(db);
@@ -170,14 +171,6 @@ void main() {
         },
         player: player,
       );
-    });
-
-    tearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows lets go a moment later.
-      }
     });
 
     /// Until the model has been asked for [n] clips: the disk is real.

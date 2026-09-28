@@ -28,7 +28,7 @@ void main() {
   late File content;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_content');
+    directory = tempDir('sogda_content');
     content = ContentFixture.write('${directory.path}/content.db').file;
 
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
@@ -40,11 +40,6 @@ void main() {
 
   tearDown(() async {
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases the file a moment later; the OS clears its temp.
-    }
   });
 
   group('the attach itself', () {

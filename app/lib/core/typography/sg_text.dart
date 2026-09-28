@@ -524,6 +524,48 @@ class SgText extends StatelessWidget {
   }
 }
 
+/// A label Material chrome draws in its own style: a segment's, a tab's, a
+/// dialog action's (#698). Its Bangla one role up, as [SgText] sets it
+/// (`theming.md`), where the chrome's style had set it at the Latin's size;
+/// everything else stays the chrome's: its colour in each state, its weight.
+/// [role] is the role the chrome's style stands for.
+class SgChromeLabel extends StatelessWidget {
+  const SgChromeLabel(
+    this.text, {
+    required this.role,
+    super.key,
+    this.softWrap,
+    this.overflow,
+  });
+
+  final String text;
+  final SgTextRole role;
+  final bool? softWrap;
+  final TextOverflow? overflow;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!SgScript.hasBengali(text)) {
+      return Text(text, softWrap: softWrap, overflow: overflow);
+    }
+    final larger = role.oneStepLarger.token(context.tokens.typography);
+    return Text.rich(
+      TextSpan(
+        children: SgScript.spans(
+          text,
+          latin: const TextStyle(),
+          bengali: TextStyle(
+            fontSize: larger.size,
+            height: larger.heightFactor,
+          ),
+        ),
+      ),
+      softWrap: softWrap,
+      overflow: overflow,
+    );
+  }
+}
+
 /// One line of [text], cut at a word rather than inside one: "konnte,
 /// musste, wollte — no …" and never "wol…". L2's rule previews.
 class SgOneLine extends StatelessWidget {

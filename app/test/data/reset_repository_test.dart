@@ -23,7 +23,7 @@ void main() {
   const today = '2026-09-25';
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_reset');
+    directory = tempDir('sogda_reset');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase.memory();
     await db.customStatement(
@@ -96,7 +96,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    directory.deleteSync(recursive: true);
   });
 
   Future<int> count(String sql) async =>

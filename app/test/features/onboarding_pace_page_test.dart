@@ -405,6 +405,37 @@ void main() {
       handle.dispose();
     });
 
+    testWidgets('#698 the slider is a 48 dp target, to a finger and a screen '
+        'reader, around the 32 dp it draws', (tester) async {
+      final handle = tester.ensureSemantics();
+      await pump(tester);
+      final slider = find.byType(SgSlider);
+
+      expect(tester.getSize(slider).height, 48);
+      expect(
+        tester
+            .getSemantics(
+              find
+                  .descendant(
+                    of: slider,
+                    matching: find.byType(GestureDetector),
+                  )
+                  .first,
+            )
+            .rect
+            .height,
+        48,
+      );
+      // 20 dp under the track's middle, at its far end.
+      await tester.tapAt(
+        tester.getRect(slider).centerRight + const Offset(-1, 20),
+      );
+      await tester.pump();
+      expect(draft().dailyNew, 30);
+
+      handle.dispose();
+    });
+
     testWidgets('the days read as whole names, and whether they are on', (
       tester,
     ) async {

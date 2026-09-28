@@ -78,8 +78,8 @@ class BootstrapHost extends StatefulWidget {
 
   /// Overridden in tests. Defaults to the real [bootstrap].
   final Future<BootstrapResult> Function({
-    Brightness platformBrightness,
     void Function(UiLanguage)? onUiLanguage,
+    void Function()? onCourseUpdate,
   })?
   run;
 
@@ -105,6 +105,10 @@ class _BootstrapHostState extends State<BootstrapHost>
   /// The learner's language, once bootstrap has read it. Until then the
   /// splash follows the phone — there is nothing else to follow.
   Locale? _splashLocale;
+
+  /// Whether an app update is copying its new course in: the splash says so,
+  /// not "first start only" (#686 ST-9).
+  bool _updatingCourse = false;
 
   @override
   void initState() {
@@ -191,10 +195,11 @@ class _BootstrapHostState extends State<BootstrapHost>
   /// [bootstrap], or the test's stand-in: at launch, and again from the
   /// error screen's *Retry*.
   Future<BootstrapResult> _run() => (widget.run ?? bootstrap)(
-    platformBrightness:
-        WidgetsBinding.instance.platformDispatcher.platformBrightness,
     onUiLanguage: (ui) {
       if (mounted) setState(() => _splashLocale = ui.locale);
+    },
+    onCourseUpdate: () {
+      if (mounted) setState(() => _updatingCourse = true);
     },
   );
 
@@ -285,7 +290,7 @@ class _BootstrapHostState extends State<BootstrapHost>
       locale: _splashLocale,
       localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: supportedLocales,
-      home: const SplashProgressGate(),
+      home: SplashProgressGate(updating: _updatingCourse),
     ),
   };
 }

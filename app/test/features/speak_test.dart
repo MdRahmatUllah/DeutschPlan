@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -22,6 +21,7 @@ import 'package:sogda/main.dart'
 import 'package:sogda/router/routes.dart' show rootNavigatorKey;
 import 'package:sogda/services/tts/tts_service.dart';
 
+import '../db/content_fixture.dart' show tempDir;
 import '../services/fake_tts.dart';
 import '../timing.dart';
 
@@ -284,14 +284,7 @@ void main() {
     tester,
   ) async {
     final phone = FakeTts();
-    final support = Directory.systemTemp.createTempSync('sg_speak');
-    addTearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows lets go a moment later.
-      }
-    });
+    final support = tempDir('sg_speak');
     await pump(tester, [
       systemTtsProvider.overrideWithValue(phone),
       modelRepositoryProvider.overrideWith(

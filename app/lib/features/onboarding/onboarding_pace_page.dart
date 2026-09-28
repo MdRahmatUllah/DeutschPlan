@@ -93,7 +93,8 @@ class OnboardingPacePage extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          // No gaps of its own: its 48 dp target has 8 dp over and under the
+          // drawn slider, where 6 dp gaps were (#698).
           SgSlider(
             value: draft.dailyNew,
             min: draft.dailyNewRange.min,
@@ -101,7 +102,6 @@ class OnboardingPacePage extends ConsumerWidget {
             onChanged: (count) => notifier().setDailyNew(count),
             label: l10n.onboardingPaceNewWords,
           ),
-          const SizedBox(height: 6),
           // Live, so a screen reader hears the estimate move with the slider
           // rather than having to go looking for it.
           Semantics(

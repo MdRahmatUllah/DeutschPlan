@@ -29,7 +29,7 @@ void main() {
   late ModelRepository models;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_results');
+    directory = tempDir('sogda_results');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
@@ -53,11 +53,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   /// Haus's article, Tür's meaning and a Writing task: 1 + 1 + 4 points.

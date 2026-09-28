@@ -32,7 +32,7 @@ void main() {
   const topicUid = 'g1';
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_grammar');
+    directory = tempDir('sogda_grammar');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
@@ -47,11 +47,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<void> practise({

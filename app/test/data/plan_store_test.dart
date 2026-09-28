@@ -36,7 +36,7 @@ void main() {
   late _Reads reads;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_plan');
+    directory = tempDir('sogda_plan');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     final raw = sqlite.sqlite3.open(content.path);
@@ -88,11 +88,6 @@ VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<void> enroll({
