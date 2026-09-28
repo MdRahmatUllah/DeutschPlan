@@ -580,10 +580,10 @@ class _ByStep extends StatelessWidget {
                         child: SgSegmentedBar(
                           done: step.done,
                           learning: step.learning,
-                          todo: math.max(
-                            0,
-                            step.words - step.done - step.learning,
-                          ),
+                          // The step's To do as L2 and M1 count it: not its
+                          // suspended words, nor a content update's removed
+                          // ones (#854).
+                          todo: step.todo,
                           colours: (
                             done: tokens.color.easy,
                             learning: tokens.color.accent,

@@ -1,4 +1,5 @@
 import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -385,6 +386,37 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
         tuer,
       );
     });
+
+    for (final scale in <double>[1, 2]) {
+      testWidgets('#742 FR-T2-02 the Undo bar clears the next new word\'s I '
+          'know it and Skip, at ${(scale * 100).round()} %', (tester) async {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final container = await pump(tester);
+        await toNew(tester, container);
+
+        await tester.runAsync(() async {
+          await tester.tap(find.text(l10n.studyKnowIt));
+          await pumpEventQueue();
+        });
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 750));
+        // Tür, the next new word, with its own two buttons under the bar.
+        expect(find.text(l10n.studyKnown('das Haus')), findsOneWidget);
+        final bar = tester.getRect(
+          find
+              .descendant(
+                of: find.byType(SnackBar),
+                matching: find.byType(Material),
+              )
+              .first,
+        );
+        for (final label in <String>[l10n.studyKnowIt, l10n.studySkip]) {
+          final button = tester.getRect(find.widgetWithText(SgButton, label));
+          expect(bar.overlaps(button), isFalse, reason: label);
+        }
+      });
+    }
 
     testWidgets("the banner takes its block's colour: Sun for New", (
       tester,

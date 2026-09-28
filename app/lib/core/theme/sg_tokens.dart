@@ -641,10 +641,6 @@ class SgShapeTokens {
   final double chip;
   final double sheet;
 
-  BorderRadius get cardRadius => BorderRadius.circular(card);
-  BorderRadius get buttonRadius => BorderRadius.circular(button);
-  BorderRadius get chipRadius => BorderRadius.circular(chip);
-
   /// Sheets are rounded at the top only.
   BorderRadius get sheetRadius =>
       BorderRadius.vertical(top: Radius.circular(sheet));

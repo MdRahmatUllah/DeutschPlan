@@ -75,6 +75,7 @@ class SgSurface extends StatefulWidget {
     this.kind = SgSurfaceKind.card,
     this.padding,
     this.radius,
+    this.borderRadius,
     this.pressed = false,
     this.selected = false,
     this.glassOutline,
@@ -87,6 +88,10 @@ class SgSurface extends StatefulWidget {
 
   /// Defaults to the card radius of the active mode.
   final double? radius;
+
+  /// Corners of their own, over [radius]: a sheet rounds only its top,
+  /// `SgShapeTokens.sheetRadius` (#686 ST-8).
+  final BorderRadius? borderRadius;
 
   /// Collapses the hard shadow and translates the panel by the same offset, so
   /// the surface appears pushed into the paper. Ignored under glass, which has
@@ -112,11 +117,25 @@ class SgSurface extends StatefulWidget {
 class _SgSurfaceState extends State<SgSurface> {
   bool _down = false;
 
+  /// A panel whose onTap goes mid-press is raised here: its gesture goes
+  /// with the callback, and cancels only once the tree is locked, too late
+  /// for a setState (#686 ST-10).
+  @override
+  void didUpdateWidget(SgSurface old) {
+    super.didUpdateWidget(old);
+    if (widget.onTap == null) _down = false;
+  }
+
+  void _press(bool down) {
+    if (_down != down) setState(() => _down = down);
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final corner = widget.radius ?? tokens.shape.card;
-    final borderRadius = BorderRadius.circular(corner);
+    final borderRadius =
+        widget.borderRadius ??
+        BorderRadius.circular(widget.radius ?? tokens.shape.card);
 
     final body = widget.padding == null
         ? widget.child
@@ -136,9 +155,9 @@ class _SgSurfaceState extends State<SgSurface> {
             // Driven here rather than left to the caller: a panel that takes an
             // onTap and never collapses its shadow is the affordance quietly
             // missing, and every tappable panel would re-implement this.
-            onTapDown: (_) => setState(() => _down = true),
-            onTapUp: (_) => setState(() => _down = false),
-            onTapCancel: () => setState(() => _down = false),
+            onTapDown: (_) => _press(true),
+            onTapUp: (_) => _press(false),
+            onTapCancel: () => _press(false),
             behavior: HitTestBehavior.opaque,
             child: surface,
           );

@@ -48,7 +48,18 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
     onEnter: (context, current, next, router) async {
       if (!arrival(next.uri)) return const Allow();
       final top = current.uri.path;
-      if (!interruptible(top)) return const Block.stop();
+      // #935: only while the attempt runs. Its results (L13) and review
+      // (L14) are the same route, with nothing a link could cost them.
+      if (!interruptible(top)) {
+        final id = int.tryParse(
+          current.uri.pathSegments.elementAtOrNull(1) ?? '',
+        );
+        // ponytail: a null id can't be current (the typed route's int param
+        // and the attempt guard stop it first); held, the safe way, if it is.
+        if (id == null || await checks.isExamRunning(id)) {
+          return const Block.stop();
+        }
+      }
       if (top.startsWith('/onboarding') && !await checks.isEnrolled()) {
         return const Block.stop();
       }

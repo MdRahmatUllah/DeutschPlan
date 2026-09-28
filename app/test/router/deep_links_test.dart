@@ -154,8 +154,9 @@ void main() {
     Future<void> pumpApp(
       WidgetTester tester, {
       List<Override> extra = const <Override>[],
+      RouteGuards? guards,
     }) async {
-      router = buildRouter(guards: enrolled);
+      router = buildRouter(guards: guards ?? enrolled);
       addTearDown(router.dispose);
 
       await tester.pumpWidget(
@@ -486,8 +487,11 @@ void main() {
     group('#676 FR-L12-04 an exam pushed over its step', () {
       // As the hub opens one (`ExamRoute.open`): the configuration's own uri
       // stays the step's, and only the top route is the exam.
-      Future<void> examOverStep(WidgetTester tester) async {
-        await pumpApp(tester);
+      Future<void> examOverStep(
+        WidgetTester tester, {
+        RouteGuards? guards,
+      }) async {
+        await pumpApp(tester, guards: guards);
         router.go('/learn/step/A1.2');
         await tester.pumpAndSettle();
         unawaited(router.push(const ExamRoute(attemptId: 7).location));
@@ -520,6 +524,30 @@ void main() {
         await openLink(tester, 'sogda://today');
 
         expect(location(), '/today');
+      });
+
+      group('#935 submitted: its results (L13) and review (L14), the same '
+          'route, have nothing a link could cost', () {
+        final submitted = RouteGuards(
+          hasExamAttempt: (_) async => true,
+          isEnrolled: () async => true,
+          isExamRunning: (_) async => false,
+        );
+
+        testWidgets('a widget link opens where it says', (tester) async {
+          await examOverStep(tester, guards: submitted);
+          await openLink(tester, 'sogda://today');
+
+          expect(location(), '/today');
+        });
+
+        testWidgets('and so does a tapped reminder', (tester) async {
+          await examOverStep(tester, guards: submitted);
+          router.go('sogda://today');
+          await tester.pumpAndSettle();
+
+          expect(router.state.uri.path, '/today');
+        });
       });
     });
 

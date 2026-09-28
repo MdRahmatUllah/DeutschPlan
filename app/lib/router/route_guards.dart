@@ -11,7 +11,11 @@ import 'package:go_router/go_router.dart';
 /// rather than the routing layer growing a second opinion about it.
 @immutable
 class RouteGuards {
-  const RouteGuards({required this.hasExamAttempt, required this.isEnrolled});
+  const RouteGuards({
+    required this.hasExamAttempt,
+    required this.isEnrolled,
+    this.isExamRunning = _running,
+  });
 
   /// The real ones. Through the repositories, not the database: only
   /// `lib/data/` touches drift (project-structure.md, layering rule 2), and
@@ -20,8 +24,11 @@ class RouteGuards {
   factory RouteGuards.of({
     required ExamRepository exams,
     required PlanRepository plan,
-  }) =>
-      RouteGuards(hasExamAttempt: exams.exists, isEnrolled: plan.hasEnrollment);
+  }) => RouteGuards(
+    hasExamAttempt: exams.exists,
+    isEnrolled: plan.hasEnrollment,
+    isExamRunning: exams.running,
+  );
 
   /// Everything allowed. What a test that is not about the guards uses, and
   /// what the router falls back to when nobody supplied any — a router with
@@ -43,6 +50,14 @@ class RouteGuards {
   /// Whether the learner has started a step. Onboarding is for those who
   /// have not.
   final Future<bool> Function() isEnrolled;
+
+  /// Whether that attempt is still being sat: an arrival from outside holds
+  /// only then (FR-L12-04, #935). L13 and L14 are the same route, and a
+  /// finished attempt has nothing a link could cost it.
+  final Future<bool> Function(int attemptId) isExamRunning;
+
+  /// Held, where nobody said: as before #935.
+  static Future<bool> _running(int _) async => true;
 }
 
 /// `navigation.md`'s guards, in one place.
