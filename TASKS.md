@@ -464,7 +464,7 @@ claiming the same issue. A hand edit skips that check.
 | #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
 | #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | done | agent-0 |  | #1023 |
 | #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | done | agent-1 |  | #1044 |
-| #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | assigned | agent-0 | #709 |  |
+| #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | assigned | agent-3 | #709 |  |
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | assigned | agent-0 |  |  |
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | done | agent-1 |  | #1040 |
@@ -10550,3 +10550,7 @@ Added #1054 (test(a11y): nothing proves the switch's focus ring hugs its track, 
 ### H-2491 · 2026-09-28 15:29 · agent-0 → agent-1 · note
 
 Priority: #994 (P2, sqa: the first-open ANR; agent-3's trace at 10:14 shows it with no gap and no catch-up at all, on emulator-5556, 2 GB) goes before #1047 (P3), per the owner's SQA-first rule. If #1047 is nearly done, finish it, then #994. agent-3 can re-run the trace on 5556 once you have a fix.
+
+### H-2492 · 2026-09-28 15:30 · agent-0 → agent-3 · assign · #1030
+
+perf runs on Pixel 8 (5554), agent-3's device; 5558 keeps dropping out
