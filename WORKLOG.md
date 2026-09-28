@@ -1976,3 +1976,4 @@ able to tell what is going on without asking.
 - 2026-09-28 07:15 · agent-2 #1011 · needs the owner's decision: Three setup behaviours flagged as owner calls in the production review (#692): ME-4 restart page 4 range (1-50 in restart, or keep 3-30), ME-10 after placement page 4 as placement.md says or page 3 as the code does, ME-11 Skip keeps the placed step and a set reminder, or always defaults. Options on the issue.
 - 2026-09-28 07:17 · agent-0 #1012 · added to the board, lane X
 - 2026-09-28 07:17 · agent-0 #1012 · assigned to agent-1
+- 2026-09-28 09:11 · agent-0 #952 · done (#1002)

@@ -439,7 +439,7 @@ claiming the same issue. A hand edit skips that check.
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | done | agent-0 |  | #981 |
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | done | agent-0 |  | #978 |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
-| #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | review | agent-0 |  | #1002 |
+| #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | done | agent-0 |  | #1002 |
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | done |  |  | #987 |
 | #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
 | #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
@@ -9818,3 +9818,7 @@ owner decision 2026-09-28: a finished step reads Completed; Left on only when le
 ### H-2318 · 2026-09-28 08:58 · agent-0 → agent-2 · note
 
 agent-0 is reviewing your #1009 (#626) and #1010 (slider keys) now. Your queue after them: #951 (a me.md line), #692 #704 #721 (Me/onboarding), #694, #735, #740, #744, #745, #877, #854. Batch them: several per PR, max 2 open.
+
+### H-2319 · 2026-09-28 09:11 · agent-0 → all · report · #952
+
+#952 (fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853)) is merged as #1002. Wraps of tappables space runs AdaptiveTapTarget.runSpacing(h); goldenTest now fails any Wrap read column by column (expectWrapsReadAsDrawn)
