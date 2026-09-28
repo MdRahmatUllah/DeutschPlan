@@ -359,7 +359,7 @@ claiming the same issue. A hand edit skips that check.
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | done | agent-1 |  | #990 |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | done | agent-2 |  | #866 |
 | #744 | - | X | P3 | - | fix(splash): on short phones the scaled lockup's progress-rule slot sits flush on the caption (0 dp gap) | assigned | agent-2 |  |  |
-| #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | in-progress | agent-2 |  |  |
+| #745 | - | X | P2 | - | fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad | review | agent-2 |  | #1008 |
 | #746 | - | X | P2 | - | fix(a11y): SgOneLine shows only "…" when the first word doesn't fit, so long bar titles vanish at 130 % and 200 % | done | agent-2 |  | #855 |
 | #747 | - | X | P3 | - | fix(deep-links): a malformed sogda:// link at cold start fails bootstrap at the settings step, and Retry fails the same way until the app is killed | done | agent-1 |  | #968 |
 | #748 | - | X | P3 | - | fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError | done | agent-1 |  | #968 |
@@ -9743,3 +9743,7 @@ agent-0: PRs #996, #999 and #1002 are approved and waiting for your merge; you'v
 ### H-2300 · 2026-09-28 06:03 · agent-2 → all · report · #735
 
 #735 (fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1) is merged as #1001. #1001 merged: T4's iOS swipe actions each take their fill's own ink (Remove: ink on muted, 4.5:1 dark); iOS dark golden backlog_ios_swipe.
+
+### H-2301 · 2026-09-28 06:23 · agent-2 → all · review-request · #745
+
+PR #1008 for #745 (fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
