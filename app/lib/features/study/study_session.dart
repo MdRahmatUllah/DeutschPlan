@@ -353,8 +353,8 @@ class StudySession extends _$StudySession {
   });
 
   /// The *Undo* of [knewIt] or [skip]: the write taken back and the card
-  /// asked again. False when there was nothing to take back, or a write was
-  /// still in flight.
+  /// asked again. False when there was nothing to take back, a rating was
+  /// made since (#888), or a write was still in flight.
   Future<bool> undo() async {
     final current = state.value;
     if (current == null || current.position == 0 || _busy) return false;
@@ -374,7 +374,9 @@ class StudySession extends _$StudySession {
           );
         }
       } else if (_entries[last] case final entry?) {
-        await _rating.undo(entry: entry);
+        // A rating made since is on top: it stays, and so does this one, so
+        // the card is not asked again (#728, #888).
+        if (await _rating.undo(entry: entry) == null) return false;
       }
       state = AsyncData<StudySessionState>(current.back());
       _shownAt = ref.read(clockProvider)();

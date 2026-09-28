@@ -177,11 +177,13 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
           .read(ratingServiceProvider)
           .rate(haus, Rating.again, source: ReviewSource.quiz);
 
-      await notifier.undo();
+      expect(await notifier.undo(), isFalse);
       expect(await log(), <Map<String, Object?>>[
         <String, Object?>{'word_uid': haus, 'rating': 4, 'source': 'known'},
         <String, Object?>{'word_uid': haus, 'rating': 1, 'source': 'quiz'},
       ]);
+      // Its rating stands, so the card is not asked again (FR-T2-02).
+      expect(session().current?.uid, tuer);
     });
 
     test("I know it's Undo restores the word as it was", () async {
