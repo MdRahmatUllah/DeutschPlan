@@ -6,7 +6,7 @@ last-read: 2327
 
 ## Now
 
-Nothing claimed.
+#1011 question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) — claimed 2026-09-28 10:02.
 
 ## Next
 
