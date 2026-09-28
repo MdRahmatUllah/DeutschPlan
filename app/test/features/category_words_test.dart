@@ -495,7 +495,7 @@ void main() {
     late ProviderContainer container;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_category');
+      directory = tempDir('sogda_category');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(
@@ -515,11 +515,6 @@ void main() {
       container.dispose();
       await settings.dispose();
       await db.close();
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     Future<List<String>> meanings() async {

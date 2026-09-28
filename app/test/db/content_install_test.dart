@@ -44,7 +44,7 @@ void main() {
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    support = Directory.systemTemp.createTempSync('sogda_install');
+    support = tempDir('sogda_install');
     PathProviderPlatform.instance = _TempPaths(support.path);
 
     // A real content.db, read back as bytes — the same thing the bundle would
@@ -63,11 +63,6 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler('flutter/assets', null);
     await db.close();
-    try {
-      support.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases the file a moment later.
-    }
   });
 
   test('the first run copies the asset and attaches it', () async {

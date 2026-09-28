@@ -116,11 +116,9 @@ void main() {
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
-    directory = Directory.systemTemp.createTempSync('sogda_m6');
+    directory = tempDir('sogda_m6');
     content = ContentFixture.write('${directory.path}/content.db').file;
   });
-
-  tearDownAll(() => directory.deleteSync(recursive: true));
 
   Future<AppDatabase> open() async {
     final opened = AppDatabase.memory();

@@ -189,7 +189,7 @@ void main() {
         );
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_widget');
+      directory = tempDir('sogda_widget');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase.memory();
       await db.customStatement(
@@ -213,7 +213,6 @@ void main() {
       container.dispose();
       await settings.dispose();
       await db.close();
-      directory.deleteSync(recursive: true);
     });
 
     Future<WidgetWord?> word() async {
@@ -336,7 +335,7 @@ void main() {
     late DateTime now;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_midnight');
+      directory = tempDir('sogda_midnight');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase.memory();
       await db.customStatement(
@@ -376,7 +375,6 @@ void main() {
       container.dispose();
       await settings.dispose();
       await db.close();
-      directory.deleteSync(recursive: true);
     });
 
     test("never writes yesterday's date over the new day's", () async {

@@ -35,7 +35,7 @@ void main() {
   final phones = <_Phone>[];
 
   setUp(() {
-    directory = Directory.systemTemp.createTempSync('sogda_import_plan');
+    directory = tempDir('sogda_import_plan');
     content = ContentFixture.write('${directory.path}/content.db').file;
     final raw = sqlite.sqlite3.open(content.path);
     try {
@@ -60,11 +60,6 @@ VALUES (?, 'A1.1', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
       await phone.close();
     }
     phones.clear();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<_Phone> setUpPhone(PlanDate on, {int mask = allDays}) async {

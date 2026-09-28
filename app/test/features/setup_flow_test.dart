@@ -35,7 +35,7 @@ void main() {
   late ProviderContainer container;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_setup');
+    directory = tempDir('sogda_setup');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     // The fixture has three words; a seven-a-day first day needs more.
@@ -90,11 +90,6 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
     container.dispose();
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   OnboardingNotifier draft() => container.read(onboardingProvider.notifier);

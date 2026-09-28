@@ -8,6 +8,8 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 
+import 'content_fixture.dart' show tempDir;
+
 /// `docs/02-data/user-database.md` is the contract this file holds the schema
 /// to. Every table it lists must exist, and every rule it states as a key rule
 /// must be enforced by the database rather than by whichever repository
@@ -311,7 +313,7 @@ void main() {
     // The generated migrationSteps() raises for a version it has no step for.
     // An empty onUpgrade would swallow that, and the first learner to update
     // would open their existing file against the new schema.
-    final dir = Directory.systemTemp.createTempSync('sogda_upgrade');
+    final dir = tempDir('sogda_upgrade');
     final file = File('${dir.path}/user.sqlite');
 
     final v1 = AppDatabase(DatabaseConnection(NativeDatabase(file)));
@@ -324,8 +326,6 @@ void main() {
       throwsA(isA<ArgumentError>()),
     );
     await v2.close();
-
-    dir.deleteSync(recursive: true);
   });
 
   test('the schema version is written where a raw inspection reads it', () async {
@@ -341,7 +341,7 @@ void main() {
     // reports 'memory', so this is the only place the setting can actually be
     // checked — and it runs through configureConnection, the same callback the
     // real isolate connection uses.
-    final dir = Directory.systemTemp.createTempSync('sogda_wal');
+    final dir = tempDir('sogda_wal');
 
     final onDisk = AppDatabase(
       DatabaseConnection(
@@ -356,7 +356,6 @@ void main() {
     expect(mode.read<String>('journal_mode'), 'wal');
 
     await onDisk.close();
-    dir.deleteSync(recursive: true);
   });
 }
 

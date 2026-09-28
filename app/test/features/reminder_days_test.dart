@@ -57,7 +57,7 @@ void main() {
   });
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_m5');
+    directory = tempDir('sogda_m5');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase.memory();
     await db.customStatement(
@@ -75,7 +75,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    directory.deleteSync(recursive: true);
   });
 
   Future<int> enrolledMask() async =>

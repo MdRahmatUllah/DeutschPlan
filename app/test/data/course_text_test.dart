@@ -19,7 +19,7 @@ void main() {
   late AppDatabase db;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_course');
+    directory = tempDir('sogda_course');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase.memory();
     await db.customStatement(
@@ -29,7 +29,6 @@ void main() {
 
   tearDown(() async {
     await db.close();
-    directory.deleteSync(recursive: true);
   });
 
   test('FR-L15-01 #330 the words, their forms and examples, and the examples '

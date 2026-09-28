@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -738,14 +736,7 @@ INSERT INTO word_state (word_uid, status, stability, reps) VALUES
   test("#409 M3's translation row reads the one build the manifest offers, "
       'Q4_K_M', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    final support = Directory.systemTemp.createTempSync('sogda_m3');
-    addTearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
-    });
+    final support = tempDir('sogda_m3');
     final container = ProviderContainer(
       overrides: <Override>[
         modelRepositoryProvider.overrideWithValue(

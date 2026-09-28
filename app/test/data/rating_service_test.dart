@@ -35,7 +35,7 @@ void main() {
   late DateTime now;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_rating');
+    directory = tempDir('sogda_rating');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
@@ -59,11 +59,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<WordStateData?> stateOf(String id) => (db.select(

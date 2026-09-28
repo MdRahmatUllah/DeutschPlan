@@ -26,7 +26,7 @@ void main() {
   const today = '2026-09-21';
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_me');
+    directory = tempDir('sogda_me');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     // Last week's b1, b2 and c1 below must be in the course, or they are a
     // content update's removed words and not counted (BR-CONTENT-02).
@@ -98,11 +98,6 @@ INSERT INTO daily_stats (day, new_done, reviews_done, grammar_done, sentences_do
     container.dispose();
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   test(

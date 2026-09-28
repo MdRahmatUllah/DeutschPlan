@@ -51,17 +51,16 @@ void main() {
   late String manifestAsset;
 
   setUpAll(() {
-    final staging = Directory.systemTemp.createTempSync('sogda_asset');
+    final staging = tempDir('sogda_asset');
     final file = ContentFixture.write('${staging.path}/content.db').file;
     contentAsset = file.readAsBytesSync();
     manifestAsset =
         '{"content_version":"${ContentFixture.version}","words":{}}';
-    staging.deleteSync(recursive: true);
   });
 
   setUp(() {
-    support = Directory.systemTemp.createTempSync('sogda_support');
-    temp = Directory.systemTemp.createTempSync('sogda_temp');
+    support = tempDir('sogda_support');
+    temp = tempDir('sogda_temp');
     PathProviderPlatform.instance = _FakePathProvider(support, temp);
     _serveAssets(<String, Uint8List>{
       ContentDao.asset: contentAsset,
@@ -69,16 +68,7 @@ void main() {
     });
   });
 
-  tearDown(() {
-    _serveAssets(const <String, Uint8List>{});
-    for (final directory in <Directory>[support, temp]) {
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
-    }
-  });
+  tearDown(() => _serveAssets(const <String, Uint8List>{}));
 
   /// A database whose file lives in the fake app-support directory, so the
   /// attach and the copy go through the same paths they would on a phone.
@@ -238,7 +228,7 @@ void main() {
       final first = await run();
       await first.dispose();
 
-      final staging = Directory.systemTemp.createTempSync('sogda_same');
+      final staging = tempDir('sogda_same');
       final next = ContentFixture.write('${staging.path}/content.db').file;
       final db = sqlite3.open(next.path);
       db.execute(
@@ -251,7 +241,6 @@ void main() {
           '{"content_version":"202603031200","words":{}}'.codeUnits,
         ),
       });
-      addTearDown(() => staging.deleteSync(recursive: true));
 
       final second = await run();
       addTearDown(second.dispose);
@@ -288,7 +277,7 @@ void main() {
       await first.dispose();
 
       // The pipeline's next build: same rows, later version.
-      final staging = Directory.systemTemp.createTempSync('sogda_next');
+      final staging = tempDir('sogda_next');
       final next = ContentFixture.write('${staging.path}/content.db').file;
       final db = sqlite3.open(next.path);
       db.execute(
@@ -301,7 +290,6 @@ void main() {
           '{"content_version":"202602021200","words":{}}'.codeUnits,
         ),
       });
-      addTearDown(() => staging.deleteSync(recursive: true));
 
       final second = await run();
       addTearDown(second.dispose);
@@ -564,8 +552,7 @@ void main() {
       // A library without FTS5's trigram tokenizer can't be loaded in a test,
       // so the course's trigram index is a plain table here: its MATCH fails
       // the way a missing tokenizer does.
-      final staging = Directory.systemTemp.createTempSync('sogda_asset');
-      addTearDown(() => staging.deleteSync(recursive: true));
+      final staging = tempDir('sogda_asset');
       final path = '${staging.path}/content.db';
       ContentFixture.write(path);
       final course = sqlite3.open(path)
@@ -778,14 +765,8 @@ void main() {
       for (var i = 0; i < 3; i++) {
         if (i > 0) {
           // A first run again: an empty app-support folder.
-          final used = support;
-          support = Directory.systemTemp.createTempSync('sogda_support');
+          support = tempDir('sogda_support');
           PathProviderPlatform.instance = _FakePathProvider(support, temp);
-          try {
-            used.deleteSync(recursive: true);
-          } on FileSystemException {
-            // Windows releases it a moment later.
-          }
         }
         final first = await run();
         await first.dispose();

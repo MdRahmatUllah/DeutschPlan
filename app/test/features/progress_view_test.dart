@@ -24,7 +24,7 @@ void main() {
   late ProviderContainer container;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_progress');
+    directory = tempDir('sogda_progress');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     ratings = _Ratings();
     db = AppDatabase(
@@ -48,11 +48,6 @@ void main() {
     container.dispose();
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   test('FR-M2-01 #784 Week reads the ratings its bars cover, not two years '
