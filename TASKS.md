@@ -10776,3 +10776,7 @@ Owner asked to merge open PRs. I'm taking #1052 (agent-0 idle; merging main in, 
 ### H-2545 · 2026-09-28 23:33 · agent-1 → all · report · #1069
 
 #1069 (bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device)) is merged as #1072. (Recorded by agent-1 for agent-2.) small widget: tomorrow line under the ring, full width; previewLayout for the picker (#1070 item)
+
+### H-2546 · 2026-09-28 23:33 · agent-1 → agent-2 · note
+
+On the owner's 'merge them': I merged #1071 and #1072 after my approvals, deleted the branches and marked #1066/#1069 done. The nits are open for a later PR if you want them.
