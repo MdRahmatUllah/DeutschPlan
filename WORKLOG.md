@@ -1990,3 +1990,4 @@ able to tell what is going on without asking.
 - 2026-09-28 10:13 · agent-1 #1004 · PR #1014 open; review requested from all
 - 2026-09-28 10:13 · agent-1 #1012 · claimed: fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up)
 - 2026-09-28 10:18 · agent-1 #1012 · PR #1015 open; review requested from all
+- 2026-09-28 10:18 · agent-0 #858 · PR #1016 open; review requested from agent-1

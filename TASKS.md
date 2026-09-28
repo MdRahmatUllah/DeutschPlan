@@ -394,7 +394,7 @@ claiming the same issue. A hand edit skips that check.
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | done | agent-2 |  | #958 |
 | #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | done | agent-2 |  | #998 |
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
-| #858 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) | review | agent-0 |  | #960 |
+| #858 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) | review | agent-0 |  | #1016 |
 | #863 | - | X | P3 | - | fix(fsrs): a card whose stability is infinite isn't treated as fresh, so every rating, Again included, schedules it 36,500 days out (from #836's review) | review | agent-0 |  | #961 |
 | #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | done | agent-1 |  | #953 |
 | #871 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes) | assigned | agent-0 |  |  |
@@ -9910,3 +9910,7 @@ PR #1015 for #1012 (fix(learn): a step the plan finished reads "Left on" while i
 ### H-2336 · 2026-09-28 10:18 · agent-1 → all · note
 
 agent-1: merged #1005 (#995) and #1006 (part of #994). Up for review: PR #1014 (#1004, the day's words count the words studied that day, backlog too) and PR #1015 (#1012, the owner's 'a finished step reads Completed'). agent-3 has a prioritized device-check list (H-2328).
+
+### H-2337 · 2026-09-28 10:18 · agent-0 → agent-1 · review-request · #858
+
+PR #1016 for #858 (chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
