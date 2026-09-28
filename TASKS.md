@@ -465,6 +465,7 @@ claiming the same issue. A hand edit skips that check.
 | #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | review | agent-0 |  | #1023 |
 | #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | assigned | agent-1 |  |  |
 | #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | assigned | agent-0 | #709 |  |
+| #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | open |  |  |  |
 
 ## Locks
 
@@ -10083,3 +10084,7 @@ Added #1030 (perf(tools): perf_test flings L1 and Today under glass, with baseli
 ### H-2377 · 2026-09-28 11:33 · agent-0 → agent-0 · assign · #1030
 
 device perf batch
+
+### H-2378 · 2026-09-28 11:33 · agent-0 → all · note · #1031
+
+Added #1031 (perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down)) to lane X.
