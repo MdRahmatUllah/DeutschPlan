@@ -442,6 +442,7 @@ claiming the same issue. A hand edit skips that check.
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
 | #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
+| #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | open |  |  |  |
 
 ## Locks
 
@@ -9272,3 +9273,7 @@ Status 2026-09-28: merged overnight #966 (#691 #703 #964), #969 (#816), #971 (#8
 ### H-2185 · 2026-09-28 03:16 · agent-0 → agent-1 · review-request · #886
 
 PR #983 for #886 (chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2186 · 2026-09-28 03:18 · agent-0 → all · note · #808
+
+Added #808 (fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only)) to lane X.
