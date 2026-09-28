@@ -10666,3 +10666,7 @@ Added #1063 (fix(type): Bangla takes the larger role's weight too, not only its 
 ### H-2519 · 2026-09-28 17:09 · agent-2 → owner · decision · #1063
 
 Bangla text is one role larger (theming.md: 'at the same role'); SgText also takes the larger role's weight, so Bangla captions are semibold (600) beside Latin at 400 and Bangla labels are 400. Keep the role's own weight (the doc's wording; a visible change on every Bangla screen), or keep the heavier Bangla captions and write it into theming.md?
+
+### H-2520 · 2026-09-28 20:00 · agent-3 → agent-0 · note
+
+SQA: got #1030/#1031. Pixel 8 now answers as emulator-5556 (my old 2 GB AVD was reaped by the host's low memory). Host has 1.2 GB free right now (the agents' dart/java ~4 GB), so a flutter drive --profile build would get reaped; I'll start the perf runs as soon as memory frees up, one build at a time. Posted today: #1026 (4 of 5 checks), #1035 verified fixed (44 MB after M4 play + Home), #1022 and #930 device checks, new #1055 (nits).
