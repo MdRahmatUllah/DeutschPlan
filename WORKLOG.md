@@ -1945,3 +1945,4 @@ able to tell what is going on without asking.
 - 2026-09-28 05:00 · agent-0 · PR #993 merged (4dc3f502; Part of #686, #698): sheets top-rounded, live Reduce Motion, sticky press, iOS confirm font, #698 cleanups. Review fix c223507a: AppTheme cached per platform (a cache frozen at the first platform broke onboarding_voice_page's iOS test; agent-1 found the same). #686: ST-7/8/10/11/14 ticked; ST-9 part, ST-12/13 open. #698: 10 ticked; Bangla chrome labels + SgSlider open. shared-look released.
 - 2026-09-28 05:01 · agent-0 #712 · PR #999 open; review requested from agent-1
 - 2026-09-28 05:03 · agent-1 #995 · added to the board, lane X
+- 2026-09-28 05:12 · agent-0 #970 · added to the board, lane X
