@@ -6,6 +6,8 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart' show WordStatus;
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/features/today/today_view.dart';
+import 'package:sogda/services/model_downloads.dart' show DownloadProgress;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'today_providers.g.dart';
@@ -52,6 +54,11 @@ Stream<Set<String>> todayGrammarDue(Ref ref) => ref
     .watchDue(ref.watch(todayProvider))
     .map((topics) => <String>{for (final topic in topics) topic.uid});
 
+/// The voice's download, as the manager reports it (FR-M4-01).
+@riverpod
+Stream<DownloadProgress> voiceDownload(Ref ref) =>
+    ref.watch(modelDownloadsProvider).watch(ModelRepository.voiceModel);
+
 /// Whether the on-device voice is installed and verified: Today's voice card
 /// offers it until it is.
 ///
@@ -61,6 +68,12 @@ Stream<Set<String>> todayGrammarDue(Ref ref) => ref
 @riverpod
 Future<bool> voiceInstalled(Ref ref) async {
   final models = ref.watch(modelRepositoryProvider);
+  // Read again when the voice's download changes phase (#663, #757): kept
+  // alive under Today, a value read once went on offering the voice, and
+  // M3's row went on saying it wasn't downloaded, until a restart. Its phase,
+  // not its every percent. M4's *Delete* is no download, and invalidates
+  // this itself.
+  ref.watch(voiceDownloadProvider.select((download) => download.value?.phase));
   try {
     final entry = (await models.manifest()).model(ModelRepository.voiceModel);
     final variant = entry?.variants.firstOrNull;
