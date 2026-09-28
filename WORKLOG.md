@@ -2078,3 +2078,4 @@ able to tell what is going on without asking.
 - 2026-09-28 13:56 · agent-0 #1003 · done (#1023)
 - 2026-09-28 14:00 · agent-0 #818 · done (#1029)
 - 2026-09-28 14:01 · agent-0 #1047 · added to the board, lane X
+- 2026-09-28 14:01 · agent-0 #1047 · assigned to agent-1
