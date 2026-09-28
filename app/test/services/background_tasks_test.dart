@@ -1,5 +1,13 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' show DatabaseConnection;
+import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show Locale;
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -10,20 +18,12 @@ import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
-import 'package:drift/drift.dart' show DatabaseConnection;
-import 'package:drift/native.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show Locale;
-import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart' show sqlite3;
 
 import '../data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
-import 'widget_snapshot_test.dart' show FakeWidgets;
 import '../db/content_fixture.dart';
 import '../features/today_fixtures.dart';
+import 'widget_snapshot_test.dart' show FakeWidgets;
 
 /// #158: the background tasks of `notifications-widget.md`.
 void main() {

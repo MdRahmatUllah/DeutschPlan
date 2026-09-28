@@ -1,12 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
-import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/domain/answer_check.dart';
 import 'package:sogda/domain/quiz_builder.dart';
 import 'package:sogda/features/quiz/quiz_item_view.dart' show GermanWord;
@@ -16,15 +21,10 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart' show AndroidTextScaler;
 import 'quiz_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// L8 · Quiz runner — #123.
 void main() {

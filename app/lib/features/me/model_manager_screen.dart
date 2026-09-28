@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -13,17 +16,14 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/me/licences_screen.dart';
+import 'package:sogda/features/today/today_providers.dart'
+    show voiceInstalledProvider;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
-import 'package:sogda/features/today/today_providers.dart'
-    show voiceInstalledProvider;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'model_manager_screen.g.dart';
 

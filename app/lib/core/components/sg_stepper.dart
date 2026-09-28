@@ -1,10 +1,10 @@
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// − value +, as `OnboardingPace` and `Settings` both draw it: two 36 dp
 /// outlined circles either side of the number. On iOS both draw the number

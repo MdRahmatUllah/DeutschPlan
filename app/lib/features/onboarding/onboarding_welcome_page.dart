@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -9,7 +10,6 @@ import 'package:sogda/features/me/export_import_screen.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/start_report.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// S2 page 1 · Welcome. `OnboardingWelcome-android.html`.
 ///

@@ -3,10 +3,10 @@ library;
 
 import 'dart:io';
 
-import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/data/db/app_database.dart';
 
 /// `docs/02-data/user-database.md` is the contract this file holds the schema
 /// to. Every table it lists must exist, and every rule it states as a key rule

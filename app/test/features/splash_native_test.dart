@@ -6,9 +6,9 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' show Color, Size;
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/theme/sg_brand.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// The native launch screens — #85, iOS's in #238 — and the launcher icon,
 /// with the brand kit's tiles (#602).

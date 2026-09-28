@@ -1,5 +1,7 @@
 import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -15,8 +17,6 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// #745 · WCAG 2.1.1: what a finger presses, a keyboard or a D-pad presses
 /// too. Tab reaches each custom control, and Enter, Space and the D-pad's

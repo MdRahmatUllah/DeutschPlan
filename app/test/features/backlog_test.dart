@@ -1,9 +1,3 @@
-import 'package:sogda/core/adaptive/adaptive.dart';
-import 'package:sogda/core/components/sg_button.dart';
-import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/core/theme/app_theme.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart'
     as drift
     show
@@ -14,34 +8,38 @@ import 'package:drift/drift.dart'
         Table,
         TableInfo;
 import 'package:drift/native.dart' show NativeDatabase;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/fsrs.dart';
+import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
 import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/study/study_session.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:sogda/features/words/word_detail_screen.dart';
 
-import '../services/fake_tts.dart';
-
-import '../db/content_fixture.dart';
-import '../core/text_clipping.dart';
 import '../core/semantics_checks.dart';
-
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
+import '../core/text_clipping.dart';
+import '../db/content_fixture.dart';
+import '../services/fake_tts.dart';
 
 /// T4 · Backlog — #108.
 void main() {

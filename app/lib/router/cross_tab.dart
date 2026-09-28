@@ -1,6 +1,6 @@
-import 'package:sogda/router/app_shell.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/router/app_shell.dart';
 
 /// Jumps from one tab to a screen in another. `navigation.md`:
 ///

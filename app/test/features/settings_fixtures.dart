@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart'
     show settingsSourceProvider;
 import 'package:sogda/data/repositories/model_repository.dart';
@@ -8,8 +10,6 @@ import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/me/settings_screen.dart';
 import 'package:sogda/features/today/today_providers.dart'
     show voiceInstalledProvider;
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
 
 /// Settings without a database: every default, and writes kept in memory.
 class StubSettings extends Fake implements SettingsRepository {

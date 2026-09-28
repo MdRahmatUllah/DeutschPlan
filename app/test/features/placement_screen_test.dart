@@ -1,6 +1,10 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
@@ -19,15 +23,10 @@ import 'package:sogda/features/onboarding/placement_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
-import '../services/fake_tts.dart';
-
-import '../domain/placement_test.dart' show wordFor;
 import '../core/semantics_checks.dart';
+import '../domain/placement_test.dart' show wordFor;
+import '../services/fake_tts.dart';
 
 /// S3 · the placement check on screen — #93. The walk itself is
 /// `placement_test.dart`'s; this is the screen around it.

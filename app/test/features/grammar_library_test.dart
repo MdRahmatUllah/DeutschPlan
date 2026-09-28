@@ -1,5 +1,9 @@
 import 'dart:ui' show LocaleStringAttribute;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -8,13 +12,9 @@ import 'package:sogda/features/learn/learn_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
-import 'today_fixtures.dart';
 import '../core/semantics_checks.dart';
+import 'today_fixtures.dart';
 
 /// L3 · Grammar library — #117.
 void main() {

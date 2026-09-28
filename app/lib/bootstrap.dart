@@ -1,9 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show immutable;
+// `Override` is not in the main barrel in Riverpod 3.
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart' show Brightness;
+import 'package:path_provider/path_provider.dart';
 import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/theme_mode.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -15,12 +21,6 @@ import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/router/app_router.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter/foundation.dart' show immutable;
-// `Override` is not in the main barrel in Riverpod 3.
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart' show Brightness;
-import 'package:path_provider/path_provider.dart';
 
 /// Which step of FR-S1-01 was running, so a failure can say what went wrong
 /// in words the learner can act on.

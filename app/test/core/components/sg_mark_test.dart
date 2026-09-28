@@ -1,8 +1,8 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_brand.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// The Sogda mark (#602): the brand kit's tiles, drawn in Flutter. The goldens
 /// of S1, About and the reminder's preview show it; this is what they can't

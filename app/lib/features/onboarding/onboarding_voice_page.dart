@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
@@ -15,9 +18,6 @@ import 'package:sogda/features/onboarding/setup_flow.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'onboarding_voice_page.g.dart';
 

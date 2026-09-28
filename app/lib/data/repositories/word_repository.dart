@@ -1,10 +1,10 @@
+import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart' show immutable;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart' show planDate;
-import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart' show immutable;
 
 part 'word_repository.g.dart';
 

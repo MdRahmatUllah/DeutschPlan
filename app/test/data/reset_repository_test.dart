@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
@@ -9,7 +10,6 @@ import 'package:sogda/data/repositories/reset_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/plan_engine.dart' show planDate;
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 

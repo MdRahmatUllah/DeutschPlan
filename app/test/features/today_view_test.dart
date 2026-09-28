@@ -1,5 +1,5 @@
-import 'package:sogda/features/today/today_view.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/features/today/today_view.dart';
 
 import 'today_fixtures.dart';
 

@@ -2,11 +2,11 @@
 // so it is a root scope in fact. The lint cannot tell from inside a builder.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/features/onboarding/onboarding_pace_page.dart';
 import 'package:sogda/features/onboarding/onboarding_start_page.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
 
 import 'golden_harness.dart';
 
