@@ -1977,3 +1977,4 @@ able to tell what is going on without asking.
 - 2026-09-28 07:17 · agent-0 #1012 · added to the board, lane X
 - 2026-09-28 07:17 · agent-0 #1012 · assigned to agent-1
 - 2026-09-28 09:11 · agent-0 #952 · done (#1002)
+- 2026-09-28 09:18 · agent-0 #974 · done (#996)
