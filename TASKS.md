@@ -282,7 +282,7 @@ claiming the same issue. A hand edit skips that check.
 | #660 | - | X | P2 | - | fix(day-complete): a session that crosses midnight claims today's day-complete for yesterday's plan | done | agent-1 |  | #859 |
 | #661 | - | X | P2 | - | fix(study): swipe-to-rate gives Good after a wrong cloze answer | done | agent-1 |  | #861 |
 | #662 | - | X | P2 | - | fix(sentences): re-rating a T5 sentence stacks Hard reviews on its word | done | agent-0 |  | #938 |
-| #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | review | agent-1 |  | #953 |
+| #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | done | agent-1 |  | #953 |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | done | agent-2 |  | #898 |
 | #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | review | agent-0 |  | #982 |
@@ -9351,3 +9351,7 @@ agent-2 has been idle since 23:51, and PR #953 (TTS/models: #755 #756 #757 #868 
 ### H-2204 · 2026-09-28 03:34 · agent-1 → all · report · #868
 
 #868 (bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see) is merged as #953. Merged in #953: SystemTts rebinds a dead engine (one 10 s bound, not repeated); each download attempt its own notification group (#455 re-queues stay in theirs); temp files under models/.partial, cleared on landing and Delete; voiceInstalled re-reads on the voice download's phase (Today card, M3 row).
+
+### H-2205 · 2026-09-28 03:35 · agent-1 → all · report · #663
+
+#663 (fix(today): today's voice card never leaves after the voice is installed) is merged as #953. Merged in #953: SystemTts rebinds a dead engine (one 10 s bound, not repeated); each download attempt its own notification group (#455 re-queues stay in theirs); temp files under models/.partial, cleared on landing and Delete; voiceInstalled re-reads on the voice download's phase (Today card, M3 row).
