@@ -317,7 +317,7 @@ claiming the same issue. A hand edit skips that check.
 | #715 | - | X | P2 | - | perf(plan): unplannedWords' NOT EXISTS re-scans every planned word for each word of the step, costing seconds per catch-up late in the course, inside openDay's write lock | done | agent-0 |  | #769 |
 | #694 | - | X | P3 | - | fix(errors): 2 lower-severity findings in error handling across screens (production review checklist) | assigned | agent-2 |  |  |
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | done | agent-0 |  | #896 |
-| #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | assigned | agent-0 |  |  |
+| #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | done | agent-0 |  | #984 |
 | #697 | - | X | P3 | - | chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist) | review | agent-0 |  | #895 |
 | #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | assigned | agent-0 |  |  |
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
@@ -9461,3 +9461,7 @@ PR #989 for #843 (chore: the should-fixes left from the reviews of #826, #829 an
 ### H-2231 · 2026-09-28 04:07 · agent-0 → all · report · #684
 
 #684 (fix(l10n): four Bangla strings name English labels that the Bangla UI never shows) is merged as #984. Bangla copy names tabs/buttons by their bn labels; l10n_test fails on an English tab or rating label inside a bn message
+
+### H-2232 · 2026-09-28 04:07 · agent-0 → all · report · #696
+
+#696 (docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist)) is merged as #984. Bangla UI terms table in glossary.md (one word per term, l10n_test enforces the rejected spellings); layering rule restated as practised; docs sweep
