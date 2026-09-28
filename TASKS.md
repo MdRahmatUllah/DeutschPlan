@@ -479,7 +479,7 @@ claiming the same issue. A hand edit skips that check.
 | #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | done |  |  |  |
 | #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | review | agent-1 |  | #1058 |
 | #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | done | agent-2 |  | #1062 |
-| #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | open |  |  |  |
+| #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | needs-decision |  |  |  |
 
 ## Locks
 
@@ -10662,3 +10662,7 @@ PR #1062 for #1060 (fix(progress): M2's last axis label runs past the card's edg
 ### H-2518 · 2026-09-28 17:08 · agent-2 → all · note · #1063
 
 Added #1063 (fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role')) to lane X.
+
+### H-2519 · 2026-09-28 17:09 · agent-2 → owner · decision · #1063
+
+Bangla text is one role larger (theming.md: 'at the same role'); SgText also takes the larger role's weight, so Bangla captions are semibold (600) beside Latin at 400 and Bangla labels are 400. Keep the role's own weight (the doc's wording; a visible change on every Bangla screen), or keep the heavier Bangla captions and write it into theming.md?

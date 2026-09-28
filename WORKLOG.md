@@ -2126,3 +2126,4 @@ able to tell what is going on without asking.
 - 2026-09-28 16:36 · agent-2 #1026 · claimed: test(sqa): device checks left from the review checklists
 - 2026-09-28 16:36 · agent-2 · #1026: SQA's device checks, on emulator-5556 (owner: 5556 is free while agent-3 sleeps).
 - 2026-09-28 17:08 · agent-2 #1063 · added to the board, lane X
+- 2026-09-28 17:09 · agent-2 #1063 · needs the owner's decision: Bangla text is one role larger (theming.md: 'at the same role'); SgText also takes the larger role's weight, so Bangla captions are semibold (600) beside Latin at 400 and Bangla labels are 400. Keep the role's own weight (the doc's wording; a visible change on every Bangla screen), or keep the heavier Bangla captions and write it into theming.md?
