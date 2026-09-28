@@ -39,23 +39,11 @@ Stream<Set<(String, String)>> todayOpen(Ref ref) => ref
       },
     );
 
-/// Today's new words skipped to the backlog and not studied since (#729):
-/// handled for the plan, as BR-PLAN-10 counts them, but not studied, so the
-/// day's "17 words" leaves them out.
+/// The words studied today, as it changes: the day's "17 words" (#1004).
 @riverpod
-Stream<int> todaySkippedNew(Ref ref) => ref
+Stream<int> todayWordsStudied(Ref ref) => ref
     .watch(planRepositoryProvider)
-    .watchPlan(ref.watch(todayProvider))
-    .map(
-      (items) => items
-          .where(
-            (item) =>
-                item.kind == PlanKind.newWord.wire &&
-                item.completedAt == null &&
-                item.skipped != 0,
-          )
-          .length,
-    );
+    .watchWordsStudiedOn(ref.watch(todayProvider));
 
 /// How many of today's practice sentences have been rated, as it changes:
 /// T5 finishing moves Today's sentence card without Today having to ask.
@@ -138,7 +126,7 @@ Future<TodayView> todayView(Ref ref) async {
   final rating = ref.watch(todaySentencesRatedProvider.future);
   final waiting = ref.watch(todayBacklogProvider.future);
   final grammarChanges = ref.watch(todayGrammarDueProvider.future);
-  final skipping = ref.watch(todaySkippedNewProvider.future);
+  final studying = ref.watch(todayWordsStudiedProvider.future);
 
   final plan = await planning;
   final open = await changes;
@@ -163,7 +151,7 @@ Future<TodayView> todayView(Ref ref) async {
   ];
 
   final backlog = await waiting;
-  final skippedNew = await skipping;
+  final wordsStudied = await studying;
   final started = await plans.courseStartedOn();
   final step = plan.activeStep;
   final counts = step == null ? null : await words.statusCounts(step);
@@ -239,7 +227,7 @@ Future<TodayView> todayView(Ref ref) async {
       done: plan.newToday.length - openNew.length,
       total: plan.newToday.length,
     ),
-    newSkipped: skippedNew,
+    words: wordsStudied,
     openRevise: openRevise,
     openNew: openNew,
     grammarDue: openGrammar,
