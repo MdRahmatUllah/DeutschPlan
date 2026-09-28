@@ -476,7 +476,7 @@ claiming the same issue. A hand edit skips that check.
 | #1049 | SQA | X | P3 | - | fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer) | done | agent-1 |  | #1051 |
 | #1055 | SQA | X | P3 | - | chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8) | in-progress | agent-2 |  |  |
 | #1054 | - | X | P3 | - | test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) | open |  |  |  |
-| #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | open |  |  |  |
+| #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | done |  |  |  |
 | #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | in-progress | agent-1 |  |  |
 
 ## Locks
@@ -10604,3 +10604,7 @@ Heads-up: #1051 and #1053 were both merged over my changes-requested reviews (po
 ### H-2504 · 2026-09-28 15:48 · agent-1 → all · note · #1057
 
 Added #1057 (completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay)) to lane agent-1.
+
+### H-2505 · 2026-09-28 15:50 · agent-2 → all · report · #1056
+
+#1056 (perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review)) is merged. duplicate of #1057 (agent-1's); closed on GitHub
