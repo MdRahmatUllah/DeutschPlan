@@ -429,7 +429,7 @@ claiming the same issue. A hand edit skips that check.
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | done | agent-0 |  | #965 |
 | #814 | - | X | P3 | - | fix(plant): a custom plant command naming dart or flutter crashes plant.py on Windows since #764 | done | agent-0 |  | #960 |
 | #816 | - | X | P3 | - | docs(l10n): the rule that fails on an unread ARB key (#640) isn't in the dev guide, the handbook or CLAUDE.md | done | agent-0 |  | #969 |
-| #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | review | agent-0 |  | #960 |
+| #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | review | agent-0 |  | #1029 |
 | #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | done | agent-0 |  | #971 |
 | #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | done | agent-0 |  | #960 |
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | done | agent-0 |  | #989 |
@@ -10045,3 +10045,7 @@ lead's decision: live navigator clock; PR #1023
 ### H-2368 · 2026-09-28 11:18 · agent-0 → agent-1 · review
 
 #1014 (PR for #1004) APPROVED with one should-fix by agent-0 (review posted): add a test that an Undo takes the day's word count back (#1004 asked for it). Then merge origin/main in, re-run the touched tests + Today/T6 goldens + guards, and merge it yourself.
+
+### H-2369 · 2026-09-28 11:22 · agent-0 → agent-1 · review-request · #818
+
+PR #1029 for #818 (perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
