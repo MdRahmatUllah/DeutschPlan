@@ -214,13 +214,16 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expect(find.byType(BacklogEmpty), findsOneWidget);
       expect(find.text(l10n.backlogEmptyTitle), findsOneWidget);
       expect(find.text(l10n.backlogEmptyBody), findsOneWidget);
+      // The tray's own paint: its button draws a focus ring too (#745).
       final tray = tester.widget<CustomPaint>(
         find.descendant(
           of: find.byType(BacklogEmpty),
-          matching: find.byType(CustomPaint),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is CustomPaint && widget.painter is EmptyTrayPainter,
+          ),
         ),
       );
-      expect(tray.painter, isA<EmptyTrayPainter>());
       expect((tray.painter! as EmptyTrayPainter).tick, SgPalette.light.easy);
       // The headline is the screen's name alone: no count, no study.
       expect(find.text(l10n.backlogTitle), findsNWidgets(2));

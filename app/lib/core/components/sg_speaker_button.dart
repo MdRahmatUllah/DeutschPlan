@@ -2,6 +2,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// What the speaker is doing.
 ///
@@ -73,27 +74,31 @@ class SgSpeakerButton extends StatelessWidget {
         child: AdaptiveTooltip(
           message: semanticLabel,
           longPress: onLongPress == null,
-          child: GestureDetector(
-            onTap: _enabled ? onPressed : null,
-            onLongPress: _enabled ? onLongPress : null,
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                color: _mute ? tokens.surface.muted : tokens.color.primary,
-                shape: BoxShape.circle,
-                border: Border.all(color: tokens.color.ink, width: 2),
-                boxShadow: tokens.isGlass
-                    ? const <BoxShadow>[]
-                    : <BoxShadow>[
-                        BoxShadow(
-                          color: tokens.surface.shadow,
-                          offset: tokens.surface.shadowOffset,
-                        ),
-                      ],
+          child: SgFocusable(
+            onPressed: onPressed,
+            radius: BorderRadius.circular(size / 2),
+            child: GestureDetector(
+              onTap: _enabled ? onPressed : null,
+              onLongPress: _enabled ? onLongPress : null,
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  color: _mute ? tokens.surface.muted : tokens.color.primary,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: tokens.color.ink, width: 2),
+                  boxShadow: tokens.isGlass
+                      ? const <BoxShadow>[]
+                      : <BoxShadow>[
+                          BoxShadow(
+                            color: tokens.surface.shadow,
+                            offset: tokens.surface.shadowOffset,
+                          ),
+                        ],
+                ),
+                child: Center(child: _content(tokens)),
               ),
-              child: Center(child: _content(tokens)),
             ),
           ),
         ),

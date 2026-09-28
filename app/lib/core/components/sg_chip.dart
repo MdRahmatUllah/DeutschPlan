@@ -2,6 +2,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// The chip families on the Foundations artboard. Each has its own height,
 /// weight and treatment, so they are separate kinds rather than one chip with
@@ -220,10 +221,14 @@ class SgChip extends StatelessWidget {
       child: ExcludeSemantics(
         child: onTap == null
             ? chip
-            : GestureDetector(
-                onTap: onTap,
-                behavior: HitTestBehavior.opaque,
-                child: chip,
+            : SgFocusable(
+                onPressed: onTap,
+                radius: BorderRadius.circular(radius),
+                child: GestureDetector(
+                  onTap: onTap,
+                  behavior: HitTestBehavior.opaque,
+                  child: chip,
+                ),
               ),
       ),
     );
