@@ -254,6 +254,7 @@ Future<BootstrapResult> bootstrap({
     await content.attach();
     final change = await updater.runIfNeeded();
     final version = await content.version();
+    await content.assertSearchable();
 
     step = BootstrapStep.settings;
     final settings = SettingsRepository(db);
