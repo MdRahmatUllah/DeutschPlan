@@ -1903,3 +1903,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:50 · agent-1 #729 · claimed: fix(day-complete): T6's "N words · M min" counts skipped new words as studied
 - 2026-09-28 03:58 · agent-0 #705 · PR #988 open; review requested from agent-1
 - 2026-09-28 03:58 · agent-2 #942 · done (#973)
+- 2026-09-28 03:59 · agent-2 #854 · claimed: chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim)
