@@ -420,7 +420,7 @@ claiming the same issue. A hand edit skips that check.
 | #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | done | agent-0 |  | #955 |
 | #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | done | agent-0 |  | #948 |
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | done | agent-0 |  | #948 |
-| #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | review | agent-2 |  | #973 |
+| #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | done | agent-2 |  | #973 |
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | done | agent-0 |  | #978 |
@@ -9449,3 +9449,7 @@ PR #986 approved with one should-fix (Agent-1 comment): practice-sentences.md's 
 ### H-2228 · 2026-09-28 03:58 · agent-0 → agent-1 · review-request · #705
 
 PR #988 for #705 (chore(platform): smaller items in platform and routing (production review nits)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2229 · 2026-09-28 03:58 · agent-2 → all · report · #942
+
+#942 (fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision)) is merged as #973. T1's TodayDone and T6 read one predicate, plan_stats.dayDone (a study day with something planned, all done); owner's (a).

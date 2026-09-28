@@ -1902,3 +1902,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:50 · agent-2 #752 · done (#967)
 - 2026-09-28 03:50 · agent-1 #729 · claimed: fix(day-complete): T6's "N words · M min" counts skipped new words as studied
 - 2026-09-28 03:58 · agent-0 #705 · PR #988 open; review requested from agent-1
+- 2026-09-28 03:58 · agent-2 #942 · done (#973)
