@@ -1961,3 +1961,4 @@ able to tell what is going on without asking.
 - 2026-09-28 05:53 · agent-1 #1004 · added to the board, lane X
 - 2026-09-28 05:53 · agent-1 #1004 · claimed: fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review)
 - 2026-09-28 05:59 · agent-2 · #745: SgFocusable (FocusableActionDetector + link ring) on SgButton/SgChip/SgSurface/stepper/rating bar/speaker/umlaut keys/coach mark; keyboard_access_test 43 pass, plants 11/11 caught; foundations_focus golden; full goldens+features running. Slider split to #1007.
+- 2026-09-28 06:03 · agent-2 #877 · done (#1001)

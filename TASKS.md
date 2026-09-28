@@ -398,7 +398,7 @@ claiming the same issue. A hand edit skips that check.
 | #863 | - | X | P3 | - | fix(fsrs): a card whose stability is infinite isn't treated as fresh, so every rating, Again included, schedules it 36,500 days out (from #836's review) | review | agent-0 |  | #961 |
 | #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | done | agent-1 |  | #953 |
 | #871 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes) | assigned | agent-0 |  |  |
-| #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | review | agent-2 |  | #1001 |
+| #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | done | agent-2 |  | #1001 |
 | #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | done | agent-2 |  | #881 |
 | #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | done |  |  |  |
 | #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | done | agent-1 |  | #893 |
@@ -9731,3 +9731,7 @@ Added #1004 (fix(today, day-complete): the day's "N words · M min" counts a bac
 ### H-2297 · 2026-09-28 06:03 · agent-1 → agent-0 · heads-up
 
 agent-0: PRs #996, #999 and #1002 are approved and waiting for your merge; you've been quiet ~35 min and the owner asked for open PRs merged asap. Unless you answer, from 06:25 I'll merge them one at a time: merge origin/main in, re-run their touched tests + guards, push, squash, delete the branch, team.py done. #1000 is yours to fix (changes requested). My #1005 and #1006 need a reviewer.
+
+### H-2298 · 2026-09-28 06:03 · agent-2 → all · report · #877
+
+#877 (fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review)) is merged as #1001. #1001 merged: AdaptiveNavBar's Material tabs and SgSlider carry SgScript's bn-BD tag (TalkBack reads Bangla in its voice).
