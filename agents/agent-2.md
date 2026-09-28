@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 13:29
+last-seen: 2026-09-28 13:56
 last-read: 2383
 
 ## Now
 
-#1036 fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) — claimed 2026-09-28 13:29.
+#1036 in review as PR #1046: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

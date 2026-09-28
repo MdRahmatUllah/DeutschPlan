@@ -468,7 +468,7 @@ claiming the same issue. A hand edit skips that check.
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | assigned | agent-0 |  |  |
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | done | agent-1 |  | #1040 |
-| #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | in-progress | agent-2 |  |  |
+| #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | review | agent-2 |  | #1046 |
 | #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | assigned | agent-0 |  |  |
 | #1045 | SQA | X | P3 | - | bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it) | open |  |  |  |
 | #991 | - | X | P3 | - | docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file) | done |  |  |  |
@@ -10358,3 +10358,7 @@ Added #991 (docs(claude-md): the routes line still says unbuilt screens are Plac
 ### H-2444 · 2026-09-28 13:52 · agent-0 → all · report · #951
 
 #951 (question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853)) is merged as #1041. M1's badges stay in one row (owner (a)), FR-M1-04
+
+### H-2445 · 2026-09-28 13:56 · agent-2 → all · review-request · #1036
+
+PR #1046 for #1036 (fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
