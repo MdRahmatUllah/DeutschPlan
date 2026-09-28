@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 12:55
+last-seen: 2026-09-28 13:03
 last-read: 2397
 
 ## Now
 
-#1035 bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure — claimed 2026-09-28 12:55.
+#1035 in review as PR #1040: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
