@@ -8,6 +8,7 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -210,18 +211,27 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                     // accessibility-performance.md: after a rating the focus
                     // moves to the next card, which is a new one (T2's
                     // switcher), so a screen reader follows (#162).
-                    Focus(
-                      autofocus: true,
-                      // FR-T2-09: a long-press copies the word.
-                      child: Semantics(
-                        onLongPressHint: l10n.studyCopyHint,
-                        child: GestureDetector(
-                          onLongPress: _copy,
-                          child: SgHeadword(
-                            word.german,
-                            article: word.article,
-                            plural: word.forms,
-                            role: SgTextRole.display,
+                    // FR-T2-09: a long-press copies the word, as do the
+                    // context-menu key and Shift+F10 (#1039). The card's own
+                    // focus sits under them, so the keys work as the card
+                    // comes, and Tab stops on the headword once, not twice.
+                    SgFocusable(
+                      onPressed: null,
+                      onLongPress: _copy,
+                      radius: BorderRadius.zero,
+                      child: Focus(
+                        autofocus: true,
+                        skipTraversal: true,
+                        child: Semantics(
+                          onLongPressHint: l10n.studyCopyHint,
+                          child: GestureDetector(
+                            onLongPress: _copy,
+                            child: SgHeadword(
+                              word.german,
+                              article: word.article,
+                              plural: word.forms,
+                              role: SgTextRole.display,
+                            ),
                           ),
                         ),
                       ),

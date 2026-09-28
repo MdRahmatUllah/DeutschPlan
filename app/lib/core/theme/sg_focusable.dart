@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 
@@ -11,16 +12,30 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 /// The control's own `Semantics` is left as authored, with no focusable or
 /// focused flags merged into it: a screen reader moves its own focus, and
 /// presses through that node's tap action.
+///
+/// #1039: a long press is no finger's alone either. The context-menu key, or
+/// Shift+F10, does what [onLongPress] does, as a desktop's context menu opens.
 class SgFocusable extends StatefulWidget {
   const SgFocusable({
     required this.onPressed,
     required this.radius,
     required this.child,
     this.keys = const <ShortcutActivator, VoidCallback>{},
+    this.onLongPress,
     super.key,
   });
 
   final VoidCallback? onPressed;
+
+  /// What a long press on the control does, which the context-menu key and
+  /// Shift+F10 do too (#1039).
+  final VoidCallback? onLongPress;
+
+  /// The keys that stand for a long press.
+  static const List<ShortcutActivator> longPressKeys = <ShortcutActivator>[
+    SingleActivator(LogicalKeyboardKey.contextMenu),
+    SingleActivator(LogicalKeyboardKey.f10, shift: true),
+  ];
 
   /// Keys of the control's own while it has the focus, as a slider's arrows
   /// (#1007). With these, a control nobody presses is still a Tab stop.
@@ -47,9 +62,17 @@ class _SgFocusableState extends State<SgFocusable> {
       onInvoke: (_) => widget.onPressed?.call(),
     ),
     _Key: CallbackAction<_Key>(
-      onInvoke: (intent) => widget.keys[intent.activator]?.call(),
+      onInvoke: (intent) => _keys[intent.activator]?.call(),
     ),
   };
+
+  Map<ShortcutActivator, VoidCallback> get _keys =>
+      <ShortcutActivator, VoidCallback>{
+        ...widget.keys,
+        if (widget.onLongPress case final longPress?)
+          for (final activator in SgFocusable.longPressKeys)
+            activator: longPress,
+      };
 
   // #1021: a `FocusableActionDetector`'s parts, less its MouseRegion and its
   // always-on highlight listener. Only the focused control hears the input
@@ -79,10 +102,11 @@ class _SgFocusableState extends State<SgFocusable> {
 
   @override
   Widget build(BuildContext context) {
+    final keys = _keys;
     final Widget focus = Actions(
       actions: _actions,
       child: Focus(
-        canRequestFocus: widget.onPressed != null || widget.keys.isNotEmpty,
+        canRequestFocus: widget.onPressed != null || keys.isNotEmpty,
         includeSemantics: false,
         onFocusChange: _focus,
         // Always present, so the tree under it keeps its shape as the focus
@@ -95,10 +119,10 @@ class _SgFocusableState extends State<SgFocusable> {
         ),
       ),
     );
-    if (widget.keys.isEmpty) return focus;
+    if (keys.isEmpty) return focus;
     return Shortcuts(
       shortcuts: <ShortcutActivator, Intent>{
-        for (final activator in widget.keys.keys) activator: _Key(activator),
+        for (final activator in keys.keys) activator: _Key(activator),
       },
       child: focus,
     );
@@ -123,7 +147,7 @@ class SgTappable extends StatelessWidget {
   /// Null: neither pressed nor a Tab stop.
   final VoidCallback? onTap;
 
-  /// A finger's alone: no key presses it.
+  /// A finger's, and the context-menu key's or Shift+F10's (#1039).
   final VoidCallback? onLongPress;
 
   /// The drawn corners, which the focus ring follows.
@@ -137,6 +161,7 @@ class SgTappable extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SgFocusable(
     onPressed: onTap,
+    onLongPress: onLongPress,
     radius: radius,
     child: GestureDetector(
       behavior: HitTestBehavior.opaque,

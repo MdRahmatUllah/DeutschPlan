@@ -76,6 +76,7 @@ class SgSpeakerButton extends StatelessWidget {
           longPress: onLongPress == null,
           child: SgFocusable(
             onPressed: onPressed,
+            onLongPress: _enabled ? onLongPress : null,
             radius: BorderRadius.circular(size / 2),
             child: GestureDetector(
               onTap: _enabled ? onPressed : null,
