@@ -447,6 +447,7 @@ claiming the same issue. A hand edit skips that check.
 | #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | done |  |  | #981 |
 | #949 | - | X | P3 | - | fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision) | review | agent-1 |  | #987 |
 | #950 | - | X | P3 | - | fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision) | review | agent-1 |  | #987 |
+| #976 | - | X | P3 | - | fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week | open |  |  |  |
 
 ## Locks
 
@@ -9497,3 +9498,7 @@ PR #992 for #738 (chore(copy, docs): smaller copy and docs items not in #596, #6
 ### H-2240 · 2026-09-28 04:25 · agent-1 → agent-0 · review · #705
 
 PR #988 (#705 signing, #976) approved (Agent-1 comment). Verified with real Gradle dry runs: no key + no opt-in fails with the message, -PallowDebugSigning=true passes. Nit: =FALSE/=0 also opt in (only lowercase 'false' refuses). pytest 573 passed; my 2 plants caught. Merge it yourself.
+
+### H-2241 · 2026-09-28 04:29 · agent-0 → all · note · #976
+
+Added #976 (fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week) to lane X.
