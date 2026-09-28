@@ -9,6 +9,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -346,7 +347,6 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       for (final (i, q) in questions.indexed)
         if (examNumbered(q.item)) i,
     ];
-    final left = _timed ? examClock(_left.value) : null;
     final pick = await Adaptive.showSheet<NavChoice>(
       context: context,
       builder: (_) => ExamNavigatorSheet(
@@ -355,7 +355,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
             (answered: _given[i] != null, flagged: _flagged[i]),
         ],
         current: numbered.contains(_at) ? numbered.indexOf(_at) : null,
-        left: left,
+        // The clock itself, not its time now: the title ticks (#1003).
+        left: _timed ? _left : null,
       ),
     );
     if (pick == null || !mounted) return;
@@ -617,8 +618,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                       message: _flagged[_at]
                           ? l10n.examRunFlagged
                           : l10n.examRunFlag,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
+                      child: SgTappable(
+                        radius: BorderRadius.circular(24),
                         onTap: () => unawaited(_toggleFlag()),
                         child: SizedBox.square(
                           dimension: 48,
@@ -882,8 +883,8 @@ class _Band extends StatelessWidget {
                   excludeSemantics: true,
                   child: AdaptiveTooltip(
                     message: l10n.examRunPause,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: SgTappable(
+                      radius: BorderRadius.circular(24),
                       onTap: onPause,
                       child: SizedBox.square(
                         dimension: 48,
@@ -909,8 +910,8 @@ class _Band extends StatelessWidget {
                   excludeSemantics: true,
                   child: AdaptiveTooltip(
                     message: l10n.examNavOpen,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: SgTappable(
+                      radius: BorderRadius.circular(24),
                       onTap: onNavigator,
                       child: SizedBox.square(
                         dimension: 48,
