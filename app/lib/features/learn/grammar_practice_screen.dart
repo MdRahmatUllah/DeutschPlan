@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -19,9 +22,6 @@ import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'grammar_practice_screen.g.dart';
 
@@ -847,7 +847,7 @@ class _SpotView extends StatelessWidget {
         const SizedBox(height: 12),
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(44),
           children: <Widget>[
             for (var i = 0; i < words.length; i++)
               _WordChip(
@@ -927,7 +927,7 @@ class _OrderViewState extends State<_OrderView> {
           ),
           child: Wrap(
             spacing: 8,
-            runSpacing: 8,
+            runSpacing: AdaptiveTapTarget.runSpacing(44),
             children: <Widget>[
               for (final i in _placed)
                 _WordChip(
@@ -942,7 +942,7 @@ class _OrderViewState extends State<_OrderView> {
         const SizedBox(height: 12),
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(44),
           children: <Widget>[
             for (var i = 0; i < widget.chips.length; i++)
               if (!_placed.contains(i))

@@ -5,10 +5,10 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// `BackupRepository` — M6's export and import.
 ///

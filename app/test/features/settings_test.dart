@@ -1,5 +1,8 @@
-import 'dart:io';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
@@ -9,8 +12,8 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -23,16 +26,11 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/model_downloads.dart' show DownloadPhase;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../db/content_fixture.dart';
 import 'model_manager_fixtures.dart' show FakeDownloads, FakeModels;
 import 'settings_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// M3 · Settings — #146.
 void main() {
@@ -738,14 +736,7 @@ INSERT INTO word_state (word_uid, status, stability, reps) VALUES
   test("#409 M3's translation row reads the one build the manifest offers, "
       'Q4_K_M', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    final support = Directory.systemTemp.createTempSync('sogda_m3');
-    addTearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
-    });
+    final support = tempDir('sogda_m3');
     final container = ProviderContainer(
       overrides: <Override>[
         modelRepositoryProvider.overrideWithValue(

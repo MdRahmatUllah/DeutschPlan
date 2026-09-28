@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -14,8 +16,6 @@ import 'package:sogda/features/quiz/quiz_item_view.dart';
 import 'package:sogda/features/study/study_cloze.dart' show StudyAnswerField;
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// FR-L12-06: a Listening word plays once and replays twice.
 const int examPlays = 3;
@@ -356,7 +356,7 @@ class _Words extends StatelessWidget {
   Widget build(BuildContext context) => Wrap(
     alignment: WrapAlignment.center,
     spacing: 8,
-    runSpacing: 8,
+    runSpacing: AdaptiveTapTarget.runSpacing(44),
     children: <Widget>[
       for (final (i, word) in words.indexed)
         AdaptiveTapTarget(

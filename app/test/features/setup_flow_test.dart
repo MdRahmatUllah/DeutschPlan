@@ -1,5 +1,10 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -11,14 +16,10 @@ import 'package:sogda/features/onboarding/onboarding_notifier.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/features/onboarding/setup_flow.dart';
 import 'package:sogda/features/today/today_providers.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../db/content_fixture.dart';
+import 'model_manager_fixtures.dart' show FakeNotificationPermission;
 
 /// S2's finish and restart setup — #92. Against SQLite with the course
 /// attached, because "one transaction" and "day 1 planned" are claims about
@@ -34,7 +35,7 @@ void main() {
   late ProviderContainer container;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_setup');
+    directory = tempDir('sogda_setup');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     // The fixture has three words; a seven-a-day first day needs more.
@@ -75,6 +76,10 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
         appDatabaseProvider.overrideWithValue(db),
         settingsProvider.overrideWithValue(settings),
         todayProvider.overrideWithValue(today),
+        // Page 5's switch asks; this phone says yes.
+        notificationPermissionProvider.overrideWithValue(
+          FakeNotificationPermission(),
+        ),
       ],
     );
     // A listener, as the pages give it: the flow auto-disposes otherwise.
@@ -85,11 +90,6 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
     container.dispose();
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   OnboardingNotifier draft() => container.read(onboardingProvider.notifier);
@@ -267,43 +267,45 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
       ..toggleStudyDay(DateTime.monday)
       ..setReminderTime((hour: 6, minute: 0));
 
-    test('from page 3 takes the defaults for pages 3, 4 and 5', () async {
-      choose();
+    for (final page in <OnboardingPage>[
+      OnboardingPage.startingPoint,
+      OnboardingPage.reminderAndVoice,
+    ]) {
+      test('#1011 ME-11 from page ${page.step} keeps what the learner chose: '
+          'the placed step, the pace, the days, a reminder they set', () async {
+        choose();
+        await draft().setReminder(on: true);
 
-      await flow().finish(skippingFrom: OnboardingPage.startingPoint);
+        await flow().finish();
+
+        final row = (await enrollments()).single;
+        expect(
+          (row['sublevel_code'], row['daily_new'], row['study_days_mask']),
+          ('A1.2', 20, 127 & ~1),
+        );
+        expect(settings.read(SettingKeys.reviseCount), 40);
+        expect(settings.read(SettingKeys.reminderEnabled), isTrue);
+        expect(settings.read(SettingKeys.reminderTime), (hour: 6, minute: 0));
+      });
+    }
+
+    test('#1011 ME-11 and what was never touched is the default', () async {
+      draft().chooseStep('A1.2');
+
+      await flow().finish();
 
       final row = (await enrollments()).single;
       expect(
         (row['sublevel_code'], row['daily_new'], row['study_days_mask']),
-        ('A1.1', 7, 127),
+        ('A1.2', 7, 127),
       );
       expect(settings.read(SettingKeys.reviseCount), 10);
-      expect(settings.read(SettingKeys.reminderTime), (hour: 19, minute: 30));
-    });
-
-    test('from page 4 keeps the step and defaults the rest', () async {
-      choose();
-
-      await flow().finish(skippingFrom: OnboardingPage.dailyPace);
-
-      final row = (await enrollments()).single;
-      expect((row['sublevel_code'], row['daily_new']), ('A1.2', 7));
-      expect(settings.read(SettingKeys.reviseCount), 10);
-    });
-
-    test('from page 5 keeps the pace and defaults the reminder', () async {
-      choose();
-
-      await flow().finish(skippingFrom: OnboardingPage.reminderAndVoice);
-
-      final row = (await enrollments()).single;
-      expect((row['daily_new'], row['study_days_mask']), (20, 127 & ~1));
-      expect(settings.read(SettingKeys.reviseCount), 40);
+      expect(settings.read(SettingKeys.reminderEnabled), isFalse);
       expect(settings.read(SettingKeys.reminderTime), (hour: 19, minute: 30));
     });
 
     test('and finishes, as FR-S2-01 says', () async {
-      await flow().finish(skippingFrom: OnboardingPage.startingPoint);
+      await flow().finish();
 
       expect(await enrollments(), hasLength(1));
       expect(await plannedToday('new'), 7);
@@ -327,7 +329,7 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
       await settings.write(SettingKeys.dailyNew, 12);
 
       await flow().beginRestart();
-      await flow().finish(skippingFrom: OnboardingPage.startingPoint);
+      await flow().finish();
 
       final rows = await enrollments();
       expect(rows, hasLength(1), reason: 'the step was not switched');

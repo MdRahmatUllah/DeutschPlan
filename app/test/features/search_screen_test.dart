@@ -1,6 +1,13 @@
 import 'dart:convert';
 import 'dart:ui' show SemanticsAction;
 
+import 'package:drift/drift.dart' show Value;
+import 'package:flutter/rendering.dart' show RenderEditable, RenderParagraph;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -12,6 +19,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/search/search_screen.dart';
+import 'package:sogda/features/words/compare_screen.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -20,20 +28,13 @@ import 'package:sogda/main.dart'
 import 'package:sogda/router/app_router.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:drift/drift.dart' show Value;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/rendering.dart' show RenderEditable, RenderParagraph;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
 import 'search_fixtures.dart';
 import 'today_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// R1 · Search results (#137, spec key R01): `search.md` and the engine's
 /// `03-domain/search.md`.
@@ -349,6 +350,54 @@ void main() {
     );
   });
 
+  testWidgets("FR-R1-01 FR-W2 #738 a set entry's row opens W2 (Compare), "
+      'any other row W1', (tester) async {
+    await pump(
+      tester,
+      routed: true,
+      extra: <Override>[
+        searchResultsProvider.overrideWith(
+          (ref, args) => Stream.value(
+            SearchView(
+              words: <SearchRow>[
+                searchRow(
+                  'set',
+                  german: 'sparsam / geizig',
+                  meaning: 'thrifty vs. stingy',
+                  tier: SearchTier.exact,
+                  kind: 'compare',
+                ),
+                searchRow(
+                  ContentFixture.haus,
+                  german: 'Haus',
+                  article: 'das',
+                  meaning: 'house',
+                  tier: SearchTier.exact,
+                ),
+              ],
+              sentences: const <SentenceHit>[],
+            ),
+          ),
+        ),
+      ],
+    );
+    await type(tester, 'sparsam');
+    await tester.tap(find.text('sparsam / geizig', findRichText: true));
+    await settle(tester);
+    expect(tester.widget<CompareScreen>(find.byType(CompareScreen)).uid, 'set');
+    expect(find.byType(WordDetailView), findsNothing);
+
+    router!.go('/search');
+    await settle(tester);
+    await tester.tap(find.text('das Haus', findRichText: true));
+    await settle(tester);
+    expect(find.byType(CompareScreen), findsNothing);
+    expect(
+      tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+      ContentFixture.haus,
+    );
+  });
+
   testWidgets('FR-R1-01 a failed search says so, and Retry asks again', (
     tester,
   ) async {
@@ -625,13 +674,19 @@ void main() {
         tester.element(find.byType(SearchScreen)),
       ).read(recentSearchesProvider.notifier);
       await tester.runAsync(() async {
+        // Short and alike, so the runs' chips line up in columns (#952):
+        // long ones in a ragged grid read in order even with runs 8 apart.
         for (final term in <String>[
           'Haus',
-          'Vorsorgeuntersuchung',
-          'prima',
-          'Hausarbeit',
-          'Wohnungsbesichtigung',
           'Tür',
+          'Bus',
+          'Zug',
+          'Hund',
+          'Kuh',
+          'Maus',
+          'Rad',
+          'Tag',
+          'Ei',
         ]) {
           await recent.remember(term);
         }

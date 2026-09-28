@@ -3,15 +3,15 @@ library;
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart' show sameTargetFamily;
 import 'package:sogda/domain/grammar_item_generator.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 
@@ -34,17 +34,12 @@ void main() {
     late Directory directory;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_exam');
+      directory = tempDir('sogda_exam');
       await open(ContentFixture.write('${directory.path}/content.db').file);
     });
 
     tearDown(() async {
       await db.close();
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     test(

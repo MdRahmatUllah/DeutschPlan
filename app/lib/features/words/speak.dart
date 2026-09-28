@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -6,9 +9,6 @@ import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:sogda/services/tts/tts_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// A speaker's tap: says [text] through `ttsProvider` — the one player, which
 /// stops whatever was sounding — at the learner's `tts_speed` times [pace]

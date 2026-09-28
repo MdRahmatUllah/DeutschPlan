@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/services/tts/tts_engine.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:flutter/widgets.dart'
     show AppLifecycleState, WidgetsBindingObserver;
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/services/tts/tts_engine.dart';
 
 /// What the one player is doing, and for which text: the speaker that says
 /// [text] shows [state], and every other speaker is idle.

@@ -1,6 +1,10 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_slider.dart';
@@ -14,10 +18,8 @@ import 'package:sogda/features/onboarding/onboarding_start_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
+
+import '../core/semantics_checks.dart';
 
 /// S2 page 4 · Daily pace — #90.
 void main() {
@@ -81,6 +83,20 @@ void main() {
 
   String estimate(int days, String step, int dailyNew) =>
       l10n.onboardingPaceEstimate(days, step, dailyNew);
+
+  testWidgets('#952 FR-S2-04 the presets read run by run, as they wrap', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    tester.view.physicalSize = const Size(260, 844) * 3;
+    await tester.pumpAndSettle();
+    expectWrapReadsAsDrawn(
+      tester,
+      find.text(l10n.onboardingPaceRelaxed(5), findRichText: true),
+    );
+    semantics.dispose();
+  });
 
   group('FR-S2-04 the estimate', () {
     testWidgets("starts on the defaults and the step's own words", (
@@ -154,6 +170,27 @@ void main() {
       await tester.pump();
 
       expect(draft().dailyNew, 30);
+    });
+
+    testWidgets('#1011 ME-4 restart setup with a pace of 45: the slider '
+        "covers Settings' 1–50, and a nudge is 46, not 30", (tester) async {
+      await pump(tester);
+      container
+          .read(onboardingProvider.notifier)
+          .prefill(
+            step: 'A1.1',
+            dailyNew: 45,
+            reviseCount: 10,
+            studyDaysMask: 127,
+            reminderOn: false,
+            reminderTime: (hour: 19, minute: 30),
+          );
+      await tester.pump();
+
+      final slider = tester.widget<SgSlider>(find.byType(SgSlider));
+      expect(<int>[slider.min, slider.value, slider.max], <int>[1, 45, 50]);
+      slider.onChanged!(46);
+      expect(draft().dailyNew, 46);
     });
 
     testWidgets('and the presets are Relaxed 5, Steady 7, Intensive 15', (

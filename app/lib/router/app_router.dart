@@ -1,8 +1,8 @@
+import 'package:flutter/widgets.dart' show WidgetsBinding;
+import 'package:go_router/go_router.dart';
 import 'package:sogda/router/deep_links.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter/widgets.dart' show WidgetsBinding;
-import 'package:go_router/go_router.dart';
 
 /// The route table of `docs/01-architecture/navigation.md`.
 ///

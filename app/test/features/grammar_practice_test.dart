@@ -1,5 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -15,12 +20,8 @@ import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import 'today_fixtures.dart';
@@ -361,6 +362,45 @@ void main() {
         find.text(l10n.practiceNotQuite('Könnten Sie helfen?')),
         findsOneWidget,
       );
+    });
+
+    testWidgets('#952 FR-L15-02 the words of spot the error and order the '
+        'sentence read run by run, as they wrap', (tester) async {
+      const words = <String>[
+        'Ich', 'habe', 'gestern', 'mit', 'meinem', 'Bruder', //
+        'einen', 'langen', 'Spaziergang', 'im', 'Park', 'gemacht.',
+      ];
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        items: const <GrammarItem>[
+          SpotTheError(tokens: words, wrong: 1, correction: 'hat'),
+        ],
+      );
+      Finder wrapOf(String word) =>
+          find.ancestor(of: find.text(word), matching: find.byType(Wrap)).first;
+      var order = wrapOrder(tester, wrapOf('Spaziergang'));
+      expect(order.runs, greaterThan(1), reason: 'the sentence wraps');
+      expect(order.drawn, words);
+      expect(order.read, order.drawn);
+
+      await pump(
+        tester,
+        items: const <GrammarItem>[
+          OrderTheSentence(chips: words, answer: words),
+        ],
+      );
+      order = wrapOrder(tester, wrapOf('Spaziergang'));
+      expect(order.runs, greaterThan(1), reason: 'the chips wrap');
+      expect(order.read, order.drawn);
+      for (final word in words.take(9)) {
+        await tester.tap(find.text(word));
+        await tester.pump();
+      }
+      order = wrapOrder(tester, wrapOf('Spaziergang'));
+      expect(order.runs, greaterThan(1), reason: 'the sentence built wraps');
+      expect(order.read, order.drawn);
+      semantics.dispose();
     });
 
     testWidgets('rule recall: four options, one right', (tester) async {

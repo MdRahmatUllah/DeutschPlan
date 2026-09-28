@@ -1,12 +1,12 @@
 import 'dart:ui' show LocaleStringAttribute, StringAttribute;
 
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/typography/app_fonts.dart';
-import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/rendering.dart' show RenderParagraph, RenderProxyBox;
 import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 
 /// One role of the type scale, named so callers ask for a role rather than a
 /// number. `docs/01-architecture/theming.md` defines all seven.

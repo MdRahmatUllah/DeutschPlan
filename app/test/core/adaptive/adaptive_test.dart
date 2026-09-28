@@ -1,18 +1,17 @@
 import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
+import 'package:flutter/rendering.dart' show RenderParagraph;
+import 'package:flutter/semantics.dart' show SemanticsAction;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
-import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 
 import '../text_clipping.dart';
-
-import 'package:flutter/rendering.dart' show RenderParagraph;
-import 'package:flutter/semantics.dart' show SemanticsAction;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// theming.md: "Chrome follows the platform through `Adaptive*` wrappers...
 /// Material 3 on Android, Cupertino on iOS. Content components (word card,

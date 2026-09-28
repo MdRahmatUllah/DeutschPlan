@@ -1,6 +1,6 @@
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// A count on a coloured pill: S3's scores, Today's Tomorrow card, L1's
 /// step badges.

@@ -1,14 +1,14 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'onboarding_meaning_page.g.dart';
 

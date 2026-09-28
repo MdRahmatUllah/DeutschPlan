@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
@@ -7,10 +10,8 @@ import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import 'exam_result_fixtures.dart';
 import 'settings_fixtures.dart';
 import 'today_fixtures.dart' show artboardTopic;
@@ -105,6 +106,17 @@ void main() {
     await tap(tester, l10n.examNavFlagged(3));
     expect(find.text(header(3, l10n.examSectionVocabulary)), findsOneWidget);
     expect(find.text(header(9, l10n.examSectionVocabulary)), findsNothing);
+  });
+
+  testWidgets('#952 FR-L14-01 the filters read run by run, as they wrap', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    tester.view.physicalSize = const Size(300, 900) * 3;
+    await tester.pumpAndSettle();
+    expectWrapReadsAsDrawn(tester, find.text(l10n.examReviewAll(40)));
+    semantics.dispose();
   });
 
   testWidgets('FR-L14-01 a wrong word: the answers, its first example and '

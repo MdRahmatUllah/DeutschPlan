@@ -3,6 +3,9 @@ library;
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
@@ -15,9 +18,6 @@ import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart' show ActiveStep, PlanEngine;
 import 'package:sogda/services/translation/translator.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 
@@ -37,7 +37,7 @@ void main() {
   late RatingService rating;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_actions');
+    directory = tempDir('sogda_actions');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
@@ -60,11 +60,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<List<PlanItem>> plan() => db.select(db.planItems).get();

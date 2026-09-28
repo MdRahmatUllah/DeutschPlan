@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 
 /// One drifting colour blob.
 ///

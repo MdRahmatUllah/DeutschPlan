@@ -1,15 +1,16 @@
+import 'package:flutter/semantics.dart' show SemanticsNode;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter/semantics.dart' show SemanticsNode;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 
 /// The golden harness.
@@ -180,6 +181,8 @@ void goldenTest(
           '${unaudited == null ? '' : ' (not audited: $unaudited)'}',
           skip: unaudited != null,
           (tester) async {
+            // #952: larger text wraps more rows of chips.
+            final semantics = tester.ensureSemantics();
             if (locale != null) {
               tester.platformDispatcher.localesTestValue = <Locale>[locale];
               addTearDown(tester.platformDispatcher.clearLocalesTestValue);
@@ -212,6 +215,8 @@ void goldenTest(
             // family's layouts, where only six screens (L8, L12, L15, T2, R2,
             // Reset) had tests of their own.
             if (scale == textAuditScales.last) await expectKeyboardFits(tester);
+            expectWrapsReadAsDrawn(tester);
+            semantics.dispose();
           },
         );
       }
@@ -284,6 +289,7 @@ void goldenTest(
     );
     if (chrome != AdaptiveChrome.cupertino) expectIconButtonsTipped(tester);
     expectTargetsApart(tester);
+    expectWrapsReadAsDrawn(tester);
     handle.dispose();
   });
 }

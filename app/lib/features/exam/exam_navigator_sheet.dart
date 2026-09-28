@@ -1,3 +1,4 @@
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -5,7 +6,6 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// One numbered question in the navigator.
 typedef NavCell = ({bool answered, bool flagged});
@@ -89,7 +89,8 @@ class ExamNavigatorSheet extends StatelessWidget {
               final width = (box.maxWidth - gap * 7) / 8;
               return Wrap(
                 spacing: gap,
-                runSpacing: gap,
+                // The cells are 40 dp tall (#952).
+                runSpacing: AdaptiveTapTarget.runSpacing(40),
                 children: <Widget>[
                   for (final (i, cell) in cells.indexed)
                     _Cell(

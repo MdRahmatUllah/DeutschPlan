@@ -447,13 +447,13 @@
     "C1.2": 21,
     "C2.2": 21
   },
-  "built_at": "2026-09-28T02:26:01+00:00",
-  "content_version": "20260928022601",
+  "built_at": "2026-09-28T07:05:17+00:00",
+  "content_version": "20260928070517",
   "counts": {
     "examples": 10545,
     "grammar": 182,
     "tips": 494,
-    "words": 5076
+    "words": 5069
   },
   "format": 1,
   "grammar": {
@@ -5950,7 +5950,7 @@
     "C2.1": {
       "examples": 618,
       "grammar": 20,
-      "words": 229
+      "words": 222
     },
     "C2.2": {
       "examples": 615,

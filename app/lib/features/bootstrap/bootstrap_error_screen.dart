@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/bootstrap.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
@@ -13,7 +14,6 @@ import 'package:sogda/features/splash/splash_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:material_ui/material_ui.dart';
 
 /// S1 · the bootstrap error state. FR-S1-03, `docs/04-screens/splash.md`.
 ///

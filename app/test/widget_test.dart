@@ -1,29 +1,29 @@
 import 'dart:async';
 
-import 'package:sogda/bootstrap.dart';
-import 'package:sogda/core/theme/glass_capability.dart';
-import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/features/backlog/backlog_screen.dart';
-import 'package:sogda/router/app_router.dart';
-import 'package:sogda/router/route_guards.dart';
-import 'package:sogda/features/today/today_screen.dart';
-import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:sogda/main.dart';
-import 'package:sogda/router/app_shell.dart';
+import 'package:flutter/foundation.dart' show FlutterError, FlutterErrorDetails;
+import 'package:flutter/services.dart' show JSONMethodCodec, MethodCall;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/services.dart' show JSONMethodCodec, MethodCall;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/foundation.dart' show FlutterError, FlutterErrorDetails;
 import 'package:go_router/go_router.dart' show GoRouter;
 import 'package:material_ui/material_ui.dart'
     show Brightness, Locale, MaterialApp, Navigator, ThemeMode;
 import 'package:material_ui/material_ui.dart' as material show Theme;
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/backlog/backlog_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/app_shell.dart';
+import 'package:sogda/router/route_guards.dart';
 
 void main() {
   /// The app under a scope with the overrides bootstrap would have supplied.

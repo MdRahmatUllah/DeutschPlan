@@ -2,15 +2,15 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/me/reminder_days_screen.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/services/background_tasks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:material_ui/material_ui.dart';
 
 import '../features/settings_fixtures.dart';
 import '../features/today_fixtures.dart';

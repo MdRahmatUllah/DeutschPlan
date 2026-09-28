@@ -1,8 +1,8 @@
+import 'package:drift/drift.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/rating_service.dart';
-import 'package:drift/drift.dart';
 
 /// What undoes a W1 action (FR-W1-04): the snackbar's *Undo* calls it once.
 typedef Undo = Future<void> Function();

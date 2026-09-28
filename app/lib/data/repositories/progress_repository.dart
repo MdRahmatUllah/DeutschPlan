@@ -1,7 +1,7 @@
+import 'package:drift/drift.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/domain/plan_engine.dart' show PlanDate, addDays, planDate;
 import 'package:sogda/domain/progress_stats.dart';
-import 'package:drift/drift.dart';
 
 /// M2's totals (`progress.md`).
 typedef ProgressTotals = ({

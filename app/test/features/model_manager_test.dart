@@ -1,30 +1,30 @@
 import 'dart:async';
-import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/me/model_manager_screen.dart';
+import 'package:sogda/features/today/today_providers.dart'
+    show voiceInstalledProvider;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/model_downloads.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:sogda/features/today/today_providers.dart'
-    show voiceInstalledProvider;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
+import '../db/content_fixture.dart' show tempDir;
 import '../services/fake_tts.dart';
+import '../timing.dart';
 import 'model_manager_fixtures.dart';
 import 'settings_fixtures.dart';
-import '../timing.dart';
-import '../core/semantics_checks.dart';
 
 /// M4 · Model manager — #155.
 void main() {
@@ -176,6 +176,17 @@ void main() {
     expect(find.text(l10n.modelsFooter), findsOneWidget);
   });
 
+  testWidgets('#952 FR-M4 the voices read run by run, as they wrap', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, modelManagerStub());
+    tester.view.physicalSize = const Size(280, 1400) * 3;
+    await tester.pumpAndSettle();
+    expectWrapReadsAsDrawn(tester, find.text('Anna'));
+    semantics.dispose();
+  });
+
   testWidgets('#314 at 200 % text nothing on M4 is cut', (tester) async {
     textAt(tester, 2);
     await pump(tester, modelManagerStub());
@@ -325,14 +336,7 @@ void main() {
     testWidgets('then deletes the model, which turns off what used it, and '
         'the voice lets go of its sessions', (tester) async {
       final settings = StubSettings();
-      final support = Directory.systemTemp.createTempSync('sg_m4');
-      addTearDown(() {
-        try {
-          support.deleteSync(recursive: true);
-        } on FileSystemException {
-          // Windows lets go a moment later.
-        }
-      });
+      final support = tempDir('sg_m4');
       final voice = FakeTts();
       await pump(
         tester,

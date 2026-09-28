@@ -1,6 +1,15 @@
 import 'dart:async';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -9,38 +18,29 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
+import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
+import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/translation_repository.dart';
+import 'package:sogda/data/repositories/word_actions.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/features/study/study_back.dart';
+import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
-import 'package:sogda/core/components/sg_button.dart';
-import 'package:sogda/core/components/sg_chip.dart';
-import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
-import 'package:sogda/data/repositories/search_repository.dart';
-import 'package:sogda/data/repositories/translation_repository.dart';
-import 'package:sogda/data/repositories/word_actions.dart';
-import 'package:sogda/domain/plan_engine.dart';
-import 'package:sogda/features/today/today_providers.dart';
-import 'package:sogda/data/db/content_update.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 
+import '../core/semantics_checks.dart';
+import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
-import '../core/text_clipping.dart';
 import 'word_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// W1 · Word detail (#140, spec key R04): `word-detail.md`.
 void main() {
@@ -815,6 +815,17 @@ void main() {
       expect(opened, <Uri>[
         SearchRepository.webLinks('Straße')[WebSource.dwds]!,
       ]);
+    });
+
+    testWidgets('#952 the web chips read run by run, as they wrap', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, size: const Size(250, 844));
+      await tester.ensureVisible(find.text('Wiktionary'));
+      await tester.pumpAndSettle();
+      expectWrapReadsAsDrawn(tester, find.text('DWDS'));
+      semantics.dispose();
     });
 
     testWidgets('FR-W1-05 with translation on, Translate puts each '

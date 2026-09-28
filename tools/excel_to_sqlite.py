@@ -609,14 +609,17 @@ def correct(sources: list[SourceBook], corrections: dict[str, dict]) -> None:
 
 
 def derive(
-    sources: list[SourceBook], boundaries: dict[str, int] | None = None
+    sources: list[SourceBook],
+    boundaries: dict[str, int] | None = None,
+    grammar_steps: dict[str, str] | None = None,
 ) -> dict[str, LevelSplit]:
     """Everything between reading and writing: the step split, so far.
 
     Runs over all workbooks at once, because a level can be spread across two
     of them and the boundary is a property of the level, not of the file.
     [boundaries] is the shipped course's boundary week per level (#923),
-    kept.
+    kept; [grammar_steps] its step of each grammar topic by uid (#970),
+    whose split is kept too.
     """
     words = [word for source in sources for word in source.words]
 
@@ -657,7 +660,10 @@ def derive(
     )
 
     grammar = [row for source in sources for row in source.grammar]
-    split_grammar(grammar)
+    # Before the split, which keeps the shipped one by uid (#970). A uid is
+    # the level and the title, both settled by now.
+    grammar_uid_warnings = assign_grammar_uids(grammar)
+    _report(split_grammar(grammar, grammar_steps))
 
     coverage = assign_tags(grammar)
     print(
@@ -687,7 +693,7 @@ def derive(
         check_formula_prefixes(words)
         + check_formula_prefixes(grammar, GRAMMAR_TEXT_FIELDS)
         + assign_uids(words)
-        + assign_grammar_uids(grammar)
+        + grammar_uid_warnings
         + examples_without_their_word(words)
     )
     _report(warnings)
@@ -722,6 +728,7 @@ UNCAPPED_WARNINGS = frozenset(
         "cross-level duplicate",
         "stale link",
         "boundary kept",
+        "grammar boundary kept",
     }
 )
 
@@ -905,7 +912,8 @@ def main(argv: list[str] | None = None) -> int:
         "--move-boundaries",
         action="store_true",
         help="split each level anew rather than keep the previous build's "
-        "boundary week (#923): words move between steps under learners",
+        "boundary week (#923) and grammar split (#970): words and topics "
+        "move between steps under learners",
     )
     parser.add_argument(
         "--allow-missing-columns",
@@ -921,7 +929,9 @@ def main(argv: list[str] | None = None) -> int:
         sources = read_sources(manifest, args.allow_missing_columns)
         correct(sources, read_corrections(manifest.corrections))
         splits = derive(
-            sources, None if args.move_boundaries else previous.boundaries
+            sources,
+            None if args.move_boundaries else previous.boundaries,
+            None if args.move_boundaries else previous.grammar_steps,
         )
         # After the grammar uids, which key them (#637).
         apply_grammar_corrections(

@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/services.dart'
+    show LengthLimitingTextInputFormatter, TextInputFormatter;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -14,17 +19,13 @@ import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/compare_set.dart' show comparesSet;
 import 'package:sogda/domain/text_norm.dart';
 import 'package:sogda/features/learn/step_words.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter/services.dart'
-    show LengthLimitingTextInputFormatter, TextInputFormatter;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_screen.g.dart';
 
@@ -662,7 +663,11 @@ class _Results extends StatelessWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   onUse();
-                  WordRoute.open(context, row.word.word.uid);
+                  // A set entry's row opens W2, any other W1 (#738).
+                  final word = row.word.word;
+                  comparesSet(word.word.german)
+                      ? CompareRoute.open(context, word.uid)
+                      : WordRoute.open(context, word.uid);
                 },
                 child: WordRow(
                   word: row.word.word,
@@ -936,7 +941,7 @@ class _Idle extends ConsumerWidget {
             // one, column by column (#853).
             child: Wrap(
               spacing: 8,
-              runSpacing: 16,
+              runSpacing: AdaptiveTapTarget.runSpacing(32),
               children: <Widget>[
                 for (final term in recent)
                   SgChip(
@@ -1139,7 +1144,7 @@ class _NoResults extends ConsumerWidget {
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(44),
           children: <Widget>[
             for (final source in WebSource.values)
               SgChip(

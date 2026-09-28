@@ -1,3 +1,9 @@
+import 'package:drift/drift.dart' show Value;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -8,17 +14,11 @@ import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/learn/step_detail_screen.dart';
 import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:drift/drift.dart' show Value;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:sogda/features/words/word_detail_screen.dart';
 
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';

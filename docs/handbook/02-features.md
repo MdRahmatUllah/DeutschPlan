@@ -84,7 +84,7 @@ ready. Spec: [`splash.md`](../04-screens/splash.md).
 ### Onboarding · S2
 
 Five pages set the course up in about a minute, with safe defaults at every
-step. *Skip* (from page 3) applies the defaults for the rest.
+step. *Skip* (from page 3) finishes with what the learner has chosen, and the defaults for what they never touched (#1011).
 
 | Page | The learner chooses |
 |---|---|
@@ -473,7 +473,7 @@ downloaded models survive a full reset. Spec: [`reset.md`](../04-screens/reset.m
 
 ### About & privacy · M9 and licences · M8
 
-The version, the course's content version and counts (5,076 words, 182
+The version, the course's content version and counts (5,069 words, 182
 grammar topics, 10,545 sentences), the privacy statement, a *Contact* link to
 the project's GitHub issues, and the licences: the Supertonic model and SDK,
 Hy-MT's, the fonts, and every package, each in full. Spec:

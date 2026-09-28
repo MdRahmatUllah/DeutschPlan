@@ -1,10 +1,14 @@
+import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_coach_mark.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_rating_bar.dart';
+import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -13,8 +17,6 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// #745 · WCAG 2.1.1: what a finger presses, a keyboard or a D-pad presses
 /// too. Tab reaches each custom control, and Enter, Space and the D-pad's
@@ -103,6 +105,113 @@ void main() {
       );
     }
   }
+
+  testWidgets('#1007 SgSlider: Tab reaches it, the arrows move it a step '
+      'each way, and it holds at its ends with the focus kept', (tester) async {
+    var value = 5;
+    await pump(
+      tester,
+      StatefulBuilder(
+        builder: (context, setState) => SizedBox(
+          width: 300,
+          child: SgSlider(
+            value: value,
+            min: 4,
+            max: 6,
+            label: 'Pace',
+            onChanged: (next) => setState(() => value = next),
+          ),
+        ),
+      ),
+    );
+    bool onSlider() =>
+        FocusManager.instance.primaryFocus?.context
+            ?.findAncestorWidgetOfExactType<SgSlider>() !=
+        null;
+    Future<void> press(LogicalKeyboardKey key) async {
+      await tester.sendKeyEvent(key);
+      await tester.pump();
+    }
+
+    await press(LogicalKeyboardKey.tab);
+    expect(onSlider(), isTrue);
+    await press(LogicalKeyboardKey.arrowRight);
+    expect(value, 6);
+    await press(LogicalKeyboardKey.arrowRight);
+    expect(value, 6, reason: 'held at the top');
+    expect(onSlider(), isTrue, reason: 'the arrow kept the focus');
+    await press(LogicalKeyboardKey.arrowLeft);
+    await press(LogicalKeyboardKey.arrowLeft);
+    await press(LogicalKeyboardKey.arrowLeft);
+    expect(value, 4, reason: 'held at the bottom');
+    expect(onSlider(), isTrue);
+  });
+
+  testWidgets('#1011 ME-4 from a value outside its range, a step lands '
+      'inside it, by key or by a screen reader', (tester) async {
+    final handle = tester.ensureSemantics();
+    late int value;
+    Future<void> at45() async {
+      value = 45;
+      await pump(
+        tester,
+        StatefulBuilder(
+          key: UniqueKey(),
+          builder: (context, setState) => SizedBox(
+            width: 300,
+            child: SgSlider(
+              value: value,
+              min: 3,
+              max: 30,
+              label: 'Pace',
+              onChanged: (next) => setState(() => value = next),
+            ),
+          ),
+        ),
+      );
+    }
+
+    await at45();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(value, 45, reason: 'no step up past the end');
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pump();
+    expect(value, 30, reason: 'one step, and inside');
+
+    await at45();
+    tester.semantics.performAction(
+      find.semantics.byLabel('Pace'),
+      SemanticsAction.decrease,
+    );
+    await tester.pump();
+    expect(value, 30);
+    handle.dispose();
+  });
+
+  testWidgets('#1007 a slider nobody can move is not a Tab stop', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const SizedBox(
+        width: 300,
+        child: SgSlider(
+          value: 5,
+          min: 4,
+          max: 6,
+          label: 'Pace',
+          onChanged: null,
+        ),
+      ),
+    );
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    expect(FocusManager.instance.primaryFocus, isA<FocusScopeNode>());
+  });
 
   testWidgets('#745 an umlaut key: Tab reaches it, Enter types it', (
     tester,
