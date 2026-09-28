@@ -98,6 +98,20 @@ class _SgButtonState extends State<SgButton> {
 
   bool get _enabled => widget.onPressed != null;
 
+  /// A button disabled mid-press is raised here: it came back enabled still
+  /// down, without its shadow. Its gesture goes with the callback, and
+  /// cancels only once the tree is locked, too late for a setState (#686
+  /// ST-10).
+  @override
+  void didUpdateWidget(SgButton old) {
+    super.didUpdateWidget(old);
+    if (!_enabled) _down = false;
+  }
+
+  void _press(bool down) {
+    if (_down != down) setState(() => _down = down);
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
@@ -227,9 +241,9 @@ class _SgButtonState extends State<SgButton> {
         attributedLabel: SgScript.attributedLabel(widget.label),
         child: GestureDetector(
           onTap: widget.onPressed,
-          onTapDown: _enabled ? (_) => setState(() => _down = true) : null,
-          onTapUp: _enabled ? (_) => setState(() => _down = false) : null,
-          onTapCancel: _enabled ? () => setState(() => _down = false) : null,
+          onTapDown: _enabled ? (_) => _press(true) : null,
+          onTapUp: _enabled ? (_) => _press(false) : null,
+          onTapCancel: _enabled ? () => _press(false) : null,
           behavior: HitTestBehavior.opaque,
           // Always present so the tree shape does not change on press, which
           // would drop the gesture — the same trap SgSurface hit in #188.
