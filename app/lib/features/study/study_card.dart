@@ -297,7 +297,8 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
             ),
     );
 
-    // *Show meaning* is the labelled way to turn it; the tap is a shortcut.
+    // *Show meaning* is the labelled way to turn it, and the Tab stop that
+    // does (#1021); the tap is a shortcut. ponytail: allow-bare-tap
     return GestureDetector(
       onTap: widget.revealed ? null : widget.onReveal,
       excludeFromSemantics: true,
