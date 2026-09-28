@@ -127,7 +127,8 @@ ORDER BY l.ord, s.ord
         );
       } else {
         await _db.customStatement(
-          'UPDATE enrollments SET started_on = ?2, completed_on = NULL '
+          'UPDATE enrollments SET started_on = ?2, completed_on = NULL, '
+          'left_part_way = NULL '
           'WHERE sublevel_code = ?1',
           <Object>[step, today],
         );
