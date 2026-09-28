@@ -32,8 +32,9 @@ typedef ContentFacts = ({
 ///
 /// `docs/02-data/content-database.md`: content.db is bundled as an asset,
 /// copied to app-support storage on first run or when `meta.content_version`
-/// differs, then **attached** to the user database as schema `c` and opened
-/// read-only. The app never writes to it.
+/// differs, then **attached** to the user database as schema `c`, by plain
+/// path: read-only by construction, not by a flag (ADR 26). The app never
+/// writes to it.
 ///
 /// Every query is hand-written SQL in `content.drift`, because drift generates
 /// nothing for an attached database. It type-checks them against
@@ -424,9 +425,10 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
 
   /// `meta.content_version` of the **bundled** asset, without installing it.
   ///
-  /// This is the probe `content-database.md` step 1 describes: the app has to
+  /// `content-database.md` step 1: read from the bundled manifest, and only
+  /// when that can't be read, from a probe copy of the asset. The app has to
   /// know whether the asset is newer than the installed copy before deciding
-  /// to replace it, and reading the asset means writing it somewhere first,
+  /// to replace it, and the probe means writing the asset somewhere first,
   /// because SQLite cannot open a Flutter asset in place.
   Future<String> bundledVersion() async {
     // The manifest first, because it is 513 KB of JSON beside an 8 MB

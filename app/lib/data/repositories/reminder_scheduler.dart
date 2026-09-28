@@ -55,7 +55,7 @@ class ReminderScheduler {
       await _work.cancel(BackgroundTask.reminderCompose);
       return _notifications.cancelAll();
     }
-    final times = _times(_now());
+    final times = await _times(_now());
     await _notifications.schedule(
       times,
       _copy(_settings.read(SettingKeys.uiLanguage)),
@@ -65,18 +65,27 @@ class ReminderScheduler {
 
   /// Queues `reminder_compose` for the first reminder after [from]: what the
   /// task does once it has written [from]'s.
-  Future<void> composeAfter(DateTime from) =>
+  Future<void> composeAfter(DateTime from) async =>
       _settings.read(SettingKeys.reminderEnabled)
-      ? _composeBefore(_times(from))
+      ? _composeBefore(await _times(from))
       : _work.cancel(BackgroundTask.reminderCompose);
 
-  List<DateTime> _times(DateTime from) {
+  Future<List<DateTime>> _times(DateTime from) async {
     final time = _settings.read(SettingKeys.reminderTime);
+    // BR-PLAN-08 (#751): today keeps the study days it was planned with.
+    // Read from the table: the plan and the 00:05 task write them through
+    // connections of their own (#688 DA-7).
+    final planned = await _settings.fresh(SettingKeys.lastPlannedDate);
+    final today = DateTime(from.year, from.month, from.day);
+    final todayMask = planned == today
+        ? await _settings.fresh(SettingKeys.plannedStudyDays)
+        : 0;
     return reminderTimes(
       now: from,
       hour: time.hour,
       minute: time.minute,
       studyDaysMask: _settings.read(SettingKeys.studyDaysMask),
+      todayMask: todayMask == 0 ? null : todayMask,
     );
   }
 

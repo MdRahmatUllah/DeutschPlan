@@ -84,7 +84,9 @@ class _GrammarLibraryScreenState extends ConsumerState<GrammarLibraryScreen> {
           // and a fixed box would cut them (#314).
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+            // 8 above and below: a 32 dp chip's 48 dp target fits inside
+            // the scroll view, which cuts what reaches past it (#853).
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Row(
               children: <Widget>[
                 for (final (filter, label) in <(LibraryFilter, String)>[

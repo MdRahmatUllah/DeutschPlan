@@ -123,8 +123,8 @@ nullable columns or new tables; never drop a column with data.
 
 ### Versioning
 
-`app/pubspec.yaml` carries `version: MAJOR.MINOR.PATCH+BUILD` (v1.0.1 is
-`1.0.1+2`); `versionCode` and `versionName` come from it. The course has its
+`app/pubspec.yaml` carries `version: MAJOR.MINOR.PATCH+BUILD` (v1.0.1 was
+`1.0.1+2`; the first Sogda build is `1.1.0+3`, #739); `versionCode` and `versionName` come from it. The course has its
 own `content_version` (the pipeline's build time), shown in About. A
 content-only release bumps PATCH.
 
@@ -256,7 +256,9 @@ flowchart LR
   `sha1(level|german|pos|english)[:16]`. Editing any other column keeps it.
   Changing a word's German, part of speech, English or level gives it a new
   uid: the build links the old uid to the new one when it is the same word, and
-  the app moves the learner's progress along the link on install (PIPE-09). A
+  the app moves the learner's progress along the link on install (PIPE-09),
+  a grammar topic's too (#808); a wrong link is refused, and a missing one
+  pinned, under `links:` in `content/corrections.yaml` (#807). A
   word gone with nothing to link it to stops the build unless
   `--allow-removed`; say so in the release notes.
 - **On the phone.** At the first launch of the new version, `bootstrap()`
@@ -271,8 +273,10 @@ flowchart LR
 - **user.db migrations** ship the same way: a new schema version migrates the
   learner's file on the first open, in one transaction, followed by a foreign
   key check. A failure there shows the start-up error screen (FR-S1-03) with
-  *Retry*, never a blank screen; *Export progress* is offered only when the
-  database opened.
+  *Retry*, never a blank screen; *Export progress* is offered when the
+  database opened, and *Share your data file* when it didn't: it shares
+  `user.sqlite` with its `-wal`, so the learner's progress can still leave the
+  phone (#619).
 
 ## Troubleshooting
 

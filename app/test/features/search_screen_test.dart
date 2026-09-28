@@ -404,6 +404,33 @@ void main() {
     );
   });
 
+  testWidgets('#703 a result row and a sentence row are buttons named by '
+      'their words; a row speaker stays its own', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    await type(tester, 'Haus');
+    for (final words in <String>['house · বাড়ি', 'The house is big.']) {
+      final data = tester.getSemantics(find.text(words)).getSemanticsData();
+      expect(data.flagsCollection.isButton, isTrue, reason: words);
+      expect(data.hasAction(SemanticsAction.tap), isTrue, reason: words);
+      expect(data.label, contains(words));
+    }
+    expect(tapsInsideTaps(tester), <String>['Play das Haus']);
+    semantics.dispose();
+  });
+
+  testWidgets('#691 EX-13 FR-R1-01 the field takes 80 characters, what is '
+      'searched', (tester) async {
+    await pump(tester);
+    await tester.enterText(find.byType(TextField), 'Haus' * 50);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      hasLength(SearchRepository.maxQueryLength),
+    );
+    expect(SearchRepository.maxQueryLength, 80);
+    await settle(tester);
+  });
+
   testWidgets('FR-R1-03 the play icon pronounces without opening the row', (
     tester,
   ) async {
@@ -460,6 +487,22 @@ void main() {
       'strase',
     );
     expect(heading(l10n.searchExact(1)), findsOneWidget);
+  });
+
+  testWidgets('#853 the chips are 48 dp targets, not cut by their row', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    await type(tester, 'Haus');
+    final chips = find.byType(SgChip);
+    expect(chips, findsWidgets);
+    for (final chip in chips.evaluate()) {
+      final node = tester.getSemantics(find.byWidget(chip.widget));
+      if (!node.getSemanticsData().hasAction(SemanticsAction.tap)) continue;
+      expect(node.rect.height, greaterThanOrEqualTo(48));
+    }
+    semantics.dispose();
   });
 
   testWidgets('FR-R1-06 a web chip opens its page for the query', (
@@ -572,6 +615,57 @@ void main() {
       expect(stored().where((t) => t.toLowerCase() == 'wort5'), hasLength(1));
       expect(stored(), isNot(contains('Wort0')), reason: 'the oldest go');
       expect(recentChip('wort5'), findsOneWidget);
+    });
+
+    testWidgets('#853 FR-R1-04 the recent searches read row by row, as they '
+        'wrap', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      final recent = ProviderScope.containerOf(
+        tester.element(find.byType(SearchScreen)),
+      ).read(recentSearchesProvider.notifier);
+      await tester.runAsync(() async {
+        for (final term in <String>[
+          'Haus',
+          'Vorsorgeuntersuchung',
+          'prima',
+          'Hausarbeit',
+          'Wohnungsbesichtigung',
+          'Tür',
+        ]) {
+          await recent.remember(term);
+        }
+      });
+      await tester.pumpAndSettle();
+      final chips = <(Rect, String)>[
+        for (final element in find.byType(SgChip).evaluate())
+          if ((element.widget as SgChip).kind == SgChipKind.filter)
+            (
+              tester.getRect(find.byWidget(element.widget)),
+              (element.widget as SgChip).label,
+            ),
+      ];
+      expect(
+        chips.map((chip) => chip.$1.center.dy).toSet().length,
+        greaterThan(1),
+        reason: 'they wrap',
+      );
+      final drawn = <String>[
+        for (final (_, label)
+            in chips.toList()..sort((a, b) {
+              final dy = a.$1.center.dy - b.$1.center.dy;
+              return dy.abs() > 4
+                  ? dy.sign.toInt()
+                  : a.$1.left.compareTo(b.$1.left);
+            }))
+          label,
+      ];
+      final read = readingOrder(
+        tester,
+        find.byType(SearchScreen),
+      ).where(drawn.contains).toList();
+      expect(read, drawn);
+      semantics.dispose();
     });
 
     testWidgets('FR-R1-04 a recent chip searches it again, and Clear '

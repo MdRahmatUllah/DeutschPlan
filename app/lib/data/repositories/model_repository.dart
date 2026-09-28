@@ -309,6 +309,20 @@ class ModelRepository {
   /// with the app id and with an iOS update.
   static String recordingName(int attemptId) => 'recordings/$attemptId.m4a';
 
+  /// Where a take records beside the recording at [path], which it replaces
+  /// only once it stops: a take that fails leaves the last one whole
+  /// (#691 EX-5). Its own `.m4a`, as the encoder is picked by the extension
+  /// on iOS.
+  static String takeOf(String path) => '$path.take.m4a';
+
+  /// The recording at [path] gone, and a take cut off beside it: the app
+  /// killed mid-take leaves one (#691 EX-5).
+  static Future<void> deleteRecordingAt(String path) async {
+    for (final file in <File>[File(path), File(takeOf(path))]) {
+      if (await file.exists()) await file.delete();
+    }
+  }
+
   /// The recording a Speaking answer's [given] names, or null when it names
   /// none or the file isn't on this phone: a missing file is not recorded
   /// (#688 DA-6). Found by [attemptId], so a row that stored the old
@@ -329,8 +343,7 @@ class ModelRepository {
       return;
     }
     for (final attempt in attempts) {
-      final file = await recordingFor(attempt);
-      if (await file.exists()) await file.delete();
+      await deleteRecordingAt((await recordingFor(attempt)).path);
     }
   }
 

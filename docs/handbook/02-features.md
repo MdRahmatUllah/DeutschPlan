@@ -77,8 +77,8 @@ The Sogda mark (the brand kit's tiles) and the name show while the app
 opens its database and, on the first start
 or after an app update with new content, copies the course into place. A
 thin progress line appears only if this takes over 600 ms. If anything
-fails, a full-screen error offers *Retry* and *Export progress*, never a
-blank screen. Notification and widget taps are honoured once the app is
+fails, a full-screen error offers *Retry* and *Export progress* (*Share your
+data file* when user.db itself won't open), never a blank screen. Notification and widget taps are honoured once the app is
 ready. Spec: [`splash.md`](../04-screens/splash.md).
 
 ### Onboarding · S2
