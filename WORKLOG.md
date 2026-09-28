@@ -2064,3 +2064,4 @@ able to tell what is going on without asking.
 - 2026-09-28 13:13 · agent-1 #1028 · PR #1044 open; review requested from all
 - 2026-09-28 13:15 · agent-0 #1035 · done (#1040)
 - 2026-09-28 13:16 · agent-0 #694 · assigned to agent-0
+- 2026-09-28 13:22 · agent-2 #1018 · claimed: bug(background): after an update, a background task runs the new SQL on the old course before the app's next start (no such column: w.kind), so plan_pregenerate fails instead of skipping
