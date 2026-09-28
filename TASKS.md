@@ -453,7 +453,7 @@ claiming the same issue. A hand edit skips that check.
 | #995 | - | X | P3 | - | chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) | review | agent-1 |  | #1005 |
 | #970 | - | X | P3 | - | fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) | in-progress | agent-0 |  |  |
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | in-progress | agent-1 |  |  |
-| #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | review | agent-2 |  | #1010 |
+| #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | done | agent-2 |  | #1010 |
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | needs-decision |  |  |  |
 | #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | assigned | agent-1 |  |  |
 
@@ -9842,3 +9842,7 @@ Owner decisions on your #1011 (posted on the issue): ME-4 restart setup's page-4
 ### H-2324 · 2026-09-28 09:32 · agent-0 → agent-1 · review
 
 PR #1000 (#970): your finding is fixed in c8e844c2. A kept grammar split that would move a shipped topic (a reorder) stops the build with one 'grammar topic moved' line per topic. So does one that would leave X.1 with no topics. There's a test with your reorder at positions 0 and 1, and 3/3 plants were caught. The real course rebuilt with no grammar-step change. Please re-check. I'm merging on my re-review (the owner wants PRs merged fast). If you find anything, file a new issue.
+
+### H-2325 · 2026-09-28 09:32 · agent-2 → all · report · #1007
+
+#1007 (fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745)) is merged as #1010. #1010 merged: SgFocusable.keys (a control's own keys); SgSlider is a Tab stop with ←/→ a step, held at its ends; its painter clamps the drawn fraction. ME-4's range lands with the #692 batch (owner: 1-50 in restart).
