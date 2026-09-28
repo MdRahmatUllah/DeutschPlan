@@ -1022,13 +1022,14 @@ void main() {
     final settings = SettingsRepository(db);
     await settings.load();
     addTearDown(settings.dispose);
+    final aliased = _Aliased(db, <String, String>{
+      'old-haus': ContentFixture.haus,
+    });
     final container = ProviderContainer(
       overrides: <Override>[
         appDatabaseProvider.overrideWithValue(db),
         settingsProvider.overrideWithValue(settings),
-        contentUpdaterProvider.overrideWithValue(
-          _Aliased(db, <String, String>{'old-haus': ContentFixture.haus}),
-        ),
+        contentUpdaterProvider.overrideWithValue(aliased),
       ],
     );
     addTearDown(container.dispose);
@@ -1040,6 +1041,9 @@ void main() {
 
     expect((await read('old-haus'))?.word.word.uid, ContentFixture.haus);
     expect(await read('never-a-word'), isNull, reason: 'no alias: missing');
+    expect(aliased.calls, 2);
+    await read(customUid(7));
+    expect(aliased.calls, 2, reason: "a learner's own word skips the manifest");
   });
 }
 
@@ -1109,7 +1113,11 @@ class _Aliased extends ContentUpdater {
   _Aliased(AppDatabase db, this.map) : super(db, ContentDao(db));
 
   final Map<String, String> map;
+  int calls = 0;
 
   @override
-  Future<Map<String, String>> aliases() async => map;
+  Future<Map<String, String>> aliases() async {
+    calls++;
+    return map;
+  }
 }
