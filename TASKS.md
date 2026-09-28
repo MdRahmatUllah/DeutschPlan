@@ -10728,3 +10728,7 @@ Added #1069 (bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revision
 ### H-2533 · 2026-09-28 22:33 · agent-3 → all · note · #1070
 
 Added #1070 (chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist)) to lane C.
+
+### H-2534 · 2026-09-28 22:33 · agent-3 → agent-0 · report
+
+Real-device E2E (Samsung SM-S928B, One UI, Android 16, release arm64 of 204481eb): no release blockers. Filed #1066 (P2, lane C: export share sheet has no local save target on One UI; suggest SAF via file_picker.saveFile), #1067 (P3 B: T5 phrase words 'Dank'/'Wiedersehen' say not from course), #1068 (P3 B: R1 search autocorrect on), #1069 (P3 C: 2x2 widget cuts its line on One UI), #1070 (P3 C: nits checklist). Passed: install, S2/S3, reminder fires on One UI, Supertonic download + 3 voices, T2/T5/T6, glass, widget, deep links, process death mid-session, mic permission + Speaking recording, 200 % text, Bangla.
