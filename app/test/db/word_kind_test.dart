@@ -130,6 +130,24 @@ INSERT INTO word_examples (word_uid, ord, german, english) VALUES
     );
   });
 
+  test('#867 FR-M3-01 BR-CONTENT-02 BR-CONTENT-04 the retention estimate sums '
+      "every word rated and not suspended, the learner's own too: not a note, "
+      'nor a word a content update removed', () async {
+    // Haus and the note were met in setUp, stability 3 each.
+    await db.customStatement('''
+INSERT INTO word_state (word_uid, status, stability, reps) VALUES
+  ('${ContentFixture.tuer}', 'suspended', 12, 3),
+  ('${ContentFixture.strasse}', 'todo', 0, 0),
+  ('uid-removed', 'learning', 40, 5),
+  ('custom:1', 'done', 30, 6)
+''');
+
+    expect(await WordRepository(db, settings).learnedStabilities(), <double>[
+      30,
+      3,
+    ]);
+  });
+
   test('BR-CONTENT-04 a note is never examined or placed', () async {
     final exams = ExamRepository(db);
     final content = ContentDao(db);

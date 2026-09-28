@@ -23,7 +23,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 | `daily_stats` (day PK, new_done, reviews_done, grammar_done, sentences_done, seconds, completed_shown) | per-day totals | streak and charts; `completed_shown` is 1 once the day's T6 has been shown (FR-T6-01, `claimDayComplete`) |
 | `content_updates` (version PK, added, removed, changed_json, seen, recorded_at) | update cards | `recorded_at` is when this device saw the update; `version` is the build time |
 | `translation_cache` | Hy-MT outputs | keyed by (src_lang, tgt_lang, src_text, model) |
-| `undo_stack` (id, created_at, payload_json) | last-action undo | trimmed to 20 rows |
+| `undo_stack` (id, created_at, payload_json) | last-action undo | trimmed to 20 rows; a rating returns its entry's id, and its *Undo* takes back nothing unless that entry is on top (#728, #888) |
 
 ## Settings keys and defaults
 

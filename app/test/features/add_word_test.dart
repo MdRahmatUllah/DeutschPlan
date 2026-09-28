@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/components/sg_button.dart';
@@ -8,12 +10,16 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show DailyPlan;
 import 'package:sogda/features/search/add_word_screen.dart';
+import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -45,6 +51,8 @@ void main() {
     Locale? locale,
     TextScaler? textScaler,
     bool edit = true,
+    WordRepository Function()? words,
+    List<Override> overrides = const <Override>[],
   }) async {
     int? id;
     tester.view
@@ -73,6 +81,9 @@ void main() {
         overrides: [
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
+          if (words != null)
+            wordRepositoryProvider.overrideWith((_) => words()),
+          ...overrides,
         ],
         child: MaterialApp(
           theme: AppTheme.light(),
@@ -507,6 +518,49 @@ void main() {
       expect(find.text('R1'), findsOneWidget, reason: 'back to R1');
     });
 
+    testWidgets('#811 FR-R2-03 backed out of while Save and add to revision '
+        "is still saving: the word is saved, and Today's plan read again", (
+      tester,
+    ) async {
+      final gate = Completer<void>();
+      var plans = 0;
+      await pump(
+        tester,
+        german: 'Pfandflasche',
+        words: () => _GatedWords(db, settings, gate.future),
+        overrides: <Override>[
+          todayPlanProvider.overrideWith((_) {
+            plans++;
+            return Completer<DailyPlan>().future;
+          }),
+        ],
+      );
+      await enter(tester, l10n.addWordMeaning, 'deposit bottle');
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AddWordScreen)),
+      );
+      container.listen(todayPlanProvider, (_, _) {});
+      expect(plans, 1);
+
+      await tester.ensureVisible(find.text(l10n.addWordSaveRevise));
+      await tester.tap(find.text(l10n.addWordSaveRevise));
+      await tester.pump();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.byType(AddWordScreen), findsNothing, reason: 'left');
+
+      await tester.runAsync(() async {
+        gate.complete();
+        await pumpEventQueue();
+      });
+      await settle(tester);
+
+      final rows = await tester.runAsync(() => db.select(db.customWords).get());
+      expect(rows, hasLength(1));
+      container.read(todayPlanProvider);
+      expect(plans, 2, reason: "Today's plan is read again");
+    });
+
     testWidgets('a double tap saves once', (tester) async {
       await pump(tester, german: 'Pfandflasche');
       await enter(tester, l10n.addWordMeaning, 'deposit bottle');
@@ -622,4 +676,29 @@ void main() {
       tester.element(find.byType(AddWordScreen)).tokens.color.die,
     );
   });
+}
+
+/// A save that waits for [gate]: the page can be left while it runs (#811).
+class _GatedWords extends WordRepository {
+  _GatedWords(super.db, super.settings, this.gate);
+
+  final Future<void> gate;
+
+  @override
+  Future<int> saveMyWord(
+    MyWordDraft word, {
+    required DateTime now,
+    int? id,
+    String? matchedUid,
+    String? reviseFrom,
+  }) async {
+    await gate;
+    return super.saveMyWord(
+      word,
+      now: now,
+      id: id,
+      matchedUid: matchedUid,
+      reviseFrom: reviseFrom,
+    );
+  }
 }
