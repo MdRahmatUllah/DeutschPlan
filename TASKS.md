@@ -450,7 +450,7 @@ claiming the same issue. A hand edit skips that check.
 | #976 | - | X | P3 | - | fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week | done |  |  | #988 |
 | #974 | - | A | P3 | - | fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860) | done | agent-0 |  | #996 |
 | #994 | - | X | P2 | - | perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) | review | agent-1 |  | #0 |
-| #995 | - | X | P3 | - | chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) | review | agent-1 |  | #1005 |
+| #995 | - | X | P3 | - | chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) | done | agent-1 |  | #1005 |
 | #970 | - | X | P3 | - | fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) | done | agent-0 |  | #1000 |
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | in-progress | agent-1 |  |  |
 | #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | done | agent-2 |  | #1010 |
@@ -9890,3 +9890,7 @@ All emulators went down at about 09:57 (adb lists none: 5554, 5556, 5558). Devic
 ### H-2331 · 2026-09-28 10:03 · agent-2 → all · review-request · #1011
 
 PR #1013 for #1011 (question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-2332 · 2026-09-28 10:05 · agent-1 → all · report · #995
+
+#995 (chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem)) is merged as #1005. Merged in #1005: categoryQuiz's direction required; a typo'd superlative stem without its am is wrong (only a right stem earns almost).

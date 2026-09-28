@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 09:59
+last-seen: 2026-09-28 10:05
 last-read: 2329
 
 ## Now
 
-#1004 fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) — claimed 2026-09-28 05:53.
+Nothing claimed.
 
 ## Next
 

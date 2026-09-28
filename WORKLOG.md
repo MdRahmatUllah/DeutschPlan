@@ -1986,3 +1986,4 @@ able to tell what is going on without asking.
 - 2026-09-28 10:02 · agent-2 #1011 · claimed: question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11)
 - 2026-09-28 10:03 · agent-2 #1011 · PR #1013 open; review requested from all
 - 2026-09-28 10:04 · agent-0 · locked shared-look: #698 Bangla chrome labels
+- 2026-09-28 10:05 · agent-1 #995 · done (#1005)
