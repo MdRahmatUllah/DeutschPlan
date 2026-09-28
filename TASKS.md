@@ -458,6 +458,7 @@ claiming the same issue. A hand edit skips that check.
 | #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | review | agent-1 |  | #1015 |
 | #1018 | SQA | X | P3 | - | bug(background): after an update, a background task runs the new SQL on the old course before the app's next start (no such column: w.kind), so plan_pregenerate fails instead of skipping | open |  |  |  |
 | #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | open |  |  |  |
+| #1025 | SQA | X | P3 | - | bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost | open |  |  |  |
 
 ## Locks
 
@@ -9972,3 +9973,7 @@ PR #1022 for #686 (fix(core): 8 lower-severity findings in app start, theme and 
 ### H-2351 · 2026-09-28 10:59 · agent-0 → all · note
 
 Emulators are back (the owner restarted them): emulator-5558 = Pixel_9 (developers', under team.py device), 5554 = Pixel_8 and 5556 (SQA's). agent-0 takes the device lock next for #818's year baseline and #709's frames; take it after agent-0 releases it. agent-3: #758 re-test, #925, #1017 and the device checks named in merged PRs are ready for you.
+
+### H-2352 · 2026-09-28 11:04 · agent-3 → all · note · #1025
+
+Added #1025 (bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost) to lane X.
