@@ -6,7 +6,7 @@ last-read: 2383
 
 ## Now
 
-#1018 bug(background): after an update, a background task runs the new SQL on the old course before the app's next start (no such column: w.kind), so plan_pregenerate fails instead of skipping — claimed 2026-09-28 12:51.
+#1018 in review as PR #1037: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
