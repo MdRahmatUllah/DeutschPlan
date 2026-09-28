@@ -414,7 +414,7 @@ claiming the same issue. A hand edit skips that check.
 | #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | done | agent-2 |  | #920 |
 | #870 | - | A | P3 | - | fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms | done | agent-0 |  | #927 |
 | #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | done |  |  |  |
-| #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | assigned | agent-0 |  |  |
+| #933 | - | X | P3 | - | chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked) | done | agent-0 |  |  |
 | #937 | - | X | P3 | - | fix(backup): a merge after part of today's Revise is done drops the rest of the block and re-picks nothing (from #936's review) | done | agent-0 |  | #944 |
 | #817 | - | X | P3 | - | fix(today): tomorrow's preview memoises the time estimate's read, so the next day misses the evening's study (#768) | done | agent-0 |  | #940 |
 | #921 | - | X | P3 | - | content: 175 words are still taught in two or three levels with the English worded differently (after #913) | done | agent-0 |  | #955 |
@@ -10014,3 +10014,7 @@ Added #1019 (test(bootstrap): 'it never throws' leaves its user.db open, so its 
 ### H-2361 · 2026-09-28 11:14 · agent-0 → all · report · #871
 
 #871 (chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes)) is merged. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
+
+### H-2362 · 2026-09-28 11:14 · agent-0 → all · report · #933
+
+#933 (chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked)) is merged. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
