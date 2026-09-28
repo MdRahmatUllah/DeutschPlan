@@ -6,7 +6,7 @@
 
 **Reached from.** T1 Sentences card, T3. **Leads to.** T6 if this completes the day, else T1; W1 mini sheet on word tap.
 
-**Layout.** Full-screen modal, Raspberry band "Sentence 1 of 3", page dots. Sentence in bodyLarge with the target word underlined in its gender colour; big play button (long-press = slow); *Show translation* → EN and/or BN; hint "Tap any word for its meaning. “Not yet” brings the word back sooner."; rating chips *Understood* (Lime) · *Partly* (Tangerine) · *Not yet* (Coral).
+**Layout.** Full-screen modal, Raspberry band "Sentence 1 of 3", page dots. Sentence in bodyLarge with the target word underlined in its gender colour; big play button (long-press = slow); *Show translation* → the English translation, in both UI languages: the course has no Bangla one for its 11,186 example sentences (the owner, 2026-09-27, #598; Bangla sentence translations are on the roadmap); hint "Tap any word for its meaning. “Not yet” brings the word back sooner."; rating chips *Understood* (Lime) · *Partly* (Tangerine) · *Not yet* (Coral).
 
 **Functional requirements**
 - FR-T5-01 Sentences come from `SentencePicker.forDay` and are stable for the day (`sentence_log`). T5 keeps the day it opened on: past midnight the learner pages through the same sentences, and their ratings stay that day's (#660). The day's set is recorded once: Today, T3 and T5 all ask for it, and a pick that finds the day already recorded when it writes returns that set instead of adding its own (#750).

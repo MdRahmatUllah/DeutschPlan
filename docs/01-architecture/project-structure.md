@@ -78,7 +78,7 @@ deutschplan/                  ← repository root
 1. `domain/` imports nothing from Flutter or drift. Everything there is unit-testable with plain Dart.
 2. `data/` implements repository interfaces declared in `domain/` and is the only layer that touches drift.
 3. `features/` widgets read providers; they never call repositories directly.
-4. `services/` wrap platform plugins behind small interfaces (`TtsEngine`, `Translator`, `AudioPlayer`) so tests can fake them.
+4. `services/` wrap platform plugins behind small interfaces (`TtsEngine`, `Translator`) so tests can fake them; audio plays through just_audio's own `AudioPlayer`, one shared instance.
 5. Copy lives in ARB files. German course text comes from content.db, never from ARB.
 
 ## Naming

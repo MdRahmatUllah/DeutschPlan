@@ -21,7 +21,7 @@ This folder is the **single source of truth**. When code and these documents dis
 
 ## Screen index
 
-Prototype artboards are exported as standalone HTML, one file per screen, in **two design sets of four canvases each**. All eight canvases carry the same 60 screens with the same layouts and behaviour; only tokens and the surface renderer differ (see `01-architecture/theming.md`).
+Prototype artboards are exported as standalone HTML, one file per screen, in **two design sets of four canvases each**. All eight canvases carry the same 58 screens (plus Foundations) with the same layouts and behaviour; only tokens and the surface renderer differ (see `01-architecture/theming.md`).
 
 | Design set | Canvas | Path | File suffix |
 | --- | --- | --- | --- |

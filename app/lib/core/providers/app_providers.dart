@@ -1,6 +1,8 @@
 /// The app's core providers. `state-management.md`'s provider map.
 ///
-/// Four things are `keepAlive`, and the list is not a matter of taste:
+/// Which providers are `keepAlive` is not a matter of taste:
+/// `state-management.md` names each one and why (#596). The four every
+/// screen leans on:
 ///
 /// - **`appDatabase`** holds an open file and an attached course. Disposing it
 ///   between screens would close and reopen user.db on every navigation.

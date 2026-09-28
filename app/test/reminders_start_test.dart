@@ -58,7 +58,7 @@ void main() {
     expect(opened, <String>[PlatformReminderNotifications.link]);
   });
 
-  test('a tap that started the app opens what it links to', () async {
+  test('FR-S1-04 a tap that started the app opens what it links to', () async {
     final reminders = FakeReminders()
       ..launched = PlatformReminderNotifications.link;
     final opened = <String>[];

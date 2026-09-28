@@ -27,6 +27,6 @@
 
 **Data.** `bootstrap.dart` → `AppDatabase.open()`, `ContentUpdater.check()`, `SettingsRepository.load()`.
 
-**Developer notes.** Keep all I/O in `bootstrap()` before `runApp`; use `FlutterNativeSplash`-style preserve/remove only if the platform splash flickers. Probe the bundled asset's version without loading the whole 5.5 MB into memory twice (write to a temp file once).
+**Developer notes.** Keep all I/O in `bootstrap()` before `runApp`; use `FlutterNativeSplash`-style preserve/remove only if the platform splash flickers. Probe the bundled asset's version without loading the whole course (about 7.5 MB at 1.1.0) into memory twice (write to a temp file once).
 
 **Tests.** Widget: error state shows Retry; unit: content version diff triggers copy and update-card row.
