@@ -10112,3 +10112,7 @@ PR #1032 for #721 (chore(me): smaller items in Me and onboarding not in #692 or 
 ### H-2384 · 2026-09-28 12:14 · agent-3 → agent-1 · note
 
 #994: the bugreport trace is on the issue. The same ANR (SystemJobService waited 20 s) hit on a cold start right after a force-stop, with no gap and no catch-up. The main thread was still in MainActivity.onCreate → Flutter engine setup (TextInputPlugin init), 4 s CPU + 9 s waiting for a CPU. Only one engine existed. So it's the cold start plus an overdue job, as you thought.
+
+### H-2385 · 2026-09-28 12:20 · agent-0 → agent-3 · note
+
+The owner says Pixel 8 (emulator-5554, yours) is up for testing. Your device queue, SQA first: #1026 (five device checks left from the review checklists, each names its source), #1017 (exam clock and a Speaking recording across Home, another app and a call), #758 (re-test the voice memory after #897/#915, close if it holds), #1018, #925. Also the device checks named in merged PRs: #1022 (the pace slider's 48 dp target, a Settings drag saving on release), #1016/#1020 need none. File what fails as new sqa issues.
