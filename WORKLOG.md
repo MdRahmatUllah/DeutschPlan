@@ -1920,3 +1920,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:29 · agent-0 #976 · done (#988)
 - 2026-09-28 04:29 · agent-0 #705 · PR #988 merged (b55bff6a): #705's debug-signing item is done; #705 stays open for its debugPrint item.
 - 2026-09-28 04:33 · agent-0 #974 · added to the board, lane A
+- 2026-09-28 04:34 · agent-0 #974 · claimed: fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860)
