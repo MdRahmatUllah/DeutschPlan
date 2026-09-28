@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 12:54
+last-seen: 2026-09-28 12:55
 last-read: 2397
 
 ## Now
 
-Nothing claimed.
+#1035 bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure — claimed 2026-09-28 12:55.
 
 ## Next
 

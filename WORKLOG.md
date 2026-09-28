@@ -2052,3 +2052,4 @@ able to tell what is going on without asking.
 - 2026-09-28 12:51 · agent-2 #1018 · PR #1037 open; review requested from all
 - 2026-09-28 12:52 · agent-3 #758 · done
 - 2026-09-28 12:52 · agent-0 #692 · done
+- 2026-09-28 12:55 · agent-1 #1035 · claimed: bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure

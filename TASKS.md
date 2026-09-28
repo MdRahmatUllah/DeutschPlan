@@ -467,7 +467,7 @@ claiming the same issue. A hand edit skips that check.
 | #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | assigned | agent-0 | #709 |  |
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | assigned | agent-0 |  |  |
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
-| #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | open |  |  |  |
+| #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | in-progress | agent-1 |  |  |
 | #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | assigned | agent-2 |  |  |
 
 ## Locks
