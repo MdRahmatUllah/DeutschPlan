@@ -1862,3 +1862,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:10 · agent-0 #867 · done (#979)
 - 2026-09-28 03:13 · agent-0 #625 · done (#975)
 - 2026-09-28 03:13 · agent-0 #711 · done (#975)
+- 2026-09-28 03:16 · agent-0 #886 · claimed: chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard)

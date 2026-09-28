@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 03:13
+last-seen: 2026-09-28 03:16
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#886 chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) — claimed 2026-09-28 03:16.
 
 ## Next
 
