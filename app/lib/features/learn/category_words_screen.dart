@@ -56,7 +56,7 @@ enum LevelFilter {
 
 /// FR-L6-02: the quiz L6's *Quiz* starts, from the category's learned words,
 /// in the learner's meaning direction (#667).
-QuizArgs categoryQuiz(int id, {String direction = 'deEn'}) => QuizArgs(
+QuizArgs categoryQuiz(int id, {required String direction}) => QuizArgs(
   direction: direction,
   source: 'category',
   sourceRef: '$id',

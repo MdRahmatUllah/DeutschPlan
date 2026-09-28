@@ -258,6 +258,13 @@ void main() {
       expect(checkForm('aufgebrochen', 'ist aufgebrochen'), Verdict.wrong);
     });
 
+    test('#995 but a typo on top of the missing am is two faults: wrong', () {
+      expect(checkForm('älteste', 'am ältesten'), Verdict.wrong);
+      expect(checkForm('altesten', 'am ältesten'), Verdict.wrong);
+      // With the am, the typo alone is almost, as ever.
+      expect(checkForm('am älteste', 'am ältesten'), Verdict.almost);
+    });
+
     test('#699 BR-ANS-01 ß is one letter for the typo gate, not two', () {
       // Five letters: one out is a different word ("Grüße"), not a typo.
       expect(checkGerman('Grüße', 'Größe'), Verdict.wrong);
