@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/services/backup_files.dart';
 
+import '../db/content_fixture.dart' show tempDir;
+
 /// M6's picked file, read with a cap (#657).
 void main() {
   test('#657 a file under the cap is read as text', () async {
@@ -34,8 +36,7 @@ void main() {
 
   test("#704 an export's copy replaces the one before, rather than piling "
       'up in the cache', () async {
-    final temporary = Directory.systemTemp.createTempSync('sg_exports');
-    addTearDown(() => temporary.deleteSync(recursive: true));
+    final temporary = tempDir('sg_exports');
 
     await exportCopy(temporary, 'sogda-2026-09-20.json', '{"a": 1}');
     final last = await exportCopy(temporary, 'sogda-2026-09-21.json', '{}');
