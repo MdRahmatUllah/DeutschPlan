@@ -67,8 +67,15 @@ Future<void> importBackup(
   }
   // The settings cache, the plan engine (built with four of them, and kept
   // alive under Today) and Today's plan were read before the import: the
-  // streams follow drift, these don't.
-  await container.read(settingsSourceProvider).reload();
+  // streams follow drift, these don't. The data is in by now: a reload
+  // that fails is logged, not reported as the import's failure, whose
+  // "Nothing changed" would be untrue (#692 ME-7). The file's settings then
+  // reach the cache at the next start.
+  try {
+    await container.read(settingsSourceProvider).reload();
+  } on Object catch (error) {
+    debugPrint('import: settings not reloaded: $error');
+  }
   container.invalidate(planEngineProvider);
   if (mode == ImportMode.merge) {
     // #622, #937: today planned again from the merged data, by the engine
@@ -145,7 +152,15 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       // Not text, too big to be a backup, or the picker failed (#657): the
       // card says so rather than doing nothing.
       debugPrint('import pick: $error');
-      if (mounted) setState(() => _problem = _Problem.notABackup);
+      // #692 ME-6: and the file chosen before goes with it, or its Import
+      // button stayed under the error and imported that one.
+      if (mounted) {
+        setState(() {
+          _file = null;
+          _preview = null;
+          _problem = _Problem.notABackup;
+        });
+      }
       return;
     }
     // Backed out of the picker: whatever was chosen before stays.

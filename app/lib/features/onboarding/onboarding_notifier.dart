@@ -2,7 +2,6 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/setup_repository.dart';
-import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/services/notification_permission.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -43,6 +42,13 @@ class OnboardingDraft {
   /// Page 4's slider: "New words slider 3–30".
   static const int minDailyNew = 3;
   static const int maxDailyNew = 30;
+
+  /// Page 4's slider's range: 3–30 in first setup; in restart setup,
+  /// Settings' 1–50, where the learner's pace may already be (the owner,
+  /// 2026-09-28, #1011 ME-4).
+  ({int min, int max}) get dailyNewRange => restart
+      ? SettingKeys.dailyNew.range!
+      : (min: minDailyNew, max: maxDailyNew);
 
   /// Page 4's stepper, over the range Settings gives `revise_count`.
   static const int minReviseCount = 0;
@@ -94,36 +100,6 @@ class OnboardingDraft {
     restart: restart ?? this.restart,
   );
 
-  /// FR-S2-01: what *Skip* leaves — every value from [page] onwards back at
-  /// its default, the earlier ones as chosen. The languages are page 2's and
-  /// written already, and Skip only appears from page 3.
-  ///
-  /// In restart setup the pages open on the learner's own values, and those
-  /// are what Skip keeps: first-run defaults there would move them back to
-  /// A1.1 and close the step they are in.
-  OnboardingDraft withDefaultsFrom(OnboardingPage page) {
-    if (restart) return this;
-    final defaults = OnboardingDraft();
-    return OnboardingDraft(
-      step: page.step <= OnboardingPage.startingPoint.step
-          ? defaults.step
-          : step,
-      dailyNew: page.step <= OnboardingPage.dailyPace.step
-          ? defaults.dailyNew
-          : dailyNew,
-      reviseCount: page.step <= OnboardingPage.dailyPace.step
-          ? defaults.reviseCount
-          : reviseCount,
-      studyDaysMask: page.step <= OnboardingPage.dailyPace.step
-          ? defaults.studyDaysMask
-          : studyDaysMask,
-      reminderOn: defaults.reminderOn,
-      reminderTime: defaults.reminderTime,
-      voice: voice,
-      restart: restart,
-    );
-  }
-
   /// The draft as the commit wants it.
   SetupChoice get choice => SetupChoice(
     step: step,
@@ -145,12 +121,9 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   /// Page 3, or S3's suggestion when the learner comes back from it.
   void chooseStep(String code) => state = state.copyWith(step: code);
 
-  /// Page 4's slider and presets, held to 3–30.
+  /// Page 4's slider and presets, held to its range.
   void setDailyNew(int count) => state = state.copyWith(
-    dailyNew: count.clamp(
-      OnboardingDraft.minDailyNew,
-      OnboardingDraft.maxDailyNew,
-    ),
+    dailyNew: count.clamp(state.dailyNewRange.min, state.dailyNewRange.max),
   );
 
   /// Page 4's stepper, held to 0–100.
@@ -229,9 +202,6 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     reminderTime: reminderTime,
     restart: true,
   );
-
-  /// FR-S2-01's first half.
-  void skipFrom(OnboardingPage page) => state = state.withDefaultsFrom(page);
 
   /// The model id `assets/models/manifest.json` gives the voice.
   static const String supertonic = ModelRepository.voiceModel;
