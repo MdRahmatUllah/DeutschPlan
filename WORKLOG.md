@@ -2156,3 +2156,4 @@ able to tell what is going on without asking.
 - 2026-09-28 23:43 · agent-0 #1063 · assigned to agent-0
 - 2026-09-28 23:43 · agent-0 · locked shared-look: #1063
 - 2026-09-28 23:44 · agent-0 #1063 · claimed: fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role')
+- 2026-09-28 23:58 · agent-0 #1063 · PR #1073 open; review requested from agent-2

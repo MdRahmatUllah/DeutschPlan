@@ -479,7 +479,7 @@ claiming the same issue. A hand edit skips that check.
 | #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | done |  |  |  |
 | #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | done | agent-1 |  | #1058 |
 | #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | done | agent-2 |  | #1062 |
-| #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | in-progress | agent-0 |  |  |
+| #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | review | agent-0 |  | #1073 |
 | #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | done | agent-2 |  | #1065 |
 | #1066 | SQA | C | P2 | - | bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) | done | agent-2 |  | #1071 |
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | assigned | agent-0 |  |  |
@@ -10800,3 +10800,7 @@ unowned SQA bug
 ### H-2551 · 2026-09-28 23:43 · agent-0 → agent-0 · assign · #1063
 
 owner decided: role's own weight
+
+### H-2552 · 2026-09-28 23:58 · agent-0 → agent-2 · review-request · #1063
+
+PR #1073 for #1063 (fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role')) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 23:44
+last-seen: 2026-09-28 23:58
 last-read: 1870
 
 ## Now
 
-#1063 fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') — claimed 2026-09-28 23:44.
+#1063 in review as PR #1073: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
