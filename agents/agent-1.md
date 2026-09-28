@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 14:43
+last-seen: 2026-09-28 15:10
 last-read: 2431
 
 ## Now
 
-#1047 fix(learn): a finished step reads "Left on" after Reset word on one of its words (#1028 follow-up) — claimed 2026-09-28 14:42.
+#1047 in review as PR #1053: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
