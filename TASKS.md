@@ -491,7 +491,7 @@ The emulator lock is local, not here: `team.py device`.
 
 | Resource | Owner | Since | Why |
 |---|---|---|---|
-| user-db-schema |  |  |  |
+| user-db-schema | agent-1 | 2026-09-28 14:43 | #1047: enrollments records a step left part-way |
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
