@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/me/me_screen.dart' show MeHeader;
 
 import 'golden_harness.dart';
 
@@ -90,6 +91,28 @@ void main() {
       ),
     );
   }
+
+  // #1064: the ring on a coloured header, in the header's ink: Me's first
+  // Tab stop, *Add your name*, on the blue.
+  goldenTest(
+    'foundations_focus_header',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    act: (tester) => tester.sendKeyEvent(LogicalKeyboardKey.tab),
+    builder: (context) => Scaffold(
+      backgroundColor: context.tokens.surface.paper,
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: MeHeader(
+          name: null,
+          streak: 3,
+          since: null,
+          daysStudied: 0,
+          onEditName: () {},
+        ),
+      ),
+    ),
+  );
 }
 
 class _FoundationsGallery extends StatelessWidget {

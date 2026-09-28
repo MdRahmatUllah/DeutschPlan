@@ -554,7 +554,10 @@ class _Header extends ConsumerWidget {
         color: gender ?? tokens.surface.muted,
         border: Border(bottom: BorderSide(color: tokens.color.ink, width: 2)),
       ),
-      child: framed,
+      // #1064: on a gender colour the ring takes the header's ink.
+      child: onFill == null
+          ? framed
+          : SgFocusRingColour(colour: onFill, child: framed),
     );
   }
 }

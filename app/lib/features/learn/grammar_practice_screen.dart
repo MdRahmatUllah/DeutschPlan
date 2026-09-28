@@ -409,7 +409,11 @@ class PracticeHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.accent, child: content);
+        : ColoredBox(
+            color: tokens.color.accent,
+            // #1064: the ring in the header's ink, which holds on its fill.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 }
 

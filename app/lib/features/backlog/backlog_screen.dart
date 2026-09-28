@@ -39,11 +39,12 @@ enum BacklogAction { known, suspended, removed }
 /// How T1's Backlog card and T4's header name the backlog's days (#821):
 /// by weekday while the oldest is within the last six days, where each
 /// weekday names one day ("Tue–Wed"); by date past that, where "Wed–Wed" or
-/// "Mon to Thu" would name several ("30 Sep–15 Oct"). In the UI's language.
+/// "Mon to Thu" would name several ("30 Sep–15 Oct"). In the UI's language,
+/// day first as the rest of the app, English too (#1055).
 DateFormat backlogDayFormat(String locale, PlanDate oldest, PlanDate today) =>
     daysBetween(oldest, today) <= 6
     ? DateFormat.E(locale)
-    : DateFormat.MMMd(locale);
+    : DateFormat('d MMM', locale);
 
 /// T4's rows (FR-T4-01): the uncompleted new plan rows from before today,
 /// newest day first (BR-PLAN-05), with their words. A stream, so a word
