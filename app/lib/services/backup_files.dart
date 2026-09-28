@@ -22,6 +22,11 @@ abstract interface class BackupFiles {
   /// Writes [json] to a temporary file called [name] and opens the share
   /// sheet. False when the learner dismissed it.
   Future<bool> share(String name, String json);
+
+  /// #1066: the system's save dialog (Android's Storage Access Framework),
+  /// [json] as [name] where the learner picks: One UI's share sheet offers
+  /// no local target. False when the learner backed out.
+  Future<bool> save(String name, String json);
 }
 
 /// The most a backup can be (#657). Ten years of daily study is some 35 MB
@@ -81,4 +86,13 @@ class PlatformBackupFiles implements BackupFiles {
     );
     return result.status != ShareResultStatus.dismissed;
   }
+
+  @override
+  Future<bool> save(String name, String json) async =>
+      await FilePicker.saveFile(
+        fileName: name,
+        bytes: utf8.encode(json),
+        mimeType: 'application/json',
+      ) !=
+      null;
 }

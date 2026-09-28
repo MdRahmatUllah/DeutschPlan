@@ -4842,7 +4842,7 @@
   "@exportImportExportHeading": {
     "description": "M6's export card heading, shown in capitals."
   },
-  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings and my words. Opens the share sheet — save to Files or Drive, or email it to yourself.",
+  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings and my words. Share it to Drive or email it to yourself, or save it on this phone.",
   "@exportImportExportBody": {
     "description": "M6's export card text (FR-M6-01)."
   },
@@ -4894,6 +4894,10 @@
   "exportImportRecordings": "Speaking recordings stay on this phone: they're too big for the file.",
   "@exportImportRecordings": {
     "description": "M6: FR-M6-01 says recordings are not exported, and the UI says so."
+  },
+  "exportImportSave": "Save to device",
+  "@exportImportSave": {
+    "description": "M6's second export button: the system save dialog, the file kept on this phone (#1066)."
   },
   "exportImportExportFailed": "The export didn't finish. Try again.",
   "@exportImportExportFailed": {
