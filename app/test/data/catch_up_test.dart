@@ -1,5 +1,7 @@
-// #994: the first open after a month away, planned as the app plans it: on
-// drift's background isolate, with the UI isolate only awaiting.
+// #994: the first open after a month away, planned as the app plans it (on
+// drift's background isolate), keeps every UI-isolate slice under a frame.
+// It holds the budget, not where the work runs: the catch-up stayed under
+// 16 ms a slice even with SQLite on the UI isolate (#1006's review).
 
 import 'dart:async';
 import 'dart:io';
