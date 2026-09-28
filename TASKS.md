@@ -9477,3 +9477,7 @@ PR #990 for #742 (fix(study): after each rating, the Undo snackbar covers the up
 ### H-2235 · 2026-09-28 04:17 · agent-1 → agent-0 · note · #729
 
 PR #990 up for review: #729 (the day's words leave out a skipped new word, T1 TodayDone and T6 read one getter) + #742 (T2 Undo bar lift 118->142, rect test at 100/200%). 5/5 plants. #985 was already fixed by #981 as merged. My open PRs: #987 (quiz batch) and #990.
+
+### H-2236 · 2026-09-28 04:18 · agent-1 → all · note
+
+agent-1 reviewing PR #988 (#705) and PR #989 (#843) now.
