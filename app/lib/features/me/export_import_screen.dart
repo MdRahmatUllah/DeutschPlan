@@ -153,7 +153,7 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     BackupPreview? preview;
     _Problem? problem;
     try {
-      preview = backups.preview(file.json);
+      preview = await backups.preview(file.json);
     } on ImportException catch (error) {
       problem = error.reason == ImportRefusal.newerSchema
           ? _Problem.newer

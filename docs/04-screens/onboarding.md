@@ -6,7 +6,7 @@
 
 **Reached from.** S1 on first run; M3 → *Restart setup* (keeps progress; only plan settings change). **Leads to.** S3 from page 3; T1 on finish, or after *Restore a backup* on page 1.
 
-**Layout (shared).** Coloured header block per page (Lagoon, Sun, Raspberry, Cobalt, Emerald) with the headline; "Step n of 5" dots; one control group; primary *Continue* pinned bottom; *Back* text button from page 2; *Skip* top-right from page 3.
+**Layout (shared).** Coloured header block per page (Lagoon, Sun, Raspberry, Cobalt, Emerald) with the headline; "Step n of 5" dots (drawn only: the header already reads the step, so a screen reader hears it once, #740); one control group; primary *Continue* pinned bottom; *Back* text button from page 2; *Skip* top-right from page 3.
 
 | Page | Content | Setting written |
 | --- | --- | --- |

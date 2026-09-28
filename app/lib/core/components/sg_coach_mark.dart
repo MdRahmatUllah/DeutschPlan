@@ -1,6 +1,7 @@
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// A one-line hint pointing at a control, in the Paper & Ink treatment: a Sun
 /// bubble with an ink edge and the hard shadow, and a notch towards what it
@@ -103,49 +104,53 @@ class _Bubble extends StatelessWidget {
       attributedLabel: SgScript.attributedLabel(message),
       excludeSemantics: true,
       onTap: onTap,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: maxWidth),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: tokens.color.accent,
-                  borderRadius: BorderRadius.circular(tokens.shape.button),
-                  border: Border.all(color: tokens.color.ink, width: 2),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: tokens.surface.shadow,
-                      offset: tokens.surface.shadowOffset,
-                      blurRadius: tokens.surface.shadowBlur,
+      child: SgFocusable(
+        onPressed: onTap,
+        radius: BorderRadius.circular(tokens.shape.button),
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: maxWidth),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: tokens.color.accent,
+                    borderRadius: BorderRadius.circular(tokens.shape.button),
+                    border: Border.all(color: tokens.color.ink, width: 2),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: tokens.surface.shadow,
+                        offset: tokens.surface.shadowOffset,
+                        blurRadius: tokens.surface.shadowBlur,
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  child: SgText(
-                    message,
-                    role: SgTextRole.label,
-                    weight: 600,
-                    color: tokens.color.onAccent,
-                    textAlign: TextAlign.center,
+                    child: SgText(
+                      message,
+                      role: SgTextRole.label,
+                      weight: 600,
+                      color: tokens.color.onAccent,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              ),
-              CustomPaint(
-                size: const Size(notch * 2, notch),
-                painter: _Notch(
-                  fill: tokens.color.accent,
-                  edge: tokens.color.ink,
+                CustomPaint(
+                  size: const Size(notch * 2, notch),
+                  painter: _Notch(
+                    fill: tokens.color.accent,
+                    edge: tokens.color.ink,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

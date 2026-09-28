@@ -272,6 +272,23 @@ void main() {
   });
 
   group('FR-L12-03 the clock', () {
+    testWidgets('#712 a second redraws the clocks, not the runner and its '
+        'question', (tester) async {
+      await pump(tester);
+      var rebuilt = 0;
+      debugOnRebuildDirtyWidget = (element, _) {
+        if (element.widget is ExamRunnerScreen) rebuilt++;
+      };
+      try {
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump(const Duration(seconds: 1));
+      } finally {
+        debugOnRebuildDirtyWidget = null;
+      }
+      expect(find.text('14:30'), findsOneWidget);
+      expect(rebuilt, 0);
+    });
+
     testWidgets('counts down and is written every 10 s', (tester) async {
       await pump(tester);
       expect(find.text('14:32'), findsOneWidget);

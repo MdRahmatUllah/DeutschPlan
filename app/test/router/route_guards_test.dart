@@ -813,6 +813,22 @@ void main() {
       expect(await guards.hasExamAttempt(id + 1), isFalse);
     });
 
+    test('#935 FR-L12-04 an attempt runs until it is submitted', () async {
+      final exams = ExamRepository(db);
+      final id = await exams.begin(
+        sublevelCode: 'A1.1',
+        seed: 1,
+        startedAt: '2026-03-04T09:00:00Z',
+        questions: const <ExamQuestion>[
+          ExamQuestion(ord: 1, section: 'vocabulary', prompt: 'das Haus'),
+        ],
+      );
+      expect(await guards.isExamRunning(id), isTrue);
+
+      await exams.abandon(id);
+      expect(await guards.isExamRunning(id), isFalse);
+    });
+
     test('a phone with no enrollment is not enrolled', () async {
       expect(await guards.isEnrolled(), isFalse);
     });
