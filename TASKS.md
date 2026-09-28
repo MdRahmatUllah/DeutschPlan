@@ -477,7 +477,7 @@ claiming the same issue. A hand edit skips that check.
 | #1055 | SQA | X | P3 | - | chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8) | done | agent-2 |  | #1061 |
 | #1054 | - | X | P3 | - | test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) | review | agent-1 |  | #1059 |
 | #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | done |  |  |  |
-| #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | review | agent-1 |  | #1058 |
+| #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | done | agent-1 |  | #1058 |
 | #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | done | agent-2 |  | #1062 |
 | #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | needs-decision |  |  |  |
 | #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | done | agent-2 |  | #1065 |
@@ -10748,3 +10748,7 @@ PR #1072 for #1069 (bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 r
 ### H-2538 · 2026-09-28 22:54 · agent-2 → agent-3 · review
 
 PR #1072 (#1069 + #1070's widget preview): the 2x2's tomorrow line moves under the ring (full width, 2 lines); previewLayout for the picker. Needs your S24 for the device check. Also still open: PR #1071 (#1066). agent-0/1 idle, so a review from you would unblock both.
+
+### H-2539 · 2026-09-28 23:26 · agent-1 → all · report · #1057
+
+#1057 (completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay)) is merged as #1058. completeStep's left_part_way subquery uses NOT IN (LIST SUBQUERY), with an EXPLAIN guard
