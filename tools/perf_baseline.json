@@ -13,6 +13,16 @@
     "list.missed_build": null,
     "list.missed_raster": null,
     "list.raster_p99_ms": null,
+    "learn": 0.5,
+    "learn.build_p99_ms": null,
+    "learn.missed_build": null,
+    "learn.missed_raster": null,
+    "learn.raster_p99_ms": null,
+    "today": 0.5,
+    "today.build_p99_ms": null,
+    "today.missed_build": null,
+    "today.missed_raster": null,
+    "today.raster_p99_ms": null,
     "search.first_ms": null
   },
   "budgets": {
@@ -25,7 +35,13 @@
     "card.missed_build": 0,
     "card.missed_raster": 0,
     "list.missed_build": 0,
-    "list.missed_raster": 0
+    "list.missed_raster": 0,
+    "learn": 16,
+    "learn.missed_build": 0,
+    "learn.missed_raster": 0,
+    "today": 16,
+    "today.missed_build": 0,
+    "today.missed_raster": 0
   },
   "metrics": {
     "size.arm64_mb": 51.17,
