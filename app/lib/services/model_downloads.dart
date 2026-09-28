@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show FileSystemException;
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
@@ -135,7 +136,11 @@ class BackgroundModelDownloads implements ModelDownloads {
       await _downloader.cancelAll(group: group);
       await _downloader.database.deleteAllRecords(group: group);
       final staging = await _models.stagingFor(group);
-      if (staging.existsSync()) staging.deleteSync(recursive: true);
+      try {
+        if (staging.existsSync()) staging.deleteSync(recursive: true);
+      } on FileSystemException {
+        // The next launch clears it; this one must still start the rest.
+      }
     }
   }
 
@@ -207,7 +212,12 @@ class BackgroundModelDownloads implements ModelDownloads {
     // its record stands in for the update (#156, AC 1).
     final manifest = await _models.manifest();
     for (final record in await _downloader.database.allRecords()) {
-      if (manifest.model(record.group) == null) continue;
+      // Nor one this build doesn't offer: `start()` replays the updates
+      // stored while no engine listened, which writes a gated model's records
+      // again after the drop (#1036).
+      if (manifest.model(record.group) == null || !_offered(record.group)) {
+        continue;
+      }
       final files = _files.putIfAbsent(record.group, () => <String, _File>{});
       final known = files[record.task.filename];
       // What this launch has heard since, or a later attempt, stands.

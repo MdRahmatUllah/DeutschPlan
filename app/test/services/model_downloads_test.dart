@@ -246,6 +246,36 @@ void main() {
       },
     );
 
+    for (final status in <TaskStatus>[TaskStatus.paused, TaskStatus.complete]) {
+      test("#1036 FR-M4-04 a gated model's record the downloader's start "
+          'writes back (${status.name}) is skipped too: no phase, nothing '
+          'lands', () async {
+        final gated = BackgroundModelDownloads(
+          models,
+          settings,
+          downloader,
+          null,
+          const Duration(seconds: 2),
+          notice,
+        );
+        downloader.onStart = () =>
+            downloader.database.records.addAll(<TaskRecord>[
+              TaskRecord(earlier('one.gguf'), status, 1, 300),
+              TaskRecord(earlier('two.gguf'), status, 1, 100),
+            ]);
+        final heard = <DownloadPhase>[];
+        final watching = gated.watch('hymt').listen((p) => heard.add(p.phase));
+        addTearDown(watching.cancel);
+
+        await gated.attach();
+        await pumpEventQueue();
+
+        expect(heard, isEmpty);
+        final active = await models.directoryFor('hymt');
+        expect(File('${active.path}/two.gguf').existsSync(), isFalse);
+      });
+    }
+
     test('every file finished while the app was away: the model verifies '
         'at launch', () async {
       downloader.database.records.addAll(<TaskRecord>[
@@ -1234,7 +1264,12 @@ class _Downloader implements FileDownloader {
     bool autoCleanDatabase = false,
   }) async {
     calls.add('start');
+    onStart?.call();
   }
+
+  /// What `start()` does besides: the real one replays the updates stored
+  /// while no engine listened, writing their records again (#1036).
+  void Function()? onStart;
 
   @override
   Future<bool> requireWiFi(
