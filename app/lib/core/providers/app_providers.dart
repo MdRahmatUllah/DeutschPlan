@@ -14,8 +14,8 @@
 /// - **`theme`** is what every frame reads.
 ///
 /// Everything else auto-disposes, which is the default `@riverpod` gives.
-/// `architecture_test.dart` holds the set to exactly this list, read out of
-/// the doc rather than restated here.
+/// `architecture_test.dart` holds the set to exactly the doc's, read out of
+/// it rather than restated here.
 library;
 
 import 'dart:async';
@@ -67,7 +67,8 @@ import 'package:url_launcher/url_launcher.dart';
 part 'app_providers.g.dart';
 
 /// The open database. Supplied by `bootstrap()` through an override, because
-/// opening it is I/O and FR-S1-01 says all of that happens before `runApp`.
+/// opening it is I/O and FR-S1-01 says all of that happens before the app's
+/// first frame.
 ///
 /// Reading it without that override throws rather than quietly opening a
 /// second database — two `AppDatabase`s over one file is how a learner loses
@@ -127,9 +128,11 @@ String today(Ref ref) {
 /// The mode `AppTheme` builds, kept in step with the setting.
 ///
 /// A notifier rather than a derived value because Settings writes to it
-/// (FR-M3-02) and the write has to reach every frame at once.
+/// (FR-M3-02) and the write has to reach every frame at once. Named with its
+/// suffix, which the provider drops (`themeProvider`): a class `Theme` made
+/// material's `Theme` ambiguous in a file that imported both (#698).
 @Riverpod(keepAlive: true)
-class Theme extends _$Theme {
+class ThemeNotifier extends _$ThemeNotifier {
   @override
   SgMode build() {
     final settings = ref.watch(settingsProvider);
@@ -535,29 +538,34 @@ SentencePicker sentencePicker(Ref ref) {
 
 /// `docs/03-domain/quiz-engine.md` (#81): builds a quiz from `QuizArgs`. The
 /// runner (L8) and the exam generator build through it.
+///
+/// It copies two settings, so it follows them as the planner does (#342):
+/// its consumers auto-dispose today, but a copy that outlives a write would
+/// quiz in the old meaning language (#698).
 @riverpod
-QuizBuilder quizBuilder(Ref ref) => QuizBuilder(
-  DriftQuizStore(
-    ref.watch(wordRepositoryProvider),
-    ref.watch(settingsProvider),
-    ref.watch(contentDaoProvider),
-  ),
-  fsrs: Fsrs(
-    desiredRetention: ref
-        .watch(settingsProvider)
-        .read(SettingKeys.desiredRetention),
-  ),
-  meanings: switch (ref
-      .watch(settingsProvider)
-      .read(SettingKeys.meaningLanguage)) {
-    MeaningLanguage.english => const <QuizDirection>{QuizDirection.deEn},
-    MeaningLanguage.bangla => const <QuizDirection>{QuizDirection.deBn},
-    MeaningLanguage.both => const <QuizDirection>{
-      QuizDirection.deEn,
-      QuizDirection.deBn,
+QuizBuilder quizBuilder(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  _followSettings(ref, settings, const <SettingKey<Object?>>{
+    SettingKeys.desiredRetention,
+    SettingKeys.meaningLanguage,
+  });
+  return QuizBuilder(
+    DriftQuizStore(
+      ref.watch(wordRepositoryProvider),
+      settings,
+      ref.watch(contentDaoProvider),
+    ),
+    fsrs: Fsrs(desiredRetention: settings.read(SettingKeys.desiredRetention)),
+    meanings: switch (settings.read(SettingKeys.meaningLanguage)) {
+      MeaningLanguage.english => const <QuizDirection>{QuizDirection.deEn},
+      MeaningLanguage.bangla => const <QuizDirection>{QuizDirection.deBn},
+      MeaningLanguage.both => const <QuizDirection>{
+        QuizDirection.deEn,
+        QuizDirection.deBn,
+      },
     },
-  },
-);
+  );
+}
 
 /// M2's reads (#145): the days, the revision ratings, the totals.
 @riverpod

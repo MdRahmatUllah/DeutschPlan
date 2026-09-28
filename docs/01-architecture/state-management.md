@@ -5,7 +5,7 @@
 - **Providers own state; widgets render it.** No `setState` for anything that outlives a gesture.
 - **Codegen everywhere:** `@riverpod` functions and `@riverpod class … extends _$…` notifiers. Hand-written providers are not allowed: `architecture_test` fails on one, since the keepAlive guard reads the annotations (#886).
 - **Database is the source of truth.** Screens watch drift `Stream`s exposed as `StreamProvider`s, so a rating in the study session updates Today's ring, the Learn bars and the streak without manual invalidation.
-- **Auto-dispose by default.** Keep-alive only for: database, settings, TTS service, audio player, active session state.
+- **Auto-dispose by default.** Keep-alive only where the provider map below says `keepAlive`, each with its reason there: what holds a file or the player open, what `build` reads synchronously, a session or draft that must outlive its screen. `architecture_test` holds the annotations to the table (#698).
 
 ## Provider map
 

@@ -101,6 +101,49 @@ void main() {
     expect(disabled, isTrue);
   });
 
+  testWidgets('#686 ST-7 Reduce Motion switched on while the app runs stills '
+      'it at once, and the app below keeps its state', (tester) async {
+    late bool disabled;
+    final home = GlobalKey();
+    await tester.pumpWidget(
+      MaterialApp(
+        builder: (context, child) => stillOnReduceMotion(context, child!),
+        home: StatefulBuilder(
+          key: home,
+          builder: (context, _) {
+            disabled = MediaQuery.disableAnimationsOf(context);
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+    expect(disabled, isFalse);
+    final before = home.currentState;
+
+    // Only reduceMotion changes: MediaQueryData has no field for it, so the
+    // root MediaQuery doesn't rebuild. Another flag changing with it would
+    // rebuild it, and hide the bug.
+    final now = tester.platformDispatcher.accessibilityFeatures;
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        FakeAccessibilityFeatures(
+          accessibleNavigation: now.accessibleNavigation,
+          invertColors: now.invertColors,
+          disableAnimations: now.disableAnimations,
+          boldText: now.boldText,
+          reduceMotion: true,
+          highContrast: now.highContrast,
+          onOffSwitchLabels: now.onOffSwitchLabels,
+          supportsAnnounce: now.supportsAnnounce,
+          autoPlayAnimatedImages: now.autoPlayAnimatedImages,
+          autoPlayVideos: now.autoPlayVideos,
+          deterministicCursor: now.deterministicCursor,
+        );
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    await tester.pump();
+    expect(disabled, isTrue);
+    expect(home.currentState, same(before));
+  });
+
   testWidgets('#164 under reduce motion the iOS edge swipe still goes back', (
     tester,
   ) async {
