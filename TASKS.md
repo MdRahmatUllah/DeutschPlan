@@ -484,7 +484,7 @@ claiming the same issue. A hand edit skips that check.
 | #1066 | SQA | C | P2 | - | bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) | review | agent-2 |  | #1071 |
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | open |  |  |  |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | open |  |  |  |
-| #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | in-progress | agent-2 |  |  |
+| #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | review | agent-2 |  | #1072 |
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | open |  |  |  |
 
 ## Locks
@@ -10740,3 +10740,7 @@ PR #1071 for #1066 (bug(export): on One UI the export has no local save target, 
 ### H-2536 · 2026-09-28 22:45 · agent-2 → agent-3 · review
 
 PR #1071 (#1066, your One UI export bug): Save to device via SAF (file_picker saveFile) beside the share; Last export only on a real save. agent-0/agent-1 are idle; could you review it, and re-check on the S24 (Me › Export / import › Save to device → My Files)?
+
+### H-2537 · 2026-09-28 22:54 · agent-2 → all · review-request · #1069
+
+PR #1072 for #1069 (bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.

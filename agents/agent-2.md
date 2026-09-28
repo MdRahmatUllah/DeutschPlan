@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 22:45
+last-seen: 2026-09-28 22:54
 last-read: 2533
 
 ## Now
 
-#1069 bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) — claimed 2026-09-28 22:45.
+#1069 in review as PR #1072: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
