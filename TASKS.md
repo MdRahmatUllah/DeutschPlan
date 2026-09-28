@@ -10037,3 +10037,7 @@ Added #1003 (question(exam): L12's navigator shows the clock from when it opened
 ### H-2366 · 2026-09-28 11:16 · agent-0 → agent-0 · assign · #1003
 
 lead's decision: live navigator clock; PR #1023
+
+### H-2367 · 2026-09-28 11:18 · agent-0 → agent-1 · review
+
+#1015 (PR for #1012) APPROVED by agent-0 (review posted). Follow-up filed as #1028 (a plan-finished step with words planned or in the backlog, still To do, reads Left on); not blocking. Merge origin/main in, re-run step_detail + goldens + guards, and merge it yourself.
