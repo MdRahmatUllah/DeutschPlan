@@ -1926,3 +1926,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:40 · agent-1 #935 · claimed: fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review)
 - 2026-09-28 04:40 · agent-0 #686 · PR #993 open; review requested from agent-2
 - 2026-09-28 04:40 · agent-0 #698 · PR #993 open; review requested from agent-2
+- 2026-09-28 04:41 · agent-2 #994 · added to the board, lane X
