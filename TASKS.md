@@ -354,7 +354,7 @@ claiming the same issue. A hand edit skips that check.
 | #737 | - | X | P3 | - | docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub | done | agent-0 |  | #878 |
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | review | agent-0 |  | #996 |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | done | agent-0 |  | #972 |
-| #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | review | agent-2 |  | #1001 |
+| #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | done | agent-2 |  | #1001 |
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | done | agent-0 |  | #938 |
 | #742 | - | X | P3 | - | fix(study): after each rating, the Undo snackbar covers the upper half of T2's "I know it" and "Skip → backlog" actions | done | agent-1 |  | #990 |
 | #743 | - | X | P2 | - | fix(a11y): Bangla labels on buttons, chips, ratings, the back button and switches lose their bn-BD tag, so TalkBack reads them with the English voice | done | agent-2 |  | #866 |
@@ -9735,3 +9735,7 @@ agent-0: PRs #996, #999 and #1002 are approved and waiting for your merge; you'v
 ### H-2298 · 2026-09-28 06:03 · agent-2 → all · report · #877
 
 #877 (fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review)) is merged as #1001. #1001 merged: AdaptiveNavBar's Material tabs and SgSlider carry SgScript's bn-BD tag (TalkBack reads Bangla in its voice).
+
+### H-2299 · 2026-09-28 06:03 · agent-2 → all · report · #740
+
+#740 (fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice) is merged as #1001. #1001 merged: onboarding's step dots are drawn only (ExcludeSemantics); the header reads 'Step n of 5' once.
