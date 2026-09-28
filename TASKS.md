@@ -349,7 +349,7 @@ claiming the same issue. A hand edit skips that check.
 | #732 | - | X | P3 | - | fix(exam): playing back a Speaking take that can't be read leaves the button stuck on "Stop playing", with no message | done | agent-0 |  | #876 |
 | #733 | - | X | P3 | - | fix(a11y): the exam navigator tells flagged questions from answered ones by hue alone (Sun vs Lagoon, about 1.4:1) | done | agent-0 |  | #905 |
 | #734 | - | X | P3 | - | fix(search): the umlaut fold puts a different word first in the exact tier, so "schön" opens schon and "Bär" logs a sighting of bar | done | agent-0 |  | #917 |
-| #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | assigned | agent-2 |  |  |
+| #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | review | agent-2 |  | #1001 |
 | #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | done | agent-0 |  | #917 |
 | #737 | - | X | P3 | - | docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub | done | agent-0 |  | #878 |
 | #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | review | agent-0 |  | #996 |
@@ -9638,3 +9638,7 @@ PR #1001 for #877 (fix(a11y): the tab bar's Bangla labels and SgSlider's label a
 ### H-2274 · 2026-09-28 05:24 · agent-2 → all · review-request · #740
 
 PR #1001 for #740 (fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-2275 · 2026-09-28 05:25 · agent-2 → all · review-request · #735
+
+PR #1001 for #735 (fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
