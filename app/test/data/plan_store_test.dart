@@ -261,7 +261,7 @@ ORDER BY w.seq_in_sublevel
       expect(steps, contains(startsWith('LIST SUBQUERY')));
     });
 
-    test('#1047 completing a step reads the planned words once too', () async {
+    test('#1047 #1057 completing a step reads the planned words once too', () async {
       final plan = await db
           .customSelect(
             'EXPLAIN QUERY PLAN ${DriftPlanStore.completeStepSql}',
