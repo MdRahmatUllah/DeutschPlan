@@ -6,7 +6,7 @@ last-read: 2218
 
 ## Now
 
-#950 in review as PR #987: answer review threads; re-run the gate if main moved, then merge.
+#729 fix(day-complete): T6's "N words · M min" counts skipped new words as studied — claimed 2026-09-28 03:50.
 
 ## Next
 
