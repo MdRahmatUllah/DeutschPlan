@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 23:33
+last-seen: 2026-09-28 23:34
 last-read: 2533
 
 ## Now
 
-#1069 in review as PR #1072: answer review threads; re-run the gate if main moved, then merge.
+#1070 chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) — claimed 2026-09-28 23:34.
 
 ## Next
 

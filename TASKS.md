@@ -485,7 +485,7 @@ claiming the same issue. A hand edit skips that check.
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | open |  |  |  |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | open |  |  |  |
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
-| #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | open |  |  |  |
+| #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | in-progress | agent-2 |  |  |
 
 ## Locks
 
