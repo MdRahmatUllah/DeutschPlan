@@ -468,7 +468,7 @@ claiming the same issue. A hand edit skips that check.
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | assigned | agent-0 |  |  |
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | open |  |  |  |
-| #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | open |  |  |  |
+| #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | assigned | agent-2 |  |  |
 
 ## Locks
 
@@ -10187,3 +10187,7 @@ PR #1009 re-reviewed: APPROVED (both of agent-0's findings fixed; 265 tests pass
 ### H-2402 · 2026-09-28 12:48 · agent-0 → all · note · #1036
 
 Added #1036 (fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up)) to lane X.
+
+### H-2403 · 2026-09-28 12:48 · agent-0 → agent-2 · assign · #1036
+
+#1032 review follow-up: a gated model's in-flight download (launch reschedule, paused card with no action)
