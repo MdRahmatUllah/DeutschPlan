@@ -256,7 +256,7 @@ the product to?
 | **One platform** | iOS users can't install it | iOS code paths are built and tested (adaptive chrome, iOS goldens) | A Mac for #171, #161, #398 |
 | **No telemetry** | Crashes and confusion are invisible unless reported | 4,598 Flutter tests (goldens included), a dedicated SQA agent, *Report a problem* | Decide on Play vitals (above) |
 | **Low-end phones** | With Supertonic's sessions open the app uses about 520 MB of memory (PSS, on the emulator); the voice is 399 MB to download | The voice is optional; a 100 MB free-space margin is enforced; the phone voice is the fallback | Owner: a memory budget (none yet) |
-| **Release depends on the owner** | Release builds are debug-signed until the upload key is added; start time on a real phone is unchecked | `tools/release_android.py` reports the signing key | Owner: upload key, real-phone check |
+| **Release depends on the owner** | Release builds fail without the upload key unless they opt in to the debug key, as the agents' device checks do (#705); start time on a real phone is unchecked | `tools/release_android.py` reports the signing key | Owner: upload key, real-phone check |
 | **The app id is permanent** | `de.sogda.app` can never change once on Play | Chosen by the owner (ADR 28, #601) | — |
 | **Exam claims and trademarks** | Implying official exams would mislead | Mock exams are labelled generated; Goethe and telc named only for the level | Recheck the store texts (`store-listing.md`) before each upload; the brand kit (`docs/sogda-brand-kit/`) names no exam body |
 | **Store policy** | Foreground-service and notification rules change | Declarations listed in `release.md` | Recheck each Play upload |

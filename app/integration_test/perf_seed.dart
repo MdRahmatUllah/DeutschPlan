@@ -5,7 +5,7 @@
 // the one that ships, untouched.
 //
 //   flutter build apk --release --target-platform android-x64 \
-//       -t integration_test/perf_seed.dart
+//       -t integration_test/perf_seed.dart -P allowDebugSigning=true
 //
 // It says `perf-seed: done` (or `perf-seed: failed`) in logcat, which
 // perf.py waits for.
