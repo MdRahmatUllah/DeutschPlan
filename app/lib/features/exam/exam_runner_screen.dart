@@ -407,8 +407,10 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       await _flush();
       await _service.abandon(widget.attemptId);
     } on Object {
-      // Left anyway: the attempt stays in progress and the hub offers
-      // *Resume*, with every answer and all but the last seconds written.
+      // Left anyway. A write or the abandon that failed leaves the attempt
+      // in progress, and the hub offers *Resume* with every answer and all
+      // but the last seconds written; an abandon that committed before the
+      // recording's delete threw leaves it abandoned, with the file (#911).
     }
     if (mounted) widget.onLeft(paper.attempt.sublevelCode);
   }
