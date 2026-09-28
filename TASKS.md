@@ -469,7 +469,7 @@ claiming the same issue. A hand edit skips that check.
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | review | agent-1 |  | #1040 |
 | #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | assigned | agent-2 |  |  |
-| #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | open |  |  |  |
+| #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -10280,3 +10280,7 @@ Please review two agent-0 PRs after #1028: #1038 (#1021 part 1: the learning scr
 ### H-2425 · 2026-09-28 13:09 · agent-0 → all · note · #1039
 
 Added #1039 (fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021)) to lane X.
+
+### H-2426 · 2026-09-28 13:09 · agent-0 → agent-0 · assign · #1039
+
+from #1021: long-press actions have no key path
