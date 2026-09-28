@@ -86,4 +86,45 @@ void main() {
       contains('android:name="${name.replaceFirst(namespace, '')}"'),
     );
   });
+
+  const widgetKotlin =
+      'android/app/src/main/kotlin/de/sogda/app/widget/SogdaWidget.kt';
+
+  // The small size's own body, up to the medium's.
+  String small() {
+    final kotlin = File(widgetKotlin).readAsStringSync();
+    final start = kotlin.indexOf('private fun Small(');
+    return kotlin.substring(
+      start,
+      kotlin.indexOf('private fun Medium(', start),
+    );
+  }
+
+  test("#1069 FR-X1-02 the small widget's tomorrow line runs under the ring, "
+      "the widget's width, not in the column beside it", () {
+    final body = small();
+    final ringRow = body.indexOf('Ring(snapshot, 48)');
+    final tomorrow = body.indexOf('copy.text("tomorrow")');
+    expect(ringRow, isNonNegative);
+    expect(tomorrow, isNonNegative);
+    // After the ring's row closes: the text sits in the outer Column.
+    final rowEnd = body.indexOf('\n        }', ringRow);
+    expect(tomorrow, greaterThan(rowEnd));
+    // And nothing beside the ring says it.
+    expect(body.substring(ringRow, rowEnd), isNot(contains('"tomorrow"')));
+  });
+
+  test('#1070 the widget picker shows a preview of the widget, not a '
+      'placeholder tile', () {
+    final info = File('android/app/src/main/res/xml/sogda_widget_info.xml')
+        .readAsStringSync();
+    final layout = RegExp(r'android:previewLayout="@layout/(\w+)"')
+        .firstMatch(info)
+        ?.group(1);
+    expect(layout, isNotNull);
+    expect(
+      File('android/app/src/main/res/layout/$layout.xml').existsSync(),
+      isTrue,
+    );
+  });
 }

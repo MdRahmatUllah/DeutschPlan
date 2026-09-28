@@ -140,23 +140,36 @@ private fun Small(snapshot: JSONObject) {
             )
         }
         Spacer(GlanceModifier.defaultWeight())
+        val done = snapshot.optBoolean("done")
         Row(verticalAlignment = Alignment.CenterVertically) {
             Ring(snapshot, 48)
             Spacer(GlanceModifier.width(10.dp))
             Column {
-                val done = snapshot.optBoolean("done")
                 Text(
                     text = copy.text(if (done) "done" else "left"),
                     // "Done for today" is three words beside the ring; "8 left" is the number.
                     style = TextStyle(color = ink, fontSize = if (done) 14.sp else 20.sp, fontWeight = FontWeight.Bold),
                     maxLines = 2,
                 )
-                Text(
-                    text = copy.text(if (done) "tomorrow" else "minutes"),
-                    style = TextStyle(color = secondary, fontSize = 11.sp),
-                    maxLines = 2,
-                )
+                if (!done) {
+                    Text(
+                        text = copy.text("minutes"),
+                        style = TextStyle(color = secondary, fontSize = 11.sp),
+                        maxLines = 2,
+                    )
+                }
             }
+        }
+        // #1069: tomorrow's plan under the ring, the widget's whole width. Beside the ring
+        // One UI's 2 x 2 left it some 50 dp, and "Tomorrow · 7 revisions · 7 new" lost its
+        // new words however many lines it had.
+        if (done) {
+            Spacer(GlanceModifier.height(4.dp))
+            Text(
+                text = copy.text("tomorrow"),
+                style = TextStyle(color = secondary, fontSize = 11.sp),
+                maxLines = 2,
+            )
         }
     }
 }
