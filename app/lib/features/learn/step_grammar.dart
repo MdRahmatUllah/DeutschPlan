@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
@@ -146,8 +147,7 @@ class TopicRow extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: SgTappable(
         onTap: () => GrammarTopicRoute.open(context, topic.uid),
         child: Container(
           constraints: const BoxConstraints(minHeight: 64),

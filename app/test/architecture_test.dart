@@ -718,11 +718,12 @@ void main() {
 
   test('#912 a card button is its own semantics node', () {
     // accessibility-performance.md: a `Semantics(button: …)` over a card (an
-    // `SgSurface` or a `GestureDetector`) with no `container` merges its
-    // flag, label and tap up into whatever node holds it. T1's grammar card
-    // became a button over the whole card list that way (#749). Right under
-    // `AdaptiveTapTarget` or `MergeSemantics` it is a node already.
-    final card = RegExp(r'^\s*(?:SgSurface|GestureDetector)\(');
+    // `SgSurface`, an `SgTappable` or a `GestureDetector`) with no `container`
+    // merges its flag, label and tap up into whatever node holds it. T1's
+    // grammar card became a button over the whole card list that way (#749).
+    // Right under `AdaptiveTapTarget` or `MergeSemantics` it is a node
+    // already.
+    final card = RegExp(r'^\s*(?:SgSurface|SgTappable|GestureDetector)\(');
     // One single-child wrapper may stand between: L12's navigator cell is
     // `AdaptiveTapTarget(child: SizedBox(width: …, child: Semantics(…)))`,
     // and the target, grown to 48 dp, is its node.
