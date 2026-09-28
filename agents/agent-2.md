@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 05:46
+last-seen: 2026-09-28 05:47
 last-read: 2292
 
 ## Now
 
-Nothing claimed.
+#745 fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad — claimed 2026-09-28 05:47.
 
 ## Next
 
