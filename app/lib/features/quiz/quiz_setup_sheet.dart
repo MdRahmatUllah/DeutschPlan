@@ -122,13 +122,17 @@ class QuizSetupSheet extends ConsumerStatefulWidget {
   ConsumerState<QuizSetupSheet> createState() => _QuizSetupSheetState();
 }
 
+/// The direction a quiz starts on (`quiz.md`, #387, #667): the learner's
+/// meaning language, DE → বাংলা for a Bangla learner, DE → EN otherwise.
+/// L7's first chip, and every one-tap quiz: L2's tiles and L6's *Quiz*.
+QuizDirection meaningDirection(WidgetRef ref) =>
+    ref.read(settingsSourceProvider).read(SettingKeys.meaningLanguage) ==
+        MeaningLanguage.bangla
+    ? QuizDirection.deBn
+    : QuizDirection.deEn;
+
 class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
-  // #387: the learner's meaning language, DE → বাংলা for a Bangla-only one.
-  late QuizDirection _direction =
-      ref.read(settingsSourceProvider).read(SettingKeys.meaningLanguage) ==
-          MeaningLanguage.bangla
-      ? QuizDirection.deBn
-      : QuizDirection.deEn;
+  late QuizDirection _direction = meaningDirection(ref);
   int _length = 20;
   QuizSource _source = QuizSource.stepLearned;
   bool _timer = false;

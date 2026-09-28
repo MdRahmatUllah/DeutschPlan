@@ -83,14 +83,35 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   /// The finished run's attempt: L9 takes the screen's place (#126).
   int? _resultOf;
 
+  /// #727: the clock holds while the app is hidden, as while *Close* asks,
+  /// or a learner who read a message came back to a question failed and
+  /// rated Again.
+  late final AppLifecycleListener _lifecycle;
+
+  /// Whether the clock was running when the app was hidden.
+  bool _heldAway = false;
+
   @override
   void initState() {
     super.initState();
+    _lifecycle = AppLifecycleListener(onHide: _hide, onShow: _show);
     unawaited(_start());
+  }
+
+  void _hide() {
+    _heldAway = _tick?.isActive ?? false;
+    _tick?.cancel();
+  }
+
+  void _show() {
+    if (!_heldAway) return;
+    _heldAway = false;
+    _startClock(resume: true);
   }
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     _tick?.cancel();
     _field.dispose();
     super.dispose();

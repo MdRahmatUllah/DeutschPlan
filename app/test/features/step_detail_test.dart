@@ -31,6 +31,7 @@ void main() {
 
   StepProgress step({
     int todo = 296,
+    int learning = 60,
     String? startedOn = '2026-08-19',
     String? completedOn,
     int? passedSeed,
@@ -43,8 +44,8 @@ void main() {
     levelCode: level,
     words: 540,
     todo: todo,
-    learning: 60,
-    done: 540 - 60 - todo,
+    learning: learning,
+    done: 540 - learning - todo,
     grammar: 10,
     grammarLearned: 4,
     unlocked: false,
@@ -90,8 +91,29 @@ void main() {
         'Completed 18 Aug · Mock 1 passed · revision continues',
       );
       expect(
-        paceLine(l10n, en, step(completedOn: '2026-08-18', todo: 0)),
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-08-18', todo: 0, learning: 0),
+        ),
         'Completed 18 Aug · revision continues',
+      );
+    });
+
+    test('#950 FR-L2-01 a step left with words To do or Learning was left, '
+        'not completed, unless its exam passed', () {
+      expect(
+        paceLine(l10n, en, step(completedOn: '2026-09-27')),
+        'Left on 27 Sep',
+      );
+      expect(
+        paceLine(l10n, en, step(completedOn: '2026-09-27', todo: 0)),
+        'Left on 27 Sep',
+        reason: 'every word met, 60 still learning',
+      );
+      expect(
+        paceLine(l10n, en, step(completedOn: '2026-09-27', passedSeed: 2)),
+        'Completed 27 Sep · Mock 2 passed · revision continues',
       );
     });
 

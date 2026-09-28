@@ -425,6 +425,37 @@ void main() {
       expect(run.answers, isEmpty);
     });
 
+    testWidgets('#727 #949 FR-L8-05 the clock holds while the app is away: '
+        'back, the question is still open with the seconds it had, neither '
+        'failed nor rated', (tester) async {
+      await pump(tester, args: timed);
+      await tester.pump(const Duration(seconds: 5));
+      expect(find.text(l10n.quizSecondsLeft(10)), findsOneWidget);
+
+      for (final state in <AppLifecycleState>[
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.paused,
+      ]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+      await tester.pump(const Duration(seconds: 20));
+      expect(run.answers, isEmpty, reason: 'not failed while away');
+
+      for (final state in <AppLifecycleState>[
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+      await tester.pump();
+      expect(find.text(l10n.quizSecondsLeft(10)), findsOneWidget);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text(l10n.quizSecondsLeft(9)), findsOneWidget);
+      expect(run.answers, isEmpty, reason: 'nor on return');
+    });
+
     testWidgets('auto-submits an empty answer as wrong at 0', (tester) async {
       await pump(tester, args: timed);
       expect(find.text(l10n.quizSecondsLeft(15)), findsOneWidget);
