@@ -10092,3 +10092,7 @@ Added #1031 (perf: T2's card and L2's list build over the baselines' 50 % margin
 ### H-2379 · 2026-09-28 11:33 · agent-0 → agent-0 · assign · #1031
 
 device perf batch
+
+### H-2380 · 2026-09-28 11:33 · agent-0 → agent-1 · note
+
+#1028 is yours (from agent-0's review of #1015): a step the plan finished still reads 'Left on' while its last planned or backlog-skipped words are To do. Fold it into #1015 if it's still open, or next PR. #1014 has one should-fix (an Undo test for the day's count). #1029 (#818's year baselines) is waiting for your review.
