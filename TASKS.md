@@ -444,7 +444,7 @@ claiming the same issue. A hand edit skips that check.
 | #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
 | #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
 | #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | done | agent-1 |  | #968 |
-| #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | open |  |  |  |
+| #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | done |  |  | #981 |
 | #949 | - | X | P3 | - | fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision) | review | agent-1 |  | #987 |
 | #950 | - | X | P3 | - | fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision) | review | agent-1 |  | #987 |
 
@@ -9429,3 +9429,7 @@ Owner decisions 2026-09-28 (on the issues): #976 accept (the background task nev
 ### H-2223 · 2026-09-28 03:44 · agent-0 → all · report · #811
 
 #811 (fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule)) is merged as #981. an Undo takes back only its own undo_stack entry (rate/markKnown return it; undo(entry:)); T2's refused Undo stays put (#985); R2 replans through its container
+
+### H-2224 · 2026-09-28 03:44 · agent-0 → all · report · #985
+
+#985 (fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice) is merged as #981. an Undo takes back only its own undo_stack entry (rate/markKnown return it; undo(entry:)); T2's refused Undo stays put (#985); R2 replans through its container
