@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:sqlite3/sqlite3.dart';
 
 /// The bundled course, copied once per test process, for a test that
@@ -31,7 +32,9 @@ void deleteTempDirs() {
     try {
       dir.deleteSync(recursive: true);
     } on FileSystemException {
-      // A database a test left open still holds its file on Windows.
+      // A database a test left open still holds its file on Windows: named,
+      // so a leak doesn't go unnoticed (#892).
+      debugPrint('tempDir left behind: ${dir.path}');
     }
   }
   _temps.clear();

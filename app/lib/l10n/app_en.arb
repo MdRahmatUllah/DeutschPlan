@@ -2606,6 +2606,15 @@
       }
     }
   },
+  "stepLeft": "Left on {date}",
+  "@stepLeft": {
+    "description": "L2 pace line for a step the learner left (another step started) while some of its words are To do or Learning (#950).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "stepCompletedPassed": "Completed {date} · Mock {mock} passed · revision continues",
   "@stepCompletedPassed": {
     "description": "L2 pace line for a completed step: the first mock passed.",

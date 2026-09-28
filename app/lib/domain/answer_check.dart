@@ -169,8 +169,20 @@ Verdict checkArticle(String given, String article) =>
 /// A plural or a participle has no article of its own to get wrong, so a
 /// leading one is simply part of what was typed. Alternatives and a note
 /// count as in [checkGerman]: "hat/ist aufgebrochen" takes either (#645).
-Verdict checkForm(String given, String expectedForm) =>
-    _best(given, germanForms(expectedForm), german: true);
+///
+/// #682: the superlative is asked as "Superlative of alt" and the course's
+/// form is "am ältesten". The stem alone, "ältesten", is the superlative
+/// with the "am" the prompt never named: almost, which counts, and the
+/// feedback shows the whole form.
+Verdict checkForm(String given, String expectedForm) {
+  final verdict = _best(given, germanForms(expectedForm), german: true);
+  final form = expectedForm.trim();
+  if (verdict != Verdict.wrong || !form.startsWith('am ')) return verdict;
+  return _best(given, germanForms(form.substring(3)), german: true) ==
+          Verdict.wrong
+      ? Verdict.wrong
+      : Verdict.almost;
+}
 
 /// The synonyms in an authored meaning column, in order.
 ///

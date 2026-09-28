@@ -17,6 +17,10 @@ import 'package:material_ui/material_ui.dart';
 
 import '../core/text_clipping.dart';
 import 'today_fixtures.dart';
+import 'settings_fixtures.dart';
+
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 
 /// L2 · Quiz tab — #116.
 void main() {
@@ -106,6 +110,18 @@ void main() {
       expect(started!.direction, 'deEn');
     });
   }
+
+  testWidgets("#667 FR-L2-04 a Bangla learner's tiles ask DE → বাংলা, as L7 "
+      'starts; Forms stays Forms', (tester) async {
+    await pump(tester);
+    (ProviderScope.containerOf(tester.element(find.byType(StepDetailScreen)))
+                .read(settingsSourceProvider)
+            as StubSettings)
+        .put(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+    await tester.tap(find.text(l10n.quizQuick));
+    await tester.pumpAndSettle();
+    expect(started!.direction, 'deBn');
+  });
 
   testWidgets('FR-L2-04 Forms', (tester) async {
     await pump(tester);

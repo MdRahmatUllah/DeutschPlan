@@ -74,8 +74,9 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
       // any intent's data over as the route, so another app's `x://h/exam/7`
       // would otherwise match the table by its path.
       if (arrival(state.uri)) {
-        // A running exam, or setup under way, never gets here: [onEnter] has
-        // blocked the arrival.
+        // A running exam, or setup with nobody enrolled, never gets here:
+        // [onEnter] has blocked the arrival. *Restart setup* (enrolled) is
+        // not held, so its arrival does (#933).
         //
         // #674: with nobody enrolled there is nothing to link into. A cold
         // start from a link (the widget, placed before the first launch)
