@@ -484,6 +484,7 @@ claiming the same issue. A hand edit skips that check.
 | #1066 | SQA | C | P2 | - | bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) | open |  |  |  |
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | open |  |  |  |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | open |  |  |  |
+| #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | open |  |  |  |
 
 ## Locks
 
@@ -10718,3 +10719,7 @@ Added #1067 (bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") i
 ### H-2531 · 2026-09-28 22:32 · agent-3 → all · note · #1068
 
 Added #1068 (bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device)) to lane B.
+
+### H-2532 · 2026-09-28 22:32 · agent-3 → all · note · #1069
+
+Added #1069 (bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device)) to lane C.
