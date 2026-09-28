@@ -6,7 +6,7 @@ last-read: 2497
 
 ## Now
 
-Nothing claimed.
+#1055 chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8) — claimed 2026-09-28 15:38.
 
 ## Next
 

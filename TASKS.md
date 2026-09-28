@@ -474,7 +474,7 @@ claiming the same issue. A hand edit skips that check.
 | #991 | - | X | P3 | - | docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file) | done |  |  |  |
 | #1047 | - | X | P3 | - | fix(learn): a finished step reads "Left on" after Reset word on one of its words (#1028 follow-up) | review | agent-1 |  | #1053 |
 | #1049 | SQA | X | P3 | - | fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer) | done | agent-1 |  | #1051 |
-| #1055 | SQA | X | P3 | - | chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8) | open |  |  |  |
+| #1055 | SQA | X | P3 | - | chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8) | in-progress | agent-2 |  |  |
 | #1054 | - | X | P3 | - | test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) | open |  |  |  |
 
 ## Locks
