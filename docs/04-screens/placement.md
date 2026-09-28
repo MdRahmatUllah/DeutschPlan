@@ -4,7 +4,7 @@
 
 **Prototype.** `Placement`, `PlacementResult`.
 
-**Reached from.** S2 page 3. **Leads to.** S2 page 4 with the suggested step selected, or back to page 3.
+**Reached from.** S2 page 3. **Leads to.** Back to S2 page 3 with the suggested step picked, which the learner confirms with *Continue* (the owner, 2026-09-28, #1011 ME-10); closed, page 3 as it was.
 
 **Layout.** Top bar: close, "Question 4 of 20", level tag ("A1 · word meaning"). One multiple-choice question (word meaning, article, or sentence gap) with four options; footer note "Two right answers in a row move you up a step; two wrong move you down. Nothing is saved until you choose a step." *Next* button.
 

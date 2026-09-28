@@ -23,7 +23,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
 import 'package:sogda/features/onboarding/onboarding_voice_page.dart';
-import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/features/onboarding/onboarding_notifier.dart';
 import 'package:sogda/features/onboarding/setup_flow.dart';
 import 'package:sogda/features/onboarding/placement_screen.dart';
@@ -591,7 +590,7 @@ void main() {
       await tester.tap(find.text(l10n.skip));
       await tester.pumpAndSettle();
 
-      expect(flowLog, <String>['finish from 3']);
+      expect(flowLog, <String>['finish'], reason: 'Skip commits the draft');
       expect(location(), '/today');
     });
 
@@ -874,10 +873,8 @@ class _RecordingFlow extends SetupFlow {
   SetupStatus build() => SetupStatus.idle;
 
   @override
-  Future<bool> finish({OnboardingPage? skippingFrom}) async {
-    log.add(
-      skippingFrom == null ? 'finish' : 'finish from ${skippingFrom.step}',
-    );
+  Future<bool> finish() async {
+    log.add('finish');
     if (!succeed) state = SetupStatus.failed;
     return succeed;
   }
