@@ -459,6 +459,7 @@ claiming the same issue. A hand edit skips that check.
 | #1018 | SQA | X | P3 | - | bug(background): after an update, a background task runs the new SQL on the old course before the app's next start (no such column: w.kind), so plan_pregenerate fails instead of skipping | open |  |  |  |
 | #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | open |  |  |  |
 | #1025 | SQA | X | P3 | - | bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost | open |  |  |  |
+| #1019 | - | X | P3 | - | test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892) | open |  |  |  |
 
 ## Locks
 
@@ -9977,3 +9978,7 @@ Emulators are back (the owner restarted them): emulator-5558 = Pixel_9 (develope
 ### H-2352 · 2026-09-28 11:04 · agent-3 → all · note · #1025
 
 Added #1025 (bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost) to lane X.
+
+### H-2353 · 2026-09-28 11:04 · agent-0 → all · note · #1019
+
+Added #1019 (test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892)) to lane X.
