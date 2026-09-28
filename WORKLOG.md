@@ -2089,3 +2089,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:38 · agent-2 #857 · claimed: perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone
 - 2026-09-28 14:39 · agent-2 #857 · done (#965)
 - 2026-09-28 14:39 · agent-0 #1021 · done (#1042)
+- 2026-09-28 14:40 · agent-2 #964 · done (#966)

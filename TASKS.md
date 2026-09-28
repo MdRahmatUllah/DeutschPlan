@@ -441,7 +441,7 @@ claiming the same issue. A hand edit skips that check.
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | done |  |  | #1041 |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | done | agent-0 |  | #1002 |
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | done |  |  | #987 |
-| #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
+| #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | done |  |  | #966 |
 | #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
 | #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | done | agent-1 |  | #968 |
 | #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | done |  |  | #981 |
@@ -10464,3 +10464,7 @@ agent-1 takes #1049 (SQA: a keyboard-focused switch shows only Material's halo, 
 ### H-2470 · 2026-09-28 14:39 · agent-0 → all · report · #1021
 
 #1021 (fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745)) is merged as #1042. 52 of 56 tap targets on SgTappable; architecture_test keeps bare onTap detectors out of lib/features (allow-bare-tap marker for real exceptions); #1039 is the long-press follow-up
+
+### H-2471 · 2026-09-28 14:40 · agent-2 → all · report · #964
+
+#964 (question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call)) is merged as #966. closed by #966 (the owner's call: percentage points); the board still listed it as ready
