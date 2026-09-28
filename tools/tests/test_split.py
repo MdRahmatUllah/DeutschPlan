@@ -195,8 +195,54 @@ class TestAssignment:
 class TestGrammar:
     def grammar(self, level: str | None, count: int) -> list[GrammarRow]:
         return [
-            GrammarRow(source_file="f", row=i, topic=f"t{i}", level=level)
+            GrammarRow(
+                source_file="f", row=i, topic=f"t{i}", level=level, uid=f"u{i}"
+            )
             for i in range(count)
+        ]
+
+    def test_970_dropping_a_topic_leaves_every_other_topics_step(self):
+        # Shipped 4 + 3. Split anew by count, dropping t6 moves t3 into B1.2
+        # under learners who finished B1.1. Kept, nothing moves, whichever
+        # topic goes, the first B1.2 topic too: the next one takes over.
+        shipped_rows = self.grammar("B1", 7)
+        split_grammar(shipped_rows)
+        shipped = {row.uid: row.sublevel_code for row in shipped_rows}
+
+        for gone in range(7):
+            rest = [r for r in self.grammar("B1", 7) if r.uid != f"u{gone}"]
+            split_grammar(rest, shipped)
+            assert all(r.sublevel_code == shipped[r.uid] for r in rest), gone
+        rest = self.grammar("B1", 6)
+        split_grammar(rest)
+        assert rest[3].sublevel_code != shipped["u3"], "by count it moved"
+
+    def test_970_a_new_topic_takes_the_step_of_its_place(self):
+        shipped = {f"u{i}": "A2.1" if i < 3 else "A2.2" for i in range(6)}
+        rows = self.grammar("A2", 6)
+        def new(uid: str) -> GrammarRow:
+            return GrammarRow(source_file="f", row=9, topic=uid, level="A2", uid=uid)
+
+        rows.insert(1, new("new1"))
+        rows.append(new("new2"))
+        report = split_grammar(rows, shipped)
+        steps = {row.uid: row.sublevel_code for row in rows}
+        assert (steps["new1"], steps["new2"]) == ("A2.1", "A2.2")
+        assert all(steps[uid] == step for uid, step in shipped.items())
+        assert report == [], "kept, A2.2 starts at t3, as by count"
+
+    def test_970_a_level_with_no_shipped_x2_topic_left_splits_by_count(self):
+        rows = self.grammar("C1", 4)
+        split_grammar(rows, {"u0": "C1.1", "u1": "C1.1", "gone": "C1.2"})
+        assert [r.sublevel_code for r in rows] == ["C1.1"] * 2 + ["C1.2"] * 2
+
+    def test_970_a_kept_split_that_is_not_the_one_by_count_says_so(self):
+        rows = self.grammar("B2", 6)
+        report = split_grammar(rows, {"u1": "B2.2"})
+        assert [r.sublevel_code for r in rows] == ["B2.1"] + ["B2.2"] * 5
+        assert report == [
+            "grammar boundary kept: B2.2 starts at topic 2 of 6, 't1', as "
+            "shipped; split anew it would start at topic 4 (--move-boundaries)"
         ]
 
     def test_BR_COURSE_03_split_by_count_keeping_teaching_order(self):

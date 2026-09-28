@@ -175,7 +175,9 @@ def assign_sublevels(
     return splits
 
 
-def split_grammar(rows: Sequence) -> None:
+def split_grammar(
+    rows: Sequence, shipped: dict[str, str] | None = None
+) -> list[str]:
     """BR-COURSE-03: grammar splits by count, keeping teaching order.
 
     By count and not by the word boundary, because the two are authored
@@ -188,18 +190,42 @@ def split_grammar(rows: Sequence) -> None:
 
     It deliberately takes no splits: passing them in would say grammar
     consults the word boundary, which is the thing this must not do.
+
+    [shipped] is the committed course's step of each topic, by uid (#970).
+    Once a level has shipped, X.2 starts at its first topic, in teaching
+    order, that shipped in X.2, so a topic added or dropped moves no other
+    topic between steps under learners (the first X.2 topic dropped
+    included: the next one that shipped there takes over). A level none of
+    whose X.2 topics is left splits by count. Returns a line for each level
+    whose kept split is not the one by count.
     """
+    kept: list[str] = []
     for level in LEVELS:
         of_level = [r for r in rows if getattr(r, "level", None) == level]
         if not of_level:
             continue
         half = (len(of_level) + 1) // 2  # the odd topic goes to X.1
-        for index, row in enumerate(of_level):
-            row.sublevel_code = (
-                f"{level}.1" if index < half else f"{level}.2"
+        second = f"{level}.2"
+        start = next(
+            (
+                index
+                for index, row in enumerate(of_level)
+                if (shipped or {}).get(row.uid) == second
+            ),
+            half,
+        )
+        if start != half:
+            kept.append(
+                f"grammar boundary kept: {second} starts at topic {start + 1} "
+                f"of {len(of_level)}, {of_level[start].topic!r}, as shipped; "
+                f"split anew it would start at topic {half + 1} "
+                f"(--move-boundaries)"
             )
+        for index, row in enumerate(of_level):
+            row.sublevel_code = f"{level}.1" if index < start else second
             row.level_code = level
             row.seq = index + 1
+    return kept
 
 
 def resolve_grammar_levels(rows: Iterable, fallback: str) -> None:
