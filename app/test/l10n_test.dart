@@ -309,6 +309,19 @@ void main() {
           );
         }
       }
+      // Bangla has no capitals to mark a name: a note that sends the learner
+      // to a screen quotes it, as modelNotifyRunningNote quotes its setting.
+      for (final key in <String>[
+        'modelNotifyPausedNote',
+        'modelNotifyCompleteNote',
+        'modelNotifyFailedNote',
+      ]) {
+        expect(
+          bn[key]! as String,
+          contains('“${bn['modelsTitle']}”'),
+          reason: 'bn: $key quotes the screen it names',
+        );
+      }
     });
   });
 

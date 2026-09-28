@@ -31,7 +31,7 @@ one (#684). `test/l10n_test.dart` fails on the rejected spellings.
 | Backlog | ব্যাকলগ | জমে থাকা |
 | Revision, revise | রিভিশন | পুনরাবৃত্তি (which means "a repeat") |
 | Review (one rating of a card) | রিভিউ | |
-| Due | বাকি | |
+| Due; left ("3 left") | বাকি | |
 | To do (a word's status) | শেখা বাকি | বাকি, which means "due" |
 | Learning (a word's status) | শিখছি | |
 | Done (a word's status) | শেখা হয়েছে | সম্পন্ন, শেষ |
