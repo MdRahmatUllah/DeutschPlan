@@ -70,8 +70,9 @@ List<ExamItem> artboardPaper() => <ExamItem>[
   for (var i = 1; i <= 6; i++)
     GapQuestion(
       'g$i',
-      before: 'Ich',
-      after: 'gern.',
+      // Spaced as a paper's are: a substring either side of the gap.
+      before: 'Ich ',
+      after: ' gern.',
       answer: 'lese',
       translation: 'I like reading.',
     ),

@@ -1018,6 +1018,56 @@ void main() {
     });
   });
 
+  group('#738 a gap is spaced as its sentence: one space either side, none '
+      'before punctuation', () {
+    for (final (item, shown) in <(ExamItem, String)>[
+      // A Gap fill question's before and after keep the sentence's spaces.
+      (
+        const GapQuestion(
+          'g1',
+          before: 'Ich ',
+          after: ' gern.',
+          answer: 'lese',
+          translation: '',
+        ),
+        'Ich _____ gern.',
+      ),
+      // A grammar item's are words, trimmed.
+      (
+        const GrammarQuestion(
+          't1#0',
+          GapFill(
+            before: 'Ich trinke',
+            after: '.',
+            answer: 'Kaffee',
+            translation: '',
+          ),
+        ),
+        'Ich trinke _____.',
+      ),
+      (
+        const GrammarQuestion(
+          't2#1',
+          PickTheForm(
+            before: '',
+            after: 'Sie mir helfen?',
+            options: <String>['Könnten', 'Können', 'Konnten'],
+            answer: 'Könnten',
+          ),
+        ),
+        '_____ Sie mir helfen?',
+      ),
+    ]) {
+      testWidgets(shown, (tester) async {
+        await pump(
+          tester,
+          stub: StubExamRun(items: <ExamItem>[item], given: <int, String>{}),
+        );
+        expect(find.text(shown), findsOneWidget);
+      });
+    }
+  });
+
   testWidgets('#798 FR-L12-01 a Bangla meaning is a tile, written at once, '
       'with no field', (tester) async {
     await pump(
@@ -1146,7 +1196,7 @@ void main() {
         if (form == null) prompt else t.quizFormPerfekt(prompt),
       ],
       GapQuestion(:final before, :final after, :final translation) => <String>[
-        '$before _____ $after',
+        '${before}_____$after',
         translation,
       ],
       _ => const <String>[],
@@ -1184,8 +1234,8 @@ void main() {
       ),
       const GapQuestion(
         'g1',
-        before: 'Ich',
-        after: 'gern einen Kaffee mit Milch.',
+        before: 'Ich ',
+        after: ' gern einen Kaffee mit Milch.',
         answer: 'trinke',
         translation: 'I like drinking a coffee with milk.',
       ),
@@ -1450,8 +1500,8 @@ void main() {
         ),
         const GapQuestion(
           'g1',
-          before: 'Ich',
-          after: 'gern einen Kaffee mit Milch.',
+          before: 'Ich ',
+          after: ' gern einen Kaffee mit Milch.',
           answer: 'trinke',
           translation: 'I like drinking a coffee with milk.',
         ),
@@ -1558,8 +1608,8 @@ void main() {
             'gap',
             const GapQuestion(
               'g1',
-              before: 'Ich',
-              after: 'gern.',
+              before: 'Ich ',
+              after: ' gern.',
               answer: 'lese',
               translation: 'I like reading.',
             ),

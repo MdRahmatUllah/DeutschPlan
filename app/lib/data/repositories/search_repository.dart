@@ -422,7 +422,13 @@ class SearchRepository {
   /// `search_repository_test` holds that invariant rather than leaving it
   /// implied; the doubling stays because it is what makes the quoting correct
   /// rather than correct-by-coincidence.
-  static String _quote(String value) => '"${value.replaceAll('"', '""')}"';
+  ///
+  /// Control characters go (#738): SQLite reads the MATCH as a C string, so a
+  /// NUL would end it inside the quotes, and "Search failed".
+  static String _quote(String value) =>
+      '"${value.replaceAll(_control, '').replaceAll('"', '""')}"';
+
+  static final RegExp _control = RegExp(r'[\x00-\x1F\x7F-\x9F]');
 
   /// BR-SEARCH-04. The app opens these in an in-app browser; it makes no
   /// request itself, which is why they are built here and not fetched.

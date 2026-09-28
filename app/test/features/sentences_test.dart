@@ -4,6 +4,7 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/sentence_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/sentence_picker.dart';
@@ -34,6 +35,7 @@ void main() {
   late SettingsRepository settings;
   late AppLocalizations l10n;
   late FakeTts tts;
+  final opened = <Uri>[];
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -161,6 +163,10 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
           clockProvider.overrideWithValue(
             clock ?? () => DateTime(2026, 9, 21, 9),
           ),
+          openWebProvider.overrideWithValue((page) async {
+            opened.add(page);
+            return true;
+          }),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light(),
@@ -502,7 +508,9 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       expect(find.text('to come'), findsOneWidget);
     });
 
-    testWidgets('a word the course lacks: Duden', (tester) async {
+    testWidgets('a word the course lacks: Duden, in the in-app browser as '
+        "R1's chips (#738 BR-SEARCH-04)", (tester) async {
+      opened.clear();
       await pump(tester);
       await tester.runAsync(() async {
         await tester.tapOnText(find.textRange.ofSubstring('lang'));
@@ -510,7 +518,13 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       });
       await tester.pumpAndSettle();
       expect(find.text(l10n.sentencesNotInCourse), findsOneWidget);
-      expect(find.text(l10n.sentencesDuden), findsOneWidget);
+
+      await tester.tap(find.text(l10n.sentencesDuden));
+      await tester.pumpAndSettle();
+      expect(opened, <Uri>[
+        SearchRepository.webLinks('lang')[WebSource.duden]!,
+      ]);
+      expect(find.text(l10n.sentencesNotInCourse), findsNothing);
     });
   });
 

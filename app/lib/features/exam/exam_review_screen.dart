@@ -15,7 +15,7 @@ import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart' show verdictFor;
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/features/exam/exam_question_view.dart'
-    show examFormPrompt, examNumbered;
+    show examFormPrompt, examGapped, examNumbered;
 import 'package:sogda/features/exam/exam_results_screen.dart'
     show examResultProvider;
 import 'package:sogda/features/learn/grammar_practice_screen.dart'
@@ -549,7 +549,7 @@ String _prompt(AppLocalizations l10n, ExamItem item) => switch (item) {
   GapQuestion(:final before, :final after) => '${before}___$after',
   GrammarQuestion(item: final g) => switch (g) {
     GapFill(:final before, :final after) ||
-    PickTheForm(:final before, :final after) => _gapped(before, after),
+    PickTheForm(:final before, :final after) => examGapped(before, after),
     SpotTheError(:final tokens) => tokens.join(' '),
     OrderTheSentence(:final chips) => chips.join(' / '),
     RuleRecall(:final question) => question,
@@ -561,16 +561,6 @@ String _prompt(AppLocalizations l10n, ExamItem item) => switch (item) {
 String? _at(List<String> list, String? given) {
   final i = int.tryParse(given ?? '');
   return i != null && i >= 0 && i < list.length ? list[i] : given;
-}
-
-/// A grammar gap as L15 draws it: a space after the words before, and
-/// before the words after unless they start with punctuation. (A gap
-/// fill's own before and after keep their spaces.)
-String _gapped(String before, String after) {
-  final tail = after.isEmpty || RegExp(r'^[.,!?;:…]').hasMatch(after)
-      ? after
-      : ' $after';
-  return '${before.isEmpty ? '' : '$before '}___$tail';
 }
 
 /// An interference tip that is a gender rule: it names an article
