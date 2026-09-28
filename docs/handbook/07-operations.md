@@ -104,7 +104,7 @@ target runs.
 | The tools' tests | `python -m pytest tools/tests -q` | `make test-content` |
 | Regenerate one screen's goldens | `flutter test --update-goldens test/golden/<screen>_golden_test.dart` | (`make update-goldens` rewrites all: avoid) |
 | Run the app | `flutter run` | |
-| A device-check build | `flutter build apk --release --target-platform android-x64`, under the device lock | |
+| A device-check build | `flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true`, under the device lock (#705: without `key.properties` a release build fails unless it opts in) | |
 | Drive the emulator | `python tools/device.py install launch tap:<label> shot:<file>` | |
 | Capture a new user.db version | `dart run drift_dev schema dump lib/data/db/app_database.dart drift_schemas/` then `python ../tools/trim_schema_fixture.py` | `make schema-dump` |
 | Clean | `flutter clean`, and delete `content/build/` | `make clean` |
@@ -154,7 +154,7 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    symbols (32-bit ARM's too), which it keeps in
    `app/build/release-symbols/<version>/` once every check passes (#697, #858):
    - it builds `flutter build appbundle --release --obfuscate --split-debug-info=build/symbols`
-     into `app/build/app/outputs/bundle/release/app-release.aab`;
+     (plus `-P allowDebugSigning=true` unless `--require-upload-key`, #705) into `app/build/app/outputs/bundle/release/app-release.aab`;
    - **16 KB:** it reads the ELF headers of every 64-bit native library in the
      bundle (`arm64-v8a`, `x86_64`) and exits 1 if any loadable segment isn't
      16 KB-aligned, as Play requires of apps targeting Android 15+;
@@ -186,10 +186,12 @@ storeFile=C:/path/to/upload-keystore.jks
 ```
 
 `key.properties`, `*.jks` and `*.keystore` are gitignored and never committed.
-Without the file, a release build is signed with the debug key, so builds and
-device checks work; Play refuses a debug-signed upload, so nothing reaches it
-signed wrongly. The owner provides the upload key; the agents' worktrees
-have no `key.properties`, so their builds are debug-signed.
+Without the file, a release build fails (#705), unless it opts in to the debug
+key with `-P allowDebugSigning=true` (or `ORG_GRADLE_PROJECT_allowDebugSigning=true`),
+so nothing is debug-signed by accident; Play refuses a debug-signed upload
+anyway. The owner provides the upload key; the agents' worktrees have no
+`key.properties`, so their device-check builds opt in, as `tools/device.py`,
+`tools/perf.py` and `tools/release_android.py` (without `--require-upload-key`) do.
 
 ### Obfuscation and symbols
 

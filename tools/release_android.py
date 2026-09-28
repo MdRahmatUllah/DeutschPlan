@@ -30,8 +30,10 @@ The bundle is `flutter build appbundle --release --obfuscate
 
 Exit 1 when a library is missing or isn't aligned, the symbols are missing,
 or the permissions differ. A debug-signed bundle is reported, not failed: it
-is what every build before the owner's keystore is; `--require-upload-key`,
-for the build that goes to Play, fails it too.
+is what every build before the owner's keystore is, so the build opts in to
+the debug key (`-P allowDebugSigning=true`; Gradle refuses a release build
+without `key.properties` otherwise, #705). `--require-upload-key`, for the
+build that goes to Play, doesn't opt in, and fails a debug-signed bundle too.
 """
 
 from __future__ import annotations
@@ -202,10 +204,12 @@ def signed_by(owner: str | None) -> str:
     return f"{owner}"
 
 
-def build() -> None:
+def build(require_upload_key: bool = False) -> None:
     flutter = shutil.which("flutter") or "flutter"
     command = [flutter, "build", "appbundle", "--release", "--obfuscate",
                f"--split-debug-info={SYMBOLS.relative_to(APP).as_posix()}"]
+    if not require_upload_key:
+        command += ["-P", "allowDebugSigning=true"]  # #705
     if subprocess.run(command, cwd=APP).returncode:
         raise SystemExit(f"failed: {' '.join(command)}")
 
@@ -223,7 +227,7 @@ def main(argv: list[str] | None = None) -> int:
         if who and not holds_device(who):
             print("refused: hold the emulator first: `python tools/team.py device`", file=sys.stderr)
             return 2
-        build()
+        build(args.require_upload_key)
     if not BUNDLE.exists():
         print(f"no bundle at {BUNDLE}: build it first", file=sys.stderr)
         return 2

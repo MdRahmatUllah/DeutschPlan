@@ -322,7 +322,7 @@ it once cost a bug.
 9. **Device check** (Android screens and anything with platform behaviour):
    ```bash
    python tools/team.py device                         # wait for the lock if refused; do other work
-   cd app && flutter build apk --release --target-platform android-x64 && cd ..
+   cd app && flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true && cd ..
    python tools/device.py install launch tap:Learn "tap:Word categories" shot:l5.png
    python tools/team.py device --release
    ```
