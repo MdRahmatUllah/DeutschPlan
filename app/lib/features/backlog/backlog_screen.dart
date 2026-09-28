@@ -325,7 +325,10 @@ class _Backlog extends ConsumerWidget {
           ),
           for (final MapEntry(key: date, value: words) in days.entries) ...[
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 4, 0),
+              // 16 at the end too: *Study this day* is a text button with no
+              // padding of its own, and at 4 its label ran into the gutter
+              // (#854; 12 dp past it in Bangla at 200 %).
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
               // The artboard's 40, grown with the text size: a fixed 40 cut
               // the day's line at 150 % (#165). And a minimum: in Bangla at
               // 200 % the line wraps, and a grown 40 cut it (#580).
