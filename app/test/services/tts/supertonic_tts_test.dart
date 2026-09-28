@@ -5,6 +5,9 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart' show WidgetsBinding;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -13,10 +16,7 @@ import 'package:sogda/data/repositories/synthesis_cache.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart' show WidgetsBinding;
 import 'package:sogda/services/tts/tts_service.dart' show VoiceRelease;
-import 'package:flutter_test/flutter_test.dart';
 
 import '../../db/content_fixture.dart' show tempDir;
 import '../../timing.dart';

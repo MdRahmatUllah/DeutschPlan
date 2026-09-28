@@ -1,3 +1,6 @@
+import 'package:flutter/services.dart'
+    show LengthLimitingTextInputFormatter, TextInputFormatter;
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/domain/exam_generator.dart';
@@ -5,9 +8,6 @@ import 'package:sogda/domain/exam_grading.dart'
     show connectorsUsed, targetsUsed, textWords;
 import 'package:sogda/features/exam/exam_question_view.dart' show examTaskPanel;
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter/services.dart'
-    show LengthLimitingTextInputFormatter, TextInputFormatter;
-import 'package:material_ui/material_ui.dart';
 
 /// L12's Writing (`exam-writing-speaking.md`, the ExamWriting artboard): the
 /// task and its ten target words, which turn Lime as the text uses them

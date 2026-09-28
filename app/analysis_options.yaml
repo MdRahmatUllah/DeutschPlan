@@ -40,3 +40,7 @@ linter:
     # `unawaited(...)`, never an accident.
     - discarded_futures
     - unawaited_futures
+    # #858: `dart:`, then `package:`, then relative imports, each sorted
+    # (the rename left `package:flutter/` after `package:sogda/`).
+    # `dart fix --apply --code=directives_ordering` sorts them.
+    - directives_ordering

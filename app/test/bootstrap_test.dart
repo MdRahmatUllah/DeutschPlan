@@ -2,25 +2,9 @@
 library;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
-import 'dart:convert';
-
-import 'package:sogda/data/repositories/backup_repository.dart';
-import 'package:sogda/bootstrap.dart';
-import 'package:share_plus/share_plus.dart' show XFile;
-import 'package:sogda/core/components/sg_button.dart';
-import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/theme/glass_capability.dart';
-import 'package:sogda/core/theme/theme_mode.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/data/db/content_update.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/main.dart';
-import 'package:sogda/router/app_router.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
@@ -29,8 +13,23 @@ import 'package:material_ui/material_ui.dart'
     show Brightness, Locale, MaterialApp, Text;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:sqlite3/sqlite3.dart';
+import 'package:share_plus/share_plus.dart' show XFile;
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/theme_mode.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sqlite3/sqlite3.dart';
 
 import 'db/content_fixture.dart';
 import 'db/generated/schema_v1.dart' as v1;

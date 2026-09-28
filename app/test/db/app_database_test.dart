@@ -3,10 +3,10 @@ library;
 
 import 'dart:io';
 
-import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/data/db/app_database.dart';
 
 import 'content_fixture.dart' show tempDir;
 

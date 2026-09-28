@@ -4,12 +4,12 @@ library;
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/domain/text_norm.dart';
-import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 import '../db/content_fixture.dart';

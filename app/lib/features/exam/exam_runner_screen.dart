@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show ValueListenable;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -22,9 +25,6 @@ import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/back_behaviour.dart';
-import 'package:flutter/foundation.dart' show ValueListenable;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// L12 · Exam runner (`exam-runner.md`, `ExamRunner-android.html`, #130):
 /// a timed, feedback-free paper that survives being killed. The Cobalt band

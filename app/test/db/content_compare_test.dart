@@ -1,10 +1,10 @@
+import 'package:drift/drift.dart' show DatabaseConnection, Variable;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/domain/compare_set.dart';
 import 'package:sogda/domain/quiz_builder.dart' show QuizItem;
-import 'package:drift/drift.dart' show DatabaseConnection, Variable;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'content_fixture.dart';
 

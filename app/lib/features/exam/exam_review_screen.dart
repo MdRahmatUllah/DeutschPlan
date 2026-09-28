@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -10,6 +13,7 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart'
     show TopicWithState;
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/answer_check.dart' show Verdict;
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart' show verdictFor;
@@ -24,13 +28,9 @@ import 'package:sogda/features/learn/step_exams.dart' show examSectionName;
 import 'package:sogda/features/quiz/quiz_item_view.dart' show GermanWord;
 import 'package:sogda/features/study/study_back.dart'
     show StudyPlayButton, StudyTip, studyBackProvider, tipText;
-import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/words/speak.dart' show say;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'exam_review_screen.g.dart';
 

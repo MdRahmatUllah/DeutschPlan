@@ -1,6 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart'
+    show MethodCall, MethodChannel, PlatformException;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show Locale;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -11,12 +17,6 @@ import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/widget_snapshot.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/services.dart'
-    show MethodCall, MethodChannel, PlatformException;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show Locale;
 
 import '../db/content_fixture.dart';
 import '../features/today_fixtures.dart';

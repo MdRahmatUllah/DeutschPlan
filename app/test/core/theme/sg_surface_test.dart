@@ -1,10 +1,10 @@
+import 'package:flutter/rendering.dart' show BackdropFilterLayer;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:flutter/rendering.dart' show BackdropFilterLayer;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// theming.md: "Every card, sheet, header and tab bar is drawn by one widget,
 /// `SgSurface`... Because screens only use `SgSurface`, adding the glass mode

@@ -1,8 +1,8 @@
+import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// The four FSRS ratings. `business-rules.md` BR-FSRS-02 fixes both the order
 /// and the numbers, which are written into `review_log`.

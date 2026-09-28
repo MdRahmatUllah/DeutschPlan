@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -10,8 +12,6 @@ import 'package:sogda/domain/plan_engine.dart' show addDays, parsePlanDate;
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
-import 'package:intl/intl.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// T1's header block: the German date and greeting, the streak, the gear.
 ///

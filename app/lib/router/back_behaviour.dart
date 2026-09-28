@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:sogda/core/adaptive/adaptive.dart';
-import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter/scheduler.dart' show SchedulerBinding;
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 
 /// Android back, inside the shell. `navigation.md`:
 ///

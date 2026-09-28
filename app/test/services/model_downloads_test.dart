@@ -4,18 +4,18 @@ import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:crypto/crypto.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/model_repository.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/services/device_storage.dart';
-import 'package:sogda/services/model_downloads.dart';
 import 'package:flutter/foundation.dart'
     show TargetPlatform, debugDefaultTargetPlatformOverride;
 import 'package:flutter/services.dart' show MethodCall, MethodChannel;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     show AndroidFlutterLocalNotificationsPlugin;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/services/device_storage.dart';
+import 'package:sogda/services/model_downloads.dart';
 
 import '../db/content_fixture.dart' show tempDir;
 

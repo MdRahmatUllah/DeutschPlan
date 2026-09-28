@@ -1,10 +1,10 @@
 @TestOn('vm')
 library;
 
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
 
 /// `ExamRepository`. No content is read here — an exam is built from content
 /// by the generator and handed over already formed, so these tests are about

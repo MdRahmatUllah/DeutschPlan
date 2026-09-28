@@ -1,30 +1,30 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/me/model_manager_screen.dart';
+import 'package:sogda/features/today/today_providers.dart'
+    show voiceInstalledProvider;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/model_downloads.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:sogda/features/today/today_providers.dart'
-    show voiceInstalledProvider;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart' show tempDir;
 import '../services/fake_tts.dart';
+import '../timing.dart';
 import 'model_manager_fixtures.dart';
 import 'settings_fixtures.dart';
-import '../timing.dart';
-import '../core/semantics_checks.dart';
 
 /// M4 · Model manager — #155.
 void main() {

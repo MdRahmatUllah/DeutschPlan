@@ -1,8 +1,8 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/theme_mode.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show Brightness;
 
 /// The one mapping between what the learner chose and what `AppTheme` builds.
 /// Written once so a silently wrong theme cannot come from two versions of it.

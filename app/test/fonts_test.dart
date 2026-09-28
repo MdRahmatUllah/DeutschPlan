@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:sogda/core/typography/app_fonts.dart';
 import 'package:flutter/services.dart' show FontLoader;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
 
 /// Inter and Noto Sans Bengali ship with the app (docs/01-architecture/theming.md).
 /// Inter carries no Bangla glyphs, so mixed German/Bangla copy - the headword

@@ -3,6 +3,9 @@ library;
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
@@ -17,9 +20,6 @@ import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart' hide PlanKind;
 import 'package:sogda/domain/quiz_builder.dart' show QuizSource;
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 

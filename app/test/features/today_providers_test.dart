@@ -1,17 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:sogda/data/repositories/model_repository.dart';
-import 'package:sogda/features/today/today_view.dart';
-import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/data/repositories/setup_repository.dart';
-import 'package:sogda/features/today/today_providers.dart';
-import 'package:sogda/domain/plan_engine.dart'
-    show MaskSpan, addDays, decodeMaskHistory, planDate;
 import 'package:drift/drift.dart'
     show
         ApplyInterceptor,
@@ -20,11 +9,22 @@ import 'package:drift/drift.dart'
         QueryInterceptor,
         Table,
         TableInfo;
+import 'package:drift/drift.dart' as drift show Table, TableInfo;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:drift/drift.dart' as drift show Table, TableInfo;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/setup_repository.dart';
+import 'package:sogda/domain/plan_engine.dart'
+    show MaskSpan, addDays, decodeMaskHistory, planDate;
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_view.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../db/content_fixture.dart';
