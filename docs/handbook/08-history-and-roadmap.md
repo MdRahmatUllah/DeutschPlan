@@ -134,7 +134,7 @@ pytest. The owner said to tag it without waiting for SQA's 1.0.1 pass.
 
 ### The ADRs
 
-All 27 are in [`decisions.md`](../05-dev-guide/decisions.md).
+All 29 are in [`decisions.md`](../05-dev-guide/decisions.md).
 
 | Area | ADRs | The decision in short |
 |---|---|---|
@@ -204,7 +204,8 @@ The milestone's open issues, each blocked on the owner or on a Mac:
 ### Noted in the specs, not scheduled
 
 - **Content:** B1 "to be expanded" (379 words); Bangla translations of
-  examples, grammar rules and category names; a `compare_group` and word
+  examples (T5's practice sentences are English-only in v1.x, the owner,
+  2026-09-27, #598), grammar rules and category names; a `compare_group` and word
   senses, so compare sets stop resolving a homograph to the wrong word.
 - **Learning:** FSRS weights optimised on the phone once a learner has 1,000
   reviews (ADR 7).

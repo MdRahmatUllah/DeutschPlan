@@ -884,7 +884,7 @@ void main() {
       );
     });
 
-    testWidgets('BR-PLAN-07 the pause offer turns the pause on', (
+    testWidgets('FR-T1-07 BR-PLAN-07 the pause offer turns the pause on', (
       tester,
     ) async {
       await show(

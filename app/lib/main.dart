@@ -655,9 +655,3 @@ class _BootstrapGateState extends State<BootstrapGate> {
 /// Named rather than inlined because FR-M6 will read it back, and a file the
 /// import side cannot recognise is a backup the learner cannot restore.
 const String exportFileName = 'sogda-backup.json';
-
-/// FR-S1-03: a full-screen, recoverable error. Never a blank screen.
-///
-/// Its own `MaterialApp`, because the failure may well be the database the
-/// real one is built from — a theme resolved from settings that would not load
-/// is not available here.

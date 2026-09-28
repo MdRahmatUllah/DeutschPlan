@@ -291,8 +291,8 @@ void main() {
       expect(find.byType(WordDetailScreen), findsOneWidget);
     });
 
-    testWidgets('a word link opened cold: back goes to Today, not out of '
-        'the app', (tester) async {
+    testWidgets('FR-S1-04 a word link opened cold: back goes to Today, not '
+        'out of the app', (tester) async {
       await pumpApp(tester);
       await openLink(tester, 'sogda://word/uid-haus');
       expect(location(), '/word/uid-haus');
