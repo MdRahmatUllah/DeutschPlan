@@ -210,13 +210,15 @@ void main() {
         tester,
         modelManagerStub(
           downloads: downloads,
-          translation: cardOf(
-            translationEntry,
+          // The voice: Hy-MT is gated in this build, and has no Resume
+          // (#692 ME-3).
+          voice: cardOf(
+            voiceEntry,
             installed: ModelStatus.downloading,
             live: (phase: DownloadPhase.paused, progress: 0.42),
           ),
-          voice: cardOf(
-            voiceEntry,
+          translation: cardOf(
+            translationEntry,
             installed: ModelStatus.downloading,
             live: (phase: DownloadPhase.waitingForWifi, progress: 0.1),
           ),
@@ -227,7 +229,7 @@ void main() {
       expect(find.text(l10n.modelsStatusPaused), findsNWidgets(2));
       await tester.tap(find.text(l10n.modelsResume));
       await tester.pumpAndSettle();
-      expect(downloads.calls, <String>['resume hymt']);
+      expect(downloads.calls, <String>['resume supertonic3']);
     });
 
     testWidgets('a failed one says why, and Retry fetches it again', (
@@ -438,30 +440,19 @@ void main() {
       expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.supertonic);
     });
 
-    testWidgets("Hy-MT's Update leaves the voice's engine as it was", (
-      tester,
-    ) async {
-      final settings = StubSettings()
-        ..put(SettingKeys.ttsEngine, TtsEngineSetting.system);
-      final downloads = FakeDownloads();
+    testWidgets('#692 ME-3 Hy-MT, gated, with an update available: Delete, '
+        'and no Update', (tester) async {
       await pump(
         tester,
         modelManagerStub(
-          settings: settings,
-          downloads: downloads,
           translation: cardOf(
             translationEntry,
             installed: ModelStatus.updateAvailable,
           ),
         ),
       );
-      await tester.tap(find.text(l10n.modelsUpdate('1.1 GB')));
-      await tester.pumpAndSettle();
-      expect(
-        downloads.calls,
-        contains('start ${ModelRepository.translationModel}'),
-      );
-      expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.system);
+      expect(find.text(l10n.modelsUpdate('1.1 GB')), findsNothing);
+      expect(find.textContaining(l10n.modelsDelete('')), findsWidgets);
     });
 
     testWidgets('a download the manager refuses leaves the engine as it was', (
@@ -574,26 +565,55 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 3));
   });
 
-  testWidgets('FR-M4-01 files on the phone that broke are fetched again from '
-      'the start, where a download that failed is retried', (tester) async {
-    final downloads = FakeDownloads();
-    await pump(
+  for (final (live, call) in <(DownloadProgress?, String)>[
+    (null, 'start supertonic3'),
+    ((phase: DownloadPhase.failed, progress: 0.4), 'retry supertonic3'),
+  ]) {
+    testWidgets('FR-M4-01 files on the phone that broke are fetched again '
+        'from the start, where a download that failed is retried: $call', (
       tester,
-      modelManagerStub(
-        downloads: downloads,
-        voice: cardOf(voiceEntry, installed: ModelStatus.failed),
-        translation: cardOf(
-          translationEntry,
-          installed: ModelStatus.downloading,
-          live: (phase: DownloadPhase.failed, progress: 0.4),
+    ) async {
+      final downloads = FakeDownloads();
+      await pump(
+        tester,
+        modelManagerStub(
+          downloads: downloads,
+          voice: cardOf(
+            voiceEntry,
+            installed: live == null
+                ? ModelStatus.failed
+                : ModelStatus.downloading,
+            live: live,
+          ),
         ),
-      ),
-    );
-    await tester.tap(find.text(l10n.retry).first);
-    await tester.tap(find.text(l10n.retry).last);
-    await tester.pumpAndSettle();
-    expect(downloads.calls, <String>['start supertonic3', 'retry hymt']);
-  });
+      );
+      await tester.tap(find.text(l10n.retry));
+      await tester.pumpAndSettle();
+      expect(downloads.calls, <String>[call]);
+    });
+  }
+
+  for (final phase in <DownloadPhase>[
+    DownloadPhase.failed,
+    DownloadPhase.paused,
+  ]) {
+    testWidgets('#692 ME-3 Hy-MT, gated, ${phase.name}: no Retry, no Resume', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        modelManagerStub(
+          translation: cardOf(
+            translationEntry,
+            installed: ModelStatus.downloading,
+            live: (phase: phase, progress: 0.4),
+          ),
+        ),
+      );
+      expect(find.text(l10n.retry), findsNothing);
+      expect(find.text(l10n.modelsResume), findsNothing);
+    });
+  }
 
   testWidgets(
     "FR-M4-01 the Wi-Fi only switch: the download's line follows it",

@@ -70,6 +70,8 @@ void main() {
     models = ModelRepository(settings, support: support)..useManifest(manifest);
     downloader = _Downloader();
     notice = _Notice();
+    // The download's mechanics, on a model any build could offer: the
+    // gate has its own test.
     downloads = BackgroundModelDownloads(
       models,
       settings,
@@ -77,6 +79,7 @@ void main() {
       null,
       const Duration(seconds: 2),
       notice,
+      (_) => true,
     );
   });
 
@@ -227,6 +230,10 @@ void main() {
       _RenameRefused(settings, support: support)..useManifest(manifest),
       settings,
       downloader,
+      null,
+      const Duration(seconds: 2),
+      null,
+      (_) => true,
     );
     await downloads.attach();
     await downloads.start('hymt');
@@ -250,6 +257,31 @@ void main() {
     );
     await expectLater(downloads.start('hymt'), throwsStateError);
     expect(downloader.queued, isEmpty);
+  });
+
+  test('#692 ME-3 FR-M4-04 a model this build does not offer is refused: '
+      'no start, no retry, no resume, whatever asks', () async {
+    final gated = BackgroundModelDownloads(
+      models,
+      settings,
+      downloader,
+      null,
+      const Duration(seconds: 2),
+      notice,
+    );
+    expect(offered(ModelRepository.translationModel), isFalse);
+    for (final attempt in <Future<void> Function(String)>[
+      gated.start,
+      gated.retry,
+      gated.resume,
+    ]) {
+      await expectLater(
+        attempt(ModelRepository.translationModel),
+        throwsStateError,
+      );
+    }
+    expect(downloader.queued, isEmpty);
+    expect(downloader.calls, isEmpty);
   });
 
   test('FR-M4-01 pause and resume act on the model\'s files, not '
@@ -287,6 +319,9 @@ void main() {
         settings,
         downloader,
         _Storage(free: 300),
+        const Duration(seconds: 2),
+        null,
+        (_) => true,
       );
       // 400 bytes of model and 100 MB to spare, over 300 bytes free.
       await expectLater(
@@ -309,6 +344,9 @@ void main() {
         settings,
         downloader,
         _Storage(free: 400 + ModelDownloads.spaceMargin),
+        const Duration(seconds: 2),
+        null,
+        (_) => true,
       );
       expect(await downloads.shortfallFor('hymt'), 0);
       await downloads.start('hymt');
@@ -423,6 +461,7 @@ void main() {
         _Storage(free: 1 << 30),
         grace,
         notice,
+        (_) => true,
       );
       seen = <DownloadProgress>[];
       final sub = downloads.watch('hymt').listen(seen.add);
@@ -656,6 +695,8 @@ void main() {
         downloader,
         _Storage(free: 1 << 30),
         grace,
+        null,
+        (_) => true,
       );
       final phases = <DownloadPhase>[];
       final sub = again.watch('hymt').listen((p) => phases.add(p.phase));
@@ -960,6 +1001,9 @@ void main() {
           settings,
           downloader,
           storage,
+          const Duration(seconds: 2),
+          null,
+          (_) => true,
         );
         downloader.queued.clear();
         await downloads.attach();
@@ -1003,6 +1047,9 @@ void main() {
           settings,
           downloader,
           storage,
+          const Duration(seconds: 2),
+          null,
+          (_) => true,
         );
         downloader.queued.clear();
         await downloads.attach();
