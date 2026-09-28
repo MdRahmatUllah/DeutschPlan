@@ -424,7 +424,15 @@ class ModelRepository {
   }
 
   /// What the card shows for [variant] right now.
-  Future<ModelState> stateOf(ModelEntry entry, ModelVariant variant) async {
+  ///
+  /// [sized] off leaves [ModelState.bytesOnDisk] at 0 (#712): a caller that
+  /// only asks whether the model is there (every speak) doesn't walk its
+  /// folder to add up ~400 MB of file sizes.
+  Future<ModelState> stateOf(
+    ModelEntry entry,
+    ModelVariant variant, {
+    bool sized = true,
+  }) async {
     final active = await directoryFor(entry.id);
     final staging = await stagingFor(entry.id);
     final previous = Directory('${active.path}$_previousSuffix');
@@ -443,7 +451,9 @@ class ModelRepository {
         entry: entry,
         variant: variant,
         status: status,
-        bytesOnDisk: status == ModelStatus.notDownloaded ? 0 : _sizeOf(active),
+        bytesOnDisk: status == ModelStatus.notDownloaded || !sized
+            ? 0
+            : _sizeOf(active),
       );
 
       // A directory nothing activated.
@@ -477,7 +487,7 @@ class ModelRepository {
         entry: entry,
         variant: variant,
         status: ModelStatus.downloading,
-        bytesOnDisk: _sizeOf(staging),
+        bytesOnDisk: sized ? _sizeOf(staging) : 0,
       );
     }
 

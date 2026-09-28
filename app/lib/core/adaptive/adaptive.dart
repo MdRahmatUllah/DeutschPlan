@@ -415,6 +415,14 @@ class AdaptiveTapTarget extends SingleChildRenderObjectWidget {
   static Size minimumOf(BuildContext context) =>
       context.isCupertino ? const Size.square(44) : const Size.square(48);
 
+  /// The run spacing of a `Wrap` of controls at least [height] tall, drawn
+  /// under the target (#952): 48 less [height], and 8 at the least. Closer,
+  /// two runs' grown targets overlap: a tap between the runs is either's,
+  /// and a screen reader takes the runs for one row and reads it column by
+  /// column (Flutter groups nodes whose extents overlap, then sorts by x).
+  /// 48 under iOS chrome too, one layout for both: 44 pt needs less.
+  static double runSpacing(double height) => math.max(8, 48 - height);
+
   @override
   RenderObject createRenderObject(BuildContext context) =>
       RenderAdaptiveTapTarget(minimumOf(context), merge);
@@ -1158,6 +1166,9 @@ class AdaptiveNavBar extends StatelessWidget {
             : tokens.surface.card,
         activeColor: tokens.color.ink,
         inactiveColor: tokens.color.textSecondary,
+        // ponytail: iOS's items take a plain label, so its Bangla isn't
+        // tagged bn-BD as Android's tabs are (#877); iOS is Later (v1 is
+        // Android-only). Wrap the icon and label ourselves on iOS's pass.
         items: <cupertino.BottomNavigationBarItem>[
           for (final destination in destinations)
             cupertino.BottomNavigationBarItem(
@@ -1198,15 +1209,31 @@ class AdaptiveNavBar extends StatelessWidget {
         // re-tap behaviour depends on hearing it, so this is wired directly.
         onDestinationSelected: onSelected,
         destinations: <Widget>[
-          for (final destination in destinations)
-            NavigationDestination(
-              icon: Icon(destination.icon, color: tokens.color.ink),
-              // On the bright pill, the ink made for its colour.
-              selectedIcon: Icon(
-                destination.selectedIcon,
-                color: destination.onColour ?? tokens.color.onPrimary,
+          for (final (i, destination) in destinations.indexed)
+            // #877: the tab read as Material reads it ("আজ", "Tab 1 of 4"),
+            // but with its Bangla tagged bn-BD, as #743 tags every other
+            // control's: Material builds the node from a plain string, so
+            // TalkBack on an English phone read the Bangla with its English
+            // voice. Its own node, so the destination's is left out, with
+            // the selection and the tap it carried.
+            Semantics(
+              container: true,
+              selected: i == currentIndex,
+              attributedLabel: SgScript.attributedLabel(
+                '${destination.label}\n'
+                '${MaterialLocalizations.of(context).tabLabel(tabIndex: i + 1, tabCount: destinations.length)}',
               ),
-              label: destination.label,
+              onTap: () => onSelected(i),
+              excludeSemantics: true,
+              child: NavigationDestination(
+                icon: Icon(destination.icon, color: tokens.color.ink),
+                // On the bright pill, the ink made for its colour.
+                selectedIcon: Icon(
+                  destination.selectedIcon,
+                  color: destination.onColour ?? tokens.color.onPrimary,
+                ),
+                label: destination.label,
+              ),
             ),
         ],
       ),

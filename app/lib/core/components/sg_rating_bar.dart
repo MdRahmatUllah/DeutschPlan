@@ -2,6 +2,7 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// The four FSRS ratings. `business-rules.md` BR-FSRS-02 fixes both the order
 /// and the numbers, which are written into `review_log`.
@@ -123,44 +124,48 @@ class _RatingButton extends StatelessWidget {
         interval == null ? name : '$name, $interval',
       ),
       child: ExcludeSemantics(
-        child: GestureDetector(
-          onTap: onTap,
-          behavior: HitTestBehavior.opaque,
-          // The artboard's 60: two lines of text (32) and the room around
-          // them. The lines grow with the text size and the room doesn't: a
-          // fixed 60 overflowed at 200 % (#165). A minimum: in Bangla at 200 %
-          // an interval of 1,000 days or more wraps (#580).
-          child: Container(
-            constraints: BoxConstraints(
-              minHeight:
-                  SgRatingBar.height -
-                  32 +
-                  SgScript.grow(context, 32, role: SgTextRole.label),
-            ),
-            decoration: BoxDecoration(
-              color: colour.withValues(alpha: rating.fillOpacity),
-              borderRadius: BorderRadius.circular(tokens.shape.button),
-              border: Border.all(color: colour, width: 2),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                // A word too wide for a quarter of the row shrinks before it
-                // would break: in Bangla at 200 % আবার broke onto a third
-                // line and overflowed the button by 30 dp (#522, #580).
-                SgText(
-                  name,
-                  role: SgTextRole.label,
-                  weight: 700,
-                  breakTooWide: true,
-                ),
-                if (interval != null)
+        child: SgFocusable(
+          onPressed: onTap,
+          radius: BorderRadius.circular(tokens.shape.button),
+          child: GestureDetector(
+            onTap: onTap,
+            behavior: HitTestBehavior.opaque,
+            // The artboard's 60: two lines of text (32) and the room around
+            // them. The lines grow with the text size and the room doesn't: a
+            // fixed 60 overflowed at 200 % (#165). A minimum: in Bangla at 200 %
+            // an interval of 1,000 days or more wraps (#580).
+            child: Container(
+              constraints: BoxConstraints(
+                minHeight:
+                    SgRatingBar.height -
+                    32 +
+                    SgScript.grow(context, 32, role: SgTextRole.label),
+              ),
+              decoration: BoxDecoration(
+                color: colour.withValues(alpha: rating.fillOpacity),
+                borderRadius: BorderRadius.circular(tokens.shape.button),
+                border: Border.all(color: colour, width: 2),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  // A word too wide for a quarter of the row shrinks before it
+                  // would break: in Bangla at 200 % আবার broke onto a third
+                  // line and overflowed the button by 30 dp (#522, #580).
                   SgText(
-                    interval!,
-                    role: SgTextRole.caption,
-                    color: tokens.color.textSecondary,
+                    name,
+                    role: SgTextRole.label,
+                    weight: 700,
+                    breakTooWide: true,
                   ),
-              ],
+                  if (interval != null)
+                    SgText(
+                      interval!,
+                      role: SgTextRole.caption,
+                      color: tokens.color.textSecondary,
+                    ),
+                ],
+              ),
             ),
           ),
         ),

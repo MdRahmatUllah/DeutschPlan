@@ -428,6 +428,11 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
   Future<ExamAttempt?> attempt(int attemptId) =>
       examAttemptById(attemptId).getSingleOrNull();
 
+  /// Whether [attemptId] is still being sat, not submitted or left: the
+  /// only exam a link holds for (FR-L12-04, #935).
+  Future<bool> running(int attemptId) async =>
+      (await attempt(attemptId))?.status == 'in_progress';
+
   /// Its answer rows, in paper order.
   Future<List<ExamAnswer>> answers(int attemptId) =>
       answersFor(attemptId).get();

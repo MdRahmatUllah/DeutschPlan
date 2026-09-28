@@ -1,6 +1,9 @@
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:material_ui/material_ui.dart';
 
 /// A whole-number slider in the Paper & Ink treatment.
@@ -69,52 +72,80 @@ class SgSlider extends StatelessWidget {
           if (next != value) changed?.call(next);
         }
 
+        // #877: the label and the values tagged bn-BD where they are
+        // Bangla, as #743 tags every control: in bn the values are Bangla
+        // digits ("৫"), which TalkBack on an English phone garbled too.
         return Semantics(
           slider: true,
-          label: label,
-          value: said(value),
-          increasedValue: value < max ? said(value + 1) : null,
-          decreasedValue: value > min ? said(value - 1) : null,
+          attributedLabel: SgScript.attributedLabel(label),
+          attributedValue: SgScript.attributedLabel(said(value)),
+          attributedIncreasedValue: value < max
+              ? SgScript.attributedLabel(said(value + 1))
+              : null,
+          attributedDecreasedValue: value > min
+              ? SgScript.attributedLabel(said(value - 1))
+              : null,
           onIncrease: changed != null && value < max
               ? () => changed(value + 1)
               : null,
           onDecrease: changed != null && value > min
               ? () => changed(value - 1)
               : null,
-          child: GestureDetector(
-            // The Semantics above is the slider's whole contract — increase
-            // and decrease. Left in, the detector would also offer a screen
-            // reader "tap" and "scroll left/right", which do nothing useful.
-            excludeFromSemantics: true,
-            behavior: HitTestBehavior.opaque,
-            onTapDown: changed == null
-                ? null
-                : (details) => moveTo(details.localPosition.dx),
-            onHorizontalDragUpdate: changed == null
-                ? null
-                : (details) => moveTo(details.localPosition.dx),
-            child: SizedBox(
-              height: height,
-              width: width,
-              child: CustomPaint(
-                painter: _SliderPainter(
-                  fraction: (value - min) / (max - min),
-                  rail: tokens.surface.track,
-                  fill: tokens.color.primary,
-                  thumbFill: tokens.surface.card,
-                  // Ink on paper; the glass hairline under glass, as the
-                  // glass artboards draw every raised control.
-                  thumbBorder: tokens.isGlass
-                      ? tokens.surface.outline
-                      : tokens.color.ink,
-                  thumbBorderWidth: tokens.isGlass
-                      ? tokens.surface.outlineWidth
-                      : 2,
-                  track: compact ? compactTrack : track,
-                  thumb: compact ? compactThumb : thumb,
-                  shadow: compact ? null : tokens.surface.shadow,
-                  shadowOffset: tokens.surface.shadowOffset,
-                  shadowBlur: tokens.surface.shadowBlur,
+          // #1007: a keyboard's arrows move it a step each way, as a screen
+          // reader's increase and decrease do. Held at the ends rather than
+          // passed on, so an arrow never moves the focus off it; up and down
+          // stay a D-pad's, to leave it.
+          child: SgFocusable(
+            onPressed: null,
+            radius: BorderRadius.circular(height / 2),
+            keys: changed == null
+                ? const <ShortcutActivator, VoidCallback>{}
+                : <ShortcutActivator, VoidCallback>{
+                    const SingleActivator(LogicalKeyboardKey.arrowRight): () {
+                      if (value < max) changed(value + 1);
+                    },
+                    const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
+                      if (value > min) changed(value - 1);
+                    },
+                  },
+            child: GestureDetector(
+              // The Semantics above is the slider's whole contract — increase
+              // and decrease. Left in, the detector would also offer a screen
+              // reader "tap" and "scroll left/right", which do nothing useful.
+              excludeFromSemantics: true,
+              behavior: HitTestBehavior.opaque,
+              onTapDown: changed == null
+                  ? null
+                  : (details) => moveTo(details.localPosition.dx),
+              onHorizontalDragUpdate: changed == null
+                  ? null
+                  : (details) => moveTo(details.localPosition.dx),
+              child: SizedBox(
+                height: height,
+                width: width,
+                child: CustomPaint(
+                  painter: _SliderPainter(
+                    // Clamped: a value outside the range never draws off the
+                    // track (#692 ME-4 drew one at 155 %; the range itself
+                    // waits for the owner).
+                    fraction: ((value - min) / (max - min)).clamp(0.0, 1.0),
+                    rail: tokens.surface.track,
+                    fill: tokens.color.primary,
+                    thumbFill: tokens.surface.card,
+                    // Ink on paper; the glass hairline under glass, as the
+                    // glass artboards draw every raised control.
+                    thumbBorder: tokens.isGlass
+                        ? tokens.surface.outline
+                        : tokens.color.ink,
+                    thumbBorderWidth: tokens.isGlass
+                        ? tokens.surface.outlineWidth
+                        : 2,
+                    track: compact ? compactTrack : track,
+                    thumb: compact ? compactThumb : thumb,
+                    shadow: compact ? null : tokens.surface.shadow,
+                    shadowOffset: tokens.surface.shadowOffset,
+                    shadowBlur: tokens.surface.shadowBlur,
+                  ),
                 ),
               ),
             ),

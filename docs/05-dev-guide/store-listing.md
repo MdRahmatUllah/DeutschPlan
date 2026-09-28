@@ -19,7 +19,7 @@ Sogda is a complete German course that works fully offline: no account, no signa
 
 WHAT YOU LEARN
 • 12 steps from A1.1 to C2.2, built around the exams
-• 5,076 words, each with examples and its pronunciation written in Bangla letters, and its article and forms where it has them
+• 5,069 words, each with examples and its pronunciation written in Bangla letters, and its article and forms where it has them
 • 182 grammar topics, each with its rule and a short practice
 • Meanings in English, Bangla, or both
 
@@ -61,7 +61,7 @@ Sogda একটি পূর্ণাঙ্গ জার্মান কোর�
 
 যা শিখবেন
 • A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ, পরীক্ষার কাঠামো মেনে সাজানো
-• ৫,০৭৬টি শব্দ, প্রতিটির উদাহরণ আর বাংলা হরফে লেখা উচ্চারণসহ, আর যেখানে আছে সেখানে আর্টিকেল ও রূপ
+• ৫,০৬৯টি শব্দ, প্রতিটির উদাহরণ আর বাংলা হরফে লেখা উচ্চারণসহ, আর যেখানে আছে সেখানে আর্টিকেল ও রূপ
 • ১৮২টি ব্যাকরণ বিষয়, প্রতিটির নিয়ম আর ছোট অনুশীলনসহ
 • অর্থ ইংরেজিতে, বাংলায়, বা দুটোতেই
 

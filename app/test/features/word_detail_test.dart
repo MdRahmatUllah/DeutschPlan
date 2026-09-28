@@ -817,6 +817,17 @@ void main() {
       ]);
     });
 
+    testWidgets('#952 the web chips read run by run, as they wrap', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, size: const Size(250, 844));
+      await tester.ensureVisible(find.text('Wiktionary'));
+      await tester.pumpAndSettle();
+      expectWrapReadsAsDrawn(tester, find.text('DWDS'));
+      semantics.dispose();
+    });
+
     testWidgets('FR-W1-05 with translation on, Translate puts each '
         'example in the meaning language under it', (tester) async {
       final asked = <(String, String)>[];

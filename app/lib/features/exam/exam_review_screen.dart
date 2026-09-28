@@ -142,7 +142,7 @@ class _ExamReviewViewState extends ConsumerState<ExamReviewView> {
         children: <Widget>[
           Wrap(
             spacing: 8,
-            runSpacing: 8,
+            runSpacing: AdaptiveTapTarget.runSpacing(32),
             children: <Widget>[
               chip(l10n.examReviewAll(cards.length), ExamReviewFilter.all),
               chip(l10n.examReviewWrong(wrong), ExamReviewFilter.wrong),

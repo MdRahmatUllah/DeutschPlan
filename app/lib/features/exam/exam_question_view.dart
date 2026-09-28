@@ -356,7 +356,7 @@ class _Words extends StatelessWidget {
   Widget build(BuildContext context) => Wrap(
     alignment: WrapAlignment.center,
     spacing: 8,
-    runSpacing: 8,
+    runSpacing: AdaptiveTapTarget.runSpacing(44),
     children: <Widget>[
       for (final (i, word) in words.indexed)
         AdaptiveTapTarget(

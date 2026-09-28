@@ -82,6 +82,10 @@ CREATE TABLE words (
 CREATE INDEX idx_words_step ON words (sublevel_code, seq_in_sublevel);
 CREATE INDEX idx_words_search_key ON words (search_key);
 CREATE INDEX idx_words_search_key_alt ON words (search_key_alt);
+-- Search tier 1 matches the Bangla meaning as typed (`exactMatches`): without
+-- this, its OR scanned all ~5,600 words on every keystroke, 17.8 ms median
+-- on the emulator (#712). ~230 KB of the file.
+CREATE INDEX idx_words_bangla ON words (bangla);
 CREATE INDEX idx_words_category ON words (category_id);
 
 -- Example sentences. `english` is null for a German line the author left
