@@ -348,6 +348,27 @@ class TestTheBuild:
     def boundaries(self, tmp_path) -> dict:
         return read_manifest(tmp_path / "build" / "content_manifest.json")["boundaries"]
 
+    def grammar_steps(self, path: Path) -> dict:
+        return dict(self.query(path, "SELECT uid, sublevel_code FROM grammar_topics"))
+
+    def test_970_a_level_keeps_its_shipped_grammar_split_unless_told(self, tmp_path, capsys):
+        # The committed course split A1's six topics 4 + 2, not 3 + 3.
+        previous = self.previous(
+            tmp_path,
+            "UPDATE grammar_topics SET sublevel_code = 'A1.1' WHERE uid = (SELECT uid "
+            "FROM grammar_topics WHERE sublevel_code = 'A1.2' ORDER BY seq LIMIT 1)",
+        )
+        shipped = self.grammar_steps(previous / "content.db")
+        built = tmp_path / "build" / "content.db"
+
+        assert self.build(tmp_path, "--previous", str(previous)) == 0
+        assert self.grammar_steps(built) == shipped
+        assert "grammar boundary kept: A1.2 starts at topic 5 of 6" in capsys.readouterr().err
+        assert self.build(tmp_path, "--previous", str(previous), "--move-boundaries") == 0
+        moved = self.grammar_steps(built)
+        assert sum(step == "A1.2" for step in moved.values()) == 3
+        assert moved != shipped
+
     def test_923_a_level_keeps_its_shipped_boundary_unless_told(self, tmp_path, capsys):
         previous = self.previous(tmp_path, "SELECT 1")
         assert self.boundaries(tmp_path)["A1.2"] == 4

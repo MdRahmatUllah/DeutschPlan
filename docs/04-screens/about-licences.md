@@ -4,7 +4,7 @@
 
 **Reached from.** M1 → About; M9 → Licences.
 
-**About layout.** App mark (the app icon, `SgMark.appIcon` at 60 dp: the brand kit's tiles on the Lagoon square, #602); "Version 1.0.0 (build 41) · content 2026.09 · 21 Sep 2026"; **Privacy**: "Your progress stays on this phone. Sogda has no account, no server and no analytics. The internet is used only when you open a web search link or download a model."; **Open-source and model licences** → M8; **Contact** address; **Content**: "5,076 words · 182 grammar topics · 10,545 sentences" (from `meta`).
+**About layout.** App mark (the app icon, `SgMark.appIcon` at 60 dp: the brand kit's tiles on the Lagoon square, #602); "Version 1.0.0 (build 41) · content 2026.09 · 21 Sep 2026"; **Privacy**: "Your progress stays on this phone. Sogda has no account, no server and no analytics. The internet is used only when you open a web search link or download a model."; **Open-source and model licences** → M8; **Contact** address; **Content**: "5,069 words · 182 grammar topics · 10,545 sentences" (from `meta`).
 
 **Licences layout.** Sections Models (Supertonic 3 — OpenRAIL-M; Hy-MT 1.5 (1.8B) — Hy-MT licence), Fonts (Inter, Noto Sans Bengali — OFL 1.1), Native libraries (ONNX Runtime — MIT, with its third-party notices; the Android libraries — Apache-2.0; #610; desugar_jdk_libs — GPL-2.0 with the Classpath Exception, #848), Packages (from `LicenseRegistry`).
 

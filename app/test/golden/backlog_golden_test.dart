@@ -2,6 +2,7 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -34,6 +35,26 @@ void main() {
         settingsProvider.overrideWithValue(settings),
         backlogProvider.overrideWith(_Artboard.new),
         // The artboard's Monday: its Tue and Wed are within the week (#821).
+        todayProvider.overrideWithValue('2026-09-21'),
+      ],
+      child: const BacklogScreen(),
+    ),
+  );
+
+  // #735: iOS's trailing swipe uncovered, in dark, where Remove's label once
+  // drew dark ink on the dark muted fill. iOS is Later: no audit of its own.
+  goldenTest(
+    'backlog_ios_swipe',
+    chrome: AdaptiveChrome.cupertino,
+    modes: const <GoldenMode>[GoldenMode.dark],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    act: (tester) =>
+        tester.drag(find.byType(BacklogRow).first, const Offset(-300, 0)),
+    builder: (context) => ProviderScope(
+      overrides: [
+        settingsProvider.overrideWithValue(settings),
+        backlogProvider.overrideWith(_Artboard.new),
         todayProvider.overrideWithValue('2026-09-21'),
       ],
       child: const BacklogScreen(),

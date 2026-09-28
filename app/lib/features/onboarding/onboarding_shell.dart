@@ -328,16 +328,13 @@ class _StepDots extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-      child: Semantics(
-        // One label for the row, because a screen reader announcing five
-        // anonymous dots says nothing a learner can use. No
-        // `excludeSemantics` — the pips are bare `Container`s and contribute
-        // nothing of their own to exclude.
-        label: l10n.onboardingStepOf(page.step, OnboardingPage.count),
+      // Drawn only: the header above says "Step 2 of 5" in words, and a
+      // label here too read the step twice on every page (#740). Five
+      // anonymous dots say nothing a learner could use either.
+      child: ExcludeSemantics(
         child: Row(
           children: <Widget>[
             for (final other in OnboardingPage.values)

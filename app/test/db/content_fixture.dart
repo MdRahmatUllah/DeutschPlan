@@ -142,12 +142,10 @@ class ContentFixture {
         ('word_count', '3'),
         ('sublevel_week_boundaries', '{"A1.2": 4}');
 
-      INSERT INTO words_fts (uid, german, english, bangla, search_key)
-        SELECT uid, german, english, bangla, search_key FROM words;
-      INSERT INTO words_trigram (uid, german, english, search_key)
-        SELECT uid, german, english, search_key FROM words;
-      INSERT INTO examples_fts (word_uid, german, english)
-        SELECT word_uid, german, english FROM word_examples;
+      -- Indexed as the pipeline does: external content, rebuilt (#712).
+      INSERT INTO words_fts (words_fts) VALUES ('rebuild');
+      INSERT INTO words_trigram (words_trigram) VALUES ('rebuild');
+      INSERT INTO examples_fts (examples_fts) VALUES ('rebuild');
     ''');
   }
 

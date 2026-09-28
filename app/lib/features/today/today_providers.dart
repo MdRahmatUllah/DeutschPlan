@@ -87,7 +87,7 @@ Future<bool> voiceInstalled(Ref ref) async {
     // The installed model, as M4 reads it (the active folder and its stamp),
     // not `verify`, which hashes the staging folder `activate` renamed away
     // (#473). An update on offer is still a voice installed.
-    final status = (await models.stateOf(entry, variant)).status;
+    final status = (await models.stateOf(entry, variant, sized: false)).status;
     return status == ModelStatus.ready || status == ModelStatus.updateAvailable;
   } on Exception {
     return false;

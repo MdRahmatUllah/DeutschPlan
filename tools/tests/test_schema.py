@@ -149,7 +149,7 @@ class TestAgainstTheDoc:
 
 
 class TestIndexes:
-    def test_the_five_the_issue_names_exist(self, database):
+    def test_the_five_the_issue_names_exist_and_712s_bangla(self, database):
         indexed = {
             row[0]: row[1]
             for row in database.execute(
@@ -163,10 +163,24 @@ class TestIndexes:
             "idx_words_search_key_alt": "words (search_key_alt)",
             "idx_words_category": "words (category_id)",
             "idx_grammar_step": "grammar_topics (sublevel_code, seq)",
+            "idx_words_bangla": "words (bangla)",
         }
         assert set(indexed) == set(expected)
         for name, columns in expected.items():
             assert columns in indexed[name], indexed[name]
+
+    def test_712_search_tier_1_reads_its_three_columns_by_index(self, database):
+        # `content.drift`'s exactMatches. The Bangla meaning had no index,
+        # so the OR scanned every word on every keystroke.
+        plan = database.execute(
+            "EXPLAIN QUERY PLAN SELECT * FROM words "
+            "WHERE (search_key = ? OR search_key_alt = ? OR bangla = ?) "
+            "AND (? IS NULL OR sublevel_code = ?) ORDER BY freq DESC, seq",
+            ("haus", "haus", "ঘর", None, None),
+        ).fetchall()
+        details = " ".join(row[3] for row in plan)
+        assert "SCAN words" not in details, details
+        assert "idx_words_bangla" in details, details
 
     def test_the_step_index_is_the_one_the_step_screen_uses(self, database):
         # `SELECT * FROM words WHERE sublevel_code = ? ORDER BY

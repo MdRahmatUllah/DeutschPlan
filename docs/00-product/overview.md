@@ -18,7 +18,7 @@ Adults learning German for work, study or residence. First audience: Bangla spea
 
 | | Count |
 | --- | --- |
-| Words and phrases | 5,076 to learn (A1 1,315 · A2 1,035 · B1 379 → to be expanded · B2 1,023 · C1 819 · C2 505), plus 160 lesson notes and comparisons |
+| Words and phrases | 5,069 to learn (A1 1,315 · A2 1,035 · B1 379 → to be expanded · B2 1,023 · C1 819 · C2 498), plus 167 lesson notes and comparisons |
 | Example sentences | 10,545 |
 | Grammar topics | 182 |
 | Course steps | 12 (A1.1 … C2.2) |

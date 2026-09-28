@@ -3,6 +3,8 @@ library;
 
 import 'dart:convert';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
@@ -273,7 +275,7 @@ void main() {
       );
       final json = await backup.exportJson(contentVersion: '202601011200');
 
-      final preview = backup.preview(json);
+      final preview = await backup.preview(json);
       expect(preview.wordStates, 1);
       expect(preview.lastActive, '2026-03-05T09:00:00Z');
       expect(preview.activeStep, 'A1.1');
@@ -286,7 +288,7 @@ void main() {
       final json = await backup.exportJson();
       await sql("DELETE FROM word_state WHERE word_uid = 'uid-haus'");
 
-      backup.preview(json);
+      await backup.preview(json);
       expect(await count('word_state'), 0);
     });
 
@@ -301,7 +303,10 @@ void main() {
         "study_days_mask) VALUES ('A1.2', '2026-02-01', 7, 127)",
       );
 
-      expect(backup.preview(await backup.exportJson()).activeStep, 'A1.2');
+      expect(
+        (await backup.preview(await backup.exportJson())).activeStep,
+        'A1.2',
+      );
     });
   });
 
@@ -1344,7 +1349,7 @@ void main() {
       },
     );
 
-    test('#657 a column this build does not have is not checked', () {
+    test('#657 a column this build does not have is not checked', () async {
       // A file from before a column was dropped: the import leaves it out.
       final file = fileWith(<String, Object?>{
         'review_log': <Object?>[
@@ -1358,7 +1363,7 @@ void main() {
         ],
       });
 
-      expect(backup.preview(file).lastActive, '2026-03-01T09:00:00Z');
+      expect((await backup.preview(file)).lastActive, '2026-03-01T09:00:00Z');
     });
   });
 
@@ -1481,6 +1486,65 @@ void main() {
     });
   });
 
+  test('#712 a year-sized file is parsed and checked in an isolate: it '
+      'previews, is refused as ever, and imports', () async {
+    await sql('''
+WITH RECURSIVE n(i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM n WHERE i < 3000)
+INSERT INTO review_log (word_uid, reviewed_at, rating, source)
+SELECT 'uid-' || i, '2026-03-01T09:00:00Z', 3, 'daily' FROM n''');
+    final json = await backup.exportJson();
+    expect(json.length, greaterThanOrEqualTo(BackupRepository.isolateFrom));
+
+    expect((await backup.preview(json)).rowCounts['review_log'], 3000);
+    await expectLater(
+      backup.preview(json.replaceFirst('"rating":3', '"rating":"x"')),
+      throwsA(isA<ImportException>()),
+    );
+    await backup.import(json, mode: ImportMode.replace);
+    expect(await count('review_log'), 3000);
+  });
+
+  test('#712 an import writes a table in one batch, not a statement a row: '
+      'forty reviews cost what four do', () async {
+    Future<int> statementsFor(int reviews, ImportMode mode) async {
+      final source = AppDatabase.memory();
+      addTearDown(source.close);
+      for (var i = 0; i < reviews; i++) {
+        await source.customStatement(
+          'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+          "VALUES ('uid-$i', '2026-03-01T09:00:00Z', 3, 'daily')",
+        );
+        await source.customStatement(
+          'INSERT INTO word_state (word_uid, status, last_review) '
+          "VALUES ('uid-$i', 'learning', '2026-03-01T09:00:00Z')",
+        );
+      }
+      final json = await BackupRepository(source).exportJson();
+      final counted = _Statements();
+      final target = AppDatabase(
+        DatabaseConnection(
+          NativeDatabase.memory(setup: configureConnection)
+              .interceptWith(counted),
+        ),
+      );
+      addTearDown(target.close);
+      await BackupRepository(target).import(json, mode: mode);
+      expect(
+        await target.customSelect('SELECT * FROM review_log').get(),
+        hasLength(reviews),
+      );
+      return counted.count;
+    }
+
+    for (final mode in ImportMode.values) {
+      expect(
+        await statementsFor(40, mode),
+        await statementsFor(4, mode),
+        reason: mode.name,
+      );
+    }
+  });
+
   test('the row keys cover every exported table', () {
     // A table with no key would silently fall out of a merge.
     for (final table in BackupRepository.tables) {
@@ -1501,4 +1565,49 @@ void main() {
       expect(BackupRepository.excluded, isNot(contains(table)));
     }
   });
+}
+
+/// Every statement sent to the database, a batch counted once (#712).
+class _Statements extends QueryInterceptor {
+  int count = 0;
+
+  @override
+  Future<void> runBatched(QueryExecutor executor, BatchedStatements s) {
+    count++;
+    return super.runBatched(executor, s);
+  }
+
+  @override
+  Future<void> runCustom(QueryExecutor executor, String sql, List<Object?> a) {
+    count++;
+    return super.runCustom(executor, sql, a);
+  }
+
+  @override
+  Future<int> runInsert(QueryExecutor executor, String sql, List<Object?> a) {
+    count++;
+    return super.runInsert(executor, sql, a);
+  }
+
+  @override
+  Future<int> runUpdate(QueryExecutor executor, String sql, List<Object?> a) {
+    count++;
+    return super.runUpdate(executor, sql, a);
+  }
+
+  @override
+  Future<int> runDelete(QueryExecutor executor, String sql, List<Object?> a) {
+    count++;
+    return super.runDelete(executor, sql, a);
+  }
+
+  @override
+  Future<List<Map<String, Object?>>> runSelect(
+    QueryExecutor executor,
+    String sql,
+    List<Object?> a,
+  ) {
+    count++;
+    return super.runSelect(executor, sql, a);
+  }
 }

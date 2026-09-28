@@ -494,6 +494,18 @@ void main() {
       );
     });
 
+    test('#712 a speak asks whether it is there, not how big it is', () async {
+      final variant = variantOf('bytes');
+      await stage('hymt', variant, 'bytes');
+      await models.activate('hymt', variant);
+      final entry = entryOf(<ModelVariant>[variant]);
+
+      final card = await models.stateOf(entry, variant);
+      final speak = await models.stateOf(entry, variant, sized: false);
+      expect(card.bytesOnDisk, greaterThan(0));
+      expect((speak.status, speak.bytesOnDisk), (ModelStatus.ready, 0));
+    });
+
     test('the other variant of the model is not an update', () async {
       // A manifest may list several builds of a model (Hy-MT publishes
       // Q4_K_M, Q6_K and Q8_0; the app offers Q4_K_M, #409). Calling another
@@ -807,6 +819,22 @@ void main() {
         await cache.write('Wort$i', voice: 'Anna', speed: 1, bytes: clip(i));
       }
       expect(await cache.count(), 4);
+    });
+
+    test('#712 a tenth goes at a time: a full cache is not listed on every '
+        'write', () async {
+      final twenty = SynthesisCache(support: support, capacity: 20);
+      for (var i = 0; i < 21; i++) {
+        await twenty.write('Wort$i', voice: 'Anna', speed: 1, bytes: clip(i));
+      }
+      expect(await twenty.count(), 18);
+      // Held, not listed: the next two go in without an eviction.
+      for (var i = 21; i < 23; i++) {
+        await twenty.write('Wort$i', voice: 'Anna', speed: 1, bytes: clip(i));
+      }
+      expect(await twenty.count(), 20);
+      await twenty.write('Wort23', voice: 'Anna', speed: 1, bytes: clip(23));
+      expect(await twenty.count(), 18);
     });
 
     test('the oldest go first', () async {

@@ -2,6 +2,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// The three button weights the Foundations artboard defines.
 enum SgButtonKind {
@@ -239,19 +240,23 @@ class _SgButtonState extends State<SgButton> {
         button: true,
         enabled: _enabled,
         attributedLabel: SgScript.attributedLabel(widget.label),
-        child: GestureDetector(
-          onTap: widget.onPressed,
-          onTapDown: _enabled ? (_) => _press(true) : null,
-          onTapUp: _enabled ? (_) => _press(false) : null,
-          onTapCancel: _enabled ? () => _press(false) : null,
-          behavior: HitTestBehavior.opaque,
-          // Always present so the tree shape does not change on press, which
-          // would drop the gesture — the same trap SgSurface hit in #188.
-          child: Transform.translate(
-            offset: _down && _enabled && !context.tokens.isGlass
-                ? tokens.surface.shadowOffset
-                : Offset.zero,
-            child: ExcludeSemantics(child: button),
+        child: SgFocusable(
+          onPressed: widget.onPressed,
+          radius: BorderRadius.circular(tokens.shape.button),
+          child: GestureDetector(
+            onTap: widget.onPressed,
+            onTapDown: _enabled ? (_) => _press(true) : null,
+            onTapUp: _enabled ? (_) => _press(false) : null,
+            onTapCancel: _enabled ? () => _press(false) : null,
+            behavior: HitTestBehavior.opaque,
+            // Always present so the tree shape does not change on press, which
+            // would drop the gesture — the same trap SgSurface hit in #188.
+            child: Transform.translate(
+              offset: _down && _enabled && !context.tokens.isGlass
+                  ? tokens.surface.shadowOffset
+                  : Offset.zero,
+              child: ExcludeSemantics(child: button),
+            ),
           ),
         ),
       ),

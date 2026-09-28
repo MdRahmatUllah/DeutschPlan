@@ -764,7 +764,7 @@ class _ActionsState extends ConsumerState<_Actions> {
       children: <Widget>[
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(SgButton.compactHeight),
           children: <Widget>[
             // BR-CONTENT-04: a note is never studied, so it has no way in.
             if (word.studied && word.status == WordStatus.todo)
@@ -832,7 +832,7 @@ class _ActionsState extends ConsumerState<_Actions> {
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
-            runSpacing: 8,
+            runSpacing: AdaptiveTapTarget.runSpacing(32),
             children: <Widget>[
               SgChip(
                 label: l10n.wordPlainCard,
@@ -852,7 +852,7 @@ class _ActionsState extends ConsumerState<_Actions> {
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(32),
           children: <Widget>[
             for (final source in <WebSource>[
               WebSource.duden,

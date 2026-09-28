@@ -390,6 +390,23 @@ ORDER BY w.seq_in_sublevel
   });
 
   group('writing the plan', () {
+    test('#712 a day of words goes in as one statement, in their order, '
+        'however many there are', () async {
+      final uids = <String>[for (var i = 20; i >= 1; i--) 's$i', 'nowhere'];
+      final before = reads.writes;
+      await store.addToPlan(monday, PlanKind.newWord, uids);
+
+      expect(reads.writes - before, 1);
+      final rows = await db
+          .customSelect('SELECT word_uid FROM plan_items ORDER BY rowid')
+          .get();
+      expect(
+        <String>[for (final row in rows) row.read<String>('word_uid')],
+        uids.take(20),
+        reason: 'a uid no step has is left out, as before',
+      );
+    });
+
     test('adds rows that read back', () async {
       await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
 
@@ -1485,6 +1502,25 @@ class _SlowStore extends DriftPlanStore {
 /// The most rows any one query returned (#708).
 class _Reads extends QueryInterceptor {
   int most = 0;
+
+  /// Inserts and batches sent (#712).
+  int writes = 0;
+
+  @override
+  Future<int> runInsert(
+    QueryExecutor executor,
+    String statement,
+    List<Object?> args,
+  ) {
+    writes++;
+    return executor.runInsert(statement, args);
+  }
+
+  @override
+  Future<void> runBatched(QueryExecutor executor, BatchedStatements s) {
+    writes++;
+    return executor.runBatched(s);
+  }
 
   @override
   Future<List<Map<String, Object?>>> runSelect(
