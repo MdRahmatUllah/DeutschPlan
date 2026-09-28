@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Resume Sogda E2E on 5556 once host memory allows: bn 200% (#564 T2 cloze, #580 rating bar/T4/exam navigator, #590 Writing, #586 Reset field), #577 portrait, widget, deep links, offline, kill/resume, content update, storage full, T2 swipe, M7 reset last; restore font_scale 1.0 + EN at the end
+verify SQA fixes #868 #756 #757 #755 (download now), then #758 re-test (R2 bn 200 % + Supertonic), then fresh-setup group #606 #879 #622 #754 #750 #724 #832 #821 #751 #752 #749 #815 #853 #854
 
 ## Memory
 
