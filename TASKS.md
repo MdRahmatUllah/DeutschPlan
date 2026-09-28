@@ -403,7 +403,7 @@ claiming the same issue. A hand edit skips that check.
 | #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | done |  |  |  |
 | #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | done | agent-1 |  | #893 |
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | done | agent-0 |  | #956 |
-| #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | in-progress | agent-0 |  |  |
+| #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | review | agent-0 |  | #983 |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | done | agent-2 |  | #931 |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | assigned | agent-0 |  |  |
@@ -9268,3 +9268,7 @@ Status 2026-09-28: merged overnight #966 (#691 #703 #964), #969 (#816), #971 (#8
 ### H-2184 · 2026-09-28 03:13 · agent-0 → all · report · #711
 
 #711 (perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time) is merged as #975. hourly widget_refresh only while a widget is placed (a failed query counts as placed); unchanged snapshots skip the write
+
+### H-2185 · 2026-09-28 03:16 · agent-0 → agent-1 · review-request · #886
+
+PR #983 for #886 (chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

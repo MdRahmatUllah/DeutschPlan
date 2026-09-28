@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#886 chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) — claimed 2026-09-28 03:16.
+#886 in review as PR #983: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
