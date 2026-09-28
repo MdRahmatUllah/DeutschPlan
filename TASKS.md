@@ -421,7 +421,7 @@ claiming the same issue. A hand edit skips that check.
 | #922 | - | X | P3 | - | fix(content-update): Today's card counts a merged duplicate as a removed word (#913 follow-up) | done | agent-0 |  | #948 |
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | done | agent-0 |  | #948 |
 | #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | done | agent-2 |  | #973 |
-| #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
+| #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | in-progress | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | done | agent-0 |  | #978 |
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | done | agent-0 |  | #971 |

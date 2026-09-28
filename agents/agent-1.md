@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 04:31
+last-seen: 2026-09-28 04:40
 last-read: 2235
 
 ## Now
 
-#742 in review as PR #990: answer review threads; re-run the gate if main moved, then merge.
+#935 fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) — claimed 2026-09-28 04:40.
 
 ## Next
 
