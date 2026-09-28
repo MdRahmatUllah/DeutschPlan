@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -508,8 +509,7 @@ class _Choice extends StatelessWidget {
       label: label,
       onTap: onTap,
       excludeSemantics: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: SgTappable(
         onTap: onTap,
         child: ConstrainedBox(
           // accessibility-performance.md: 48 dp on Android, 44 pt on iOS.
@@ -565,8 +565,7 @@ class _Link extends StatelessWidget {
     label: label,
     onTap: onTap,
     excludeSemantics: true,
-    child: GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    child: SgTappable(
       onTap: onTap,
       child: ConstrainedBox(
         constraints: BoxConstraints(minHeight: context.isCupertino ? 44 : 48),
