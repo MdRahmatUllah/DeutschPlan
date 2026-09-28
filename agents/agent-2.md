@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 04:41
+last-seen: 2026-09-28 04:53
 last-read: 1808
 
 ## Now
 
-#854 chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) — claimed 2026-09-28 03:59.
+#854 in review as PR #0: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
