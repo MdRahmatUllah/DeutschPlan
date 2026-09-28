@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart'
 import 'package:flutter/semantics.dart' show SemanticsConfiguration;
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -558,6 +559,8 @@ class AdaptiveSwitch extends StatelessWidget {
             value: value,
             onChanged: onChanged,
             activeTrackColor: tokens.color.primary,
+            // #1049: the app's ring shows the focus, not a second halo.
+            focusColor: tokens.color.primary.withValues(alpha: 0),
           )
         // The artboards' Paper & Ink switch: on, an ink thumb with a Lagoon
         // tick on Lagoon; off, a Slate thumb on Oat; each inside a 2 px border
@@ -580,11 +583,25 @@ class AdaptiveSwitch extends StatelessWidget {
                   ? Icon(Icons.check, color: tokens.color.primary)
                   : null,
             ),
+            // #1049: Material's focus halo measured 1.09:1; the app's ring
+            // shows the focus instead, and one indicator is enough.
+            overlayColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.focused)
+                  ? tokens.color.primary.withValues(alpha: 0)
+                  : null,
+            ),
           );
+    final track = context.isCupertino ? cupertinoTrack : materialTrack;
 
     return Semantics(
       attributedLabel: SgScript.attributedLabel(semanticLabel),
-      child: control,
+      // #1049: the 2 dp ring every control shows under the keys, around the
+      // track, while the switch has the focus.
+      child: SgFocusable.around(
+        radius: BorderRadius.circular(track.height / 2),
+        size: track,
+        child: control,
+      ),
     );
   }
 }
