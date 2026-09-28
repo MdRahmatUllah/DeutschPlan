@@ -2068,3 +2068,4 @@ able to tell what is going on without asking.
 - 2026-09-28 13:22 · agent-2 #1018 · PR #1037 open; review requested from all
 - 2026-09-28 13:27 · agent-2 #1025 · done (#1037)
 - 2026-09-28 13:28 · agent-2 #1018 · done (#1037)
+- 2026-09-28 13:29 · agent-2 #1036 · claimed: fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up)

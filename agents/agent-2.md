@@ -6,7 +6,7 @@ last-read: 2383
 
 ## Now
 
-Nothing claimed.
+#1036 fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) — claimed 2026-09-28 13:29.
 
 ## Next
 
