@@ -459,6 +459,37 @@ void main() {
         ),
         <String>{'wordCount'},
       );
+      // #886: with other arguments, over several lines.
+      expect(
+        _keepAliveIn(
+          '@Riverpod(keepAlive: true, dependencies: [clock])\n'
+          'int dayCount(Ref ref) => 1;\n'
+          '@Riverpod(\n  dependencies: [clock],\n  keepAlive: true,\n)\n'
+          'int weekCount(Ref ref) => 7;\n'
+          '@Riverpod(keepAlive: false)\n'
+          'int yearCount(Ref ref) => 365;',
+        ),
+        <String>{'dayCount', 'weekCount'},
+      );
+    });
+
+    test('#886 no provider is written by hand, so the keepAlive guard, which '
+        'reads the annotations, sees every one', () {
+      // Riverpod keeps a hand-written provider alive unless it says
+      // autoDispose, and nothing above would see it (state-management.md:
+      // codegen everywhere).
+      final byHand = RegExp(
+        r'\b(Provider|StateProvider|FutureProvider|StreamProvider|'
+        r'NotifierProvider|AsyncNotifierProvider|StreamNotifierProvider|'
+        r'ChangeNotifierProvider|StateNotifierProvider)'
+        r'(\.autoDispose)?(\.family)?\s*(<[^;]*>)?\s*\(',
+      );
+      final offenders = <String>[
+        for (final file in _dartFilesIn('lib'))
+          for (final (i, line) in file.readAsLinesSync().indexed)
+            if (byHand.hasMatch(line)) '${_rel(file)}:${i + 1}: ${line.trim()}',
+      ];
+      expect(offenders, isEmpty, reason: offenders.join('\n'));
     });
 
     test('the repositories are not kept alive', () {
@@ -866,9 +897,10 @@ String _lowerFirst(String name) => name[0].toLowerCase() + name.substring(1);
 /// `onboardingProvider`).
 Set<String> _keepAliveIn(String source) {
   final names = <String>{};
-  for (final match in RegExp(
-    r'@Riverpod\(keepAlive: true\)',
-  ).allMatches(source)) {
+  // Any argument list, over several lines too, with keepAlive among
+  // `dependencies:` and the rest (#886).
+  for (final match in RegExp(r'@Riverpod\(([^)]*)\)').allMatches(source)) {
+    if (!RegExp(r'keepAlive:\s*true').hasMatch(match.group(1)!)) continue;
     // Everything up to the end of the declaration's first line.
     final declaration = source
         .substring(match.end)
@@ -919,7 +951,6 @@ Iterable<File> _dartFilesIn(String path) {
       .where((f) => f.path.endsWith('.dart'))
       // Generated code is rebuilt by `make gen`; its imports are not ours to fix.
       .where((f) => !f.path.endsWith('.g.dart'))
-      .where((f) => !f.path.endsWith('.freezed.dart'))
       .where((f) => !f.path.endsWith('.drift.dart'))
       .where((f) => !_rel(f).contains('lib/l10n/generated/'));
 }

@@ -5251,9 +5251,9 @@
       }
     }
   },
-  "examResultCompare": "{delta} points vs attempt {number} ({percent}%)",
+  "examResultCompare": "{delta} percentage points vs attempt {number} ({percent}%)",
   "@examResultCompare": {
-    "description": "L13 comparison with the previous finished attempt of the same step (FR-L13-01); delta is signed, e.g. +15.",
+    "description": "L13 comparison with the previous finished attempt of the same step (FR-L13-01), in percentage points (#964): this result's percent minus that attempt's, both as shown, so 77% after 62% is +15. delta is signed: +15, −3, ±0. Not score points, which the line above counts (\"37 of 48 points\").",
     "placeholders": {
       "delta": {
         "type": "String"
@@ -5438,9 +5438,9 @@
   "@reminderDaysOnlyWhenDueNote": {
     "description": "M5 under the only-when-due switch."
   },
-  "reminderDaysTonight": "Tonight's text",
+  "reminderDaysTonight": "The reminder's text",
   "@reminderDaysTonight": {
-    "description": "M5's preview heading, shown in capitals."
+    "description": "M5's preview heading, shown in capitals. Not \"tonight\": the reminder may be at any time (#854)."
   },
   "reminderDaysFrom": "{app} · {time}",
   "@reminderDaysFrom": {

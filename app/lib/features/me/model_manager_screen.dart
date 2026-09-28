@@ -19,6 +19,8 @@ import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
+import 'package:sogda/features/today/today_providers.dart'
+    show voiceInstalledProvider;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -613,7 +615,9 @@ class _ModelCardView extends ConsumerWidget {
     if (_isVoice) await container.read(supertonicTtsProvider).isAvailable();
     container
       ..invalidate(modelCardProvider(card.entry.id))
-      ..invalidate(phoneSpaceProvider);
+      ..invalidate(phoneSpaceProvider)
+      // Today's voice card and M3's row: a delete is no download (#757).
+      ..invalidate(voiceInstalledProvider);
   }
 
   /// *Check for update*: the manifest the app carries is read again, and a

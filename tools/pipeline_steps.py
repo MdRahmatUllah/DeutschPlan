@@ -68,7 +68,7 @@ class LevelSplit:
         return sum(1 for week in self.weeks if week >= self.boundary_week)
 
 
-def split_level(words: Sequence, level: str) -> LevelSplit:
+def split_level(words: Sequence, level: str, boundary: int | None = None) -> LevelSplit:
     """PIPE-02: the week boundary nearest the middle of the level by word count.
 
     Not the middle week, and not the middle word: the boundary that leaves the
@@ -78,6 +78,10 @@ def split_level(words: Sequence, level: str) -> LevelSplit:
 
     Ties go to the earlier boundary, so the result never depends on iteration
     order.
+
+    A [boundary] given is the shipped course's (#923), kept rather than
+    recomputed: dropping a level's rows must not move its other words between
+    steps under the learners. It must still leave both halves words.
     """
     of_level = [w for w in words if w.level == level]
     if not of_level:
@@ -88,6 +92,21 @@ def split_level(words: Sequence, level: str) -> LevelSplit:
         )
 
     weeks = sorted({_week_of(w) for w in of_level})
+    if boundary is not None:
+        in_first = sum(1 for w in of_level if _week_of(w) < boundary)
+        if in_first in (0, len(of_level)):
+            raise SplitError(
+                f"{level}'s shipped boundary, week {boundary}, would leave "
+                f"{level}.{1 if in_first == 0 else 2} with no words (#923). "
+                f"Rerun with --move-boundaries to split the level anew."
+            )
+        return LevelSplit(
+            level=level,
+            boundary_week=boundary,
+            words_in_first=in_first,
+            words_in_second=len(of_level) - in_first,
+            weeks=tuple(weeks),
+        )
     if len(weeks) < 2:
         raise SplitError(
             f"{level} has only week {weeks[0]}, so there is no boundary to "
@@ -132,17 +151,20 @@ def _week_of(word) -> int:
     return word.week if getattr(word, "week", None) else 1
 
 
-def assign_sublevels(words: Sequence) -> dict[str, LevelSplit]:
+def assign_sublevels(
+    words: Sequence, kept: dict[str, int] | None = None
+) -> dict[str, LevelSplit]:
     """Sets `sublevel_code` on every word and returns the boundaries.
 
     The returned map is what goes into `meta.sublevel_week_boundaries`, so the
-    app can say "Step A1.2 starts at week 7" without re-deriving it.
+    app can say "Step A1.2 starts at week 7" without re-deriving it. [kept]
+    is the shipped course's boundary week per level (#923), kept.
     """
     splits: dict[str, LevelSplit] = {}
     for level in LEVELS:
         if not any(w.level == level for w in words):
             continue
-        split = split_level(words, level)
+        split = split_level(words, level, (kept or {}).get(level))
         splits[level] = split
         for word in words:
             if word.level != level:
@@ -743,6 +765,28 @@ def read_corrections(path, section: str = "words") -> dict[str, dict]:
 #: learner's progress on the topic (#808).
 GRAMMAR_CORRECTABLE = ("rule", "example_de", "example_en", "watch_out")
 
+#: The word columns a correction may clear with `null`: cells a workbook may
+#: leave blank (#633 clears phrases' articles). Every other value is text, or
+#: a number for `freq` and `week`.
+CLEARABLE = frozenset(
+    {"article", "forms", "pos", "pron_bn", "bangla", "category", "collocations",
+     "synonyms_register", "freq", "week"}
+)
+
+
+def _checked(uid: str, field: str, value, clearable=CLEARABLE):
+    """[value], if [field] takes it. YAML reads an empty value as None, which
+    would ship a NOT NULL column or an example line empty (#933)."""
+    kind = int if field in ("freq", "week") else str
+    if (isinstance(value, kind) and not isinstance(value, bool)) or (
+        value is None and field in clearable
+    ):
+        return value
+    raise PipelineError(
+        f"corrections: {uid} sets {field} to {value!r}; it takes "
+        f"{'a number' if kind is int else 'text'}."
+    )
+
 
 def apply_grammar_corrections(rows: Sequence, corrections: dict[str, dict]) -> None:
     """Applies each `grammar:` correction to the topic whose uid, as built
@@ -763,7 +807,7 @@ def apply_grammar_corrections(rows: Sequence, corrections: dict[str, dict]) -> N
                     f"corrections: grammar {uid} sets {field!r}; only "
                     f"{', '.join(GRAMMAR_CORRECTABLE)} can be corrected."
                 )
-            setattr(by_uid[uid], field, value)
+            setattr(by_uid[uid], field, _checked(uid, field, value, clearable=()))
 
 
 def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> list:
@@ -805,9 +849,11 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
                 dropped.add(id(word))
                 merges.append((uid, word, str(value)))
             elif example:
-                _set_example(word, example.group(1), int(example.group(2)), value, uid)
+                _set_example(
+                    word, example.group(1), int(example.group(2)), _checked(uid, field, value), uid
+                )
             elif field in fields:
-                setattr(word, field, value)
+                setattr(word, field, _checked(uid, field, value))
             else:
                 raise PipelineError(
                     f"corrections: {uid} sets {field!r}, which is not a "
