@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 14:52
+last-seen: 2026-09-28 14:59
 last-read: 1870
 
 ## Now
 
-#1039 fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) — claimed 2026-09-28 14:52.
+#1039 in review as PR #1052: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

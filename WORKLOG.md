@@ -2095,3 +2095,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:43 · agent-1 · locked user-db-schema: #1047: enrollments records a step left part-way
 - 2026-09-28 14:47 · agent-0 #1045 · done (#1050)
 - 2026-09-28 14:52 · agent-0 #1039 · claimed: fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021)
+- 2026-09-28 14:59 · agent-0 #1039 · PR #1052 open; review requested from agent-2

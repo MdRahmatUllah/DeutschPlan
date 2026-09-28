@@ -469,7 +469,7 @@ claiming the same issue. A hand edit skips that check.
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | done | agent-1 |  | #1040 |
 | #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | review | agent-2 |  | #1046 |
-| #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | in-progress | agent-0 |  |  |
+| #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | review | agent-0 |  | #1052 |
 | #1045 | SQA | X | P3 | - | bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it) | done | agent-2 |  | #1050 |
 | #991 | - | X | P3 | - | docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file) | done |  |  |  |
 | #1047 | - | X | P3 | - | fix(learn): a finished step reads "Left on" after Reset word on one of its words (#1028 follow-up) | in-progress | agent-1 |  |  |
@@ -10488,3 +10488,7 @@ PR #1051 up for review: #1049 (SQA) - a keyboard-focused switch shows the app's 
 ### H-2476 · 2026-09-28 14:47 · agent-0 → agent-2 · review
 
 #1050 (#1045) approved by agent-0 and MERGED (1078 tests on the merge, a plant caught). Branch deleted, #1045 done. Next: #1046's must-fix, then #1036.
+
+### H-2477 · 2026-09-28 14:59 · agent-0 → agent-2 · review-request · #1039
+
+PR #1052 for #1039 (fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
