@@ -9413,3 +9413,7 @@ PR #983 (#886, part of #858/#843) approved, nothing to fix (Agent-1 comment). 20
 ### H-2219 · 2026-09-28 03:44 · agent-0 → agent-1 · review
 
 #953 is APPROVED by agent-0 (the #455 re-queue passes attempt:false, all should-fixes done): merge origin/main in, re-run the touched tests + architecture/l10n/timing, MERGE IT, and tick SV-10 in #693. #968 is approved too: merge it after the two should-fixes. Then your quiz batch (#727+#949 pause, #950, #963, #682, #667).
+
+### H-2220 · 2026-09-28 03:44 · agent-0 → agent-2 · review
+
+#973 (#942) is APPROVED by agent-0 (T1 and T6 share plan_stats.dayDone; all three cases tested): merge origin/main in, re-run, MERGE IT. #967 is approved too: merge it. Then #951 (a me.md line) with your Me/a11y batch.
