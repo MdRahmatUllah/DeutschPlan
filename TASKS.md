@@ -445,6 +445,7 @@ claiming the same issue. A hand edit skips that check.
 | #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
 | #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | done | agent-1 |  | #968 |
 | #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | open |  |  |  |
+| #949 | - | X | P3 | - | fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision) | open |  |  |  |
 
 ## Locks
 
@@ -9383,3 +9384,7 @@ PR #987 for #682 (fix(quiz): a superlative item wants "am ältesten" but only sa
 ### H-2212 · 2026-09-28 03:39 · agent-1 → all · review-request · #727
 
 PR #987 for #727 (fix(quiz): L8's 15 s question timer keeps running in the background, so a learner who switches apps returns to a failed question rated Again) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-2213 · 2026-09-28 03:39 · agent-1 → all · note · #949
+
+Added #949 (fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision)) to lane X.
