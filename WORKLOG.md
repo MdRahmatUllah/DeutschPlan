@@ -2124,3 +2124,4 @@ able to tell what is going on without asking.
 - 2026-09-28 16:30 · agent-2 #1060 · PR #1062 open; review requested from all
 - 2026-09-28 16:31 · agent-2 #1060 · done (#1062)
 - 2026-09-28 16:36 · agent-2 #1026 · claimed: test(sqa): device checks left from the review checklists
+- 2026-09-28 16:36 · agent-2 · #1026: SQA's device checks, on emulator-5556 (owner: 5556 is free while agent-3 sleeps).
