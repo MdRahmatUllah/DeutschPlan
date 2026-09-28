@@ -423,7 +423,7 @@ claiming the same issue. A hand edit skips that check.
 | #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | review | agent-2 |  | #973 |
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | assigned | agent-1 |  |  |
 | #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
-| #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | review | agent-0 |  | #978 |
+| #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | done | agent-0 |  | #978 |
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | done | agent-0 |  | #971 |
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | assigned | agent-0 |  |  |
 | #813 | - | X | P3 | - | docs(data): the ContentDao comments still say content.db is opened read-only, and point at a probe step 1 no longer has | done | agent-0 |  | #965 |
@@ -9277,3 +9277,7 @@ PR #983 for #886 (chore(review): should-fixes from reviewing #856, #860 and #862
 ### H-2186 · 2026-09-28 03:18 · agent-0 → all · note · #808
 
 Added #808 (fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only)) to lane X.
+
+### H-2187 · 2026-09-28 03:18 · agent-0 → all · report · #807
+
+#807 (fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order) is merged as #978. PIPE-09 links: links: refuse/pin in corrections.yaml, grammar topics linked and moved on install and on import (#808), each level keeps its shipped step boundary (--move-boundaries to re-split); content unchanged
