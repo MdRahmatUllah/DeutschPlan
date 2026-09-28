@@ -381,6 +381,8 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
   }
   // The schedule queues reminder_compose, on the work started above.
   if (!await background) return null;
+  // #626: and today's follows a day finished, or opened again, in the app.
+  followReminder(container, notifications);
   return remindersFor(container, notifications, work).follow();
 }
 

@@ -211,5 +211,8 @@ class FakeNotificationPermission implements NotificationPermission {
   }
 
   @override
+  Future<bool> granted() async => allowed;
+
+  @override
   Future<bool> openSettings() async => true;
 }

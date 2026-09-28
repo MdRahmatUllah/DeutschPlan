@@ -3,6 +3,8 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/main.dart';
+import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/services/background_tasks.dart' show reminderBodyProvider;
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
+import 'features/today_fixtures.dart' show artboardToday;
 import 'services/widget_snapshot_test.dart' show FakeWidgets;
 
 class _Broken extends FakeReminders {
@@ -40,6 +43,37 @@ void main() {
     container.dispose();
     await settings.dispose();
     await db.close();
+  });
+
+  test("#626 once started, a day finished in the app cancels today's "
+      'reminder at once', () async {
+    String? body = '12 revisions · 7 new · about 9 min';
+    final app = ProviderContainer(
+      overrides: <Override>[
+        settingsProvider.overrideWithValue(settings),
+        clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 8)),
+        todayViewProvider.overrideWith((ref) async => artboardToday()),
+        reminderBodyProvider.overrideWith((ref) async => body),
+      ],
+    );
+    addTearDown(app.dispose);
+    await settings.write(SettingKeys.reminderEnabled, true);
+    final reminders = FakeReminders();
+    final following = await startReminders(
+      app,
+      reminders,
+      FakeWork(),
+      widgets: FakeWidgets(),
+      open: (_) {},
+    );
+    addTearDown(() => following?.cancel());
+    await pumpEventQueue();
+    expect(reminders.cancelledDays, isEmpty);
+
+    body = null;
+    app.invalidate(reminderBodyProvider);
+    await pumpEventQueue();
+    expect(reminders.cancelledDays, <DateTime>[DateTime(2026, 9, 21, 19, 30)]);
   });
 
   test('a tapped reminder opens Today', () async {
