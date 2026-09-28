@@ -1981,3 +1981,4 @@ able to tell what is going on without asking.
 - 2026-09-28 09:23 · agent-0 #970 · claimed: fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up)
 - 2026-09-28 09:32 · agent-2 #1007 · done (#1010)
 - 2026-09-28 09:34 · agent-0 #970 · done (#1000)
+- 2026-09-28 09:56 · agent-3 · session started
