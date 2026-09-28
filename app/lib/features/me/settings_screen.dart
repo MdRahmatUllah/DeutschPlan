@@ -80,6 +80,16 @@ class SettingsEditor extends _$SettingsEditor {
         .setStudyDays(mask, today: ref.read(todayProvider));
   }
 
+  /// FR-M5-01: [day] (0 is Monday) switched against the mask as it is now,
+  /// not the one M5 was drawn with: two quick taps are two days (#692 ME-9).
+  // ponytail: a second tap within the first's history write (milliseconds,
+  // before it writes the setting) still reads the old mask; chain the
+  // toggles if that is ever seen.
+  Future<void> toggleStudyDay(int day) => studyDays(
+    ref.read(settingsSourceProvider).read(SettingKeys.studyDaysMask) ^
+        (1 << day),
+  );
+
   /// FR-M3-03: on only once the model is ready. False otherwise, with the
   /// switch left off, and M3 opens M4 to get it.
   Future<bool> translation({required bool on}) async {

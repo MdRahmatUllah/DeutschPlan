@@ -1,6 +1,9 @@
+import 'dart:async' show unawaited;
 import 'dart:io' show File, Platform;
 
 import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter_riverpod/flutter_riverpod.dart'
+    show ProviderSubscription;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
@@ -139,24 +142,56 @@ Future<DateTime> composeReminder(
       await notifications.cancelDay(at);
       return at;
     }
-    final l10n = lookupAppLocalizations(
-      settings.read(SettingKeys.uiLanguage).locale,
-    );
+    final plain = reminderCopy(settings.read(SettingKeys.uiLanguage));
     final body = await text.read();
     if (body != null) {
       await notifications.replace(at, (
-        title: l10n.reminderTitle,
+        title: plain.title,
         body: body,
-        channel: l10n.reminderChannel,
+        channel: plain.channel,
       ));
     } else if (settings.read(SettingKeys.reminderOnlyWhenDue)) {
       await notifications.cancelDay(at);
+    } else {
+      // The plain one, not a plan written into it earlier that the day has
+      // since finished (#626).
+      await notifications.replace(at, plain);
     }
     return at;
   } finally {
     view.close();
     text.close();
   }
+}
+
+/// #626: today's reminder follows the day while the app runs. When a session
+/// finishes the day, or an Undo opens it again, it is composed again at once:
+/// cancelled under `reminder_only_when_due`, or back to its plan. Before,
+/// only `reminder_compose` looked, ten minutes ahead, and a day finished
+/// after it still rang with its plan.
+///
+/// ponytail: only when the day turns done or open again, not at each rating,
+/// which would call the plugin for every card; a plan written in by the
+/// compose keeps its counts until the reminder rings.
+ProviderSubscription<AsyncValue<String?>> followReminder(
+  ProviderContainer container,
+  ReminderNotifications notifications,
+) {
+  bool? open;
+  return container.listen(reminderBodyProvider, (_, next) {
+    if (!next.hasValue) return;
+    final was = open;
+    open = next.value != null;
+    // The first answer is the start's, which the schedule's sync and the
+    // compose it queues already cover.
+    if (was == null || was == open) return;
+    unawaited(
+      composeReminder(container, notifications).then<void>(
+        (_) {},
+        onError: (Object error) => debugPrint('reminders: $error'),
+      ),
+    );
+  });
 }
 
 /// Tonight's reminder text from today's plan, in the app's language

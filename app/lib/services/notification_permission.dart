@@ -11,6 +11,10 @@ abstract interface class NotificationPermission {
   /// the dialog — the platform does not ask twice.
   Future<bool> request();
 
+  /// Whether the app may post now, without asking. The phone's settings
+  /// change it while the app runs (#692 ME-8).
+  Future<bool> granted();
+
   /// The phone's settings for this app: where a learner who said no can
   /// allow notifications after all (FR-M5-02). False when they can't open.
   Future<bool> openSettings();
@@ -22,6 +26,10 @@ class PlatformNotificationPermission implements NotificationPermission {
   @override
   Future<bool> request() async =>
       (await Permission.notification.request()).isGranted;
+
+  @override
+  Future<bool> granted() async =>
+      (await Permission.notification.status).isGranted;
 
   @override
   Future<bool> openSettings() => openAppSettings();

@@ -206,8 +206,9 @@ void main() {
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
           clockProvider.overrideWithValue(() => now),
-          if (view case final view?)
-            todayViewProvider.overrideWith((ref) async => view),
+          // Read when built, so a test can change the day under it (#626).
+          if (view != null)
+            todayViewProvider.overrideWith((ref) async => view!),
         ],
       );
       addTearDown(container.dispose);
@@ -336,17 +337,64 @@ void main() {
       expect(reminders.cancelledDays, <DateTime>[reminder]);
     });
 
-    test(
-      'nothing due, and reminder_only_when_due off: the plain one stays',
-      () async {
-        view = artboardDone();
-        await settings.write(SettingKeys.reminderOnlyWhenDue, false);
-        await run(BackgroundTask.reminderCompose);
+    test('#626 nothing due, and reminder_only_when_due off: the plain one, '
+        'not a plan written into it earlier', () async {
+      view = artboardDone();
+      await settings.write(SettingKeys.reminderOnlyWhenDue, false);
+      await run(BackgroundTask.reminderCompose);
+
+      expect(reminders.replaced.keys, <DateTime>[reminder]);
+      expect(
+        reminders.replaced[reminder]?.body,
+        "Today's plan is ready. "
+        'A few minutes is enough.',
+      );
+      expect(reminders.cancelledDays, isEmpty);
+    });
+
+    group("#626 in the app, today's reminder follows the day", () {
+      /// [followReminder] over a container whose today is [view], changed
+      /// by [then].
+      Future<void> follow(TodayView from, TodayView to) async {
+        view = from;
+        final container = containerFor();
+        final following = followReminder(container, reminders);
+        addTearDown(following.close);
+        await pumpEventQueue();
+        expect(
+          reminders.replaced.isEmpty && reminders.cancelledDays.isEmpty,
+          isTrue,
+          reason: "the start's answer is the sync's and its compose's",
+        );
+        view = to;
+        container.invalidate(todayViewProvider);
+        await pumpEventQueue();
+      }
+
+      test('finished before the reminder: cancelled at once', () async {
+        await follow(artboardToday(reviseDone: 0, newDone: 0), artboardDone());
+
+        expect(reminders.cancelledDays, <DateTime>[reminder]);
+        expect(reminders.replaced, isEmpty);
+      });
+
+      test('opened again (an Undo): its plan written back', () async {
+        await follow(artboardDone(), artboardToday(reviseDone: 0, newDone: 0));
+
+        expect(reminders.replaced.keys, <DateTime>[reminder]);
+        expect(reminders.cancelledDays, isEmpty);
+      });
+
+      test('a rating that leaves the day open writes nothing', () async {
+        await follow(
+          artboardToday(reviseDone: 0, newDone: 0),
+          artboardToday(reviseDone: 3, newDone: 0),
+        );
 
         expect(reminders.replaced, isEmpty);
         expect(reminders.cancelledDays, isEmpty);
-      },
-    );
+      });
+    });
 
     test('a rest day: cancelled, even with revisions to do', () async {
       view = artboardRest();

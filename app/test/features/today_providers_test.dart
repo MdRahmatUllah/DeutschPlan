@@ -18,9 +18,11 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/setup_repository.dart';
+import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart'
     show MaskSpan, addDays, decodeMaskHistory, planDate;
 import 'package:sogda/features/today/today_providers.dart';
@@ -117,28 +119,51 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     await db.close();
   });
 
-  test("#729 a new word skipped to the backlog is done for the plan, but "
-      "not a word studied", () async {
-    final view = await container.read(todayViewProvider.future);
+  /// A rating of [uid] from [source] at the learner's [at], logged as the
+  /// rating service logs it: `reviewed_at` in UTC.
+  Future<void> rated(String uid, String source, DateTime at) => db.customInsert(
+    'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+    "VALUES ('$uid', '${at.toUtc().toIso8601String()}', 3, '$source')",
+    updates: <drift.TableInfo<drift.Table, Object?>>{db.reviewLog},
+  );
 
-    // Tür skipped, Haus still open; r1 revised, r2 still open.
-    expect(view.newToday.done, 1, reason: 'skipped: nothing waits on it');
-    expect(view.newSkipped, 1);
-    expect(view.words, 1, reason: 'r1 alone was studied');
-  });
+  test(
+    '#729 #1004 the words studied: each rated in a session, the plan\'s '
+    "or the backlog's, or known, once; not a quiz's, not yesterday's",
+    () async {
+      await rated('r1', 'daily', DateTime(2026, 9, 21, 7));
+      await rated('r1', 'daily', DateTime(2026, 9, 21, 7, 5));
+      // A backlog word, planned on the 15th, studied today.
+      await rated('b1', 'daily', DateTime(2026, 9, 21, 7, 10));
+      await rated(ContentFixture.haus, 'known', DateTime(2026, 9, 21, 7, 15));
+      // Skipped to the backlog, never studied (#729): a quiz answer isn't.
+      await rated(ContentFixture.tuer, 'quiz', DateTime(2026, 9, 21, 7, 20));
+      // The learner's day, not UTC's: just after midnight is today, which
+      // east of Greenwich is still yesterday in UTC; yesterday's late
+      // session isn't, which west of it is already today in UTC.
+      await rated('r2', 'daily', DateTime(2026, 9, 21, 0, 30));
+      await rated('b2', 'daily', DateTime(2026, 9, 20, 23, 30));
+      await pumpEventQueue();
+      final view = await container.read(todayViewProvider.future);
 
-  test('#729 and one skipped, then studied from the backlog the same day, '
-      'was studied', () async {
-    await db.customUpdate(
-      "UPDATE plan_items SET completed_at = '2026-09-21T07:30:00' "
-      "WHERE word_uid = '${ContentFixture.tuer}'",
-      updates: <drift.TableInfo<drift.Table, Object?>>{db.planItems},
+      expect(view.newToday.done, 1, reason: 'skipped: nothing waits on it');
+      expect(view.words, 4, reason: 'r1, b1, Haus and r2');
+    },
+  );
+
+  test('#1004 an Undo takes its word back out of the count', () async {
+    final rating = container.read(ratingServiceProvider);
+    final entry = await rating.rate(
+      'r2',
+      Rating.good,
+      source: ReviewSource.daily,
     );
     await pumpEventQueue();
-    final view = await container.read(todayViewProvider.future);
+    expect((await container.read(todayViewProvider.future)).words, 1);
 
-    expect(view.newSkipped, 0);
-    expect(view.words, 2, reason: 'r1 and Tür');
+    await rating.undo(entry: entry);
+    await pumpEventQueue();
+    expect((await container.read(todayViewProvider.future)).words, 0);
   });
 
   test('FR-T1-01 it renders from the persisted plan', () async {

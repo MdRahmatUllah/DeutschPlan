@@ -625,6 +625,9 @@ class _FakePermission implements NotificationPermission {
   int asked = 0;
 
   @override
+  Future<bool> granted() async => allowed;
+
+  @override
   Future<bool> request() async {
     asked++;
     if (throws) {
