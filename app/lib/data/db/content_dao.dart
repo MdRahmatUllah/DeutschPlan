@@ -332,6 +332,12 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
     return version();
   }
 
+  /// ADR 14: the SQLite this build bundles has FTS5 and its trigram
+  /// tokenizer, which search needs. Throws when it doesn't, so a library
+  /// built without them fails the first start, where a device check sees it,
+  /// not R1's fuzzy tier on a learner's misspelling (#596).
+  Future<void> assertSearchable() => trigramCandidates('"abc"', null, 1).get();
+
   /// #885: whether the attached course has every column this build reads.
   /// One an older build copied can lack one (`words.kind`, #860), and every
   /// read of it would fail.
