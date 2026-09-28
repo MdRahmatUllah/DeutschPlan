@@ -663,6 +663,13 @@ class _TrailingActionsState extends State<_TrailingActions> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    // Each fill with its own ink (#735). Lagoon, Sun and Oat: no red, even
+    // for Remove (FR-T4-05).
+    final colours = <(Color, Color)>[
+      (tokens.color.primary, tokens.color.onPrimary),
+      (tokens.color.accent, tokens.color.onAccent),
+      (tokens.surface.muted, tokens.color.ink),
+    ];
     return GestureDetector(
       onHorizontalDragUpdate: (d) =>
           setState(() => _open = (_open - d.delta.dx).clamp(0, _full)),
@@ -683,18 +690,12 @@ class _TrailingActionsState extends State<_TrailingActions> {
                     child: Container(
                       width: _TrailingActions.width,
                       alignment: Alignment.center,
-                      // Lagoon, Sun and Oat: no red, even for Remove
-                      // (FR-T4-05).
-                      color: switch (i) {
-                        0 => tokens.color.primary,
-                        1 => tokens.color.accent,
-                        _ => tokens.surface.muted,
-                      },
+                      color: colours[i].$1,
                       child: SgText(
                         label,
                         role: SgTextRole.label,
                         textAlign: TextAlign.center,
-                        color: tokens.color.onAccent,
+                        color: colours[i].$2,
                       ),
                     ),
                   ),
