@@ -204,6 +204,127 @@ void main() {
     );
   });
 
+  group('#684 #696 CD-2 Bangla names things as the Bangla UI shows them', () {
+    Map<String, Object?> read(String path) =>
+        jsonDecode(File(path).readAsStringSync()) as Map<String, Object?>;
+    final en = read('lib/l10n/app_en.arb');
+    final bn = read('lib/l10n/app_bn.arb');
+    final messages = <String, String>{
+      for (final MapEntry(:key, :value) in bn.entries)
+        if (!key.startsWith('@')) key: value! as String,
+    };
+
+    test('#684 no English tab or button label inside a Bangla message', () {
+      // "Not yet", "Good or Easy", "Learn" and "Today" were quoted in English
+      // to a learner whose buttons and tabs read এখনো না, ভালো, সহজ, শিখুন, আজ.
+      const labels = <String>[
+        'tabToday',
+        'tabLearn',
+        'tabSearch',
+        'tabMe',
+        'ratingAgain',
+        'ratingHard',
+        'ratingGood',
+        'ratingEasy',
+        'sentencesNotYet',
+      ];
+      final offenders = <String>[
+        for (final MapEntry(:key, :value) in messages.entries)
+          for (final label in labels)
+            if (RegExp(
+              '(?<![A-Za-z])${RegExp.escape(en[label]! as String)}'
+              '(?![A-Za-z])',
+            ).hasMatch(value))
+              '$key names "${en[label]}": say "${bn[label]}"',
+      ];
+      expect(offenders, isEmpty, reason: offenders.join('\n'));
+    });
+
+    test(
+      '#696 CD-2 one Bangla word per term (docs/00-product/glossary.md)',
+      () {
+        // The glossary's Bangla column; each rejected spelling is one the copy
+        // used beside the chosen one.
+        const rejected = <String, String>{
+          'জমে': 'ব্যাকলগ',
+          'কণ্ঠ': 'ভয়েস',
+          'সম্পন্ন': 'শেখা হয়েছে',
+          'শেষ ধর': '“শেখা হয়েছে” ধরুন',
+          'পুনরাবৃত্তিতে': 'রিভিশনে',
+          'পুনরাবৃত্তির': 'রিভিশনের',
+          'বাকি-তে': '“শেখা বাকি”-তে',
+        };
+        final offenders = <String>[
+          for (final MapEntry(:key, :value) in messages.entries)
+            for (final MapEntry(key: word, value: instead) in rejected.entries)
+              if (value.contains(word)) '$key says $word: say $instead',
+        ];
+        expect(offenders, isEmpty, reason: offenders.join('\n'));
+      },
+    );
+
+    test('#738 Bangla spells units out and hyphenates a suffix', () {
+      // "দি", "ঘ" and "মি" are not Bangla abbreviations, and a case ending
+      // joins its placeholder with a hyphen, not a space.
+      expect(bn['studyIntervalDays'], '{days} দিন');
+      expect(bn['progressMinutes'], '{minutes} মিনিট');
+      expect(bn['progressHours'], startsWith('{hours} ঘণ্টা '));
+      expect(bn['umlautLongPressHint'], contains('{capital}-এর'));
+      expect(bn['meExamsUnlocksAt'], contains('{percent}%-এ'));
+    });
+
+    test('#684 a status, and a screen, keep one name wherever they are '
+        'named', () {
+      // "To do" is শেখা বাকি, not the বাকি that means "due" beside it.
+      final due = (bn['libraryDue']! as String).split(' · ').first;
+      expect(bn['wordStatusToDo'], isNot(due));
+      for (final (arb, language) in <(Map<String, Object?>, String)>[
+        (en, 'en'),
+        (bn, 'bn'),
+      ]) {
+        // M1's legend explains the labels of the counts above it.
+        for (final status in <String>[
+          'wordStatusLearning',
+          'wordStatusDone',
+          'wordStatusSuspended',
+        ]) {
+          expect(
+            arb['meWordsLegend']! as String,
+            contains('${arb[status]} ='),
+            reason: '$language: the legend explains ${arb[status]}',
+          );
+        }
+        // Me's row, the screen it opens, and the download notifications
+        // that send the learner there.
+        for (final key in <String>[
+          'meVoice',
+          'modelNotifyPausedNote',
+          'modelNotifyCompleteNote',
+          'modelNotifyFailedNote',
+        ]) {
+          expect(
+            arb[key]! as String,
+            contains(arb['modelsTitle']! as String),
+            reason: '$language: $key names the screen as its title does',
+          );
+        }
+      }
+      // Bangla has no capitals to mark a name: a note that sends the learner
+      // to a screen quotes it, as modelNotifyRunningNote quotes its setting.
+      for (final key in <String>[
+        'modelNotifyPausedNote',
+        'modelNotifyCompleteNote',
+        'modelNotifyFailedNote',
+      ]) {
+        expect(
+          bn[key]! as String,
+          contains('“${bn['modelsTitle']}”'),
+          reason: 'bn: $key quotes the screen it names',
+        );
+      }
+    });
+  });
+
   test('#166 Bangla numerals never reach German content: Today\'s German date '
       'keeps its digits under a Bangla UI', () {
     final before = Intl.defaultLocale;

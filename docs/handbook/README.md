@@ -24,7 +24,7 @@ Sogda is a complete German course on the phone, from the first word
   - Quizzes in six directions and grammar practice.
   - Three mock exams per step, each with vocabulary, grammar, listening, writing and speaking sections.
 - **The voice.** The phone's German voice, or Supertonic, an optional ~400 MB on-device voice.
-- **It works offline, with no account, no ads and no analytics.** Progress stays on the phone; export and import move it. The only network use is a model download the learner starts.
+- **It works offline, with no account, no ads and no analytics.** Progress stays on the phone; export and import move it. The app itself sends nothing: it goes online only for a model download the learner starts, a web link the learner taps (Duden, DWDS and the others, FR-R1-06), and *Report a problem*, which opens a pre-filled GitHub issue in the browser.
 - **It is built to be used by everyone.**
   - English or Bangla, light, dark and aurora-glass themes, and text up to 200 %, checked on every screen in both languages with the keyboard up.
   - Screen readers, reduced motion and transparency.

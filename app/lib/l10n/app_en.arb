@@ -794,7 +794,7 @@
   "@placementAskGap": {
     "description": "S3: the prompt on a gap item."
   },
-  "placementRule": "Two right answers in a row move you up a level; two wrong move you down. Nothing is saved until you choose a step.",
+  "placementRule": "Two right answers in a row move you up a step; two wrong move you down. Nothing is saved until you choose a step.",
   "@placementRule": {
     "description": "S3: the note under the options (FR-S3-01, FR-S3-03)."
   },
@@ -1809,7 +1809,7 @@
       }
     }
   },
-  "summaryGrammar": "Practice grammar · {topics}",
+  "summaryGrammar": "Practise grammar · {topics}",
   "@summaryGrammar": {
     "description": "T3 primary when grammar topics are next (FR-T3-02).",
     "placeholders": {
@@ -1819,7 +1819,7 @@
       }
     }
   },
-  "summarySentences": "{count, plural, =1{Practice 1 sentence} other{Practice {count} sentences}}",
+  "summarySentences": "{count, plural, =1{Practise 1 sentence} other{Practise {count} sentences}}",
   "@summarySentences": {
     "description": "T3 primary when the day's sentences are next (FR-T3-02).",
     "placeholders": {
@@ -2403,7 +2403,7 @@
       }
     }
   },
-  "dayCompleteStreak": "{days, plural, =1{day streak} other{day streak}}",
+  "dayCompleteStreak": "{days, plural, other{day streak}}",
   "@dayCompleteStreak": {
     "description": "T6: beside the streak chip, which shows the number.",
     "placeholders": {

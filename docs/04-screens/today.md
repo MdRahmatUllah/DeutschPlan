@@ -22,7 +22,7 @@
 - *All done* (`TodayDone`): a study day with something planned, all of it done, the same predicate as T6 (`dayDone`, the owner's decision, #942): a rest day revised anyway, or a day with nothing planned, is not. Header "Tag geschafft, {name}", ring 20/20 Lime, one collapsed "Today · done" row ("Revise 10 · New 7 · Sentences 3 · backlog cleared"), a *Tomorrow* card ("12 revisions · 7 new · Grammar due · 1 · ≈ 13 min · {category} continues").
 - *Rest day* (`TodayRest`): header "Rest day", ring shows "Frei · no plan" (a screen reader hears "no plan", with no percentage, #879), explanation "Sunday is off in your study days. The streak is safe." with a link to Settings (a caption drawn in a 48 dp, 44 pt on iOS, target, #689 TD-14); Revise card "6 words · optional today" (the block is filled to `revise_count` with words not yet due, BR-PLAN-03, so "words", not "due"); note "Nothing is scheduled and nothing moves to the backlog. Revising anyway keeps tomorrow lighter: 12 → 6 revisions." The count is what is due by the next study day, and when tomorrow is off too the note names that day: "keeps Tuesday lighter" (#345).
 - *Course finished*: revision-only mode with a completion card: revisions are still planned, no new words, the backlog only shrinks; the completion card shows once no other contextual card is waiting.
-- *Error*: `ErrorPanel` with Retry.
+- *Error*: `SgErrorPanel` with Retry.
 
 **Functional requirements**
 - FR-T1-01 Opening MUST call `PlanEngine.openDay(today)` (idempotent) and render from the persisted plan.
@@ -38,7 +38,7 @@
 
 **Motion.** Ring tweens from 0 on open (deliberate) and to new values after a session; numbers count up; section rings animate. Glass: header is a Lagoon glassTint panel.
 
-**Data.** `todayPlanProvider(date)`, `streakProvider`, `settingsProvider`, `contentUpdatesProvider`.
+**Data.** `todayView` (in `today_providers.dart`), built on `todayPlan` (no argument: it watches `today`), `todayOpen`, `todayBacklog`, `todaySentencesRated`, `todayGrammarDue` and `voiceInstalled`; the streak comes from the plan engine inside `todayView`, and the settings from `settingsProvider`.
 
 **Developer notes.** `TodayScreen` composes `TodayHeader`, `ProgressRingCard`, `PlanSectionCard`, `ContextualCard`, `GrammarPreviewCard`, `PrimaryActionBar`. Date formatting uses `intl` with `de_DE` regardless of UI locale.
 
