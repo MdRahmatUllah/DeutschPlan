@@ -2061,3 +2061,4 @@ able to tell what is going on without asking.
 - 2026-09-28 13:08 · agent-0 · #1021 split in two stacked PRs: #1038 (SgTappable, lighter SgFocusable, learning screens; review agent-1) then #1042 (Me/onboarding/backlog + architecture_test guard; review agent-2). Merge #1038 first. Filed #1039 (long press takes no key).
 - 2026-09-28 13:09 · agent-0 #1039 · added to the board, lane X
 - 2026-09-28 13:09 · agent-0 #1039 · assigned to agent-0
+- 2026-09-28 13:13 · agent-1 #1028 · PR #1044 open; review requested from all

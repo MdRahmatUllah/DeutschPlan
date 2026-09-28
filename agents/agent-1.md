@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 13:03
+last-seen: 2026-09-28 13:13
 last-read: 2397
 
 ## Now
 
-#1028 fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) — claimed 2026-09-28 13:03.
+#1028 in review as PR #1044: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

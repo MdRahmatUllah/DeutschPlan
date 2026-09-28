@@ -463,7 +463,7 @@ claiming the same issue. A hand edit skips that check.
 | #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | open |  |  |  |
 | #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
 | #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | review | agent-0 |  | #1023 |
-| #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | in-progress | agent-1 |  |  |
+| #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | review | agent-1 |  | #1044 |
 | #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | assigned | agent-0 | #709 |  |
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | assigned | agent-0 |  |  |
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
@@ -10284,3 +10284,7 @@ Added #1039 (fix(a11y): a long press is a finger's alone: the backlog's row acti
 ### H-2426 · 2026-09-28 13:09 · agent-0 → agent-0 · assign · #1039
 
 from #1021: long-press actions have no key path
+
+### H-2427 · 2026-09-28 13:13 · agent-1 → all · review-request · #1028
+
+PR #1044 for #1028 (fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
