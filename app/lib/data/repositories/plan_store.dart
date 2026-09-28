@@ -241,10 +241,22 @@ ORDER BY due, grammar_uid
   }
 
   @override
-  Future<List<String>> grammarOfDay(PlanDate date) async {
-    final practised = await _db
-        .customSelect(
-          '''
+  Future<List<String>> grammarOfDay(PlanDate date) async =>
+      // Due first, as [grammarDueOn] orders them; then the ones practised on
+      // the learner's own day (#347), once each.
+      <String>{
+        ...await grammarDueOn(date),
+        ..._onDay(await _practisedOn(date).get(), date),
+      }.toList();
+
+  /// #1045: the topics practised on [date], as they change: T1's ring takes
+  /// one practised off the plan at once, as the day's plan does once it is
+  /// built again.
+  Stream<Set<String>> watchGrammarPractisedOn(PlanDate date) =>
+      _practisedOn(date).watch().map((rows) => _onDay(rows, date));
+
+  Selectable<QueryRow> _practisedOn(PlanDate date) => _db.customSelect(
+    '''
 SELECT l.grammar_uid AS uid, l.practised_at AS at
 FROM grammar_practice_log l
 JOIN grammar_state s ON s.grammar_uid = l.grammar_uid
@@ -252,21 +264,18 @@ WHERE l.practised_at >= ?1 AND l.practised_at < ?2
   AND s.status != 'suspended'
 ORDER BY l.practised_at, l.id
 ''',
-          variables: _instantBounds(date, addDays(date, 1)),
-          readsFrom: <ResultSetImplementation<Object, Object>>{
-            _db.grammarPracticeLog,
-            _db.grammarState,
-          },
-        )
-        .get();
-    // Due first, as [grammarDueOn] orders them; then the ones practised on
-    // the learner's own day (#347), once each.
-    return <String>{
-      ...await grammarDueOn(date),
-      for (final row in practised)
-        if (_localDay(row.read<String>('at')) == date) row.read<String>('uid'),
-    }.toList();
-  }
+    variables: _instantBounds(date, addDays(date, 1)),
+    readsFrom: <ResultSetImplementation<Object, Object>>{
+      _db.grammarPracticeLog,
+      _db.grammarState,
+    },
+  );
+
+  /// Of [rows], the topics practised on the learner's own [date] (#347).
+  static Set<String> _onDay(List<QueryRow> rows, PlanDate date) => <String>{
+    for (final row in rows)
+      if (_localDay(row.read<String>('at')) == date) row.read<String>('uid'),
+  };
 
   /// Adds plan rows in one statement: the uids go in as one JSON array
   /// (`json_each`), one trip to the database's isolate, not one a word (a
