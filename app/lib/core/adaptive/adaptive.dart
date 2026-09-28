@@ -646,7 +646,11 @@ class AdaptiveSegmented<T extends Object> extends StatelessWidget {
     return SegmentedButton<T>(
       segments: <ButtonSegment<T>>[
         for (final entry in segments.entries)
-          ButtonSegment<T>(value: entry.key, label: Text(entry.value)),
+          ButtonSegment<T>(
+            value: entry.key,
+            // Material's style is `labelLarge`, the label role (#698).
+            label: SgChromeLabel(entry.value, role: SgTextRole.label),
+          ),
       ],
       selected: <T>{value},
       showSelectedIcon: false,
@@ -756,7 +760,17 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
         indicatorSize: TabBarIndicatorSize.tab,
         dividerHeight: 0,
         tabs: <Widget>[
-          for (final label in widget.tabs.values) Tab(height: 48, text: label),
+          for (final label in widget.tabs.values)
+            // As `Tab(text:)` draws it, with its Bangla a role up (#698).
+            Tab(
+              height: 48,
+              child: SgChromeLabel(
+                label,
+                role: SgTextRole.label,
+                softWrap: false,
+                overflow: TextOverflow.fade,
+              ),
+            ),
         ],
       ),
     );
@@ -981,7 +995,8 @@ abstract final class Adaptive {
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(cancelLabel),
+            // Material's style is `labelLarge`, the label role (#698).
+            child: SgChromeLabel(cancelLabel, role: SgTextRole.label),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -992,7 +1007,7 @@ abstract final class Adaptive {
                   ? tokens.color.wrongText
                   : tokens.color.link,
             ),
-            child: Text(confirmLabel),
+            child: SgChromeLabel(confirmLabel, role: SgTextRole.label),
           ),
         ],
       ),
@@ -1182,7 +1197,16 @@ class AdaptiveNavBar extends StatelessWidget {
 
     // The artboards' bar: a hairline on top, the tab's own pill under the
     // current tab, and 12 pt labels — ink when chosen, Slate otherwise.
-    final label = Theme.of(context).textTheme.labelSmall!;
+    // Bangla a role up (#698): 12 is the caption's size, so the label's.
+    // Material draws each from a plain string, so the whole bar's style.
+    final bangla = destinations.any(
+      (destination) => SgScript.hasBengali(destination.label),
+    );
+    final larger = tokens.typography.label;
+    final label = Theme.of(context).textTheme.labelSmall!.copyWith(
+      fontSize: bangla ? larger.size : 12,
+      height: bangla ? larger.heightFactor : null,
+    );
     final current = destinations[currentIndex];
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -1195,12 +1219,10 @@ class AdaptiveNavBar extends StatelessWidget {
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
               ? label.copyWith(
-                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: tokens.color.ink,
                 )
               : label.copyWith(
-                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: tokens.color.textSecondary,
                 ),
@@ -1339,7 +1361,10 @@ class _TypedConfirmState extends State<_TypedConfirm> {
                     alpha: 0.5,
                   ),
                 ),
-                child: Text(widget.confirmLabel),
+                child: SgChromeLabel(
+                  widget.confirmLabel,
+                  role: SgTextRole.label,
+                ),
               );
       },
     );
@@ -1456,7 +1481,7 @@ class _TypedConfirmState extends State<_TypedConfirm> {
         TextButton(
           onPressed: cancel,
           style: TextButton.styleFrom(foregroundColor: tokens.color.link),
-          child: Text(widget.cancelLabel),
+          child: SgChromeLabel(widget.cancelLabel, role: SgTextRole.label),
         ),
         typed,
       ],

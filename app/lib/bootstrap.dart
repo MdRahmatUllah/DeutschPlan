@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
-import 'package:sogda/core/theme/theme_mode.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/content_update.dart';
@@ -19,7 +17,6 @@ import 'package:flutter/foundation.dart' show immutable;
 // `Override` is not in the main barrel in Riverpod 3.
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:path_provider/path_provider.dart';
 
 /// Which step of FR-S1-01 was running, so a failure can say what went wrong
@@ -43,20 +40,13 @@ enum BootstrapStep {
 class Bootstrap {
   const Bootstrap({
     required this.db,
-    required this.content,
     required this.settings,
     required this.glass,
     required this.router,
-    required this.contentVersion,
-    required this.contentChange,
-    required this.themeMode,
-    required this.themeSetting,
-    required this.isFirstRun,
     required this.elapsed,
   });
 
   final AppDatabase db;
-  final ContentDao content;
   final SettingsRepository settings;
   final GlassCapability glass;
 
@@ -69,35 +59,9 @@ class Bootstrap {
   /// to open with (#70).
   final GoRouter router;
 
-  /// `meta.content_version` of the course now attached.
-  final String contentVersion;
-
-  /// What this launch installed, or null when the course was already current.
-  /// Today's update card reads it (BR-CONTENT-03).
-  final ContentChange? contentChange;
-
-  /// The mode `AppTheme` should build. Resolved here so the first frame is
-  /// already the right one — a frame of the wrong theme is the thing
-  /// FR-S1-01 exists to prevent.
-  final SgMode themeMode;
-
-  /// What the learner actually chose, which [themeMode] cannot say: `system`
-  /// resolves to light or dark, and the app has to keep following the
-  /// platform rather than pinning whichever it was at launch.
-  final ThemeModeSetting themeSetting;
-
   /// How long the whole thing took. FR-S1-02 budgets 500 ms warm, 2 s on a
   /// first run; this is what a test and a bug report measure against.
   final Duration elapsed;
-
-  /// True when this launch installed the course for the first time.
-  ///
-  /// Read from whether the file was there before, not from the change: a
-  /// first install reports an empty change (there is nothing to diff against)
-  /// and so does an update that moved no words, so the change cannot tell
-  /// them apart. Splash's caption — "Preparing your course · first start
-  /// only" — is the thing that would be wrong.
-  final bool isFirstRun;
 
   /// The overrides `ProviderScope` needs so nothing re-opens what this
   /// already opened.
@@ -199,9 +163,11 @@ const Duration glassTimeout = Duration(milliseconds: 150);
 /// FR-S1-01, in the order the doc gives it.
 ///
 /// Open user.db (creating the schema if absent) · copy content.db when the
-/// version differs · attach it · load settings · resolve the theme. All of it
-/// before the app's first frame, so nothing here is ever waiting behind one:
-/// `main` runs the app first, and S1 shows while this runs.
+/// version differs · attach it · load settings. All of it before the app's
+/// first frame, so nothing here is ever waiting behind one: `main` runs the
+/// app first, and S1 shows while this runs. The theme is resolved from the
+/// loaded settings by `themeProvider`, which `BootstrapHost` tells the
+/// phone's brightness before the app's first frame (#644).
 ///
 /// It does not throw. A failure comes back as [BootstrapFailed] carrying the
 /// step and whatever opened, because the error screen has to offer *Retry* and
@@ -211,14 +177,18 @@ const Duration glassTimeout = Duration(milliseconds: 150);
 /// open — before the content install, which on a first run is most of the
 /// wait — so the splash already on screen can switch to it.
 ///
-/// [openDatabase], [platformBrightness] and [glass] exist for tests;
+/// [onCourseUpdate] hears that an app update is about to copy its new course
+/// in, so the splash can say so rather than "first start only" (#686 ST-9).
+/// Never on a first start, whose copy the splash's own caption names.
+///
+/// [openDatabase] and [glass] exist for tests;
 /// everything else here is real I/O, and a test that faked the database would
 /// be testing its own fake.
 Future<BootstrapResult> bootstrap({
   AppDatabase Function()? openDatabase,
-  Brightness platformBrightness = Brightness.light,
   GlassCapability? glass,
   void Function(UiLanguage)? onUiLanguage,
+  void Function()? onCourseUpdate,
 }) async {
   final watch = Stopwatch()..start();
 
@@ -250,14 +220,16 @@ Future<BootstrapResult> bootstrap({
 
     // Whether the course is already installed, asked before `attach` — which
     // is what writes it on a first run, so afterwards the answer is always
-    // yes.
+    // yes. A first start's copy is the splash's own caption; only a course
+    // that was there is being updated.
     final firstRun = !(await content.installedFile()).existsSync();
 
     // Attach first: on a first run this is what writes the asset to disk, and
     // the updater's replace path detaches before it renames.
     await content.attach();
-    final change = await updater.runIfNeeded();
-    final version = await content.version();
+    await updater.runIfNeeded(onCopy: firstRun ? null : onCourseUpdate);
+    // Asked for what it checks: a course with no version fails the start.
+    await content.version();
     await content.assertSearchable();
 
     step = BootstrapStep.settings;
@@ -273,8 +245,6 @@ Future<BootstrapResult> bootstrap({
     await capability.queryPlatform().timeout(glassTimeout, onTimeout: () {});
 
     final plan = PlanRepository(db);
-    final setting = settings.read(SettingKeys.themeMode);
-    final mode = setting.resolve(platformBrightness);
 
     // `splash.md`: S1 "leads to S2 (no enrollment) · T1". The guards only
     // send an *enrolled* learner away from onboarding; nothing sent a new
@@ -293,15 +263,9 @@ Future<BootstrapResult> bootstrap({
     return BootstrapReady(
       Bootstrap(
         db: db,
-        content: content,
         settings: settings,
         glass: capability,
         router: router,
-        contentVersion: version,
-        contentChange: change,
-        themeMode: mode,
-        themeSetting: setting,
-        isFirstRun: firstRun,
         elapsed: watch.elapsed,
       ),
     );

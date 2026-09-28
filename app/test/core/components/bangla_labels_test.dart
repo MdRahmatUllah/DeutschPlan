@@ -14,6 +14,8 @@ import 'package:flutter/rendering.dart' show SemanticsNode;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../text_clipping.dart';
+
 /// #743: a control's Bangla label carries its bn-BD tag, as text on screen
 /// does. The labels were plain strings, and TalkBack on an English phone read
 /// them with its English voice, garbling or skipping them.
@@ -177,4 +179,124 @@ void main() {
       handle.dispose();
     },
   );
+
+  group('#698 Material chrome sets its Bangla labels a role up', () {
+    Future<void> pump(WidgetTester tester, Widget body, {Widget? bar}) =>
+        tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            home: Scaffold(body: body, bottomNavigationBar: bar),
+          ),
+        );
+
+    /// The size [text]'s Bangla is drawn at, or its whole text's.
+    double sizeOf(WidgetTester tester, String text) {
+      final rich = tester.widget<RichText>(
+        find
+            .byWidgetPredicate(
+              (widget) =>
+                  widget is RichText && widget.text.toPlainText() == text,
+            )
+            .first,
+      );
+      final bangla = SgScript.hasBengali(text);
+      double? found;
+      void visit(InlineSpan span, double? inherited) {
+        final size = span.style?.fontSize ?? inherited;
+        if (span is! TextSpan) return;
+        final own = span.text;
+        if (found == null &&
+            own != null &&
+            (!bangla || SgScript.hasBengali(own))) {
+          found = size;
+        }
+        for (final child in span.children ?? const <InlineSpan>[]) {
+          visit(child, size);
+        }
+      }
+
+      visit(rich.text, null);
+      return found!;
+    }
+
+    testWidgets('a segment, and the Latin beside it as it was', (tester) async {
+      await pump(
+        tester,
+        AdaptiveSegmented<int>(
+          segments: const <int, String>{1: 'শব্দ', 2: 'Words'},
+          value: 1,
+          onChanged: (_) {},
+        ),
+      );
+      expect(sizeOf(tester, 'শব্দ'), 15, reason: "the body's, a role up");
+      expect(sizeOf(tester, 'Words'), 13, reason: "the label role's");
+    });
+
+    testWidgets('a tab', (tester) async {
+      await pump(
+        tester,
+        AdaptiveTabBar<int>(
+          tabs: const <int, String>{1: 'শব্দ', 2: 'Words'},
+          value: 1,
+          onChanged: (_) {},
+        ),
+      );
+      expect(sizeOf(tester, 'শব্দ'), 15);
+      expect(sizeOf(tester, 'Words'), 14, reason: "the artboard's 14");
+    });
+
+    testWidgets('a nav destination', (tester) async {
+      AdaptiveNavBar bar(String first, String second) => AdaptiveNavBar(
+        destinations: <AdaptiveNavDestination>[
+          AdaptiveNavDestination(
+            icon: Icons.today_outlined,
+            selectedIcon: Icons.today,
+            label: first,
+          ),
+          AdaptiveNavDestination(
+            icon: Icons.school_outlined,
+            selectedIcon: Icons.school,
+            label: second,
+          ),
+        ],
+        currentIndex: 0,
+        onSelected: (_) {},
+      );
+      await pump(tester, const SizedBox(), bar: bar('আজ', 'শিখুন'));
+      expect(sizeOf(tester, 'আজ'), 13, reason: "the label role's");
+      expect(sizeOf(tester, 'শিখুন'), 13);
+
+      await pump(tester, const SizedBox(), bar: bar('Today', 'Learn'));
+      expect(sizeOf(tester, 'Today'), 12);
+
+      // And nothing cut at 200 %: no golden draws the shell's bar.
+      textAt(tester, 2);
+      await pump(tester, const SizedBox(), bar: bar('অনুশীলন', 'অগ্রগতি'));
+      expectNothingClipped(tester);
+    });
+
+    testWidgets("a dialog's actions", (tester) async {
+      await pump(
+        tester,
+        Builder(
+          builder: (context) => TextButton(
+            onPressed: () => Adaptive.showConfirm(
+              context: context,
+              title: 'মুছবেন?',
+              message: 'Sure?',
+              confirmLabel: 'মুছুন',
+              cancelLabel: 'Cancel',
+            ),
+            child: const Text('open'),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      expect(sizeOf(tester, 'মুছুন'), 15);
+      expect(sizeOf(tester, 'Cancel'), 13);
+    });
+  });
 }
