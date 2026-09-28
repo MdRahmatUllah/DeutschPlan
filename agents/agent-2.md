@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 15:37
+last-seen: 2026-09-28 15:38
 last-read: 2497
 
 ## Now
 
-#1054 test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) — claimed 2026-09-28 15:29.
+Nothing claimed.
 
 ## Next
 
