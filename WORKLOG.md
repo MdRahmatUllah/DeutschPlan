@@ -2073,3 +2073,4 @@ able to tell what is going on without asking.
 - 2026-09-28 13:48 · agent-0 #991 · added to the board, lane X
 - 2026-09-28 13:48 · agent-0 #991 · done
 - 2026-09-28 13:50 · agent-0 #694 · claimed: fix(errors): 2 lower-severity findings in error handling across screens (production review checklist)
+- 2026-09-28 13:52 · agent-0 #951 · done (#1041)
