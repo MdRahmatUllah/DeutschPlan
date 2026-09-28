@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/exam/exam_question_view.dart' show examClock;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 
@@ -32,11 +34,10 @@ class ExamNavigatorSheet extends StatelessWidget {
   /// The cell of the question on screen; null on a task.
   final int? current;
 
-  /// The time left when it opened, as the clock shows it ("14:32"); null
-  /// with the timer off.
-  // ponytail: a snapshot; the sheet is open for seconds, and the clock
-  // behind it keeps running.
-  final String? left;
+  /// The runner's clock, in seconds left; null with the timer off. The
+  /// title counts down with the exam bar behind the sheet (#1003): a still
+  /// time beside a moving one read as a bug.
+  final ValueListenable<int>? left;
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +61,14 @@ class ExamNavigatorSheet extends StatelessWidget {
               Expanded(
                 child: SgText(l10n.examNavTitle, role: SgTextRole.title),
               ),
-              if (left case final time?)
-                SgText(
-                  l10n.examNavLeft(l10n.digits(time)),
-                  role: SgTextRole.caption,
-                  color: tokens.color.textSecondary,
+              if (left case final left?)
+                ValueListenableBuilder<int>(
+                  valueListenable: left,
+                  builder: (context, seconds, _) => SgText(
+                    l10n.examNavLeft(l10n.digits(examClock(seconds))),
+                    role: SgTextRole.caption,
+                    color: tokens.color.textSecondary,
+                  ),
                 ),
             ],
           ),
