@@ -95,7 +95,15 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
     setState(() => _loading = true);
 
     PlacementItem? next;
-    if (!session.finished) next = session.next(await _pool(session.step));
+    try {
+      if (!session.finished) next = session.next(await _pool(session.step));
+    } on Object {
+      // #692 ME-12: a step's words that can't be read end the check as a
+      // course that can't be read does (FR-S3-04), rather than leave *Next*
+      // greyed out for good.
+      if (mounted) widget.onDone(null);
+      return;
+    }
     if (!mounted) return;
 
     if (next == null) {

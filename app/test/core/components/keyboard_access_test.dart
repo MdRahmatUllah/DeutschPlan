@@ -1,3 +1,4 @@
+import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -144,6 +145,50 @@ void main() {
     await press(LogicalKeyboardKey.arrowLeft);
     expect(value, 4, reason: 'held at the bottom');
     expect(onSlider(), isTrue);
+  });
+
+  testWidgets('#1011 ME-4 from a value outside its range, a step lands '
+      'inside it, by key or by a screen reader', (tester) async {
+    final handle = tester.ensureSemantics();
+    late int value;
+    Future<void> at45() async {
+      value = 45;
+      await pump(
+        tester,
+        StatefulBuilder(
+          key: UniqueKey(),
+          builder: (context, setState) => SizedBox(
+            width: 300,
+            child: SgSlider(
+              value: value,
+              min: 3,
+              max: 30,
+              label: 'Pace',
+              onChanged: (next) => setState(() => value = next),
+            ),
+          ),
+        ),
+      );
+    }
+
+    await at45();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(value, 45, reason: 'no step up past the end');
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pump();
+    expect(value, 30, reason: 'one step, and inside');
+
+    await at45();
+    tester.semantics.performAction(
+      find.semantics.byLabel('Pace'),
+      SemanticsAction.decrease,
+    );
+    await tester.pump();
+    expect(value, 30);
+    handle.dispose();
   });
 
   testWidgets('#1007 a slider nobody can move is not a Tab stop', (

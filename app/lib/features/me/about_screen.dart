@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
@@ -82,9 +83,16 @@ class AboutScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SgText(l10n.appTitle, role: SgTextRole.title),
-                    if (version != null && facts != null)
+                    // #692 ME-13: the app's version is its own, shown when
+                    // the course's facts can't be read too.
+                    if (version != null)
                       SgText(
-                        built == null
+                        facts == null
+                            ? l10n.aboutVersionAppOnly(
+                                version.version,
+                                version.build,
+                              )
+                            : built == null
                             ? l10n.aboutVersionUndated(
                                 version.version,
                                 version.build,
@@ -140,7 +148,13 @@ class AboutScreen extends ConsumerWidget {
                 _Link(
                   title: l10n.aboutContact,
                   note: l10n.aboutContactNote,
-                  onTap: () => ref.read(openWebProvider)(contactUri),
+                  onTap: () async {
+                    // #692 ME-13: said, not silent, when there's no browser.
+                    final opened = await ref.read(openWebProvider)(contactUri);
+                    if (!opened && context.mounted) {
+                      SgToast.show(context, l10n.webOpenFailed);
+                    }
+                  },
                 ),
                 _Link(
                   title: l10n.aboutContent,

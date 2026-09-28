@@ -654,8 +654,7 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
       OnboardingPage.startingPoint => OnboardingStartPage(
         onContinue: () => next(OnboardingPage.dailyPace),
         onBack: () => _back(context, OnboardingPage.startingPoint),
-        onSkip: () =>
-            _finish(context, skippingFrom: OnboardingPage.startingPoint),
+        onSkip: () => _finish(context),
         // S3 pops with the step it suggests (#93, #94), or with nothing.
         // `restart` too: in restart setup the learner is enrolled, and the
         // guard would send a plain link to Today.
@@ -668,14 +667,13 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
       OnboardingPage.dailyPace => OnboardingPacePage(
         onContinue: () => next(OnboardingPage.reminderAndVoice),
         onBack: () => _back(context, OnboardingPage.dailyPace),
-        onSkip: () => _finish(context, skippingFrom: OnboardingPage.dailyPace),
+        onSkip: () => _finish(context),
       ),
 
       OnboardingPage.reminderAndVoice => OnboardingVoicePage(
         onFinish: () => _finish(context),
         onBack: () => _back(context, OnboardingPage.reminderAndVoice),
-        onSkip: () =>
-            _finish(context, skippingFrom: OnboardingPage.reminderAndVoice),
+        onSkip: () => _finish(context),
       ),
     };
   }
@@ -694,21 +692,16 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
     }
   }
 
-  /// FR-S2-03 — and FR-S2-01's Skip, from [skippingFrom]: commit the draft,
-  /// plan day 1, open Today. A failure leaves the learner where they are,
-  /// and the page says so.
-  static Future<void> _finish(
-    BuildContext context, {
-    OnboardingPage? skippingFrom,
-  }) async {
+  /// FR-S2-03 — and FR-S2-01's Skip: commit the draft, plan day 1, open
+  /// Today. A failure leaves the learner where they are, and the page says
+  /// so.
+  static Future<void> _finish(BuildContext context) async {
     final container = ProviderScope.containerOf(context, listen: false);
     // Held for the whole finish: the notifier auto-disposes, and one with no
     // listener could go between the commit and the plan.
     final keep = container.listen(setupFlowProvider, (_, _) {});
     try {
-      final done = await container
-          .read(setupFlowProvider.notifier)
-          .finish(skippingFrom: skippingFrom);
+      final done = await container.read(setupFlowProvider.notifier).finish();
       if (done && context.mounted) {
         const TodayRoute().go(context);
         // After leaving, so the page does not redraw with the defaults on

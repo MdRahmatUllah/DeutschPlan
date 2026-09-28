@@ -12,6 +12,7 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/reset_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/me/reset_flow.dart';
@@ -25,6 +26,15 @@ import '../db/content_fixture.dart';
 
 /// The recordings, deleted without a disk: `reset_repository_test.dart`
 /// deletes real ones, and file I/O never finishes in a widget test's clock.
+/// A step list that can't be read (#692 ME-13).
+class _BrokenSteps extends ResetRepository {
+  _BrokenSteps(super.db, super.settings);
+
+  @override
+  Future<List<({String code, bool current})>> steps() =>
+      Future<List<({String code, bool current})>>.error(StateError('no steps'));
+}
+
 class _Recordings extends Fake implements ModelRepository {
   final List<Iterable<int>?> deleted = <Iterable<int>?>[];
 
@@ -93,6 +103,7 @@ void main() {
     TextScaler? textScaler,
     AdaptiveChrome chrome = AdaptiveChrome.material,
     Locale? locale,
+    List<Override> more = const <Override>[],
   }) async {
     tester.view
       ..physicalSize = screen * 2
@@ -113,6 +124,7 @@ void main() {
           learnedStabilitiesProvider.overrideWith((ref) async => <double>[]),
           translationModelProvider.overrideWith((ref) async => null),
           modelRepositoryProvider.overrideWithValue(recordings),
+          ...more,
         ],
         child: AdaptiveChromeScope(
           chrome: chrome,
@@ -307,6 +319,23 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(recordings.deleted, hasLength(1));
     expect(await count('word_state'), 0);
+  });
+
+  testWidgets("#692 ME-13 a step list that can't be read says so, and "
+      'resets nothing', (tester) async {
+    await pump(
+      tester,
+      more: <Override>[
+        resetRepositoryProvider.overrideWithValue(_BrokenSteps(db, settings)),
+      ],
+    );
+    final before = await count('word_state');
+    await tap(tester, l10n.settingsReset);
+    await tap(tester, l10n.resetOneStep);
+
+    expect(find.text(l10n.resetFailed), findsOneWidget);
+    expect(find.text(l10n.resetPickStep), findsNothing);
+    expect(await count('word_state'), before);
   });
 
   testWidgets('FR-M7-01 one step: picked, confirmed, reset; M3 stays', (

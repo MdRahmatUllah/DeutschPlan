@@ -48,7 +48,15 @@ Future<void> _resetStep(BuildContext context) async {
   // follows it must still happen (#679).
   final container = ProviderScope.containerOf(context, listen: false);
   final reset = container.read(resetRepositoryProvider);
-  final steps = await reset.steps();
+  final List<({String code, bool current})> steps;
+  try {
+    steps = await reset.steps();
+  } on Object catch (error) {
+    // #692 ME-13: said, not silent; nothing was reset.
+    debugPrint('reset steps: $error');
+    if (context.mounted) SgToast.show(context, l10n.resetFailed);
+    return;
+  }
   if (!context.mounted) return;
   if (steps.isEmpty) {
     SgToast.show(context, l10n.resetNoStep);

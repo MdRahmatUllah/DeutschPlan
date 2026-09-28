@@ -219,17 +219,18 @@ void main() {
   });
 
   group('Not sure? Take a 3-minute check', () {
-    testWidgets('opens S3 and comes back with its suggestion picked', (
-      tester,
-    ) async {
+    testWidgets('#1011 ME-10 opens S3 and comes back to page 3 with its '
+        'suggestion picked, for Continue to take on', (tester) async {
       final answer = Completer<String?>();
       var opened = 0;
+      var continued = 0;
       await pump(
         tester,
         onPlacement: () {
           opened++;
           return answer.future;
         },
+        onContinue: () => continued++,
       );
 
       await tester.tap(find.text(l10n.onboardingPlacementLink));
@@ -244,6 +245,7 @@ void main() {
 
       expect(picked(tester), <String>['B2.1']);
       expect(container.read(onboardingProvider).step, 'B2.1');
+      expect(continued, 0, reason: 'the learner confirms it (the owner)');
     });
 
     testWidgets('and coming back without one leaves the pick alone', (

@@ -40,6 +40,20 @@ class _GatedSettings extends SettingsRepository {
   }
 }
 
+/// Settings whose reload fails once [broken]: a reload after an import
+/// that had already committed (#692 ME-7).
+class _BrokenReload extends SettingsRepository {
+  _BrokenReload(super.db);
+
+  bool broken = false;
+
+  @override
+  Future<void> reload() async {
+    if (broken) throw StateError('reload failed');
+    return super.reload();
+  }
+}
+
 /// The share sheet and the file picker without a phone.
 class FakeBackupFiles implements BackupFiles {
   /// What the picker hands back; null is backing out of it.
@@ -155,7 +169,7 @@ void main() {
 
   setUp(() async {
     db = await open();
-    settings = SettingsRepository(db);
+    settings = _BrokenReload(db);
     await settings.load();
     // This phone's own word, which a merge keeps and a replace doesn't.
     await db.customStatement(
@@ -340,6 +354,21 @@ void main() {
       await tester.tap(find.text(l10n.exportImportChoose));
       await tester.pumpAndSettle();
       expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+    });
+
+    testWidgets('#692 ME-6 a file that is not text, after a good one: the '
+        "good one goes too, so Import can't bring it in", (tester) async {
+      await pump(tester);
+      await choose(tester, await otherPhone());
+      expect(find.text(l10n.exportImportDoMerge), findsOneWidget);
+
+      files.unreadable = true;
+      await tester.tap(find.text(l10n.exportImportChooseOther));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+      expect(find.text('sogda-2026-09-20.json'), findsNothing);
+      expect(find.text(l10n.exportImportDoMerge), findsNothing);
     });
 
     testWidgets('#657 a file with a value of the wrong type is refused at the '
@@ -591,6 +620,19 @@ void main() {
       expect(find.text(l10n.exportImportDone), findsNothing);
       expect(await count('word_state'), 1);
     });
+  });
+
+  testWidgets('#692 ME-7 an import that went in, whose settings reload then '
+      'failed, says it is done, not that nothing changed', (tester) async {
+    await pump(tester);
+    (settings as _BrokenReload).broken = true;
+    await choose(tester, await otherPhone());
+    await tester.tap(find.text(l10n.exportImportDoMerge));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.exportImportDone), findsOneWidget);
+    expect(find.text(l10n.exportImportFailed), findsNothing);
+    expect(await count('word_state'), greaterThan(1), reason: 'the data is in');
   });
 
   testWidgets('a screen reader hears Merge and Replace as one set of radios', (

@@ -38,6 +38,8 @@ void main() {
     String at = '/me/about',
     List<Override> more = const <Override>[],
     bool dated = true,
+    bool facts = true,
+    bool browser = true,
   }) async {
     tester.view
       ..physicalSize = const Size(1200, 4000)
@@ -46,10 +48,10 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: <Override>[
-          ...aboutStub(dated: dated),
+          ...aboutStub(dated: dated, facts: facts),
           openWebProvider.overrideWithValue((page) async {
             opened.add(page);
-            return true;
+            return browser;
           }),
           ...more,
         ],
@@ -107,6 +109,35 @@ void main() {
       find.text(l10n.aboutVersionUndated('1.0.0', '41', '2026.09')),
       findsOneWidget,
     );
+  });
+
+  testWidgets("#692 ME-13 the course's facts unread: the app's own version "
+      'still shows', (tester) async {
+    await pump(tester, facts: false);
+    expect(find.text(l10n.aboutVersionAppOnly('1.0.0', '41')), findsOneWidget);
+  });
+
+  testWidgets('#692 ME-13 Contact on a phone with no browser says so', (
+    tester,
+  ) async {
+    await pump(tester, browser: false);
+    await tester.tap(find.text(l10n.aboutContact));
+    await tester.pump();
+    expect(find.text(l10n.webOpenFailed), findsOneWidget);
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+  });
+
+  testWidgets("#692 ME-13 a link the phone can't open is false, not a throw", (
+    tester,
+  ) async {
+    // No url_launcher plugin in a test: launchUrl throws, as it does on a
+    // phone with no browser.
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final opened = await tester.runAsync(
+      () => container.read(openWebProvider)(Uri.https('example.com')),
+    );
+    expect(opened, isFalse);
   });
 
   test('FR-M9-01 the course version as About shows it', () {

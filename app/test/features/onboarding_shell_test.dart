@@ -365,6 +365,33 @@ void main() {
       expect(find.text('It went wrong'), findsOneWidget);
     });
 
+    testWidgets('#692 ME-5 while finishing, Back is off too, and the '
+        'system back waits', (tester) async {
+      var back = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: OnboardingShell(
+            page: OnboardingPage.dailyPace,
+            headline: 'A headline',
+            primaryLabel: 'Continue',
+            onPrimary: () {},
+            onBack: () => back++,
+            busy: true,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.widgetWithText(SgButton, l10n.back));
+      await tester.pump();
+      expect(back, 0);
+      expect(tester.widget<PopScope>(find.byType(PopScope)).canPop, isFalse);
+    });
+
     testWidgets('the primary action calls back', (tester) async {
       var advanced = 0;
       await pumpShell(

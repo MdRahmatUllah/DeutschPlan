@@ -2,7 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/onboarding/onboarding_notifier.dart';
-import 'package:sogda/features/onboarding/onboarding_shell.dart';
 
 part 'setup_flow.g.dart';
 
@@ -20,15 +19,14 @@ class SetupFlow extends _$SetupFlow {
   @override
   SetupStatus build() => SetupStatus.idle;
 
-  /// FR-S2-03: commits the draft in one transaction and plans day 1.
-  /// [skippingFrom] is FR-S2-01 — every page from there on takes
-  /// its defaults first. True when setup is done and Today can open.
-  Future<bool> finish({OnboardingPage? skippingFrom}) async {
+  /// FR-S2-03: commits the draft in one transaction and plans day 1. True
+  /// when setup is done and Today can open. FR-S2-01's *Skip* is this too:
+  /// the draft keeps what the learner chose, and the defaults for what they
+  /// never touched (the owner, 2026-09-28, #1011 ME-11).
+  Future<bool> finish() async {
     if (state == SetupStatus.finishing) return false;
     state = SetupStatus.finishing;
 
-    final notifier = ref.read(onboardingProvider.notifier);
-    if (skippingFrom != null) notifier.skipFrom(skippingFrom);
     final draft = ref.read(onboardingProvider);
     final today = ref.read(todayProvider);
 

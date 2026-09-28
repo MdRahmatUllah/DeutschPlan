@@ -20,6 +20,7 @@ library;
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:material_ui/material_ui.dart' show Brightness;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -385,12 +386,20 @@ TranslationRepository translationRepository(Ref ref) => TranslationRepository(
 
 /// Opens a web page in an in-app browser tab: R1's Duden · DWDS · Wiktionary
 /// · Linguee · Google chips (FR-R1-06). The app makes no request of its own
-/// (BR-PRIV-01); the browser does, because the learner tapped.
+/// (BR-PRIV-01); the browser does, because the learner tapped. False when
+/// it couldn't: `launchUrl` throws on a phone with no browser, and every
+/// link goes through here (#692 ME-13).
 typedef OpenWeb = Future<bool> Function(Uri page);
 
 @riverpod
-OpenWeb openWeb(Ref ref) =>
-    (page) => launchUrl(page, mode: LaunchMode.inAppBrowserView);
+OpenWeb openWeb(Ref ref) => (page) async {
+  try {
+    return await launchUrl(page, mode: LaunchMode.inAppBrowserView);
+  } on Object catch (error) {
+    debugPrint('web: $error');
+    return false;
+  }
+};
 
 /// The phone's German voice: S2's preview (FR-S2-06) and `tts.md`'s fallback.
 /// Kept alive because the plugin reports playback to one instance only.

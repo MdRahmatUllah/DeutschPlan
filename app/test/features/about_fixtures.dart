@@ -22,18 +22,20 @@ final List<Licence> artboardPackages = <Licence>[
 
 /// M9 and M8 as the artboards draw them: version 1.0.0 (build 41), the
 /// course of 21 Sep 2026, and six packages.
-List<Override> aboutStub({bool dated = true}) => <Override>[
+List<Override> aboutStub({bool dated = true, bool facts = true}) => <Override>[
   appVersionProvider.overrideWith(
     (ref) async => (version: '1.0.0', build: '41'),
   ),
   contentFactsProvider.overrideWith(
-    (ref) async => (
-      version: '202609210900',
-      builtAt: dated ? DateTime(2026, 9, 21, 9) : null,
-      words: 5594,
-      grammar: 182,
-      sentences: 11188,
-    ),
+    (ref) async => !facts
+        ? throw StateError('no course to read')
+        : (
+            version: '202609210900',
+            builtAt: dated ? DateTime(2026, 9, 21, 9) : null,
+            words: 5594,
+            grammar: 182,
+            sentences: 11188,
+          ),
   ),
   packageLicencesProvider.overrideWith((ref) async => artboardPackages),
 ];
