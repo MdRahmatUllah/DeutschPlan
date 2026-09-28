@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 15:49
+last-seen: 2026-09-28 15:51
 last-read: 2431
 
 ## Now
 
-#1057 completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) — claimed 2026-09-28 15:49.
+#1057 in review as PR #1058: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
