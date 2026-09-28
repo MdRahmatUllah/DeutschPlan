@@ -608,6 +608,30 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await tester.pumpAndSettle();
     });
 
+    testWidgets('#694 CC-3 an action that fails to save says so, and the '
+        'word stays; Retry writes it', (tester) async {
+      await pump(tester);
+      await tester.runAsync(
+        () => db.customStatement(
+          'CREATE TEMP TRIGGER fail_known BEFORE INSERT ON review_log '
+          "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+        ),
+      );
+      await longPress(tester, l10n.backlogMarkKnown);
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+      expect(word('das Haus'), findsOneWidget);
+
+      await tester.runAsync(
+        () => db.customStatement('DROP TRIGGER fail_known'),
+      );
+      await tester.tap(find.text(l10n.retry));
+      await settle(tester);
+      expect(word('das Haus'), findsNothing);
+      expect(find.text(l10n.studyKnown('das Haus')), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('#679 the Undo still works once T4 is closed', (tester) async {
       // The bar outlives T4, and T4's notifier goes with the screen.
       await pump(tester);

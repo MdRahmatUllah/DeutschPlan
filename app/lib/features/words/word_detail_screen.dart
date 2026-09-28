@@ -26,6 +26,7 @@ import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart' show daysBetween;
 import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/features/words/word_row.dart';
@@ -111,8 +112,18 @@ class ExampleTranslations extends _$ExampleTranslations {
   @override
   Map<String, String> build(String uid) => const <String, String>{};
 
+  /// The run under way: a second tap on *Translate* while it runs waits
+  /// for it, and translates nothing twice (#694 CC-3).
+  Future<void>? _running;
+
   /// Runs [germans] through the translator, cached, into [to].
-  Future<void> translate(List<String> germans, {required String to}) async {
+  Future<void> translate(List<String> germans, {required String to}) =>
+      _running ??= _translate(
+        germans,
+        to: to,
+      ).whenComplete(() => _running = null);
+
+  Future<void> _translate(List<String> germans, {required String to}) async {
     final translations = ref.read(translationRepositoryProvider);
     final found = <String, String>{...state};
     for (final german in germans) {
@@ -686,7 +697,13 @@ class _ActionsState extends ConsumerState<_Actions> {
     final container = ProviderScope.containerOf(context, listen: false);
     void replan() => container.invalidate(todayPlanProvider);
     try {
-      final undo = await action(ref.read(wordActionsProvider));
+      // A write that fails says so, with Retry and Export (#694 CC-3).
+      late Undo undo;
+      final written = await guardWrite(context, () async {
+        undo = await action(ref.read(wordActionsProvider));
+        return true;
+      });
+      if (!written) return;
       replan();
       if (!mounted) return;
       unawaited(

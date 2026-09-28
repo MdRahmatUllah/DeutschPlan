@@ -21,7 +21,6 @@ import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
-import 'package:sogda/router/routes.dart';
 
 part 'grammar_practice_screen.g.dart';
 
@@ -177,21 +176,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
   }
 
   /// Every topic done: T6 if that completes the day, else back.
-  Future<void> _finish() async {
-    final today = _day;
-    ref.invalidate(studyNextProvider(today));
-    // Listened to while it answers: read alone, an auto-disposing provider
-    // can go before its future does.
-    final hold = ref.listenManual(studyNextProvider(today), (_, _) {});
-    final next = await ref.read(studyNextProvider(today).future);
-    hold.close();
-    if (!mounted) return;
-    if (next.dayDone && next.sentences == 0) {
-      DayCompleteRoute.instead(context, today);
-    } else {
-      unawaited(Navigator.of(context).maybePop());
-    }
-  }
+  Future<void> _finish() => leaveSession(context, ref, _day);
 
   void _seeRule(TopicWithState topic) => unawaited(
     Adaptive.showSheet<void>(

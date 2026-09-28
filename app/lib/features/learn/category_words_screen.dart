@@ -26,10 +26,15 @@ part 'category_words_screen.g.dart';
 /// L6's rows: every word of category [id], suspended ones included, by step,
 /// then frequency, then reading order (FR-L6-01).
 @riverpod
-Stream<List<StepWord>> categoryWords(Ref ref, int id) => ref
-    .watch(wordRepositoryProvider)
-    .watchCategory(id)
-    .map((words) => withMeanings(ref, words));
+Stream<List<StepWord>> categoryWords(Ref ref, int id) {
+  // Watched (#694 CC-4): a change in Settings re-emits the list at once,
+  // not at the next write to its words.
+  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+  return ref
+      .watch(wordRepositoryProvider)
+      .watchCategory(id)
+      .map((words) => withMeanings(meaning, words));
+}
 
 /// L6's level chips: All · A1 · A2 · B1 · B2+, where B2+ is B2 to C2.
 enum LevelFilter {

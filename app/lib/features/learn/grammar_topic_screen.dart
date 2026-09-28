@@ -18,6 +18,7 @@ import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/domain/plan_engine.dart' show daysBetween;
 import 'package:sogda/features/learn/step_grammar.dart';
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -259,7 +260,11 @@ class _MarkLearnedState extends ConsumerState<_MarkLearned> {
     if (_busy) return;
     setState(() => _busy = true);
     try {
-      await ref.read(grammarRatingServiceProvider).markLearned(widget.uid);
+      // A write that fails says so, with Retry and Export (#694 CC-3).
+      await guardWrite(context, () async {
+        await ref.read(grammarRatingServiceProvider).markLearned(widget.uid);
+        return true;
+      });
     } finally {
       if (mounted) setState(() => _busy = false);
     }
