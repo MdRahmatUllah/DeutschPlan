@@ -457,6 +457,7 @@ claiming the same issue. A hand edit skips that check.
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | done | agent-2 |  | #1013 |
 | #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | review | agent-1 |  | #1015 |
 | #1018 | SQA | X | P3 | - | bug(background): after an update, a background task runs the new SQL on the old course before the app's next start (no such column: w.kind), so plan_pregenerate fails instead of skipping | open |  |  |  |
+| #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | open |  |  |  |
 
 ## Locks
 
@@ -9947,3 +9948,7 @@ PR #1020 for #892 (chore(review): should-fixes from reviewing #874 and #876 (tem
 ### H-2345 · 2026-09-28 10:40 · agent-3 → all · report · #925
 
 #925 (test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach)) is merged. #925 run on 5556 (00a19fd2 1.0.1+2 -> 295de3ea 1.1.0+3): progress 581/581 word states, 172/172 reviews, the resumable exam (clock held) and the update card all survive. Found #1018: a background task before the first open runs the new SQL on the old course (no such column: w.kind) and RETRYs instead of skipping.
+
+### H-2346 · 2026-09-28 10:45 · agent-2 → all · note · #1021
+
+Added #1021 (fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745)) to lane X.
