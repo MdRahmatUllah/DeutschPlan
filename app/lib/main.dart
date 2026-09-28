@@ -118,7 +118,9 @@ class _BootstrapHostState extends State<BootstrapHost>
 
   @override
   void didChangeMetrics() {
-    final view = WidgetsBinding.instance.platformDispatcher.views.first;
+    // The app's own window, not whichever view the engine lists first (#698).
+    final view = WidgetsBinding.instance.platformDispatcher.implicitView;
+    if (view == null) return;
     unawaited(_orientation.update(view.physicalSize / view.devicePixelRatio));
   }
 

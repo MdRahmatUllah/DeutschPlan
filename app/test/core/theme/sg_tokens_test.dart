@@ -316,6 +316,28 @@ void main() {
       expect(mid.shape.card, a.shape.card);
       expect(mid.motion.quick, a.motion.quick);
     });
+
+    final themes = <String, (ThemeData Function(), SgTokens)>{
+      'light': (AppTheme.light, SgTokens.light()),
+      'dark': (AppTheme.dark, SgTokens.dark()),
+      'glass': (AppTheme.glass, SgTokens.glass()),
+      'glass dark': (() => AppTheme.glass(dark: true), SgTokens.glassDark()),
+    };
+
+    test('#698 each theme is built once, not on every SogdaApp build', () {
+      for (final MapEntry(key: name, value: (theme, _)) in themes.entries) {
+        expect(theme(), same(theme()), reason: name);
+      }
+      expect(AppTheme.glass(dark: true), isNot(same(AppTheme.glass())));
+    });
+
+    test("#698 the scheme's error is the wrong-answer text colour, 4.5:1 as "
+        'text, not the Coral fill at 3.0:1', () {
+      for (final MapEntry(key: name, value: (theme, tokens))
+          in themes.entries) {
+        expect(theme().colorScheme.error, tokens.color.wrongText, reason: name);
+      }
+    });
   });
 }
 

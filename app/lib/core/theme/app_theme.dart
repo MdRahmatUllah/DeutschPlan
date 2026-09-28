@@ -12,14 +12,20 @@ import 'package:material_ui/material_ui.dart';
 /// Material 3 is *not* given a dynamic colour scheme:
 /// ADR 12 rules it out so the gender colours stay stable.
 abstract final class AppTheme {
-  static ThemeData light() => _build(SgTokens.light());
+  static ThemeData light() => _light;
 
-  static ThemeData dark() => _build(SgTokens.dark());
+  static ThemeData dark() => _dark;
 
   /// [dark] picks the smoked variant; theming.md resolves it from the system
   /// light/dark setting rather than from a separate learner choice.
-  static ThemeData glass({bool dark = false}) =>
-      _build(dark ? SgTokens.glassDark() : SgTokens.glass());
+  static ThemeData glass({bool dark = false}) => dark ? _glassDark : _glass;
+
+  // Each built once: `ColorScheme.fromSeed` works out its tonal palettes, and
+  // SogdaApp asks for two themes on every rebuild (#698).
+  static final ThemeData _light = _build(SgTokens.light());
+  static final ThemeData _dark = _build(SgTokens.dark());
+  static final ThemeData _glass = _build(SgTokens.glass());
+  static final ThemeData _glassDark = _build(SgTokens.glassDark());
 
   static ThemeData _build(SgTokens tokens) {
     final dialog = Color.alphaBlend(tokens.surface.card, tokens.surface.paper);
@@ -37,7 +43,9 @@ abstract final class AppTheme {
       onSecondary: tokens.color.onAccent,
       surface: tokens.surface.card,
       onSurface: tokens.color.ink,
-      error: tokens.color.again,
+      // A Material widget sets its error text in it (a field's errorText):
+      // the text colour, not Coral's fill at 3.0:1 (#698).
+      error: tokens.color.wrongText,
       // fromSeed derives the rest, and its derivations are cold greys that do
       // not belong in Paper & Ink. Every field a Material widget actually
       // reaches for is pinned to a token instead.
@@ -155,14 +163,49 @@ class StillPageTransitions extends PageTransitionsBuilder {
 
 /// #164: iOS's Reduce Motion sets `reduceMotion`, not `disableAnimations`
 /// (`MediaQueryData.disableAnimations` says so), and every "still" in the app
-/// reads the latter: the app root folds the one into the other. Live, as
-/// MediaQuery rebuilds on a change of the accessibility features.
-Widget stillOnReduceMotion(BuildContext context, Widget child) {
-  final data = MediaQuery.of(context);
-  final reduce = View.of(context)
-      .platformDispatcher
-      .accessibilityFeatures
-      .reduceMotion;
-  if (!reduce || data.disableAnimations) return child;
-  return MediaQuery(data: data.copyWith(disableAnimations: true), child: child);
+/// reads the latter: the app root folds the one into the other.
+Widget stillOnReduceMotion(BuildContext context, Widget child) =>
+    _StillOnReduceMotion(child: child);
+
+/// Live (#686 ST-7): `MediaQueryData` has no `reduceMotion`, so the root
+/// MediaQuery doesn't rebuild when only it changes; this hears the change
+/// itself. Always a MediaQuery, so the switch keeps the app's state below.
+class _StillOnReduceMotion extends StatefulWidget {
+  const _StillOnReduceMotion({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_StillOnReduceMotion> createState() => _StillOnReduceMotionState();
+}
+
+class _StillOnReduceMotionState extends State<_StillOnReduceMotion>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() => setState(() {});
+
+  @override
+  Widget build(BuildContext context) {
+    final data = MediaQuery.of(context);
+    final reduce = View.of(context)
+        .platformDispatcher
+        .accessibilityFeatures
+        .reduceMotion;
+    return MediaQuery(
+      data: data.copyWith(disableAnimations: data.disableAnimations || reduce),
+      child: widget.child,
+    );
+  }
 }
