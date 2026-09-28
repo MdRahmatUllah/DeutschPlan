@@ -248,6 +248,7 @@ void main() {
       expect(await db.select(db.reviewLog).get(), isEmpty);
       expect(await state(), isNull);
       expect(await db.select(db.dailyStats).get(), isEmpty);
+      expect(await db.select(db.undoStack).get(), isEmpty, reason: '#871');
       expect(await open(), hasLength(2));
     });
   });

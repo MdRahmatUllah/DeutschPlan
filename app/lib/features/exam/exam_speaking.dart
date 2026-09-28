@@ -173,11 +173,24 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     if (!mounted) return;
     await recorder.stopPlaying();
     final path = await widget.recordingPath();
-    await recorder.start(path);
+    // Heard from before `start`, so a call that takes the microphone while
+    // the recorder starts still holds the time (#892).
+    _interrupted = false;
+    _interruptions = recorder.interrupted.listen((interrupted) {
+      if (mounted) setState(() => _interrupted = interrupted);
+    });
+    try {
+      await recorder.start(path);
+    } on Object {
+      unawaited(_interruptions?.cancel());
+      _interruptions = null;
+      rethrow;
+    }
     widget.onTake();
     if (!mounted) {
       // The task left the screen while the recorder started: stop it, and
       // keep what little it has, as leaving mid-recording does.
+      unawaited(_interruptions?.cancel());
       await recorder.stop();
       widget.onGiven(path);
       return;
@@ -186,14 +199,10 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
       _path = path;
       _mic = _Mic.recording;
       _seconds = 0;
-      _interrupted = false;
       _levels.clear();
     });
     _heard = recorder.levels.listen((level) {
       if (mounted) setState(() => _levels.add(level));
-    });
-    _interruptions = recorder.interrupted.listen((interrupted) {
-      if (mounted) setState(() => _interrupted = interrupted);
     });
     _finishing = null;
     widget.onRecording(_finish);
