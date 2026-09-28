@@ -16,10 +16,15 @@ class SgFocusable extends StatefulWidget {
     required this.onPressed,
     required this.radius,
     required this.child,
+    this.keys = const <ShortcutActivator, VoidCallback>{},
     super.key,
   });
 
   final VoidCallback? onPressed;
+
+  /// Keys of the control's own while it has the focus, as a slider's arrows
+  /// (#1007). With these, a control nobody presses is still a Tab stop.
+  final Map<ShortcutActivator, VoidCallback> keys;
 
   /// The control's drawn corners, which the ring follows. A circle's or a
   /// pill's is half its height or more.
@@ -40,12 +45,18 @@ class _SgFocusableState extends State<SgFocusable> {
     ActivateIntent: CallbackAction<ActivateIntent>(
       onInvoke: (_) => widget.onPressed?.call(),
     ),
+    _Key: CallbackAction<_Key>(
+      onInvoke: (intent) => widget.keys[intent.activator]?.call(),
+    ),
   };
 
   @override
   Widget build(BuildContext context) => FocusableActionDetector(
-    enabled: widget.onPressed != null,
+    enabled: widget.onPressed != null || widget.keys.isNotEmpty,
     includeFocusSemantics: false,
+    shortcuts: <ShortcutActivator, Intent>{
+      for (final activator in widget.keys.keys) activator: _Key(activator),
+    },
     actions: _actions,
     onShowFocusHighlight: (on) => setState(() => _ring = on),
     // Always present, so the tree under it keeps its shape as the focus comes
@@ -76,4 +87,11 @@ class _Ring extends CustomPainter {
 
   @override
   bool shouldRepaint(_Ring old) => old.colour != colour || old.radius != radius;
+}
+
+/// One of [SgFocusable.keys], pressed.
+class _Key extends Intent {
+  const _Key(this.activator);
+
+  final ShortcutActivator activator;
 }

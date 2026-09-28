@@ -153,3 +153,23 @@ def test_630_the_shipped_course_has_its_notes_and_its_named_rows_fixed(tmp_path)
     }
     assert suffixes == [(None,)]
     assert gone == []
+
+
+def test_974_a_set_whose_gloss_contrasts_its_words_is_a_comparison(tmp_path):
+    """#974: "sparsam / geizig", "thrifty (positive) vs. stingy (negative)",
+    is listed and compared, never studied as one word."""
+    copy = tmp_path / "content.db"
+    shutil.copy(SHIPPED, copy)
+    db = sqlite3.connect(copy)
+    try:
+        taught = db.execute(
+            "SELECT german FROM words WHERE kind = 'vocab' "
+            "AND german LIKE '% / %' AND english LIKE '% vs%'"
+        ).fetchall()
+        compared = db.execute(
+            "SELECT COUNT(*) FROM words WHERE kind = 'compare' AND german LIKE '% / %'"
+        ).fetchone()
+    finally:
+        db.close()
+    assert taught == []
+    assert compared == (7,)

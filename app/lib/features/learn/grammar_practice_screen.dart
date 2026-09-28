@@ -847,7 +847,7 @@ class _SpotView extends StatelessWidget {
         const SizedBox(height: 12),
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(44),
           children: <Widget>[
             for (var i = 0; i < words.length; i++)
               _WordChip(
@@ -927,7 +927,7 @@ class _OrderViewState extends State<_OrderView> {
           ),
           child: Wrap(
             spacing: 8,
-            runSpacing: 8,
+            runSpacing: AdaptiveTapTarget.runSpacing(44),
             children: <Widget>[
               for (final i in _placed)
                 _WordChip(
@@ -942,7 +942,7 @@ class _OrderViewState extends State<_OrderView> {
         const SizedBox(height: 12),
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(44),
           children: <Widget>[
             for (var i = 0; i < widget.chips.length; i++)
               if (!_placed.contains(i))

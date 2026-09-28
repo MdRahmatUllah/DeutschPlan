@@ -2671,6 +2671,29 @@ words:
     why: "#924: names the sense of the row #635 merged into it"
     english: "without prejudice to / notwithstanding (+ genitive)"
     bangla: "ক্ষতি না করে / সত্ত্বেও"
+  # #974: comparisons whose headword separates its words with " / ", which
+  # PIPE-10's shape reads as a word; the gloss contrasts them (" vs").
+  "99b892dd6271e0d8":
+    why: "#974: a comparison (placement vs. position), not a word to learn"
+    kind: compare
+  "38631ae25d9faec7":
+    why: "#974: a comparison (self-assured vs. arrogant vs. supercilious), not a word to learn"
+    kind: compare
+  "d050f17b659bbedf":
+    why: "#974: a comparison (persistent vs. pig-headed), not a word to learn"
+    kind: compare
+  "9b23a17c2ecca108":
+    why: "#974: a comparison (compromise vs. rotten compromise), not a word to learn"
+    kind: compare
+  "e16076e113076c99":
+    why: "#974: a comparison (reform vs. cut), not a word to learn"
+    kind: compare
+  "0ee4701a8aa8c679":
+    why: "#974: a comparison (thrifty vs. stingy), not a word to learn"
+    kind: compare
+  "204f8f58995eb0ef":
+    why: "#974: a comparison (north vs. south), not a word to learn"
+    kind: compare
 
 # Grammar topics, keyed by their uid as built (`grammar_topics.uid`). An
 # entry sets a topic's `rule`, `example_de`, `example_en` or `watch_out`, never
