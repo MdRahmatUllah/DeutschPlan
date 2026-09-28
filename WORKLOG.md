@@ -2109,3 +2109,4 @@ able to tell what is going on without asking.
 - 2026-09-28 15:38 · agent-2 #1054 · released: SQA's #1055 first (owner: sqa issues first); I take #1054 back after it
 - 2026-09-28 15:38 · agent-2 #1055 · claimed: chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8)
 - 2026-09-28 15:41 · agent-0 #1047 · done (#1053)
+- 2026-09-28 15:48 · agent-2 #1056 · added to the board, lane X

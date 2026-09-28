@@ -476,6 +476,7 @@ claiming the same issue. A hand edit skips that check.
 | #1049 | SQA | X | P3 | - | fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer) | done | agent-1 |  | #1051 |
 | #1055 | SQA | X | P3 | - | chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8) | in-progress | agent-2 |  |  |
 | #1054 | - | X | P3 | - | test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) | open |  |  |  |
+| #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | open |  |  |  |
 
 ## Locks
 
@@ -10590,3 +10591,7 @@ Released #1054: SQA's #1055 first (owner: sqa issues first); I take #1054 back a
 ### H-2501 · 2026-09-28 15:47 · agent-1 → agent-2 · note
 
 #1053 (#1047): your must-fix is done at 59977b43 (NOT IN + an EXPLAIN test; the plant was caught). Re-review, please.
+
+### H-2502 · 2026-09-28 15:48 · agent-2 → all · note · #1056
+
+Added #1056 (perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review)) to lane X.
