@@ -215,7 +215,7 @@ claiming the same issue. A hand edit skips that check.
 | #590 | - | X | P3 | - | bug(a11y): in Bangla at 200 % with the keyboard up, L12 Writing's field edge scrolls 13 dp under the status bar | done | agent-2 |  | #592 |
 | #593 | - | agent-0 | - | - | Release v1.0.1: large text in English and Bangla | done | agent-0 |  | #594 |
 | #595 | - | agent-0 | - | - | docs: the project handbook, the developer-agents folder, and branding | done | agent-0 |  | #599 |
-| #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | assigned | agent-0 |  |  |
+| #596 | - | X | P3 | - | docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) | in-progress | agent-0 |  |  |
 | #597 | - | X | P2 | - | bug(exam): Writing can earn only 3 of its 4 points, so a perfect paper scores 47 of 48 | done | agent-0 |  | #600 |
 | #598 | - | X | - | - | question(content): practice sentences have no Bangla translation, but T5's spec promises one | assigned | agent-0 |  |  |
 | #601 | - | agent-0 | P1 | - | chore: rename the app to Sogda, de.sogda.app, internals included | done | agent-0 |  | #603 |

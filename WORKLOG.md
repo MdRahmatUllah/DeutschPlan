@@ -1884,3 +1884,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:37 · agent-1 #747 · done (#968)
 - 2026-09-28 03:37 · agent-1 #748 · done (#968)
 - 2026-09-28 03:37 · agent-1 #980 · done (#968)
+- 2026-09-28 03:38 · agent-0 #596 · claimed: docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595)

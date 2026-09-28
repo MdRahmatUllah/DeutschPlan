@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 03:29
+last-seen: 2026-09-28 03:38
 last-read: 1870
 
 ## Now
 
-#684 in review as PR #984: answer review threads; re-run the gate if main moved, then merge.
+#596 docs: reconcile 13 stale spec statements with the code (found writing the handbook, #595) — claimed 2026-09-28 03:38.
 
 ## Next
 
