@@ -13,6 +13,7 @@
   storeFile=C:/path/to/upload-keystore.jks
   ```
   Without it, a release build is signed with the debug key, so builds and device checks work before the keystore exists. Play refuses a debug-signed upload.
+- **Gradle** comes from the wrapper, pinned to its distribution's SHA-256 (`distributionSha256Sum` in `android/gradle/wrapper/gradle-wrapper.properties`, #705). Gradle refuses a download that doesn't match, and an upgrade takes the new "Complete (-all)" checksum from gradle.org/release-checksums.
 - **Build and check:** `python tools/release_android.py`. In an agent's worktree the emulator is held first (an app build takes the lock); the owner's checkout has no lock to take (#707). `--check` checks the last build without building; `--require-upload-key` fails a bundle that isn't signed with the owner's upload key (use it for the build that goes to Play).
   - **Libraries:** `libflutter.so` and `libapp.so` must be in the bundle for every ABI it ships (`armeabi-v7a`, `arm64-v8a`, `x86_64`: the bundle has no ABI filter), so a half-built bundle can't pass the 16 KB check on nothing (#697, #858).
   - It builds with `flutter build appbundle --release --obfuscate --split-debug-info=build/symbols`, into `app/build/app/outputs/bundle/release/app-release.aab`.

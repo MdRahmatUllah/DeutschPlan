@@ -13,6 +13,7 @@ import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/features/me/settings_screen.dart';
@@ -675,6 +676,34 @@ void main() {
       closeTo(500, 1e-9),
     );
     expect(Fsrs(desiredRetention: 0.97).intervalDays(10), 3);
+  });
+
+  test('FR-M3-01 BR-CONTENT-02 BR-CONTENT-04 #867 #886 sums over every word '
+      'rated and not suspended that is revised: not a removed word or a '
+      'note', () async {
+    final content = ContentFixture.write(
+      '${tempDir('sg_m3_course').path}/content.db',
+    ).file;
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
+    );
+    // A row #630 made a lesson note after the learner had rated it.
+    await db.customStatement(
+      "UPDATE c.words SET kind = 'note' WHERE uid = '${ContentFixture.tuer}'",
+    );
+    await db.customStatement('''
+INSERT INTO word_state (word_uid, status, stability, reps) VALUES
+  ('${ContentFixture.haus}', 'learning', 2.5, 1),
+  ('custom:1', 'done', 30, 6),
+  ('${ContentFixture.strasse}', 'suspended', 12, 3),
+  ('custom:2', 'todo', 0, 0),
+  ('${ContentFixture.tuer}', 'learning', 4, 2),
+  ('uid-removed', 'done', 40, 5)
+''');
+    expect(await WordRepository(db, settings).learnedStabilities(), <double>[
+      30,
+      2.5,
+    ]);
   });
 
   test("#409 M3's translation row reads the one build the manifest offers, "

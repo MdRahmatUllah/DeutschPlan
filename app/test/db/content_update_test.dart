@@ -754,7 +754,8 @@ void main() {
       expect(await updater.aliases(), isEmpty, reason: 'no kept manifest');
     });
 
-    test('every user.db column named for a word uid is moved', () async {
+    test('every user.db column named for a word uid, or a grammar uid '
+        '(#808), is moved', () async {
       // A table added later with a word_uid column, and left out of the
       // list, would lose its rows on the next gloss fix.
       final tables = await db
@@ -764,6 +765,7 @@ void main() {
           )
           .get();
       final found = <(String, String)>{};
+      final grammar = <(String, String)>{};
       for (final table in tables) {
         final name = table.read<String>('name');
         for (final column
@@ -772,10 +774,72 @@ void main() {
           if (columnName == 'word_uid' || columnName == 'matched_uid') {
             found.add((name, columnName));
           }
+          if (columnName == 'grammar_uid') grammar.add((name, columnName));
         }
       }
       expect(found, isNotEmpty);
       expect(ContentUpdater.aliasedColumns.toSet(), containsAll(found));
+      expect(grammar, isNotEmpty);
+      expect(
+        ContentUpdater.aliasedGrammarColumns.toSet(),
+        containsAll(grammar),
+      );
+    });
+
+    test('#808 a renamed grammar topic keeps its schedule, its practice log '
+        'and its exam refs', () async {
+      const old = 'uid-topic';
+      const renamed = 'uid-topic-renamed';
+      await db.customStatement(
+        'INSERT INTO grammar_state (grammar_uid, status, reps) '
+        "VALUES ('$old', 'learning', 4)",
+      );
+      await db.customStatement(
+        'INSERT INTO grammar_practice_log (grammar_uid, practised_at, items, '
+        "correct) VALUES ('$old', '2026-01-02T08:00:00Z', 5, 4)",
+      );
+      await db.customStatement(
+        'INSERT INTO exam_attempts (id, sublevel_code, seed, started_at) '
+        "VALUES (1, 'A1.1', 1, '2026-01-02T08:00:00Z')",
+      );
+      await db.customStatement(
+        'INSERT INTO exam_answers (attempt_id, ord, section, item_ref, prompt) '
+        "VALUES (1, 1, 'grammar', '$old#1', '{}'), "
+        "(1, 2, 'grammar', '$old#12', '{}'), "
+        "(1, 3, 'grammar', 'uid-other#1', '{}'), "
+        "(1, 4, 'meaning', '${ContentFixture.haus}', '{}')",
+      );
+      publish(
+        course(
+          version: '202602020000',
+          aliases: <String, String>{old: renamed},
+        ),
+      );
+      await updater.runIfNeeded();
+
+      for (final (table, column) in ContentUpdater.aliasedGrammarColumns) {
+        expect(await count(table, column, old), 0, reason: '$table.$column');
+        expect(
+          await count(table, column, renamed),
+          1,
+          reason: '$table.$column',
+        );
+      }
+      final state = await db
+          .customSelect(
+            "SELECT reps FROM grammar_state WHERE grammar_uid = '$renamed'",
+          )
+          .getSingle();
+      expect(state.read<int>('reps'), 4, reason: 'the schedule itself moved');
+      final refs = await db
+          .customSelect('SELECT item_ref FROM exam_answers ORDER BY ord')
+          .get();
+      expect(refs.map((row) => row.read<String>('item_ref')), <String>[
+        '$renamed#1',
+        '$renamed#12',
+        'uid-other#1',
+        ContentFixture.haus,
+      ]);
     });
   });
 

@@ -117,6 +117,29 @@ class TestBoundary:
         assert (split.weeks_in_first, split.weeks_in_second) == (2, 2)
 
 
+class TestShippedBoundary:
+    """#923: once a course has shipped, its boundary weeks are kept."""
+
+    def test_923_dropping_rows_leaves_every_other_words_step(self):
+        every = words("B2", {1: 10, 2: 10, 3: 10, 4: 10})
+        shipped = assign_sublevels(every)["B2"].boundary_week
+        steps = {id(word): word.sublevel_code for word in every}
+
+        # Week 4's rows go: split anew, the middle moves and week 2 with it,
+        # into B2.2, under learners who finished B2.1.
+        rest = every[:30]
+        assert assign_sublevels(rest)["B2"].boundary_week != shipped
+        split = assign_sublevels(rest, {"B2": shipped})["B2"]
+        assert split.boundary_week == shipped
+        assert all(word.sublevel_code == steps[id(word)] for word in rest)
+
+    def test_923_a_kept_boundary_that_empties_a_step_says_how_to_move_it(self):
+        with pytest.raises(SplitError, match=r"B2\.2 with no words.*--move-boundaries"):
+            split_level(words("B2", {1: 4, 2: 4}), "B2", 3)
+        with pytest.raises(SplitError, match=r"B2\.1 with no words"):
+            split_level(words("B2", {2: 4, 3: 4}), "B2", 2)
+
+
 class TestRefusals:
     def test_a_level_with_no_words_says_which_one(self):
         with pytest.raises(SplitError, match=r"B2 has no words"):

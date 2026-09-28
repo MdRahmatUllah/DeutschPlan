@@ -218,9 +218,10 @@ quizPool:
 
 -- FR-M3-01: what Settings' retention estimate sums over — every word that has
 -- been rated and is not suspended. One never rated has no stability, and asks
--- for no review until it has one. A word of the learner's own or one still in
--- the course (`inCourse` in plan_store.dart): not one a content update removed
--- (BR-CONTENT-02), nor a note (BR-CONTENT-04), which ask for no review (#867).
+-- for no review until it has one. Only what is revised: the learner's own
+-- words and the course's words to learn, as plan_store's inCourse, not a word
+-- a content update removed (BR-CONTENT-02, #867) or a note (BR-CONTENT-04,
+-- #886).
 stabilitiesOfLearned:
   SELECT s.stability FROM word_state s
   WHERE s.status <> 'suspended' AND s.stability > 0

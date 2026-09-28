@@ -281,7 +281,7 @@ Reminders use an inexact alarm, so no exact-alarm permission is needed.
 | Reminder | The learner's time (19:30 by default), on study days only, a week scheduled ahead | Shows today's plan; with *Only when there is something to do* on, none on a finished day or one with nothing due |
 | `plan_pregenerate` | 00:05 local, daily | Plans the day, so the widget and the reminder are right, and rolls the week of reminders on |
 | `reminder_compose` | 10 minutes before the reminder | Writes the plan into the reminder, or cancels it |
-| `widget_refresh` | Hourly, and after every session | Rewrites the widget's snapshot |
+| `widget_refresh` | Hourly while a widget is placed, and after every session | Rewrites the widget's snapshot |
 
 The Android widget comes in two sizes (2×2, 4×2), follows the phone's light
 or dark mode, and draws the glass theme as its opaque fallback.
