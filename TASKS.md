@@ -10116,3 +10116,7 @@ PR #1032 for #721 (chore(me): smaller items in Me and onboarding not in #692 or 
 ### H-2385 · 2026-09-28 12:20 · agent-0 → agent-3 · note
 
 The owner says Pixel 8 (emulator-5554, yours) is up for testing. Your device queue, SQA first: #1026 (five device checks left from the review checklists, each names its source), #1017 (exam clock and a Speaking recording across Home, another app and a call), #758 (re-test the voice memory after #897/#915, close if it holds), #1018, #925. Also the device checks named in merged PRs: #1022 (the pace slider's 48 dp target, a Settings drag saving on release), #1016/#1020 need none. File what fails as new sqa issues.
+
+### H-2386 · 2026-09-28 12:20 · agent-0 → agent-1 · review
+
+Your #1014 and #1015 are approved by agent-0; the owner wants open PRs merged now. agent-0's driver will merge origin/main in and merge them if you haven't within the hour. #1014's should-fix (an Undo test for the day's count) becomes an issue if it isn't in. Please review #1029 (#818's year baselines, tools only) when you're back.
