@@ -245,6 +245,27 @@ class TestGrammar:
             "shipped; split anew it would start at topic 4 (--move-boundaries)"
         ]
 
+    @pytest.mark.parametrize("at", [0, 1])
+    def test_970_a_reordered_level_stops_the_build_naming_each_move(self, at):
+        # Agent-1's case on #1000: B1 shipped 4 + 3, and t5 put first (or
+        # second) would have moved the shipped B1.1 topics after it into
+        # B1.2, under a line that said "kept".
+        shipped = {f"u{i}": "B1.1" if i < 4 else "B1.2" for i in range(7)}
+        rows = self.grammar("B1", 7)
+        rows.insert(at, rows.pop(5))
+        with pytest.raises(SplitError) as error:
+            split_grammar(rows, shipped)
+        lines = str(error.value).splitlines()
+        assert lines[: 4 - at] == [
+            f"grammar topic moved: 't{i}' B1.1 -> B1.2" for i in range(at, 4)
+        ]
+        assert f"would move {4 - at} topic(s)" in lines[4 - at]
+
+    def test_970_a_level_with_no_shipped_x1_topic_left_stops_the_build(self):
+        shipped = {f"u{i}": "B1.1" if i < 4 else "B1.2" for i in range(7)}
+        with pytest.raises(SplitError, match=r"leave B1\.1 with no topics"):
+            split_grammar(self.grammar("B1", 7)[4:], shipped)
+
     def test_BR_COURSE_03_split_by_count_keeping_teaching_order(self):
         rows = self.grammar("A1", 7)
         split_grammar(rows)
