@@ -35,7 +35,12 @@ CREATE TABLE enrollments (
   started_on      TEXT NOT NULL,
   daily_new       INTEGER NOT NULL,
   study_days_mask INTEGER NOT NULL,
-  completed_on    TEXT
+  completed_on    TEXT,
+  -- #1047: how the enrollment ended, recorded then, as the words can't tell
+  -- later (a Reset word, a content update): 1, left by switching part-way,
+  -- with words never planned; 0, finished by the plan. NULL: open, or ended
+  -- before v4, which L2 reads by today's words (#1028).
+  left_part_way   INTEGER
 );
 
 -- BR-COURSE-04: at most one open enrollment, which is the active step. Unique

@@ -294,7 +294,8 @@ void main() {
       NativeDatabase(File('${support.path}/user.sqlite')),
     );
     for (final insert in <String>[
-      "INSERT INTO enrollments VALUES ('A1.1', '2026-03-02', 7, 127, NULL)",
+      "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+          "study_days_mask, completed_on) VALUES ('A1.1', '2026-03-02', 7, 127, NULL)",
       'INSERT INTO word_state (word_uid, status, introduced_on, due, '
           'stability, difficulty, reps, lapses, fsrs_state, last_review, '
           "card_mode) VALUES ('w1', 'learning', '2026-03-02', '2026-09-30', "

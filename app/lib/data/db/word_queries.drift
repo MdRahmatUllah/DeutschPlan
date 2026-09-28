@@ -166,6 +166,7 @@ stepProgress:
       ORDER BY a.finished_at, a.id LIMIT 1) AS passed_seed,
     e.started_on AS started_on,
     e.completed_on AS completed_on,
+    e.left_part_way AS left_part_way,
     e.daily_new AS daily_new,
     e.study_days_mask AS study_days_mask
   FROM sublevels sl
