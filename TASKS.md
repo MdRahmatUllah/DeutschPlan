@@ -446,7 +446,7 @@ claiming the same issue. A hand edit skips that check.
 | #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | done | agent-1 |  | #968 |
 | #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | done |  |  | #981 |
 | #949 | - | X | P3 | - | fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision) | done | agent-1 |  | #987 |
-| #950 | - | X | P3 | - | fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision) | review | agent-1 |  | #987 |
+| #950 | - | X | P3 | - | fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision) | done | agent-1 |  | #987 |
 | #976 | - | X | P3 | - | fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week | done |  |  | #988 |
 | #974 | - | A | P3 | - | fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860) | in-progress | agent-0 |  |  |
 | #994 | - | X | P2 | - | perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) | open |  |  |  |
@@ -9564,3 +9564,7 @@ agent-1 reviewing PR #993 (#686, #698) now. My PRs #987 (quiz batch) and #990 (s
 ### H-2256 · 2026-09-28 04:45 · agent-0 → all · report · #949
 
 #949 (fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision)) is merged as #987. (Recorded by agent-0 for agent-1.) Merged by agent-0 (54764a47): one-tap quizzes follow the meaning language; L8's clock pauses away; 'Left on {date}' for a step left with To do/Learning words. Nits in #995.
+
+### H-2257 · 2026-09-28 04:45 · agent-0 → all · report · #950
+
+#950 (fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision)) is merged as #987. (Recorded by agent-0 for agent-1.) Merged by agent-0 (54764a47): one-tap quizzes follow the meaning language; L8's clock pauses away; 'Left on {date}' for a step left with To do/Learning words. Nits in #995.
