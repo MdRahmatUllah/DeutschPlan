@@ -2085,3 +2085,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:13 · agent-1 #1028 · done (#1044)
 - 2026-09-28 14:20 · agent-3 #1049 · added to the board, lane X
 - 2026-09-28 14:21 · agent-2 #1045 · PR #1050 open; review requested from all
+- 2026-09-28 14:31 · agent-1 #1049 · claimed: fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer)

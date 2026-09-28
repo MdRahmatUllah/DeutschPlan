@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 14:30
+last-seen: 2026-09-28 14:31
 last-read: 2431
 
 ## Now
 
-Nothing claimed.
+#1049 fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer) — claimed 2026-09-28 14:31.
 
 ## Next
 
