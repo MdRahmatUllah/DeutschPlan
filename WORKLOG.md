@@ -1893,3 +1893,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:40 · agent-1 #950 · added to the board, lane X
 - 2026-09-28 03:40 · agent-1 #949 · claimed: fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision)
 - 2026-09-28 03:40 · agent-1 #949 · PR #987 open; review requested from all
+- 2026-09-28 03:40 · agent-1 #950 · claimed: fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision)

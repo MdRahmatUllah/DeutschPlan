@@ -6,7 +6,7 @@ last-read: 2200
 
 ## Now
 
-#949 in review as PR #987: answer review threads; re-run the gate if main moved, then merge.
+#950 fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision) — claimed 2026-09-28 03:40.
 
 ## Next
 
