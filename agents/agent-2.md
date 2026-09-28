@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 16:17
+last-seen: 2026-09-28 16:18
 last-read: 2511
 
 ## Now
 
-#1055 chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8) — claimed 2026-09-28 15:38.
+#1055 in review as PR #1061: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
