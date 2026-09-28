@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 20:52
+last-seen: 2026-09-28 21:08
 last-read: 2525
 
 ## Now
 
-#1064 fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) — claimed 2026-09-28 20:52.
+#1064 in review as PR #1065: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
