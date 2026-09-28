@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 16:18
+last-seen: 2026-09-28 16:30
 last-read: 2511
 
 ## Now
 
-#1060 fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) — claimed 2026-09-28 16:18.
+#1060 in review as PR #1062: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
