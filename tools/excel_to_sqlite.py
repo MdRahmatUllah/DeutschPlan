@@ -24,8 +24,10 @@ from openpyxl import load_workbook
 from cloze import examples_without_their_word
 from content_manifest import (
     MANIFEST_NAME,
+    PreviousBuild,
     build_manifest,
     diff,
+    grammar_key,
     link_uids,
     previous_build,
     word_key,
@@ -53,6 +55,7 @@ from pipeline_steps import (
     split_articles,
     LevelSplit,
     assign_sublevels,
+    split_level,
     check_every_step_has_words,
     resolve_grammar_levels,
     split_grammar,
@@ -605,11 +608,15 @@ def correct(sources: list[SourceBook], corrections: dict[str, dict]) -> None:
         print(f"corrections: {len(corrections)} applied", file=sys.stderr)
 
 
-def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
+def derive(
+    sources: list[SourceBook], boundaries: dict[str, int] | None = None
+) -> dict[str, LevelSplit]:
     """Everything between reading and writing: the step split, so far.
 
     Runs over all workbooks at once, because a level can be spread across two
     of them and the boundary is a property of the level, not of the file.
+    [boundaries] is the shipped course's boundary week per level (#923),
+    kept.
     """
     words = [word for source in sources for word in source.words]
 
@@ -633,8 +640,21 @@ def derive(sources: list[SourceBook]) -> dict[str, LevelSplit]:
         if levels_here:
             resolve_grammar_levels(source.grammar, levels_here[-1])
 
-    splits = assign_sublevels(words)
+    splits = assign_sublevels(words, boundaries)
     check_every_step_has_words(words)
+    # #923: a kept boundary the level's middle has moved away from, so the
+    # author knows a split anew is there to be asked for.
+    _report(
+        [
+            f"boundary kept: {split.second} starts at week "
+            f"{split.boundary_week}, as shipped; split anew it would start at "
+            f"week {week} (--move-boundaries)"
+            for level, split in splits.items()
+            if level in (boundaries or {})
+            and (week := split_level(words, level).boundary_week)
+            != split.boundary_week
+        ]
+    )
 
     grammar = [row for source in sources for row in source.grammar]
     split_grammar(grammar)
@@ -700,6 +720,8 @@ UNCAPPED_WARNINGS = frozenset(
         "removed",
         "example without its word",
         "cross-level duplicate",
+        "stale link",
+        "boundary kept",
     }
 )
 
@@ -764,38 +786,92 @@ def collect(
 
 
 def link_previous(
-    words: list[Word], previous_dir: Path, allow_removed: bool
-) -> tuple[dict[str, str], dict | None]:
-    """PIPE-09 (#648): links each changed uid to the one its word has now.
+    inputs: BuildInputs,
+    previous: PreviousBuild,
+    links: dict[str, dict],
+    allow_removed: bool,
+) -> dict[str, str]:
+    """PIPE-09 (#648): links each changed uid to the one its word, or its
+    grammar topic (#808), has now. Returns the alias map for the manifest.
 
     Before the build writes anything, so a refusal leaves no half-built
-    course behind. Returns the alias map for the manifest, and the previous
-    manifest to print the diff against.
+    course behind. [links] is `content/corrections.yaml`'s `links:` (#807):
+    an entry pins an old uid `to:` a new one, or `refuse: true` leaves it
+    linked to nothing, so it is removed.
     """
-    before, previous = previous_build(previous_dir)
-    after = {w.uid: word_key(w.level, w.german, w.pos, w.english) for w in words}
-    carried = (previous or {}).get("aliases", {})
-    corrected = {w.corrected_from: w.uid for w in words if w.corrected_from}
-    corrected.update({old: w.uid for w in words for old in w.merged_from})
-    aliases, unmatched = link_uids(before, after, carried, corrected)
+    words, topics = inputs.words, inputs.grammar
+    after_words = {w.uid: word_key(w.level, w.german, w.pos, w.english) for w in words}
+    after_topics = {r.uid: grammar_key(r.level, r.topic) for r in topics}
+    known = {w.corrected_from: w.uid for w in words if w.corrected_from}
+    known.update({old: w.uid for w in words for old in w.merged_from})
 
-    fresh = {old: new for old, new in aliases.items() if old in before}
-    _report(
-        [
-            f"uid link: {old} ({'|'.join(before[old])}) -> {new} "
-            f"({'|'.join(after[new])})"
-            for old, new in fresh.items()
-        ]
-        + [f"removed: {uid} ({'|'.join(before[uid])})" for uid in unmatched]
-    )
-    if unmatched and not allow_removed:
-        raise PipelineError(
-            f"{len(unmatched)} word(s) of the committed course are gone and "
-            f"nothing in this build matches them, so learners would lose "
-            f"their progress on them (listed above as 'removed'). Restore "
-            f"them, or rerun with --allow-removed if that is intended."
+    refused: set[str] = set()
+    stale: list[str] = []
+    for old, entry in links.items():
+        rest = {key: value for key, value in entry.items() if key != "why"}
+        target = rest.get("to")
+        if rest != {"refuse": True} and not (
+            set(rest) == {"to"}
+            and isinstance(target, str)
+            and re.fullmatch(r"[0-9a-f]{16}", target)
+        ):
+            raise PipelineError(
+                f'corrections: links {old} needs `to: "<uid>"` or '
+                f"`refuse: true`, and nothing else but `why`."
+            )
+        before, after = (
+            (previous.words, after_words)
+            if old in previous.words
+            else (previous.grammar, after_topics)
         )
-    return aliases, previous
+        if old not in before or old in after:
+            stale.append(
+                f"stale link: {old} is no word or grammar topic the committed "
+                f"course lost, so its `links:` entry does nothing. Delete it "
+                f"once the course it was written for is committed."
+            )
+        elif target is None:
+            refused.add(old)
+        elif target not in after:
+            raise PipelineError(
+                f"corrections: links {old} pins to {target}, which is not a "
+                f"{'word' if before is previous.words else 'grammar topic'} "
+                f"of this build."
+            )
+        else:
+            known[old] = target
+    _report(stale)
+
+    carried = (previous.manifest or {}).get("aliases", {})
+    aliases: dict[str, str] = {}
+    lines, lost = [], []
+    for kind, before, after, width in (
+        ("", previous.words, after_words, 4),
+        ("grammar ", previous.grammar, after_topics, 2),
+    ):
+        found, unmatched = link_uids(before, after, carried, known, refused)
+        aliases.update(found)
+        lines += [
+            f"uid link: {kind}{old} ({'|'.join(before[old][:width])}) -> "
+            f"{new} ({'|'.join(after[new][:width])})"
+            for old, new in found.items()
+            if old in before
+        ]
+        lost += [
+            f"removed: {kind}{uid} ({'|'.join(before[uid][:width])})"
+            for uid in unmatched
+        ]
+    _report(lines + lost)
+    if lost and not allow_removed:
+        raise PipelineError(
+            f"{len(lost)} word(s) or grammar topic(s) of the committed course "
+            f"are gone and nothing in this build matches them, so learners "
+            f"would lose their progress on them (listed above as 'removed'). "
+            f"Restore them, link them under `links:` in "
+            f"content/corrections.yaml, or rerun with --allow-removed if that "
+            f"is intended."
+        )
+    return dict(sorted(aliases.items()))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -822,8 +898,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--allow-removed",
         action="store_true",
-        help="build even when a word of the previous build is gone and "
-        "nothing matches it: learners lose their progress on it",
+        help="build even when a word or grammar topic of the previous build "
+        "is gone and nothing matches it: learners lose their progress on it",
+    )
+    parser.add_argument(
+        "--move-boundaries",
+        action="store_true",
+        help="split each level anew rather than keep the previous build's "
+        "boundary week (#923): words move between steps under learners",
     )
     parser.add_argument(
         "--allow-missing-columns",
@@ -835,9 +917,12 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         manifest = read_manifest(args.manifest)
+        previous = previous_build(args.previous)
         sources = read_sources(manifest, args.allow_missing_columns)
         correct(sources, read_corrections(manifest.corrections))
-        splits = derive(sources)
+        splits = derive(
+            sources, None if args.move_boundaries else previous.boundaries
+        )
         # After the grammar uids, which key them (#637).
         apply_grammar_corrections(
             [row for source in sources for row in source.grammar],
@@ -856,14 +941,19 @@ def main(argv: list[str] | None = None) -> int:
                 f"the row until the course has the word."
             )
         inputs = collect(sources, splits, resolved)
-        aliases, previous = link_previous(inputs.words, args.previous, args.allow_removed)
+        aliases = link_previous(
+            inputs,
+            previous,
+            read_corrections(manifest.corrections, "links"),
+            args.allow_removed,
+        )
         build(args.out, inputs)
 
         manifest_path = args.out.parent / MANIFEST_NAME
         current = build_manifest(inputs, splits, aliases)
         write_manifest(manifest_path, current)
-        if previous is not None:
-            print(diff(previous, current).summary())
+        if previous.manifest is not None:
+            print(diff(previous.manifest, current).summary())
     except PipelineError as error:
         print(f"content pipeline: {error}", file=sys.stderr)
         return 1

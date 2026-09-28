@@ -14,6 +14,10 @@
 # way), which takes its learners' progress and fills its blank cells from it
 # (#635). A key that matches no row, or more than one, fails the build.
 #
+# `grammar:` corrects a topic's text, keyed by its uid as built (#637).
+# `links:` refuses a PIPE-09 uid link (`refuse: true`) or pins one
+# (`to: "<uid>"`), keyed by the committed course's uid (#807, #808).
+#
 # This repository is public: an entry holds the new text only, never the text
 # it replaces.
 
