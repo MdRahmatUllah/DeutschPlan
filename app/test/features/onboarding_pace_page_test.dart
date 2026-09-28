@@ -1,6 +1,10 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_slider.dart';
@@ -14,10 +18,6 @@ import 'package:sogda/features/onboarding/onboarding_start_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../core/semantics_checks.dart';
 
@@ -170,6 +170,27 @@ void main() {
       await tester.pump();
 
       expect(draft().dailyNew, 30);
+    });
+
+    testWidgets('#1011 ME-4 restart setup with a pace of 45: the slider '
+        "covers Settings' 1–50, and a nudge is 46, not 30", (tester) async {
+      await pump(tester);
+      container
+          .read(onboardingProvider.notifier)
+          .prefill(
+            step: 'A1.1',
+            dailyNew: 45,
+            reviseCount: 10,
+            studyDaysMask: 127,
+            reminderOn: false,
+            reminderTime: (hour: 19, minute: 30),
+          );
+      await tester.pump();
+
+      final slider = tester.widget<SgSlider>(find.byType(SgSlider));
+      expect(<int>[slider.min, slider.value, slider.max], <int>[1, 45, 50]);
+      slider.onChanged!(46);
+      expect(draft().dailyNew, 46);
     });
 
     testWidgets('and the presets are Relaxed 5, Steady 7, Intensive 15', (
@@ -380,6 +401,37 @@ void main() {
           hasDecreaseAction: true,
         ),
       );
+
+      handle.dispose();
+    });
+
+    testWidgets('#698 the slider is a 48 dp target, to a finger and a screen '
+        'reader, around the 32 dp it draws', (tester) async {
+      final handle = tester.ensureSemantics();
+      await pump(tester);
+      final slider = find.byType(SgSlider);
+
+      expect(tester.getSize(slider).height, 48);
+      expect(
+        tester
+            .getSemantics(
+              find
+                  .descendant(
+                    of: slider,
+                    matching: find.byType(GestureDetector),
+                  )
+                  .first,
+            )
+            .rect
+            .height,
+        48,
+      );
+      // 20 dp under the track's middle, at its far end.
+      await tester.tapAt(
+        tester.getRect(slider).centerRight + const Offset(-1, 20),
+      );
+      await tester.pump();
+      expect(draft().dailyNew, 30);
 
       handle.dispose();
     });

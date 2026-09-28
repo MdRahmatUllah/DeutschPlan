@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -8,7 +9,6 @@ import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:material_ui/material_ui.dart';
 
 import 'golden_harness.dart';
 

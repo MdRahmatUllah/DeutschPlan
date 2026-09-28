@@ -3,11 +3,11 @@ library;
 
 import 'dart:io';
 
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/services/background_tasks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/services/background_tasks.dart';
 
 import 'content_fixture.dart';
 
@@ -28,27 +28,14 @@ void main() {
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
-    storage = Directory.systemTemp.createTempSync('sogda_support');
+    storage = tempDir('sogda_support');
     // A different directory, or the assertion below that the file landed in
     // app-support rather than documents would pass either way.
-    documents = Directory.systemTemp.createTempSync('sogda_documents');
+    documents = tempDir('sogda_documents');
     PathProviderPlatform.instance = _TempPathProvider(
       support: storage.path,
       documents: documents.path,
     );
-  });
-
-  tearDown(() {
-    // On Windows the drift isolate releases the file a moment after close(),
-    // so a failed delete here is housekeeping, not a test result. The OS
-    // clears its own temp directory.
-    for (final dir in <Directory>[storage, documents]) {
-      try {
-        dir.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Left for the OS.
-      }
-    }
   });
 
   test('opens in app-support storage, on an isolate, configured', () async {

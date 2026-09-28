@@ -21,12 +21,12 @@
 
 **Business rules.** BR-CONTENT-01/02 (uid stability during content copy).
 
-**States.** first run · normal · updating content · error.
+**States.** first run · normal · updating content · error. The caption is "Preparing your course · first start only" (`splashPreparing`) from the first frame, on a first start and a warm one alike. When an app update finds a newer bundled course and starts copying it in, it changes to "Updating the course…" (`splashUpdating`) for the rest of the wait; never on a first start, whose copy the first caption names (the owner's decision on #686 ST-9: bootstrap's `onCourseUpdate`).
 
 **Motion.** Mark shrinks toward Today's ring position while Today fades up 8 px (standard).
 
 **Data.** `bootstrap.dart` → `AppDatabase.open()`, `ContentUpdater.check()`, `SettingsRepository.load()`.
 
-**Developer notes.** Keep all I/O in `bootstrap()` before `runApp`; use `FlutterNativeSplash`-style preserve/remove only if the platform splash flickers. Probe the bundled asset's version without loading the whole course (about 7.5 MB at 1.1.0) into memory twice (write to a temp file once).
+**Developer notes.** Keep all I/O in `bootstrap()`, before the app's first frame (S1 shows meanwhile); use `FlutterNativeSplash`-style preserve/remove only if the platform splash flickers. Probe the bundled asset's version without loading the whole course (about 7.5 MB at 1.1.0) into memory twice (write to a temp file once).
 
 **Tests.** Widget: error state shows Retry; unit: content version diff triggers copy and update-card row.

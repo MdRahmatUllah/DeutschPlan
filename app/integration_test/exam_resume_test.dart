@@ -2,10 +2,10 @@
 // was force-stopped (`tools/smoke.py`). The exam it left must still be there,
 // with its answers.
 
-import 'package:sogda/features/learn/step_exams.dart' show examQuestions;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/features/learn/step_exams.dart' show examQuestions;
 
 import 'smoke.dart';
 

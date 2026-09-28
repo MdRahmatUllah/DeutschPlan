@@ -1,10 +1,10 @@
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/features/today/today_components.dart';
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:material_ui/material_ui.dart';
 
 import 'golden_harness.dart';
 

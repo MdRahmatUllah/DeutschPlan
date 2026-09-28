@@ -1,6 +1,6 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/progress_repository.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// M2's reads — #145.
 void main() {

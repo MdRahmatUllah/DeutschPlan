@@ -1,15 +1,14 @@
-import 'package:sogda/core/theme/app_theme.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
-
 import 'dart:ui' show LocaleStringAttribute;
 
-import 'package:sogda/core/typography/sg_text.dart';
-import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:sogda/main.dart' show appLocalizationsDelegates;
 import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart' show appLocalizationsDelegates;
 
 import '../text_clipping.dart';
 

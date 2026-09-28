@@ -1,9 +1,9 @@
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/features/words/word_detail_screen.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// The WordDetail artboard's word: die Straße, A1.1, Done, due in eight days
 /// from the artboards' Monday, 2026-09-21.

@@ -1,25 +1,24 @@
 @TestOn('vm')
 library;
 
-import 'package:sogda/core/theme/aurora_backdrop.dart';
-
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/bootstrap.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_brand.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/splash/splash_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show BootstrapHost, appLocalizationsDelegates, supportedLocales;
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// S1 · Splash — #85.
 ///
@@ -425,8 +424,8 @@ void main() {
       await tester.pumpWidget(
         BootstrapHost(
           run: ({
-            Brightness platformBrightness = Brightness.light,
             void Function(UiLanguage)? onUiLanguage,
+            void Function()? onCourseUpdate,
           }) => finished.future,
         ),
       );
@@ -467,8 +466,8 @@ void main() {
         BootstrapHost(
           run:
               ({
-                Brightness platformBrightness = Brightness.light,
                 void Function(UiLanguage)? onUiLanguage,
+                void Function()? onCourseUpdate,
               }) {
                 tell = onUiLanguage;
                 return finished.future;
@@ -498,14 +497,61 @@ void main() {
       await tester.pumpAndSettle();
     });
 
+    testWidgets('#686 ST-9 and it says the course is updating once an app '
+        "update starts copying one in, in the learner's language", (
+      tester,
+    ) async {
+      final finished = Completer<BootstrapResult>();
+      void Function(UiLanguage)? tell;
+      void Function()? updating;
+
+      await tester.pumpWidget(
+        BootstrapHost(
+          run:
+              ({
+                void Function(UiLanguage)? onUiLanguage,
+                void Function()? onCourseUpdate,
+              }) {
+                tell = onUiLanguage;
+                updating = onCourseUpdate;
+                return finished.future;
+              },
+        ),
+      );
+      await tester.pump();
+      expect(find.text(l10n.splashPreparing), findsNWidgets(2));
+
+      tell!(UiLanguage.bangla);
+      updating!();
+      await tester.pump(const Duration(milliseconds: 601));
+
+      final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+      expect(find.text(bn.splashUpdating), findsNWidgets(2));
+      expect(find.text(bn.splashPreparing), findsNothing);
+      // The same gate: its progress line keeps its own timing.
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+
+      finished.complete(
+        BootstrapFailed(
+          BootstrapFailure(
+            step: BootstrapStep.content,
+            error: 'no content',
+            stackTrace: StackTrace.empty,
+            db: null,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('and the progress line appears on a slow one', (tester) async {
       final finished = Completer<BootstrapResult>();
 
       await tester.pumpWidget(
         BootstrapHost(
           run: ({
-            Brightness platformBrightness = Brightness.light,
             void Function(UiLanguage)? onUiLanguage,
+            void Function()? onCourseUpdate,
           }) => finished.future,
         ),
       );

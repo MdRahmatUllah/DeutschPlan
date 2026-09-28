@@ -3,13 +3,13 @@
 // describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
-import 'package:sogda/features/learn/learn_screen.dart';
-import 'package:sogda/features/me/me_screen.dart';
-import 'package:sogda/features/today/today_screen.dart';
 import 'package:flutter/rendering.dart' show BackdropFilterLayer, BackdropKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/features/learn/learn_screen.dart';
+import 'package:sogda/features/me/me_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
 
 import '../../features/me_fixtures.dart';
 import '../../features/today_fixtures.dart';

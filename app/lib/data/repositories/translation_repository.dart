@@ -1,6 +1,6 @@
+import 'package:drift/drift.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/services/translation/translator.dart';
-import 'package:drift/drift.dart';
 
 /// [Translator] through `translation_cache` (`translation.md`): a sentence is
 /// translated once per model and language pair, then read back.

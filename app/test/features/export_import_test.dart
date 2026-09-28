@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -19,10 +23,6 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/backup_files.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
@@ -36,6 +36,20 @@ class _GatedSettings extends SettingsRepository {
   @override
   Future<void> reload() async {
     await gate?.future;
+    return super.reload();
+  }
+}
+
+/// Settings whose reload fails once [broken]: a reload after an import
+/// that had already committed (#692 ME-7).
+class _BrokenReload extends SettingsRepository {
+  _BrokenReload(super.db);
+
+  bool broken = false;
+
+  @override
+  Future<void> reload() async {
+    if (broken) throw StateError('reload failed');
     return super.reload();
   }
 }
@@ -102,11 +116,9 @@ void main() {
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
-    directory = Directory.systemTemp.createTempSync('sogda_m6');
+    directory = tempDir('sogda_m6');
     content = ContentFixture.write('${directory.path}/content.db').file;
   });
-
-  tearDownAll(() => directory.deleteSync(recursive: true));
 
   Future<AppDatabase> open() async {
     final opened = AppDatabase.memory();
@@ -155,7 +167,7 @@ void main() {
 
   setUp(() async {
     db = await open();
-    settings = SettingsRepository(db);
+    settings = _BrokenReload(db);
     await settings.load();
     // This phone's own word, which a merge keeps and a replace doesn't.
     await db.customStatement(
@@ -340,6 +352,21 @@ void main() {
       await tester.tap(find.text(l10n.exportImportChoose));
       await tester.pumpAndSettle();
       expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+    });
+
+    testWidgets('#692 ME-6 a file that is not text, after a good one: the '
+        "good one goes too, so Import can't bring it in", (tester) async {
+      await pump(tester);
+      await choose(tester, await otherPhone());
+      expect(find.text(l10n.exportImportDoMerge), findsOneWidget);
+
+      files.unreadable = true;
+      await tester.tap(find.text(l10n.exportImportChooseOther));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
+      expect(find.text('sogda-2026-09-20.json'), findsNothing);
+      expect(find.text(l10n.exportImportDoMerge), findsNothing);
     });
 
     testWidgets('#657 a file with a value of the wrong type is refused at the '
@@ -591,6 +618,19 @@ void main() {
       expect(find.text(l10n.exportImportDone), findsNothing);
       expect(await count('word_state'), 1);
     });
+  });
+
+  testWidgets('#692 ME-7 an import that went in, whose settings reload then '
+      'failed, says it is done, not that nothing changed', (tester) async {
+    await pump(tester);
+    (settings as _BrokenReload).broken = true;
+    await choose(tester, await otherPhone());
+    await tester.tap(find.text(l10n.exportImportDoMerge));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.exportImportDone), findsOneWidget);
+    expect(find.text(l10n.exportImportFailed), findsNothing);
+    expect(await count('word_state'), greaterThan(1), reason: 'the data is in');
   });
 
   testWidgets('a screen reader hears Merge and Replace as one set of radios', (

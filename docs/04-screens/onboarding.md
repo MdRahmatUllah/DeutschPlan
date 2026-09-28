@@ -13,12 +13,12 @@
 | 1 Welcome | Three points: offline · exam-structured 12 steps · progress stays on the phone. Button *Let's start*; under it the link *Restore a backup* (#822, below) | — (a restore: the file's) |
 | 2 Meaning language | Cards English / বাংলা / Both with sample `die Wohnung → …`; note "This also sets the app language". The Bangla pronunciation follows: off for English only, on for বাংলা or Both (#527) | `meaning_language`, `ui_language`, `show_pron_bn` |
 | 3 Starting point | 12 step chips in level rows with word counts (A1.1 pre-selected); link *Not sure? Take a 3-minute check* → S3 | chosen step |
-| 4 Daily pace | New words slider 3–30 with live estimate "A1.1 takes about 91 days at 7 words a day" (637 words; the artboard's 69 counted 480); presets Relaxed 5 · Steady 7 · Intensive 15; revisions stepper (10) with note "Due cards beyond this wait for tomorrow"; weekday chips | `daily_new`, `revise_count`, `study_days_mask` |
+| 4 Daily pace | New words slider 3–30 (in restart setup Settings' 1–50, where the learner's pace may already be: the owner, 2026-09-28, #1011 ME-4) with live estimate "A1.1 takes about 91 days at 7 words a day" (637 words; the artboard's 69 counted 480); presets Relaxed 5 · Steady 7 · Intensive 15; revisions stepper (10) with note "Due cards beyond this wait for tomorrow"; weekday chips | `daily_new`, `revise_count`, `study_days_mask` |
 | 5 Reminder & voice | Reminder switch (off) + time 19:30, note about permission; *Hear it: „Guten Tag!"* (system voice); Supertonic card (its size from the model manifest, about 400 MB, #245; Wi-Fi only, the default voice style F1) with *Download now* / *Later*; button *Start learning* | `reminder_*`, starts download |
 
 **Functional requirements**
-- FR-S2-01 *Skip* MUST apply defaults for all remaining pages and finish.
-- FR-S2-02 Values MUST persist when navigating back.
+- FR-S2-01 *Skip* MUST finish with what the learner has chosen (a placed step, a pace, a reminder they set) and the defaults for what they never touched, on every page it appears (the owner, 2026-09-28, #1011 ME-11).
+- FR-S2-02 Values MUST persist when navigating back. While setup finishes, nothing leaves the page: *Back*, *Skip*, the system back and iOS's swipe all wait (#692 ME-5).
 - FR-S2-03 Finishing MUST call `PlanEngine.enroll(step, dailyNew)` and open Today with the first day planned, even on a weekday the learner has just switched off (BR-PLAN-01, #606) and a one-time coach mark on the primary button (gone once the button or a session is used, and never over a finished day: `today.md`, #396).
 - FR-S2-04 The estimate on page 4 MUST use the selected step's word count ÷ daily_new × (7 ÷ study days per week).
 - FR-S2-05 Reminder permission MUST be requested only when the switch is turned on. The one other asker is a model download the learner starts (*Download now* here, M4's *Download* / *Retry* / *Update*): it asks on Android 13+ and iOS, so the download can show its progress, with the line "It asks to show the download's progress in a notification" under the button; a refusal still downloads, without a notification (#501, the owner's decision).

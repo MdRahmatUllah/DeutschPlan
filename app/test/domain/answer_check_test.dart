@@ -1,8 +1,8 @@
 @TestOn('vm')
 library;
 
-import 'package:sogda/domain/answer_check.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/domain/answer_check.dart';
 
 /// Answer checking — #75, BR-ANS-01…04.
 ///

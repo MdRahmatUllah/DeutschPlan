@@ -1,10 +1,10 @@
+import 'package:drift/drift.dart' show Variable;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/plan_engine.dart'
     show PlanDate, addDays, parsePlanDate, planDate;
-import 'package:drift/drift.dart' show Variable;
 
 /// M7 · Reset (`reset.md`, #149): one step's progress, or all of it.
 class ResetRepository {

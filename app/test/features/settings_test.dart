@@ -1,5 +1,8 @@
-import 'dart:io';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
@@ -9,8 +12,8 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -23,16 +26,11 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/model_downloads.dart' show DownloadPhase;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import '../db/content_fixture.dart';
 import 'model_manager_fixtures.dart' show FakeDownloads, FakeModels;
 import 'settings_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// M3 · Settings — #146.
 void main() {
@@ -254,6 +252,117 @@ void main() {
     await tester.pumpAndSettle();
     expect(settings.read(SettingKeys.ttsSpeed), 0.5);
     expect(find.text(l10n.settingsSpeedLine('0.5')), findsOneWidget);
+  });
+
+  group('#698 a slider saves when the finger lets go', () {
+    /// How many times retention was written, as `SettingsEditor` hears it.
+    List<Object?> writes() {
+      final heard = <Object?>[];
+      final listening = settings.changes
+          .where((key) => key == SettingKeys.desiredRetention)
+          .listen(heard.add);
+      addTearDown(listening.cancel);
+      return heard;
+    }
+
+    testWidgets('a drag shows every step in its row at once, and writes once, '
+        'on release', (tester) async {
+      await pump(tester);
+      final heard = writes();
+      final slider = sliderFor(l10n.settingsRetention);
+      int shown() => tester.widget<SgSlider>(slider).value;
+
+      // 90 % sits 10/17 of the way along the 120 dp track.
+      final gesture = await tester.startGesture(
+        tester.getCenter(slider) + const Offset(10.6, 0),
+      );
+      // Past the slop: the drag starts, and the next move moves it.
+      await gesture.moveBy(const Offset(20, 0));
+      await gesture.moveBy(const Offset(9.4, 0));
+      await tester.pump();
+      expect(shown(), 94);
+      await gesture.moveBy(const Offset(10, 0));
+      await tester.pump();
+      expect(shown(), 96);
+      expect(find.text(l10n.settingsRetentionLine(96, 0)), findsOneWidget);
+      expect(settings.read(SettingKeys.desiredRetention), 0.9);
+      expect(heard, isEmpty, reason: 'a step wrote user.db');
+
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(settings.read(SettingKeys.desiredRetention), 0.96);
+      expect(heard, hasLength(1));
+      expect(shown(), 96);
+      expect(find.text(l10n.settingsRetentionLine(96, 0)), findsOneWidget);
+
+      // And the row follows the setting again: an import or a reset writes
+      // it too.
+      await settings.write(SettingKeys.desiredRetention, 0.85);
+      await tester.pumpAndSettle();
+      expect(shown(), 85);
+    });
+
+    testWidgets('a drag let go and the screen left at once still saves: '
+        'nothing waits for a later frame', (tester) async {
+      await pump(tester);
+      final slider = sliderFor(l10n.settingsRetention);
+      final gesture = await tester.startGesture(
+        tester.getCenter(slider) + const Offset(10.6, 0),
+      );
+      await gesture.moveBy(const Offset(20, 0));
+      await gesture.moveBy(const Offset(9.4, 0));
+      await tester.pump();
+      expect(tester.widget<SgSlider>(slider).value, 94);
+
+      await gesture.up();
+      // Left before another frame: Settings and its providers are gone.
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      expect(settings.read(SettingKeys.desiredRetention), 0.94);
+    });
+
+    testWidgets('a touch the scroll view takes over keeps, and saves, the '
+        'value the thumb moved to', (tester) async {
+      await pump(tester);
+      final slider = sliderFor(l10n.settingsRetention);
+      final gesture = await tester.startGesture(
+        tester.getCenter(slider) + const Offset(59, 0),
+      );
+      // Past the tap's deadline: its down moves the thumb.
+      await tester.pump(const Duration(milliseconds: 150));
+      expect(tester.widget<SgSlider>(slider).value, 97);
+
+      await gesture.cancel();
+      await tester.pumpAndSettle();
+      expect(settings.read(SettingKeys.desiredRetention), 0.97);
+      expect(tester.widget<SgSlider>(slider).value, 97);
+    });
+
+    testWidgets("a key's or a screen reader's step saves at once", (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      // The row's node, which its note and its slider's label share.
+      tester.semantics.increase(
+        find.semantics.byLabel(RegExp(RegExp.escape(l10n.settingsRetention))),
+      );
+      await tester.pumpAndSettle();
+      expect(settings.read(SettingKeys.desiredRetention), 0.91);
+      semantics.dispose();
+    });
+
+    testWidgets('its target is 48 dp tall around the 32 dp it draws', (
+      tester,
+    ) async {
+      await pump(tester);
+      final slider = sliderFor(l10n.settingsSpeed);
+
+      // 20 dp over the track's middle: outside what it draws, inside 48.
+      await tester.tapAt(tester.getCenter(slider) + const Offset(-59, -20));
+      await tester.pumpAndSettle();
+      expect(settings.read(SettingKeys.ttsSpeed), 0.5);
+    });
   });
 
   testWidgets("speech speed is on the study menu's grid: 0.75 and 1.25 read "
@@ -738,14 +847,7 @@ INSERT INTO word_state (word_uid, status, stability, reps) VALUES
   test("#409 M3's translation row reads the one build the manifest offers, "
       'Q4_K_M', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    final support = Directory.systemTemp.createTempSync('sogda_m3');
-    addTearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
-    });
+    final support = tempDir('sogda_m3');
     final container = ProviderContainer(
       overrides: <Override>[
         modelRepositoryProvider.overrideWithValue(
