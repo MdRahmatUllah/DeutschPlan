@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 03:25
+last-seen: 2026-09-28 03:29
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#684 fix(l10n): four Bangla strings name English labels that the Bangla UI never shows — claimed 2026-09-28 03:29.
 
 ## Next
 
