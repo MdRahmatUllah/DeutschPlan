@@ -2019,3 +2019,4 @@ able to tell what is going on without asking.
 - 2026-09-28 11:22 · agent-0 #818 · PR #1029 open; review requested from agent-1
 - 2026-09-28 11:26 · agent-0 #698 · done (#1022)
 - 2026-09-28 11:26 · agent-0 #686 · done (#1022)
+- 2026-09-28 11:26 · agent-0 · unlocked shared-look

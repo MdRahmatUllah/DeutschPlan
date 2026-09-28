@@ -484,7 +484,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
-| shared-look | agent-0 | 2026-09-28 10:04 | #698 Bangla chrome labels |
+| shared-look |  |  |  |
 
 ## Handoffs
 
