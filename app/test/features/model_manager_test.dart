@@ -801,8 +801,11 @@ class _Models extends FakeModels {
       ModelManifest(version: 1, models: <ModelEntry>[voiceEntry]);
 
   @override
-  Future<ModelState> stateOf(ModelEntry entry, ModelVariant variant) async =>
-      ModelState(entry: entry, variant: variant, status: status);
+  Future<ModelState> stateOf(
+    ModelEntry entry,
+    ModelVariant variant, {
+    bool sized = true,
+  }) async => ModelState(entry: entry, variant: variant, status: status);
 }
 
 class _Storage extends Fake implements DeviceStorage {

@@ -20,7 +20,7 @@ import 'golden_harness.dart';
 /// 20 September, in A2.1; and what else it holds (#396).
 class _ArtboardBackups extends Fake implements BackupRepository {
   @override
-  BackupPreview preview(String json) => const BackupPreview(
+  Future<BackupPreview> preview(String json) async => const BackupPreview(
     schemaVersion: 2,
     contentVersion: null,
     exportedAt: '2026-09-20T12:00:00Z',

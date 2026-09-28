@@ -22,6 +22,7 @@ import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/back_behaviour.dart';
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -93,7 +94,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
   /// paused (FR-L12-03, FR-L12-04's "The timer stops").
   bool _paused = false;
   final GlobalKey<ExamBackGuardState> _guard = GlobalKey<ExamBackGuardState>();
-  int _left = ExamRunnerScreen.limitSeconds;
+
+  /// The seconds left, which only the clocks listen to (#712): a tick
+  /// rebuilds them, not the runner and its question.
+  final ValueNotifier<int> _left = ValueNotifier<int>(
+    ExamRunnerScreen.limitSeconds,
+  );
   Timer? _tick;
 
   /// Seconds counted but not yet written.
@@ -125,6 +131,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     unawaited(_saveTyped());
     unawaited(_flush());
     _field.dispose();
+    _left.dispose();
     super.dispose();
   }
 
@@ -179,12 +186,12 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
         _at = paper.resumeAt;
         _field.text = _typedHere ? _given[_at] ?? '' : '';
         _timed = _service.timed;
-        _left = math.max(
+        _left.value = math.max(
           0,
           ExamRunnerScreen.limitSeconds - paper.attempt.durationSec,
         );
       });
-      if (_timed && _left == 0) {
+      if (_timed && _left.value == 0) {
         await _submit(asked: true);
         return;
       }
@@ -200,19 +207,19 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     // #670: Android runs the timer in the background until it freezes the
     // app, iOS not at all: the time away is not the exam's.
     if (!mounted || _done || _away) return;
-    setState(() {
-      if (_paused) {
-        _pausePending++;
-      } else {
-        _runPending++;
-        // Held at 0:00 while a submit the learner started is still asking.
-        if (_timed && _left > 0) _left--;
-      }
-    });
+    // No setState (#712): the counts aren't drawn, and the clocks listen to
+    // [_left] themselves.
+    if (_paused) {
+      _pausePending++;
+    } else {
+      _runPending++;
+      // Held at 0:00 while a submit the learner started is still asking.
+      if (_timed && _left.value > 0) _left.value--;
+    }
     if (_runPending + _pausePending >= ExamRunnerScreen.flushEvery) {
       unawaited(_flush());
     }
-    if (_timed && _left <= 0 && !_submitFailed) {
+    if (_timed && _left.value <= 0 && !_submitFailed) {
       unawaited(_submit(asked: true));
     }
   }
@@ -339,7 +346,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       for (final (i, q) in questions.indexed)
         if (examNumbered(q.item)) i,
     ];
-    final left = _timed ? examClock(_left) : null;
+    final left = _timed ? examClock(_left.value) : null;
     final pick = await Adaptive.showSheet<NavChoice>(
       context: context,
       builder: (_) => ExamNavigatorSheet(
@@ -480,7 +487,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       // The answers are written already: stay on the paper, clock running,
       // and let the learner submit again.
       _submitting = false;
-      _submitFailed = _left <= 0;
+      _submitFailed = _left.value <= 0;
       if (!mounted) return;
       _tick = Timer.periodic(const Duration(seconds: 1), (_) => _second());
       SgToast.show(context, AppLocalizations.of(context).examRunSubmitFailed);
@@ -731,7 +738,7 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                               const SizedBox(width: 8),
                             ] else
                               const Spacer(),
-                            _Clock(seconds: _left, ink: tokens.color.ink),
+                            _Clock(left: _left, ink: tokens.color.ink),
                           ],
                         ),
                       ),
@@ -782,13 +789,19 @@ const double shortRoom = 360;
 /// The time left, in [ink] on whatever it sits on: the band, or the bar
 /// above the keyboard while the band is collapsed (#560).
 class _Clock extends StatelessWidget {
-  const _Clock({required this.seconds, required this.ink});
+  const _Clock({required this.left, required this.ink});
 
-  final int seconds;
+  /// The seconds left: this clock rebuilds on each, and nothing else (#712).
+  final ValueListenable<int> left;
   final Color ink;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => ValueListenableBuilder<int>(
+    valueListenable: left,
+    builder: (context, seconds, _) => _face(context, seconds),
+  );
+
+  Widget _face(BuildContext context, int seconds) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     // FR-L12-03 / exam-hub.md: Coral in the last 2 minutes.
@@ -840,7 +853,7 @@ class _Band extends StatelessWidget {
   final bool collapsed;
 
   /// Seconds left; null when the timer is off.
-  final int? left;
+  final ValueListenable<int>? left;
   final VoidCallback onPause;
 
   /// Opens the navigator (#131).
@@ -851,7 +864,6 @@ class _Band extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onDer;
-    final seconds = left;
     final content = Column(
       children: <Widget>[
         SizedBox(height: MediaQuery.paddingOf(context).top),
@@ -889,7 +901,7 @@ class _Band extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                if (seconds != null) _Clock(seconds: seconds, ink: ink),
+                if (left case final left?) _Clock(left: left, ink: ink),
                 Semantics(
                   button: true,
                   label: l10n.examNavOpen,

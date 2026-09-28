@@ -78,6 +78,15 @@ void main() {
         <int>[0, 16384, -16384, 32767, 32767, -32767],
       );
     });
+
+    test('#712 a clip is encoded in an isolate of its own, byte for byte the '
+        'same', () async {
+      final samples = Float32List.fromList(<double>[0, 0.5, -0.5, 1, 2, -2]);
+      expect(
+        await SupertonicTts.wavInIsolate(samples, 44100),
+        SupertonicTts.wavBytes(samples, 44100),
+      );
+    });
   });
 
   group('the engine', () {
