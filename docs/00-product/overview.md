@@ -39,7 +39,7 @@ Three visual modes share identical layouts and behaviour: **Light** (Paper & Ink
 
 ## Platforms
 
-Android 8.0+ (API 26) and iOS 16+. Tablet layouts are two-pane where documented. No web or desktop target in v1.
+Android 8.0+ (API 26) in v1 (the owner, 2026-09-26); iOS 16+ is Later: the code keeps its chrome, but no iOS build ships. Tablet layouts are two-pane where documented. No web or desktop target in v1.
 
 ## Success measures
 

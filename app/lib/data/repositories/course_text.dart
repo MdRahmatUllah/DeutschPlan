@@ -30,11 +30,16 @@ Future<CourseText> _load(AppDatabase db) async {
   final grammar = await db
       .customSelect('SELECT example_de FROM grammar_topics')
       .get();
+  // Each example with its word's step in course order (#752).
   final examples = await db
       .customSelect(
-        'SELECT german, english FROM word_examples ORDER BY word_uid, ord',
+        'SELECT e.german, e.english, s.ord AS step FROM word_examples e '
+        'JOIN words w ON w.uid = e.word_uid '
+        'JOIN sublevels s ON s.code = w.sublevel_code '
+        'ORDER BY e.word_uid, e.ord',
       )
       .get();
+  final steps = await db.customSelect('SELECT code, ord FROM sublevels').get();
   final entries = <({String german, String? forms})>[
     for (final row in words)
       (german: row.read<String>('german'), forms: row.read<String?>('forms')),
@@ -49,9 +54,21 @@ Future<CourseText> _load(AppDatabase db) async {
         english: row.read<String?>('english') ?? '',
       ),
   ];
+  final sentenceSteps = <int>[
+    for (final row in examples) row.read<int>('step'),
+  ];
+  final stepOrder = <String, int>{
+    for (final row in steps) row.read<String>('code'): row.read<int>('ord'),
+  };
   // Its sets and index take 70–160 ms to build: off the UI isolate, so L4
   // doesn't stall a frame (#386). The result moves back without a copy.
   return Isolate.run(
-    () => CourseText(words: entries, texts: texts, sentences: sentences),
+    () => CourseText(
+      words: entries,
+      texts: texts,
+      sentences: sentences,
+      sentenceSteps: sentenceSteps,
+      stepOrder: stepOrder,
+    ),
   );
 }

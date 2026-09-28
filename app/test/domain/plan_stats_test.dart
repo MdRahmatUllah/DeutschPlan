@@ -340,6 +340,21 @@ void main() {
       );
     });
   });
+
+  group('#942 dayDone: T1 and T6, one predicate', () {
+    test('a study day with something planned, all of it done', () {
+      expect(dayDone(isStudyDay: true, planned: 20, open: 0), isTrue);
+      expect(dayDone(isStudyDay: true, planned: 20, open: 1), isFalse);
+    });
+
+    test('never a rest day, even revised anyway', () {
+      expect(dayDone(isStudyDay: false, planned: 6, open: 0), isFalse);
+    });
+
+    test('never a day with nothing planned', () {
+      expect(dayDone(isStudyDay: true, planned: 0, open: 0), isFalse);
+    });
+  });
 }
 
 /// A set that says every date is in it, and counts how often it is asked.

@@ -45,9 +45,14 @@ class BootstrapErrorScreen extends StatelessWidget {
 
   Future<void> _export(BuildContext context) async {
     if (await onExport!() || !context.mounted) return;
+    final l10n = AppLocalizations.of(context);
+    // Worded as the button was: the backup's export, or the file's share
+    // (#843).
     SgToast.show(
       context,
-      AppLocalizations.of(context).exportImportExportFailed,
+      failure.canExport
+          ? l10n.exportImportExportFailed
+          : l10n.bootstrapShareFailed,
     );
   }
 

@@ -369,6 +369,12 @@ void main() {
       return (await container.read(studyNextProvider(today).future)).dayDone;
     }
 
+    // A day with something planned, all done (#942).
+    await db.customStatement(
+      'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, '
+      "completed_at) VALUES ('$today', '${ContentFixture.haus}', 'revise', "
+      "'A1.1', '${today}T08:00:00Z')",
+    );
     final plans = PlanRepository(db);
     expect(await plans.dayCompleteShown(today), isFalse);
     expect(await dayDone(), isTrue);
@@ -455,10 +461,13 @@ void main() {
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
     );
-    // Planned before the update took 'gone' out of the course.
+    // Planned before the update took 'gone' out of the course; Haus done.
+    // A day needs something planned and done to be one (#942).
     await db.customStatement(
-      'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
-      "VALUES ('$today', 'gone', 'revise', 'A1.1')",
+      'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, '
+      "completed_at) VALUES ('$today', 'gone', 'revise', 'A1.1', NULL), "
+      "('$today', '${ContentFixture.haus}', 'revise', 'A1.1', "
+      "'${today}T08:00:00Z')",
     );
     final settings = SettingsRepository(db);
     await settings.load();
@@ -477,6 +486,72 @@ void main() {
     expect(next.revise, isEmpty, reason: 'no blank card to study');
     expect(next.dayDone, isTrue);
   });
+
+  group(
+    '#942 FR-T6-01 T6 follows T1: a study day, something planned, all done',
+    () {
+      Future<StudyNext> next({required int mask, required String rows}) async {
+        final db = AppDatabase.memory();
+        addTearDown(db.close);
+        final directory = tempDir('sg_t6');
+        final content = ContentFixture.write('${directory.path}/content.db');
+        await db.customStatement(
+          "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+        );
+        await db.customStatement(
+          'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+          "study_days_mask) VALUES ('A1.1', '2026-09-01', 7, $mask)",
+        );
+        if (rows.isNotEmpty) {
+          await db.customStatement(
+            'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, '
+            'completed_at) VALUES $rows',
+          );
+        }
+        final settings = SettingsRepository(db);
+        await settings.load();
+        addTearDown(settings.dispose);
+        final container = ProviderContainer(
+          overrides: <Override>[
+            appDatabaseProvider.overrideWithValue(db),
+            settingsProvider.overrideWithValue(settings),
+          ],
+        );
+        addTearDown(container.dispose);
+        final hold = container.listen(studyNextProvider(today), (_, _) {});
+        addTearDown(hold.close);
+        return container.read(studyNextProvider(today).future);
+      }
+
+      final off = 1 << (parsePlanDate(today).weekday - 1);
+      final done = "'${today}T08:00:00Z'";
+
+      test('Revise anyway on a rest day, finished: no T6', () async {
+        final result = await next(
+          mask: 127 & ~off,
+          rows: "('$today', '${ContentFixture.haus}', 'revise', 'A1.1', $done)",
+        );
+        expect(result.dayDone, isFalse);
+      });
+
+      test('a backlog session on a day with nothing planned: no T6', () async {
+        final result = await next(
+          mask: 127,
+          rows:
+              "('2026-09-20', '${ContentFixture.haus}', 'new', 'A1.1', $done)",
+        );
+        expect(result.dayDone, isFalse);
+      });
+
+      test("a study day's plan, all done: T6", () async {
+        final result = await next(
+          mask: 127,
+          rows: "('$today', '${ContentFixture.haus}', 'revise', 'A1.1', $done)",
+        );
+        expect(result.dayDone, isTrue);
+      });
+    },
+  );
 
   testWidgets('#677 FR-T6 a day that will not read goes on to Today, not a '
       'blank page', (tester) async {

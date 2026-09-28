@@ -484,7 +484,7 @@ void main() {
     );
     expect(find.bySemanticsLabel('২০টির মধ্যে ১২টি'), findsOneWidget);
     expect(
-      find.bySemanticsLabel('১৮৪টি শেখা হয়েছে, ৬০টি শিখছি, ২৯৬টি বাকি'),
+      find.bySemanticsLabel('১৮৪টি শেখা হয়েছে, ৬০টি শিখছি, ২৯৬টি শেখা বাকি'),
       findsOneWidget,
     );
     expect(

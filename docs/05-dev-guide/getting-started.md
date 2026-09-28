@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Flutter 3.47.x stable (`flutter --version`), Dart 3.13.x. The exact version is pinned in `.fvmrc` at the repository root (currently **3.47.5**, which ships Dart 3.13.4). It is the SDK every build uses: check that `flutter --version` matches before the check below. Install that version however you like: *Using fvm* below is one way.
-- Android Studio (latest) with SDK 37 (`compileSdk` and `targetSdk`, ADR 19). The NDK is Flutter's own (`flutter.ndkVersion`). Xcode 16+ with an iOS 16 simulator. CocoaPods is no longer required: Swift Package Manager is the default since Flutter 3.44.
+- Android Studio (latest) with SDK 37 (`compileSdk` and `targetSdk`, ADR 19). The NDK is Flutter's own (`flutter.ndkVersion`). Only for iOS, which is Later (v1 is Android-only): Xcode 16+ with an iOS 16 simulator. CocoaPods is no longer required: Swift Package Manager is the default since Flutter 3.44.
 - Python 3.10+ with `openpyxl`, for the content pipeline and the tools' tests.
 - `make` is optional. Each target is spelled out below; without `make`, run those commands.
 

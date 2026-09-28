@@ -34,11 +34,11 @@ operating systems — hinting, subpixel positioning and antialiasing all differ.
 These were generated on **Windows**. A diff on another platform is about the
 renderer, not the design.
 
-So they carry the `golden` tag and are excluded from `make test`:
+So they carry the `golden` tag (`make` is not installed; `getting-started.md` spells out each command):
 
 ```
-make test            # everything except goldens — runs anywhere
-make goldens-verify  # the pixel comparison — one platform
+flutter test --exclude-tags golden   # everything except goldens — runs anywhere
+flutter test test/golden             # the pixel comparison — one platform
 ```
 
 Goldens are verified on Windows only. CI is off (#302), so a PR's basic check
@@ -53,7 +53,7 @@ Per file, for the screens your change touches (from `app/`):
 flutter test --update-goldens test/golden/<screen>_golden_test.dart
 ```
 
-`make goldens` rewrites the whole suite, including files you did not mean to
+`flutter test test/golden --update-goldens` rewrites the whole suite, including files you did not mean to
 touch, and hides an unintended change among hundreds. Keep it for a deliberate
 suite-wide change, such as a token that moves every screen, and then review
 every image it changed.

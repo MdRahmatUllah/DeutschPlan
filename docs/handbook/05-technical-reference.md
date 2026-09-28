@@ -466,6 +466,7 @@ The full table, with each decision's reason and when to revisit it, is
 | 25 | `skill_prompts.text` renamed to `prompt` (drift name clash) |
 | 26 | content.db attached by plain path, read-only by construction |
 | 27 | llamadart ships llama.cpp's CPU backend only (159.5 → 72.3 MB); superseded by 29 |
+| 28 | The app is Sogda, `de.sogda.app`; the internals follow (package `sogda`, prefix `Sg`, `sogda://`) |
 | 29 | llamadart removed while Hy-MT is off (72.3 → 51.2 MB) |
 
-The next free number is 28; take the `adr-number` lock before writing it.
+The next free number is 30 (read the last row of `decisions.md` first); take the `adr-number` lock before writing it.
