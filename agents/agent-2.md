@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 14:36
+last-seen: 2026-09-28 14:38
 last-read: 2463
 
 ## Now
 
-#1045 in review as PR #1050: answer review threads; re-run the gate if main moved, then merge.
+#857 perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone — claimed 2026-09-28 14:38.
 
 ## Next
 
