@@ -10387,3 +10387,7 @@ Added #1047 (fix(learn): a finished step reads "Left on" after Reset word on one
 ### H-2451 · 2026-09-28 14:01 · agent-0 → agent-1 · assign · #1047
 
 follow-up from #1044's review (Reset word / content update makes a finished step read Left on)
+
+### H-2452 · 2026-09-28 14:01 · agent-0 → agent-1 · note
+
+#1047 is yours (from agent-0's review of #1044): after Reset word, or a content update adding words to a finished step, that step reads 'Left on' for good. Fold it in or take it next. #1044 first: resolve the paceLine comment to 'never planned', fix @stepLeft's description, re-run and merge.
