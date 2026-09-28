@@ -149,6 +149,18 @@ void main() {
       expect(ready.settings.read(SettingKeys.dailyNew), 7);
     });
 
+    test('#686 ST-9 a disposed start lets go of its glass capability too, '
+        'frame watchdog and all', () async {
+      final glass = GlassCapability()
+        ..startFrameWatchdog()
+        ..glassOnScreen = true;
+      expect(glass.watchingFrames, isTrue);
+      final result = await bootstrap(openDatabase: openReal, glass: glass);
+      await (result as BootstrapReady).bootstrap.dispose();
+      expect(glass.watchingFrames, isFalse);
+      expect(() => glass.addListener(() {}), throwsFlutterError);
+    });
+
     test('resolves the theme against the platform', () async {
       final light = await run();
       expect(light.themeMode, SgMode.light);

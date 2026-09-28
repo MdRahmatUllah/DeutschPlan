@@ -876,6 +876,35 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expect(say('2026-09-14', 'bn'), isNot(contains('14')));
     });
   });
+
+  testWidgets('#854 in Bangla at 200 % on a 411 dp phone, Study this day '
+      'keeps inside the 16 dp gutter', (tester) async {
+    tester.view
+      ..physicalSize = const Size(411, 731) * 3
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await pump(
+      tester,
+      locale: const Locale('bn'),
+      textScaler: const TextScaler.linear(2),
+    );
+    final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+    final button = find.byWidgetPredicate(
+      (widget) => widget is SgButton && widget.label == bn.backlogStudyDay,
+      skipOffstage: false,
+    );
+    await tester.dragUntilVisible(
+      button.first,
+      find.byType(Scrollable).first,
+      const Offset(0, -150),
+    );
+    await tester.pumpAndSettle();
+    final label = find
+        .descendant(of: button.first, matching: find.byType(RichText))
+        .first;
+    expect(tester.getRect(label).right, lessThanOrEqualTo(411 - 16));
+    expect(tester.takeException(), isNull);
+  });
 }
 
 /// Counts the queries that read (#664).

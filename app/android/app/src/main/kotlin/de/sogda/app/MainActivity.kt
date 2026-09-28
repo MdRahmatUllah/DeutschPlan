@@ -52,6 +52,14 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ownLinksOnly(intent)
         super.onCreate(savedInstanceState)
+        // #854: the system splash's exit reveal (Android 12+) is removed at
+        // once rather than animated. `splash.md` wants no visible hand-off,
+        // and a reveal cut short under load is the likeliest cause of the
+        // app-wide ~12 % dim SQA saw three times. Flutter's splash docs
+        // suggest the same.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            splashScreen.setOnExitAnimationListener { view -> view.remove() }
+        }
     }
 
     override fun onNewIntent(intent: Intent) {

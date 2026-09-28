@@ -313,6 +313,20 @@ void main() {
       await pumpEventQueue();
       expect(c.read(sentencePickerProvider).gapDays, 3);
     });
+
+    test('#698 the quiz builder follows the two it copies', () async {
+      final c = container();
+      c.listen(quizBuilderProvider, (_, _) {}); // kept, as a screen would
+      for (final write in <Future<void> Function()>[
+        () => settings.write(SettingKeys.desiredRetention, 0.85),
+        () => settings.write(SettingKeys.meaningLanguage, MeaningLanguage.both),
+      ]) {
+        final before = c.read(quizBuilderProvider);
+        await write();
+        await pumpEventQueue();
+        expect(c.read(quizBuilderProvider), isNot(same(before)));
+      }
+    });
   });
 
   group('#339 the quiz builder', () {

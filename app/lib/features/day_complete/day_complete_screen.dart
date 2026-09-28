@@ -182,7 +182,7 @@ class _Reward extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final ink = tokens.color.onAccent;
-    final words = view.revise.done + view.newToday.done;
+    final words = view.words;
     final tomorrow = view.tomorrow;
 
     return Column(

@@ -192,6 +192,33 @@ void main() {
       expect(taps, 1);
     });
 
+    testWidgets('#686 ST-10 a button disabled mid-press comes back up when '
+        'enabled again', (tester) async {
+      void tap() {}
+      await pump(tester, SgButton(label: 'Start today', onPressed: tap));
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byType(SgButton)),
+      );
+      await tester.pump();
+      expect(decorationIn(tester, SgButton).boxShadow, isEmpty);
+
+      await pump(tester, const SgButton(label: 'Start today', onPressed: null));
+      await pump(tester, SgButton(label: 'Start today', onPressed: tap));
+      expect(decorationIn(tester, SgButton).boxShadow, hasLength(1));
+      final translated = tester.widgetList<Transform>(
+        find.descendant(
+          of: find.byType(SgButton),
+          matching: find.byType(Transform),
+        ),
+      );
+      expect(
+        translated.every((t) => t.transform.getTranslation().x == 0),
+        isTrue,
+        reason: 'not pushed into the shadow',
+      );
+      await gesture.up();
+    });
+
     testWidgets('a disabled button still renders and does not fire', (
       tester,
     ) async {
