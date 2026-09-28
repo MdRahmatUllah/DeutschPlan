@@ -347,7 +347,6 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       for (final (i, q) in questions.indexed)
         if (examNumbered(q.item)) i,
     ];
-    final left = _timed ? examClock(_left.value) : null;
     final pick = await Adaptive.showSheet<NavChoice>(
       context: context,
       builder: (_) => ExamNavigatorSheet(
@@ -356,7 +355,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
             (answered: _given[i] != null, flagged: _flagged[i]),
         ],
         current: numbered.contains(_at) ? numbered.indexOf(_at) : null,
-        left: left,
+        // The clock itself, not its time now: the title ticks (#1003).
+        left: _timed ? _left : null,
       ),
     );
     if (pick == null || !mounted) return;

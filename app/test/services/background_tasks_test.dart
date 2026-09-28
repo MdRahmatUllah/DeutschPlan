@@ -11,6 +11,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/today/today_providers.dart';
@@ -157,6 +158,24 @@ void main() {
     });
 
     test('no course yet', () async {
+      await skip(BackgroundTask.planPregenerate);
+
+      expect(ran, isEmpty);
+      expect(
+        work.queued[BackgroundTask.planPregenerate],
+        const Duration(days: 1),
+      );
+    });
+
+    test("#1018 a course older than this build: left for the app's next "
+        "start, and tomorrow's run queued", () async {
+      // The course of the build before, installed beside a user.db at this
+      // schema: the manifest the app keeps names an older version than the
+      // one this build bundles.
+      File('${support.path}/${ContentDao.fileName}').writeAsBytesSync(<int>[]);
+      File('${support.path}/${ContentUpdater.manifestFile}')
+          .writeAsStringSync('{"content_version": "202001010000"}');
+
       await skip(BackgroundTask.planPregenerate);
 
       expect(ran, isEmpty);
