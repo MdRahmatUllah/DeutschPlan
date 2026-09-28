@@ -1982,3 +1982,4 @@ able to tell what is going on without asking.
 - 2026-09-28 09:32 · agent-2 #1007 · done (#1010)
 - 2026-09-28 09:34 · agent-0 #970 · done (#1000)
 - 2026-09-28 09:56 · agent-3 · session started
+- 2026-09-28 10:02 · agent-2 #1011 · reopened: owner decided 2026-09-28 (ME-4 opt 1, ME-10 opt 2, ME-11 opt 1); implemented in PR #1013
