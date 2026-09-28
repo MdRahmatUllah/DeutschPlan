@@ -20,6 +20,7 @@ import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/compare_set.dart';
 import 'package:sogda/domain/quiz_builder.dart';
 import 'package:sogda/features/study/study_back.dart' show StudyPlayButton;
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -133,29 +134,24 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
     final container = ProviderScope.containerOf(context, listen: false);
     // Today's plan is read once, when the day opens (as W1 replans).
     void replan() => container.invalidate(todayPlanProvider);
-    final undos = <Undo>[];
     try {
-      for (final word in words) {
-        undos.add(
-          await actions.addToToday(
-            word.uid,
-            today: today,
-            step: word.word.sublevelCode,
-          ),
-        );
-      }
+      // All or none, and a failure says so, with Retry and Export (#694).
+      late Undo undo;
+      final written = await guardWrite(context, () async {
+        undo = await actions.addAllToToday(<({String uid, String step})>[
+          for (final word in words)
+            (uid: word.uid, step: word.word.sublevelCode),
+        ], today: today);
+        return true;
+      });
+      if (!written) return;
       replan();
       if (!mounted) return;
       unawaited(
         SgUndo.show(
           context,
           message: AppLocalizations.of(context).compareAdded(words.length),
-          onUndo: () => unawaited(() async {
-            for (final undo in undos.reversed) {
-              await undo();
-            }
-            replan();
-          }()),
+          onUndo: () => unawaited(undo().then((_) => replan())),
         ),
       );
     } finally {

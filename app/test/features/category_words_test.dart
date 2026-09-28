@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:drift/drift.dart' show DatabaseConnection, Value;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_riverpod/misc.dart' show Override, ProviderListenable;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -19,9 +19,11 @@ import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
 import 'package:sogda/features/learn/category_words_screen.dart';
-import 'package:sogda/features/learn/step_words.dart' show StepWord;
+import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/search/search_screen.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -558,6 +560,48 @@ void main() {
         'door · দরজা',
         'street · রাস্তা',
       ]);
+    });
+
+    test("#694 CC-4 M3's change of meaning language reaches the word lists "
+        "at once, with no write to their words: L6's, L2's, R1's and "
+        "T4's", () async {
+      // Haus, planned before today and not studied: T4's.
+      await db
+          .into(db.planItems)
+          .insert(
+            PlanItemsCompanion.insert(
+              planDate: '2000-01-03',
+              wordUid: ContentFixture.haus,
+              kind: 'new',
+              sublevelCode: 'A1.1',
+            ),
+          );
+      final lists = <ProviderListenable<Object?>>[
+        categoryWordsProvider(1),
+        stepWordsProvider('A1.1'),
+        searchResultsProvider('haus'),
+        backlogProvider,
+      ];
+      for (final list in lists) {
+        final sub = container.listen(list, (_, _) {});
+        addTearDown(sub.close);
+      }
+      Future<List<String>> haus() async => <String>[
+        (await container.read(categoryWordsProvider(1).future)).first.meaning,
+        (await container.read(stepWordsProvider('A1.1').future)).first.meaning,
+        (await container.read(searchResultsProvider('haus').future))
+            .words
+            .first
+            .word
+            .meaning,
+        (await container.read(backlogProvider.future)).first.meaning,
+      ];
+      expect(await haus(), List.filled(4, 'house · বাড়ি'));
+
+      await container
+          .read(languagesProvider.notifier)
+          .setMeaning(MeaningLanguage.english);
+      expect(await haus(), List.filled(4, 'house'));
     });
 
     test('in English when the learner reads English', () async {

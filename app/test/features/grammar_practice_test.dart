@@ -91,6 +91,7 @@ void main() {
     required List<GrammarItem> items,
     List<String> topics = const <String>['g3'],
     bool dayDone = false,
+    Object? nextError,
     TextScaler? textScaler,
     String Function()? today,
     Duration nextLoad = Duration.zero,
@@ -150,8 +151,9 @@ void main() {
           }),
           grammarRatingServiceProvider.overrideWithValue(rating),
           studyNextProvider.overrideWith(
-            (ref, date) async =>
-                StudyNext(sentences: 0, backlog: 0, dayDone: dayDone),
+            (ref, date) async => nextError != null
+                ? throw nextError
+                : StudyNext(sentences: 0, backlog: 0, dayDone: dayDone),
           ),
         ],
         child: MaterialApp.router(
@@ -564,6 +566,19 @@ void main() {
 
   testWidgets('the last topic done: back to the opener', (tester) async {
     await pump(tester, items: <GrammarItem>[pick]);
+    await tester.tap(find.text('Könnten'));
+    await tester.pumpAndSettle();
+    await tapNext(tester);
+    expect(find.text('opener'), findsOneWidget);
+  });
+
+  testWidgets("#694 CC-3 the last topic done and the day's state fails to "
+      'read: back to the opener, never stuck', (tester) async {
+    await pump(
+      tester,
+      items: <GrammarItem>[pick],
+      nextError: StateError('disk I/O error'),
+    );
     await tester.tap(find.text('Könnten'));
     await tester.pumpAndSettle();
     await tapNext(tester);

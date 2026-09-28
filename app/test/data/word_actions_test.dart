@@ -149,6 +149,40 @@ void main() {
     });
   });
 
+  group("#694 CC-3 W2's Add all", () {
+    const tuer = ContentFixture.tuer;
+    final words = <({String uid, String step})>[
+      (uid: uid, step: 'A1.1'),
+      (uid: tuer, step: 'A1.1'),
+    ];
+
+    test('FR-W1-01 every word joins today, and one Undo takes them all '
+        'back', () async {
+      final undo = await actions.addAllToToday(words, today: today);
+      expect(
+        [for (final row in await plan()) row.wordUid],
+        <String>[uid, tuer],
+      );
+
+      await undo();
+      expect(await plan(), isEmpty);
+    });
+
+    test('a failure part-way adds none', () async {
+      await db.customStatement(
+        'CREATE TEMP TRIGGER fail_add BEFORE INSERT ON plan_items '
+        "WHEN NEW.word_uid = '$tuer' "
+        "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+      );
+
+      await expectLater(
+        actions.addAllToToday(words, today: today),
+        throwsA(anything),
+      );
+      expect(await plan(), isEmpty);
+    });
+  });
+
   group('FR-W1-02 Mark known', () {
     test('BR-STATUS-04 a review rated Easy, logged as known', () async {
       await actions.markKnown(uid, today: today);

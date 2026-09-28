@@ -18,6 +18,7 @@ import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/study/study_session.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/router/routes.dart';
 
 part 'study_summary.g.dart';
 
@@ -88,6 +89,35 @@ Future<StudyNext> studyNext(Ref ref, String date) async {
         ) &&
         !await ref.watch(planRepositoryProvider).dayCompleteShown(date),
   );
+}
+
+/// Out of a session whose last answer is written (L15, T5): T6 when that
+/// completes [day] with no sentence left, else back (FR-T3-02). A read that
+/// fails goes back too, never stays: the answers are written, and Today
+/// reads the day again (#694 CC-3).
+Future<void> leaveSession(
+  BuildContext context,
+  WidgetRef ref,
+  String day,
+) async {
+  ref.invalidate(studyNextProvider(day));
+  // Listened to while it answers: read alone, an auto-disposing provider
+  // can go before its future does.
+  final hold = ref.listenManual(studyNextProvider(day), (_, _) {});
+  StudyNext? next;
+  try {
+    next = await ref.read(studyNextProvider(day).future);
+  } on Object catch (error) {
+    debugPrint('study next: $error');
+  } finally {
+    hold.close();
+  }
+  if (!context.mounted) return;
+  if (next != null && next.dayDone && next.sentences == 0) {
+    DayCompleteRoute.instead(context, day);
+  } else {
+    unawaited(Navigator.of(context).maybePop());
+  }
 }
 
 /// Where T3 sends the learner.

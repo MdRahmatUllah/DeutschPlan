@@ -21,6 +21,7 @@ import 'package:sogda/domain/plan_engine.dart'
     show PlanDate, daysBetween, parsePlanDate;
 import 'package:sogda/features/study/study_back.dart' show meaningLine;
 import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/cross_tab.dart';
@@ -53,9 +54,8 @@ class Backlog extends _$Backlog {
   @override
   Stream<List<BacklogWord>> build() {
     final words = ref.watch(wordRepositoryProvider);
-    final meaning = ref
-        .watch(settingsProvider)
-        .read(SettingKeys.meaningLanguage);
+    // Watched (#694 CC-4): T4 stays alive under the Today tab.
+    final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
     return ref
         .watch(planRepositoryProvider)
         .watchBacklogWithStates(ref.watch(todayProvider))
@@ -589,7 +589,13 @@ class BacklogRow extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final notifier = ref.read(backlogProvider.notifier);
     final name = spokenForm(row.word.word);
-    final undo = await notifier.act(action, row);
+    // A write that fails says so, with Retry and Export (#694 CC-3).
+    Future<void> Function()? acted;
+    await guardWrite(context, () async {
+      acted = await notifier.act(action, row);
+      return acted != null;
+    });
+    final undo = acted;
     if (undo == null || !context.mounted) return;
     unawaited(
       SgUndo.show(
