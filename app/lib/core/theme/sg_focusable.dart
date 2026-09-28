@@ -128,8 +128,7 @@ class _SgFocusableState extends State<SgFocusable> {
       actions: _actions,
       child: Focus(
         canRequestFocus:
-            !widget.around &&
-            (widget.onPressed != null || keys.isNotEmpty),
+            !widget.around && (widget.onPressed != null || keys.isNotEmpty),
         includeSemantics: false,
         onFocusChange: _focus,
         // Always present, so the tree under it keeps its shape as the focus
