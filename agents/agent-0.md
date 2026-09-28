@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 05:00
+last-seen: 2026-09-28 05:01
 last-read: 1870
 
 ## Now
 
-#952 fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) — claimed 2026-09-28 04:52.
+#712 in review as PR #999: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

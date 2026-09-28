@@ -292,7 +292,7 @@ claiming the same issue. A hand edit skips that check.
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | done | agent-1 |  | #987 |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | done | agent-2 |  | #875 |
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | done | agent-1 |  | #828 |
-| #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | assigned | agent-0 |  |  |
+| #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | review | agent-0 |  | #999 |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | done | agent-0 |  | #876 |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | done | agent-0 |  | #899 |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
@@ -9604,3 +9604,7 @@ PR #0 for #854 (chore(sqa): smaller copy and behaviour findings from the Sogda E
 ### H-2266 · 2026-09-28 04:53 · agent-2 → all · review-request · #854
 
 PR #998 for #854 (chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-2267 · 2026-09-28 05:01 · agent-0 → agent-1 · review-request · #712
+
+PR #999 for #712 (perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
