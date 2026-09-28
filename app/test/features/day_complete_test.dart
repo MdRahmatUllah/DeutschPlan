@@ -142,11 +142,9 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('#729 FR-T6-01 a new word skipped to the backlog is not a '
-      'word studied: 17 done for the plan, 7 of them skipped, 10 words', (
-    tester,
-  ) async {
-    await pump(tester, view: artboardDone(newSkipped: 7));
+  testWidgets("#729 #1004 FR-T6-01 the words studied, not the plan's "
+      'done: 17 done for the plan, 10 studied', (tester) async {
+    await pump(tester, view: artboardDone(words: 10));
     await tester.pump(const Duration(milliseconds: 1300));
 
     expect(find.text(l10n.dayCompleteStats(10, 12)), findsOneWidget);
