@@ -711,7 +711,11 @@ class _FakeModels implements ModelRepository {
       ModelManifest(version: 1, models: <ModelEntry>[_voice]);
 
   @override
-  Future<ModelState> stateOf(ModelEntry entry, ModelVariant variant) => asking
+  Future<ModelState> stateOf(
+    ModelEntry entry,
+    ModelVariant variant, {
+    bool sized = true,
+  }) => asking
       ? Completer<ModelState>().future
       : fails
       ? Future<ModelState>.error(const FileSystemException('unreadable'))

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -19,6 +20,31 @@ import 'golden_harness.dart';
 /// these six files change.
 void main() {
   goldenTest('foundations', builder: (context) => const _FoundationsGallery());
+
+  // #745: the focus ring a keyboard or a D-pad shows, on the first control
+  // Tab reaches, in each mode. The gallery above is its text audit.
+  goldenTest(
+    'foundations_focus',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    act: (tester) => tester.sendKeyEvent(LogicalKeyboardKey.tab),
+    builder: (context) => Scaffold(
+      backgroundColor: context.tokens.surface.paper,
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(context.tokens.spacing.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SgButton(label: 'Start today · 20 cards', onPressed: () {}),
+              SizedBox(height: context.tokens.spacing.md),
+              SgChip(label: 'A2.1', onTap: () {}),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 class _FoundationsGallery extends StatelessWidget {

@@ -4,6 +4,7 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// − value +, as `OnboardingPace` and `Settings` both draw it: two 36 dp
 /// outlined circles either side of the number. On iOS both draw the number
@@ -156,14 +157,18 @@ class _RoundButton extends StatelessWidget {
           child: SizedBox.square(
             dimension: tapTarget,
             child: Center(
-              child: Container(
-                width: SgStepper.button,
-                height: SgStepper.button,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: colour, width: 1.5),
+              child: SgFocusable(
+                onPressed: onTap,
+                radius: BorderRadius.circular(SgStepper.button / 2),
+                child: Container(
+                  width: SgStepper.button,
+                  height: SgStepper.button,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: colour, width: 1.5),
+                  ),
+                  child: Icon(icon, size: 18, color: colour),
                 ),
-                child: Icon(icon, size: 18, color: colour),
               ),
             ),
           ),
@@ -195,17 +200,21 @@ class _PillButton extends StatelessWidget {
       onTap: onTap,
       child: AdaptiveTooltip(
         message: label,
-        child: GestureDetector(
-          onTap: onTap,
-          behavior: HitTestBehavior.opaque,
-          child: SizedBox.square(
-            dimension: 44,
-            child: Icon(
-              icon,
-              size: 18,
-              color: onTap == null
-                  ? tokens.color.textSecondary
-                  : tokens.color.ink,
+        child: SgFocusable(
+          onPressed: onTap,
+          radius: BorderRadius.circular(22),
+          child: GestureDetector(
+            onTap: onTap,
+            behavior: HitTestBehavior.opaque,
+            child: SizedBox.square(
+              dimension: 44,
+              child: Icon(
+                icon,
+                size: 18,
+                color: onTap == null
+                    ? tokens.color.textSecondary
+                    : tokens.color.ink,
+              ),
             ),
           ),
         ),

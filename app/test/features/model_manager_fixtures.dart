@@ -165,7 +165,11 @@ class FakeModels extends Fake implements ModelRepository {
       ModelManifest(version: 1, models: <ModelEntry>[voiceEntry]);
 
   @override
-  Future<ModelState> stateOf(ModelEntry entry, ModelVariant variant) async =>
+  Future<ModelState> stateOf(
+    ModelEntry entry,
+    ModelVariant variant, {
+    bool sized = true,
+  }) async =>
       ModelState(entry: entry, variant: variant, status: voice, bytesOnDisk: 0);
 }
 

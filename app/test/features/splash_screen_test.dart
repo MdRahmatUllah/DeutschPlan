@@ -134,6 +134,28 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    for (final size in <Size>[const Size(360, 640), const Size(320, 568)]) {
+      for (final scale in <double>[1, 2]) {
+        testWidgets('#744 FR-S1-05 on a ${size.width.round()} × '
+            '${size.height.round()} phone at ${(scale * 100).round()} % the '
+            'lockup keeps 16 dp from the caption, the mark at the centre', (
+          tester,
+        ) async {
+          phone(tester, size, bottom: 48);
+          tester.platformDispatcher.textScaleFactorTestValue = scale;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+          await pump(tester, child: const SplashScreen(showProgress: true));
+
+          final caption = tester.getRect(find.text(l10n.splashPreparing).last);
+          final lockup = tester.getRect(find.byType(SplashLockup));
+          expect(caption.top - lockup.bottom, greaterThanOrEqualTo(16 - 0.01));
+          final mark = tester.getRect(find.byType(SgMark)).center;
+          expect(mark.dx, moreOrLessEquals(size.width / 2));
+          expect(mark.dy, moreOrLessEquals(size.height / 2));
+        });
+      }
+    }
+
     testWidgets('FR-S1-05 #602 and a 1024 × 600 tablet on its side, with a '
         'navigation bar, does not overflow', (tester) async {
       tester.view

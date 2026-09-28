@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -266,7 +268,9 @@ ORDER BY l.practised_at, l.id
     }.toList();
   }
 
-  /// Adds plan rows in one transaction.
+  /// Adds plan rows in one statement: the uids go in as one JSON array
+  /// (`json_each`), one trip to the database's isolate, not one a word (a
+  /// catch-up plans ~1,200, #712). In their order, as one by one did.
   ///
   /// `insertOnConflictUpdate` would overwrite `completed_at`, so this ignores
   /// a row that is already there: reopening a day must not un-complete what
@@ -285,28 +289,26 @@ ORDER BY l.practised_at, l.id
   ) async {
     if (uids.isEmpty) return;
 
-    await _db.transaction(() async {
-      for (final uid in uids) {
-        await _db.customInsert(
-          '''
+    await _db.customInsert(
+      '''
 INSERT OR IGNORE INTO plan_items (plan_date, word_uid, kind, sublevel_code)
-SELECT ?1, ?2, ?3, code FROM (
-  SELECT COALESCE(
-    (SELECT w.sublevel_code FROM words w WHERE w.uid = ?2),
-    (SELECT e.sublevel_code FROM enrollments e WHERE ?2 LIKE 'custom:%'
+SELECT ?1, uid, ?3, code FROM (
+  SELECT u.key AS ord, u.value AS uid, COALESCE(
+    (SELECT w.sublevel_code FROM words w WHERE w.uid = u.value),
+    (SELECT e.sublevel_code FROM enrollments e WHERE u.value LIKE 'custom:%'
       ORDER BY e.completed_on IS NULL DESC, e.started_on DESC LIMIT 1)
   ) AS code
+  FROM json_each(?2) u
 ) WHERE code IS NOT NULL
+ORDER BY ord
 ''',
-          variables: <Variable<Object>>[
-            Variable<String>(date),
-            Variable<String>(uid),
-            Variable<String>(kind.wire),
-          ],
-          updates: <TableInfo<Table, Object>>{_db.planItems},
-        );
-      }
-    });
+      variables: <Variable<Object>>[
+        Variable<String>(date),
+        Variable<String>(jsonEncode(uids)),
+        Variable<String>(kind.wire),
+      ],
+      updates: <TableInfo<Table, Object>>{_db.planItems},
+    );
   }
 
   /// The backlog (BR-PLAN-05): open `new` rows from before [today].

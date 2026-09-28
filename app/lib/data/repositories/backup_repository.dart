@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_update.dart' show ContentUpdater;
@@ -201,8 +202,8 @@ class BackupRepository {
   /// Refuses here rather than half way through: FR-M6-02 shows the preview
   /// before writing, and a file that cannot be imported should say so before
   /// the learner has chosen merge or replace.
-  BackupPreview preview(String json) {
-    final backup = _parse(json);
+  Future<BackupPreview> preview(String json) async {
+    final backup = await _parsed(json, _columns);
     final data = backup['tables']! as Map<String, Object?>;
 
     final rowCounts = <String, int>{
@@ -262,7 +263,7 @@ class BackupRepository {
     PlanDate? today,
     Map<String, String> aliases = const <String, String>{},
   }) async {
-    final backup = _parse(json);
+    final backup = await _parsed(json, _columns);
     final data = backup['tables']! as Map<String, Object?>;
 
     // Fresh ids assigned on a merge, by the table that reads them: an
@@ -389,6 +390,15 @@ WHERE kind = 'new' AND completed_at IS NULL
         ? await _keysOf(table)
         : <String, Map<String, Object?>>{};
 
+    // #712: a row whose id nothing reads goes in one batch with the rest of
+    // its table, one trip to the database's isolate, not one a row (a year's
+    // `review_log` is thousands). An attempt's and a word of the learner's
+    // own's ids are read back for the rows naming them, and `enrollments`
+    // reads its own rows as it goes (one open step): those go one by one.
+    final queued = child == null && !ownIds && table != 'enrollments'
+        ? <(String, List<Object?>)>[]
+        : null;
+
     for (final row in rows) {
       final incoming = <String, Object?>{
         for (final column in columns)
@@ -503,17 +513,32 @@ WHERE kind = 'new' AND completed_at IS NULL
           }
           final wins = fileWins && table == 'settings';
           if (!wins && !_isNewer(table, mapped, local)) continue;
-          await _replaceRow(table, mapped);
+          if (queued != null) {
+            queued.add(_insertOf(table, mapped, replace: true));
+          } else {
+            await _replaceRow(table, mapped);
+          }
           continue;
         }
       }
 
+      if (queued != null) {
+        if (mapped.isNotEmpty) queued.add(_insertOf(table, mapped));
+        continue;
+      }
       final id = await _insertRow(table, mapped);
       if ((child != null || ownIds) && row['id'] != null) {
         remapped[row['id']! as int] = id;
       }
     }
 
+    if (queued != null && queued.isNotEmpty) {
+      await _db.batch((batch) {
+        for (final (sql, args) in queued) {
+          batch.customStatement(sql, args);
+        }
+      });
+    }
     if (child != null) remap[child] = remapped;
     if (ownIds) remap[_customWords] = remapped;
   }
@@ -523,25 +548,33 @@ WHERE kind = 'new' AND completed_at IS NULL
   /// it back from the insert itself: no `last_insert_rowid()` round trip
   /// (#700).
   Future<int> _insertRow(String table, Map<String, Object?> row) async {
-    final names = row.keys.toList();
-    if (names.isEmpty) return 0;
-
-    final placeholders = List<String>.filled(names.length, '?').join(', ');
-    final quoted = names.map((name) => '"$name"').join(', ');
+    if (row.isEmpty) return 0;
+    final (sql, args) = _insertOf(table, row);
     return _db.customInsert(
-      'INSERT INTO "$table" ($quoted) VALUES ($placeholders)',
+      sql,
       variables: <Variable<Object>>[
-        for (final name in names) Variable<Object>(row[name]),
+        for (final arg in args) Variable<Object>(arg),
       ],
     );
   }
 
   Future<void> _replaceRow(String table, Map<String, Object?> row) async {
+    final (sql, args) = _insertOf(table, row, replace: true);
+    await _db.customStatement(sql, args);
+  }
+
+  /// [row]'s INSERT (OR REPLACE) into [table], and its arguments.
+  static (String, List<Object?>) _insertOf(
+    String table,
+    Map<String, Object?> row, {
+    bool replace = false,
+  }) {
     final names = row.keys.toList();
     final placeholders = List<String>.filled(names.length, '?').join(', ');
     final quoted = names.map((name) => '"$name"').join(', ');
-    await _db.customStatement(
-      'INSERT OR REPLACE INTO "$table" ($quoted) VALUES ($placeholders)',
+    return (
+      'INSERT ${replace ? 'OR REPLACE ' : ''}INTO "$table" ($quoted) '
+          'VALUES ($placeholders)',
       <Object?>[for (final name in names) row[name]],
     );
   }
@@ -652,6 +685,32 @@ WHERE kind = 'new' AND completed_at IS NULL
     SettingKeys.desiredRetention.name: (Fsrs.minRetention, Fsrs.maxRetention),
   };
 
+  /// Each table's columns by name: its type and whether it takes null.
+  /// Plain values, for a parse in another isolate to check rows against.
+  late final _Columns _columns = <String, Map<String, (Object, bool)>>{
+    for (final table in _db.allTables)
+      table.actualTableName: <String, (Object, bool)>{
+        for (final column in table.$columns)
+          column.name: (column.type, column.$nullable),
+      },
+  };
+
+  /// A file this long or longer is parsed and checked in an isolate of its
+  /// own (#712): a year of use, ~5 MB, took ~290 ms in a debug VM, and the
+  /// UI isolate paid it twice, for the preview and again for the import.
+  // ponytail: a smaller file is parsed where it is: a spawn costs more than
+  // it saves, and a widget test's fake clock never sees an isolate finish.
+  static const int isolateFrom = 256 * 1024;
+
+  /// [_parse], in an isolate once [json] is [isolateFrom] long. Static, so
+  /// the isolate is sent the text and the columns and nothing else.
+  static Future<Map<String, Object?>> _parsed(
+    String json,
+    _Columns columns,
+  ) async => json.length < isolateFrom
+      ? _parse(json, columns)
+      : Isolate.run(() => _parse(json, columns));
+
   /// Parses and checks the version. FR-M6-02.
   ///
   /// An older file is read as it is: every migration this schema has had adds
@@ -663,7 +722,7 @@ WHERE kind = 'new' AND completed_at IS NULL
   /// The file is from outside the app, so every row is checked here, before
   /// the preview (#657): SQLite would store `"stability": "x"` as text, and
   /// every typed read of it would then throw, Today's plan first.
-  Map<String, Object?> _parse(String json) {
+  static Map<String, Object?> _parse(String json, _Columns columns) {
     final Object? decoded;
     try {
       decoded = jsonDecode(json);
@@ -703,7 +762,7 @@ WHERE kind = 'new' AND completed_at IS NULL
       }
     }
     for (final table in tables) {
-      _checkRows(table, _rowsIn(data, table));
+      _checkRows(table, _rowsIn(data, table), columns[table]!);
     }
 
     return decoded;
@@ -712,25 +771,21 @@ WHERE kind = 'new' AND completed_at IS NULL
   /// Each value of [rows] against its column's declared type and
   /// nullability, and the [ranges] (#657). A column the file has and this
   /// build doesn't is not checked: the import leaves it out.
-  void _checkRows(String table, List<Map<String, Object?>> rows) {
-    final columns = <String, GeneratedColumn<Object>>{
-      for (final column
-          in _db.allTables
-              .firstWhere((t) => t.actualTableName == table)
-              .$columns)
-        column.name: column,
-    };
+  static void _checkRows(
+    String table,
+    List<Map<String, Object?>> rows,
+    Map<String, (Object, bool)> columns,
+  ) {
     for (final (index, row) in rows.indexed) {
       for (final MapEntry(key: name, value: value) in row.entries) {
         final column = columns[name];
         if (column == null) continue;
+        final (type, nullable) = column;
         final fits = switch (value) {
-          null => column.$nullable,
-          int() =>
-            column.type == DriftSqlType.int ||
-                column.type == DriftSqlType.double,
-          double() => column.type == DriftSqlType.double,
-          String() => column.type == DriftSqlType.string,
+          null => nullable,
+          int() => type == DriftSqlType.int || type == DriftSqlType.double,
+          double() => type == DriftSqlType.double,
+          String() => type == DriftSqlType.string,
           _ => false,
         };
         if (!fits || (value is String && !_isWhen(name, value))) {
@@ -779,3 +834,5 @@ WHERE kind = 'new' AND completed_at IS NULL
     'That file is JSON, but not a Sogda export ($what).',
   );
 }
+
+typedef _Columns = Map<String, Map<String, (Object, bool)>>;
