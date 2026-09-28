@@ -93,13 +93,17 @@ class StubExamStart extends ExamStart {
   /// Set to make the next begin throw, as a failed write would.
   static bool fail = false;
 
+  /// What a failing begin throws: a failed write's, or a bad seed's
+  /// RangeError (#694 CC-3).
+  static Object error = Exception('no database');
+
   @override
   bool build() => false;
 
   @override
   Future<int?> begin(String step, int seed, {required bool timer}) async {
     begun.add((step, seed, timer));
-    if (fail) throw Exception('no database');
+    if (fail) throw error;
     return 42;
   }
 }

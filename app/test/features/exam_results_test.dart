@@ -255,6 +255,20 @@ void main() {
     expect(find.text(l10n.examResultPercent(79)), findsOneWidget);
   });
 
+  testWidgets('#694 CC-3 FR-L13-03 a tick that fails to save says so; Retry '
+      'writes it and grades again', (tester) async {
+    await pump(tester, with_: StubExamResult()..failRubric = true);
+    await tap(tester, l10n.examSectionWriting);
+    await tap(tester, l10n.examWritingRubricTask);
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    expect(stub.rubrics, isEmpty);
+
+    stub.failRubric = false;
+    await tap(tester, l10n.retry);
+    expect(stub.rubrics.single.$2, <bool>[true, true]);
+    expect(find.text(l10n.examResultPercent(79)), findsOneWidget);
+  });
+
   testWidgets('Speaking opens its four ticks as the runner left them', (
     tester,
   ) async {

@@ -101,10 +101,15 @@ class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
         // the grading's own rule, so a text of dots offers none (#703).
         empty: !rubricCounts(task.item, task.given),
         speaking: task.item is SpeakingTask,
+        // A tick that fails to save says so, with Retry and Export (#694).
         onChanged: (ticks) async {
-          await ref
-              .read(examResultServiceProvider)
-              .rubric(widget.attemptId, task.ord, ticks);
+          await guardWrite(context, () async {
+            await ref
+                .read(examResultServiceProvider)
+                .rubric(widget.attemptId, task.ord, ticks);
+            return true;
+          });
+          if (!mounted) return;
           ref.invalidate(examResultProvider(widget.attemptId));
         },
         // #891: a write that fails is asked about (*Retry* · *Export

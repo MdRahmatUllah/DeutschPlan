@@ -303,6 +303,31 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     expect(view.total, 5);
   });
 
+  test('#1045 FR-T1-02 a topic practised from L4 on a day it was not due '
+      'reaches the ring at once, the plan not built again', () async {
+    await db.customUpdate(
+      'INSERT INTO grammar_state '
+      '(grammar_uid, status, due, stability, reps, last_review) '
+      "VALUES ('g1', 'learning', '${addDays(today, 5)}', 1, 1, "
+      "'2026-09-20T09:00:00Z')",
+      updates: <TableInfo<Table, Object?>>{db.grammarState},
+    );
+    container.invalidate(todayPlanProvider);
+    final before = await container.read(todayViewProvider.future);
+    expect((before.grammarDone, before.total), (0, 4));
+
+    await container
+        .read(grammarRatingServiceProvider)
+        .ratePractice('g1', items: 3, correct: 3);
+    await pumpEventQueue();
+
+    // No invalidate: as the learner comes back from L4.
+    final view = await container.read(todayViewProvider.future);
+    expect(view.grammarDue, isEmpty);
+    expect(view.grammarDone, 1);
+    expect(view.total, 5, reason: 'the ring grows as the learner does more');
+  });
+
   test('a topic falling due after the day opened waits for tomorrow', () async {
     await db.customUpdate(
       'INSERT INTO grammar_state (grammar_uid, status, due, last_review) '

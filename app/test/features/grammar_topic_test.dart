@@ -186,6 +186,23 @@ void main() {
     expect(marked, <String>['g3', 'g3']);
   });
 
+  testWidgets('#694 CC-3 FR-L4-01 a Mark as learned that fails to save says '
+      'so; Retry writes it again', (tester) async {
+    await pump(tester);
+    await tester.tap(find.text(l10n.topicMarkLearned));
+    await tester.pump();
+    release!.completeError(StateError('disk I/O error'));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+
+    await tester.tap(find.text(l10n.retry));
+    await tester.pump();
+    expect(marked, <String>['g3', 'g3']);
+    release!.complete();
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.saveAnswerFailed), findsNothing);
+  });
+
   testWidgets('once learned: when it comes round, and no Mark as learned', (
     tester,
   ) async {

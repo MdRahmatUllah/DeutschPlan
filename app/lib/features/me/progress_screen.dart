@@ -11,6 +11,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -563,8 +564,7 @@ class _ByStep extends StatelessWidget {
             Semantics(
               container: true,
               button: true,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: SgTappable(
                 onTap: () => context.jumpToTab(LearnStepRoute(code: step.code)),
                 child: ConstrainedBox(
                   // accessibility-performance.md: 48 dp on Android, 44 pt

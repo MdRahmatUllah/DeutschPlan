@@ -15,6 +15,7 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/study/study_back.dart' show meaningLine;
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -27,20 +28,25 @@ typedef StepWord = ({WordWithState word, String meaning});
 /// L2's Words tab: every word of [code] in teaching order, suspended ones
 /// included, as a stream — a word rated elsewhere changes its chip here.
 @riverpod
-Stream<List<StepWord>> stepWords(Ref ref, String code) => ref
-    .watch(wordRepositoryProvider)
-    .watchStep(code)
-    .map((words) => withMeanings(ref, words));
-
-/// [words] with their meanings in the learner's meaning language: English
-/// where the course has no Bangla, and both for both (#689 TD-15).
-List<StepWord> withMeanings(Ref ref, List<WordWithState> words) {
-  final meaning = ref.read(settingsProvider).read(SettingKeys.meaningLanguage);
-  return <StepWord>[
-    for (final word in words)
-      (word: word, meaning: meaningLine(word.word, meaning)),
-  ];
+Stream<List<StepWord>> stepWords(Ref ref, String code) {
+  // Watched (#694 CC-4): a change in Settings re-emits the list at once,
+  // not at the next write to its words.
+  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+  return ref
+      .watch(wordRepositoryProvider)
+      .watchStep(code)
+      .map((words) => withMeanings(meaning, words));
 }
+
+/// [words] with their meanings in [meaning]: English where the course has
+/// no Bangla, and both for both (#689 TD-15).
+List<StepWord> withMeanings(
+  MeaningLanguage meaning,
+  List<WordWithState> words,
+) => <StepWord>[
+  for (final word in words)
+    (word: word, meaning: meaningLine(word.word, meaning)),
+];
 
 /// The categories [code]'s words fall in, the biggest first: the chips
 /// after the status ones.
@@ -133,14 +139,18 @@ class _StepWordsTabState extends ConsumerState<StepWordsTab> {
     setState(() => _starting = true);
     final settings = ref.read(settingsProvider);
     try {
-      await ref
-          .read(planEngineProvider)
-          .switchStep(
-            widget.step.code,
-            ref.read(todayProvider),
-            dailyNew: settings.read(SettingKeys.dailyNew),
-            studyDaysMask: settings.read(SettingKeys.studyDaysMask),
-          );
+      // A write that fails says so, with Retry and Export (#694 CC-3).
+      await guardWrite(context, () async {
+        await ref
+            .read(planEngineProvider)
+            .switchStep(
+              widget.step.code,
+              ref.read(todayProvider),
+              dailyNew: settings.read(SettingKeys.dailyNew),
+              studyDaysMask: settings.read(SettingKeys.studyDaysMask),
+            );
+        return true;
+      });
     } finally {
       if (mounted) setState(() => _starting = false);
     }

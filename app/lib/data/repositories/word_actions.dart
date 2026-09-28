@@ -32,6 +32,24 @@ class WordActions {
     required String step,
   }) => _db.transaction(() => _addToToday(uid, today: today, step: step));
 
+  /// W2's *Add all* (FR-W1-01 for each of [words], as (uid, its step)): one
+  /// transaction, so a failure part-way adds none, and one [Undo] takes
+  /// them all back (#694 CC-3).
+  Future<Undo> addAllToToday(
+    List<({String uid, String step})> words, {
+    required String today,
+  }) => _db.transaction(() async {
+    final undos = <Undo>[
+      for (final word in words)
+        await _addToToday(word.uid, today: today, step: word.step),
+    ];
+    return () => _db.transaction(() async {
+      for (final undo in undos.reversed) {
+        await undo();
+      }
+    });
+  });
+
   Future<Undo> _addToToday(
     String uid, {
     required String today,
