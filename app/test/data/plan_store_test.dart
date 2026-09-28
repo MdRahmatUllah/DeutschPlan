@@ -261,6 +261,23 @@ ORDER BY w.seq_in_sublevel
       expect(steps, contains(startsWith('LIST SUBQUERY')));
     });
 
+    test('#1047 completing a step reads the planned words once too', () async {
+      final plan = await db
+          .customSelect(
+            'EXPLAIN QUERY PLAN ${DriftPlanStore.completeStepSql}',
+            variables: <Variable<Object>>[
+              Variable<String>('A1.1'),
+              Variable<String>('2026-03-10'),
+            ],
+          )
+          .get();
+      final steps = <String>[for (final row in plan) row.read('detail')];
+
+      // The EXISTS is correlated to nothing; only a per-word plan scan counts.
+      expect(steps, isNot(contains(contains('CORRELATED'))));
+      expect(steps, contains(startsWith('LIST SUBQUERY')));
+    });
+
     test('a limit of zero asks for nothing', () async {
       expect(await store.unplannedWords('A1.1', limit: 0), isEmpty);
     });
