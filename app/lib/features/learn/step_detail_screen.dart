@@ -263,10 +263,10 @@ String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
     if (step.passedSeed case final mock?) {
       return l10n.stepCompletedPassed(day(completed), mock);
     }
-    // #950 (the owner): an enrollment's end is "Completed" only once every
-    // word is Done; before that the step was left, as *Start* on another
-    // step leaves it (FR-L2-03).
-    return step.todo + step.learning == 0
+    // #950, #1012 (the owner): a step the plan finished is completed, words
+    // still Learning and all; one with words never met was left part-way, as
+    // *Start* on another step leaves it (FR-L2-03).
+    return step.todo == 0
         ? l10n.stepCompleted(day(completed))
         : l10n.stepLeft(day(completed));
   }
