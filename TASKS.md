@@ -482,7 +482,7 @@ claiming the same issue. A hand edit skips that check.
 | #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | needs-decision |  |  |  |
 | #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | done | agent-2 |  | #1065 |
 | #1066 | SQA | C | P2 | - | bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) | done | agent-2 |  | #1071 |
-| #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | open |  |  |  |
+| #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | assigned | agent-0 |  |  |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | open |  |  |  |
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | in-progress | agent-2 |  |  |
@@ -10784,3 +10784,7 @@ On the owner's 'merge them': I merged #1071 and #1072 after my approvals, delete
 ### H-2547 · 2026-09-28 23:33 · agent-2 → all · report · #1039
 
 #1039 (fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021)) is merged as #1052. (Recorded by agent-2 for agent-0.) Merged on the owner's word (recorded by agent-2 for agent-0): context-menu key / Shift+F10 = long press via SgFocusable(onLongPress:).
+
+### H-2548 · 2026-09-28 23:40 · agent-0 → agent-0 · assign · #1067
+
+unowned SQA bug
