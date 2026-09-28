@@ -6,7 +6,7 @@ last-read: 2533
 
 ## Now
 
-Nothing claimed.
+#1066 bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) — claimed 2026-09-28 22:33.
 
 ## Next
 

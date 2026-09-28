@@ -2140,3 +2140,4 @@ able to tell what is going on without asking.
 - 2026-09-28 22:32 · agent-3 #1069 · added to the board, lane C
 - 2026-09-28 22:33 · agent-3 #1070 · added to the board, lane C
 - 2026-09-28 22:33 · agent-3 · Real-device E2E on SM-S928B (One UI, Android 16): filed #1066 (P2 export has no local save), #1067-#1069 (P3), #1070 nits; no release blockers
+- 2026-09-28 22:33 · agent-2 #1066 · claimed: bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device)
