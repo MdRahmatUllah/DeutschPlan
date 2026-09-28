@@ -685,7 +685,7 @@ void main() {
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {
       final source = file.readAsStringSync();
-      for (final call in _semanticsCalls(source)) {
+      for (final call in _calls(source, 'Semantics')) {
         final button = RegExp(r'\bbutton:\s*(?!false\b)').hasMatch(call.args);
         final hides =
             call.args.contains('excludeSemantics: true') ||
@@ -718,11 +718,12 @@ void main() {
 
   test('#912 a card button is its own semantics node', () {
     // accessibility-performance.md: a `Semantics(button: …)` over a card (an
-    // `SgSurface` or a `GestureDetector`) with no `container` merges its
-    // flag, label and tap up into whatever node holds it. T1's grammar card
-    // became a button over the whole card list that way (#749). Right under
-    // `AdaptiveTapTarget` or `MergeSemantics` it is a node already.
-    final card = RegExp(r'^\s*(?:SgSurface|GestureDetector)\(');
+    // `SgSurface`, an `SgTappable` or a `GestureDetector`) with no `container`
+    // merges its flag, label and tap up into whatever node holds it. T1's
+    // grammar card became a button over the whole card list that way (#749).
+    // Right under `AdaptiveTapTarget` or `MergeSemantics` it is a node
+    // already.
+    final card = RegExp(r'^\s*(?:SgSurface|SgTappable|GestureDetector)\(');
     // One single-child wrapper may stand between: L12's navigator cell is
     // `AdaptiveTapTarget(child: SizedBox(width: …, child: Semantics(…)))`,
     // and the target, grown to 48 dp, is its node.
@@ -733,7 +734,7 @@ void main() {
     final offenders = <String>[];
     for (final file in _dartFilesIn('lib')) {
       final source = file.readAsStringSync();
-      for (final call in _semanticsCalls(source)) {
+      for (final call in _calls(source, 'Semantics')) {
         // Hiding its child's semantics doesn't make it a node: L4's
         // next-topic link merged up over the whole rule that way.
         final button = RegExp(r'\bbutton:\s*(?!false\b)').hasMatch(call.args);
@@ -751,6 +752,37 @@ void main() {
       isEmpty,
       reason:
           'give the card button `container: true`:\n${offenders.join('\n')}',
+    );
+  });
+
+  test('#1021 a screen taps through SgTappable, never a bare '
+      'GestureDetector', () {
+    // accessibility-performance.md, WCAG 2.1.1: a keyboard or a D-pad
+    // reaches and presses what a finger does. A bare `GestureDetector` with
+    // an `onTap:` is no Tab stop, and Enter does nothing; an `SgTappable` is
+    // both. A drag or a long press alone isn't matched. A tap that another
+    // Tab stop already makes names that stop, and says
+    // `ponytail: allow-bare-tap` on the line or ending the comment above.
+    final offenders = <String>[];
+    for (final file in _dartFilesIn('lib/features')) {
+      final source = file.readAsStringSync();
+      final lines = source.split('\n');
+      for (final call in _calls(source, 'GestureDetector')) {
+        if (!RegExp(r'\bonTap:').hasMatch(call.args)) continue;
+        if (_marked(lines, call.line - 1, 'ponytail: allow-bare-tap')) {
+          continue;
+        }
+        offenders.add('${_rel(file)}:${call.line}');
+      }
+    }
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'use SgTappable (core/theme/sg_focusable.dart), or name the Tab '
+          'stop that makes the same tap and mark it // ponytail: '
+          'allow-bare-tap:\n${offenders.join('\n')}',
     );
   });
 
@@ -835,13 +867,15 @@ void main() {
   });
 }
 
-/// Every `Semantics(…)` call in [source]: its own arguments (up to its
-/// top-level `child:`), the child, the line it starts on, and the source
-/// before it. Bracket-matched, so a nested call's `child:` is not mistaken for
-/// this one's.
-Iterable<({String args, String child, int line, String before})>
-_semanticsCalls(String source) sync* {
-  for (final match in RegExp(r'(?<![A-Za-z])Semantics\(').allMatches(source)) {
+/// Every [name]`(…)` call in [source] (`Semantics`, `GestureDetector`): its
+/// own arguments (up to its top-level `child:`), the child, the line it
+/// starts on, and the source before it. Bracket-matched, so a nested call's
+/// `child:` is not mistaken for this one's.
+Iterable<({String args, String child, int line, String before})> _calls(
+  String source,
+  String name,
+) sync* {
+  for (final match in RegExp('(?<![A-Za-z])$name\\(').allMatches(source)) {
     var depth = 0;
     var childAt = -1;
     for (var i = match.end - 1; i < source.length; i++) {

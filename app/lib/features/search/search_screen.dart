@@ -12,6 +12,7 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -500,8 +501,8 @@ class _Header extends StatelessWidget {
                             excludeSemantics: true,
                             child: AdaptiveTooltip(
                               message: l10n.searchClear,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
+                              child: SgTappable(
+                                radius: BorderRadius.circular(24),
                                 onTap: onClear,
                                 child: SizedBox(
                                   width: 48,
@@ -662,8 +663,7 @@ class _Results extends StatelessWidget {
             Semantics(
               container: true,
               button: true,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: SgTappable(
                 onTap: () {
                   onUse();
                   // A set entry's row opens W2, any other W1 (#738).
@@ -836,8 +836,7 @@ class _SentenceRow extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: SgTappable(
         onTap: () {
           onUse();
           WordRoute.open(context, sentence.wordUid);
@@ -1040,8 +1039,7 @@ class _MyWordRow extends StatelessWidget {
       child: Semantics(
         button: true,
         onTap: () => EditCustomWordRoute.open(context, word.id),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        child: SgTappable(
           onTap: () => EditCustomWordRoute.open(context, word.id),
           child: Container(
             constraints: const BoxConstraints(minHeight: WordRow.height),

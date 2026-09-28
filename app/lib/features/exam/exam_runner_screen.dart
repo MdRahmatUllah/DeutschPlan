@@ -9,6 +9,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -625,8 +626,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                       message: _flagged[_at]
                           ? l10n.examRunFlagged
                           : l10n.examRunFlag,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
+                      child: SgTappable(
+                        radius: BorderRadius.circular(24),
                         onTap: () => unawaited(_toggleFlag()),
                         child: SizedBox.square(
                           dimension: 48,
@@ -890,8 +891,8 @@ class _Band extends StatelessWidget {
                   excludeSemantics: true,
                   child: AdaptiveTooltip(
                     message: l10n.examRunPause,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: SgTappable(
+                      radius: BorderRadius.circular(24),
                       onTap: onPause,
                       child: SizedBox.square(
                         dimension: 48,
@@ -917,8 +918,8 @@ class _Band extends StatelessWidget {
                   excludeSemantics: true,
                   child: AdaptiveTooltip(
                     message: l10n.examNavOpen,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: SgTappable(
+                      radius: BorderRadius.circular(24),
                       onTap: onNavigator,
                       child: SizedBox.square(
                         dimension: 48,

@@ -124,6 +124,7 @@ class StepProgress {
     this.passedSeed,
     this.startedOn,
     this.completedOn,
+    this.unplanned = 0,
   });
 
   final String code;
@@ -132,6 +133,10 @@ class StepProgress {
   /// Every word of the step, suspended ones included.
   final int words;
   final int todo;
+
+  /// Of [todo], the words never planned: what a step left by switching
+  /// part-way still has, and one the plan finished doesn't (#1028).
+  final int unplanned;
   final int learning;
   final int done;
   final int grammar;
@@ -585,6 +590,7 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
               todo: row.todo,
               learning: row.learning,
               done: row.done,
+              unplanned: row.unplanned,
               grammar: row.grammarCount,
               grammarLearned: row.grammarLearned,
               unlocked: StepProgress.unlocks(

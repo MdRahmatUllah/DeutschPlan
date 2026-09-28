@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -7,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -21,6 +23,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 
+import '../core/keyboard.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import 'settings_fixtures.dart';
@@ -362,6 +365,32 @@ void main() {
     expect(
       tester.widgetList<WordRow>(find.byType(WordRow)).first.word.word.german,
       first,
+    );
+  });
+
+  testWidgets('#1021 FR-L2-02 Tab reaches a word row and then its speaker, '
+      'and Enter on the row opens W1', (tester) async {
+    await pump(
+      tester,
+      overrides: over(<StepWord>[for (var i = 0; i < 5; i++) word(i)]),
+    );
+    final first = find.byType(WordRow).first;
+    await tabTo(
+      tester,
+      find.ancestor(of: first, matching: find.byType(SgTappable)),
+    );
+    await tabTo(
+      tester,
+      find.descendant(of: first, matching: find.byType(SgTappable)),
+    );
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+      'w0',
     );
   });
 

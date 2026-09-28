@@ -11,6 +11,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -707,9 +708,9 @@ class _Answer extends StatelessWidget {
       label: label,
       onTap: onPressed,
       child: ExcludeSemantics(
-        child: GestureDetector(
+        child: SgTappable(
+          radius: BorderRadius.circular(tokens.shape.button),
           onTap: onPressed,
-          behavior: HitTestBehavior.opaque,
           // 48, grown with the text size: a fixed 48 cut "Understood" at
           // 150 % (#165).
           child: Container(
@@ -765,9 +766,9 @@ class _IconButton extends StatelessWidget {
     label: label,
     child: AdaptiveTooltip(
       message: label,
-      child: GestureDetector(
+      child: SgTappable(
+        radius: BorderRadius.circular(24),
         onTap: onPressed,
-        behavior: HitTestBehavior.opaque,
         child: SizedBox(
           width: 48,
           height: 48,
