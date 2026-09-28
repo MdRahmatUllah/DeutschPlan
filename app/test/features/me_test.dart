@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -6,6 +7,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_stats.dart';
@@ -14,6 +16,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 
+import '../core/keyboard.dart';
 import '../core/semantics_checks.dart';
 import 'me_fixtures.dart';
 
@@ -515,6 +518,23 @@ void main() {
       testWidgets('opens $path', (tester) async {
         await pump(tester);
         await tapAndSettle(tester, find.text(label()));
+
+        expect(went, path);
+      });
+
+      testWidgets('#1021 Tab reaches it, and Enter opens $path', (
+        tester,
+      ) async {
+        await pump(tester);
+        await tabTo(
+          tester,
+          find.ancestor(
+            of: find.text(label()),
+            matching: find.byType(SgTappable),
+          ),
+        );
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
 
         expect(went, path);
       });

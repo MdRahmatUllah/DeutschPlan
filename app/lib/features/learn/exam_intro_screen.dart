@@ -122,7 +122,10 @@ class _ExamIntroScreenState extends ConsumerState<ExamIntroScreen> {
           .read(examStartProvider.notifier)
           .begin(widget.step, widget.seed, timer: timer);
       if (id != null && mounted) ExamRoute.open(context, id);
-    } on Exception {
+      // Any throw, not only an Exception: a deep link's seed outside 1..3
+      // fails the paper with a RangeError (#694 CC-3).
+    } on Object catch (error) {
+      debugPrint('exam start: $error');
       if (mounted) SgToast.show(context, l10n.examIntroFailed);
     }
   }

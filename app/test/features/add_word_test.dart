@@ -254,6 +254,25 @@ void main() {
     });
   });
 
+  testWidgets('#694 CC-3 FR-R2-02 a Log it that fails to save says so; Retry '
+      'logs it once', (tester) async {
+    late _FailingWords words;
+    await pump(
+      tester,
+      german: 'Haus',
+      words: () => words = _FailingWords(db, settings),
+    );
+    await tester.tap(find.text(l10n.addWordLogIt));
+    await settle(tester);
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    expect(find.text(l10n.addWordLogged('das Haus')), findsNothing);
+
+    await tester.tap(find.text(l10n.retry));
+    await settle(tester);
+    expect(words.logged, 1);
+    expect(find.text(l10n.addWordLogged('das Haus')), findsOneWidget);
+  });
+
   testWidgets('FR-R2-02 Log it counts one more sighting, making the row as '
       'To do, and saves no word of my own', (tester) async {
     await pump(tester, german: 'Haus');
@@ -676,6 +695,24 @@ void main() {
       tester.element(find.byType(AddWordScreen)).tokens.color.die,
     );
   });
+}
+
+/// A *Log it* whose first write fails (#694).
+class _FailingWords extends WordRepository {
+  _FailingWords(super.db, super.settings);
+
+  int failures = 1;
+  int logged = 0;
+
+  @override
+  Future<void> logSighting(String uid) async {
+    if (failures > 0) {
+      failures--;
+      throw StateError('disk I/O error');
+    }
+    logged++;
+    await super.logSighting(uid);
+  }
 }
 
 /// A save that waits for [gate]: the page can be left while it runs (#811).

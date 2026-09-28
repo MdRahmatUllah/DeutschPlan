@@ -275,6 +275,23 @@ void main() {
       ]);
     });
 
+    testWidgets('#694 CC-3 a failed add says so and adds none; Retry adds '
+        'them all', (tester) async {
+      await pump(tester);
+      actions.failures = 1;
+      await tester.tap(find.text(l10n.compareAddAll(3)));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+      expect(actions.added, isEmpty);
+      expect(find.text(l10n.compareAdded(3)), findsNothing);
+
+      await tester.tap(find.text(l10n.retry));
+      await tester.pumpAndSettle();
+      expect(actions.added, hasLength(3));
+      expect(find.text(l10n.compareAdded(3)), findsOneWidget);
+    });
+
     testWidgets('one already in today\'s plan is not counted', (tester) async {
       await pump(tester, open: const <(String, String)>{('new', 'uid-grund')});
       await tester.tap(find.text(l10n.compareAddAll(2)));
@@ -426,6 +443,30 @@ class _Actions implements WordActions {
 
   /// The uids whose add was undone, in the order it was.
   final List<String> undone = <String>[];
+
+  /// How many *Add all* writes fail before one goes through (#694).
+  int failures = 0;
+
+  /// As the real one: all or none, one Undo for them all.
+  @override
+  Future<Undo> addAllToToday(
+    List<({String uid, String step})> words, {
+    required String today,
+  }) async {
+    if (failures > 0) {
+      failures--;
+      throw StateError('disk I/O error');
+    }
+    final undos = <Undo>[
+      for (final word in words)
+        await addToToday(word.uid, today: today, step: word.step),
+    ];
+    return () async {
+      for (final undo in undos.reversed) {
+        await undo();
+      }
+    };
+  }
 
   @override
   Future<Undo> addToToday(
