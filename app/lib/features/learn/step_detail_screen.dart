@@ -255,7 +255,7 @@ class StepHeader extends StatelessWidget {
 
 /// FR-L2-01's line: when the step began and how long its To-do words will
 /// take at its pace, or when it was completed and which mock passed, or
-/// left with words still to learn.
+/// left with words never planned.
 String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
   String day(String date) =>
       DateFormat('d MMM', locale.toString()).format(parsePlanDate(date));
@@ -264,9 +264,10 @@ String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
       return l10n.stepCompletedPassed(day(completed), mock);
     }
     // #950, #1012 (the owner): a step the plan finished is completed, words
-    // still Learning and all; one with words never met was left part-way, as
-    // *Start* on another step leaves it (FR-L2-03).
-    return step.todo == 0
+    // still Learning, or planned and not yet met, and all (#1028); one with
+    // words never planned was left part-way, as *Start* on another step
+    // leaves it (FR-L2-03).
+    return step.unplanned == 0
         ? l10n.stepCompleted(day(completed))
         : l10n.stepLeft(day(completed));
   }

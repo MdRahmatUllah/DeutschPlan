@@ -408,6 +408,24 @@ void main() {
       },
     );
 
+    test('#1028 unplanned: the To-do words no plan has ever held', () async {
+      expect((await course()).first.unplanned, 2);
+
+      // Haus planned, then skipped to the backlog: To do, but planned.
+      await db.customInsert(
+        'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, '
+        "skipped) VALUES ('2026-01-05', '${ContentFixture.haus}', 'new', "
+        "'A1.1', 1)",
+        updates: <TableInfo<Table, Object?>>{db.planItems},
+      );
+      final first = (await course()).first;
+      expect((first.todo, first.unplanned), (2, 1));
+
+      // Tür met: learning, no longer To do.
+      await state(ContentFixture.tuer, stability: 1);
+      expect((await course()).first.unplanned, 0);
+    });
+
     test('BR-STATUS-02 done follows done_stability_days', () async {
       await state(ContentFixture.haus, stability: 10);
       expect((await course()).first.done, 1);
