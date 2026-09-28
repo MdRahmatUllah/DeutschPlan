@@ -122,29 +122,37 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     }
   });
 
-  test("#729 a new word skipped to the backlog is done for the plan, but "
-      "not a word studied", () async {
-    final view = await container.read(todayViewProvider.future);
+  /// A rating of [uid] from [source] at the learner's [at], logged as the
+  /// rating service logs it: `reviewed_at` in UTC.
+  Future<void> rated(String uid, String source, DateTime at) => db.customInsert(
+    'INSERT INTO review_log (word_uid, reviewed_at, rating, source) '
+    "VALUES ('$uid', '${at.toUtc().toIso8601String()}', 3, '$source')",
+    updates: <drift.TableInfo<drift.Table, Object?>>{db.reviewLog},
+  );
 
-    // Tür skipped, Haus still open; r1 revised, r2 still open.
-    expect(view.newToday.done, 1, reason: 'skipped: nothing waits on it');
-    expect(view.newSkipped, 1);
-    expect(view.words, 1, reason: 'r1 alone was studied');
-  });
+  test(
+    '#729 #1004 the words studied: each rated in a session, the plan\'s '
+    "or the backlog's, or known, once; not a quiz's, not yesterday's",
+    () async {
+      await rated('r1', 'daily', DateTime(2026, 9, 21, 7));
+      await rated('r1', 'daily', DateTime(2026, 9, 21, 7, 5));
+      // A backlog word, planned on the 15th, studied today.
+      await rated('b1', 'daily', DateTime(2026, 9, 21, 7, 10));
+      await rated(ContentFixture.haus, 'known', DateTime(2026, 9, 21, 7, 15));
+      // Skipped to the backlog, never studied (#729): a quiz answer isn't.
+      await rated(ContentFixture.tuer, 'quiz', DateTime(2026, 9, 21, 7, 20));
+      // The learner's day, not UTC's: just after midnight is today, which
+      // east of Greenwich is still yesterday in UTC; yesterday's late
+      // session isn't, which west of it is already today in UTC.
+      await rated('r2', 'daily', DateTime(2026, 9, 21, 0, 30));
+      await rated('b2', 'daily', DateTime(2026, 9, 20, 23, 30));
+      await pumpEventQueue();
+      final view = await container.read(todayViewProvider.future);
 
-  test('#729 and one skipped, then studied from the backlog the same day, '
-      'was studied', () async {
-    await db.customUpdate(
-      "UPDATE plan_items SET completed_at = '2026-09-21T07:30:00' "
-      "WHERE word_uid = '${ContentFixture.tuer}'",
-      updates: <drift.TableInfo<drift.Table, Object?>>{db.planItems},
-    );
-    await pumpEventQueue();
-    final view = await container.read(todayViewProvider.future);
-
-    expect(view.newSkipped, 0);
-    expect(view.words, 2, reason: 'r1 and Tür');
-  });
+      expect(view.newToday.done, 1, reason: 'skipped: nothing waits on it');
+      expect(view.words, 4, reason: 'r1, b1, Haus and r2');
+    },
+  );
 
   test('FR-T1-01 it renders from the persisted plan', () async {
     final view = await container.read(todayViewProvider.future);

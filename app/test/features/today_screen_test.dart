@@ -635,9 +635,9 @@ void main() {
       expect(find.text(l10n.todayDoneLine(34, 17, 12)), findsOneWidget);
     });
 
-    testWidgets('#729 TodayDone counts the words studied, not a new word '
-        'skipped to the backlog', (tester) async {
-      await pump(tester, view: artboardDone(newSkipped: 7));
+    testWidgets('#729 #1004 TodayDone counts the words studied, not the '
+        "plan's done", (tester) async {
+      await pump(tester, view: artboardDone(words: 10));
 
       expect(find.text(l10n.todayDoneLine(34, 10, 12)), findsOneWidget);
     });
