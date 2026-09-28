@@ -6,7 +6,7 @@ last-read: 2308
 
 ## Now
 
-#1007 fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) — claimed 2026-09-28 07:08.
+#1007 in review as PR #1010: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
