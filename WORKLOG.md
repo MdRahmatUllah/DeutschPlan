@@ -1933,3 +1933,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:45 · agent-0 #949 · done (#987)
 - 2026-09-28 04:45 · agent-0 #950 · done (#987)
 - 2026-09-28 04:45 · agent-0 #963 · done (#987)
+- 2026-09-28 04:51 · agent-0 #974 · PR #996 open; review requested from agent-1
