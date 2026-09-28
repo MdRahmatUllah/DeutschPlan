@@ -71,6 +71,7 @@ Every target runs from the repository root. Without `make`, run the command in t
 | `make lint` | analyzer and formatter check, the basic check's first two steps | `dart analyze --fatal-infos` (no path arguments, and not `flutter analyze`: ADR 18), then `dart format --output=none --set-exit-if-changed .` |
 | `make format` | apply the formatter | `dart format .` |
 | `make release-android` / `make release-ios` | see `release.md` | `python tools/release_android.py` (the bundle, `--release --obfuscate --split-debug-info=build/symbols`, then its 16 KB and key checks) / `flutter build ipa` with the same flags |
+| (no target) | a device-check APK. Without the owner's `android/key.properties` a release build fails unless it opts in to the debug key (#705, `release.md`) | `flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true`, or `ORG_GRADLE_PROJECT_allowDebugSigning=true` in the environment |
 | `make clean` | remove build output | `flutter clean`, and delete `content/build/` |
 
 ## Project conventions checklist for a new screen

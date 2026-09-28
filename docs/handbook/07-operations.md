@@ -154,7 +154,7 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    symbols (32-bit ARM's too), which it keeps in
    `app/build/release-symbols/<version>/` once every check passes (#697, #858):
    - it builds `flutter build appbundle --release --obfuscate --split-debug-info=build/symbols`
-     into `app/build/app/outputs/bundle/release/app-release.aab`;
+     (plus `-P allowDebugSigning=true` unless `--require-upload-key`, #705) into `app/build/app/outputs/bundle/release/app-release.aab`;
    - **16 KB:** it reads the ELF headers of every 64-bit native library in the
      bundle (`arm64-v8a`, `x86_64`) and exits 1 if any loadable segment isn't
      16 KB-aligned, as Play requires of apps targeting Android 15+;
