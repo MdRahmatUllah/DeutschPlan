@@ -6,7 +6,7 @@ last-read: 2508
 
 ## Now
 
-#1057 in review as PR #1058: answer review threads; re-run the gate if main moved, then merge.
+#1054 test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) — claimed 2026-09-28 15:52.
 
 ## Next
 
