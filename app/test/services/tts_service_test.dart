@@ -167,6 +167,36 @@ void main() {
       expect(prefetch.releases, 1);
     });
 
+    testWidgets('#1035 watchVoiceMemory: a voice only M4 played, through the '
+        'engine itself, is released in the background and under memory '
+        'pressure too', (tester) async {
+      final prefetch = FakePrefetchTts();
+      final container = ProviderContainer(
+        overrides: <Override>[
+          settingsProvider.overrideWithValue(settings),
+          supertonicTtsProvider.overrideWithValue(prefetch),
+        ],
+      );
+      addTearDown(container.dispose);
+      final observer = watchVoiceMemory(container);
+      addTearDown(() => tester.binding.removeObserver(observer));
+
+      // M4's voice chips: the engine, no speaker's service.
+      container.read(supertonicTtsProvider);
+      observer.didChangeAppLifecycleState(AppLifecycleState.paused);
+      await tester.pump();
+      expect(prefetch.releases, 1);
+
+      tester.binding.handleMemoryPressure();
+      await tester.pump();
+      expect(prefetch.releases, 2);
+      expect(
+        container.exists(ttsProvider),
+        isFalse,
+        reason: 'no service built to release nothing (#906)',
+      );
+    });
+
     test('#906 the app watches the voice from its start', () {
       final main = File('lib/main.dart')
           .readAsStringSync()
