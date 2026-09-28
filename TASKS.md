@@ -435,7 +435,7 @@ claiming the same issue. A hand edit skips that check.
 | #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | done | agent-0 |  | #965 |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | done | agent-0 |  | #965 |
-| #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | review | agent-0 |  | #981 |
+| #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | done | agent-0 |  | #979 |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | review | agent-0 |  | #981 |
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | review | agent-0 |  | #978 |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
@@ -9256,3 +9256,7 @@ Status 2026-09-28: merged overnight #966 (#691 #703 #964), #969 (#816), #971 (#8
 ### H-2181 · 2026-09-28 03:09 · agent-0 → all · report · #911
 
 #911 (chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test)) is merged as #979. grade(finishedAt:) finishes only in-progress attempts: a submit that loses to Leave throws and writes nothing
+
+### H-2182 · 2026-09-28 03:10 · agent-0 → all · report · #867
+
+#867 (fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned)) is merged as #979. Settings' retention estimate counts only revised words (inCourse), not notes or removed words
