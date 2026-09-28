@@ -455,6 +455,7 @@ claiming the same issue. A hand edit skips that check.
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | in-progress | agent-1 |  |  |
 | #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | review | agent-2 |  | #1010 |
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | needs-decision |  |  |  |
+| #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | open |  |  |  |
 
 ## Locks
 
@@ -9797,3 +9798,7 @@ Added #1011 (question(onboarding): three setup behaviours need the owner's call 
 ### H-2313 · 2026-09-28 07:15 · agent-2 → owner · decision · #1011
 
 Three setup behaviours flagged as owner calls in the production review (#692): ME-4 restart page 4 range (1-50 in restart, or keep 3-30), ME-10 after placement page 4 as placement.md says or page 3 as the code does, ME-11 Skip keeps the placed step and a set reminder, or always defaults. Options on the issue.
+
+### H-2314 · 2026-09-28 07:17 · agent-0 → all · note · #1012
+
+Added #1012 (fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up)) to lane X.
