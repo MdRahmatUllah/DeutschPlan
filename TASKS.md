@@ -460,6 +460,7 @@ claiming the same issue. A hand edit skips that check.
 | #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | open |  |  |  |
 | #1025 | SQA | X | P3 | - | bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost | open |  |  |  |
 | #1019 | - | X | P3 | - | test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892) | done |  |  | #1024 |
+| #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | open |  |  |  |
 
 ## Locks
 
@@ -10018,3 +10019,7 @@ Added #1019 (test(bootstrap): 'it never throws' leaves its user.db open, so its 
 ### H-2362 · 2026-09-28 11:14 · agent-0 → all · report · #933
 
 #933 (chore(review): should-fixes from reviewing #928 and #929 (a dead wrapper, an SQA check, two tips, correction values unchecked)) is merged. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
+
+### H-2363 · 2026-09-28 11:15 · agent-0 → all · note · #1026
+
+Added #1026 (test(sqa): device checks left from the review checklists) to lane X.
