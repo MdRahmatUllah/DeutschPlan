@@ -176,10 +176,17 @@ class HomeWidgetStore implements WidgetStore {
   }
 
   /// Android's pinned instances; iOS's widget kinds in use, none before
-  /// #161's extension.
+  /// #161's extension. A query that fails counts as placed: the hourly run
+  /// as before #711, never a start that stops before the reminders.
   @override
-  Future<bool> placed() async =>
-      (await HomeWidget.getInstalledWidgets()).isNotEmpty;
+  Future<bool> placed() async {
+    try {
+      return (await HomeWidget.getInstalledWidgets()).isNotEmpty;
+    } on Exception catch (error) {
+      debugPrint('widget: $error');
+      return true;
+    }
+  }
 }
 
 /// Writes the snapshot from [container]'s database: a background task's

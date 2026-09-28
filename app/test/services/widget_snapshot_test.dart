@@ -13,7 +13,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/widget_snapshot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/services.dart' show MethodCall, MethodChannel;
+import 'package:flutter/services.dart' show MethodCall, MethodChannel, PlatformException;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show Locale;
 
@@ -408,7 +408,8 @@ void main() {
     final calls = <MethodCall>[];
     // What the store holds, and the widgets on the home screen.
     String? stored;
-    var pinned = <Map<String, Object?>>[];
+    // Null: the query fails.
+    List<Map<String, Object?>>? pinned;
 
     setUp(() {
       TestWidgetsFlutterBinding.ensureInitialized();
@@ -422,7 +423,7 @@ void main() {
         calls.add(call);
         return switch (call.method) {
           'getWidgetData' => stored,
-          'getInstalledWidgets' => pinned,
+          'getInstalledWidgets' => pinned ?? (throw PlatformException(code: '-5')),
           _ => true,
         };
       });
@@ -469,6 +470,13 @@ void main() {
           'androidClassName': HomeWidgetStore.androidReceiver,
         },
       ];
+      expect(await const HomeWidgetStore().placed(), isTrue);
+    });
+
+    test('#711 #625 a query that fails counts as placed, so the start goes '
+        'on to the reminders', () async {
+      pinned = null;
+
       expect(await const HomeWidgetStore().placed(), isTrue);
     });
   });
