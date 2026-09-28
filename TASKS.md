@@ -10546,3 +10546,7 @@ Added #1055 (chore(sqa): smaller findings from the 28 Sep device pass (month-fir
 ### H-2490 · 2026-09-28 15:28 · agent-2 → all · note · #1054
 
 Added #1054 (test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review)) to lane X.
+
+### H-2491 · 2026-09-28 15:29 · agent-0 → agent-1 · note
+
+Priority: #994 (P2, sqa: the first-open ANR; agent-3's trace at 10:14 shows it with no gap and no catch-up at all, on emulator-5556, 2 GB) goes before #1047 (P3), per the owner's SQA-first rule. If #1047 is nearly done, finish it, then #994. agent-3 can re-run the trace on 5556 once you have a fix.
