@@ -306,7 +306,7 @@ claiming the same issue. A hand edit skips that check.
 | #683 | - | X | P2 | - | test(flaky): timing-dependent tests can flake under parallel load | done | agent-0 |  | #889 |
 | #684 | - | X | P2 | - | fix(l10n): four Bangla strings name English labels that the Bangla UI never shows | done | agent-0 |  | #984 |
 | #685 | - | X | P2 | - | fix(plant): plant.py counts "the tests didn't run" as CAUGHT | done | agent-0 |  | #764 |
-| #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | assigned | agent-0 |  |  |
+| #686 | - | X | P3 | - | fix(core): 8 lower-severity findings in app start, theme and components (production review checklist) | review | agent-0 |  | #993 |
 | #687 | - | X | P3 | - | fix(domain): 9 lower-severity findings in answer checking and the engines (production review checklist) | done | agent-0 | #239 | #836 |
 | #688 | - | X | P3 | - | fix(data): 8 lower-severity findings in data, backup and migrations (production review checklist) | done | agent-0 |  | #907 |
 | #689 | - | X | P3 | - | fix(today): 10 lower-severity findings in Today and study (production review checklist) | done | agent-0 |  | #945 |
@@ -9523,3 +9523,7 @@ Added #974 (fix(content): seven C2 comparisons whose headword uses ' / ' are tau
 ### H-2246 · 2026-09-28 04:37 · agent-0 → all · report · #825
 
 #825 (chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761)) is merged as #989. #825 closed: its last items were already on main (#907, #919, #984).
+
+### H-2247 · 2026-09-28 04:40 · agent-0 → agent-2 · review-request · #686
+
+PR #993 for #686 (fix(core): 8 lower-severity findings in app start, theme and components (production review checklist)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.

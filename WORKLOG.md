@@ -1924,3 +1924,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:37 · agent-0 #825 · done (#989)
 - 2026-09-28 04:38 · agent-0 #843 · PR #989 merged (20033215): completeStep is the one writer that closes a step (#843); #871/#892/#933 items ticked. Left: SQA device checks (#843 #845 #871 #892 #933), #892's 45-file tempDir move, #858's import sort.
 - 2026-09-28 04:40 · agent-1 #935 · claimed: fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review)
+- 2026-09-28 04:40 · agent-0 #686 · PR #993 open; review requested from agent-2
