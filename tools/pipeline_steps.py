@@ -765,6 +765,28 @@ def read_corrections(path, section: str = "words") -> dict[str, dict]:
 #: learner's progress on the topic (#808).
 GRAMMAR_CORRECTABLE = ("rule", "example_de", "example_en", "watch_out")
 
+#: The word columns a correction may clear with `null`: cells a workbook may
+#: leave blank (#633 clears phrases' articles). Every other value is text, or
+#: a number for `freq` and `week`.
+CLEARABLE = frozenset(
+    {"article", "forms", "pos", "pron_bn", "bangla", "category", "collocations",
+     "synonyms_register", "freq", "week"}
+)
+
+
+def _checked(uid: str, field: str, value, clearable=CLEARABLE):
+    """[value], if [field] takes it. YAML reads an empty value as None, which
+    would ship a NOT NULL column or an example line empty (#933)."""
+    kind = int if field in ("freq", "week") else str
+    if (isinstance(value, kind) and not isinstance(value, bool)) or (
+        value is None and field in clearable
+    ):
+        return value
+    raise PipelineError(
+        f"corrections: {uid} sets {field} to {value!r}; it takes "
+        f"{'a number' if kind is int else 'text'}."
+    )
+
 
 def apply_grammar_corrections(rows: Sequence, corrections: dict[str, dict]) -> None:
     """Applies each `grammar:` correction to the topic whose uid, as built
@@ -785,7 +807,7 @@ def apply_grammar_corrections(rows: Sequence, corrections: dict[str, dict]) -> N
                     f"corrections: grammar {uid} sets {field!r}; only "
                     f"{', '.join(GRAMMAR_CORRECTABLE)} can be corrected."
                 )
-            setattr(by_uid[uid], field, value)
+            setattr(by_uid[uid], field, _checked(uid, field, value, clearable=()))
 
 
 def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> list:
@@ -827,9 +849,11 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
                 dropped.add(id(word))
                 merges.append((uid, word, str(value)))
             elif example:
-                _set_example(word, example.group(1), int(example.group(2)), value, uid)
+                _set_example(
+                    word, example.group(1), int(example.group(2)), _checked(uid, field, value), uid
+                )
             elif field in fields:
-                setattr(word, field, value)
+                setattr(word, field, _checked(uid, field, value))
             else:
                 raise PipelineError(
                     f"corrections: {uid} sets {field!r}, which is not a "

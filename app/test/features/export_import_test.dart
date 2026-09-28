@@ -8,6 +8,7 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -80,6 +81,14 @@ class _Recordings extends Fake implements ModelRepository {
   }
 }
 
+/// The installed course's PIPE-09 links, read without a disk (#809).
+class _Course extends Fake implements ContentUpdater {
+  Map<String, String> links = const <String, String>{};
+
+  @override
+  Future<Map<String, String>> aliases() async => links;
+}
+
 /// M6 · Export / import — #148.
 void main() {
   late AppLocalizations l10n;
@@ -89,6 +98,7 @@ void main() {
   late SettingsRepository settings;
   late FakeBackupFiles files;
   late _Recordings recordings;
+  late _Course course;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -155,6 +165,7 @@ void main() {
     );
     files = FakeBackupFiles();
     recordings = _Recordings();
+    course = _Course();
   });
 
   tearDown(() async {
@@ -179,6 +190,7 @@ void main() {
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 8)),
           backupFilesProvider.overrideWithValue(files),
           modelRepositoryProvider.overrideWithValue(recordings),
+          contentUpdaterProvider.overrideWithValue(course),
         ],
         child: MaterialApp(
           theme: AppTheme.light(),
@@ -369,6 +381,21 @@ void main() {
     expect(find.text(l10n.exportImportDone), findsOneWidget);
     expect(find.text(l10n.exportImportChoose), findsOneWidget);
     expect(recordings.deletions, 0, reason: "this phone's attempts stay");
+  });
+
+  testWidgets('#809 FR-M6-03 a file from an older course comes in under the '
+      'uids the installed course has now', (tester) async {
+    course.links = <String, String>{ContentFixture.tuer: 'uid-tuer-now'};
+    await pump(tester);
+    await choose(tester, await otherPhone());
+
+    await tester.tap(find.text(l10n.exportImportDoMerge));
+    await tester.pumpAndSettle();
+
+    final uids = await db.customSelect('SELECT word_uid FROM word_state').get();
+    expect(<String>[
+      for (final row in uids) row.read<String>('word_uid'),
+    ], allOf(contains('uid-tuer-now'), isNot(contains(ContentFixture.tuer))));
   });
 
   testWidgets('#622 #937 FR-M6-03 a merge plans again the day M6 is on: '

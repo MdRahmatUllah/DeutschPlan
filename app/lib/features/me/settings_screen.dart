@@ -99,14 +99,6 @@ class SettingsEditor extends _$SettingsEditor {
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  /// The ranges `settings.md` gives each stepper and slider.
-  static const dailyNew = (min: 1, max: 50);
-  static const reviseCount = (min: 0, max: 100);
-  static const sentenceCount = (min: 0, max: 20);
-  static const doneDays = (min: 3, max: 60);
-  static const unlockPercent = (min: 50, max: 100);
-  static const passPercent = (min: 50, max: 90);
-
   /// Speech speed in quarters: 0.5× to 1.5×, around the 1.0× the artboard
   /// draws at the middle, on the grid the study menu's 0.75 / 1 / 1.25 use.
   static const speed = (min: 2, max: 6);
@@ -190,7 +182,6 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: _stepper(
                   settings,
                   SettingKeys.dailyNew,
-                  dailyNew,
                   l10n.settingsDailyNewDecrease,
                   l10n.settingsDailyNewIncrease,
                   <T>(key, value) => editor.dailyNew(value as int),
@@ -202,7 +193,6 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: _stepper(
                   settings,
                   SettingKeys.reviseCount,
-                  reviseCount,
                   l10n.settingsReviseCountDecrease,
                   l10n.settingsReviseCountIncrease,
                   set,
@@ -213,7 +203,6 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: _stepper(
                   settings,
                   SettingKeys.sentenceCount,
-                  sentenceCount,
                   l10n.settingsSentenceCountDecrease,
                   l10n.settingsSentenceCountIncrease,
                   set,
@@ -277,7 +266,6 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: _stepper(
                   settings,
                   SettingKeys.doneStabilityDays,
-                  doneDays,
                   l10n.settingsDoneDaysDecrease,
                   l10n.settingsDoneDaysIncrease,
                   set,
@@ -454,7 +442,7 @@ class SettingsScreen extends ConsumerWidget {
                   final chosen = await _choose(
                     context,
                     l10n.settingsUnlockAt,
-                    percents(unlockPercent),
+                    percents(SettingKeys.examUnlockPercent.range!),
                     unlock,
                   );
                   if (chosen != null) {
@@ -469,7 +457,7 @@ class SettingsScreen extends ConsumerWidget {
                   final chosen = await _choose(
                     context,
                     l10n.settingsPassMark,
-                    percents(passPercent),
+                    percents(SettingKeys.examPassPercent.range!),
                     pass,
                   );
                   if (chosen != null) {
@@ -549,14 +537,13 @@ class SettingsScreen extends ConsumerWidget {
   static Widget _stepper(
     SettingsRepository settings,
     IntSetting key,
-    ({int min, int max}) range,
     String decrease,
     String increase,
     Future<void> Function<T>(SettingKey<T> key, T value) set,
   ) => SgStepper(
-    value: settings.read(key).clamp(range.min, range.max),
-    min: range.min,
-    max: range.max,
+    value: settings.read(key).clamp(key.range!.min, key.range!.max),
+    min: key.range!.min,
+    max: key.range!.max,
     decreaseLabel: decrease,
     increaseLabel: increase,
     onChanged: (value) => set(key, value),
