@@ -424,8 +424,8 @@ void main() {
       await tester.pumpWidget(
         BootstrapHost(
           run: ({
-            Brightness platformBrightness = Brightness.light,
             void Function(UiLanguage)? onUiLanguage,
+            void Function()? onCourseUpdate,
           }) => finished.future,
         ),
       );
@@ -466,8 +466,8 @@ void main() {
         BootstrapHost(
           run:
               ({
-                Brightness platformBrightness = Brightness.light,
                 void Function(UiLanguage)? onUiLanguage,
+                void Function()? onCourseUpdate,
               }) {
                 tell = onUiLanguage;
                 return finished.future;
@@ -497,14 +497,61 @@ void main() {
       await tester.pumpAndSettle();
     });
 
+    testWidgets('#686 ST-9 and it says the course is updating once an app '
+        "update starts copying one in, in the learner's language", (
+      tester,
+    ) async {
+      final finished = Completer<BootstrapResult>();
+      void Function(UiLanguage)? tell;
+      void Function()? updating;
+
+      await tester.pumpWidget(
+        BootstrapHost(
+          run:
+              ({
+                void Function(UiLanguage)? onUiLanguage,
+                void Function()? onCourseUpdate,
+              }) {
+                tell = onUiLanguage;
+                updating = onCourseUpdate;
+                return finished.future;
+              },
+        ),
+      );
+      await tester.pump();
+      expect(find.text(l10n.splashPreparing), findsNWidgets(2));
+
+      tell!(UiLanguage.bangla);
+      updating!();
+      await tester.pump(const Duration(milliseconds: 601));
+
+      final bn = await AppLocalizations.delegate.load(const Locale('bn'));
+      expect(find.text(bn.splashUpdating), findsNWidgets(2));
+      expect(find.text(bn.splashPreparing), findsNothing);
+      // The same gate: its progress line keeps its own timing.
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+
+      finished.complete(
+        BootstrapFailed(
+          BootstrapFailure(
+            step: BootstrapStep.content,
+            error: 'no content',
+            stackTrace: StackTrace.empty,
+            db: null,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('and the progress line appears on a slow one', (tester) async {
       final finished = Completer<BootstrapResult>();
 
       await tester.pumpWidget(
         BootstrapHost(
           run: ({
-            Brightness platformBrightness = Brightness.light,
             void Function(UiLanguage)? onUiLanguage,
+            void Function()? onCourseUpdate,
           }) => finished.future,
         ),
       );

@@ -21,13 +21,21 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 /// as `colors.xml` paints the native window. The tiles and the wordmark are
 /// the kit's own colours in every mode ([SgMark]): the kit sets Ink on Lagoon.
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key, this.showProgress = false});
+  const SplashScreen({
+    super.key,
+    this.showProgress = false,
+    this.updating = false,
+  });
 
   /// FR-S1: the progress line appears only once bootstrap has run long enough
   /// to be worth mentioning. [SplashProgressGate] owns the timing; this takes
   /// the answer so the screen itself stays a pure function of its inputs and
   /// can be golden-tested in both states.
   final bool showProgress;
+
+  /// An app update is copying its new course in (#686 ST-9): the caption says
+  /// so, rather than "first start only".
+  final bool updating;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +45,7 @@ class SplashScreen extends StatelessWidget {
     final caption = Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
       child: SgText(
-        l10n.splashPreparing,
+        updating ? l10n.splashUpdating : l10n.splashPreparing,
         role: SgTextRole.caption,
         textAlign: TextAlign.center,
         // Ink on the solid field, secondary on glass — the artboards
@@ -261,9 +269,13 @@ class SplashProgressGate extends StatefulWidget {
   const SplashProgressGate({
     super.key,
     this.after = _SplashMetrics.progressAfter,
+    this.updating = false,
   });
 
   final Duration after;
+
+  /// [SplashScreen.updating].
+  final bool updating;
 
   @override
   State<SplashProgressGate> createState() => _SplashProgressGateState();
@@ -291,5 +303,6 @@ class _SplashProgressGateState extends State<SplashProgressGate> {
   }
 
   @override
-  Widget build(BuildContext context) => SplashScreen(showProgress: _slow);
+  Widget build(BuildContext context) =>
+      SplashScreen(showProgress: _slow, updating: widget.updating);
 }
