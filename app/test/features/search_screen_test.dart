@@ -3,6 +3,7 @@ import 'dart:ui' show SemanticsAction;
 
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/rendering.dart' show RenderEditable, RenderParagraph;
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +12,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -29,6 +31,7 @@ import 'package:sogda/router/app_router.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
 
+import '../core/keyboard.dart';
 import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
@@ -212,6 +215,26 @@ void main() {
       await pump(tester);
       await type(tester, 'Haus');
       await tester.tap(find.text('das Haus', findRichText: true));
+      await settle(tester);
+      expect(
+        tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+        ContentFixture.haus,
+      );
+    });
+
+    testWidgets('#1021 FR-R1-01 Tab reaches a result row, and Enter opens W1', (
+      tester,
+    ) async {
+      await pump(tester);
+      await type(tester, 'Haus');
+      await tabTo(
+        tester,
+        find.ancestor(
+          of: find.text('das Haus', findRichText: true),
+          matching: find.byType(SgTappable),
+        ),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await settle(tester);
       expect(
         tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
