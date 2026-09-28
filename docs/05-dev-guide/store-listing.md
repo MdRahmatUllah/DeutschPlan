@@ -43,8 +43,8 @@ MADE FOR YOU
 • Light, dark and glass themes, text up to 200 %, and screen-reader support
 • The app in English or Bangla
 
-### What's new (1.0.1)
-Large text works better, in English and in Bangla: up to 200 %, typing no longer hides the question, the field or the exam clock, and long words and labels show whole. On phones the app stays upright; on tablets it turns.
+### What's new (1.1.0)
+The first release as Sogda, with a new icon and look, and a smaller download. About a hundred fixes: answers are graded more fairly, each word is taught once, a mock exam keeps every answer, you can restore a backup when you set up, and screen readers read better in Bangla.
 
 ## Bangla (bn-BD)
 
@@ -85,8 +85,8 @@ Sogda একটি পূর্ণাঙ্গ জার্মান কোর�
 • লাইট, ডার্ক আর গ্লাস থিম, ২০০ % পর্যন্ত বড় লেখা, আর স্ক্রিন রিডার সাপোর্ট
 • অ্যাপ ইংরেজি বা বাংলায়
 
-### What's new (1.0.1)
-বড় লেখায় অ্যাপ এখন আরও ভালো চলে, ইংরেজি ও বাংলা দুটোতেই: ২০০ % পর্যন্ত লেখায় টাইপ করার সময় প্রশ্ন, লেখার ঘর বা পরীক্ষার ঘড়ি আর ঢাকা পড়ে না, আর লম্বা শব্দ ও লেবেল পুরো দেখা যায়। ফোনে অ্যাপ খাড়াই থাকে; ট্যাবলেটে ঘোরানো যায়।
+### What's new (1.1.0)
+Sogda নামে প্রথম রিলিজ: নতুন আইকন ও চেহারা, আর আরও ছোট ডাউনলোড। সঙ্গে প্রায় একশোটি সংশোধন: উত্তর আরও ন্যায্যভাবে যাচাই হয়, প্রতিটি শব্দ একবারই শেখানো হয়, মক পরীক্ষা প্রতিটি উত্তর রাখে, সেটআপের সময় ব্যাকআপ ফেরানো যায়, আর স্ক্রিন রিডার বাংলায় আরও ভালো পড়ে।
 
 ## Screenshots
 

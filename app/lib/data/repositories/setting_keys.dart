@@ -35,7 +35,11 @@ sealed class SettingKey<T> {
 }
 
 class IntSetting extends SettingKey<int> {
-  const IntSetting(super.name, super.defaultValue);
+  const IntSetting(super.name, super.defaultValue, [this.range]);
+
+  /// The values allowed: `settings.md`'s stepper, or a bound no screen
+  /// sets. The one source for M3 and for an import's check (#820).
+  final ({int min, int max})? range;
 
   @override
   int decode(String raw) => int.tryParse(raw) ?? defaultValue;
@@ -191,16 +195,26 @@ abstract final class SettingKeys {
   // Daily plan. BR-PLAN-08: changing the first three is visible at once but
   // only reaches the plan from tomorrow, because the plan engine generates
   // from last_planned_date + 1 and never rewrites today.
-  static const dailyNew = IntSetting('daily_new', 7);
-  static const reviseCount = IntSetting('revise_count', 10);
-  static const sentenceCount = IntSetting('sentence_count', 3);
+  static const dailyNew = IntSetting('daily_new', 7, (min: 1, max: 50));
+  static const reviseCount = IntSetting('revise_count', 10, (min: 0, max: 100));
+  static const sentenceCount = IntSetting('sentence_count', 3, (
+    min: 0,
+    max: 20,
+  ));
+
+  /// No screen sets it (#820): a year either way.
   static const sentenceRepeatGapDays = IntSetting(
     'sentence_repeat_gap_days',
     14,
+    (min: 0, max: 365),
   );
 
-  /// A bitmask of weekdays, Monday the lowest bit. 127 is all seven.
-  static const studyDaysMask = IntSetting('study_days_mask', 127);
+  /// A bitmask of weekdays, Monday the lowest bit. 127 is all seven, and
+  /// BR-PLAN-01 keeps one at least.
+  static const studyDaysMask = IntSetting('study_days_mask', 127, (
+    min: 1,
+    max: 127,
+  ));
 
   /// #377: the study-days masks over time, a JSON list of `{from, mask}`,
   /// so a past day keeps the mask it had. Empty until they first change.
@@ -221,11 +235,20 @@ abstract final class SettingKeys {
     'pause_new_when_backlog',
     false,
   );
-  static const backlogCatchupDays = IntSetting('backlog_catchup_days', 30);
+
+  /// No screen sets it (#820). A year at most: the plan engine walks every
+  /// missed day in it, inside `openDay`'s write lock.
+  static const backlogCatchupDays = IntSetting('backlog_catchup_days', 30, (
+    min: 0,
+    max: 365,
+  ));
 
   // Revision.
   static const desiredRetention = DoubleSetting('desired_retention', 0.90);
-  static const doneStabilityDays = IntSetting('done_stability_days', 7);
+  static const doneStabilityDays = IntSetting('done_stability_days', 7, (
+    min: 3,
+    max: 60,
+  ));
   static const swipeToRate = BoolSetting('swipe_to_rate', false);
 
   /// FR-R2-04 (#363): all-learned quizzes also ask the learner's own words.
@@ -281,8 +304,14 @@ abstract final class SettingKeys {
   static const modelsWifiOnly = BoolSetting('models_wifi_only', true);
 
   // Exams.
-  static const examUnlockPercent = IntSetting('exam_unlock_percent', 90);
-  static const examPassPercent = IntSetting('exam_pass_percent', 60);
+  static const examUnlockPercent = IntSetting('exam_unlock_percent', 90, (
+    min: 50,
+    max: 100,
+  ));
+  static const examPassPercent = IntSetting('exam_pass_percent', 60, (
+    min: 50,
+    max: 90,
+  ));
   static const examTimerDefault = BoolSetting('exam_timer_default', true);
 
   /// The timer of the mock last begun: L11's switch writes it on *Begin

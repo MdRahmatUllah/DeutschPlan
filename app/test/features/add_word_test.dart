@@ -6,6 +6,7 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/search/add_word_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -122,6 +123,21 @@ void main() {
 
   SgButton button(WidgetTester tester, String label) =>
       tester.widget<SgButton>(find.widgetWithText(SgButton, label));
+
+  testWidgets('#691 EX-13 the German takes 80 characters, searched as R1 '
+      'searches, and the meaning 200', (tester) async {
+    await pump(tester);
+    await enter(tester, l10n.addWordGerman, 'Haus' * 50);
+    await enter(tester, l10n.addWordMeaning, 'house ' * 50);
+    TextField at(String label) => tester.widget<TextField>(
+      find.descendant(of: field(label), matching: find.byType(TextField)),
+    );
+    expect(
+      at(l10n.addWordGerman).controller!.text,
+      hasLength(SearchRepository.maxQueryLength),
+    );
+    expect(at(l10n.addWordMeaning).controller!.text, hasLength(200));
+  });
 
   testWidgets('#590 in bn at 200 %, the keyboard up in SQA room, the German '
       "field focused sits under the status bar, not behind it: R2's list runs "

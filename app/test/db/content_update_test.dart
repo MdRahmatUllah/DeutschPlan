@@ -734,6 +734,26 @@ void main() {
       }
     });
 
+    test("#809 an import's aliases are the kept manifest's: the course "
+        'attached, not the one bundled', () async {
+      expect(await updater.aliases(), isEmpty);
+
+      publish(glossFixed());
+      expect(
+        await updater.aliases(),
+        isEmpty,
+        reason: 'the new course is not installed yet',
+      );
+
+      await updater.runIfNeeded();
+      expect(await updater.aliases(), <String, String>{
+        ContentFixture.haus: home,
+      });
+
+      File('${support.path}/${ContentUpdater.manifestFile}').deleteSync();
+      expect(await updater.aliases(), isEmpty, reason: 'no kept manifest');
+    });
+
     test('every user.db column named for a word uid is moved', () async {
       // A table added later with a word_uid column, and left out of the
       // list, would lose its rows on the next gloss fix.
