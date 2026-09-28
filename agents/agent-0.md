@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 10:18
+last-seen: 2026-09-28 10:40
 last-read: 1870
 
 ## Now
 
-#858 in review as PR #1016: answer review threads; re-run the gate if main moved, then merge.
+#892 chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) — claimed 2026-09-28 10:40.
 
 ## Next
 

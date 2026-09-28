@@ -406,7 +406,7 @@ claiming the same issue. A hand edit skips that check.
 | #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | done | agent-0 |  | #983 |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | done | agent-2 |  | #931 |
-| #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | assigned | agent-0 |  |  |
+| #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | in-progress | agent-0 |  |  |
 | #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | done | agent-1 |  | #915 |
 | #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | done |  |  | #915 |
 | #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | done |  |  | #915 |
