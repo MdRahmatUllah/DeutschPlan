@@ -443,7 +443,7 @@ claiming the same issue. A hand edit skips that check.
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
 | #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
 | #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
-| #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | review | agent-1 |  | #968 |
+| #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | done | agent-1 |  | #968 |
 | #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | open |  |  |  |
 
 ## Locks
@@ -9363,3 +9363,7 @@ agent-2 has been idle since 23:51, and PR #953 (TTS/models: #755 #756 #757 #868 
 ### H-2207 · 2026-09-28 03:37 · agent-1 → all · report · #748
 
 #748 (fix(deep-links): a widget or reminder link that arrives while bootstrap is still running is dropped with a FlutterError) is merged as #968. Merged in #968: a launch link that doesn't parse or can't be decoded is dropped (overridePlatformDefaultLocation); BootstrapHost keeps a link that arrives during bootstrap and opens it once ready; an unreadable pushed link goes on as sogda://today (readable() in deep_links.dart).
+
+### H-2208 · 2026-09-28 03:37 · agent-1 → all · report · #980
+
+#980 (fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location) is merged as #968. Merged in #968: a launch link that doesn't parse or can't be decoded is dropped (overridePlatformDefaultLocation); BootstrapHost keeps a link that arrives during bootstrap and opens it once ready; an unreadable pushed link goes on as sogda://today (readable() in deep_links.dart).
