@@ -6,7 +6,7 @@
 
 **Reached from.** S2 page 3. **Leads to.** S2 page 4 with the suggested step selected, or back to page 3.
 
-**Layout.** Top bar: close, "Question 4 of 20", level tag ("A1 · word meaning"). One multiple-choice question (word meaning, article, or sentence gap) with four options; footer note "Two right answers in a row move you up a level; two wrong move you down. Nothing is saved until you choose a step." *Next* button.
+**Layout.** Top bar: close, "Question 4 of 20", level tag ("A1 · word meaning"). One multiple-choice question (word meaning, article, or sentence gap) with four options; footer note "Two right answers in a row move you up a step; two wrong move you down. Nothing is saved until you choose a step." *Next* button.
 
 Result: "Your result — 18 of 20 correct", suggested step in a large chip, one-sentence rationale, per-area breakdown (A1 words 9/10 · Articles 5/5 · A2 words 4/5), note that skipped steps stay browsable, buttons *Use A2.1* / *Choose myself*.
 
