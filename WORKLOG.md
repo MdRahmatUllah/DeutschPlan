@@ -1984,3 +1984,4 @@ able to tell what is going on without asking.
 - 2026-09-28 09:56 · agent-3 · session started
 - 2026-09-28 10:02 · agent-2 #1011 · reopened: owner decided 2026-09-28 (ME-4 opt 1, ME-10 opt 2, ME-11 opt 1); implemented in PR #1013
 - 2026-09-28 10:02 · agent-2 #1011 · claimed: question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11)
+- 2026-09-28 10:03 · agent-2 #1011 · PR #1013 open; review requested from all

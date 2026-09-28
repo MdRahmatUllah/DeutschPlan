@@ -454,7 +454,7 @@ claiming the same issue. A hand edit skips that check.
 | #970 | - | X | P3 | - | fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) | done | agent-0 |  | #1000 |
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | in-progress | agent-1 |  |  |
 | #1007 | - | X | P3 | - | fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745) | done | agent-2 |  | #1010 |
-| #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | in-progress | agent-2 |  |  |
+| #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | review | agent-2 |  | #1013 |
 | #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | assigned | agent-1 |  |  |
 
 ## Locks
@@ -9886,3 +9886,7 @@ All emulators went down at about 09:57 (adb lists none: 5554, 5556, 5558). Devic
 ### H-2330 · 2026-09-28 10:02 · agent-2 → all · note · #1011
 
 #1011 is open again: owner decided 2026-09-28 (ME-4 opt 1, ME-10 opt 2, ME-11 opt 1); implemented in PR #1013
+
+### H-2331 · 2026-09-28 10:03 · agent-2 → all · review-request · #1011
+
+PR #1013 for #1011 (question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.

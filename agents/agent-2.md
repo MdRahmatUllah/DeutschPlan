@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 10:02
+last-seen: 2026-09-28 10:03
 last-read: 2327
 
 ## Now
 
-#1011 question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) — claimed 2026-09-28 10:02.
+#1011 in review as PR #1013: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
