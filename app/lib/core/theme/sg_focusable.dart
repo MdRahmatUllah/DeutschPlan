@@ -23,7 +23,22 @@ class SgFocusable extends StatefulWidget {
     this.keys = const <ShortcutActivator, VoidCallback>{},
     this.onLongPress,
     super.key,
-  });
+  }) : around = false,
+       size = null;
+
+  /// #1049: the ring around a control that takes the focus itself, a
+  /// Material or Cupertino switch: no Tab stop or keys of this one's own,
+  /// only the ring while the control inside has the focus. [size] is the
+  /// drawn part (the switch's track), centred in the tap target.
+  const SgFocusable.around({
+    required this.radius,
+    required this.child,
+    this.size,
+    super.key,
+  }) : onPressed = null,
+       onLongPress = null,
+       keys = const <ShortcutActivator, VoidCallback>{},
+       around = true;
 
   final VoidCallback? onPressed;
 
@@ -36,6 +51,12 @@ class SgFocusable extends StatefulWidget {
     SingleActivator(LogicalKeyboardKey.contextMenu),
     SingleActivator(LogicalKeyboardKey.f10, shift: true),
   ];
+
+  /// The control inside takes the focus: this one only shows the ring.
+  final bool around;
+
+  /// The drawn part the ring surrounds, centred; null, the whole child.
+  final Size? size;
 
   /// Keys of the control's own while it has the focus, as a slider's arrows
   /// (#1007). With these, a control nobody presses is still a Tab stop.
@@ -106,14 +127,16 @@ class _SgFocusableState extends State<SgFocusable> {
     final Widget focus = Actions(
       actions: _actions,
       child: Focus(
-        canRequestFocus: widget.onPressed != null || keys.isNotEmpty,
+        canRequestFocus:
+            !widget.around &&
+            (widget.onPressed != null || keys.isNotEmpty),
         includeSemantics: false,
         onFocusChange: _focus,
         // Always present, so the tree under it keeps its shape as the focus
         // comes and goes: a press under way is never dropped (#188).
         child: CustomPaint(
           foregroundPainter: _ring
-              ? _Ring(context.tokens.color.link, widget.radius)
+              ? _Ring(context.tokens.color.link, widget.radius, widget.size)
               : null,
           child: widget.child,
         ),
@@ -174,14 +197,27 @@ class SgTappable extends StatelessWidget {
 }
 
 class _Ring extends CustomPainter {
-  _Ring(this.colour, this.radius);
+  _Ring(this.colour, this.radius, [this.drawn]);
 
   final Color colour;
   final BorderRadius radius;
 
+  /// The drawn part, centred; null, the whole of what is painted.
+  final Size? drawn;
+
   @override
   void paint(Canvas canvas, Size size) => canvas.drawRRect(
-    radius.toRRect(Offset.zero & size).inflate(3),
+    radius
+        .toRRect(
+          drawn == null
+              ? Offset.zero & size
+              : Rect.fromCenter(
+                  center: size.center(Offset.zero),
+                  width: drawn!.width,
+                  height: drawn!.height,
+                ),
+        )
+        .inflate(3),
     Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
@@ -189,7 +225,8 @@ class _Ring extends CustomPainter {
   );
 
   @override
-  bool shouldRepaint(_Ring old) => old.colour != colour || old.radius != radius;
+  bool shouldRepaint(_Ring old) =>
+      old.colour != colour || old.radius != radius || old.drawn != drawn;
 }
 
 /// One of [SgFocusable.keys], pressed.

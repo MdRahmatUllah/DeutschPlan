@@ -14,6 +14,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show PlanDate, PlanEngine;
 import 'package:sogda/features/learn/step_detail_screen.dart';
 import 'package:sogda/features/learn/step_words.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
@@ -25,6 +26,7 @@ import 'package:sogda/main.dart'
 import '../core/keyboard.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
+import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
 import 'word_fixtures.dart';
 
@@ -515,6 +517,30 @@ void main() {
     expect(find.text(l10n.stepStart), findsOneWidget);
   });
 
+  testWidgets('#694 CC-3 FR-L2-03 a Start that fails to save says so; Retry '
+      'starts the step', (tester) async {
+    final engine = _Engine();
+    await pump(
+      tester,
+      code: 'A2.2',
+      overrides: <Override>[
+        ...over(const <StepWord>[]),
+        settingsProvider.overrideWithValue(StubSettings()),
+        planEngineProvider.overrideWithValue(engine),
+      ],
+    );
+    await tester.tap(find.text(l10n.stepStart));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.stepStart).last);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    expect(engine.switched, isEmpty);
+
+    await tester.tap(find.text(l10n.retry));
+    await tester.pumpAndSettle();
+    expect(engine.switched, <String>['A2.2']);
+  });
+
   testWidgets('FR-L2-03 Start: the current step completes today and this '
       'one opens, and the banner goes', (tester) async {
     late AppDatabase db;
@@ -593,4 +619,27 @@ void main() {
     );
     expect(find.byType(StartBanner), findsNothing);
   });
+}
+
+/// FR-L2-03's switch, whose first write fails (#694).
+class _Engine implements PlanEngine {
+  final List<String> switched = <String>[];
+  int failures = 1;
+
+  @override
+  Future<void> switchStep(
+    String code,
+    PlanDate today, {
+    required int dailyNew,
+    required int studyDaysMask,
+  }) async {
+    if (failures > 0) {
+      failures--;
+      throw StateError('disk I/O error');
+    }
+    switched.add(code);
+  }
+
+  @override
+  Object? noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

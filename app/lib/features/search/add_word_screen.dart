@@ -19,6 +19,7 @@ import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/search/search_screen.dart'
     show myWordsProvider, sameWord, savedAs;
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
@@ -194,8 +195,12 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     final words = ref.read(wordRepositoryProvider);
     setState(() => _busy = true);
     try {
-      await words.logSighting(match.uid);
-      if (mounted) {
+      // A write that fails says so, with Retry and Export (#694 CC-3).
+      final written = await guardWrite(context, () async {
+        await words.logSighting(match.uid);
+        return true;
+      });
+      if (written && mounted) {
         SgToast.show(context, l10n.addWordLogged(_headword(match)));
       }
     } finally {
@@ -219,8 +224,11 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
         : '${word.article} ${word.german}';
     setState(() => _busy = true);
     try {
-      await words.logMySighting(word.id);
-      if (mounted) SgToast.show(context, l10n.addWordLogged(name));
+      final written = await guardWrite(context, () async {
+        await words.logMySighting(word.id);
+        return true;
+      });
+      if (written && mounted) SgToast.show(context, l10n.addWordLogged(name));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -239,8 +247,11 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
       destructive: true,
     );
     if (sure != true || !mounted) return;
-    await words.deleteMyWord(id);
-    if (mounted) Navigator.of(context).pop();
+    final written = await guardWrite(context, () async {
+      await words.deleteMyWord(id);
+      return true;
+    });
+    if (written && mounted) Navigator.of(context).pop();
   }
 
   static String _headword(WordHit match) {

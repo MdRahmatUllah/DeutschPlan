@@ -320,6 +320,56 @@ void main() {
     expect(FocusManager.instance.primaryFocus, isA<FocusScopeNode>());
   });
 
+  for (final chrome in AdaptiveChrome.values) {
+    testWidgets('#1049 a switch (${chrome.name}): Tab reaches it, the ring '
+        'shows around it while keys are in use, and Space turns it', (
+      tester,
+    ) async {
+      var on = false;
+      await pump(
+        tester,
+        AdaptiveChromeScope(
+          chrome: chrome,
+          child: StatefulBuilder(
+            builder: (context, setState) => AdaptiveSwitch(
+              value: on,
+              onChanged: (value) => setState(() => on = value),
+              semanticLabel: 'Auto-advance',
+            ),
+          ),
+        ),
+      );
+      CustomPaint ring() => tester.widget<CustomPaint>(
+        find
+            .descendant(
+              of: find.byType(SgFocusable),
+              matching: find.byType(CustomPaint),
+            )
+            .first,
+      );
+      expect(ring().foregroundPainter, isNull);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(ring().foregroundPainter, isNotNull);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pumpAndSettle();
+      expect(on, isTrue);
+    });
+  }
+
+  testWidgets("#1049 Material's own focus halo is off: one indicator", (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      AdaptiveSwitch(value: false, onChanged: (_) {}, semanticLabel: 'x'),
+    );
+    final overlay = tester.widget<Switch>(find.byType(Switch)).overlayColor!;
+    expect(overlay.resolve(<WidgetState>{WidgetState.focused})!.a, 0);
+  });
+
   testWidgets('#745 the ring shows only while keys are in use', (tester) async {
     await pump(tester, SgButton(label: 'Start', onPressed: () {}));
     CustomPaint ring() => tester.widget<CustomPaint>(

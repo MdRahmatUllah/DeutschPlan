@@ -15,6 +15,7 @@ import 'package:sogda/data/repositories/sentence_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/sentence_picker.dart';
 import 'package:sogda/features/sentences/sentences_screen.dart';
+import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
@@ -142,6 +143,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
     bool voice = true,
     DateTime Function()? clock,
     List<String> sql = const <String>[],
+    List<Override> extra = const <Override>[],
   }) async {
     tts = FakeTts(voice: voice);
     await tester.runAsync(
@@ -166,6 +168,7 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
             opened.add(page);
             return true;
           }),
+          ...extra,
         ],
         child: MaterialApp.router(
           theme: AppTheme.light(),
@@ -451,6 +454,22 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       tester,
     ) async {
       await pump(tester);
+      for (var i = 0; i < 3; i++) {
+        await answer(tester, l10n.sentencesUnderstood);
+      }
+      expect(find.text('T1 today'), findsOneWidget);
+    });
+
+    testWidgets("#694 CC-3 the last answer, and the day's state fails to "
+        'read: back to Today, never stuck', (tester) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          studyNextProvider.overrideWith(
+            (ref, date) async => throw StateError('disk I/O error'),
+          ),
+        ],
+      );
       for (var i = 0; i < 3; i++) {
         await answer(tester, l10n.sentencesUnderstood);
       }

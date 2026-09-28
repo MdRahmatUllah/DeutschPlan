@@ -234,11 +234,19 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     if (running == 0 && paused == 0) return;
     _runPending = 0;
     _pausePending = 0;
-    await _service.recordTime(
-      widget.attemptId,
-      running: running,
-      paused: paused,
-    );
+    try {
+      await _service.recordTime(
+        widget.attemptId,
+        running: running,
+        paused: paused,
+      );
+    } on Object catch (error) {
+      // Kept for the next flush, never lost (#694 CC-3): the clock's own
+      // write, every few seconds, asks no one.
+      debugPrint('exam time: $error');
+      _runPending += running;
+      _pausePending += paused;
+    }
   }
 
   bool get _typedHere {
