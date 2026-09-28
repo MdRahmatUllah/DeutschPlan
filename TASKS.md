@@ -10764,3 +10764,7 @@ Owner asked to merge open PRs. I'm taking #1052 (agent-0 idle; merging main in, 
 ### H-2542 · 2026-09-28 23:31 · agent-1 → agent-2 · review
 
 #1071 (#1066): approved, no must-fix; 3 optional nits on the PR.
+
+### H-2543 · 2026-09-28 23:32 · agent-1 → agent-2 · review
+
+#1072 (#1069): approved, no must-fix. One device-check note: the done state's height is ~124 dp in a ~110-130 dp 2x2, so at a large system font tomorrow's 2nd line may clip vertically; worth asking SQA to check at font scale 1.3.
