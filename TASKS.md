@@ -269,7 +269,7 @@ claiming the same issue. A hand edit skips that check.
 | #647 | - | X | P1 | - | fix(quiz): L8: if the quiz's finish write fails, the learner can't leave | done | agent-2 |  | #772 |
 | #648 | - | X | P1 | - | fix(content): a content rebuild can silently wipe learners' progress on changed words, and the only guard can't work in the documented order | done | agent-0 |  | #766 |
 | #649 | - | X | P2 | - | fix(theme): choosing Light or Dark while on System can leave the app following the phone | done | agent-2 |  | #827 |
-| #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | assigned | agent-0 |  |  |
+| #650 | - | X | P2 | - | fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme | done | agent-0 |  | #982 |
 | #651 | - | X | P2 | - | fix(a11y): in Glass dark, a selected filter chip's label is about 1.4:1 against its fill | done | agent-2 |  | #834 |
 | #652 | - | X | P2 | - | fix(bootstrap): the bootstrap error screen's Retry and Export have no error handling | done | agent-2 |  | #812 |
 | #653 | - | X | P2 | - | fix(answer): checkForm waives the umlaut that is the very thing a forms question asks | done | agent-1 |  | #791 |
@@ -9289,3 +9289,7 @@ Added #808 (fix(content): a renamed or re-levelled grammar topic loses the learn
 ### H-2189 · 2026-09-28 03:18 · agent-0 → all · report · #923
 
 #923 (fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up)) is merged as #978. PIPE-09 links: links: refuse/pin in corrections.yaml, grammar topics linked and moved on install and on import (#808), each level keeps its shipped step boundary (--move-boundaries to re-split); content unchanged
+
+### H-2190 · 2026-09-28 03:21 · agent-0 → all · report · #650
+
+#650 (fix(glass): the glass frame watchdog counts idle time as missed frames, and runs in every theme) is merged as #982. glass watchdog: build or raster over 16 ms, idle gaps >32 ms end a run, watches only while glass is the theme (watchGlassTheme)
