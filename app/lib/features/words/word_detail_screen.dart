@@ -69,17 +69,27 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
   final dao = ref.watch(contentDaoProvider);
   final settings = ref.watch(settingsProvider);
   final words = ref.watch(wordRepositoryProvider);
+  final updater = ref.watch(contentUpdaterProvider);
+  // #854: an old uid, from a link written before an update re-keyed its
+  // word (PIPE-09), opens the word it became.
+  var id = uid;
+  // A one-shot read, not a watch: a watch's `first` cancels a live query.
+  // A learner's own word is never aliased: it skips the manifest's decode.
+  if (customId(uid) == null &&
+      await dao.wordByUid(uid).getSingleOrNull() == null) {
+    id = (await updater.aliases())[uid] ?? uid;
+  }
   // The course is read-only, so its part is read once; the state is watched.
   final examples = <StudyExample>[
-    for (final e in await dao.examplesForWord(uid).get())
+    for (final e in await dao.examplesForWord(id).get())
       (german: e.german, english: e.english),
   ];
-  final tips = await dao.tipsForWord(uid).get();
+  final tips = await dao.tipsForWord(id).get();
   final StudyTip? tip = tips.isEmpty
       ? null
       : (en: tips.first.tipEn, bn: tips.first.tipBn);
   yield* words
-      .watchWord(uid)
+      .watchWord(id)
       .map(
         (word) => word == null
             ? null
@@ -754,7 +764,7 @@ class _ActionsState extends ConsumerState<_Actions> {
       children: <Widget>[
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(SgButton.compactHeight),
           children: <Widget>[
             // BR-CONTENT-04: a note is never studied, so it has no way in.
             if (word.studied && word.status == WordStatus.todo)
@@ -822,7 +832,7 @@ class _ActionsState extends ConsumerState<_Actions> {
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
-            runSpacing: 8,
+            runSpacing: AdaptiveTapTarget.runSpacing(32),
             children: <Widget>[
               SgChip(
                 label: l10n.wordPlainCard,
@@ -842,7 +852,7 @@ class _ActionsState extends ConsumerState<_Actions> {
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: AdaptiveTapTarget.runSpacing(32),
           children: <Widget>[
             for (final source in <WebSource>[
               WebSource.duden,

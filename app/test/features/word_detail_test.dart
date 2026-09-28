@@ -27,6 +27,7 @@ import 'package:sogda/data/repositories/translation_repository.dart';
 import 'package:sogda/data/repositories/word_actions.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -816,6 +817,17 @@ void main() {
       ]);
     });
 
+    testWidgets('#952 the web chips read run by run, as they wrap', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester, size: const Size(250, 844));
+      await tester.ensureVisible(find.text('Wiktionary'));
+      await tester.pumpAndSettle();
+      expectWrapReadsAsDrawn(tester, find.text('DWDS'));
+      semantics.dispose();
+    });
+
     testWidgets('FR-W1-05 with translation on, Translate puts each '
         'example in the meaning language under it', (tester) async {
       final asked = <(String, String)>[];
@@ -1007,6 +1019,43 @@ void main() {
     expect(tapsInsideTaps(tester), isEmpty);
     semantics.dispose();
   });
+
+  test('#854 PIPE-09 an old uid, from a link written before an update '
+      're-keyed its word, opens the word it became', () async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final content = ContentFixture.write(
+      '${tempDir('sg_alias').path}/content.db',
+    );
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+    );
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final aliased = _Aliased(db, <String, String>{
+      'old-haus': ContentFixture.haus,
+    });
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+        contentUpdaterProvider.overrideWithValue(aliased),
+      ],
+    );
+    addTearDown(container.dispose);
+    Future<WordDetail?> read(String uid) async {
+      final hold = container.listen(wordDetailProvider(uid), (_, _) {});
+      addTearDown(hold.close);
+      return container.read(wordDetailProvider(uid).future);
+    }
+
+    expect((await read('old-haus'))?.word.word.uid, ContentFixture.haus);
+    expect(await read('never-a-word'), isNull, reason: 'no alias: missing');
+    expect(aliased.calls, 2);
+    await read(customUid(7));
+    expect(aliased.calls, 2, reason: "a learner's own word skips the manifest");
+  });
 }
 
 /// W1's actions, recorded; each undo records its name.
@@ -1068,4 +1117,18 @@ class _Translations implements TranslationRepository {
     required String from,
     required String to,
   }) async => answer(text, to);
+}
+
+/// The course's PIPE-09 aliases, as a kept manifest would give them (#854).
+class _Aliased extends ContentUpdater {
+  _Aliased(AppDatabase db, this.map) : super(db, ContentDao(db));
+
+  final Map<String, String> map;
+  int calls = 0;
+
+  @override
+  Future<Map<String, String>> aliases() async {
+    calls++;
+    return map;
+  }
 }

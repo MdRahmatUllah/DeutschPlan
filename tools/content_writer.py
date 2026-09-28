@@ -73,28 +73,18 @@ def create_fts(connection: sqlite3.Connection) -> None:
 
 
 def fill_fts(connection: sqlite3.Connection) -> None:
-    """Copies `words` and `word_examples` into the search tables.
+    """Indexes `words` and `word_examples` into the search tables.
 
-    A copy rather than FTS5 external content: external content needs triggers
-    on the source table to stay in step, and content.db is read-only on the
-    device, so there is nothing for a trigger to react to. This runs once, at
-    build time, and cannot drift afterwards.
+    FTS5's `rebuild`: the tables are external content (#712), an index of the
+    rows as they are now. Last, after every row is written, so nothing is
+    left out of it; content.db is read-only on the device, so it cannot drift
+    afterwards, and PIPE-08's integrity check says if anything moved it.
     """
-    connection.execute(
-        "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
-        "SELECT uid, german, english, bangla, search_key FROM words"
-    )
-    connection.execute(
-        "INSERT INTO words_trigram (uid, german, english, search_key) "
-        "SELECT uid, german, english, search_key FROM words"
-    )
-    connection.execute(
-        "INSERT INTO examples_fts (word_uid, german, english) "
-        "SELECT word_uid, german, english FROM word_examples"
-    )
+    for table in ("words_fts", "words_trigram", "examples_fts"):
+        connection.execute(f"INSERT INTO {table} ({table}) VALUES ('rebuild')")
 
     # No `optimize` here. It merges the index's b-tree segments, and there is
-    # nothing to merge: the three inserts above run in one transaction, so
+    # nothing to merge: the three rebuilds above run in one transaction, so
     # FTS5 flushes once. Measured on a real build — segment count and file
     # size are identical with and without it.
     #

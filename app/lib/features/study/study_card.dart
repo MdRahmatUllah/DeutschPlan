@@ -398,9 +398,13 @@ class StudyFrontActions extends StatelessWidget {
 
   final VoidCallback onReveal;
 
-  /// How far a snackbar floats up to clear these actions: the StudyNew
-  /// artboard's `bottom: 128px`, less the bar's own 10 px margin.
-  static const double clearance = 118;
+  /// How far a snackbar floats up to clear these actions, and a new word's
+  /// *I know it* and *Skip* in the hint's place: 32 + 56 (*Show meaning*) +
+  /// 8 + 48 dp, and 8 clear, less the bar's own 10 px margin. The StudyNew
+  /// artboard's `bottom: 128px` left the bar over the two (#742).
+  // ponytail: one lift for both fronts; a revision's bar floats 24 dp higher
+  // than it needs, over the card, not over anything to press.
+  static const double clearance = 142;
 
   /// [clearance], grown with the text: at 200 % *Show meaning* and the hint
   /// are taller, and a fixed 118 left the Undo bar over them (#165).

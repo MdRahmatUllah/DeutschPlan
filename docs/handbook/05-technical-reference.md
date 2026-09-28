@@ -155,6 +155,8 @@ sentences, 182 grammar topics, 159 categories and 622 interference tips.
 | `words_trigram` | FTS5 `trigram`: candidates for fuzzy search |
 | `examples_fts` | FTS5 over example sentences: the "in sentences" tier |
 
+The three are external content: an index of `words` and `word_examples`, which they read the text from, not a copy of it (#712).
+
 `app/assets/db/content_manifest.json` ships beside it: counts, per-step
 boundaries and every uid with two digests (`words`, what the learner sees, and
 `meanings`). The app keeps the previous version's manifest, and diffing the

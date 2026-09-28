@@ -23,8 +23,12 @@ FTS_TABLES = ("words_fts", "words_trigram", "examples_fts")
 
 
 @contextmanager
-def probe_row(database: sqlite3.Connection, insert: str):
-    """Adds a row for the duration of one assertion, then undoes it.
+def probe_words(database: sqlite3.Connection, *words: tuple):
+    """Adds words, `(uid, german, english, bangla, search_key)`, for the
+    duration of one assertion, indexed, then undoes it.
+
+    Into `words`, and indexed by FTS5's `rebuild` as the build does: the
+    search tables are external content, an index of `words`' rows (#712).
 
     A savepoint rather than a matching DELETE: these run on a module-scoped
     connection, so a probe that outlives its test — because the test failed,
@@ -33,7 +37,15 @@ def probe_row(database: sqlite3.Connection, insert: str):
     """
     database.execute("SAVEPOINT probe")
     try:
-        database.execute(insert)
+        database.executemany(
+            "INSERT INTO words (uid, sublevel_code, level_code, seq, "
+            "seq_in_sublevel, german, english, bangla, search_key, "
+            "search_key_alt, kind) "
+            "VALUES (?, 'A1.1', 'A1', 0, 0, ?, ?, ?, ?, ?, 'vocab')",
+            [(*word, word[-1]) for word in words],
+        )
+        for table in ("words_fts", "words_trigram"):
+            database.execute(f"INSERT INTO {table} ({table}) VALUES ('rebuild')")
         yield
     finally:
         database.execute("ROLLBACK TO probe")
@@ -74,26 +86,47 @@ class TestTheyExistAndAreFull:
         }
         assert set(FTS_TABLES) <= found
 
+    # What each has indexed is its `_docsize` rows, one a row: a count of an
+    # external-content table counts its source (#712).
+
     def test_none_is_empty(self, database):
         # PIPE-08 fails the build on this; here it catches a tokenizer that
         # silently accepted nothing.
         for table in FTS_TABLES:
-            count = database.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+            count = database.execute(
+                f"SELECT COUNT(*) FROM {table}_docsize"
+            ).fetchone()[0]
             assert count > 0, table
 
     def test_the_word_tables_cover_every_word(self, database):
         words = database.execute("SELECT COUNT(*) FROM words").fetchone()[0]
         for table in ("words_fts", "words_trigram"):
             assert (
-                database.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+                database.execute(
+                    f"SELECT COUNT(*) FROM {table}_docsize"
+                ).fetchone()[0]
                 == words
             ), table
 
     def test_examples_fts_covers_every_example(self, database):
         assert (
-            database.execute("SELECT COUNT(*) FROM examples_fts").fetchone()[0]
+            database.execute(
+                "SELECT COUNT(*) FROM examples_fts_docsize"
+            ).fetchone()[0]
             == database.execute("SELECT COUNT(*) FROM word_examples").fetchone()[0]
         )
+
+    def test_712_they_hold_no_copy_of_the_text(self, database):
+        # External content: the index alone, the text read from `words` and
+        # `word_examples`. A `_content` table was a copy, 1.9 MB of 7.5.
+        tables = {
+            name
+            for (name,) in database.execute(
+                "SELECT name FROM sqlite_master WHERE type = 'table'"
+            )
+        }
+        for table in FTS_TABLES:
+            assert f"{table}_content" not in tables, table
 
 
 class TestTheSearchTiers:
@@ -127,10 +160,8 @@ class TestTheSearchTiers:
     def test_tier_3_trigram_finds_a_misspelling(self, database):
         # The tier's whole reason: "Strase" for "Straße". Trigram matches any
         # three-character run, so a dropped or wrong letter still hits.
-        with probe_row(
-            database,
-            "INSERT INTO words_trigram (uid, german, english, search_key) "
-            "VALUES ('probe', 'Strasse', 'street', 'strasse')",
+        with probe_words(
+            database, ("probe", "Strasse", "street", None, "strasse")
         ):
             rows = database.execute(
                 "SELECT uid FROM words_trigram WHERE words_trigram MATCH ?",
@@ -143,10 +174,8 @@ class TestTheSearchTiers:
         # nothing at all — silently, with no error. The search screen has to
         # fall back to the tiers above rather than show the learner an empty
         # result, and this is the behaviour it falls back from.
-        with probe_row(
-            database,
-            "INSERT INTO words_trigram (uid, german, english, search_key) "
-            "VALUES ('probe', 'Strasse', 'street', 'strasse')",
+        with probe_words(
+            database, ("probe", "Strasse", "street", None, "strasse")
         ):
             assert ("probe",) in database.execute(
                 "SELECT uid FROM words_trigram WHERE words_trigram MATCH ?",
@@ -173,11 +202,7 @@ class TestTokenizers:
         # remove_diacritics 2 is why "Tur" finds "Tür" here, on top of
         # search_key_alt. Inserted directly so the assertion is about the
         # tokenizer rather than about the fixture's vocabulary.
-        with probe_row(
-            database,
-            "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
-            "VALUES ('probe', 'Tür', 'door', NULL, 'tuer')",
-        ):
+        with probe_words(database, ("probe", "Tür", "door", None, "tuer")):
             rows = database.execute(
                 "SELECT uid FROM words_fts WHERE words_fts MATCH ?", ['"Tur"']
             ).fetchall()
@@ -186,10 +211,8 @@ class TestTokenizers:
     def test_bangla_survives_the_tokenizer(self, database):
         # A Bangla meaning is findable as itself — tier 1's `bangla = raw`
         # match.
-        with probe_row(
-            database,
-            "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
-            "VALUES ('probe', 'Mädchen', 'girl', 'মেয়ে', 'maedchen')",
+        with probe_words(
+            database, ("probe", "Mädchen", "girl", "মেয়ে", "maedchen")
         ):
             rows = database.execute(
                 "SELECT uid FROM words_fts WHERE words_fts MATCH ?",
@@ -201,12 +224,11 @@ class TestTokenizers:
         # unicode61 split at Bangla's vowel signs, hasanta and nukta (Mn, Mc):
         # মেয়ে was ম + য, and মতামত began with ম too, so "মে"* matched both
         # and R1's Bangla "starts with" was mostly noise (#713).
-        with probe_row(
+        with probe_words(
             database,
-            "INSERT INTO words_fts (uid, german, english, bangla, search_key) "
-            "VALUES ('girl', 'Mädchen', 'girl', 'মেয়ে', 'maedchen'), "
-            "('opinion', 'Meinung', 'opinion', 'মতামত', 'meinung'), "
-            "('friction', 'Reibung', 'friction', 'ঘর্ষণ', 'reibung')",
+            ("girl", "Mädchen", "girl", "মেয়ে", "maedchen"),
+            ("opinion", "Meinung", "opinion", "মতামত", "meinung"),
+            ("friction", "Reibung", "friction", "ঘর্ষণ", "reibung"),
         ):
             def found(query: str) -> set[str]:
                 return {
@@ -258,13 +280,16 @@ class TestTokenizers:
 
 
 def test_the_index_survives_its_own_integrity_check(database):
-    """FTS5's own verdict on the index it built.
+    """FTS5's own verdict on the index it built, against the rows it indexes
+    (`rank` 1: an external-content table is checked against its source).
 
-    There is no `optimize` in the writer: the three inserts run in one
+    There is no `optimize` in the writer: the three rebuilds run in one
     transaction, so FTS5 flushes once and there is nothing to merge. Measured
     — segment count and file size are identical either way.
     """
     for table in FTS_TABLES:
         database.execute(
-            "INSERT INTO " + table + "(" + table + ") VALUES ('integrity-check')"
+            "INSERT INTO " + table + "(" + table + ", rank) "
+            "VALUES ('integrity-check', 1)"
         )
+
