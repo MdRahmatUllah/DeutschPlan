@@ -1,7 +1,7 @@
 # Onboarding: building Sogda as a team of agents
 
-This is for every coding agent that works on Sogda. Three of you
-(`agent-0`, the lead, and `agent-1`, `agent-2`) work at the same time, each on its own issue in its own worktree,
+This is for every coding agent that works on Sogda. Four of you
+(`agent-0`, the lead; `agent-1` and `agent-2`, developers; `agent-3`, SQA) work at the same time, each on its own issue in its own worktree,
 coordinating through a shared task board. `CLAUDE.md` is the one-page
 summary; this is the whole of it. Read it once when you take an identity,
 then again whenever something surprises you.
@@ -30,7 +30,7 @@ and 182 grammar topics. It has:
 - a daily plan scheduled by FSRS
 - grammar practice
 - quizzes and mock exams
-- on-device voice and translation
+- on-device voice (translation is off in every v1 build: ADRs 9 and 29)
 - a home-screen widget
 
 It has no accounts and no analytics. No network call happens without a user
@@ -41,13 +41,12 @@ action (BR-PRIV-01).
   - M1 First run
   - M2 Daily loop (Today, study session, backlog, sentences)
   - M3 Learn & grammar (L1–L6, L15, the grammar practice generator)
-- **Left:**
   - M4 Quiz & mock exams
   - M5 Search, words, Me
   - M6 Voice, translation, widget
-  - M7 Polish & release
-
-  That is about 60 issues, organised in `PLAN.md` on the team branch.
+  - M7 Polish & release: v1.0.1 is tagged (Android only; iOS is Later)
+- **Now:** the production review's issues and the Play upload, organised in
+  `PLAN.md` on the team branch.
 - **Issues** are generated from the docs. Each one has a Goal, Design (8 artboard paths), Specification, Acceptance criteria and Dependencies ("Blocked by #…"). Labels:
   - `P0`–`P3`
   - `size:S/M/L`
@@ -605,7 +604,7 @@ that touches your files. It is cheap early and expensive late.
 | How an engine works | `docs/03-domain/` (quiz-engine, exam-generator, fsrs-scheduler, plan-engine, answer-checking, search, tts, translation, notifications-widget, sentences, grammar-practice) |
 | The data | `docs/02-data/user-database.md` (tables, settings keys, migrations, backups), `content-database.md`, `content-pipeline.md` |
 | How the app is built | `docs/01-architecture/` (project-structure, state-management, navigation, theming, accessibility-performance, tech-stack) |
-| How to work | `docs/05-dev-guide/` (getting-started, coding-standards, testing, decisions = ADRs 1–25, release, adding-content). This guide adds the team layer. |
+| How to work | `docs/05-dev-guide/` (getting-started, coding-standards, testing, decisions = the ADRs, one row each, release, adding-content). This guide adds the team layer. |
 | What it looks like | `deutsch-plan-design-html/<android-light, android-dark, ios-light, ios-dark>/screens/<Screen>-<suffix>.html` (PNGs in `docs/design/<canvas>/`); glass: `deutsch-plan-v2-aurora-glass-html/…` (no PNGs, so render with `tools/artboard.py`); `Foundations.html` per canvas holds the tokens |
 | Goldens | `app/test/golden/README.md` |
 | What to do next | the `team` branch: `PLAN.md`, `TASKS.md`, `STATUS.md` |
@@ -614,6 +613,9 @@ Docs are the source of truth: when code and docs disagree, the docs win until
 they are deliberately changed, in the same PR as the code.
 
 ## 10. The plan for M4–M7
+
+M4–M7 are done; this is how the lanes ran them, kept as the record. What is
+next is in `PLAN.md`.
 
 `PLAN.md` on the team branch is the living version. In short:
 

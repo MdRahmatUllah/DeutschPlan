@@ -39,6 +39,7 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Audio recording | `record` | 7.x | Speaking section recorder (AAC/M4A), mic permission handling. |
 | Downloads | `background_downloader` | 9.x | Resumable, background, Wi-Fi-only model downloads with progress notifications on both platforms. |
 | Notifications | `flutter_local_notifications` | 22.x | Daily reminder (inexact alarm on Android, UNUserNotificationCenter on iOS). |
+| Time zones | `timezone` | 0.11.x | The `TZDateTime` that `zonedSchedule` takes for the reminder (#157); it came with the notifications plugin. |
 | Home-screen widget | `home_widget` | 0.10.x | Bridges to Glance (Android) and WidgetKit (iOS) via a shared JSON snapshot. |
 | Background work | `workmanager` | 0.10.x | Nightly plan pre-generation and widget refresh on Android; iOS uses BGTaskScheduler through the same package. |
 | Files & sharing | `path_provider`, `file_picker`, `share_plus` | 2.x / 13.x / 13.x | Export/import JSON. |
@@ -46,6 +47,8 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Animation | the framework's own | — | Implicit and explicit animations (reveal, shake, ring fill); confetti is a custom `CustomPainter`. `flutter_animate` was never imported and was removed (#697). |
 | Charts | `fl_chart` | 1.x | Activity bars, retention line on Progress. |
 | Permissions | `permission_handler` | 13.x | Mic and notification permissions with rationale. |
+| App version | `package_info_plus` | 10.x | The version and build that M6's About shows. |
+| Checksums | `crypto` + `convert` | 3.x | SHA-256 of each model file before it is activated (FR-M4-01), hashed in chunks so a large file is never read into memory. |
 | Lints | `flutter_lints` + `riverpod_lint` | 6.x / 3.1.x | Enforced by the gate (`dart analyze --fatal-infos`). `custom_lint` is **no longer used**: riverpod_lint 3.1.4+ is a native `analyzer_plugin` and the two cannot co-resolve. |
 | Tests | `flutter_test` (goldens with `matchesGoldenFile`), `integration_test`, `drift` in-memory DB | latest | Unit, widget, golden (three themes) and integration tests. Fakes are hand-written (`testing.md`); `mocktail` and `alchemist` were never used and were removed (#697). |
 

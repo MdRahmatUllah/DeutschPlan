@@ -76,6 +76,10 @@
   "@bootstrapShareDataFile": {
     "description": "Action on the bootstrap error screen when user.db would not open (corrupt, or from a newer build): shares the raw database file so the learner's progress is not lost. Stands where Export progress does. FR-S1-03, #619."
   },
+  "bootstrapShareFailed": "Your data file wasn't shared. Try again.",
+  "@bootstrapShareFailed": {
+    "description": "Toast on the bootstrap error screen when Share your data file didn't hand the file over (#843); Export progress's failure says exportImportExportFailed."
+  },
   "exportProgress": "Export progress",
   "@exportProgress": {
     "description": "Action on the bootstrap error screen and on Export / import. Writes everything the learner has done to a JSON file. FR-S1-03, FR-M6-01."
@@ -790,7 +794,7 @@
   "@placementAskGap": {
     "description": "S3: the prompt on a gap item."
   },
-  "placementRule": "Two right answers in a row move you up a level; two wrong move you down. Nothing is saved until you choose a step.",
+  "placementRule": "Two right answers in a row move you up a step; two wrong move you down. Nothing is saved until you choose a step.",
   "@placementRule": {
     "description": "S3: the note under the options (FR-S3-01, FR-S3-03)."
   },
@@ -1805,7 +1809,7 @@
       }
     }
   },
-  "summaryGrammar": "Practice grammar · {topics}",
+  "summaryGrammar": "Practise grammar · {topics}",
   "@summaryGrammar": {
     "description": "T3 primary when grammar topics are next (FR-T3-02).",
     "placeholders": {
@@ -1815,7 +1819,7 @@
       }
     }
   },
-  "summarySentences": "{count, plural, =1{Practice 1 sentence} other{Practice {count} sentences}}",
+  "summarySentences": "{count, plural, =1{Practise 1 sentence} other{Practise {count} sentences}}",
   "@summarySentences": {
     "description": "T3 primary when the day's sentences are next (FR-T3-02).",
     "placeholders": {
@@ -1930,6 +1934,10 @@
   "backlogPauseNote": "Revisions continue as normal",
   "@backlogPauseNote": {
     "description": "T4 switch note."
+  },
+  "backlogLoadFailed": "Your backlog did not load",
+  "@backlogLoadFailed": {
+    "description": "T4's error panel title, when the backlog's read fails; Retry and Back sit under it (#677, #858)."
   },
   "backlogPauseLabel": "Pause new words until the backlog is clear",
   "@backlogPauseLabel": {
@@ -2345,6 +2353,10 @@
   "@sentencesHint": {
     "description": "T5 hint above the answers."
   },
+  "sentencesLoadFailed": "Today's sentences did not load",
+  "@sentencesLoadFailed": {
+    "description": "T5's error panel title, when the day's sentences can't be read; Retry sits under it (#677, #886)."
+  },
   "sentencesAsk": "Did you understand it?",
   "@sentencesAsk": {
     "description": "T5: heading over the three answers. Shown in capitals."
@@ -2391,7 +2403,7 @@
       }
     }
   },
-  "dayCompleteStreak": "{days, plural, =1{day streak} other{day streak}}",
+  "dayCompleteStreak": "{days, plural, other{day streak}}",
   "@dayCompleteStreak": {
     "description": "T6: beside the streak chip, which shows the number.",
     "placeholders": {

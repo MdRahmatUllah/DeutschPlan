@@ -21,6 +21,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/deep_links.dart' show readable, todayLink;
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
@@ -133,6 +134,33 @@ class _BootstrapHostState extends State<BootstrapHost>
     if (_ready) _tellBrightness(_container!);
   }
 
+  /// #748: a link that arrives before the app is ready (the widget tapped
+  /// during a first run's course copy), which the splash's own app would
+  /// push as a named route and throw on. Kept, and opened by the router once
+  /// the app is ready, under the same rules as any arrival.
+  Uri? _pendingLink;
+
+  @override
+  Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
+    // #980: a link that can't be read goes on as Today's: as it is, every
+    // observer after this one, and the router, would throw on it.
+    // ponytail: the View's MediaQuery above the app is asked first, and
+    // Flutter's default there logs a caught FormatException (logcat only);
+    // silencing it means MainActivity rewriting the intent's data.
+    final arrived = routeInformation.uri;
+    final link = readable(arrived) ? arrived : todayLink;
+    if (!_ready) {
+      _pendingLink = link;
+      return Future<bool>.value(true);
+    }
+    if (identical(link, arrived)) return Future<bool>.value(false);
+    // Under the same rules as a platform push: a running exam holds.
+    if (_result case BootstrapReady(:final bootstrap)) {
+      bootstrap.router.go(link.toString());
+    }
+    return Future<bool>.value(true);
+  }
+
   /// Tells the theme notifier the phone's brightness, which its own default
   /// can't know: a dark phone would otherwise get a light first frame.
   void _tellBrightness(ProviderContainer container) => container
@@ -220,6 +248,12 @@ class _BootstrapHostState extends State<BootstrapHost>
       _ready = result is BootstrapReady;
       _result = result;
     });
+    if (result case BootstrapReady(:final bootstrap)) {
+      if (_pendingLink case final link?) {
+        _pendingLink = null;
+        bootstrap.router.go(link.toString());
+      }
+    }
     // The failed start's. Nothing was opened through it, and it goes once
     // the frame that drops its tree has been built.
     if (previous != null) {

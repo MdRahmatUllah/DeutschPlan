@@ -133,6 +133,46 @@ void main() {
       );
     });
 
+    testWidgets("#843 a share of the file that fails says the share didn't "
+        'happen, not the export', (tester) async {
+      await pump(
+        tester,
+        failure: BootstrapFailure(
+          step: BootstrapStep.database,
+          error: 'file is not a database',
+          stackTrace: StackTrace.empty,
+          db: null,
+          file: File('user.sqlite'),
+        ),
+        onExport: () async => false,
+      );
+
+      await tester.tap(
+        find.widgetWithText(SgButton, l10n.bootstrapShareDataFile),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text(l10n.bootstrapShareFailed), findsOneWidget);
+      expect(find.text(l10n.exportImportExportFailed), findsNothing);
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+    });
+
+    testWidgets('and an export that fails says the export', (tester) async {
+      await pump(
+        tester,
+        failure: failureOf(BootstrapStep.content, canExport: true),
+        onExport: () async => false,
+      );
+
+      await tester.tap(export);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text(l10n.exportImportExportFailed), findsOneWidget);
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+    });
+
     testWidgets('and is absent when it did not', (tester) async {
       // A button that cannot do what it says is worse than no button — the
       // learner taps it precisely because their data is what worries them.

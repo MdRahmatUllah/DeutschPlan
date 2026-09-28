@@ -40,6 +40,7 @@ GrammarSource grammarSource(TopicWithState topic) => GrammarSource(
   watchOut: topic.topic.watchOut ?? '',
   tags: topic.tags,
   levelCode: topic.topic.levelCode,
+  sublevelCode: topic.topic.sublevelCode,
 );
 
 /// What the generator checks its forms against and takes *Pick the form*'s

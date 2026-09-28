@@ -146,6 +146,9 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     final now = ref.read(clockProvider)();
     final today = ref.read(todayProvider);
     final name = _name;
+    // Held now: Back isn't blocked while the save runs, and this page's
+    // `ref` is gone once it has been left (#811, `state-management.md`).
+    final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _busy = true);
     try {
       await words.saveMyWord(
@@ -165,7 +168,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
       );
       // Today's plan is read once, when the day opens: the row is on Today's
       // Revise block once it is read again.
-      if (revise) ref.invalidate(todayPlanProvider);
+      if (revise) container.invalidate(todayPlanProvider);
       if (!mounted) return;
       SgToast.show(
         context,

@@ -1,6 +1,6 @@
 # Sogda — Project Documentation (source of truth)
 
-Sogda is an offline German course app (A1.1 → C2.2) for Android and iOS, built in Flutter from the four German tracker workbooks. Everything the learner does is stored only on the device.
+Sogda is an offline German course app (A1.1 → C2.2) for Android (v1; iOS is Later), built in Flutter from the four German tracker workbooks. Everything the learner does is stored only on the device.
 
 This folder is the **single source of truth**. When code and these documents disagree, the documents win until they are deliberately changed. Every change to behaviour must land here first, in the same pull request as the code.
 

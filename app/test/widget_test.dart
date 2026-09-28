@@ -5,6 +5,7 @@ import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -16,7 +17,10 @@ import 'package:sogda/main.dart';
 import 'package:sogda/router/app_shell.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter/services.dart' show JSONMethodCodec, MethodCall;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/foundation.dart' show FlutterError, FlutterErrorDetails;
+import 'package:go_router/go_router.dart' show GoRouter;
 import 'package:material_ui/material_ui.dart'
     show Brightness, Locale, MaterialApp, Navigator, ThemeMode;
 import 'package:material_ui/material_ui.dart' as material show Theme;
@@ -346,6 +350,130 @@ void main() {
       expect(shown(tester), (Brightness.light, SgMode.light));
     });
   });
+
+  /// #748 #980: the app's host, its bootstrap held until `ready`, on a
+  /// router that starts at [at].
+  Future<({GoRouter router, Future<void> Function() ready})> hold(
+    WidgetTester tester, {
+    required String at,
+  }) async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final router = buildRouter(
+      initialLocation: at,
+      guards: RouteGuards(
+        hasExamAttempt: (_) async => true,
+        isEnrolled: () async => true,
+      ),
+    );
+    final running = Completer<BootstrapResult>();
+    await tester.pumpWidget(
+      BootstrapHost(
+        run: ({
+          Brightness platformBrightness = Brightness.light,
+          void Function(UiLanguage)? onUiLanguage,
+        }) => running.future,
+        wire: (_, _) {},
+      ),
+    );
+    Future<void> ready() async {
+      running.complete(
+        BootstrapReady(
+          Bootstrap(
+            db: db,
+            content: ContentDao(db),
+            settings: settings,
+            glass: GlassCapability(),
+            router: router,
+            contentVersion: 'test',
+            contentChange: null,
+            themeMode: SgMode.light,
+            themeSetting: ThemeModeSetting.light,
+            isFirstRun: true,
+            elapsed: Duration.zero,
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    return (router: router, ready: ready);
+  }
+
+  /// A link as the platform sends it: the widget, a tapped reminder, a page.
+  Future<void> push(WidgetTester tester, String link) async {
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      'flutter/navigation',
+      const JSONMethodCodec().encodeMethodCall(
+        MethodCall('pushRouteInformation', <String, dynamic>{
+          'location': link,
+          'state': null,
+        }),
+      ),
+      (_) {},
+    );
+    await tester.pump(const Duration(seconds: 1));
+  }
+
+  testWidgets('#748 a link that arrives while bootstrap runs is kept, and '
+      'opened once the app is ready', (tester) async {
+    final host = await hold(tester, at: '/today');
+    String at() => host.router.routerDelegate.currentConfiguration.uri.path;
+
+    // The widget's tap during a first run's course copy: before this, the
+    // splash's own app pushed it as a named route and threw.
+    await push(tester, 'sogda://learn');
+    expect(tester.takeException(), isNull);
+
+    await host.ready();
+    expect(at(), '/learn');
+
+    // Once the app is ready, a link is the router's again, not kept.
+    host.router.go('/today');
+    await tester.pump(const Duration(seconds: 1));
+    await push(tester, 'sogda://learn');
+    expect(at(), '/learn');
+  });
+
+  for (final link in <String>['sogda://word/%FF', 'sogda://today?x=%FF']) {
+    testWidgets("#980 a link whose escape isn't UTF-8 lands on Today, while "
+        'bootstrap runs and after: $link', (tester) async {
+      final host = await hold(tester, at: '/learn');
+      String at() => host.router.routerDelegate.currentConfiguration.uri.path;
+
+      // Flutter's own observers above the app (the View's MediaQuery) are
+      // asked first and report a caught FormatException each; nothing from
+      // BootstrapHost on throws, the router least of all.
+      Future<void> pushUnreadable() async {
+        final reported = <FlutterErrorDetails>[];
+        final previous = FlutterError.onError;
+        FlutterError.onError = reported.add;
+        try {
+          await push(tester, link);
+        } finally {
+          FlutterError.onError = previous;
+        }
+        for (final report in reported) {
+          expect(report.exception, isA<FormatException>());
+          expect('${report.stack}', isNot(contains('package:go_router')));
+          expect('${report.stack}', isNot(contains('package:sogda/')));
+        }
+      }
+
+      await pushUnreadable();
+      await host.ready();
+      expect(at(), '/today');
+
+      host.router.go('/learn');
+      await tester.pump(const Duration(seconds: 1));
+      await pushUnreadable();
+      expect(at(), '/today');
+    });
+  }
 
   test('English leads supportedLocales so it is the fallback locale', () {
     expect(supportedLocales.first.languageCode, 'en');

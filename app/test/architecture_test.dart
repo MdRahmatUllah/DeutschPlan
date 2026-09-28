@@ -949,7 +949,8 @@ Iterable<File> _dartFilesIn(String path) {
       .listSync(recursive: true)
       .whereType<File>()
       .where((f) => f.path.endsWith('.dart'))
-      // Generated code is rebuilt by `make gen`; its imports are not ours to fix.
+      // Generated code is rebuilt by build_runner (`getting-started.md`);
+      // its imports are not ours to fix.
       .where((f) => !f.path.endsWith('.g.dart'))
       .where((f) => !f.path.endsWith('.drift.dart'))
       .where((f) => !_rel(f).contains('lib/l10n/generated/'));
