@@ -159,6 +159,17 @@ class TestSearchGate:
         assert "search" in gates(database)
         assert "rows for" in messages(database)
 
+    def test_712_an_index_of_other_rows_is_caught(self, database):
+        # External content: the index is of `words` as the build left it. A
+        # row changed or renumbered since (a VACUUM) is one the index is
+        # not of, and FTS5's integrity check says so.
+        break_it(
+            database,
+            "UPDATE words SET search_key = search_key || 'x' WHERE rowid = 1",
+        )
+        assert "search" in gates(database)
+        assert "is not an index of words" in messages(database)
+
     def test_a_missing_index_is_caught(self, database):
         break_it(database, "DROP TABLE examples_fts")
         assert "search" in gates(database)

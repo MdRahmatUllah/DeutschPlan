@@ -225,9 +225,12 @@ void main() {
       test('FR-R1-01 the German forms search the German only: "Tür" is not '
           '"Turn"', () async {
         await db.customStatement(
-          "INSERT INTO c.examples_fts (word_uid, german, english) VALUES "
-          "('${ContentFixture.haus}', 'Mach das Licht an.', "
+          "INSERT INTO c.word_examples (word_uid, ord, german, english) "
+          "VALUES ('${ContentFixture.haus}', 9, 'Mach das Licht an.', "
           "'Turn on the light.')",
+        );
+        await db.customStatement(
+          "INSERT INTO c.examples_fts (examples_fts) VALUES ('rebuild')",
         );
         final hits = (await search.search('Tür')).sentences;
         expect(hits, isNotEmpty);
@@ -882,12 +885,10 @@ void _writeCourseSizedContent(String path) {
     example.close();
 
     db.execute('''
-      INSERT INTO words_fts (uid, german, english, bangla, search_key)
-        SELECT uid, german, english, bangla, search_key FROM words;
-      INSERT INTO words_trigram (uid, german, english, search_key)
-        SELECT uid, german, english, search_key FROM words;
-      INSERT INTO examples_fts (word_uid, german, english)
-        SELECT word_uid, german, english FROM word_examples;
+      -- Indexed as the pipeline does: external content, rebuilt (#712).
+      INSERT INTO words_fts (words_fts) VALUES ('rebuild');
+      INSERT INTO words_trigram (words_trigram) VALUES ('rebuild');
+      INSERT INTO examples_fts (examples_fts) VALUES ('rebuild');
       INSERT INTO meta ("key", value) VALUES ('content_version', '202601011200');
     ''');
     db.execute('COMMIT');

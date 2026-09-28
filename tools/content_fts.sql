@@ -1,13 +1,17 @@
 -- The three full-text tables, one per tier of `docs/03-domain/search.md`.
 --
--- Separate from content_schema.sql because they are derived: every row here is
--- a copy of a row in `words` or `word_examples`, and they are rebuilt from
--- those rather than written alongside them.
+-- Separate from content_schema.sql because they are derived: each indexes the
+-- rows of `words` or `word_examples`, and is rebuilt from them rather than
+-- written alongside them.
 --
--- All three are ordinary (not external-content) FTS5 tables. External content
--- would halve the file, but it needs triggers on the source table to stay in
--- step — and content.db is read-only on the device, so there is nothing for a
--- trigger to react to. A plain copy cannot drift.
+-- All three are external-content FTS5 tables (#712): the index only, the text
+-- read from `words` and `word_examples` by rowid when a query needs it (the
+-- `uid` a MATCH joins back on, `highlight()`). A copy of the text in each was
+-- 1.9 MB of a 7.5 MB file. External content needs triggers to stay in step
+-- with a table that changes, and content.db is read-only on the device, so
+-- the build fills them once, last, with FTS5's `rebuild` (`content_writer`),
+-- and PIPE-08 runs FTS5's integrity check of each index against its table:
+-- anything that renumbered the rows after (a VACUUM) fails the build.
 
 -- Tier 1 and 2: exact and starts-with.
 --
@@ -29,6 +33,7 @@ CREATE VIRTUAL TABLE words_fts USING fts5(
   english,
   bangla,
   search_key,
+  content = 'words',
   tokenize = 'unicode61 remove_diacritics 2 categories ''L* N* Co Mn Mc'''
 );
 
@@ -45,6 +50,7 @@ CREATE VIRTUAL TABLE words_trigram USING fts5(
   german,
   english,
   search_key,
+  content = 'words',
   tokenize = 'trigram'
 );
 
@@ -56,5 +62,6 @@ CREATE VIRTUAL TABLE examples_fts USING fts5(
   word_uid UNINDEXED,
   german,
   english,
+  content = 'word_examples',
   tokenize = 'unicode61 remove_diacritics 2'
 );
