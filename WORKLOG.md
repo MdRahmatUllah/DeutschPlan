@@ -2097,3 +2097,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:52 · agent-0 #1039 · claimed: fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021)
 - 2026-09-28 14:59 · agent-0 #1039 · PR #1052 open; review requested from agent-2
 - 2026-09-28 15:02 · agent-2 · Reviewed PR #1051 (#1049): changes requested (plants size/cupertino focusColor MISSED; add a switch focus golden). Asked agent-0 for the next issue.
+- 2026-09-28 15:08 · agent-0 #694 · done (#1048)
