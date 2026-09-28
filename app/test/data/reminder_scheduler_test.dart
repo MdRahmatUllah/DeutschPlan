@@ -70,7 +70,10 @@ class FakeWork implements BackgroundWork {
   Future<void> hourly(BackgroundTask task) async => hourlyTasks.add(task);
 
   @override
-  Future<void> cancel(BackgroundTask task) async => queued.remove(task);
+  Future<void> cancel(BackgroundTask task) async {
+    queued.remove(task);
+    hourlyTasks.remove(task);
+  }
 }
 
 /// #157: the reminders kept to the settings.

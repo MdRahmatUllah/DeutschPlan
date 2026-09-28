@@ -13,6 +13,7 @@
   storeFile=C:/path/to/upload-keystore.jks
   ```
   Without it, a release build is signed with the debug key, so builds and device checks work before the keystore exists. Play refuses a debug-signed upload.
+- **Gradle** comes from the wrapper, pinned to its distribution's SHA-256 (`distributionSha256Sum` in `android/gradle/wrapper/gradle-wrapper.properties`, #705). Gradle refuses a download that doesn't match, and an upgrade takes the new "Complete (-all)" checksum from gradle.org/release-checksums.
 - **Build and check:** `python tools/release_android.py`. In an agent's worktree the emulator is held first (an app build takes the lock); the owner's checkout has no lock to take (#707). `--check` checks the last build without building; `--require-upload-key` fails a bundle that isn't signed with the owner's upload key (use it for the build that goes to Play).
   - **Libraries:** `libflutter.so` and `libapp.so` must be in the bundle for every ABI it ships (`armeabi-v7a`, `arm64-v8a`, `x86_64`: the bundle has no ABI filter), so a half-built bundle can't pass the 16 KB check on nothing (#697, #858).
   - It builds with `flutter build appbundle --release --obfuscate --split-debug-info=build/symbols`, into `app/build/app/outputs/bundle/release/app-release.aab`.
@@ -48,4 +49,4 @@
 4. `ENABLE_HYMT_DOWNLOAD` stays **off** (ADR 9, #173): the release build passes no `--dart-define=ENABLE_HYMT_DOWNLOAD`, so M4 says Hy-MT is "Not offered in this version of the app" and M3 hides its Translation group (#513). Changing that needs a new ADR 9 entry first.
 5. `python tools/release_android.py --require-upload-key` passes (libraries, 16 KB, permissions, the upload key, the symbols); `app/build/release-symbols/<version>/` stored privately.
 6. `python tools/perf.py all` and `python tools/perf.py all --profile year` pass: size, frames, search and start against their baselines, on a fresh install and on a year of study (`accessibility-performance.md`, #167, #818). The owner's checkout takes no lock, and perf.py refuses while an agent holds the emulator (#845); an agent holds it first (`team.py device`). Then cold and warm start timed by hand on a real mid-range phone against the absolute budgets.
-7. Tag `vX.Y.Z`, changelog entry (`CHANGELOG.md`), store notes in EN and BN (`store-listing.md`, which `tools/tests/test_store_listing.py` holds to Play's limits), and the screenshots beside it.
+7. Tag `vX.Y.Z`, with the changelog entry (`CHANGELOG.md`) dated in the tagging commit, store notes in EN and BN (`store-listing.md`, which `tools/tests/test_store_listing.py` holds to Play's limits), and the screenshots beside it.

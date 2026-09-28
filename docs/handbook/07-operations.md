@@ -123,8 +123,8 @@ nullable columns or new tables; never drop a column with data.
 
 ### Versioning
 
-`app/pubspec.yaml` carries `version: MAJOR.MINOR.PATCH+BUILD` (v1.0.1 is
-`1.0.1+2`); `versionCode` and `versionName` come from it. The course has its
+`app/pubspec.yaml` carries `version: MAJOR.MINOR.PATCH+BUILD` (v1.0.1 was
+`1.0.1+2`; the first Sogda build is `1.1.0+3`, #739); `versionCode` and `versionName` come from it. The course has its
 own `content_version` (the pipeline's build time), shown in About. A
 content-only release bumps PATCH.
 
@@ -256,7 +256,9 @@ flowchart LR
   `sha1(level|german|pos|english)[:16]`. Editing any other column keeps it.
   Changing a word's German, part of speech, English or level gives it a new
   uid: the build links the old uid to the new one when it is the same word, and
-  the app moves the learner's progress along the link on install (PIPE-09). A
+  the app moves the learner's progress along the link on install (PIPE-09),
+  a grammar topic's too (#808); a wrong link is refused, and a missing one
+  pinned, under `links:` in `content/corrections.yaml` (#807). A
   word gone with nothing to link it to stops the build unless
   `--allow-removed`; say so in the release notes.
 - **On the phone.** At the first launch of the new version, `bootstrap()`

@@ -139,7 +139,13 @@ Future<String> widgetSnapshotJson(Ref ref) async {
 /// Where the snapshot goes: an interface so the writer can be tested without
 /// the native widgets (#159's third criterion).
 abstract interface class WidgetStore {
+  /// Writes [snapshot] and redraws the widget, unless it is what the widget
+  /// already holds.
   Future<void> save(String snapshot);
+
+  /// Whether a widget is on the home screen: the hourly refresh is only for
+  /// one (#711).
+  Future<bool> placed();
 }
 
 /// [WidgetStore] on `home_widget`: SharedPreferences on Android, the App
@@ -160,13 +166,26 @@ class HomeWidgetStore implements WidgetStore {
   // ponytail: the redraw is Android's; #161 adds WidgetKit's `iOSName`.
   @override
   Future<void> save(String snapshot) async {
-    if (Platform.isIOS) {
-      await HomeWidget.setAppGroupId(appGroup);
-      await HomeWidget.saveWidgetData<String>(key, snapshot);
-      return;
-    }
+    if (Platform.isIOS) await HomeWidget.setAppGroupId(appGroup);
+    // #711: a background task has no memory of its last write; the store
+    // does.
+    if (await HomeWidget.getWidgetData<String>(key) == snapshot) return;
     await HomeWidget.saveWidgetData<String>(key, snapshot);
+    if (Platform.isIOS) return;
     await HomeWidget.updateWidget(qualifiedAndroidName: androidReceiver);
+  }
+
+  /// Android's pinned instances; iOS's widget kinds in use, none before
+  /// #161's extension. A query that fails counts as placed: the hourly run
+  /// as before #711, never a start that stops before the reminders.
+  @override
+  Future<bool> placed() async {
+    try {
+      return (await HomeWidget.getInstalledWidgets()).isNotEmpty;
+    } on Exception catch (error) {
+      debugPrint('widget: $error');
+      return true;
+    }
   }
 }
 

@@ -471,6 +471,10 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
   /// is the submit that finishes the attempt; without, L13's re-grade after
   /// a rubric tick (FR-L13-03). One transaction: a score never disagrees
   /// with the rows it adds up.
+  ///
+  /// The submit finishes only an attempt still in progress (#911): one a
+  /// racing *Leave* has abandoned, its recording deleted, stays abandoned,
+  /// and the submit throws, writing nothing.
   Future<ExamScore> grade(
     int attemptId, {
     required int passPercent,
@@ -502,19 +506,29 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
       maxPoints: paper.max,
       passed: paper.passed,
     );
-    await (update(db.examAttempts)..where((t) => t.id.equals(attemptId))).write(
-      ExamAttemptsCompanion(
-        scorePoints: Value(score.scorePoints),
-        maxPoints: Value(score.maxPoints),
-        passed: Value(score.passed ? 1 : 0),
-        finishedAt: finishedAt == null
-            ? const Value.absent()
-            : Value(finishedAt),
-        status: finishedAt == null
-            ? const Value.absent()
-            : const Value('finished'),
-      ),
-    );
+    final written =
+        await (update(db.examAttempts)..where(
+              (t) => finishedAt == null
+                  ? t.id.equals(attemptId)
+                  : t.id.equals(attemptId) & t.status.equals('in_progress'),
+            ))
+            .write(
+              ExamAttemptsCompanion(
+                scorePoints: Value(score.scorePoints),
+                maxPoints: Value(score.maxPoints),
+                passed: Value(score.passed ? 1 : 0),
+                finishedAt: finishedAt == null
+                    ? const Value.absent()
+                    : Value(finishedAt),
+                status: finishedAt == null
+                    ? const Value.absent()
+                    : const Value('finished'),
+              ),
+            );
+    if (written == 0 && finishedAt != null) {
+      // Thrown inside the transaction, so the rows' points roll back too.
+      throw StateError('exam attempt $attemptId is no longer in progress');
+    }
     return score;
   });
 

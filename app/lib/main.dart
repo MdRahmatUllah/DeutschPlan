@@ -21,6 +21,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/deep_links.dart' show readable, todayLink;
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
@@ -133,6 +134,33 @@ class _BootstrapHostState extends State<BootstrapHost>
     if (_ready) _tellBrightness(_container!);
   }
 
+  /// #748: a link that arrives before the app is ready (the widget tapped
+  /// during a first run's course copy), which the splash's own app would
+  /// push as a named route and throw on. Kept, and opened by the router once
+  /// the app is ready, under the same rules as any arrival.
+  Uri? _pendingLink;
+
+  @override
+  Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
+    // #980: a link that can't be read goes on as Today's: as it is, every
+    // observer after this one, and the router, would throw on it.
+    // ponytail: the View's MediaQuery above the app is asked first, and
+    // Flutter's default there logs a caught FormatException (logcat only);
+    // silencing it means MainActivity rewriting the intent's data.
+    final arrived = routeInformation.uri;
+    final link = readable(arrived) ? arrived : todayLink;
+    if (!_ready) {
+      _pendingLink = link;
+      return Future<bool>.value(true);
+    }
+    if (identical(link, arrived)) return Future<bool>.value(false);
+    // Under the same rules as a platform push: a running exam holds.
+    if (_result case BootstrapReady(:final bootstrap)) {
+      bootstrap.router.go(link.toString());
+    }
+    return Future<bool>.value(true);
+  }
+
   /// Tells the theme notifier the phone's brightness, which its own default
   /// can't know: a dark phone would otherwise get a light first frame.
   void _tellBrightness(ProviderContainer container) => container
@@ -220,6 +248,12 @@ class _BootstrapHostState extends State<BootstrapHost>
       _ready = result is BootstrapReady;
       _result = result;
     });
+    if (result case BootstrapReady(:final bootstrap)) {
+      if (_pendingLink case final link?) {
+        _pendingLink = null;
+        bootstrap.router.go(link.toString());
+      }
+    }
     // The failed start's. Nothing was opened through it, and it goes once
     // the frame that drops its tree has been built.
     if (previous != null) {
@@ -267,6 +301,7 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
       container,
       PlatformReminderNotifications(),
       const WorkmanagerWork(),
+      widgets: const HomeWidgetStore(),
       open: bootstrap.router.go,
     ),
   );
@@ -278,7 +313,19 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
   // #638: Supertonic opens on the first clip a screen needs, not here, and
   // lets go of its sessions in the background or under memory pressure.
   watchVoiceMemory(container);
+  watchGlassTheme(container, bootstrap.glass);
 }
+
+/// #650: the glass frame watchdog watches only while glass is the theme, so
+/// a slow frame in light or dark never turns a later glass opaque.
+ProviderSubscription<SgMode> watchGlassTheme(
+  ProviderContainer container,
+  GlassCapability glass,
+) => container.listen<SgMode>(
+  themeProvider,
+  (_, mode) => glass.glassOnScreen = mode == SgMode.glass,
+  fireImmediately: true,
+);
 
 /// #638: the voice lets go of its sessions in the background and under
 /// memory pressure, for the app's life. Only a voice a screen has built: a
@@ -304,8 +351,20 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
   ProviderContainer container,
   ReminderNotifications notifications,
   BackgroundWork work, {
+  required WidgetStore widgets,
   required void Function(String location) open,
 }) async {
+  // #625: apart from the notifications, which the widget and the nightly
+  // plan_pregenerate don't need: a notifications plugin that fails to
+  // start must not leave them unqueued until the next launch.
+  final background =
+      startBackgroundWork(work, widgets, container.read(clockProvider)()).then(
+        (_) => true,
+        onError: (Object error) {
+          debugPrint('background: $error');
+          return false;
+        },
+      );
   // The link goes to the router as it is, not resolved here: the router
   // resolves it, and holds a running exam against it as against any
   // arrival (#676).
@@ -314,11 +373,12 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
     // A tap that started the app arrives here, not through [init]'s
     // callback, which hears only taps while it runs.
     if (await notifications.launchedWith() case final link?) open(link);
-    await startBackgroundWork(work, container.read(clockProvider)());
   } on Object catch (error) {
     debugPrint('reminders: $error');
     return null;
   }
+  // The schedule queues reminder_compose, on the work started above.
+  if (!await background) return null;
   return remindersFor(container, notifications, work).follow();
 }
 

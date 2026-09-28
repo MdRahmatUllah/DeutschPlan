@@ -53,13 +53,23 @@ Duration untilPregenerate(DateTime now) {
   return next.difference(now);
 }
 
-/// Queues the tasks no setting moves: tonight's `plan_pregenerate` and the
-/// hourly `widget_refresh`. `reminder_compose` follows the reminder's
-/// settings, through [ReminderScheduler].
-Future<void> startBackgroundWork(BackgroundWork work, DateTime now) async {
+/// Queues the tasks no setting moves: tonight's `plan_pregenerate`, and the
+/// hourly `widget_refresh` while a widget is on the home screen.
+/// `reminder_compose` follows the reminder's settings, through
+/// [ReminderScheduler].
+///
+/// #711: no widget, no hourly engine. One placed while the app is closed is
+/// written at 00:05 by `plan_pregenerate`, and hourly from the next start.
+Future<void> startBackgroundWork(
+  BackgroundWork work,
+  WidgetStore widgets,
+  DateTime now,
+) async {
   await work.init();
   await work.after(BackgroundTask.planPregenerate, untilPregenerate(now));
-  await work.hourly(BackgroundTask.widgetRefresh);
+  await (await widgets.placed()
+      ? work.hourly(BackgroundTask.widgetRefresh)
+      : work.cancel(BackgroundTask.widgetRefresh));
 }
 
 /// Runs [task] against [container]'s database (`notifications-widget.md`).
@@ -95,6 +105,9 @@ Future<void> runBackgroundTask(
         await composeReminder(container, notifications),
       );
     case BackgroundTask.widgetRefresh:
+      // #711: the widget taken off the home screen takes its hourly run
+      // with it.
+      if (!await widgets.placed()) return work.cancel(task);
       // Hourly, for the word of the day; the app writes it after every
       // session (`followWidget`).
       await refreshWidget(container, widgets);
@@ -220,6 +233,26 @@ class WorkmanagerWork implements BackgroundWork {
       Workmanager().cancelByUniqueName(task.id);
 }
 
+/// [task] in the background: [run] against user.db, once the app has left
+/// it ready to open.
+///
+/// #625: a `plan_pregenerate` that skips still queues tomorrow's. It queues
+/// its next run only once it has run, and the app queues it only at a start
+/// that gets as far as the reminders, so a skip would end the chain: the
+/// week of reminders already scheduled, then none, and a widget left on the
+/// day of the skip.
+Future<void> runInBackground(
+  BackgroundTask task, {
+  required BackgroundWork work,
+  required DateTime Function() clock,
+  required Future<void> Function(ProviderContainer container) run,
+}) async {
+  if (await withBackgroundDatabase(run)) return;
+  if (task == BackgroundTask.planPregenerate) {
+    await work.after(task, untilPregenerate(clock()));
+  }
+}
+
 /// Where the platform starts a background task: an engine of its own, with
 /// no app around it.
 @pragma('vm:entry-point')
@@ -229,18 +262,25 @@ void backgroundDispatcher() {
     if (task == null) return true;
     debugPrint('background: ${task.id}');
     try {
-      await withBackgroundDatabase((container) async {
-        final notifications = PlatformReminderNotifications();
-        // A tap is the app's to handle, in its own engine.
-        await notifications.init((_) {});
-        await runBackgroundTask(
-          task,
-          container,
-          notifications: notifications,
-          work: const WorkmanagerWork(),
-          widgets: const HomeWidgetStore(),
-        );
-      });
+      const work = WorkmanagerWork();
+      await runInBackground(
+        task,
+        work: work,
+        // The one clock, read before any database is open.
+        clock: ProviderContainer().read(clockProvider),
+        run: (container) async {
+          final notifications = PlatformReminderNotifications();
+          // A tap is the app's to handle, in its own engine.
+          await notifications.init((_) {});
+          await runBackgroundTask(
+            task,
+            container,
+            notifications: notifications,
+            work: work,
+            widgets: const HomeWidgetStore(),
+          );
+        },
+      );
       return true;
     } on Object catch (error, stackTrace) {
       debugPrint('background ${task.id}: $error\n$stackTrace');
@@ -255,7 +295,8 @@ void backgroundDispatcher() {
 /// A task never migrates: after an update the app does it at its next
 /// start, and a task that opened the file first would run the migration on
 /// a connection of its own, beside an app that may start and run it too.
-/// Tonight's task skips, and tomorrow's finds the file migrated.
+/// Tonight's task skips, and queues tomorrow's ([runInBackground]), which
+/// finds the file migrated once the app has started.
 bool atCurrentSchema(File file) =>
     AppDatabase.versionOf(file) == AppDatabase.latestSchemaVersion;
 
@@ -265,18 +306,20 @@ bool atCurrentSchema(File file) =>
 /// A connection of its own ([AppDatabase.open]'s `shared` off): the app's
 /// streams don't hear what a task writes, which is only `openDay`'s rows,
 /// and the app's own `openDay` finds them.
-Future<void> withBackgroundDatabase(
+///
+/// False when [run] never ran: user.db not at this schema, or no course.
+Future<bool> withBackgroundDatabase(
   Future<void> Function(ProviderContainer container) run,
 ) async {
   if (!atCurrentSchema(await AppDatabase.file())) {
     debugPrint('background: user.db is not at this schema; left for the app');
-    return;
+    return false;
   }
   final db = AppDatabase.open(shared: false);
   try {
     final content = ContentDao(db);
     // Never started: installing the course is the app's first start's job.
-    if (!(await content.installedFile()).existsSync()) return;
+    if (!(await content.installedFile()).existsSync()) return false;
     await content.attach();
     final settings = SettingsRepository(db);
     await settings.load();
@@ -288,6 +331,7 @@ Future<void> withBackgroundDatabase(
     );
     try {
       await run(container);
+      return true;
     } finally {
       container.dispose();
       await settings.dispose();
