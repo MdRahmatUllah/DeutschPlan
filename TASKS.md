@@ -410,7 +410,7 @@ claiming the same issue. A hand edit skips that check.
 | #906 | - | X | P2 | - | fix(tts): #638's follow-ups: one set of sessions at a time, no TTS stack built to release nothing, release after a long background | done | agent-1 |  | #915 |
 | #909 | - | X | P2 | - | fix(tts): a speak during Supertonic's release opens a second set of sessions (~800 MB) just when memory is short, and a failed load can orphan a newer one (from #897's review) | done |  |  | #915 |
 | #910 | - | X | P3 | - | chore(review): should-fixes from reviewing #897 (voice release: a needless build, T2's look-ahead after a resume, stale docs, an unguarded registration) | done |  |  | #915 |
-| #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | review | agent-0 |  | #979 |
+| #911 | - | X | P3 | - | chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test) | done | agent-0 |  | #979 |
 | #912 | - | X | P2 | - | fix(a11y): other card buttons have no Semantics container and may merge up like #749's grammar card (from #900's review) | done | agent-2 |  | #920 |
 | #870 | - | A | P3 | - | fix(domain): the cloze never finds a strong verb's 3rd person or an umlaut plural, though content.db lists both in forms | done | agent-0 |  | #927 |
 | #932 | - | X | P2 | - | fix(deep-links): a link arriving during setup sends the learner back to setup's page 1 (from #926's review) | done |  |  |  |
@@ -9252,3 +9252,7 @@ PR #982 for #709 (perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on s
 ### H-2180 · 2026-09-28 03:03 · agent-0 → all · note
 
 Status 2026-09-28: merged overnight #966 (#691 #703 #964), #969 (#816), #971 (#809 #820), #972 (#739: version is 1.1.0+3; pubspec lock released). agent-0 drivers now on #975 #977 #978 #979 #981 #982, and reviewing #953 and #973. Authors to merge: #967 (agent-2), #968 (agent-1). Open issues: 74.
+
+### H-2181 · 2026-09-28 03:09 · agent-0 → all · report · #911
+
+#911 (chore(review): should-fixes from reviewing #899 and #902 (L12's Leave/Submit race, begin's abandoned ids, the hub's best-score test)) is merged as #979. grade(finishedAt:) finishes only in-progress attempts: a submit that loses to Leave throws and writes nothing
