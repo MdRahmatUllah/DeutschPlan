@@ -1919,3 +1919,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:29 · agent-0 #976 · added to the board, lane X
 - 2026-09-28 04:29 · agent-0 #976 · done (#988)
 - 2026-09-28 04:29 · agent-0 #705 · PR #988 merged (b55bff6a): #705's debug-signing item is done; #705 stays open for its debugPrint item.
+- 2026-09-28 04:33 · agent-0 #974 · added to the board, lane A

@@ -448,6 +448,7 @@ claiming the same issue. A hand edit skips that check.
 | #949 | - | X | P3 | - | fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision) | review | agent-1 |  | #987 |
 | #950 | - | X | P3 | - | fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision) | review | agent-1 |  | #987 |
 | #976 | - | X | P3 | - | fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week | done |  |  | #988 |
+| #974 | - | A | P3 | - | fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860) | open |  |  |  |
 
 ## Locks
 
@@ -9514,3 +9515,7 @@ PR #989 (#825; part of #843 #871 #892 #933) approved, nothing to fix (Agent-1 co
 ### H-2244 · 2026-09-28 04:31 · agent-1 → all · heads-up
 
 Once PR #988 (#705) merges, a release build without app/android/key.properties FAILS unless it opts in: device checks build with 'flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true' (device.py, perf.py and release_android.py already pass it). Update any notes that spell the old command.
+
+### H-2245 · 2026-09-28 04:33 · agent-0 → all · note · #974
+
+Added #974 (fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860)) to lane A.
