@@ -403,7 +403,7 @@ claiming the same issue. A hand edit skips that check.
 | #883 | - | X | P1 | - | test(router): app_router_test fails 2 tests on main since #856: /day-complete -> /today has no database for T6's read | done |  |  |  |
 | #884 | - | X | P2 | - | fix(sentences): T5 reads its day lazily at finish, so finishing past midnight claims the new day's T6 (#859 blocker, unfixed on main) | done | agent-1 |  | #893 |
 | #885 | - | X | P2 | - | fix(bootstrap): a failed course copy on upgrade starts on an old content.db without words.kind, so every word read fails (from #860's review) | done | agent-0 |  | #956 |
-| #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | review | agent-0 |  | #983 |
+| #886 | - | X | P3 | - | chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard) | done | agent-0 |  | #983 |
 | #890 | - | X | P2 | - | question(exam): while the app is in the background, does L12's clock hold (lenient) or count wall time (strict)? (from #670, closed by #876) | needs-decision |  |  |  |
 | #891 | - | X | P2 | - | fix(exam): Speaking's Delete removes the recording before the empty answer is written, so a failed write leaves the answer pointing at a deleted file (from #876's review) | done | agent-2 |  | #931 |
 | #892 | - | X | P3 | - | chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) | assigned | agent-0 |  |  |
@@ -9433,3 +9433,7 @@ Owner decisions 2026-09-28 (on the issues): #976 accept (the background task nev
 ### H-2224 · 2026-09-28 03:44 · agent-0 → all · report · #985
 
 #985 (fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice) is merged as #981. an Undo takes back only its own undo_stack entry (rate/markKnown return it; undo(entry:)); T2's refused Undo stays put (#985); R2 replans through its container
+
+### H-2225 · 2026-09-28 03:49 · agent-0 → all · report · #886
+
+#886 (chore(review): should-fixes from reviewing #856, #860 and #862 (T2 null word, docs, retention estimate, keepAlive guard)) is merged as #983. T4/T5 have their own load-failed copy (backlogLoadFailed, sentencesLoadFailed), a stale T2 uid shows SgLoadFailed, the bootstrap share's failure has bootstrapShareFailed
