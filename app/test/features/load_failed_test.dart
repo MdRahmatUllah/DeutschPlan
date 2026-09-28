@@ -287,7 +287,9 @@ void main() {
     await expectPanel(tester, calls, l10n.learnLoadFailed, back: true);
   });
 
-  testWidgets("#677 FR-T5 the day's sentences", (tester) async {
+  testWidgets("#677 #886 FR-T5 the day's sentences, in words of their own", (
+    tester,
+  ) async {
     final calls = await pump(
       tester,
       const SentencesScreen(),
@@ -295,16 +297,18 @@ void main() {
         () => _FailingSentences(calls),
       ),
     );
-    await expectPanel(tester, calls, l10n.todayLoadFailed, back: false);
+    await expectPanel(tester, calls, l10n.sentencesLoadFailed, back: false);
   });
 
-  testWidgets('#677 FR-T4 the backlog: Back too', (tester) async {
+  testWidgets('#677 #858 FR-T4 the backlog, in words of its own: Back too', (
+    tester,
+  ) async {
     final calls = await pump(
       tester,
       const BacklogScreen(),
       (calls) => backlogProvider.overrideWith(() => _FailingBacklog(calls)),
     );
-    await expectPanel(tester, calls, l10n.todayLoadFailed, back: true);
+    await expectPanel(tester, calls, l10n.backlogLoadFailed, back: true);
   });
 }
 
