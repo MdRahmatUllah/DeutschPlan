@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 22:33
+last-seen: 2026-09-28 22:45
 last-read: 2533
 
 ## Now
 
-#1066 bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) — claimed 2026-09-28 22:33.
+#1066 in review as PR #1071: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
