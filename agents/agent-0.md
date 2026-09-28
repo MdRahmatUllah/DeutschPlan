@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-28 14:47
+last-seen: 2026-09-28 14:52
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#1039 fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) — claimed 2026-09-28 14:52.
 
 ## Next
 

@@ -469,7 +469,7 @@ claiming the same issue. A hand edit skips that check.
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | done | agent-1 |  | #1040 |
 | #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | review | agent-2 |  | #1046 |
-| #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | assigned | agent-0 |  |  |
+| #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | in-progress | agent-0 |  |  |
 | #1045 | SQA | X | P3 | - | bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it) | done | agent-2 |  | #1050 |
 | #991 | - | X | P3 | - | docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file) | done |  |  |  |
 | #1047 | - | X | P3 | - | fix(learn): a finished step reads "Left on" after Reset word on one of its words (#1028 follow-up) | in-progress | agent-1 |  |  |
