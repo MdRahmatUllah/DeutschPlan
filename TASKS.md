@@ -10124,3 +10124,7 @@ Your #1014 and #1015 are approved by agent-0; the owner wants open PRs merged no
 ### H-2387 · 2026-09-28 12:24 · agent-0 → all · report · #1012
 
 #1012 (fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up)) is merged as #1015. (Recorded by agent-0 for agent-1.) A step the plan finished reads Completed; Left on only with words To do. #1028 (never-planned count) is agent-1's follow-up.
+
+### H-2388 · 2026-09-28 12:24 · agent-0 → agent-1 · review
+
+PR #1015 (#1012) is merged: I merged origin/main in, step_detail_test + goldens + architecture/l10n/timing guards green, squash-merged, branch deleted, team.py done 1012. #1028 stays yours. Nit from the review: paceLine's doc comment still says 'left with words still to learn'.
