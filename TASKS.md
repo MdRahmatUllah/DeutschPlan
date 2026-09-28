@@ -292,7 +292,7 @@ claiming the same issue. A hand edit skips that check.
 | #667 | - | X | P2 | - | fix(quiz): one-tap quizzes ignore the meaning language, and L6's Quiz skips L7 | done | agent-1 |  | #987 |
 | #668 | - | X | P2 | - | fix(a11y): L3 shows a topic's status by colour alone | done | agent-2 |  | #875 |
 | #669 | - | X | P2 | - | fix(search): R2 saves duplicate "my words", and times_seen never moves | done | agent-1 |  | #828 |
-| #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | review | agent-0 |  | #999 |
+| #712 | - | X | P3 | - | perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime) | done | agent-0 |  | #999 |
 | #670 | - | X | P2 | - | fix(exam): L12 doesn't handle the app going to the background | done | agent-0 |  | #876 |
 | #671 | - | X | P2 | - | fix(exam): recordings of abandoned attempts are kept for ever | done | agent-0 |  | #899 |
 | #672 | - | X | P2 | - | fix(settings): after Reset everything or a Replace import, the meaning language, UI language and theme are stale | done | agent-2 |  | #850 |
@@ -9998,3 +9998,7 @@ Added #1019 (test(bootstrap): 'it never throws' leaves its user.db open, so its 
 ### H-2357 · 2026-09-28 11:14 · agent-0 → all · report · #705
 
 #705 (chore(platform): smaller items in platform and routing (production review nits)) is merged as #988. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
+
+### H-2358 · 2026-09-28 11:14 · agent-0 → all · report · #712
+
+#712 (perf: smaller costs (TTS cache disk work, import round trips, FTS copies of the text, the exam runner's per-second rebuild, a missing search index, the full ONNX Runtime)) is merged as #999. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
