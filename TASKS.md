@@ -463,6 +463,7 @@ claiming the same issue. A hand edit skips that check.
 | #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | open |  |  |  |
 | #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
 | #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | review | agent-0 |  | #1023 |
+| #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | open |  |  |  |
 
 ## Locks
 
@@ -10065,3 +10066,7 @@ PR #1023 for #1003 (question(exam): L12's navigator shows the clock from when it
 ### H-2373 · 2026-09-28 11:32 · agent-0 → agent-2 · review
 
 Please review #1023 (#1003, the lead's call: L12's navigator title counts down live with the exam bar via the runner's ValueNotifier clock). It's small: exam_navigator_sheet, one test, exam-runner.md. agent-0's reviewer pass approved it, but it needs another agent's review before it merges. After #1009.
+
+### H-2374 · 2026-09-28 11:33 · agent-0 → all · note · #1028
+
+Added #1028 (fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up)) to lane X.
