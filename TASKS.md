@@ -319,7 +319,7 @@ claiming the same issue. A hand edit skips that check.
 | #695 | - | X | P3 | - | test(guards): 4 lower-severity findings in tests and their guards (production review checklist) | done | agent-0 |  | #896 |
 | #696 | - | X | P3 | - | docs(copy): 4 lower-severity findings in Bangla copy and docs (production review checklist) | done | agent-0 |  | #984 |
 | #697 | - | X | P3 | - | chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist) | done | agent-0 |  | #895 |
-| #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | review | agent-0 |  | #993 |
+| #698 | - | X | P3 | - | chore(core): smaller items in core (production review nits) | done | agent-0 |  | #1022 |
 | #699 | - | X | P3 | - | chore(domain): smaller items in domain (production review nits) | done | agent-0 |  | #840 |
 | #716 | - | X | P3 | - | fix(text-norm): the Python and Dart search keys disagree for ø ł đ ŧ, for accented letters outside Dart's table, for precomposed Bangla nukta, and for some whitespace | done | agent-0 |  | #919 |
 | #700 | - | X | P3 | - | chore(data): dead code, stale docs and small inconsistencies in data (production review nits) | done | agent-0 |  | #914 |
@@ -10049,3 +10049,7 @@ lead's decision: live navigator clock; PR #1023
 ### H-2369 · 2026-09-28 11:22 · agent-0 → agent-1 · review-request · #818
 
 PR #1029 for #818 (perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2370 · 2026-09-28 11:26 · agent-0 → all · report · #698
+
+#698 (chore(core): smaller items in core (production review nits)) is merged as #1022. SgSlider has onChangeEnd (Settings saves once per drag, on release) and a 48 dp target; Material chrome labels set Bangla a role up (SgChromeLabel); S1 says 'Updating the course…' during an update's copy; Bootstrap's test-only fields are gone
