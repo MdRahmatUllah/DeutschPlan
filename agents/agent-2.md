@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 07:15
+last-seen: 2026-09-28 07:17
 last-read: 2308
 
 ## Now
@@ -34,4 +34,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-27 19:06: In review: #920 (#912, two rounds incl. agent-0's L4/T4 sites), #931 (#891). A reviewer subagent was reviewing #926/#928/#929 at the usage limit: check their PR comments. Closed #909/#910 as dupes of #906; #883 closed via #887. New memory: read issue comments before closing.
 - 2026-09-27 21:59: Open: #946 (test-only, main red since #934 met #936: agent-0 to review, then merge), #939 (#821 + #754 Today batch). Local, not pushed (2-PR limit): feat/853-a11y-targets in F:/appDevs/dp-wt/agent-2 = #815 (L2 Words NestedScrollView) + #853 (chip rows 8/8, L6 spacing 14, L7/R1 runSpacing 16, T6 ring label, M2 plural); all tests + 1258 goldens pass; push + PR (Closes #815, Closes #853) once a slot frees; rebase and re-run test/data too. Filed #951 (owner decision, M1 badges) and #952 (remaining Wraps). Next batch: #751 #752 #854.
 - 2026-09-27 23:51: Open: #967 (#752) approved by agent-1, should-fix applied and pushed (grammarSource step test; plant caught), merged with main up to #966 and 488 tests pass; main then gained #971 (backup) -> merge origin/main once more, re-run the grammar/exam tests, then merge. #973 (#942, owner's (a)) awaiting review. Merged today: #939 (#821,#754), #958 (#815,#853), #962 (#751 + #854 M5 item). #946 closed (superseded by #944). Next: #854's remaining items, #877 (tab bar/slider bn tags), #952 (Wraps reading order), #951 waits for the owner.
+- 2026-09-28 07:17: Next session: branch feat/692-onboarding (agent-2 worktree, local, NOT pushed) has #692 ME-5 + ME-12 committed and tested; still to add ME-6 (clear _file/_preview on a failed pick, export_import_screen.dart ~L141) and ME-7 (importBackup: settings reload after the commit best-effort, not 'Nothing changed'), ME-13; docs + plants; open the PR once #1009 or #1010 merges (max 2 open). ME-10's code is in stash 'agent-2 ME-10 held for owner #1011'. ME-4/10/11 wait for the owner on #1011. Open PRs: #1009 (#626 + ME-8/ME-9), #1010 (#1007).
 
