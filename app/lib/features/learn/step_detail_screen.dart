@@ -267,7 +267,8 @@ String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
     // still Learning, or planned and not yet met, and all (#1028); one with
     // words never planned was left part-way, as *Start* on another step
     // leaves it (FR-L2-03).
-    return step.unplanned == 0
+    // #1047: as recorded when it ended; one ended before v4 by its words.
+    return !(step.leftPartWay ?? step.unplanned > 0)
         ? l10n.stepCompleted(day(completed))
         : l10n.stepLeft(day(completed));
   }

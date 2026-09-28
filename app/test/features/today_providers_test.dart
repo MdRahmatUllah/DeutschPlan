@@ -78,7 +78,8 @@ VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
     // through today already, so openDay has nothing to add and the rows below
     // are the whole plan.
     await db.customStatement(
-      "INSERT INTO enrollments VALUES ('A0.9', '2026-08-25', 7, 127, "
+      "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+      "study_days_mask, completed_on) VALUES ('A0.9', '2026-08-25', 7, 127, "
       "'2026-08-31'), ('A1.1', '2026-09-01', 7, 127, NULL)",
     );
     await settings.write(
@@ -872,7 +873,8 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
         "WHERE sublevel_code = 'A1.1'",
       );
       await db.customStatement(
-        "INSERT INTO enrollments VALUES ('A1.2', '2026-09-15', 7, 127, "
+        "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+        "study_days_mask, completed_on) VALUES ('A1.2', '2026-09-15', 7, 127, "
         "'2026-09-20')",
       );
       await db.customStatement(

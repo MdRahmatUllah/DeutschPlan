@@ -72,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
       );
 
   /// Readable without an instance, which the migration tests need.
-  static const int latestSchemaVersion = 3;
+  static const int latestSchemaVersion = 4;
 
   /// user.db's file name in app support: drift_flutter's own default for
   /// `user`, which every install has had since M0. Another name strands
@@ -153,6 +153,10 @@ class AppDatabase extends _$AppDatabase {
         // was the rule's, so the default 0 says exactly that.
         from2To3: (m, schema) =>
             m.addColumn(schema.wordState, schema.wordState.cardModeManual),
+        // v4: `enrollments.left_part_way` (#1047). Nullable: a step ended
+        // before it has no record of how, and L2 reads it by its words.
+        from3To4: (m, schema) =>
+            m.addColumn(schema.enrollments, schema.enrollments.leftPartWay),
       )(m, from, to),
     ),
   );

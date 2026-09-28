@@ -252,7 +252,8 @@ void main() {
       settings = SettingsRepository(db);
       await settings.load();
       await db.customStatement(
-        "INSERT INTO enrollments VALUES ('A1.1', '$today', 7, 127, NULL)",
+        "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+        "study_days_mask, completed_on) VALUES ('A1.1', '$today', 7, 127, NULL)",
       );
       await settings.write(SettingKeys.reminderEnabled, true);
       await settings.write(SettingKeys.reminderTime, (hour: 19, minute: 30));
