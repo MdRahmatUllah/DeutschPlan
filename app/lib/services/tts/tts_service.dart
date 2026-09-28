@@ -143,10 +143,13 @@ class TtsService {
   }
 
   /// #638: Supertonic's sessions let go of, whichever voice is chosen now.
-  Future<void> release() async {
-    final supertonic = _supertonic;
-    if (supertonic is! SpeechPrefetch) return;
-    await _quietly((supertonic as SpeechPrefetch).release);
+  Future<void> release() => releaseEngine(_supertonic);
+
+  /// [engine]'s sessions let go of, if it holds any: the service's voice,
+  /// or M4's voice chips', which speak to the engine itself (#1035).
+  static Future<void> releaseEngine(TtsEngine? engine) async {
+    if (engine is! SpeechPrefetch) return;
+    await _quietly((engine as SpeechPrefetch).release);
   }
 
   /// Stops [texts]' list, if Supertonic is still making it; whichever voice

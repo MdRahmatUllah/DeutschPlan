@@ -212,21 +212,20 @@ void main() {
     });
 
     test('an older file is read, and the new column takes its default', () async {
-      // v1 had no `content_updates.recorded_at`. Every migration so far adds a
+      // v2 had no `word_state.card_mode_manual`. Every migration so far adds a
       // column with a default, so a row that predates one simply has no value
       // for it — which is what makes reading an older file possible at all.
       final older = jsonEncode(<String, Object?>{
-        'schema_version': 1,
+        'schema_version': 2,
         'content_version': null,
         'exported_at': '2026-01-01T00:00:00Z',
         'tables': <String, Object?>{
-          'content_updates': <Object?>[
+          'word_state': <Object?>[
             <String, Object?>{
-              'version': '202601011200',
-              'added': 5,
-              'removed': 0,
-              'changed_json': null,
-              'seen': 0,
+              'word_uid': 'uid-haus',
+              'status': 'learning',
+              'stability': 1.0,
+              'last_review': '2026-01-01T09:00:00Z',
             },
           ],
         },
@@ -234,9 +233,44 @@ void main() {
 
       await backup.import(older, mode: ImportMode.replace);
 
-      final rows = await rowsOf('content_updates');
-      expect(rows.single['added'], 5);
-      expect(rows.single['recorded_at'], isNull);
+      final rows = await rowsOf('word_state');
+      expect(rows.single['status'], 'learning');
+      expect(rows.single['card_mode_manual'], 0);
+    });
+
+    for (final mode in ImportMode.values) {
+      test("#1025 a ${mode.name} keeps this phone's course history, and "
+          "reads none from the file", () async {
+        // This phone just installed 20260928070517; the file is from before.
+        await sql(
+          'INSERT INTO content_updates (version, changed_json, seen) '
+          "VALUES ('20260928070517', '[\"w1\"]', 0)",
+        );
+        final file =
+            jsonDecode(await backup.exportJson()) as Map<String, Object?>;
+        (file['tables']!
+            as Map<String, Object?>)['content_updates'] = <Object?>[
+          <String, Object?>{
+            'version': '20260927101110',
+            'added': 0,
+            'removed': 0,
+            'changed_json': null,
+            'seen': 0,
+          },
+        ];
+
+        await backup.import(jsonEncode(file), mode: mode);
+
+        final rows = await rowsOf('content_updates');
+        expect(rows.map((row) => row['version']), <Object?>['20260928070517']);
+        expect(rows.single['seen'], 0, reason: 'its card is still to show');
+      });
+    }
+
+    test("#1025 an export doesn't carry this phone's course history", () async {
+      await fillEverything();
+      final tables = (await backup.export())['tables']! as Map<String, Object?>;
+      expect(tables.keys, isNot(contains('content_updates')));
     });
 
     test('something that is not JSON is refused', () {
@@ -1560,6 +1594,7 @@ SELECT 'uid-' || i, '2026-03-01T09:00:00Z', 3, 'daily' FROM n''');
     expect(BackupRepository.excluded, <String>{
       'translation_cache',
       'undo_stack',
+      'content_updates',
     });
     for (final table in BackupRepository.tables) {
       expect(BackupRepository.excluded, isNot(contains(table)));

@@ -255,7 +255,7 @@ class StepHeader extends StatelessWidget {
 
 /// FR-L2-01's line: when the step began and how long its To-do words will
 /// take at its pace, or when it was completed and which mock passed, or
-/// left with words still to learn.
+/// left with words never met.
 String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
   String day(String date) =>
       DateFormat('d MMM', locale.toString()).format(parsePlanDate(date));
