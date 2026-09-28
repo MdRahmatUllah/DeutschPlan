@@ -890,9 +890,9 @@ String _lowerFirst(String name) => name[0].toLowerCase() + name.substring(1);
 /// provider is `DateTime Function() clock(Ref ref)`, where a regex that took
 /// the word before the parenthesis captured `Function`; and a notifier is
 /// `class ThemeNotifier extends _$ThemeNotifier`, which has no parenthesis
-/// at all. Matched on what each one really looks like instead. A notifier's provider drops a
-/// `Notifier` suffix, as riverpod_generator names it (`OnboardingNotifier` →
-/// `onboardingProvider`).
+/// at all. Matched on what each one really looks like instead. A notifier's
+/// provider drops a `Notifier` suffix, as riverpod_generator names it
+/// (`OnboardingNotifier` → `onboardingProvider`).
 Set<String> _keepAliveIn(String source) {
   final names = <String>{};
   // Any argument list, over several lines too, with keepAlive among

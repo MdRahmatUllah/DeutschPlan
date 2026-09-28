@@ -1,6 +1,7 @@
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/app_fonts.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:material_ui/material_ui.dart';
 
 /// Builds the `ThemeData` for each mode and attaches its [SgTokens].
@@ -12,20 +13,24 @@ import 'package:material_ui/material_ui.dart';
 /// Material 3 is *not* given a dynamic colour scheme:
 /// ADR 12 rules it out so the gender colours stay stable.
 abstract final class AppTheme {
-  static ThemeData light() => _light;
+  static ThemeData light() => _once('light', SgTokens.light);
 
-  static ThemeData dark() => _dark;
+  static ThemeData dark() => _once('dark', SgTokens.dark);
 
   /// [dark] picks the smoked variant; theming.md resolves it from the system
   /// light/dark setting rather than from a separate learner choice.
-  static ThemeData glass({bool dark = false}) => dark ? _glassDark : _glass;
+  static ThemeData glass({bool dark = false}) => dark
+      ? _once('glassDark', SgTokens.glassDark)
+      : _once('glass', SgTokens.glass);
 
   // Each built once: `ColorScheme.fromSeed` works out its tonal palettes, and
-  // SogdaApp asks for two themes on every rebuild (#698).
-  static final ThemeData _light = _build(SgTokens.light());
-  static final ThemeData _dark = _build(SgTokens.dark());
-  static final ThemeData _glass = _build(SgTokens.glass());
-  static final ThemeData _glassDark = _build(SgTokens.glassDark());
+  // SogdaApp asks for two themes on every rebuild (#698). Once per platform:
+  // ThemeData takes its platform, and the typography and tap targets that
+  // follow it, from `defaultTargetPlatform`, which a test overrides.
+  static final Map<(String, TargetPlatform), ThemeData> _built = {};
+
+  static ThemeData _once(String mode, SgTokens Function() tokens) =>
+      _built.putIfAbsent((mode, defaultTargetPlatform), () => _build(tokens()));
 
   static ThemeData _build(SgTokens tokens) {
     final dialog = Color.alphaBlend(tokens.surface.card, tokens.surface.paper);

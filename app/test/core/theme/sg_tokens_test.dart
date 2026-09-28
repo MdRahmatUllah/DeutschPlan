@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:flutter/foundation.dart'
+    show debugDefaultTargetPlatformOverride;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -329,6 +331,16 @@ void main() {
         expect(theme(), same(theme()), reason: name);
       }
       expect(AppTheme.glass(dark: true), isNot(same(AppTheme.glass())));
+    });
+
+    test('#698 once per platform: a platform override still reaches the '
+        "theme, as iOS's chrome is chosen from it", () {
+      expect(AppTheme.light().platform, TargetPlatform.android);
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      for (final MapEntry(key: name, value: (theme, _)) in themes.entries) {
+        expect(theme().platform, TargetPlatform.iOS, reason: name);
+      }
     });
 
     test("#698 the scheme's error is the wrong-answer text colour, 4.5:1 as "
