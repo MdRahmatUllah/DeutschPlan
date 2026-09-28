@@ -111,7 +111,7 @@ class _SgFocusableState extends State<SgFocusable> {
         // comes and goes: a press under way is never dropped (#188).
         child: CustomPaint(
           foregroundPainter: _ring
-              ? _Ring(context.tokens.color.link, widget.radius, widget.size)
+              ? _Ring(SgFocusRingColour.of(context), widget.radius, widget.size)
               : null,
           child: widget.child,
         ),
@@ -168,6 +168,27 @@ class SgTappable extends StatelessWidget {
       child: child,
     ),
   );
+}
+
+/// #1064: the ring's colour where the link colour won't hold 3:1, a
+/// coloured header's fill (Me's blue read 1.02:1): the header's own ink.
+/// Anywhere else, the link colour.
+class SgFocusRingColour extends InheritedWidget {
+  const SgFocusRingColour({
+    required this.colour,
+    required super.child,
+    super.key,
+  });
+
+  final Color colour;
+
+  static Color of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<SgFocusRingColour>()?.colour ??
+      context.tokens.color.link;
+
+  @override
+  bool updateShouldNotify(SgFocusRingColour oldWidget) =>
+      oldWidget.colour != colour;
 }
 
 class _Ring extends CustomPainter {
