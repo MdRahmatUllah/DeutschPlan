@@ -366,10 +366,22 @@ class _CardsChart extends StatelessWidget {
                         if (i < 0 || i >= bars.length || !named(i)) {
                           return const SizedBox.shrink();
                         }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 6),
+                        final label = _when(context, range, bars[i].start);
+                        // #1060: centred on the last bar, Month's "28 Sep"
+                        // ran past the card; an edge label moves inside.
+                        // Keyed by its bar and its text: fl_chart measures a
+                        // title once per state, so a reused one would keep
+                        // the old width.
+                        return SideTitleWidget(
+                          key: ValueKey<(int, String)>((i, label)),
+                          meta: meta,
+                          space: 6,
+                          fitInside: SideTitleFitInsideData.fromTitleMeta(
+                            meta,
+                            distanceFromEdge: 0,
+                          ),
                           child: SgText(
-                            _when(context, range, bars[i].start),
+                            label,
                             role: SgTextRole.caption,
                             color: tokens.color.textSecondary,
                           ),
