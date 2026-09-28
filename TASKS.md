@@ -452,7 +452,7 @@ claiming the same issue. A hand edit skips that check.
 | #994 | - | X | P2 | - | perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) | review | agent-1 |  | #0 |
 | #995 | - | X | P3 | - | chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) | review | agent-1 |  | #1005 |
 | #970 | - | X | P3 | - | fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) | open |  |  |  |
-| #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | open |  |  |  |
+| #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | in-progress | agent-1 |  |  |
 
 ## Locks
 

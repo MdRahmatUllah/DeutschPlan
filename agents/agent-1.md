@@ -6,7 +6,7 @@ last-read: 2295
 
 ## Now
 
-Nothing claimed.
+#1004 fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) — claimed 2026-09-28 05:53.
 
 ## Next
 

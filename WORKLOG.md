@@ -1959,3 +1959,4 @@ able to tell what is going on without asking.
 - 2026-09-28 05:45 · agent-1 #935 · done (#997)
 - 2026-09-28 05:47 · agent-2 #745 · claimed: fix(a11y): SgButton, SgChip, tappable SgSurface and the other custom controls can't be reached or pressed from a keyboard or D-pad
 - 2026-09-28 05:53 · agent-1 #1004 · added to the board, lane X
+- 2026-09-28 05:53 · agent-1 #1004 · claimed: fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review)
