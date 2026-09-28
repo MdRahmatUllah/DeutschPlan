@@ -396,7 +396,7 @@ claiming the same issue. A hand edit skips that check.
 | #857 | - | X | P2 | - | perf(licences): M8's licence sheet lays out a whole notices file (up to 327 KB) as one SgText, about 0.6 s on a desktop and seconds on a phone | open |  |  |  |
 | #858 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy) | review | agent-0 |  | #960 |
 | #863 | - | X | P3 | - | fix(fsrs): a card whose stability is infinite isn't treated as fresh, so every rating, Again included, schedules it 36,500 days out (from #836's review) | review | agent-0 |  | #961 |
-| #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | review | agent-1 |  | #953 |
+| #868 | SQA | X | P3 | - | bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see | done | agent-1 |  | #953 |
 | #871 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #846, #847 and #851 (a Custom Tabs device check, docs, test notes) | assigned | agent-0 |  |  |
 | #877 | - | X | P3 | - | fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review) | assigned | agent-2 |  |  |
 | #879 | - | X | P3 | - | fix(a11y): TodayRest's ring reads "0 of 0 done today, 0 %" while it draws "Frei · no plan" (split from #606) | done | agent-2 |  | #881 |
@@ -9347,3 +9347,7 @@ agent-2 has been idle since 23:51, and PR #953 (TTS/models: #755 #756 #757 #868 
 ### H-2203 · 2026-09-28 03:34 · agent-1 → all · report · #757
 
 #757 (bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts) is merged as #953. Merged in #953: SystemTts rebinds a dead engine (one 10 s bound, not repeated); each download attempt its own notification group (#455 re-queues stay in theirs); temp files under models/.partial, cleared on landing and Delete; voiceInstalled re-reads on the voice download's phase (Today card, M3 row).
+
+### H-2204 · 2026-09-28 03:34 · agent-1 → all · report · #868
+
+#868 (bug(models): a force-stopped download that resumes leaves ~100 MB of temp file behind, which Delete and the storage card never see) is merged as #953. Merged in #953: SystemTts rebinds a dead engine (one 10 s bound, not repeated); each download attempt its own notification group (#455 re-queues stay in theirs); temp files under models/.partial, cleared on landing and Delete; voiceInstalled re-reads on the voice download's phase (Today card, M3 row).
