@@ -4,10 +4,13 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart' show find;
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/domain/progress_stats.dart' show ProgressRange;
 import 'package:sogda/features/me/progress_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 
 import '../features/progress_fixtures.dart';
 import 'golden_harness.dart';
@@ -28,6 +31,32 @@ void main() {
   );
 
   goldenTest('progress', builder: screen);
+  // #1060: the Month range, its last label ("28 Sep") inside the card.
+  goldenTest(
+    'progress_month',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (context) => ProviderScope(
+      overrides: <Override>[
+        progressViewProvider.overrideWith(
+          (ref, range) async => range == ProgressRange.month
+              ? monthProgress()
+              : artboardProgress(),
+        ),
+        stepProgressProvider.overrideWith(
+          (ref) => Stream.value(artboardProgressSteps()),
+        ),
+      ],
+      child: const ProgressScreen(),
+    ),
+    act: (tester) async {
+      // In the audit's Bangla too.
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(ProgressScreen)),
+      );
+      await tester.tap(find.text(l10n.progressMonth));
+      await tester.pumpAndSettle();
+    },
+  );
   goldenTest(
     'progress_ios',
     modes: const <GoldenMode>[GoldenMode.light],

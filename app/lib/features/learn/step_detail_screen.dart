@@ -8,6 +8,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -249,7 +250,11 @@ class StepHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.accent, child: content);
+        : ColoredBox(
+            color: tokens.color.accent,
+            // #1064: the ring in the header's ink, which holds on its fill.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 }
 
@@ -267,7 +272,8 @@ String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
     // still Learning, or planned and not yet met, and all (#1028); one with
     // words never planned was left part-way, as *Start* on another step
     // leaves it (FR-L2-03).
-    return step.unplanned == 0
+    // #1047: as recorded when it ended; one ended before v4 by its words.
+    return !(step.leftPartWay ?? step.unplanned > 0)
         ? l10n.stepCompleted(day(completed))
         : l10n.stepLeft(day(completed));
   }

@@ -110,6 +110,26 @@ void main() {
     expect(row.cardModeManual, 0);
   });
 
+  test('v3 -> v4: an enrollment already ended keeps its row, with no record '
+      'of how it ended, which L2 then reads by its words (#1047)', () async {
+    final schema = await verifier.schemaAt(3);
+    schema.rawDatabase.execute(
+      'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+      "study_days_mask, completed_on) VALUES ('A1.1', '2026-01-01', 7, 127, "
+      "'2026-02-01'), ('A1.2', '2026-02-01', 7, 127, NULL)",
+    );
+    final db = AppDatabase(schema.newConnection());
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 4, options: _strict);
+
+    final rows = await db.select(db.enrollments).get();
+    expect(
+      [for (final row in rows) (row.sublevelCode, row.completedOn)],
+      [('A1.1', '2026-02-01'), ('A1.2', null)],
+    );
+    expect(rows.map((row) => row.leftPartWay), <int?>[null, null]);
+  });
+
   test('the live DDL still matches the fixture for its own version', () async {
     // The one that bites day to day: editing user_schema.drift without
     // bumping the version and re-dumping leaves the fixture describing a

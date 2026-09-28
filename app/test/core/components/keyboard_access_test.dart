@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_test/flutter_test.dart';
@@ -14,7 +16,9 @@ import 'package:sogda/core/components/sg_stepper.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/me/me_screen.dart' show MeHeader;
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 
@@ -390,5 +394,75 @@ void main() {
     await tester.tap(find.byType(SgButton));
     await tester.pump();
     expect(ring().foregroundPainter, isNull);
+  });
+
+  // #1064: on a coloured header the ring takes the header's ink, which holds
+  // WCAG 1.4.11's 3:1 on the fill where the link colour did not (Me's blue
+  // 1.02:1, Today's teal 2.2:1).
+  test("#1064 each coloured header's ring colour holds 3:1 on its fill, in "
+      'light and dark', () {
+    double contrast(Color a, Color b) {
+      final x = a.computeLuminance() + 0.05;
+      final y = b.computeLuminance() + 0.05;
+      return x > y ? x / y : y / x;
+    }
+
+    for (final (name, tokens) in <(String, SgTokens)>[
+      ('light', SgTokens.light()),
+      ('dark', SgTokens.dark()),
+    ]) {
+      final c = tokens.color;
+      for (final (header, ring, fill) in <(String, Color, Color)>[
+        ('Today', c.onPrimary, c.primary),
+        ('Me', c.onDer, c.der),
+        ('Learn, L2, L4, practice', c.onAccent, c.accent),
+        ('Search', c.onPrimary, c.die),
+        ('W1 der', c.onDer, c.der),
+        ('W1 die', c.onPrimary, c.die),
+        ('W1 das', c.onPrimary, c.das),
+      ]) {
+        expect(
+          contrast(ring, fill),
+          greaterThanOrEqualTo(3),
+          reason: '$name $header',
+        );
+      }
+    }
+  });
+
+  test("#1064 every coloured header gives its focus ring the header's ink", () {
+    for (final path in <String>[
+      'lib/features/today/today_components.dart',
+      'lib/features/me/me_screen.dart',
+      'lib/features/learn/learn_screen.dart',
+      'lib/features/learn/step_detail_screen.dart',
+      'lib/features/learn/grammar_topic_screen.dart',
+      'lib/features/learn/grammar_practice_screen.dart',
+      'lib/features/search/search_screen.dart',
+      'lib/features/words/word_detail_screen.dart',
+    ]) {
+      expect(
+        File(path).readAsStringSync(),
+        contains(RegExp(r'SgFocusRingColour\(\s*colour: ')),
+        reason: path,
+      );
+    }
+  });
+
+  testWidgets("#1064 Me's header: Add your name's ring is the header's ink", (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      MeHeader(
+        name: null,
+        streak: 3,
+        since: null,
+        daysStudied: 0,
+        onEditName: () {},
+      ),
+    );
+    final name = tester.element(find.byType(SgFocusable).first);
+    expect(SgFocusRingColour.of(name), SgTokens.light().color.onDer);
   });
 }

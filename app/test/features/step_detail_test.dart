@@ -32,6 +32,7 @@ void main() {
   StepProgress step({
     int todo = 296,
     int? unplanned,
+    bool? leftPartWay,
     int learning = 60,
     String? startedOn = '2026-08-19',
     String? completedOn,
@@ -46,6 +47,7 @@ void main() {
     words: 540,
     todo: todo,
     unplanned: unplanned ?? todo,
+    leftPartWay: leftPartWay,
     learning: learning,
     done: 540 - learning - todo,
     grammar: 10,
@@ -126,6 +128,27 @@ void main() {
       expect(
         paceLine(l10n, en, step(completedOn: '2026-09-27', passedSeed: 2)),
         'Completed 27 Sep · Mock 2 passed · revision continues',
+      );
+    });
+
+    test('#1047 FR-L2-01 as recorded when it ended, whatever its words '
+        'say now', () {
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', unplanned: 1, leftPartWay: false),
+        ),
+        'Completed 27 Sep · revision continues',
+        reason: 'finished by the plan, a word reset since',
+      );
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', unplanned: 0, leftPartWay: true),
+        ),
+        'Left on 27 Sep',
       );
     });
 

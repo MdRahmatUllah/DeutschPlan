@@ -67,7 +67,8 @@ void main() {
       "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
     );
     await db.customStatement(
-      "INSERT INTO enrollments VALUES ('A1.1', '2026-09-01', 7, 127, NULL)",
+      "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+      "study_days_mask, completed_on) VALUES ('A1.1', '2026-09-01', 7, 127, NULL)",
     );
     settings = SettingsRepository(db);
     await settings.load();

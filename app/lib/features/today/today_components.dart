@@ -114,7 +114,11 @@ class TodayHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.primary, child: content);
+        : ColoredBox(
+            color: tokens.color.primary,
+            // #1064: the ring in the header's ink, which holds on its fill.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 }
 

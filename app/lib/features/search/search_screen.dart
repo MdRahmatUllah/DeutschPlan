@@ -541,7 +541,14 @@ class _Header extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.die, child: content);
+        : ColoredBox(
+            color: tokens.color.die,
+            // #1064: the ring in the dark ink, as W1 on die: 3:1 in both themes.
+            child: SgFocusRingColour(
+              colour: tokens.color.onPrimary,
+              child: content,
+            ),
+          );
   }
 }
 

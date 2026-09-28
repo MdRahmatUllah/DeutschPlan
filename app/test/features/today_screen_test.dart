@@ -343,22 +343,25 @@ void main() {
       );
     });
 
-    testWidgets('#821 BR-PLAN-05 back more than six days, it says the dates, '
-        'not "Wed–Thu"', (tester) async {
-      // 30 Sep to 15 Oct, opened on 21 Sep's artboard day: well past a week.
-      await pump(
-        tester,
-        view: artboardToday(
-          backlog: 81,
-          backlogFrom: '2026-09-02',
-          backlogTo: '2026-09-17',
-        ),
-      );
-      expect(
-        find.text(l10n.todayBacklogRange(81, 'Sep 2', 'Sep 17')),
-        findsOneWidget,
-      );
-    });
+    testWidgets(
+      '#821 #1055 BR-PLAN-05 back more than six days, it says the dates, '
+      'day first, not "Wed–Thu"',
+      (tester) async {
+        // 30 Sep to 15 Oct, opened on 21 Sep's artboard day: well past a week.
+        await pump(
+          tester,
+          view: artboardToday(
+            backlog: 81,
+            backlogFrom: '2026-09-02',
+            backlogTo: '2026-09-17',
+          ),
+        );
+        expect(
+          find.text(l10n.todayBacklogRange(81, '2 Sep', '17 Sep')),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets('#821 a week apart on the same weekday is two dates, never '
         '"Wed–Wed"', (tester) async {
@@ -367,7 +370,7 @@ void main() {
         view: artboardToday(backlogFrom: '2026-09-09', backlogTo: '2026-09-16'),
       );
       expect(
-        find.text(l10n.todayBacklogRange(14, 'Sep 9', 'Sep 16')),
+        find.text(l10n.todayBacklogRange(14, '9 Sep', '16 Sep')),
         findsOneWidget,
       );
     });

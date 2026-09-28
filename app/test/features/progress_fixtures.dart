@@ -26,6 +26,27 @@ ProgressView artboardProgress({
   best: 19,
 );
 
+/// #1060: a month, 30 August to 28 September 2026, as the Month range
+/// shows it: named every seventh day back from the last, "28 Sep" at the
+/// right edge.
+ProgressView monthProgress() => (
+  bars: <ProgressBar>[
+    for (var d = 0; d < 30; d++)
+      (
+        start: DateTime.utc(2026, 8, 30 + d).toIso8601String().substring(0, 10),
+        reviews: d.isEven ? 10 + d % 7 : 0,
+        newWords: d % 3 == 0 ? 6 : 0,
+      ),
+  ],
+  retention: <double?>[for (var d = 0; d < 30; d++) d.isEven ? 0.9 : null],
+  retentionOverall: 0.9,
+  target: 0.9,
+  retentionDaysLeft: null,
+  totals: (seconds: 6 * 3600, introduced: 60, reviews: 200),
+  streak: 3,
+  best: 9,
+);
+
 /// The artboard's steps: A1.1 and A1.2 done, A2.1 184 of 540.
 List<StepProgress> artboardProgressSteps() => <StepProgress>[
   for (final (code, level, done, learning, words, passed)

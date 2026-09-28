@@ -420,14 +420,35 @@ LIMIT 1
     return rows.isEmpty ? null : rows.first.read<String>('code');
   }
 
+  /// [completeStep]'s statement, public so a test can `EXPLAIN` it (#1047).
+  ///
+  /// `NOT IN` over the planned words, as in [unplannedWordsSql] and for the
+  /// same reason (#715): a correlated `NOT EXISTS` scans the `new` plan rows
+  /// once per word, and this runs inside `openDay`'s write each time a
+  /// catch-up finishes a step.
+  static const String completeStepSql = '''
+UPDATE enrollments SET completed_on = ?2, left_part_way = EXISTS (
+  SELECT 1 FROM words w LEFT JOIN word_state s ON s.word_uid = w.uid
+  WHERE w.sublevel_code = ?1 AND w.kind = 'vocab'
+    AND (s.word_uid IS NULL OR (s.status != 'suspended'
+      AND s.introduced_on IS NULL AND s.reps = 0))
+    AND w.uid NOT IN (SELECT word_uid FROM plan_items WHERE kind = 'new')
+)
+WHERE sublevel_code = ?1 AND completed_on IS NULL
+''';
+
   /// A `customUpdate` naming `enrollments`, not a `customStatement`: L1 and
   /// L2 watch the table, and a raw statement would leave them showing the
   /// old step (#114).
+  ///
+  /// It records how (#1047): left part-way when the step still has words
+  /// never planned (a switch, restart setup), finished when it has none (the
+  /// plan ran out of them). The words can't tell later: a Reset word or a
+  /// content update gives a finished step an unplanned word.
   @override
   Future<void> completeStep(String sublevelCode, PlanDate on) =>
       _db.customUpdate(
-        'UPDATE enrollments SET completed_on = ?2 '
-        'WHERE sublevel_code = ?1 AND completed_on IS NULL',
+        completeStepSql,
         variables: <Variable<Object>>[
           Variable<String>(sublevelCode),
           Variable<String>(on),
@@ -458,7 +479,8 @@ ON CONFLICT(sublevel_code) DO UPDATE SET
   started_on      = excluded.started_on,
   daily_new       = excluded.daily_new,
   study_days_mask = excluded.study_days_mask,
-  completed_on    = NULL
+  completed_on    = NULL,
+  left_part_way   = NULL
 ''',
     variables: <Variable<Object>>[
       Variable<String>(step.sublevelCode),
