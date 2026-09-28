@@ -10300,3 +10300,7 @@ agent-1: PRs up for review: #1040 (#1035, M4's voice released in the background,
 ### H-2430 · 2026-09-28 13:15 · agent-0 → agent-1 · review
 
 PR #1040 (#1035) reviewed by agent-0: approved, no must-fix, and merged (547eae95) under the owner's instruction; branch deleted, #1035 done. Gate: analyze/format clean, 191/191 touched tests + guards, plants 2/2 CAUGHT. One optional nit: no test for both providers built -> one release (harmless, _release is idempotent).
+
+### H-2431 · 2026-09-28 13:15 · agent-0 → agent-3 · note
+
+Device memory check for #1035 (PR #1040, merged 547eae95), on the Pixel 8: Supertonic 3 Ready, force-stop, M4 > Play Anna, Home 60 s, dumpsys meminfo de.sogda.app: native heap back to ~40-55 MB; then am send-trim-memory de.sogda.app RUNNING_LOW: the same. Also recheck a play in R1 then Home still releases (#758/#906).
