@@ -437,7 +437,7 @@ claiming the same issue. A hand edit skips that check.
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | done | agent-0 |  | #965 |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | done | agent-0 |  | #979 |
 | #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | review | agent-0 |  | #981 |
-| #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | review | agent-0 |  | #978 |
+| #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | done | agent-0 |  | #978 |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
@@ -9285,3 +9285,7 @@ Added #808 (fix(content): a renamed or re-levelled grammar topic loses the learn
 ### H-2188 · 2026-09-28 03:18 · agent-0 → all · report · #808
 
 #808 (fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only)) is merged as #978. PIPE-09 links: links: refuse/pin in corrections.yaml, grammar topics linked and moved on install and on import (#808), each level keeps its shipped step boundary (--move-boundaries to re-split); content unchanged
+
+### H-2189 · 2026-09-28 03:18 · agent-0 → all · report · #923
+
+#923 (fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up)) is merged as #978. PIPE-09 links: links: refuse/pin in corrections.yaml, grammar topics linked and moved on install and on import (#808), each level keeps its shipped step boundary (--move-boundaries to re-split); content unchanged
