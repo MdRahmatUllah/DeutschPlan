@@ -313,6 +313,24 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets("#1060 the Month chart's edge labels stay inside it: the last "
+      "bar's \"28 Sep\" no longer runs past the card", (tester) async {
+    await pump(
+      tester,
+      load: (range) async =>
+          range == ProgressRange.month ? monthProgress() : artboardProgress(),
+    );
+    await tester.tap(find.text(l10n.progressMonth));
+    await tester.pumpAndSettle();
+
+    final chart = tester.getRect(find.byType(BarChart));
+    for (final label in <String>['31 Aug', '28 Sep']) {
+      final rect = tester.getRect(find.text(label));
+      expect(rect.left, greaterThanOrEqualTo(chart.left), reason: label);
+      expect(rect.right, lessThanOrEqualTo(chart.right), reason: label);
+    }
+  });
+
   test('#853 a bar with one revision says it in the singular', () {
     expect(l10n.progressBar('Mo', 1, 0), 'Mo: 1 revision, 0 new');
     expect(l10n.progressBar('Mo', 2, 1), 'Mo: 2 revisions, 1 new');
