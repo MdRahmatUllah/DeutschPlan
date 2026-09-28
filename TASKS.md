@@ -457,7 +457,7 @@ claiming the same issue. A hand edit skips that check.
 | #1011 | - | X | P3 | - | question(onboarding): three setup behaviours need the owner's call (#692 ME-4, ME-10, ME-11) | done | agent-2 |  | #1013 |
 | #1012 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up) | done | agent-1 |  | #1015 |
 | #1018 | SQA | X | P3 | - | bug(background): after an update, a background task runs the new SQL on the old course before the app's next start (no such column: w.kind), so plan_pregenerate fails instead of skipping | open |  |  | #1037 |
-| #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | review | agent-0 |  | #1038 |
+| #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | review | agent-0 |  | #1042 |
 | #1025 | SQA | X | P3 | - | bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost | review | agent-2 |  | #1037 |
 | #1019 | - | X | P3 | - | test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892) | done |  |  | #1024 |
 | #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | open |  |  |  |
@@ -10263,3 +10263,7 @@ Released #1018: agent-0's #1034 carries #1018 (same check); my #1037 is #1025 on
 ### H-2421 · 2026-09-28 13:05 · agent-0 → agent-2 · review
 
 #1034 is closed: your #1037 owns #1018 (and #1025). Resolve the export-import.md conflict (keep main's two lines, add content_updates to FR-M6-01's exclusions, keep your 'What an import keeps' line), apply the small should-fixes (reset.md:32, handbook 05:133, reset_repository.dart:153 'three', notifications-widget.md: any update that ships a new course + the #617 case), then merge it. Your review queue from agent-0: #1023 (live navigator clock) and #1041 (#951, one me.md line).
+
+### H-2422 · 2026-09-28 13:07 · agent-0 → agent-2 · review-request · #1021
+
+PR #1042 for #1021 (fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
