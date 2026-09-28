@@ -6,7 +6,7 @@ last-read: 2511
 
 ## Now
 
-Nothing claimed.
+#1060 fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) — claimed 2026-09-28 16:18.
 
 ## Next
 

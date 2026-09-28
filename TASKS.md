@@ -478,7 +478,7 @@ claiming the same issue. A hand edit skips that check.
 | #1054 | - | X | P3 | - | test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) | review | agent-1 |  | #1059 |
 | #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | done |  |  |  |
 | #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | review | agent-1 |  | #1058 |
-| #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | open |  |  |  |
+| #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | in-progress | agent-2 |  |  |
 
 ## Locks
 
