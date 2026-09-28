@@ -18,6 +18,8 @@
 - **Between keystrokes** the last results stay up until the next query answers.
 - **The in-app browser (FR-R1-06).** The web chips open through `url_launcher`'s in-app browser view, which is a Custom Tab on Android and `SFSafariViewController` on iOS. That is what `flutter_custom_tabs` would give, with no new dependency.
 - **In sentences.** The words FTS matched are marked in Sun, from `highlight()`.
+- **A screen reader** hears each result row and each sentence row as a button named by its words, as *My words* rows are (#445); a row's speaker is a button of its own (#703).
+- **The field** takes 80 characters, what is searched (`03-domain/search.md`, #691 EX-13).
 
 **Filled in by #138 (idle):**
 - **What counts as a search (FR-R1-04).** A search counts once the learner commits to it: the search key, a result or web chip opened, or a recent chip tapped. A pause in typing doesn't count. The same search again moves to the front, compared without case, and the oldest past ten goes. `recent_searches` is a JSON list, newest first. *Clear* forgets them all, and a screen reader hears it as "Clear recent searches".

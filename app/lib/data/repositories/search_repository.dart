@@ -155,6 +155,13 @@ class SearchRepository {
   /// compound is further from the word than a typo in "Haus".
   static const int _longQueryLength = 5;
 
+  /// The longest query searched, in characters (#691 EX-13): a pasted page
+  /// built an OR of thousands of trigrams and ranked 400 rows against it.
+  /// The course's longest headword is 61 and its longest meaning 70, so any
+  /// of them can still be typed whole. R1's field and R2's German stop here
+  /// too, so what is searched is what shows.
+  static const int maxQueryLength = 80;
+
   /// How many words the course has (`meta.word_count`): R1's "5,433 words,
   /// none spelled like this" (#139). Null when the course doesn't say.
   Future<int?> courseWords() async => int.tryParse(
@@ -166,7 +173,12 @@ class SearchRepository {
   Future<SearchResults> search(String query, {String? step}) async {
     // NFC's nukta letters, as `bangla` is stored: the exact tier matches the
     // column as typed, and a keyboard may type ড় as its one letter (#716).
-    final raw = nfc(query.trim());
+    final trimmed = query.trim();
+    final raw = nfc(
+      trimmed.runes.length > maxQueryLength
+          ? String.fromCharCodes(trimmed.runes.take(maxQueryLength))
+          : trimmed,
+    );
     if (raw.isEmpty) return const SearchResults.empty();
 
     final key = searchKey(raw);

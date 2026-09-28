@@ -2,6 +2,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/features/exam/exam_writing.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -147,6 +148,16 @@ void main() {
     expect(used('Termin'), findsNothing);
     expect(find.text(l10n.examWritingUsed(2, 10, 30, 'A1')), findsOneWidget);
     semantics.dispose();
+  });
+
+  testWidgets('#691 EX-13 the text stops at 5,000 characters', (tester) async {
+    await pump(tester);
+    await write(tester, 'Wort ' * 1200);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      hasLength(ExamWriting.maxLength),
+    );
+    expect(ExamWriting.maxLength, 5000);
   });
 
   testWidgets("FR-L12W-02 its length against the level's minimum", (

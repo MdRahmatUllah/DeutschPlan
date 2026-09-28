@@ -9,6 +9,7 @@ git, so the tests plant their own.
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import sqlite3
 import sys
@@ -108,6 +109,26 @@ class TestCorrections:
         with pytest.raises(PipelineError):
             corrected([haus], {uid_for(haus): entry})
 
+    @pytest.mark.parametrize(
+        "entry",
+        [
+            {"why": "t", "english": None},
+            {"why": "t", "german": 12},
+            {"why": "t", "example_de_1": None},
+            {"why": "t", "week": "drei"},
+        ],
+    )
+    def test_933_a_value_of_the_wrong_type_fails_the_build(self, entry):
+        # An empty YAML value is None: it would ship a NOT NULL column empty.
+        haus = word()
+        with pytest.raises(PipelineError, match="it takes"):
+            corrected([haus], {uid_for(haus): entry})
+
+    def test_933_a_blank_cell_may_be_cleared_and_a_number_set(self):
+        haus = word()
+        corrected([haus], {uid_for(haus): {"why": "t", "article": None, "week": 3}})
+        assert (haus.article, haus.week) == (None, 3)
+
     def test_628_a_key_that_matches_no_row_or_two_fails_the_build(self):
         with pytest.raises(PipelineError, match="matches 0 rows"):
             corrected([word()], {"0123456789abcdef": {"why": "t"}})
@@ -201,6 +222,8 @@ class TestGrammar:
             ({"fedcba9876543210": {"why": "t", "rule": "x"}}, "matches no topic"),
             ({"0123456789abcdef": {"why": "t", "topic": "x"}}, "only rule"),
             ({"0123456789abcdef": {"why": "t", "level": "B1"}}, "only rule"),
+            # #933: an empty value in the file.
+            ({"0123456789abcdef": {"why": "t", "rule": None}}, "takes text"),
         ],
     )
     def test_637_an_unknown_topic_or_its_title_fails_the_build(self, entries, message):
@@ -239,8 +262,6 @@ class TestGrammar:
         assert entries and all(set(entry) - {"why"} for entry in entries.values())
 
     def test_637_the_shipped_grammar_names_no_tracker_week_mark_or_exam_centre(self):
-        import re
-
         connection = sqlite3.connect(REPO / "app" / "assets" / "db" / "content.db")
         try:
             rows = connection.execute(

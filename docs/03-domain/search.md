@@ -1,6 +1,6 @@
 # Search engine
 
-`data/repositories/search_repository.dart` running in drift's background isolate; UI debounce 120 ms.
+`data/repositories/search_repository.dart`: its SQL runs in drift's background isolate; UI debounce 120 ms. A query is its first 80 characters (`maxQueryLength`, #691 EX-13), and R1's field and R2's German take no more: a pasted page built an OR of thousands of trigrams. The course's longest headword is 61 characters and its longest meaning 70, so each can still be typed whole. Tier 3's ranking (at most 400 candidates against at most 80 characters) runs on the caller's isolate: on the real course, a 5,000-character paste is searched in under 20 ms on the dev PC (about 80 ms uncapped), so a hop to `Isolate.run`, which copies the rows each way, is not taken.
 
 Tiers, in order (BR-SEARCH-01…03):
 

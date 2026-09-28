@@ -117,7 +117,10 @@ rule is broken, so the rules don't depend on review:
 - every supported locale resolves every key;
 - no user-facing string is hard-coded under `lib/` (in `Text(…)`, `tooltip:`,
   `label:`, `hintText:`, `semanticsLabel:`; escape hatch
-  `// ponytail: allow-literal`), and a shared component words nothing itself.
+  `// ponytail: allow-literal`), and a shared component words nothing itself;
+- every key is read somewhere under `lib/`, as `l10n.<key>` or
+  `AppLocalizations.of(context).<key>` (#640): a key goes
+  in with the code that reads it, and out of both ARBs with the last one.
 
 ## Tests that read the docs
 
