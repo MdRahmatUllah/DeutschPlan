@@ -588,10 +588,13 @@ void main() {
       // threw would be a blank screen — the one thing FR-S1-03 forbids.
       _serveAssets(const <String, Uint8List>{});
 
-      await expectLater(
-        bootstrap(openDatabase: openReal, glass: GlassCapability()),
-        completion(isA<BootstrapFailed>()),
+      final result = await bootstrap(
+        openDatabase: openReal,
+        glass: GlassCapability(),
       );
+      expect(result, isA<BootstrapFailed>());
+      // Its user.db stays open until disposed, and holds its folder (#1019).
+      addTearDown((result as BootstrapFailed).failure.dispose);
     });
 
     test('retrying after a bad copy starts clean', () async {
