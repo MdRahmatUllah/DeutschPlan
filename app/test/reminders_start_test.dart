@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
+import 'services/widget_snapshot_test.dart' show FakeWidgets;
 
 class _Broken extends FakeReminders {
   @override
@@ -48,6 +49,7 @@ void main() {
       container,
       reminders,
       FakeWork(),
+      widgets: FakeWidgets(),
       open: opened.add,
     );
     addTearDown(() => following?.cancel());
@@ -64,6 +66,7 @@ void main() {
       container,
       reminders,
       FakeWork(),
+      widgets: FakeWidgets(),
       open: opened.add,
     );
     addTearDown(() => following?.cancel());
@@ -76,6 +79,7 @@ void main() {
       container,
       FakeReminders(),
       FakeWork(),
+      widgets: FakeWidgets(),
       open: opened.add,
     );
     addTearDown(() => following?.cancel());
@@ -89,6 +93,7 @@ void main() {
       container,
       reminders,
       work,
+      widgets: FakeWidgets(),
       open: (_) {},
     );
     addTearDown(() => following?.cancel());
@@ -103,18 +108,57 @@ void main() {
     expect(work.queued, contains(BackgroundTask.reminderCompose));
   });
 
-  test("#158: tonight's plan_pregenerate and the hourly widget", () async {
+  test("#158 #711: tonight's plan_pregenerate, and with a widget placed the "
+      'hourly widget', () async {
     final work = FakeWork();
     final following = await startReminders(
       container,
       FakeReminders(),
       work,
+      widgets: FakeWidgets(),
       open: (_) {},
     );
     addTearDown(() => following?.cancel());
 
     expect(work.started, isTrue);
     // 08:00 to 00:05 tomorrow.
+    expect(
+      work.queued[BackgroundTask.planPregenerate],
+      const Duration(hours: 16, minutes: 5),
+    );
+    expect(work.hourlyTasks, <BackgroundTask>{BackgroundTask.widgetRefresh});
+  });
+
+  test('#711 no widget placed: no hourly widget_refresh, and the one an '
+      'older start queued is cancelled', () async {
+    final work = FakeWork()..hourlyTasks.add(BackgroundTask.widgetRefresh);
+    final following = await startReminders(
+      container,
+      FakeReminders(),
+      work,
+      widgets: FakeWidgets()..onHome = false,
+      open: (_) {},
+    );
+    addTearDown(() => following?.cancel());
+
+    expect(work.hourlyTasks, isEmpty);
+    expect(work.queued, contains(BackgroundTask.planPregenerate));
+  });
+
+  test('#625 a notifications plugin that fails to start still queues the '
+      "widget and tonight's plan_pregenerate", () async {
+    final work = FakeWork();
+    final following = await startReminders(
+      container,
+      _Broken(),
+      work,
+      widgets: FakeWidgets(),
+      open: (_) {},
+    );
+    await pumpEventQueue();
+
+    expect(following, isNull);
+    expect(work.started, isTrue);
     expect(
       work.queued[BackgroundTask.planPregenerate],
       const Duration(hours: 16, minutes: 5),
@@ -129,6 +173,7 @@ void main() {
         container,
         _Broken(),
         FakeWork(),
+        widgets: FakeWidgets(),
         open: (_) {},
       );
       expect(following, isNull);
