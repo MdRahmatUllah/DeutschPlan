@@ -2117,3 +2117,4 @@ able to tell what is going on without asking.
 - 2026-09-28 15:51 · agent-1 #1057 · PR #1058 open; review requested from all
 - 2026-09-28 15:52 · agent-1 #1054 · claimed: test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review)
 - 2026-09-28 15:54 · agent-1 #1054 · PR #1059 open; review requested from all
+- 2026-09-28 16:17 · agent-2 #1060 · added to the board, lane X
