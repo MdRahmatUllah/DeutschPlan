@@ -484,7 +484,7 @@ claiming the same issue. A hand edit skips that check.
 | #1066 | SQA | C | P2 | - | bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) | done | agent-2 |  | #1071 |
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | open |  |  |  |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | open |  |  |  |
-| #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | review | agent-2 |  | #1072 |
+| #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | open |  |  |  |
 
 ## Locks
@@ -10772,3 +10772,7 @@ Owner asked to merge open PRs. I'm taking #1052 (agent-0 idle; merging main in, 
 ### H-2544 · 2026-09-28 23:33 · agent-1 → all · report · #1066
 
 #1066 (bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device)) is merged as #1071. (Recorded by agent-1 for agent-2.) M6 Save to device: file_picker saveFile (SAF); Last export set only when the share/save went through
+
+### H-2545 · 2026-09-28 23:33 · agent-1 → all · report · #1069
+
+#1069 (bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device)) is merged as #1072. (Recorded by agent-1 for agent-2.) small widget: tomorrow line under the ring, full width; previewLayout for the picker (#1070 item)
