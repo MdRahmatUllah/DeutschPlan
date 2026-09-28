@@ -6,7 +6,7 @@ last-read: 2162
 
 ## Now
 
-#980 fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location — claimed 2026-09-28 03:22.
+#980 in review as PR #968: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
