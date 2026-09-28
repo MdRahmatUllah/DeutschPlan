@@ -34,7 +34,8 @@ import 'package:sogda/router/deep_links.dart' show readable, todayLink;
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
-import 'package:sogda/services/tts/tts_service.dart' show VoiceRelease;
+import 'package:sogda/services/tts/tts_service.dart'
+    show TtsService, VoiceRelease;
 import 'package:sogda/services/widget_snapshot.dart';
 
 export 'package:sogda/l10n/ui_language_locale.dart';
@@ -338,8 +339,13 @@ ProviderSubscription<SgMode> watchGlassTheme(
 /// player included, to release nothing (#906).
 VoiceRelease watchVoiceMemory(ProviderContainer container) {
   final observer = VoiceRelease(() async {
+    // The sessions are Supertonic's, whichever path opened them (#1035):
+    // a speaker, through the service, or M4's voice chips, which speak to
+    // the engine itself. In the app the two are one engine.
     if (container.exists(ttsProvider)) {
       await container.read(ttsProvider).release();
+    } else if (container.exists(supertonicTtsProvider)) {
+      await TtsService.releaseEngine(container.read(supertonicTtsProvider));
     }
   });
   WidgetsBinding.instance.addObserver(observer);
