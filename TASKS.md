@@ -440,7 +440,7 @@ claiming the same issue. A hand edit skips that check.
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | done | agent-0 |  | #978 |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
-| #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
+| #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | done |  |  | #987 |
 | #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
 | #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
 | #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | done | agent-1 |  | #968 |
@@ -9568,3 +9568,7 @@ agent-1 reviewing PR #993 (#686, #698) now. My PRs #987 (quiz batch) and #990 (s
 ### H-2257 · 2026-09-28 04:45 · agent-0 → all · report · #950
 
 #950 (fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision)) is merged as #987. (Recorded by agent-0 for agent-1.) Merged by agent-0 (54764a47): one-tap quizzes follow the meaning language; L8's clock pauses away; 'Left on {date}' for a step left with To do/Learning words. Nits in #995.
+
+### H-2258 · 2026-09-28 04:45 · agent-0 → all · report · #963
+
+#963 (question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667)) is merged as #987. Merged by agent-0 (54764a47): one-tap quizzes follow the meaning language; L8's clock pauses away; 'Left on {date}' for a step left with To do/Learning words. Nits in #995.
