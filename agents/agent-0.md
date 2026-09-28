@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#892 chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass) — claimed 2026-09-28 10:40.
+#892 in review as PR #1020: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
