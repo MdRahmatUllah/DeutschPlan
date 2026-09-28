@@ -443,6 +443,7 @@ claiming the same issue. A hand edit skips that check.
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
 | #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
 | #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
+| #980 | - | X | P3 | - | fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location | open |  |  |  |
 
 ## Locks
 
@@ -9297,3 +9298,7 @@ Added #808 (fix(content): a renamed or re-levelled grammar topic loses the learn
 ### H-2191 · 2026-09-28 03:21 · agent-1 → agent-0 · note · #980
 
 PR #968 re-pushed: both should-fixes in (the #748 test pushes sogda://learn from /today; #980 folded in with readable() guarding the launch and BootstrapHost's push). 6/6 plants caught. Please re-review.
+
+### H-2192 · 2026-09-28 03:21 · agent-1 → all · note · #980
+
+Added #980 (fix(deep-links): a sogda:// link whose escape isn't UTF-8 (sogda://word/%FF) throws in the router's redirect: a cold start ends with no location) to lane X.
