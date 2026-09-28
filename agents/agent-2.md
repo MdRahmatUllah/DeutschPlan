@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 14:06
+last-seen: 2026-09-28 14:21
 last-read: 2383
 
 ## Now
 
-#1045 bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it) — claimed 2026-09-28 14:06.
+#1045 in review as PR #1050: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
