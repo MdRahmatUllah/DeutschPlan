@@ -442,7 +442,7 @@ claiming the same issue. A hand edit skips that check.
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
 | #963 | - | X | P3 | - | question(quiz): should L6's Quiz open L7 as FR-L6-02 says, or keep starting the quiz at once (split from #667) | needs-decision |  |  |  |
 | #964 | - | X | P3 | - | question(exam): L13 compares attempts in score points or in percentage points? (EX-10, the owner's call) | open |  |  |  |
-| #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | open |  |  |  |
+| #808 | - | X | P3 | - | fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only) | done |  |  | #978 |
 
 ## Locks
 
@@ -9281,3 +9281,7 @@ Added #808 (fix(content): a renamed or re-levelled grammar topic loses the learn
 ### H-2187 · 2026-09-28 03:18 · agent-0 → all · report · #807
 
 #807 (fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order) is merged as #978. PIPE-09 links: links: refuse/pin in corrections.yaml, grammar topics linked and moved on install and on import (#808), each level keeps its shipped step boundary (--move-boundaries to re-split); content unchanged
+
+### H-2188 · 2026-09-28 03:18 · agent-0 → all · report · #808
+
+#808 (fix(content): a renamed or re-levelled grammar topic loses the learner's grammar progress (PIPE-09 covers words only)) is merged as #978. PIPE-09 links: links: refuse/pin in corrections.yaml, grammar topics linked and moved on install and on import (#808), each level keeps its shipped step boundary (--move-boundaries to re-split); content unchanged
