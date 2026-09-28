@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -45,6 +46,50 @@ void main() {
       ),
     ),
   );
+
+  // #1049: a switch takes the focus itself; the ring hugs its track, and
+  // neither Material's halo nor iOS's own border is drawn beside it.
+  for (final chrome in AdaptiveChrome.values) {
+    goldenTest(
+      chrome == AdaptiveChrome.material
+          ? 'foundations_focus_switch'
+          : 'foundations_focus_switch_ios',
+      devices: const <GoldenDevice>[GoldenDevice.phone],
+      chrome: chrome,
+      textAudit: false,
+      act: (tester) => tester.sendKeyEvent(LogicalKeyboardKey.tab),
+      builder: (context) => Scaffold(
+        backgroundColor: context.tokens.surface.paper,
+        // As a screen has it: in a row the screen reader hears as the switch.
+        body: Center(
+          child: Semantics(
+            container: true,
+            child: Padding(
+              padding: EdgeInsets.all(context.tokens.spacing.lg),
+              child: SizedBox(
+                height: 56,
+                child: Row(
+                  children: <Widget>[
+                    const Expanded(
+                      child: SgText(
+                        'Continue into the next step',
+                        role: SgTextRole.body,
+                      ),
+                    ),
+                    AdaptiveSwitch(
+                      value: true,
+                      onChanged: (_) {},
+                      semanticLabel: 'Continue into the next step',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _FoundationsGallery extends StatelessWidget {
