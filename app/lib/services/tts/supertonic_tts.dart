@@ -138,7 +138,11 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
     final entry = (await _models.manifest()).model(ModelRepository.voiceModel);
     final status = entry == null || entry.variants.isEmpty
         ? ModelStatus.notDownloaded
-        : (await _models.stateOf(entry, entry.variants.first)).status;
+        : (await _models.stateOf(
+            entry,
+            entry.variants.first,
+            sized: false,
+          )).status;
     final available =
         status == ModelStatus.ready || status == ModelStatus.updateAvailable;
     if (!available && _wasAvailable) {
@@ -305,7 +309,7 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
           text,
           voice: voice,
           speed: speed,
-          bytes: wavBytes(samples, model.sampleRate),
+          bytes: await wavInIsolate(samples, model.sampleRate),
         );
       } finally {
         unawaited(_making.remove(key));
@@ -362,6 +366,13 @@ class SupertonicTts implements TtsEngine, SpeechPrefetch {
       }
     }();
   }
+
+  /// [wavBytes] in an isolate of its own (#712): a 5 s clip is 220,500
+  /// samples, ~10 ms one by one in a debug VM, which the UI isolate paid on
+  /// every new clip. Static, so the closure holds the samples and nothing
+  /// of this engine's.
+  static Future<Uint8List> wavInIsolate(Float32List samples, int sampleRate) =>
+      Isolate.run(() => wavBytes(samples, sampleRate));
 
   /// [samples] (-1 to 1) as a mono 16-bit PCM WAV, which `just_audio` plays.
   static Uint8List wavBytes(Float32List samples, int sampleRate) {

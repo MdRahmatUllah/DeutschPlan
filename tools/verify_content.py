@@ -264,10 +264,14 @@ def check_no_cross_level_duplicates(db: sqlite3.Connection) -> list[Failure]:
 
 
 def check_fts_is_populated(db: sqlite3.Connection) -> list[Failure]:
-    """Gate 5: an empty FTS table.
+    """Gate 5: an empty FTS table, or one that is not its table's index.
 
-    Counted against the table it mirrors, not against zero: a words_fts with
-    one row is as broken as an empty one and would pass a non-zero check.
+    Counted against the table it indexes, not against zero: a words_fts with
+    one row is as broken as an empty one and would pass a non-zero check. The
+    rows indexed are `<table>_docsize`'s, one each (#712): the tables are
+    external content, so a count of the table itself counts its source. Then
+    FTS5's own check of the index against the source's rows, which a rowid
+    moved after the build (a VACUUM) fails.
     """
     expected = {
         "words_fts": "words",
@@ -278,7 +282,9 @@ def check_fts_is_populated(db: sqlite3.Connection) -> list[Failure]:
     failures = []
     for table, source in expected.items():
         try:
-            indexed = db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+            indexed = db.execute(
+                f"SELECT COUNT(*) FROM {table}_docsize"
+            ).fetchone()[0]
         except sqlite3.OperationalError as error:
             failures.append(
                 Failure("search", f"{table} is missing ({error}).")
@@ -293,6 +299,21 @@ def check_fts_is_populated(db: sqlite3.Connection) -> list[Failure]:
                     f"{table} has {indexed} rows for {rows} in {source}. "
                     f"That search tier will miss words. Rebuild with "
                     f"`make content`.",
+                )
+            )
+            continue
+        try:
+            db.execute(
+                f"INSERT INTO {table} ({table}, rank) "
+                "VALUES ('integrity-check', 1)"
+            )
+        except sqlite3.DatabaseError as error:
+            failures.append(
+                Failure(
+                    "search",
+                    f"{table} is not an index of {source} as it is ({error}): "
+                    f"its rows were changed or renumbered after the build. "
+                    f"Rebuild with `make content`.",
                 )
             )
     return failures
