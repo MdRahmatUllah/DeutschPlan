@@ -27,6 +27,7 @@ import 'package:sogda/data/repositories/translation_repository.dart';
 import 'package:sogda/data/repositories/word_actions.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -1007,6 +1008,39 @@ void main() {
     expect(tapsInsideTaps(tester), isEmpty);
     semantics.dispose();
   });
+
+  test('#854 PIPE-09 an old uid, from a link written before an update '
+      're-keyed its word, opens the word it became', () async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final content = ContentFixture.write(
+      '${tempDir('sg_alias').path}/content.db',
+    );
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+    );
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+        contentUpdaterProvider.overrideWithValue(
+          _Aliased(db, <String, String>{'old-haus': ContentFixture.haus}),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    Future<WordDetail?> read(String uid) async {
+      final hold = container.listen(wordDetailProvider(uid), (_, _) {});
+      addTearDown(hold.close);
+      return container.read(wordDetailProvider(uid).future);
+    }
+
+    expect((await read('old-haus'))?.word.word.uid, ContentFixture.haus);
+    expect(await read('never-a-word'), isNull, reason: 'no alias: missing');
+  });
 }
 
 /// W1's actions, recorded; each undo records its name.
@@ -1068,4 +1102,14 @@ class _Translations implements TranslationRepository {
     required String from,
     required String to,
   }) async => answer(text, to);
+}
+
+/// The course's PIPE-09 aliases, as a kept manifest would give them (#854).
+class _Aliased extends ContentUpdater {
+  _Aliased(AppDatabase db, this.map) : super(db, ContentDao(db));
+
+  final Map<String, String> map;
+
+  @override
+  Future<Map<String, String>> aliases() async => map;
 }

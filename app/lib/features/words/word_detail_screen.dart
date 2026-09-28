@@ -69,17 +69,25 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
   final dao = ref.watch(contentDaoProvider);
   final settings = ref.watch(settingsProvider);
   final words = ref.watch(wordRepositoryProvider);
+  final updater = ref.watch(contentUpdaterProvider);
+  // #854: an old uid, from a link written before an update re-keyed its
+  // word (PIPE-09), opens the word it became.
+  var id = uid;
+  // A one-shot read, not a watch: a watch's `first` cancels a live query.
+  if (await dao.wordByUid(uid).getSingleOrNull() == null) {
+    id = (await updater.aliases())[uid] ?? uid;
+  }
   // The course is read-only, so its part is read once; the state is watched.
   final examples = <StudyExample>[
-    for (final e in await dao.examplesForWord(uid).get())
+    for (final e in await dao.examplesForWord(id).get())
       (german: e.german, english: e.english),
   ];
-  final tips = await dao.tipsForWord(uid).get();
+  final tips = await dao.tipsForWord(id).get();
   final StudyTip? tip = tips.isEmpty
       ? null
       : (en: tips.first.tipEn, bn: tips.first.tipBn);
   yield* words
-      .watchWord(uid)
+      .watchWord(id)
       .map(
         (word) => word == null
             ? null
