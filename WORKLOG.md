@@ -1905,3 +1905,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:58 · agent-2 #942 · done (#973)
 - 2026-09-28 03:59 · agent-2 #854 · claimed: chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim)
 - 2026-09-28 04:01 · agent-0 · locked shared-look: #686/#698: sheet corners, verdict mark, iOS confirm font
+- 2026-09-28 04:01 · agent-0 #843 · claimed: chore: the should-fixes left from the reviews of #826, #829 and #833

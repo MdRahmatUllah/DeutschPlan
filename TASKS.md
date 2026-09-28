@@ -432,7 +432,7 @@ claiming the same issue. A hand edit skips that check.
 | #818 | - | X | P3 | - | perf(tools): perf.py gains a seeded one-year profile for start and frames (#708's third criterion) | review | agent-0 |  | #960 |
 | #820 | - | X | P3 | - | fix(backup): an import still accepts a date that isn't one and an unranged backlog_catchup_days (#657 follow-up) | done | agent-0 |  | #971 |
 | #837 | - | X | P3 | - | fix(pipeline): a header renamed in every workbook at once still builds, and the course ships without that column | done | agent-0 |  | #960 |
-| #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | assigned | agent-0 |  |  |
+| #843 | - | X | P3 | - | chore: the should-fixes left from the reviews of #826, #829 and #833 | in-progress | agent-0 |  |  |
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | done | agent-0 |  | #965 |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | done | agent-0 |  | #965 |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | done | agent-0 |  | #979 |
