@@ -40,9 +40,6 @@ class SgUmlautBar extends StatelessWidget {
     'ß': 'ẞ',
   };
 
-  /// The capital sharp s exists in Unicode and on no keyboard at all.
-  static const String capitalSharpS = 'ẞ';
-
   /// A German field's `scrollPadding` when this row sits under it: how far
   /// the page scrolls the field up from the keyboard on focus. Flutter's
   /// 20 dp alone left the keys cut at the keyboard's edge (#396, #515). The
@@ -449,10 +446,13 @@ class SgVerdictRow extends StatelessWidget {
             SizedBox(
               width: markSize,
               // A mark in the Icon's place, at its size: not a text role
-              // (#695 TS-4). ponytail: allow-raw-text
+              // (#695 TS-4), and not scaled, as the icons aren't: at 200 % it
+              // was 24 dp wide in its 18 (#686 ST-11). The words beside it
+              // scale. ponytail: allow-raw-text
               child: Text(
                 almostGlyph,
                 textAlign: TextAlign.center,
+                textScaler: TextScaler.noScaling,
                 style: TextStyle(fontSize: markSize, color: colour),
               ),
             ),

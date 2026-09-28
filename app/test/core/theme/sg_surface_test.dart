@@ -408,6 +408,23 @@ void main() {
     expect(taps, 1);
   });
 
+  testWidgets('#686 ST-10 a panel whose onTap goes mid-press comes back up', (
+    tester,
+  ) async {
+    await pump(tester, AppTheme.light(), onTap: () {});
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byType(SgSurface)),
+    );
+    await tester.pump();
+    expect(decorationOf(tester).boxShadow, isEmpty, reason: 'pressed');
+
+    await pump(tester, AppTheme.light());
+    expect(decorationOf(tester).boxShadow, hasLength(1));
+    await pump(tester, AppTheme.light(), onTap: () {});
+    expect(decorationOf(tester).boxShadow, hasLength(1));
+    await gesture.up();
+  });
+
   testWidgets('a cancelled press restores the shadow', (tester) async {
     await pump(tester, AppTheme.light(), onTap: () {});
     final gesture = await tester.startGesture(

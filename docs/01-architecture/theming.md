@@ -29,7 +29,7 @@ Container(color: t.surface.card, …)  // never Color(0xFFFFFFFF)
 | `cardStrong` | #FFFFFF | #1E1B2C | rgba(255,255,255,0.72) blur 32 |
 | `muted` Oat | #F3EADB | #29253A | rgba(255,255,255,0.35) |
 | `track` (ring, bars, slider, heat-map's empty day) | ink 47 % | #F4F1FF 37 % | ink 56 % (light) / #F4F1FF 52 % (dark variant) |
-| `textSecondary` | #5B5670 | #B7B1CC | #5B5670 |
+| `textSecondary` | #5B5670 | #B7B1CC | #3B374C (light) / #E6E4ED (dark variant) |
 | `inverseLink` (on the ink snackbar) | #00C2B2 | #007A70 | as light |
 | `onAccentMark` (Learning on a Sun field: L1's course bar, L2's step bar) | #FFFFFF | #FFFFFF | #FFFFFF (light) / #0E0C16, the paper (dark variant) |
 | `onAccentTrack` (To do on a Sun field: L1's course bar, L2's step bar and exams card) | #15121F 50 % | #15121F 50 % | ink 56 % (light) / #F4F1FF 73 % (dark variant) |
@@ -68,7 +68,7 @@ Inter (Latin) and Noto Sans Bengali, bundled. Scale: display 40/48 · headline 2
 
 ### Shape, spacing, motion
 
-Radius: cards 16 (glass 20), buttons 12 (glass 16), chips 8, sheets 24 (glass 28). Spacing scale 4/8/12/16/24/32/48. Motion tokens: instant 100 ms, quick 200, standard 300, deliberate 400, celebrate 1200. Glass adds blur-in/out and the press light-sweep. All motion respects the OS reduce-motion setting.
+Radius: cards 16 (glass 20), buttons 12 (glass 16), chips 8, sheets 24 (glass 28) at the top only, their foot being the screen's (`sheetRadius`, #686). Spacing scale 4/8/12/16/24/32/48. Motion tokens: instant 100 ms, quick 200, standard 300, deliberate 400, celebrate 1200. Glass adds blur-in/out and the press light-sweep. All motion respects the OS reduce-motion setting.
 
 ## Platform adaptation
 

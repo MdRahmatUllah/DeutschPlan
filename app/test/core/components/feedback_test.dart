@@ -118,7 +118,7 @@ void main() {
 
       await tester.longPress(find.text('ß'));
       await tester.pumpAndSettle();
-      expect(controller.text, SgUmlautBar.capitalSharpS);
+      expect(controller.text, 'ẞ');
     });
 
     testWidgets('long-pressing any key gives its capital', (tester) async {
@@ -430,6 +430,27 @@ void main() {
       expect(
         SgVerdictRow.markSize,
         greaterThan(SgTypeTokens.defaults.body.size),
+      );
+    });
+
+    testWidgets('#686 ST-11 at 200 % the almost mark stays in its box, the '
+        "size of the icons, which don't scale either", (tester) async {
+      await pump(
+        tester,
+        Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: AndroidTextScaler(2)),
+            child: const SgVerdictRow(verdict: SgVerdict.almost, message: 'x'),
+          ),
+        ),
+      );
+      final mark = tester.renderObject<RenderParagraph>(
+        find.text(SgVerdictRow.almostGlyph),
+      );
+      expect(
+        mark.getMaxIntrinsicWidth(double.infinity),
+        lessThanOrEqualTo(SgVerdictRow.markSize),
       );
     });
 

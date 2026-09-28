@@ -617,7 +617,7 @@ void main() {
     // streak and the scheduler all turn on which day it is — a second clock
     // means two answers to "is this due", and only one of them is testable.
     //
-    // Five files are allowed one, and each says why above it. `DateTime.now`
+    // Four files are allowed one, and each says why above it. `DateTime.now`
     // torn off, and `DateTime.timestamp()`, are the same clock (#695 TS-4).
     const allowed = <String>{
       // The clock itself.
@@ -630,8 +630,6 @@ void main() {
       // A file's modification time, for the cache's eviction order. Not a
       // date the learner ever sees.
       'lib/data/repositories/synthesis_cache.dart',
-      // The time picker's initial value comes from the platform's own clock.
-      'lib/core/adaptive/adaptive.dart',
     };
 
     final now = RegExp(r'\bDateTime\.(?:now|timestamp)\b');
@@ -900,10 +898,10 @@ String _lowerFirst(String name) => name[0].toLowerCase() + name.substring(1);
 /// Two shapes, and the first version of this got both wrong: a function
 /// provider is `DateTime Function() clock(Ref ref)`, where a regex that took
 /// the word before the parenthesis captured `Function`; and a notifier is
-/// `class Theme extends _$Theme`, which has no parenthesis at all. Matched on
-/// what each one really looks like instead. A notifier's provider drops a
-/// `Notifier` suffix, as riverpod_generator names it (`OnboardingNotifier` →
-/// `onboardingProvider`).
+/// `class ThemeNotifier extends _$ThemeNotifier`, which has no parenthesis
+/// at all. Matched on what each one really looks like instead. A notifier's
+/// provider drops a `Notifier` suffix, as riverpod_generator names it
+/// (`OnboardingNotifier` → `onboardingProvider`).
 Set<String> _keepAliveIn(String source) {
   final names = <String>{};
   // Any argument list, over several lines too, with keepAlive among
