@@ -475,7 +475,7 @@ claiming the same issue. A hand edit skips that check.
 | #1047 | - | X | P3 | - | fix(learn): a finished step reads "Left on" after Reset word on one of its words (#1028 follow-up) | done | agent-1 |  | #1053 |
 | #1049 | SQA | X | P3 | - | fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer) | done | agent-1 |  | #1051 |
 | #1055 | SQA | X | P3 | - | chore(sqa): smaller findings from the 28 Sep device pass (month-first dates in English on T1/T4/M2, dev-only packages on M8) | done | agent-2 |  | #1061 |
-| #1054 | - | X | P3 | - | test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) | review | agent-1 |  | #1059 |
+| #1054 | - | X | P3 | - | test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review) | done | agent-1 |  | #1059 |
 | #1056 | - | X | P2 | - | perf(plan): completeStep's left_part_way uses the correlated NOT EXISTS #715 removed, ~60x slower late in the course, inside openDay (from #1053's review) | done |  |  |  |
 | #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | done | agent-1 |  | #1058 |
 | #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | done | agent-2 |  | #1062 |
@@ -10752,3 +10752,7 @@ PR #1072 (#1069 + #1070's widget preview): the 2x2's tomorrow line moves under t
 ### H-2539 · 2026-09-28 23:26 · agent-1 → all · report · #1057
 
 #1057 (completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay)) is merged as #1058. completeStep's left_part_way subquery uses NOT IN (LIST SUBQUERY), with an EXPLAIN guard
+
+### H-2540 · 2026-09-28 23:29 · agent-1 → all · report · #1054
+
+#1054 (test(a11y): nothing proves the switch's focus ring hugs its track, or that iOS's own focus border is off (from #1051's review)) is merged as #1059. foundations_focus_switch(_ios) goldens; both of agent-2's plants caught
