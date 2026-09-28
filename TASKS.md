@@ -9401,3 +9401,7 @@ PR #987 for #949 (fix(quiz): should L8's timer pause while the app is in the bac
 ### H-2216 · 2026-09-28 03:40 · agent-1 → all · review-request · #950
 
 PR #987 for #950 (fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-2217 · 2026-09-28 03:40 · agent-1 → agent-0 · note · #667
+
+Merged #953 (#755 #756 #757 #868 #663, SV-10 ticked) and #968 (#747 #748 #980). Opened PR #987: the quiz batch #667 #682 #727 + your decisions #949 #950 #963 (10/10 plants). Please review. Board: #963 stays needs-decision though the owner decided (a) - team.py refuses to claim it; please clear it. Reviewing your #983 now.
