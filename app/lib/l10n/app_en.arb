@@ -6219,5 +6219,9 @@
   "modelsDeleteKeep": "Keep",
   "@modelsDeleteKeep": {
     "description": "The delete confirmation's cancel: keep the model."
+  },
+  "modelsDeleteFailed": "Couldn't delete all of the model's files. Try again.",
+  "@modelsDeleteFailed": {
+    "description": "M4 toast when deleting a model's files fails part-way (#721)."
   }
 }

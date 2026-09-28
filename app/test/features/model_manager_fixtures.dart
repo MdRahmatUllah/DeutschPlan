@@ -158,7 +158,13 @@ class FakeModels extends Fake implements ModelRepository {
   ModelStatus voice = ModelStatus.notDownloaded;
 
   @override
-  Future<void> delete(ModelEntry entry) async => deleted.add(entry.id);
+  Future<void> delete(ModelEntry entry) async {
+    if (deleteFails) throw StateError('files in use');
+    deleted.add(entry.id);
+  }
+
+  /// A delete whose files won't go (#721).
+  bool deleteFails = false;
 
   @override
   Future<ModelManifest> manifest() async =>
