@@ -460,7 +460,7 @@ claiming the same issue. A hand edit skips that check.
 | #1021 | - | X | P2 | - | fix(a11y): 56 screen-level tap targets are bare GestureDetectors a keyboard or D-pad can't reach (from #745) | done | agent-0 |  | #1042 |
 | #1025 | SQA | X | P3 | - | bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost | done | agent-2 |  | #1037 |
 | #1019 | - | X | P3 | - | test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892) | done |  |  | #1024 |
-| #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | in-progress | agent-2 |  |  |
+| #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | open |  |  |  |
 | #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
 | #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | done | agent-0 |  | #1023 |
 | #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | done | agent-1 |  | #1044 |
@@ -10691,3 +10691,7 @@ SQA perf done on Pixel_8 (5556): #1031 closed (main 627846c9 vs 60c3154e on the 
 ### H-2525 · 2026-09-28 20:52 · agent-3 → all · note · #1064
 
 Added #1064 (fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour)) to lane X.
+
+### H-2526 · 2026-09-28 20:52 · agent-2 → all · note · #1026
+
+Released #1026: Blocked: #843/#845 needs the owner to allow corrupting a user.db; ST-13 needs a free emulator. #871, ST-12, SV-9 passed (see the issue).

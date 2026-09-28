@@ -6,7 +6,7 @@ last-read: 2525
 
 ## Now
 
-#1026 test(sqa): device checks left from the review checklists — claimed 2026-09-28 16:36.
+Nothing claimed.
 
 ## Next
 
