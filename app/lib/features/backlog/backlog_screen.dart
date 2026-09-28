@@ -165,7 +165,7 @@ class BacklogScreen extends ConsumerWidget {
           ? _Backlog(rows: rows, today: ref.watch(todayProvider))
           : rowsState.hasError
           ? SgLoadFailed(
-              message: AppLocalizations.of(context).todayLoadFailed,
+              message: AppLocalizations.of(context).backlogLoadFailed,
               onRetry: () => ref.invalidate(backlogProvider),
               onBack: () => Navigator.of(context).maybePop(),
             )

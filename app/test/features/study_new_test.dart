@@ -477,4 +477,37 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
     await tester.pumpAndSettle();
     expect(reads, greaterThan(before));
   });
+
+  testWidgets('#886 FR-T2 a card whose word reads as nothing, a stale uid, '
+      'says so too, not a blank card with nothing to press', (tester) async {
+    await tester.runAsync(open);
+    addTearDown(
+      () => tester.runAsync(() async {
+        await settings.dispose();
+        await db.close();
+      }),
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: <Override>[
+          ...overrides(),
+          studyWordProvider.overrideWith((ref, uid) async => null),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: const StudyScreen(args: args),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.pump(StudyScreen.bannerTime);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SgLoadFailed), findsOneWidget);
+    expect(find.text(l10n.wordLoadFailed), findsOneWidget);
+    expect(find.text(l10n.studyShowMeaning), findsNothing);
+    expect(find.byType(StudyNewActions), findsNothing);
+  });
 }
