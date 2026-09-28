@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-28 03:50
+last-seen: 2026-09-28 04:16
 last-read: 2218
 
 ## Now
 
-#729 fix(day-complete): T6's "N words · M min" counts skipped new words as studied — claimed 2026-09-28 03:50.
+#729 in review as PR #990: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
