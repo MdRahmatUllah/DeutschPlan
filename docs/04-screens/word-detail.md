@@ -25,7 +25,7 @@
   - *Copy*.
   - *Translate*, only with `mt_enabled`, into Bangla. An English learner isn't offered it, since the examples come in English already.
   - Then the *Plain card / Cloze card* chips, and the Duden · DWDS · Wiktionary chips.
-- **Mark known** also closes every open plan row for the word, whether today's or the backlog's, so a known word isn't served again. A skipped row stays skipped, since its day is already complete (BR-PLAN-10).
+- **Mark known** also closes every open plan row for the word, whether today's or the backlog's, so a known word isn't served again. A skipped row stays skipped, since its day is already complete (BR-PLAN-10). The rating and the rows it closes are one write (#717): a failure saves neither, nor an undo entry.
 - **Reset word** clears `word_state`, the word's open plan rows from today on, and every `new` row, done or not. A word with a `new` row is never planned again (`DriftPlanStore.unplannedWords`), and a reset word is To do again, so it goes back into the pool. Done revisions stay, because they are the day's history, and so do `daily_stats` and `review_log`; a rating from before the reset isn't one of BR-FSRS-06's two in a row (#700). *Undo* restores exactly what went.
 - **Undo** restores the row as it was. For a word never met, that means no `word_state` row at all.
 - **One action at a time.** A second tap while one is running does nothing.
@@ -37,6 +37,7 @@
 - FR-W1-03 Card mode toggle writes `word_state.card_mode` and `card_mode_manual = 1`, so BR-FSRS-06's rule keeps the choice from then on. *Undo* and *Reset word* give the card back to the rule.
 - FR-W1-04 Every action shows a snackbar with *Undo*; audio never closes the sheet.
 - FR-W1-05 *Translate* runs the examples through the translator (cached) and shows results inline.
+- A link to a word's old uid, written before a course update re-keyed it (a widget or reminder link tapped before the next launch rewrites it), opens the word it became, by the course's PIPE-09 `aliases` (#854).
 - FR-W1-06 *Compare* is offered when the headword contains " / " or the word has a `compare_group` (from register notes). content.db has no `compare_group` yet, so today only the " / " rule applies — and not to a word-formation entry whose parts are affixes ("Adjektive auf -bar / -lich / -sam"), which W2 has nothing to compare in (#142, `compare.md`).
 
 **Data.** `wordDetailProvider(uid)` (word + state + examples + tips + last review).

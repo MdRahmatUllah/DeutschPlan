@@ -5,7 +5,7 @@ The developer agents share emulator-5558, the default, so hold the device lock
 for the whole check:
 
     python tools/team.py device                # take it (or be told who has it)
-    cd app && flutter build apk --release --target-platform android-x64
+    cd app && flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true
     python tools/device.py install
     python tools/device.py launch tap:Learn "tap:Word categories" wait:Wohnen shot:l5.png back shot:after.png
     python tools/team.py device --release      # the moment you are done
@@ -23,7 +23,9 @@ Steps run in order:
     labels         print what is on screen (to find labels)
 
 Debug APKs do not fit on the emulator's storage: always the release x64
-build. Screenshots and dumps go to --out, never into the repo.
+build, signed with the debug key by opting in (`-P allowDebugSigning=true`:
+without app/android/key.properties a release build fails otherwise, #705).
+Screenshots and dumps go to --out, never into the repo.
 """
 
 from __future__ import annotations
@@ -139,7 +141,7 @@ class Device:
         """Installs [apk]; whether adb answered `Success`. A refusal (a version
         downgrade, say) goes to adb's stderr and leaves the old app in place."""
         if not apk.exists():
-            raise SystemExit(f"no APK at {apk}: `cd app && flutter build apk --release --target-platform android-x64`")
+            raise SystemExit(f"no APK at {apk}: `cd app && flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true`")
         def attempt() -> str:
             # Both streams: `Failure [...]` comes on stderr (#697 TL-4).
             done = self.run("install", "-r", str(apk))

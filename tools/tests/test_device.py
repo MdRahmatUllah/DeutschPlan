@@ -86,3 +86,12 @@ def test_707_typed_text_reaches_the_device_shell_quoted(monkeypatch):
     monkeypatch.setattr(device.time, "sleep", lambda s: None)
     assert device.main(["--serial", "emulator-5558", "type:Tom & Jerry; ls"]) == 0
     assert sent == [("input", "text", "'Tom%s&%sJerry;%sls'")]
+
+
+def test_705_the_device_check_build_opts_in_to_the_debug_key(tmp_path, monkeypatch):
+    # Without app/android/key.properties Gradle refuses a release build that
+    # doesn't opt in, so the build this asks for must.
+    assert "android-x64 -P allowDebugSigning=true" in device.__doc__
+    dev, _ = _device(tmp_path, monkeypatch, _Adb())
+    with pytest.raises(SystemExit, match="android-x64 -P allowDebugSigning=true"):
+        dev.install(tmp_path / "none.apk")

@@ -149,6 +149,18 @@ void main() {
       expect(ready.settings.read(SettingKeys.dailyNew), 7);
     });
 
+    test('#686 ST-9 a disposed start lets go of its glass capability too, '
+        'frame watchdog and all', () async {
+      final glass = GlassCapability()
+        ..startFrameWatchdog()
+        ..glassOnScreen = true;
+      expect(glass.watchingFrames, isTrue);
+      final result = await bootstrap(openDatabase: openReal, glass: glass);
+      await (result as BootstrapReady).bootstrap.dispose();
+      expect(glass.watchingFrames, isFalse);
+      expect(() => glass.addListener(() {}), throwsFlutterError);
+    });
+
     test('resolves the theme against the platform', () async {
       final light = await run();
       expect(light.themeMode, SgMode.light);
@@ -546,6 +558,43 @@ void main() {
         isNotNull,
         reason: 'the database was closed on the way out',
       );
+    });
+
+    test('ADR 14 #596 a SQLite whose trigram search cannot answer fails the '
+        'start, not the first misspelt search', () async {
+      // A library without FTS5's trigram tokenizer can't be loaded in a test,
+      // so the course's trigram index is a plain table here: its MATCH fails
+      // the way a missing tokenizer does.
+      final staging = Directory.systemTemp.createTempSync('sogda_asset');
+      addTearDown(() => staging.deleteSync(recursive: true));
+      final path = '${staging.path}/content.db';
+      ContentFixture.write(path);
+      final course = sqlite3.open(path)
+        ..execute('DROP TABLE words_trigram')
+        ..execute(
+          'CREATE TABLE words_trigram (uid, german, english, search_key)',
+        )
+        ..execute(
+          'INSERT INTO words_trigram SELECT uid, german, english, search_key '
+          'FROM words',
+        );
+      course.close();
+      _serveAssets(<String, Uint8List>{
+        ContentDao.asset: File(path).readAsBytesSync(),
+        ContentUpdater.manifestAsset: Uint8List.fromList(
+          manifestAsset.codeUnits,
+        ),
+      });
+
+      final result = await bootstrap(
+        openDatabase: openReal,
+        glass: GlassCapability(),
+      );
+
+      expect(result, isA<BootstrapFailed>());
+      final failure = (result as BootstrapFailed).failure;
+      addTearDown(failure.dispose);
+      expect(failure.step, BootstrapStep.content);
     });
 
     test('it never throws', () async {

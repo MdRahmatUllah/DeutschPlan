@@ -17,4 +17,37 @@ void main() {
       isTrue,
     );
   });
+
+  test('#705 a release build without key.properties fails unless it opts in '
+      'to the debug key', () {
+    final gradle = File('android/app/build.gradle.kts').readAsStringSync();
+    bool has(String pattern) => RegExp(pattern).hasMatch(gradle);
+    // Once the task graph is known, before any task runs: `flutter build apk
+    // --release` runs assembleRelease, `flutter build appbundle` bundleRelease.
+    expect(
+      has(
+        r'gradle\.taskGraph\.whenReady \{\s*'
+        r'val release = listOf\("assembleRelease", "bundleRelease"\)\s*'
+        r'\.any \{ hasTask\("\$\{project\.path\}:\$it"\) \}',
+      ),
+      isTrue,
+    );
+    expect(
+      has(
+        r'if \(release && keyProperties\.isEmpty && !allowDebugSigning\) \{'
+        r'\s*throw GradleException\(',
+      ),
+      isTrue,
+    );
+    // -P allowDebugSigning=true (flutter's -P, --android-project-arg) or
+    // ORG_GRADLE_PROJECT_allowDebugSigning: both are Gradle properties, and
+    // =false doesn't opt in.
+    expect(
+      has(
+        r'val allowDebugSigning = providers\.gradleProperty\("allowDebugSigning"\)'
+        r'\.orNull\s*\.let \{ it != null && it != "false" \}',
+      ),
+      isTrue,
+    );
+  });
 }

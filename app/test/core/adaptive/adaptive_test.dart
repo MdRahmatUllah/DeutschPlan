@@ -4,6 +4,8 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/main.dart'
+    show appLocalizationsDelegates, supportedLocales;
 
 import '../text_clipping.dart';
 
@@ -1200,5 +1202,217 @@ void main() {
         }
       });
     });
+  });
+
+  testWidgets("#686 ST-14 the iOS time wheel follows the phone's 12- or "
+      '24-hour setting, and gives back the time picked', (tester) async {
+    for (final always24 in <bool>[false, true]) {
+      TimeOfDay? result;
+      await tester.pumpWidget(
+        MaterialApp(
+          key: ValueKey(always24),
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(alwaysUse24HourFormat: always24),
+            child: child!,
+          ),
+          home: AdaptiveChromeScope(
+            chrome: AdaptiveChrome.cupertino,
+            child: Scaffold(
+              body: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () async => result = await Adaptive.showTimePickerFor(
+                    context: context,
+                    initial: const TimeOfDay(hour: 2, minute: 30),
+                  ),
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<cupertino.CupertinoDatePicker>(
+              find.byType(cupertino.CupertinoDatePicker),
+            )
+            .use24hFormat,
+        always24,
+      );
+      await tester.tap(find.text('Done'));
+      await tester.pumpAndSettle();
+      expect(result, const TimeOfDay(hour: 2, minute: 30));
+    }
+  });
+
+  testWidgets('#698 a tab bar whose tabs change count follows them, and a '
+      'value not among them moves nothing', (tester) async {
+    Future<void> bar(Map<String, String> tabs, String value) =>
+        tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            home: AdaptiveChromeScope(
+              chrome: AdaptiveChrome.material,
+              child: Scaffold(
+                body: AdaptiveTabBar<String>(
+                  tabs: tabs,
+                  value: value,
+                  onChanged: (_) {},
+                ),
+              ),
+            ),
+          ),
+        );
+    TabController controller() =>
+        tester.widget<TabBar>(find.byType(TabBar)).controller!;
+
+    const three = <String, String>{'a': 'A', 'b': 'B', 'c': 'C'};
+    await bar(const <String, String>{'a': 'A', 'b': 'B'}, 'b');
+    await bar(three, 'c');
+    await tester.pumpAndSettle();
+    expect(controller().length, 3);
+    expect(controller().index, 2);
+
+    await bar(three, 'z');
+    await tester.pumpAndSettle();
+    expect(controller().index, 2);
+  });
+
+  testWidgets("#698 the iOS confirm is in the app's font, Bangla behind it, "
+      'as the typed confirm is (#432)', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        home: AdaptiveChromeScope(
+          chrome: AdaptiveChrome.cupertino,
+          child: Scaffold(
+            body: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () => Adaptive.showConfirm(
+                  context: context,
+                  title: 'রিসেট?',
+                  message: 'সব মুছে যাবে।',
+                  confirmLabel: 'রিসেট',
+                  cancelLabel: 'বাতিল',
+                  destructive: true,
+                ),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    /// The family the first run of text in [label] is drawn in: the nearest
+    /// one set on the way down to it.
+    String? family(String label) {
+      String? found;
+      String? current;
+      tester
+          .renderObject<RenderParagraph>(find.text(label, findRichText: true))
+          .text
+          .visitChildren((span) {
+            current = span.style?.fontFamily ?? current;
+            if (span is TextSpan && (span.text ?? '').isNotEmpty) {
+              found = current;
+              return false;
+            }
+            return true;
+          });
+      return found;
+    }
+
+    final app = SgText.styleFor(SgTokens.light(), SgTextRole.body);
+    for (final label in <String>['রিসেট?', 'সব মুছে যাবে।', 'রিসেট', 'বাতিল']) {
+      expect(family(label), app.fontFamily, reason: label);
+    }
+    expect(
+      tester
+          .widgetList<cupertino.CupertinoDialogAction>(
+            find.byType(cupertino.CupertinoDialogAction),
+          )
+          .map((action) => action.textStyle?.fontFamilyFallback),
+      everyElement(app.fontFamilyFallback),
+    );
+  });
+
+  testWidgets('#686 ST-8 a sheet rounds its top corners only: its foot is '
+      "the screen's", (tester) async {
+    // Each sheet, by the chrome it opens under and what is in it.
+    final sheets = <(AdaptiveChrome, void Function(BuildContext), Finder)>[
+      for (final chrome in AdaptiveChrome.values)
+        (
+          chrome,
+          (context) => Adaptive.showSheet<void>(
+            context: context,
+            builder: (_) => const Text('sheet'),
+          ),
+          find.text('sheet'),
+        ),
+      // iOS's reminder-time wheel.
+      (
+        AdaptiveChrome.cupertino,
+        (context) => Adaptive.showTimePickerFor(
+          context: context,
+          initial: const TimeOfDay(hour: 19, minute: 0),
+        ),
+        find.byType(cupertino.CupertinoDatePicker),
+      ),
+    ];
+    for (final (i, (chrome, open, content)) in sheets.indexed) {
+      await tester.pumpWidget(
+        MaterialApp(
+          key: ValueKey(i),
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+          home: AdaptiveChromeScope(
+            chrome: chrome,
+            child: Scaffold(
+              body: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () => open(context),
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      final decoration =
+          tester
+                  .widgetList<DecoratedBox>(
+                    find.descendant(
+                      of: find.ancestor(
+                        of: content,
+                        matching: find.byType(SgSurface),
+                      ),
+                      matching: find.byType(DecoratedBox),
+                    ),
+                  )
+                  .first
+                  .decoration
+              as BoxDecoration;
+      expect(
+        decoration.borderRadius,
+        SgTokens.light().shape.sheetRadius,
+        reason: 'sheet $i, $chrome',
+      );
+      expect(
+        (decoration.borderRadius! as BorderRadius).bottomLeft,
+        Radius.zero,
+      );
+    }
   });
 }

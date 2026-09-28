@@ -69,7 +69,7 @@ first machine, as it was set up.
 |---|---|
 | OS | Windows 11. Use Git Bash for commands, PowerShell where noted. |
 | Flutter | 3.47.5 / Dart 3.13.4 on PATH (`F:/appDevs/flutterSDK/flutter`). It matches `.fvmrc`. **No `fvm`, no `make`.** |
-| Python | 3.10 on PATH (docs say 3.11+). Has pytest, openpyxl, PyYAML and Pillow. |
+| Python | 3.10 on PATH (the docs ask for 3.10+). Has pytest, openpyxl, PyYAML and Pillow. |
 | gh | Logged in as `rahmat-ullah`. |
 | Android | SDK at `%LOCALAPPDATA%/Android/Sdk`. App id `de.sogda.app` (ADR 28; `io.github.rahmatullah.deutschplan` (#170) and `com.example.deutschplan` before it: uninstall those). Emulators: **`emulator-5554` (Pixel_8) is agent-3's (SQA) alone**; the developer agents share **`emulator-5558`** (Medium_Phone, API 36), `tools/device.py`'s default. Leave any other running emulator alone. |
 | iOS | Impossible here (no Mac). iOS-only work is written blind and marked *unverified*. |
@@ -250,7 +250,7 @@ change):
 | Lock | Take it before |
 |---|---|
 | `user-db-schema` | bumping `AppDatabase.latestSchemaVersion` or adding `drift_schemas/drift_schema_vN.json`. Two parallel v3s can't both be right. |
-| `adr-number` | writing the next row of `docs/05-dev-guide/decisions.md` (the next free number is 27; 26 is cited in code but missing, see #284) |
+| `adr-number` | writing the next row of `docs/05-dev-guide/decisions.md` (read the last row for the next free number: 30 as of #596 |
 | `pubspec` | adding or bumping a dependency (`pubspec.yaml`/`.lock`; a licence entry is also needed) |
 | `ci-config` | `.github/workflows/*`, `Makefile`, `tools/tests/test_ci.py` |
 | `shared-look` | a change to `core/theme`, `core/components`, `core/adaptive`, `core/typography` or the golden harness that re-renders OTHER screens' goldens. Adding an optional parameter for your own screen doesn't need it. |
@@ -322,7 +322,7 @@ it once cost a bug.
 9. **Device check** (Android screens and anything with platform behaviour):
    ```bash
    python tools/team.py device                         # wait for the lock if refused; do other work
-   cd app && flutter build apk --release --target-platform android-x64 && cd ..
+   cd app && flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true && cd ..
    python tools/device.py install launch tap:Learn "tap:Word categories" shot:l5.png
    python tools/team.py device --release
    ```
@@ -389,7 +389,7 @@ F:/appDevs/deutschplan/
     lib/                      see below
     test/                     mirrors lib: core/ data/ db/ domain/ features/ golden/ router/ services/
     assets/db/content.db      the course (committed, read-only)
-    drift_schemas/            user.db schema fixtures v1, v2 (committed)
+    drift_schemas/            user.db schema fixtures v1…vN, one per schema version (committed)
   docs/                       the source of truth (§9)
   tools/                      Python: content pipeline, team.py, plant.py, artboard.py, device.py; tests in tools/tests
   content/                    pipeline manifest + interference tips (workbooks are in the gitignored data/)
@@ -416,15 +416,22 @@ app/lib/
     db/user_schema.drift     user.db DDL (17 tables) — the only schema source (ADR 22)
     db/app_database.dart     AppDatabase, latestSchemaVersion, stepByStep migrations
     db/*.drift               content.drift (course reads), word_queries, grammar_queries, exam_queries
-    repositories/            word, grammar, plan, plan_store, rating_service, exam (quiz+exam persistence),
-                             search (4 tiers), backup, model, settings + setting_keys, setup, sentence_store, synthesis_cache
-  domain/                    pure Dart: answer_check, cloze, edit_distance, fsrs, grammar_item_generator, placement,
-                             plan_engine (PlanStore interface), plan_stats, sentence_picker, text_norm
-  features/                  backlog, bootstrap, day_complete, learn (L1–L6, L15), onboarding (S2, S3), sentences (T5),
-                             splash, study (T2, T3), today (T1), words (WordRow)
+    repositories/            word, word_actions, grammar, plan, plan_store, rating_service, exam (+ its run and
+                             result services), quiz_store, quiz_run_service, search (4 tiers), backup, reset, progress,
+                             model, translation, reminder_scheduler, settings + setting_keys, setup, sentence_store,
+                             synthesis_cache, course_text
+  domain/                    pure Dart: answer_check, cloze, compare_set, edit_distance, exam_generator, exam_grading,
+                             fsrs, grammar_item_generator, placement, plan_engine (PlanStore interface), plan_stats,
+                             progress_stats, quiz_builder, quiz_queue, reminder_times, sentence_picker, text_norm,
+                             word_of_day
+  features/                  backlog, bootstrap, day_complete, exam (L12–L14), learn (L1–L6, L10, L11, L15), me (M1–M9),
+                             onboarding (S2, S3), quiz (L7–L9), search (R1, R2), sentences (T5), splash, study (T2, T3),
+                             today (T1), words (W1, W2, WordRow)
   router/                    routes.dart (typed routes + args + helpers), app_router, app_shell (4 tabs),
-                             cross_tab (jumpToTab), route_guards, back_behaviour, deep_links, placeholder_screen
-  services/                  tts (TtsEngine, SystemTts), model_downloads, notification_permission
+                             cross_tab (jumpToTab), route_guards, back_behaviour, deep_links
+  services/                  tts (TtsEngine, SystemTts, Supertonic), translation (Translator, off in v1), model_downloads,
+                             notification_permission, reminder_notifications, background_tasks, widget_snapshot,
+                             device_storage, exam_recorder, speech_audio, backup_files, start_report
   l10n/                      app_en.arb (template, with @descriptions), app_bn.arb; generated/ is gitignored
 ```
 
@@ -564,7 +571,6 @@ Layers, per `docs/05-dev-guide/testing.md`:
   - `settings_repository_test` reads `user-database.md`'s settings table.
 
   Change the doc with the code.
-- **Placeholders asserted by text:** the router tests (`app_router_test`, `back_behaviour_test`, `route_guards_test`, `deep_links_test`) and `backlog_test`/`sentences_test` look for texts like `'R1'`, `'M1'`, `'W1 $haus'`. Replacing a placeholder means updating those assertions.
 - **Planted violations:** `tools/plant.py` (§4, step 8). It never kills other agents' processes. If a stale `flutter_tester` from *your* worktree holds a DLL, run it with `--kill-own-testers`.
 
 ## 8. Working in parallel without collisions
@@ -574,9 +580,9 @@ The files every feature touches, and how to keep merges cheap:
 | File | What features do there | Rule |
 |---|---|---|
 | `app/lib/l10n/app_en.arb`, `app_bn.arb` | add keys | Add your keys **after the last key of the most related screen** (quiz keys after the `quiz…` keys, placed after that key's `@key` block in `app_en.arb`), not at the end of the file, where every PR collides. A brand-new screen goes after the keys of the screen it is reached from. On conflict, keep both blocks and fix the commas. `test/l10n_test.dart` checks the result. |
-| `app/lib/router/routes.dart` | replace a placeholder, add imports and helpers | Keep your edit inside your route's class. Put your import in alphabetical order. Rebase just before merging. |
+| `app/lib/router/routes.dart` | add a route, its imports and helpers | Keep your edit inside your route's class. Put your import in alphabetical order. Rebase just before merging. |
 | `app/test/features/today_fixtures.dart` | add fixtures and `todayStub` overrides | Put your fixtures in `test/features/<feature>_fixtures.dart` and add one spread line (`...searchStub(),`) to `todayStub()`. |
-| `app/test/router/*_test.dart` | screen tables, placeholder assertions | Change only your rows. |
+| `app/test/router/*_test.dart` | screen tables | Change only your rows. |
 | `app/lib/core/providers/app_providers.dart` | new repository or service providers | Append to the right section. A keepAlive provider also needs its row in `state-management.md`. |
 | `navigation.md`, `state-management.md`, `user-database.md` tables | rows that tests parse | Rows in order. Keep both sides on conflict. |
 | `core/*` shared widgets | new optional parameters | An optional parameter needs no lock. A change that re-renders other screens takes `shared-look`, and you regenerate only the goldens it changes and look at them. |

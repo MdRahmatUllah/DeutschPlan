@@ -409,6 +409,23 @@ void main() {
       expect(find.text('00:03'), findsOneWidget);
     });
 
+    testWidgets('#892 #624 a call while the recorder starts holds the time '
+        'too', (tester) async {
+      final slow = FakeRecorder()..starting = Completer<void>();
+      await pump(tester, recorder: slow);
+      await tester.tap(find.byIcon(Icons.mic));
+      await tester.pump();
+
+      slow.interruptions.add(true);
+      await tester.pump();
+      slow.starting!.complete();
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10n.examSpeakingInterrupted), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5));
+      expect(find.text('00:00'), findsOneWidget);
+    });
+
     testWidgets('#670 the app going to the background stops and keeps it', (
       tester,
     ) async {

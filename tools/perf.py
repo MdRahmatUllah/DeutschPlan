@@ -72,6 +72,9 @@ BASELINE = TOOLS / "perf_baseline.json"
 SPLITS = APP / "build" / "app" / "outputs" / "flutter-apk"
 RESPONSE = APP / "build" / "integration_response_data.json"
 SEED_APK = APP / "build" / "perf-seed.apk"
+# #705: without app/android/key.properties a release build fails unless it opts
+# in to the debug key; with the file, the upload key signs it all the same.
+DEBUG_SIGNING = "allowDebugSigning=true"
 YEAR = "year."
 ACTIVITY = f"{device.PACKAGE}/.MainActivity"
 RUNS = 5
@@ -112,7 +115,7 @@ def build_splits() -> None:
     over it as a downgrade — should the uninstall at the end not have run."""
     run([flutter(), "build", "apk", "--release", "--split-per-abi",
          "--obfuscate", "--split-debug-info=build/perf-symbols",  # not the AAB's (#697 TL-9)
-         "-P", "force-version-code-ignoring-abi=true"])
+         "-P", "force-version-code-ignoring-abi=true", "-P", DEBUG_SIGNING])
 
 
 def build_seed() -> None:
@@ -120,7 +123,7 @@ def build_seed() -> None:
     splits: the app's own id, key and version code, so the measured APK
     installs over it and keeps what it seeded (#818)."""
     run([flutter(), "build", "apk", "--release", "--target-platform", "android-x64",
-         "-t", "integration_test/perf_seed.dart"])
+         "-t", "integration_test/perf_seed.dart", "-P", DEBUG_SIGNING])
     shutil.copyfile(SPLITS / "app-release.apk", SEED_APK)
 
 

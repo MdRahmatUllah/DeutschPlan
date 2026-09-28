@@ -19,7 +19,7 @@ the device. It writes no product code.
    gh issue list --state closed --search "closed:>=<UTC timestamp>" --limit 200
    ```
    Build the timestamp with `date -u +%Y-%m-%dT%H:%M:%SZ`: the host is UTC+2, and a local time marked `Z` silently misses closures. Diff the list against the ledger, and test only what's new, oldest first. Include the SQA fixes that merged.
-3. **Build and install** a release x64 APK of the commit under test (`flutter build apk --release --target-platform android-x64`). Install on 5556 (`adb -s emulator-5556 …`, or `tools/device.py --serial emulator-5556`). Storage is tight, so free space first (`pm trim-caches`, `pm uninstall -k` then install).
+3. **Build and install** a release x64 APK of the commit under test (`flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true`; without the opt-in a release build fails, #705). Install on 5556 (`adb -s emulator-5556 …`, or `tools/device.py --serial emulator-5556`). Storage is tight, so free space first (`pm trim-caches`, `pm uninstall -k` then install).
 4. **Test each issue** against its acceptance criteria and spec, on the device:
    - drive the UI with `uiautomator dump` plus taps. Dump before every tap; parse both quote styles, because uiautomator single-quotes attributes containing `"`;
    - screenshots, screen recordings, and `logcat` timings (`log -t SQAMARK` markers);

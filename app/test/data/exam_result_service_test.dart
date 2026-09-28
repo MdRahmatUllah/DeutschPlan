@@ -328,6 +328,7 @@ void main() {
     expect(await db.select(db.reviewLog).get(), isEmpty);
     expect(await db.select(db.wordState).get(), isEmpty);
     expect(await db.select(db.dailyStats).get(), isEmpty);
+    expect(await db.select(db.undoStack).get(), isEmpty, reason: '#871');
 
     await db.customStatement('DROP TRIGGER fail_rating');
     await service.addToRevision(uids, today: '2026-09-21');

@@ -317,31 +317,34 @@ void main() {
       );
     });
 
-    test('BR-PLAN-07 the pause offer needs more than 3 × daily_new', () {
-      expect(
-        kind(const ContextualFacts(backlog: 21, step: 'A1.1')),
-        isNull,
-        reason: '= 3×',
-      );
-      expect(
-        kind(const ContextualFacts(backlog: 22, step: 'A1.1')),
-        ContextualKind.pauseOffer,
-      );
-      expect(
-        kind(const ContextualFacts(backlog: 22, step: 'A1.1', pauseOn: true)),
-        isNull,
-        reason: 'already paused',
-      );
-      expect(
-        kind(const ContextualFacts(backlog: 16, dailyNew: 5, step: 'A1.1')),
-        ContextualKind.pauseOffer,
-      );
-      expect(
-        kind(const ContextualFacts(backlog: 22)),
-        isNull,
-        reason: 'Z05: no step, no new words to pause',
-      );
-    });
+    test(
+      'FR-T1-07 BR-PLAN-07 the pause offer needs more than 3 × daily_new',
+      () {
+        expect(
+          kind(const ContextualFacts(backlog: 21, step: 'A1.1')),
+          isNull,
+          reason: '= 3×',
+        );
+        expect(
+          kind(const ContextualFacts(backlog: 22, step: 'A1.1')),
+          ContextualKind.pauseOffer,
+        );
+        expect(
+          kind(const ContextualFacts(backlog: 22, step: 'A1.1', pauseOn: true)),
+          isNull,
+          reason: 'already paused',
+        );
+        expect(
+          kind(const ContextualFacts(backlog: 16, dailyNew: 5, step: 'A1.1')),
+          ContextualKind.pauseOffer,
+        );
+        expect(
+          kind(const ContextualFacts(backlog: 22)),
+          isNull,
+          reason: 'Z05: no step, no new words to pause',
+        );
+      },
+    );
 
     test('BR-EXAM-01 exams unlock at exam_unlock_percent of the step', () {
       const at90 = ContextualFacts(

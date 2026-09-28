@@ -7,10 +7,10 @@ Excel is the authoring tool; the app never opens a workbook. `tools/excel_to_sql
 ```
 content/manifest.yaml
   workbooks:
-    - file: German_B1_Tracker.xlsx     # contains A1, A2, B1 (level per word row)
-    - file: German_B2_Tracker.xlsx
-    - file: German_C1_Tracker.xlsx
-    - file: German_C2_Tracker.xlsx
+    - file: data/German_B1_Tracker.xlsx # contains A1, A2, B1 (level per word row)
+    - file: data/German_B2_Tracker.xlsx
+    - file: data/German_C1_Tracker.xlsx
+    - file: data/German_C2_Tracker.xlsx
     # add more here; order = fallback level order for grammar without a level
   tips: content/interference_tips.csv
   corrections: content/corrections.yaml   # reviewed fixes to the workbooks, below
@@ -110,13 +110,13 @@ links:
 
 ## Outputs
 
-- `content/build/content.db` — copied to `app/assets/db/content.db` by `make content`.
+- `content/build/content.db` — copied to `app/assets/db/content.db` by hand after the build (step 2 below).
 - `content/build/content_manifest.json` — counts, boundaries (kept by the next build, PIPE-02), uid list with its `words` and `meanings` digests, the `aliases` of PIPE-09, build time.
 
 ## Adding a fifth workbook
 
 1. Put the `.xlsx` in `data/` and add it to `content/manifest.yaml` (and to the workbook list in `tools/tests/test_shipped_content.py`). A column the maps read that the workbook doesn't have goes under its entry's `without:`, by field name (`without: [collocations, synonyms_register]`), or the build stops on it as a renamed header (#714).
-2. Build, verify, copy (`make content` does the three): `python tools/excel_to_sqlite.py`, `python tools/verify_content.py`, then copy `content/build/content.db` and `content/build/content_manifest.json` to `app/assets/db/`.
+2. Build, verify, copy: `python tools/excel_to_sqlite.py`, `python tools/verify_content.py`, then copy `content/build/content.db` and `content/build/content_manifest.json` to `app/assets/db/`.
 3. Run `python -m pytest tools/tests -q` and, from `app/`, `flutter test test/db/` (schema and count assertions read the manifest).
 4. Commit `content/manifest.yaml` and the regenerated asset together, not the workbook. The workbooks stay out of git until the owner makes the repository private (#634): until then they live in `data/`, which is git-ignored, and what the repository records is each one's SHA-256, in `meta.sources` and the manifest's `sources`.
 

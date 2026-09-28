@@ -118,6 +118,10 @@ void main() {
     await app.transaction(() async {
       await rows(app);
       backgroundWrite = background.transaction(() => put(background, 'bg'));
+      // Long enough for the background's BEGIN to reach SQLite and wait on
+      // the lock: nothing signals that it waits. A runner too slow for that
+      // lets the app commit first, and the test passes without the race it
+      // is about. It can miss, never fail wrongly (#871).
       await Future<void>.delayed(const Duration(milliseconds: 300));
       await put(app, 'app');
     });
