@@ -121,7 +121,7 @@ class OnboardingPacePage extends ConsumerWidget {
           const SizedBox(height: groupGap),
           Wrap(
             spacing: 8,
-            runSpacing: 8,
+            runSpacing: AdaptiveTapTarget.runSpacing(32),
             children: <Widget>[
               for (final (count, label) in <(int, String)>[
                 (relaxed, l10n.onboardingPaceRelaxed(relaxed)),

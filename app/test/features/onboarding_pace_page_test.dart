@@ -19,6 +19,8 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
+
 /// S2 page 4 · Daily pace — #90.
 void main() {
   late AppLocalizations l10n;
@@ -81,6 +83,20 @@ void main() {
 
   String estimate(int days, String step, int dailyNew) =>
       l10n.onboardingPaceEstimate(days, step, dailyNew);
+
+  testWidgets('#952 FR-S2-04 the presets read run by run, as they wrap', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    tester.view.physicalSize = const Size(260, 844) * 3;
+    await tester.pumpAndSettle();
+    expectWrapReadsAsDrawn(
+      tester,
+      find.text(l10n.onboardingPaceRelaxed(5), findRichText: true),
+    );
+    semantics.dispose();
+  });
 
   group('FR-S2-04 the estimate', () {
     testWidgets("starts on the defaults and the step's own words", (

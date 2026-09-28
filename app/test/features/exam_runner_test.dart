@@ -483,6 +483,49 @@ void main() {
     });
   });
 
+  testWidgets("#952 FR-L12-01 Spot the error's and Order the sentence's "
+      'words read run by run, as they wrap', (tester) async {
+    const words = <String>[
+      'Ich', 'habe', 'gestern', 'mit', 'meinem', 'Bruder', //
+      'einen', 'langen', 'Spaziergang', 'im', 'Park', 'gemacht.',
+    ];
+    final semantics = tester.ensureSemantics();
+    await pump(
+      tester,
+      stub: StubExamRun(
+        items: const <ExamItem>[
+          GrammarQuestion(
+            't1#0',
+            SpotTheError(tokens: words, wrong: 1, correction: 'hat'),
+          ),
+          GrammarQuestion(
+            't2#1',
+            OrderTheSentence(chips: words, answer: words),
+          ),
+        ],
+        given: const <int, String>{},
+      ),
+    );
+    Finder wrapOf(String word) =>
+        find.ancestor(of: find.text(word), matching: find.byType(Wrap)).first;
+    var order = wrapOrder(tester, wrapOf('Spaziergang'));
+    expect(order.runs, greaterThan(1), reason: 'the sentence wraps');
+    expect(order.read, order.drawn);
+    expect(order.drawn, words);
+
+    await tap(tester, l10n.examRunNext);
+    order = wrapOrder(tester, wrapOf('Spaziergang'));
+    expect(order.runs, greaterThan(1));
+    expect(order.read, order.drawn);
+    for (final word in words.take(9)) {
+      await tap(tester, word);
+    }
+    order = wrapOrder(tester, wrapOf('Spaziergang'));
+    expect(order.runs, greaterThan(1), reason: 'the placed words wrap');
+    expect(order.read, order.drawn);
+    semantics.dispose();
+  });
+
   group('#131 the navigator', () {
     Future<void> open(WidgetTester tester) async {
       await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
@@ -564,6 +607,29 @@ void main() {
         isSemantics(isSelected: true),
         reason: 'the question on screen',
       );
+      semantics.dispose();
+    });
+
+    testWidgets('#952 the numbers read row by row, as the grid draws them', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      await open(tester);
+      final order = wrapOrder(
+        tester,
+        find
+            .ancestor(
+              of: find.bySemanticsLabel(l10n.examNavQuestion(1)),
+              matching: find.byType(Wrap),
+            )
+            .first,
+      );
+      expect(order.runs, 5, reason: 'eight to a row');
+      expect(order.drawn, <String>[
+        for (var n = 1; n <= 40; n++) l10n.examNavQuestion(n),
+      ]);
+      expect(order.read, order.drawn);
       semantics.dispose();
     });
 

@@ -415,6 +415,14 @@ class AdaptiveTapTarget extends SingleChildRenderObjectWidget {
   static Size minimumOf(BuildContext context) =>
       context.isCupertino ? const Size.square(44) : const Size.square(48);
 
+  /// The run spacing of a `Wrap` of controls at least [height] tall, drawn
+  /// under the target (#952): 48 less [height], and 8 at the least. Closer,
+  /// two runs' grown targets overlap: a tap between the runs is either's,
+  /// and a screen reader takes the runs for one row and reads it column by
+  /// column (Flutter groups nodes whose extents overlap, then sorts by x).
+  /// 48 under iOS chrome too, one layout for both: 44 pt needs less.
+  static double runSpacing(double height) => math.max(8, 48 - height);
+
   @override
   RenderObject createRenderObject(BuildContext context) =>
       RenderAdaptiveTapTarget(minimumOf(context), merge);
