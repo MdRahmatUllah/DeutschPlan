@@ -341,6 +341,28 @@ void main() {
       expect(location(), '/today');
     });
 
+    // It parses, and throws once its path or query is decoded. A push of one
+    // is BootstrapHost's, the first observer (widget_test.dart).
+    for (final link in <String>['sogda://word/%FF', 'sogda://today?x=%FF']) {
+      testWidgets("#980 a launch link whose escape isn't UTF-8 opens where "
+          'bootstrap says: $link', (tester) async {
+        tester.platformDispatcher.defaultRouteNameTestValue = link;
+        addTearDown(tester.platformDispatcher.clearDefaultRouteNameTestValue);
+        await pumpApp(tester);
+
+        expect(location(), '/today');
+      });
+    }
+
+    test(
+      '#980 readable: a link whose escape decodes, and one whose does not',
+      () {
+        expect(readable(Uri.parse('sogda://word/b%C3%A4r?speak=1')), isTrue);
+        expect(readable(Uri.parse('sogda://word/%FF')), isFalse);
+        expect(readable(Uri.parse('sogda://today?x=%FF')), isFalse);
+      },
+    );
+
     testWidgets('an unknown link lands on Today, not on an error', (
       tester,
     ) async {

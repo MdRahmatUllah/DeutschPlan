@@ -21,6 +21,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/router/app_router.dart';
+import 'package:sogda/router/deep_links.dart' show readable, todayLink;
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
@@ -141,8 +142,22 @@ class _BootstrapHostState extends State<BootstrapHost>
 
   @override
   Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
-    if (_ready) return Future<bool>.value(false);
-    _pendingLink = routeInformation.uri;
+    // #980: a link that can't be read goes on as Today's: as it is, every
+    // observer after this one, and the router, would throw on it.
+    // ponytail: the View's MediaQuery above the app is asked first, and
+    // Flutter's default there logs a caught FormatException (logcat only);
+    // silencing it means MainActivity rewriting the intent's data.
+    final arrived = routeInformation.uri;
+    final link = readable(arrived) ? arrived : todayLink;
+    if (!_ready) {
+      _pendingLink = link;
+      return Future<bool>.value(true);
+    }
+    if (identical(link, arrived)) return Future<bool>.value(false);
+    // Under the same rules as a platform push: a running exam holds.
+    if (_result case BootstrapReady(:final bootstrap)) {
+      bootstrap.router.go(link.toString());
+    }
     return Future<bool>.value(true);
   }
 
