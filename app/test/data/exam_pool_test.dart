@@ -8,6 +8,7 @@ import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart' show sameTargetFamily;
+import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -188,6 +189,53 @@ VALUES ('uid-heim', 'A1.2', 'A1', 9, 9, 'das', 'Heim', 'noun', 'house',
     ];
 
     String key(String ref) => ref.split('#').first;
+
+    test('#752 FR-L15-01 no Pick the form borrows a sentence from a later '
+        'step than its topic', () async {
+      // The earliest step each example sentence is a word's example in.
+      final firstStep = <String, int>{};
+      for (final row
+          in await db
+              .customSelect(
+                'SELECT e.german AS german, s.ord AS step FROM word_examples e '
+                'JOIN words w ON w.uid = e.word_uid '
+                'JOIN sublevels s ON s.code = w.sublevel_code',
+              )
+              .get()) {
+        // Compared without spaces: an item's parts leave out the blank's.
+        final german = row.read<String>('german').replaceAll(RegExp(r'\s'), '');
+        final step = row.read<int>('step');
+        final known = firstStep[german];
+        if (known == null || step < known) firstStep[german] = step;
+      }
+      final order = <String, int>{
+        for (final row
+            in await db.customSelect('SELECT code, ord FROM sublevels').get())
+          row.read<String>('code'): row.read<int>('ord'),
+      };
+
+      final later = <String>[];
+      for (final step in steps) {
+        final pool = await exams.pool(step);
+        for (final topic in pool.topics) {
+          for (var seed = 1; seed <= 20; seed++) {
+            for (final item in generateItems(
+              topic,
+              seed: seed,
+              course: pool.course,
+            ).whereType<PickTheForm>()) {
+              final sentence = '${item.before}${item.answer}${item.after}'
+                  .replaceAll(RegExp(r'\s'), '');
+              final from = firstStep[sentence];
+              if (from != null && from > order[step]!) {
+                later.add('[$step] ${topic.topic}: $sentence');
+              }
+            }
+          }
+        }
+      }
+      expect(later.toSet(), isEmpty);
+    });
 
     test('#753 every Writing and Speaking task is about a theme, never a word '
         'class or a language feature', () async {

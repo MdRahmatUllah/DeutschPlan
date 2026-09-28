@@ -152,6 +152,12 @@ void main() {
     expect(find.text(l10n.speakerNoVoice), findsOneWidget);
   });
 
+  test('#752 FR-L15-01 L4 and L15 give the generator the step of the topic, '
+      'which Pick the form borrows up to', () {
+    final topic = artboardTopic();
+    expect(grammarSource(topic).sublevelCode, topic.topic.sublevelCode);
+  });
+
   testWidgets('FR-L4-02 Practise opens L15 for this topic, as many items as '
       'it will ask', (tester) async {
     await pump(tester);

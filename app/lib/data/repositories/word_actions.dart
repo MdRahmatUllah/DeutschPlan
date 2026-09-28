@@ -106,7 +106,7 @@ class WordActions {
         final first = open.firstOrNull;
         // The newest goes with the rating, so the rating's undo reopens it;
         // the rest close at the same moment and reopen with it.
-        await _rating.markKnown(
+        final entry = await _rating.markKnown(
           uid,
           planDate: first?.planDate,
           kind: switch (first?.kind) {
@@ -129,7 +129,8 @@ class WordActions {
           }
         }
         return () => _db.transaction(() async {
-          if (await _rating.undo(expectUid: uid) == null) return;
+          // This rating only: one made since, of this word too, stays (#888).
+          if (await _rating.undo(entry: entry) == null) return;
           for (final row in rest) {
             await _db
                 .into(_db.planItems)

@@ -647,6 +647,27 @@ void main() {
       expect((await models.stagingFor('hymt')).existsSync(), isFalse);
     });
 
+    test(
+      '#868 FR-M4-03 deleting frees what an interrupted download left: '
+      "the downloader's copies, in models/ and in app support's root",
+      () async {
+        final partial = await models.partialDirectory();
+        File('${partial.path}/com.bbflight.background_downloader7')
+          ..createSync(recursive: true)
+          ..writeAsStringSync('a third of a file');
+        final orphan = File(
+          '${support.path}/com.bbflight.background_downloader8',
+        )..writeAsStringSync('from an older build');
+        final mine = File('${support.path}/user.sqlite')..writeAsStringSync('');
+
+        await models.delete(entryOf(<ModelVariant>[variantOf('bytes')]));
+
+        expect(partial.existsSync(), isFalse);
+        expect(orphan.existsSync(), isFalse);
+        expect(mine.existsSync(), isTrue);
+      },
+    );
+
     test('deleting one model leaves the other', () async {
       final variant = variantOf('bytes');
       await stage('hymt', variant, 'bytes');

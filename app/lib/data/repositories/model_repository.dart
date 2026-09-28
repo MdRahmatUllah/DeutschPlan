@@ -309,6 +309,20 @@ class ModelRepository {
   /// with the app id and with an iOS update.
   static String recordingName(int attemptId) => 'recordings/$attemptId.m4a';
 
+  /// Where a take records beside the recording at [path], which it replaces
+  /// only once it stops: a take that fails leaves the last one whole
+  /// (#691 EX-5). Its own `.m4a`, as the encoder is picked by the extension
+  /// on iOS.
+  static String takeOf(String path) => '$path.take.m4a';
+
+  /// The recording at [path] gone, and a take cut off beside it: the app
+  /// killed mid-take leaves one (#691 EX-5).
+  static Future<void> deleteRecordingAt(String path) async {
+    for (final file in <File>[File(path), File(takeOf(path))]) {
+      if (await file.exists()) await file.delete();
+    }
+  }
+
   /// The recording a Speaking answer's [given] names, or null when it names
   /// none or the file isn't on this phone: a missing file is not recorded
   /// (#688 DA-6). Found by [attemptId], so a row that stored the old
@@ -329,8 +343,7 @@ class ModelRepository {
       return;
     }
     for (final attempt in attempts) {
-      final file = await recordingFor(attempt);
-      if (await file.exists()) await file.delete();
+      await deleteRecordingAt((await recordingFor(attempt)).path);
     }
   }
 
@@ -475,6 +488,36 @@ class ModelRepository {
     );
   }
 
+  /// Where the downloader writes a file until it is whole (#868): under
+  /// `models/`, which *Delete* and a landed download clear, and not app
+  /// support's root, where the platform's default put a big file's copy and
+  /// a force-stopped download left ~100 MB for good.
+  Future<Directory> partialDirectory() async =>
+      Directory('${(await _root()).path}/.partial');
+
+  /// Every part-downloaded file thrown away (#868): [partialDirectory], and
+  /// the downloader's own copies an older build left in app support's root.
+  /// Only with no download running, which writes there.
+  Future<void> clearPartial() async {
+    final partial = await partialDirectory();
+    if (partial.existsSync()) partial.deleteSync(recursive: true);
+    final root = support ?? await getApplicationSupportDirectory();
+    if (!root.existsSync()) return;
+    for (final entity in root.listSync()) {
+      if (entity is File &&
+          entity.uri.pathSegments.last.startsWith(_downloaderTemp)) {
+        try {
+          entity.deleteSync();
+        } on FileSystemException {
+          // Held by something: the next clear takes it.
+        }
+      }
+    }
+  }
+
+  /// How background_downloader names its copy of a file being downloaded.
+  static const String _downloaderTemp = 'com.bbflight.background_downloader';
+
   /// FR-M4-03: deleting a model turns off what depended on it.
   ///
   /// The setting is written after the files are gone, so a failure to delete
@@ -489,6 +532,12 @@ class ModelRepository {
     ]) {
       if (directory.existsSync()) directory.deleteSync(recursive: true);
     }
+    // What an interrupted download left, which no model's folder holds
+    // (#868). *Delete* is offered only once a model is in place.
+    // ponytail: .partial is every model's, so deleting one while another
+    // downloads fails that download (Retry fetches it again). Only the voice
+    // downloads in v1 (Hy-MT is off); a folder per model once two can.
+    await clearPartial();
 
     switch (entry.disables) {
       case 'tts_engine':

@@ -22,7 +22,7 @@ A word suspended mid-session (W1 opened from the overflow) stays in the queue it
 
 **Functional requirements**
 - FR-T2-01 Tapping the card or *Show meaning* MUST reveal; auto-play rules per `03-domain/tts.md`.
-- FR-T2-02 Rating MUST write one transaction (plan engine `rate`) and advance; a 4 s snackbar *Undo* MUST revert it fully.
+- FR-T2-02 Rating MUST write one transaction (plan engine `rate`) and advance; a 4 s snackbar *Undo* MUST revert it fully. It reverts that rating only: when the word has been rated again since, elsewhere (an L8 answer under a bar a screen reader keeps), nothing changes (#888). *I know it*'s *Undo* likewise.
   - The card that completes the day keeps its *Undo* too: T6 comes once the bar has gone (4 s, or when a screen reader's user closes it). Taken, the session is back on that card (#689 TD-9).
   - A rating, *I know it* or *Skip* acts on the card it came from. A swipe on a card still leaving (its exit animation) writes nothing, rather than rating the card come in its place (#689 TD-10).
 - FR-T2-03 *Skip → backlog* MUST leave the item open (BR-PLAN-06) and show "Moved {word} to the backlog · Undo".

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -83,7 +84,14 @@ class PlatformReminderNotifications implements ReminderNotifications {
   Future<void> schedule(List<DateTime> at, ReminderCopy copy) async {
     await cancelAll();
     for (final instant in at) {
-      await replace(instant, copy);
+      try {
+        await replace(instant, copy);
+      } on ArgumentError catch (error) {
+        // SV-6 (#693): today's, ahead when the week was worked out, can be
+        // a few milliseconds past by now, and the plugin refuses it ("Must
+        // be a date in the future"). The rest of the week still goes in.
+        debugPrint('reminder: $error');
+      }
     }
   }
 

@@ -2,7 +2,7 @@ name: sogda
 description: "An exam-structured, fully offline German study plan from A1.1 to C2.2."
 publish_to: 'none'
 
-version: 1.0.1+2
+version: 1.1.0+3
 
 environment:
   sdk: ^3.13.0
@@ -93,7 +93,6 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   # riverpod_lint 3.1.4+ is a native analyzer plugin; it no longer needs custom_lint
   riverpod_lint: ^3.1.9
-
 
 flutter:
   uses-material-design: true

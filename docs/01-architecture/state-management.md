@@ -3,7 +3,7 @@
 ## Principles
 
 - **Providers own state; widgets render it.** No `setState` for anything that outlives a gesture.
-- **Codegen everywhere:** `@riverpod` functions and `@riverpod class … extends _$…` notifiers. Hand-written providers are not allowed (lint `riverpod_lint` enforces).
+- **Codegen everywhere:** `@riverpod` functions and `@riverpod class … extends _$…` notifiers. Hand-written providers are not allowed: `architecture_test` fails on one, since the keepAlive guard reads the annotations (#886).
 - **Database is the source of truth.** Screens watch drift `Stream`s exposed as `StreamProvider`s, so a rating in the study session updates Today's ring, the Learn bars and the streak without manual invalidation.
 - **Auto-dispose by default.** Keep-alive only for: database, settings, TTS service, audio player, active session state.
 
@@ -39,6 +39,6 @@
 
 - **Actions** are methods on notifiers (`ref.read(studySessionProvider.notifier).rate(4)`); widgets never write to repositories.
 - **Undo**: `rate()` pushes an `UndoToken` (previous `word_state` row + review_log id); `undo()` restores the row and deletes the log entry within one transaction.
-- **After an await**: a screen the learner can leave never uses its own `ref` (or `context`) once an await has passed, because Riverpod throws on a widget that has gone. What runs after it (invalidations, a settings write, onboarding after a reset, an *Undo* whose bar outlives its screen) goes through `ProviderScope.containerOf(context, listen: false)`, services and the router read before the await (M7's reset, M6's import, M4's download and delete, T4's *Undo*; #679).
+- **After an await**: a screen the learner can leave never uses its own `ref` (or `context`) once an await has passed, because Riverpod throws on a widget that has gone. What runs after it (invalidations, a settings write, onboarding after a reset, an *Undo* whose bar outlives its screen) goes through `ProviderScope.containerOf(context, listen: false)`, services and the router read before the await (M7's reset, M6's import, M4's download and delete, T4's *Undo*; #679; R2's *Save and add to revision*, #811).
 - **Refresh after midnight**: `today` doesn't tick. T1 invalidates it on app resume and on pull-to-refresh, and `todayPlan` watches it, so a new date re-runs `openDay`.
 - **Errors**: `AsyncValue.error` renders the shared `ErrorPanel` with Retry; a screen's own read that fails, or that finds nothing for a stale uid or attempt, shows `SgLoadFailed` (the panel centred, never a blank page), with **Back** too where the screen's back row is part of what failed (L4, L9, L15, T4; #677); database write failures never lose the last saved card (writes are per-card transactions). A failed answer write (T2's rate, *I know it*, skip and *Undo*; T5's rating; L15's result; L8's answer, re-ask and finish, and L9's *Add mistakes to revision*, #647) goes through `guardWrite` (`features/study/write_guard.dart`): the card stays, and the same panel comes up in a sheet with **Retry** (the write again, then on as a success would) and **Export progress** (the backup shared in place, the session left open) (#174).

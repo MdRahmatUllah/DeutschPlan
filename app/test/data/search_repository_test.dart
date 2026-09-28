@@ -592,6 +592,22 @@ void main() {
       expect((await search.search('ab')).sentences, isNotEmpty);
     });
 
+    test('#691 EX-13 FR-R1-01 a pasted page is searched by its first 80 '
+        'characters, under 50 ms', () async {
+      // Letters at random, as a pasted text's are: each run of three was its
+      // own trigram, in an OR of thousands.
+      const letters = 'abcdefghijklmnopqrstuvwxyzäöüß';
+      final random = Random(7);
+      final page = String.fromCharCodes(<int>[
+        for (var i = 0; i < 5000; i++)
+          letters.codeUnitAt(random.nextInt(letters.length)),
+      ]);
+      await search.search(page); // Warm, as the others are.
+      final fastest = await fastestOf(3, () => search.search(page));
+      debugPrint('a 5,000-character page: ${fastest.inMicroseconds / 1000} ms');
+      expect(fastest, lessThan(const Duration(milliseconds: 50)));
+    });
+
     test('#736 FR-R1-01 under 50 ms per query, one-letter queries '
         'included', () async {
       const queries = <String>[

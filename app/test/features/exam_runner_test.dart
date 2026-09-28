@@ -294,6 +294,66 @@ void main() {
       expect(run.times, [(3, 0)], reason: 'the last seconds are written');
     });
 
+    testWidgets('#691 EX-4 at 0:00 a submit that fails says so once, and '
+        'the clock does not try again every second', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(attempt: artboardAttempt(durationSec: 20 * 60 - 1))
+          ..failSubmit = true,
+      );
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
+      expect(run.submitted, 1);
+      expect(find.text(l10n.examRunSubmitFailed), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 5));
+      expect(run.submitted, 1, reason: 'no submit, and no toast, a second');
+      await tester.pumpAndSettle(); // the toast's 2 s are over
+
+      // By hand, it still goes.
+      run.failSubmit = false;
+      await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.examRunSubmit).last);
+      await tester.pumpAndSettle();
+      await tap(tester, l10n.examRunSubmitConfirm);
+      expect(run.submitted, 2);
+      expect(find.text('L13'), findsOneWidget);
+    });
+
+    testWidgets('#691 EX-4 FR-L12-03 a submit by hand that fails with time '
+        'left still leaves 0:00 its try', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(attempt: artboardAttempt(durationSec: 20 * 60 - 30))
+          ..failSubmit = true,
+      );
+      await tester.tap(find.bySemanticsLabel(l10n.examNavOpen));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.examRunSubmit).last);
+      await tester.pumpAndSettle();
+      await tap(tester, l10n.examRunSubmitConfirm);
+      expect(run.submitted, 1);
+
+      await tester.pump(const Duration(seconds: 30));
+      await tester.pump();
+      expect(run.submitted, 2, reason: '0:00 submits, once');
+      await tester.pump(const Duration(seconds: 5));
+      expect(run.submitted, 2);
+      await tester.pumpAndSettle(); // the toast's 2 s are over
+    });
+
+    testWidgets('#703 a timed attempt resumed after its time ran out '
+        'submits as it opens', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(attempt: artboardAttempt(durationSec: 20 * 60 + 30)),
+      );
+      expect(run.submitted, 1);
+      expect(find.text('L13'), findsOneWidget);
+      expect(run.times, isEmpty, reason: 'no second counted past the end');
+    });
+
     testWidgets('the last two minutes are Coral', (tester) async {
       Color? fill(String time) =>
           (tester
@@ -616,6 +676,21 @@ void main() {
       semantics.dispose();
     });
 
+    testWidgets('#691 EX-11 FR-L12-03 at 0:00 under the sheet, the sheet '
+        'closes and L13 shows', (tester) async {
+      await pump(
+        tester,
+        stub: StubExamRun(attempt: artboardAttempt(durationSec: 20 * 60 - 2)),
+      );
+      await open(tester);
+      expect(find.text(l10n.examNavTitle), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
+      expect(run.submitted, 1);
+      expect(find.text(l10n.examNavTitle), findsNothing);
+      expect(find.text('L13'), findsOneWidget);
+    });
+
     testWidgets('timer off: no time in the sheet', (tester) async {
       final semantics = tester.ensureSemantics();
       await pump(tester, stub: StubExamRun(timed: false));
@@ -722,6 +797,35 @@ void main() {
       hold.complete();
       await tester.pumpAndSettle();
       expect(find.text('L13'), findsOneWidget);
+      semantics.dispose();
+    });
+
+    testWidgets('#691 EX-12 a Leave during a submit that then fails leaves '
+        'the clock running', (tester) async {
+      final semantics = tester.ensureSemantics();
+      final hold = Completer<void>();
+      await pump(
+        tester,
+        stub: StubExamRun(
+          items: artboardPaper().take(1).toList(),
+          given: <int, String>{1: 'x'},
+        )..holdSubmit = hold,
+      );
+      await tester.tap(find.text(l10n.examRunSubmit));
+      await tester.pump();
+      await pause(tester);
+      await tap(tester, l10n.examLeaveConfirm);
+      run.failSubmit = true;
+      hold.complete();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.examRunSubmitFailed), findsOneWidget);
+      expect(left, isEmpty);
+
+      run.times.clear();
+      await tester.pump(const Duration(seconds: 10));
+      expect(run.times, [(10, 0)], reason: 'running, not paused');
+      expect(find.text('14:32'), findsNothing);
+      await tester.pumpAndSettle(); // the toast's 2 s are over
       semantics.dispose();
     });
 
@@ -981,6 +1085,56 @@ void main() {
     await tester.tap(find.byType(SgSpeakerButton));
     await tester.pumpAndSettle();
     expect(spoken, <String>['das Haus', 'das Haus', 'das Haus']);
+  });
+
+  testWidgets('#691 EX-7 FR-L12-06 a play no voice said is not used up', (
+    tester,
+  ) async {
+    late AppDatabase db;
+    late SettingsRepository settings;
+    await tester.runAsync(() async {
+      db = AppDatabase.memory();
+      settings = SettingsRepository(db);
+      await settings.load();
+    });
+    addTearDown(
+      () => tester.runAsync(() async {
+        await settings.dispose();
+        await db.close();
+      }),
+    );
+    final voice = FakeTts(voice: false);
+    await pump(
+      tester,
+      stub: StubExamRun(
+        items: <ExamItem>[
+          const WordQuestion(
+            ExamSection.listening,
+            'l',
+            prompt: 'das Haus',
+            expected: 'das Haus',
+          ),
+        ],
+        given: <int, String>{},
+      ),
+      more: <Override>[
+        settingsProvider.overrideWithValue(settings),
+        fakeVoice(voice),
+      ],
+    );
+    // No German voice on the phone: three taps said nothing, and the
+    // question could no longer be heard once one came.
+    for (var tap = 0; tap < 4; tap++) {
+      await tester.tap(find.byType(SgSpeakerButton));
+      await tester.pumpAndSettle();
+    }
+    expect(find.text(l10n.examRunPlaysLeft(3)), findsOneWidget);
+
+    voice.voice = true;
+    await tester.tap(find.byType(SgSpeakerButton));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.examRunPlaysLeft(2)), findsOneWidget);
+    await tester.pumpAndSettle(const Duration(seconds: 5)); // the toasts
   });
 
   group('L12 #554 a typed question with the keyboard up', () {

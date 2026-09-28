@@ -20,6 +20,7 @@ class GrammarSource {
     required this.watchOut,
     required this.tags,
     required this.levelCode,
+    this.sublevelCode,
   });
 
   final String uid;
@@ -32,6 +33,11 @@ class GrammarSource {
   /// `grammar_topics.tags`, the pipeline's keywords: they decide which item
   /// types apply.
   final List<String> tags;
+
+  /// The topic's step: *Pick the form* borrows no sentence from a later one
+  /// (#752). Null: any.
+  final String? sublevelCode;
+
   final String levelCode;
 }
 
@@ -48,6 +54,8 @@ class CourseText {
         const <({String german, String? forms})>[],
     Iterable<String> texts = const <String>[],
     this.sentences = const <({String german, String english})>[],
+    this.sentenceSteps = const <int>[],
+    this.stepOrder = const <String, int>{},
   }) : _forms = <String>{
          for (final word in words)
            for (final form in _words('${word.german} ${word.forms ?? ''}'))
@@ -197,12 +205,40 @@ class CourseText {
     return index;
   }
 
-  /// The sentences with [form], as it is written, as a word of their own.
-  List<({String german, String english})> sentencesWith(String form) =>
-      <({String german, String english})>[
-        for (final i in _byWord[form] ?? const <int>[]) sentences[i],
-      ];
+  /// Each of [sentences]' step, as `sublevels.ord` orders the course, and
+  /// each step's place in it (#752).
+  final List<int> sentenceSteps;
+  final Map<String, int> stepOrder;
+
+  /// The sentences with [form], as it is written, as a word of their own,
+  /// from [upTo]'s step or an earlier one when it is given (#752): an A1.1
+  /// learner can't read a B2.2 word's example.
+  List<({String german, String english})> sentencesWith(
+    String form, {
+    String? upTo,
+  }) {
+    final limit = upTo == null ? null : stepOrder[upTo];
+    return <({String german, String english})>[
+      for (final i in _byWord[form] ?? const <int>[])
+        if (limit == null ||
+            i >= sentenceSteps.length ||
+            sentenceSteps[i] <= limit)
+          sentences[i],
+    ];
+  }
 }
+
+/// An example that is a note, not a sentence to practise in (#752): a
+/// pair of sounds ("ich ↔ ach"), a gloss in brackets, a word in quotes.
+bool _isNote(String german) =>
+    german.contains('↔') || german.contains('(') || _quoted.hasMatch(german);
+
+/// A word in quotes: 'die', „die“. Not an apostrophe (geht's).
+final RegExp _quoted = RegExp(
+  '(^|\\s)[\u0027\u0022\u201E\u201A\u2018\u201C]'
+  '[^\u0027\u0022\u201C\u201D\u2018\u2019]+'
+  '[\u0027\u0022\u201C\u201D\u2018\u2019](?=\\s|[.,;:!?]|\$)',
+);
 
 /// One practice item.
 sealed class GrammarItem {
@@ -435,9 +471,13 @@ List<GrammarItem> generateItems(
       final form = _bare(tokens[i]);
       if (askedAlready(form)) continue;
       final elsewhere = <({String german, String english})>[
-        for (final sentence in text.sentencesWith(form))
+        for (final sentence in text.sentencesWith(
+          form,
+          upTo: source.sublevelCode,
+        ))
           if (!sentences.contains(sentence.german.trim()) &&
-              !borrowed.contains(sentence.german))
+              !borrowed.contains(sentence.german) &&
+              !_isNote(sentence.german))
             sentence,
       ];
       if (elsewhere.isEmpty) continue;

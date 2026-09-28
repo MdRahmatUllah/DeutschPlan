@@ -16,6 +16,8 @@ import 'package:sogda/features/search/search_screen.dart'
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:flutter/services.dart'
+    show LengthLimitingTextInputFormatter, TextInputFormatter;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -144,6 +146,9 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     final now = ref.read(clockProvider)();
     final today = ref.read(todayProvider);
     final name = _name;
+    // Held now: Back isn't blocked while the save runs, and this page's
+    // `ref` is gone once it has been left (#811, `state-management.md`).
+    final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _busy = true);
     try {
       await words.saveMyWord(
@@ -163,7 +168,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
       );
       // Today's plan is read once, when the day opens: the row is on Today's
       // Revise block once it is read again.
-      if (revise) ref.invalidate(todayPlanProvider);
+      if (revise) container.invalidate(todayPlanProvider);
       if (!mounted) return;
       SgToast.show(
         context,
@@ -292,6 +297,8 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                   label: l10n.addWordGerman,
                   // German: the keyboard mustn't correct it into English.
                   german: true,
+                  // Searched as it is typed (FR-R2-01), so R1's length.
+                  maxLength: SearchRepository.maxQueryLength,
                   // On focus, its umlaut row and the next field show above
                   // the keyboard: 14 dp, a label and a 48 dp field (#515).
                   scrollPadding: SgUmlautBar.scrollPadding(
@@ -464,6 +471,7 @@ class _Field extends StatelessWidget {
     this.hint,
     this.german = false,
     this.scrollPadding = const EdgeInsets.all(20),
+    this.maxLength = 200,
   });
 
   final TextEditingController controller;
@@ -478,6 +486,11 @@ class _Field extends StatelessWidget {
 
   /// German text: no autocorrect into the phone's language.
   final bool german;
+
+  /// The most it takes, in characters (#691 EX-13). 200 by default: a
+  /// meaning, a place or a sentence, where the course's longest sentence
+  /// is 141.
+  final int maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -494,6 +507,9 @@ class _Field extends StatelessWidget {
         autocorrect: !german,
         enableSuggestions: !german,
         textInputAction: TextInputAction.next,
+        inputFormatters: <TextInputFormatter>[
+          LengthLimitingTextInputFormatter(maxLength),
+        ],
         // R2's list runs under the status bar (its header bleeds to the
         // top, #421), so a field revealed 20 dp from the list's top sat
         // under it: in Bangla at 200 % with the keyboard up, 3 dp (#590).

@@ -103,10 +103,11 @@ class Backlog extends _$Backlog {
       kind: PlanKind.newWord,
       at: at?.toIso8601String(),
     );
+    int? entry;
     try {
       switch (action) {
         case BacklogAction.known:
-          await rating.markKnown(
+          entry = await rating.markKnown(
             uid,
             planDate: row.planDate,
             kind: PlanKind.newWord,
@@ -123,8 +124,9 @@ class Backlog extends _$Backlog {
     return () async {
       switch (action) {
         case BacklogAction.known:
-          // Only this word's rating: another made since stays (#728).
-          await rating.undo(expectUid: uid);
+          // Only this rating: another made since, of this word too, stays
+          // (#728, #888).
+          await rating.undo(entry: entry);
         case BacklogAction.suspended:
           if (!wasSuspended) await rating.resume(uid);
         case BacklogAction.removed:
@@ -165,7 +167,7 @@ class BacklogScreen extends ConsumerWidget {
           ? _Backlog(rows: rows, today: ref.watch(todayProvider))
           : rowsState.hasError
           ? SgLoadFailed(
-              message: AppLocalizations.of(context).todayLoadFailed,
+              message: AppLocalizations.of(context).backlogLoadFailed,
               onRetry: () => ref.invalidate(backlogProvider),
               onBack: () => Navigator.of(context).maybePop(),
             )

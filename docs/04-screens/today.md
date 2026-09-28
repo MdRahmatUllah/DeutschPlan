@@ -30,7 +30,7 @@
 - FR-T1-03 Button label per the table above; tapping starts a session with all open blocks in order Revise → New → Grammar.
 - FR-T1-04 Tapping a section card starts a session with only that block; Backlog card opens T4.
 - FR-T1-05 Pull-to-refresh MUST re-plan if the date changed; the plan also refreshes on app resume across midnight.
-- FR-T1-06 At most one contextual card; dismiss persists in settings (`dismissed_cards` JSON).
+- FR-T1-06 At most one contextual card; dismiss persists in settings (`dismissed_cards` JSON). The voice card reads whether the voice is installed again whenever its download changes phase, and after M4's *Delete*, so it leaves once the voice lands, with no restart (#663).
 - FR-T1-07 The backlog pause offer appears when backlog > 3 × daily_new (BR-PLAN-07) and a step is active — with the course finished there are no new words to pause; the content-update card while `content_updates.seen = 0` (BR-CONTENT-03).
 - FR-T1-08 The step chip and the grammar card MUST switch to the Learn tab then push (navigation rules).
 
