@@ -1955,3 +1955,4 @@ able to tell what is going on without asking.
 - 2026-09-28 05:40 · agent-1 #742 · done (#990)
 - 2026-09-28 05:43 · agent-1 #994 · PR #0 open; review requested from all
 - 2026-09-28 05:43 · agent-1 #995 · claimed: chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem)
+- 2026-09-28 05:43 · agent-1 #995 · PR #1005 open; review requested from all

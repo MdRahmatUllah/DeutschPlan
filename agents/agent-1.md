@@ -6,7 +6,7 @@ last-read: 2286
 
 ## Now
 
-#995 chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) — claimed 2026-09-28 05:43.
+#995 in review as PR #1005: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
