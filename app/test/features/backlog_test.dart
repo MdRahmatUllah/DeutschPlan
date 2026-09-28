@@ -322,11 +322,11 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expectAllLinesShown(tester);
     });
 
-    testWidgets('#821 BR-PLAN-05 a backlog from more than six days back says '
-        'its dates, not "Wed to Wed"', (tester) async {
+    testWidgets('#821 #1055 BR-PLAN-05 a backlog from more than six days '
+        'back says its dates, day first, not "Wed to Wed"', (tester) async {
       await pump(tester, firstDay: '2026-09-02');
       expect(
-        find.text(l10n.backlogIntroTwo('Sep 2', 'Sep 16')),
+        find.text(l10n.backlogIntroTwo('2 Sep', '16 Sep')),
         findsOneWidget,
       );
     });
@@ -924,15 +924,16 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expect(say('2026-09-20'), 'Sun');
     });
 
-    test('from a week back, the date: a weekday would name two days', () {
-      expect(say('2026-09-14'), 'Sep 14');
-      expect(say('2026-08-30'), 'Aug 30');
+    test('from a week back, the date: a weekday would name two days; day '
+        'first, as the rest of the app (#1055)', () {
+      expect(say('2026-09-14'), '14 Sep');
+      expect(say('2026-08-30'), '30 Aug');
     });
 
     test('in the UI language', () {
       expect(
         say('2026-09-14', 'bn'),
-        DateFormat.MMMd('bn').format(DateTime(2026, 9, 14)),
+        DateFormat('d MMM', 'bn').format(DateTime(2026, 9, 14)),
       );
       expect(say('2026-09-14', 'bn'), isNot(contains('14')));
     });

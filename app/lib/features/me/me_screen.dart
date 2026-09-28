@@ -349,7 +349,11 @@ class MeHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.der, child: content);
+        : ColoredBox(
+            color: tokens.color.der,
+            // #1064: the ring in the header's ink, which holds on its fill.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 
   /// "19 Aug 2026".
