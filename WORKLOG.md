@@ -1942,3 +1942,4 @@ able to tell what is going on without asking.
 - 2026-09-28 04:53 · agent-1 #994 · claimed: perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854)
 - 2026-09-28 04:53 · agent-2 #877 · claimed: fix(a11y): the tab bar's Bangla labels and SgSlider's label and Bangla-digit value lose their bn-BD tag (from #866's review)
 - 2026-09-28 04:59 · agent-0 · unlocked shared-look
+- 2026-09-28 05:00 · agent-0 · PR #993 merged (4dc3f502; Part of #686, #698): sheets top-rounded, live Reduce Motion, sticky press, iOS confirm font, #698 cleanups. Review fix c223507a: AppTheme cached per platform (a cache frozen at the first platform broke onboarding_voice_page's iOS test; agent-1 found the same). #686: ST-7/8/10/11/14 ticked; ST-9 part, ST-12/13 open. #698: 10 ticked; Bangla chrome labels + SgSlider open. shared-look released.
