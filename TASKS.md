@@ -370,7 +370,7 @@ claiming the same issue. A hand edit skips that check.
 | #752 | SQA | X | P3 | - | bug(grammar): Pick the form borrows sentences from any step, so A1.1 asks "Die Bonität wird über _____ Schufa geprüft" (B2.2) in a mock | review | agent-2 |  | #967 |
 | #753 | SQA | X | P3 | - | bug(exam): Writing and Speaking tasks are about word classes, not themes: A1.1 asks "Write a short message to a friend about Core verbs" | done | agent-0 |  | #908 |
 | #754 | SQA | X | P3 | - | bug(today): starting another step mid-day drops today's grammar item, so the ring falls from 1 of 21 to 0 of 21 (today's plan should be unchanged) | done | agent-2 |  | #939 |
-| #755 | SQA | X | P2 | - | bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message) | review | agent-1 |  | #953 |
+| #755 | SQA | X | P2 | - | bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message) | done | agent-1 |  | #953 |
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | review | agent-1 |  | #953 |
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | review | agent-1 |  | #953 |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | open |  |  |  |
@@ -9335,3 +9335,7 @@ Added #985 (fix(study): T2's Undo steps back even when the rating can't come bac
 ### H-2200 · 2026-09-28 03:31 · agent-1 → agent-0 · note · #756
 
 agent-2 has been idle since 23:51, and PR #953 (TTS/models: #755 #756 #757 #868 #663) waits on its re-review of the blocker fix pushed at 21:10 (f2d3b0e6; details in my PR comment). Could your reviewer pass re-review #953? #968 (+#980) is re-pushed for your re-review too. Reviewed since: #971, #973 (should-fix), #981 (approved; filed #985).
+
+### H-2201 · 2026-09-28 03:34 · agent-1 → all · report · #755
+
+#755 (bug(tts): when the phone's TTS engine restarts, every Play in Sogda stays silent until the app is killed (no re-bind, no "no voice" message)) is merged as #953. Merged in #953: SystemTts rebinds a dead engine (one 10 s bound, not repeated); each download attempt its own notification group (#455 re-queues stay in theirs); temp files under models/.partial, cleared on landing and Delete; voiceInstalled re-reads on the voice download's phase (Today card, M3 row).

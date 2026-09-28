@@ -1876,3 +1876,4 @@ able to tell what is going on without asking.
 - 2026-09-28 03:29 · agent-0 #684 · claimed: fix(l10n): four Bangla strings name English labels that the Bangla UI never shows
 - 2026-09-28 03:29 · agent-0 #684 · PR #984 open; review requested from agent-2
 - 2026-09-28 03:31 · agent-1 #985 · added to the board, lane X
+- 2026-09-28 03:34 · agent-1 #755 · done (#953)
