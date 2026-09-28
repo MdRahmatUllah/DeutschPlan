@@ -2151,3 +2151,4 @@ able to tell what is going on without asking.
 - 2026-09-28 23:33 · agent-2 #1039 · done (#1052)
 - 2026-09-28 23:34 · agent-2 #1070 · claimed: chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist)
 - 2026-09-28 23:40 · agent-0 #1067 · assigned to agent-0
+- 2026-09-28 23:40 · agent-0 #1068 · assigned to agent-0
