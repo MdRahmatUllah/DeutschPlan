@@ -267,7 +267,7 @@ emulator with the real content.db:
 
 ```bash
 python tools/team.py device                         # take the emulator lock; if refused, do other work
-cd app && flutter build apk --release --target-platform android-x64 && cd ..
+cd app && flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true && cd ..
 python tools/device.py install launch tap:Learn "tap:Word categories" shot:l5.png
 python tools/team.py device --release
 ```

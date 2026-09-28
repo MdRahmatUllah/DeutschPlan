@@ -104,7 +104,7 @@ target runs.
 | The tools' tests | `python -m pytest tools/tests -q` | `make test-content` |
 | Regenerate one screen's goldens | `flutter test --update-goldens test/golden/<screen>_golden_test.dart` | (`make update-goldens` rewrites all: avoid) |
 | Run the app | `flutter run` | |
-| A device-check build | `flutter build apk --release --target-platform android-x64`, under the device lock | |
+| A device-check build | `flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true`, under the device lock (#705: without `key.properties` a release build fails unless it opts in) | |
 | Drive the emulator | `python tools/device.py install launch tap:<label> shot:<file>` | |
 | Capture a new user.db version | `dart run drift_dev schema dump lib/data/db/app_database.dart drift_schemas/` then `python ../tools/trim_schema_fixture.py` | `make schema-dump` |
 | Clean | `flutter clean`, and delete `content/build/` | `make clean` |
@@ -186,10 +186,12 @@ storeFile=C:/path/to/upload-keystore.jks
 ```
 
 `key.properties`, `*.jks` and `*.keystore` are gitignored and never committed.
-Without the file, a release build is signed with the debug key, so builds and
-device checks work; Play refuses a debug-signed upload, so nothing reaches it
-signed wrongly. The owner provides the upload key; the agents' worktrees
-have no `key.properties`, so their builds are debug-signed.
+Without the file, a release build fails (#705), unless it opts in to the debug
+key with `-P allowDebugSigning=true` (or `ORG_GRADLE_PROJECT_allowDebugSigning=true`),
+so nothing is debug-signed by accident; Play refuses a debug-signed upload
+anyway. The owner provides the upload key; the agents' worktrees have no
+`key.properties`, so their device-check builds opt in, as `tools/device.py`,
+`tools/perf.py` and `tools/release_android.py` (without `--require-upload-key`) do.
 
 ### Obfuscation and symbols
 

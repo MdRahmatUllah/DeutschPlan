@@ -118,7 +118,7 @@ checkout, so any `<root>` works.
    ```
    (On the first machine SQA's emulator ended up on 5556, so agent-3's memory
    says 5556 and passes `--serial`; on a new machine use 5554.)
-   Device checks use a release x64 APK (`flutter build apk --release --target-platform android-x64`).
+   Device checks use a release x64 APK (`flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true`: without the owner's `key.properties` a release build fails unless it opts in to the debug key, #705).
 6. **Start the sessions.** Open one Claude Code session per agent, each in
    `<root>/deutschplan` (the session starts in the main checkout, and the
    agent edits only its own worktree, by absolute path). Tell each one who it is:

@@ -97,16 +97,29 @@ def test_without_keytool_the_key_is_unknown(tmp_path, monkeypatch):
 def test_the_owners_checkout_builds_without_the_lock(monkeypatch):
     built = []
     monkeypatch.setattr(release.device, "agent", lambda: "")
-    monkeypatch.setattr(release, "build", lambda: built.append(True))
+    monkeypatch.setattr(release, "build", lambda require_upload_key: built.append(require_upload_key))
     monkeypatch.setattr(release, "BUNDLE", Path("no-such.aab"))
     release.main([])
-    assert built == [True]
+    release.main(["--require-upload-key"])
+    assert built == [False, True]
+
+
+def test_705_only_the_play_build_refuses_the_debug_key(monkeypatch):
+    # Gradle fails a release build without key.properties unless it opts in:
+    # the checks' own builds do; the one for Play must not.
+    commands = []
+    monkeypatch.setattr(release.subprocess, "run",
+                        lambda command, cwd: commands.append(command) or type("Done", (), {"returncode": 0})())
+    release.build()
+    release.build(require_upload_key=True)
+    assert commands[0][-2:] == ["-P", "allowDebugSigning=true"]
+    assert not any("allowDebugSigning" in arg for arg in commands[1])
 
 
 def test_an_agent_without_the_lock_is_refused(monkeypatch):
     monkeypatch.setattr(release.device, "agent", lambda: "agent-2")
     monkeypatch.setattr(release, "holds_device", lambda who: False)
-    monkeypatch.setattr(release, "build", lambda: pytest.fail("built without the lock"))
+    monkeypatch.setattr(release, "build", lambda *args: pytest.fail("built without the lock"))
     assert release.main([]) == 2
 
 
