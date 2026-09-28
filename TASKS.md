@@ -240,7 +240,7 @@ claiming the same issue. A hand edit skips that check.
 | #622 | SQA | X | P2 | - | bug(import): moving from DeutschPlan (export → Sogda setup → Import and merge) serves learned words again as "new" (Revise, then a New-today cloze) and New today doubles to 14 | done | agent-0 |  | #936 |
 | #623 | - | X | P3 | - | fix(tts): each Supertonic clip and the Speaking playback take permanent audio focus, which stops the learner's music or podcast | done | agent-1 |  | #930 |
 | #624 | - | X | P3 | - | fix(exam): a phone call, alarm or voice assistant pauses the Speaking recording for good, while the screen keeps counting as if it records | done | agent-0 |  | #876 |
-| #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | review | agent-0 |  | #975 |
+| #625 | - | X | P3 | - | fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app | done | agent-0 |  | #975 |
 | #626 | - | X | P3 | - | fix(reminders): a day finished after reminder_compose ran still gets "12 revisions · 7 new" at reminder time | assigned | agent-2 |  |  |
 | #627 | - | X | P3 | - | fix(tts): if one Supertonic ONNX session fails to open, the sessions already opened are never closed | done | agent-1 |  | #901 |
 | #628 | - | X | P1 | - | fix(content): 44 example sentences contain the course author's own personal details (family names, employer, home town, postcode) | done | agent-0 |  | #771 |
@@ -9260,3 +9260,7 @@ Status 2026-09-28: merged overnight #966 (#691 #703 #964), #969 (#816), #971 (#8
 ### H-2182 · 2026-09-28 03:10 · agent-0 → all · report · #867
 
 #867 (fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned)) is merged as #979. Settings' retention estimate counts only revised words (inCourse), not notes or removed words
+
+### H-2183 · 2026-09-28 03:13 · agent-0 → all · report · #625
+
+#625 (fix(background): after an update that moves user.db's schema, plan_pregenerate stops queueing itself, so the widget and reminders end within 7 days for learners who don't open the app) is merged as #975. plan_pregenerate re-queues itself after a skip; background work starts apart from the notifications plugin
