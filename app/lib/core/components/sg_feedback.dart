@@ -8,6 +8,7 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 
 /// The umlaut helper row, attached to every German text field.
 ///
@@ -155,28 +156,32 @@ class _UmlautKey extends StatelessWidget {
         onTap: onTap,
         onLongPress: onLongPress,
         child: ExcludeSemantics(
-          child: GestureDetector(
-            onTap: onTap,
-            onLongPress: onLongPress,
-            behavior: HitTestBehavior.opaque,
-            // The artboard's height at least, taller at large text: a fixed one
-            // cut "ä" at 150 % (#165).
-            child: Container(
-              constraints: const BoxConstraints(
-                minHeight: SgUmlautBar.keyHeight,
-              ),
-              decoration: BoxDecoration(
-                color: tokens.surface.card,
-                borderRadius: BorderRadius.circular(tokens.shape.chip),
-                border: Border.all(
-                  color: tokens.color.ink,
-                  width: tokens.surface.outlineWidth,
+          child: SgFocusable(
+            onPressed: onTap,
+            radius: BorderRadius.circular(tokens.shape.chip),
+            child: GestureDetector(
+              onTap: onTap,
+              onLongPress: onLongPress,
+              behavior: HitTestBehavior.opaque,
+              // The artboard's height at least, taller at large text: a fixed one
+              // cut "ä" at 150 % (#165).
+              child: Container(
+                constraints: const BoxConstraints(
+                  minHeight: SgUmlautBar.keyHeight,
                 ),
-              ),
-              // Its own height, centred: an Align would fill a tall parent.
-              child: Center(
-                heightFactor: 1,
-                child: SgText(label, role: SgTextRole.title, weight: 500),
+                decoration: BoxDecoration(
+                  color: tokens.surface.card,
+                  borderRadius: BorderRadius.circular(tokens.shape.chip),
+                  border: Border.all(
+                    color: tokens.color.ink,
+                    width: tokens.surface.outlineWidth,
+                  ),
+                ),
+                // Its own height, centred: an Align would fill a tall parent.
+                child: Center(
+                  heightFactor: 1,
+                  child: SgText(label, role: SgTextRole.title, weight: 500),
+                ),
               ),
             ),
           ),
