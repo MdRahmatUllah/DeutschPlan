@@ -179,4 +179,23 @@ void main() {
 
     expect((await attempt(id)).status, 'in_progress');
   });
+
+  test('#911 FR-L12-04 a submit that lost the race to Leave finishes '
+      'nothing: the attempt stays abandoned and unscored', () async {
+    final id = await sit();
+    await answer(id, 1, 'das');
+    expect(await exams.abandon(id), isTrue);
+
+    await expectLater(
+      exams.grade(id, passPercent: 60, finishedAt: '2026-09-21T08:30:00Z'),
+      throwsStateError,
+    );
+
+    final row = await attempt(id);
+    expect(row.status, 'abandoned');
+    expect(row.finishedAt, isNull);
+    expect(row.scorePoints, 0);
+    // The rows' points roll back with it.
+    expect((await exams.answersFor(id).get()).first.points, 0);
+  });
 }

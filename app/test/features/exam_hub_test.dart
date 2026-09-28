@@ -1,12 +1,15 @@
 @TestOn('vm')
 library;
 
+import 'dart:convert';
+
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/features/learn/step_exams.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -147,6 +150,55 @@ void main() {
     expect(built, greaterThan(before));
     expect(view.resume, isEmpty);
     expect(view.seeds.map((s) => s.seed), <int>[1, 2]);
+  });
+
+  test('#911 FR-L13-03 a re-grade that moves only the best score reaches the '
+      "hub's pill", () async {
+    // One article (1 point) and Speaking (4): the rubric's tick is L13's
+    // re-grade, which changes neither `finished` nor the pass (#666's test
+    // changes both, so it can't tell whether the best score is compared).
+    final id = await exams.begin(
+      sublevelCode: 'A1.2',
+      seed: 1,
+      startedAt: '2026-09-21T08:00:00Z',
+      questions: <ExamQuestion>[
+        ExamQuestion.of(
+          1,
+          WordQuestion(
+            ExamSection.articles,
+            'w1',
+            prompt: 'Haus',
+            expected: 'das',
+          ),
+        ),
+        ExamQuestion.of(
+          2,
+          const SpeakingTask(
+            'speaking:1',
+            level: 'A1',
+            category: 'Wohnen',
+            seconds: 60,
+          ),
+        ),
+      ],
+    );
+    await exams.answer(attemptId: id, ord: 1, given: 'das');
+    await exams.answer(attemptId: id, ord: 2, given: 'recordings/1.m4a');
+    await exams.grade(id, passPercent: 60, finishedAt: '2026-09-21T08:30:00Z');
+    await pumpEventQueue();
+    expect((await hub()).seeds.single.bestPercent, 20);
+
+    await exams.rubric(
+      attemptId: id,
+      ord: 2,
+      json: jsonEncode(<bool>[true, false, false, false]),
+    );
+    await exams.grade(id, passPercent: 60);
+    await pumpEventQueue();
+
+    final seed = (await hub()).seeds.single;
+    expect(seed.bestPercent, 40);
+    expect((seed.finished, seed.everPassed), (1, false));
   });
 
   test('BR-EXAM-02 eleven topics for twelve slots: Mock 3 shares', () async {
