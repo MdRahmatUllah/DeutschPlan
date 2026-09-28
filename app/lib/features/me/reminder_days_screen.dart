@@ -32,9 +32,45 @@ class ReminderDaysScreen extends ConsumerStatefulWidget {
 }
 
 class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
-  /// The phone said no this visit: the switch stays off, and M5 says where
-  /// to allow it (FR-M5-02).
+  /// The phone says no: the switch reads off, and M5 says where to allow it
+  /// (FR-M5-02).
   bool _blocked = false;
+
+  late final AppLifecycleListener _lifecycle = AppLifecycleListener(
+    onResume: () => unawaited(_check()),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle;
+    unawaited(_check());
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  /// #692 ME-8: the phone's answer as it is now, when M5 opens and on each
+  /// return to the app, whose settings page is where M5 sends a learner who
+  /// said no. The setting alone read "granted" after a revoke there, and
+  /// "blocked" after a grant. The setting stays as the learner left it, so
+  /// a grant brings the reminder back without a tap.
+  Future<void> _check() async {
+    final bool granted;
+    try {
+      granted = await ref.read(notificationPermissionProvider).granted();
+    } on Object {
+      return;
+    }
+    if (!mounted) return;
+    final on = ref
+        .read(settingsSourceProvider)
+        .read(SettingKeys.reminderEnabled);
+    setState(() => _blocked = !granted && (on || _blocked));
+  }
 
   /// FR-M5-02: asked when the switch goes on, as S2 page 5 asks.
   Future<void> _reminder({required bool on}) async {
@@ -78,7 +114,8 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
     final tokens = context.tokens;
 
     final mask = settings.read(SettingKeys.studyDaysMask);
-    final on = settings.read(SettingKeys.reminderEnabled);
+    // #692 ME-8: blocked by the phone reads as off, preview and all.
+    final on = settings.read(SettingKeys.reminderEnabled) && !_blocked;
     final onlyWhenDue = settings.read(SettingKeys.reminderOnlyWhenDue);
     final clock = settings.read(SettingKeys.reminderTime);
     final time = MaterialLocalizations.of(context).formatTimeOfDay(
@@ -120,8 +157,7 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
                           full: full,
                           on: mask & (1 << index) != 0,
                           // FR-M5-01: the last study day stays.
-                          onTap: () =>
-                              unawaited(editor.studyDays(mask ^ (1 << index))),
+                          onTap: () => unawaited(editor.toggleStudyDay(index)),
                         ),
                       ),
                     ],

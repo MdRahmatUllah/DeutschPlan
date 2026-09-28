@@ -182,6 +182,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       _file = file;
       _preview = preview;
       _problem = problem;
+      // #721: each file starts on Merge, the default; *Replace* is chosen
+      // for a file, never carried over from the last one.
+      _mode = ImportMode.merge;
     });
   }
 

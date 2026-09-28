@@ -42,6 +42,19 @@ Future<String> readCapped(Stream<List<int>> bytes, {int cap = maxBytes}) async {
   return utf8.decode(read.takeBytes());
 }
 
+/// [json] as [name] in [temporary]'s `exports` folder, emptied first: an
+/// export's copy is handed to the share sheet (which keeps its own), and the
+/// one before it is gone once there is a new one, rather than piling up in
+/// the cache for good (#704).
+Future<File> exportCopy(Directory temporary, String name, String json) async {
+  final folder = Directory('${temporary.path}/exports');
+  if (folder.existsSync()) folder.deleteSync(recursive: true);
+  folder.createSync(recursive: true);
+  final file = File('${folder.path}/$name');
+  await file.writeAsString(json, flush: true);
+  return file;
+}
+
 /// [BackupFiles] on `file_picker` and `share_plus`. Nothing here makes a
 /// request: the learner picks where the file goes (BR-PRIV-01, -02).
 class PlatformBackupFiles implements BackupFiles {
@@ -60,8 +73,7 @@ class PlatformBackupFiles implements BackupFiles {
   Future<bool> share(String name, String json) async {
     // Temporary storage: a copy handed to another app, not state, as the
     // bootstrap error screen's export is.
-    final file = File('${(await getTemporaryDirectory()).path}/$name');
-    await file.writeAsString(json, flush: true);
+    final file = await exportCopy(await getTemporaryDirectory(), name, json);
     final result = await SharePlus.instance.share(
       ShareParams(
         files: <XFile>[XFile(file.path, mimeType: 'application/json')],

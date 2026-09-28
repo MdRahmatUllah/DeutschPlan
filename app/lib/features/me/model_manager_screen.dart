@@ -80,10 +80,6 @@ ModelCardStatus cardStatusOf(ModelCard card) {
   };
 }
 
-/// Whether this build offers [modelId]'s download (FR-M4-04).
-bool offered(String modelId) =>
-    modelId != ModelRepository.translationModel || enableHymtDownload;
-
 /// [id]'s card, as its download moves: the files on the phone read again
 /// whenever the download manager says something.
 @riverpod
@@ -469,6 +465,9 @@ class _ModelCardView extends ConsumerWidget {
       }
     }
 
+    // FR-M4-04, #692 ME-3: a model this build doesn't offer can be deleted,
+    // and nothing that downloads it again: no Update, Retry or Resume.
+    final gated = !offered(id);
     final deleteButton = _Action(
       label: l10n.modelsDelete(freed),
       onPressed: () => unawaited(_delete(context)),
@@ -498,12 +497,13 @@ class _ModelCardView extends ConsumerWidget {
           _Actions(
             children: <Widget>[
               deleteButton,
-              _Action(
-                label: l10n.modelsUpdate(size),
-                white: true,
-                // FR-M4 *Not enough space*: an update is a download too.
-                onPressed: short ? null : () => unawaited(act(download)),
-              ),
+              if (!gated)
+                _Action(
+                  label: l10n.modelsUpdate(size),
+                  white: true,
+                  // FR-M4 *Not enough space*: an update is a download too.
+                  onPressed: short ? null : () => unawaited(act(download)),
+                ),
             ],
           ),
         ];
@@ -520,18 +520,19 @@ class _ModelCardView extends ConsumerWidget {
           ),
           _Actions(
             children: <Widget>[
-              _Action(
-                label: live?.phase == DownloadPhase.paused
-                    ? l10n.modelsResume
-                    : l10n.modelsPause,
-                onPressed: () => unawaited(
-                  act(
-                    () => live?.phase == DownloadPhase.paused
-                        ? downloads.resume(id)
-                        : downloads.pause(id),
+              if (!gated || live?.phase != DownloadPhase.paused)
+                _Action(
+                  label: live?.phase == DownloadPhase.paused
+                      ? l10n.modelsResume
+                      : l10n.modelsPause,
+                  onPressed: () => unawaited(
+                    act(
+                      () => live?.phase == DownloadPhase.paused
+                          ? downloads.resume(id)
+                          : downloads.pause(id),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ];
@@ -542,21 +543,22 @@ class _ModelCardView extends ConsumerWidget {
           note(l10n.modelsFailedNote),
           _Actions(
             children: <Widget>[
-              _Action(
-                label: l10n.retry,
-                // A download that failed is retried; files on the phone that
-                // broke are fetched again from the start, space checked.
-                onPressed: () => unawaited(
-                  act(() async {
-                    await askToNotifyDownload(
-                      container.read(notificationPermissionProvider),
-                    );
-                    return card.live == null
-                        ? downloads.start(id)
-                        : downloads.retry(id);
-                  }),
+              if (!gated)
+                _Action(
+                  label: l10n.retry,
+                  // A download that failed is retried; files on the phone that
+                  // broke are fetched again from the start, space checked.
+                  onPressed: () => unawaited(
+                    act(() async {
+                      await askToNotifyDownload(
+                        container.read(notificationPermissionProvider),
+                      );
+                      return card.live == null
+                          ? downloads.start(id)
+                          : downloads.retry(id);
+                    }),
+                  ),
                 ),
-              ),
               if (card.installed.bytesOnDisk > 0) deleteButton,
             ],
           ),
@@ -573,7 +575,6 @@ class _ModelCardView extends ConsumerWidget {
           ),
         ];
       case ModelCardStatus.notDownloaded:
-        final gated = !_isVoice && !enableHymtDownload;
         return <Widget>[
           if (gated) note(l10n.modelsHymtGated),
           _Actions(
@@ -609,16 +610,23 @@ class _ModelCardView extends ConsumerWidget {
       destructive: true,
     );
     if (confirmed != true) return;
-    await container.read(modelRepositoryProvider).delete(card.entry);
-    // With `tts_engine` now the phone's, nothing would ask Supertonic again:
-    // asked once, it finds its model gone and lets go of its ~400 MB of
-    // sessions and its clips.
-    if (_isVoice) await container.read(supertonicTtsProvider).isAvailable();
-    container
-      ..invalidate(modelCardProvider(card.entry.id))
-      ..invalidate(phoneSpaceProvider)
-      // Today's voice card and M3's row: a delete is no download (#757).
-      ..invalidate(voiceInstalledProvider);
+    try {
+      await container.read(modelRepositoryProvider).delete(card.entry);
+      // With `tts_engine` now the phone's, nothing would ask Supertonic
+      // again: asked once, it finds its model gone and lets go of its
+      // ~400 MB of sessions and its clips.
+      if (_isVoice) await container.read(supertonicTtsProvider).isAvailable();
+    } on Object catch (error) {
+      // #721: said, not silent; the card below shows what is left.
+      debugPrint('model delete: $error');
+      if (context.mounted) SgToast.show(context, l10n.modelsDeleteFailed);
+    } finally {
+      container
+        ..invalidate(modelCardProvider(card.entry.id))
+        ..invalidate(phoneSpaceProvider)
+        // Today's voice card and M3's row: a delete is no download (#757).
+        ..invalidate(voiceInstalledProvider);
+    }
   }
 
   /// *Check for update*: the manifest the app carries is read again, and a
