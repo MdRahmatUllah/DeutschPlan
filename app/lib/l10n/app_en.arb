@@ -2612,7 +2612,7 @@
   },
   "stepLeft": "Left on {date}",
   "@stepLeft": {
-    "description": "L2 pace line for a step the learner left (another step started) while some of its words are To do or Learning (#950).",
+    "description": "L2 pace line for a step the learner left (another step started) while some of its words were never planned (#950, #1012, #1028).",
     "placeholders": {
       "date": {
         "type": "String"

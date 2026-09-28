@@ -31,6 +31,7 @@ void main() {
 
   StepProgress step({
     int todo = 296,
+    int? unplanned,
     int learning = 60,
     String? startedOn = '2026-08-19',
     String? completedOn,
@@ -44,6 +45,7 @@ void main() {
     levelCode: level,
     words: 540,
     todo: todo,
+    unplanned: unplanned ?? todo,
     learning: learning,
     done: 540 - learning - todo,
     grammar: 10,
@@ -124,6 +126,28 @@ void main() {
       expect(
         paceLine(l10n, en, step(completedOn: '2026-09-27', passedSeed: 2)),
         'Completed 27 Sep · Mock 2 passed · revision continues',
+      );
+    });
+
+    test('#1028 FR-L2-01 a step the plan finished with words still To do, '
+        "planned and in the backlog, is completed; one left with words "
+        'never planned was left', () {
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', todo: 3, unplanned: 0),
+        ),
+        'Completed 27 Sep · revision continues',
+        reason: 'every word planned, 3 skipped to the backlog',
+      );
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', todo: 3, unplanned: 1),
+        ),
+        'Left on 27 Sep',
       );
     });
 
