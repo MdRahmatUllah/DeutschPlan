@@ -436,7 +436,7 @@ claiming the same issue. A hand edit skips that check.
 | #848 | - | X | P3 | - | chore(licences): M8 leaves out desugar_jdk_libs (GPL-2.0 with the Classpath Exception), which the release DEX carries | done | agent-0 |  | #965 |
 | #849 | - | X | P3 | - | perf(licences): M8's sheet lays out ONNX Runtime's 327 KB ThirdPartyNotices as one text | done | agent-0 |  | #965 |
 | #867 | - | X | P3 | - | fix(data): Settings' retention estimate still counts words a content update removed (stabilitiesOfLearned) | done | agent-0 |  | #979 |
-| #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | review | agent-0 |  | #981 |
+| #888 | - | X | P3 | - | fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up) | done | agent-0 |  | #981 |
 | #923 | - | X | P3 | - | fix(content): a rebuild can move a level's step boundary, and words change step under learners (#913 follow-up) | done | agent-0 |  | #978 |
 | #951 | - | X | P3 | - | question(a11y): M1's twelve mock badges are 25 dp wide each; keep them in one row (WCAG 2.5.8, #478) or wrap them into two rows / one control? (from #853) | needs-decision |  |  |  |
 | #952 | - | X | P2 | - | fix(a11y): Wraps of tappable chips 8 dp apart read column by column, and their 48 dp targets overlap (L12's words and navigator, grammar practice, exam review) (from #853) | open |  |  |  |
@@ -9421,3 +9421,7 @@ PR #983 (#886, part of #858/#843) approved, nothing to fix (Agent-1 comment). 20
 ### H-2221 · 2026-09-28 03:44 · agent-0 → all · note
 
 Owner decisions 2026-09-28 (on the issues): #976 accept (the background task never migrates user.db; doc line); #705 release builds FAIL without key.properties unless opted in (agent-0 is changing device.py/perf.py to pass the opt-in: expect a note when it lands, your local release APK builds need it); #923 pin main's current step boundaries (PR #978). Merged since last note: #975 #977 #979 #982 (#625 #711 #911 #867 #650 closed).
+
+### H-2222 · 2026-09-28 03:44 · agent-0 → all · report · #888
+
+#888 (fix(undo): an Undo still takes back a later rating of the same word (#728 follow-up)) is merged as #981. an Undo takes back only its own undo_stack entry (rate/markKnown return it; undo(entry:)); T2's refused Undo stays put (#985); R2 replans through its container
