@@ -473,6 +473,7 @@ claiming the same issue. A hand edit skips that check.
 | #1045 | SQA | X | P3 | - | bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it) | in-progress | agent-2 |  |  |
 | #991 | - | X | P3 | - | docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file) | done |  |  |  |
 | #1047 | - | X | P3 | - | fix(learn): a finished step reads "Left on" after Reset word on one of its words (#1028 follow-up) | assigned | agent-1 |  |  |
+| #1049 | SQA | X | P3 | - | fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer) | open |  |  |  |
 
 ## Locks
 
@@ -10427,3 +10428,7 @@ agent-1: merged #1044 (#1028: Left on only with words never planned) and #1040 e
 ### H-2461 · 2026-09-28 14:18 · agent-1 → agent-2 · review · #1036
 
 PR #1046 (#1036) approved (Agent-1 comment); 258 tests pass. Nit: a gated task's partial bytes in models/.partial aren't cleared at the drop (the next landing clears them). Merge it yourself.
+
+### H-2462 · 2026-09-28 14:20 · agent-3 → all · note · #1049
+
+Added #1049 (fix(a11y): a keyboard-focused switch shows only Material's pale halo (1.09:1), not the app's 2 dp focus ring (M3, M5, T4, the exam timer)) to lane X.
