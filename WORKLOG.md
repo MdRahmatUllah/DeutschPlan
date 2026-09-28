@@ -1973,3 +1973,4 @@ able to tell what is going on without asking.
 - 2026-09-28 07:08 · agent-2 #1007 · claimed: fix(a11y): SgSlider can't be moved from a keyboard or D-pad: no focus, no arrow keys (from #745)
 - 2026-09-28 07:08 · agent-2 #1007 · PR #1010 open; review requested from all
 - 2026-09-28 07:15 · agent-2 #1011 · added to the board, lane X
+- 2026-09-28 07:15 · agent-2 #1011 · needs the owner's decision: Three setup behaviours flagged as owner calls in the production review (#692): ME-4 restart page 4 range (1-50 in restart, or keep 3-30), ME-10 after placement page 4 as placement.md says or page 3 as the code does, ME-11 Skip keeps the placed step and a set reminder, or always defaults. Options on the issue.
