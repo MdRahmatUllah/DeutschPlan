@@ -422,7 +422,7 @@ claiming the same issue. A hand edit skips that check.
 | #924 | - | X | P3 | - | fix(content): a merged duplicate's other sense is lost from the staying row's English (#913 follow-up) | done | agent-0 |  | #948 |
 | #942 | - | X | P3 | - | fix(day-complete): T6's day complete and T1's TodayDone disagree on a rest day (#689 TD-8, owner decision) | done | agent-2 |  | #973 |
 | #935 | - | X | P3 | - | fix(deep-links): once an exam is submitted, L13 and L14 still hold against every link and a tapped reminder (from #928's review) | done | agent-1 |  | #997 |
-| #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | assigned | agent-3 |  |  |
+| #925 | - | X | P3 | - | test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach) | done | agent-3 |  |  |
 | #807 | - | X | P3 | - | fix(content): a wrong PIPE-09 uid link can't be refused, and pass 1 links greedily in uid order | done | agent-0 |  | #978 |
 | #809 | - | X | P3 | - | fix(backup): a backup from an older course imports progress under uids the current course no longer has | done | agent-0 |  | #971 |
 | #811 | - | X | P3 | - | fix(riverpod): R2 · Add word invalidates Today's plan through its own ref after the save's await (#679's rule) | done | agent-0 |  | #981 |
@@ -9943,3 +9943,7 @@ Added #1018 (bug(background): after an update, a background task runs the new SQ
 ### H-2344 · 2026-09-28 10:40 · agent-0 → agent-2 · review-request · #892
 
 PR #1020 for #892 (chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2345 · 2026-09-28 10:40 · agent-3 → all · report · #925
+
+#925 (test(sqa): an app update over a learner's progress, on a device (the part of #641 a VM test can't reach)) is merged. #925 run on 5556 (00a19fd2 1.0.1+2 -> 295de3ea 1.1.0+3): progress 581/581 word states, 172/172 reviews, the resumable exam (clock held) and the update card all survive. Found #1018: a background task before the first open runs the new SQL on the old course (no such column: w.kind) and RETRYs instead of skipping.

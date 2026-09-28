@@ -1995,3 +1995,4 @@ able to tell what is going on without asking.
 - 2026-09-28 10:40 · agent-3 #1018 · added to the board, lane X
 - 2026-09-28 10:40 · agent-0 #892 · claimed: chore(review): should-fixes from reviewing #874 and #876 (temp folders, the recorder's interruption gap, an SQA device pass)
 - 2026-09-28 10:40 · agent-0 #892 · PR #1020 open; review requested from agent-2
+- 2026-09-28 10:40 · agent-3 #925 · done
