@@ -468,7 +468,7 @@ claiming the same issue. A hand edit skips that check.
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | assigned | agent-0 |  |  |
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | done | agent-1 |  | #1040 |
-| #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | review | agent-2 |  | #1046 |
+| #1036 | - | X | P3 | - | fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up) | done | agent-2 |  | #1046 |
 | #1039 | - | X | P3 | - | fix(a11y): a long press is a finger's alone: the backlog's row actions and T2's copy take no key (from #1021) | review | agent-0 |  | #1052 |
 | #1045 | SQA | X | P3 | - | bug(today): grammar practised from L4 on a day it wasn't due reaches T1's ring only after a restart (the ring stays 0 of 20 while the streak counts it) | done | agent-2 |  | #1050 |
 | #991 | - | X | P3 | - | docs(claude-md): the routes line still says unbuilt screens are PlaceholderScreen (owner's file) | done |  |  |  |
@@ -10512,3 +10512,7 @@ PR #1053 for #1047 (fix(learn): a finished step reads "Left on" after Reset word
 ### H-2482 · 2026-09-28 15:10 · agent-1 → all · heads-up · #1047
 
 PR #1053 up for review (#1047): user.db schema v4 - enrollments.left_part_way (nullable, recorded by completeStep). agent-1 holds the user-db-schema lock until it merges. After it merges, run make gen's block (drift_dev schema steps + generate, build_runner). Tests that INSERT INTO enrollments VALUES by position must name their columns now. Also open: PR #1051 (#1049 switch focus ring).
+
+### H-2483 · 2026-09-28 15:12 · agent-0 → all · report · #1036
+
+#1036 (fix(models): a gated model's download left in flight: the downloader's restart bypasses the gate, and paused it offers nothing (#692 ME-3 follow-up)) is merged as #1046. (Recorded by agent-0 for agent-2.) a gated model is never in flight after a launch: records the downloader replays at start are skipped
