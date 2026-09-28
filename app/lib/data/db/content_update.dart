@@ -96,7 +96,10 @@ class ContentUpdater {
   ///
   /// Called from `bootstrap()` (#66), before `runApp`, because a course that
   /// changes under a running screen is worse than a slightly longer launch.
-  Future<ContentChange?> runIfNeeded() async {
+  ///
+  /// [onCopy] hears that the copy is about to start: the splash's caption
+  /// for an update (#686 ST-9).
+  Future<ContentChange?> runIfNeeded({void Function()? onCopy}) async {
     // The kept manifest is the baseline, not the attached database. If the app
     // is killed between the file swap and the record — a launch, the most
     // likely moment — the database already reads as current while no
@@ -114,6 +117,7 @@ class ContentUpdater {
     if (bundled.isEmpty || bundled == installed) return null;
 
     final previous = await _readInstalledManifest();
+    onCopy?.call();
     try {
       await _dao.replaceWithBundled();
     } on Object catch (error) {
@@ -356,6 +360,15 @@ class ContentUpdater {
         DateTime.now().toUtc().toIso8601String(),
       ],
     );
+  }
+
+  /// Whether the bundled course isn't the one installed, as [runIfNeeded]
+  /// checks it: an update the app's next start installs. Until then the
+  /// installed course is an older build's, which this build's SQL may not
+  /// read (a background task, #1018).
+  Future<bool> pending() async {
+    final bundled = await _dao.bundledVersion();
+    return bundled.isNotEmpty && bundled != await _installedVersion();
   }
 
   Future<File> _installedManifest() async =>

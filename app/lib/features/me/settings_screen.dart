@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -77,6 +79,16 @@ class SettingsEditor extends _$SettingsEditor {
         .read(setupRepositoryProvider)
         .setStudyDays(mask, today: ref.read(todayProvider));
   }
+
+  /// FR-M5-01: [day] (0 is Monday) switched against the mask as it is now,
+  /// not the one M5 was drawn with: two quick taps are two days (#692 ME-9).
+  // ponytail: a second tap within the first's history write (milliseconds,
+  // before it writes the setting) still reads the old mask; chain the
+  // toggles if that is ever seen.
+  Future<void> toggleStudyDay(int day) => studyDays(
+    ref.read(settingsSourceProvider).read(SettingKeys.studyDaysMask) ^
+        (1 << day),
+  );
 
   /// FR-M3-03: on only once the model is ready. False otherwise, with the
   /// switch left off, and M3 opens M4 to get it.
@@ -235,27 +247,31 @@ class SettingsScreen extends ConsumerWidget {
           _Group(
             title: l10n.settingsGroupRevision,
             rows: <Widget>[
-              _Row(
-                title: l10n.settingsRetention,
-                subtitle: stabilities == null
-                    ? l10n.settingsPercent(retention)
-                    : l10n.settingsRetentionLine(
-                        retention,
-                        Fsrs(desiredRetention: retention / 100)
-                            .reviewsPerDay(stabilities)
-                            .round(),
-                      ),
-                labelledByControl: true,
-                trailing: _slider(
-                  SgSlider(
-                    value: retention,
-                    min: (Fsrs.minRetention * 100).round(),
-                    max: (Fsrs.maxRetention * 100).round(),
-                    compact: true,
-                    label: l10n.settingsRetention,
-                    describe: l10n.settingsPercent,
-                    onChanged: (percent) =>
-                        set(SettingKeys.desiredRetention, percent / 100),
+              _Held(
+                value: retention,
+                builder: (retention, hold) => _Row(
+                  title: l10n.settingsRetention,
+                  subtitle: stabilities == null
+                      ? l10n.settingsPercent(retention)
+                      : l10n.settingsRetentionLine(
+                          retention,
+                          Fsrs(desiredRetention: retention / 100)
+                              .reviewsPerDay(stabilities)
+                              .round(),
+                        ),
+                  labelledByControl: true,
+                  trailing: _slider(
+                    SgSlider(
+                      value: retention,
+                      min: (Fsrs.minRetention * 100).round(),
+                      max: (Fsrs.maxRetention * 100).round(),
+                      compact: true,
+                      label: l10n.settingsRetention,
+                      describe: l10n.settingsPercent,
+                      onChanged: hold,
+                      onChangeEnd: (percent) =>
+                          set(SettingKeys.desiredRetention, percent / 100),
+                    ),
                   ),
                 ),
               ),
@@ -381,24 +397,25 @@ class SettingsScreen extends ConsumerWidget {
                 },
                 onTap: () => ModelsRoute.open(context),
               ),
-              _Row(
-                title: l10n.settingsSpeed,
-                subtitle: l10n.settingsSpeedLine(
-                  l10n.digits(
-                    _times(speedQuarters.clamp(speed.min, speed.max)),
-                  ),
-                ),
-                labelledByControl: true,
-                trailing: _slider(
-                  SgSlider(
-                    value: speedQuarters.clamp(speed.min, speed.max),
-                    min: speed.min,
-                    max: speed.max,
-                    compact: true,
-                    label: l10n.settingsSpeed,
-                    describe: (quarters) => l10n.digits('${_times(quarters)}×'),
-                    onChanged: (quarters) =>
-                        set(SettingKeys.ttsSpeed, quarters / 4),
+              _Held(
+                value: speedQuarters.clamp(speed.min, speed.max),
+                builder: (shown, hold) => _Row(
+                  title: l10n.settingsSpeed,
+                  subtitle: l10n.settingsSpeedLine(l10n.digits(_times(shown))),
+                  labelledByControl: true,
+                  trailing: _slider(
+                    SgSlider(
+                      value: shown,
+                      min: speed.min,
+                      max: speed.max,
+                      compact: true,
+                      label: l10n.settingsSpeed,
+                      describe: (quarters) =>
+                          l10n.digits('${_times(quarters)}×'),
+                      onChanged: hold,
+                      onChangeEnd: (quarters) =>
+                          set(SettingKeys.ttsSpeed, quarters / 4),
+                    ),
                   ),
                 ),
               ),
@@ -522,7 +539,7 @@ class SettingsScreen extends ConsumerWidget {
               _Row(
                 title: l10n.settingsRestart,
                 subtitle: l10n.settingsRestartNote,
-                onTap: () => OnboardingRoute.restartSetup(context),
+                onTap: () => unawaited(_restart(context)),
               ),
             ],
           ),
@@ -566,6 +583,8 @@ class SettingsScreen extends ConsumerWidget {
         if (mask & (1 << day) != 0) day,
     ];
     // 1 January 2024 was a Monday: the locale's own short weekday names.
+    // Not M5's chip names ("Mo", "বৃহঃ"), which are as short as a chip is
+    // narrow: a line of text reads "Mon–Sat" (#704, declined).
     final weekday = DateFormat.E(Localizations.localeOf(context).toString());
     String name(int day) => weekday.format(DateTime(2024, 1, 1 + day));
 
@@ -668,6 +687,40 @@ class SettingsScreen extends ConsumerWidget {
   );
 }
 
+/// A slider row's value while the finger is on it (#698): the row shows it at
+/// once, the retention estimate and the speed with it, and the slider's
+/// `onChangeEnd` saves it when the finger lets go: one write a drag, where
+/// every step wrote user.db and woke every listener of the setting.
+class _Held extends StatefulWidget {
+  const _Held({required this.value, required this.builder});
+
+  /// The saved value.
+  final int value;
+
+  /// The row, showing [shown]; [hold] is its slider's `onChanged`.
+  final Widget Function(int shown, ValueChanged<int> hold) builder;
+
+  @override
+  State<_Held> createState() => _HeldState();
+}
+
+class _HeldState extends State<_Held> {
+  int? _held;
+
+  @override
+  void didUpdateWidget(_Held old) {
+    super.didUpdateWidget(old);
+    // The save came back (or another writer's did): the setting shows again.
+    if (widget.value != old.value) _held = null;
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(
+    _held ?? widget.value,
+    (value) => setState(() => _held = value),
+  );
+}
+
 /// A group: a Cobalt header over flat rows on Android, an upper-case header
 /// over an inset panel on iOS.
 class _Group extends StatelessWidget {
@@ -737,6 +790,24 @@ class _Group extends StatelessWidget {
 
 /// One setting: its name, a line under it, and its control — or, for a row
 /// that opens something, the value and a chevron.
+/// #704: Restart setup reads the learner's values before it pushes its
+/// page, and a second tap in between pushed a second. Held until that page is
+/// up. (Reset's sheet needs none: a second tap opens no second sheet.)
+bool _restarting = false;
+
+Future<void> _restart(BuildContext context) async {
+  if (_restarting) return;
+  _restarting = true;
+  try {
+    await OnboardingRoute.restartSetup(context);
+  } finally {
+    // Until the page it pushed is up: go_router builds it on the next
+    // frame, and M3 is the current route until then.
+    await WidgetsBinding.instance.endOfFrame;
+    _restarting = false;
+  }
+}
+
 class _Row extends StatelessWidget {
   const _Row({
     required this.title,

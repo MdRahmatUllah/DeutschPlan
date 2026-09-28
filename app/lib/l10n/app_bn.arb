@@ -76,6 +76,7 @@
   "onboardingMeaningSample": "{german} → {meaning}",
   "onboardingMeaningSampleBoth": "{english} · {bangla}",
   "splashPreparing": "আপনার কোর্স প্রস্তুত হচ্ছে · শুধু প্রথমবার",
+  "splashUpdating": "কোর্স আপডেট হচ্ছে…",
   "onboardingStartHeadline": "কোথা থেকে শুরু করবেন?",
   "onboardingStepWords": "{count, plural, other{{count}টি শব্দ}}",
   "onboardingPlacementLink": "নিশ্চিত নন? ৩ মিনিটের একটি যাচাই দিন",
@@ -985,5 +986,6 @@
   "modelsFooter": "দুটি মডেলই পুরোপুরি ফোনে চলে। ভয়েস মুছলে ফোনের জার্মান ভয়েস ব্যবহার হবে; অনুবাদ মডেল মুছলে অনুবাদ বন্ধ হবে।",
   "modelsStartFailed": "ডাউনলোড শুরু করা যায়নি",
   "modelsSampleFailed": "নমুনাটি বাজানো যায়নি",
-  "modelsDeleteKeep": "রেখে দিন"
+  "modelsDeleteKeep": "রেখে দিন",
+  "modelsDeleteFailed": "মডেলের সব ফাইল মোছা যায়নি। আবার চেষ্টা করুন।"
 }

@@ -4,7 +4,7 @@
 
 **Reached from.** M1, gear on T1. **Leads to.** M5 (Study days & reminder), M4 (Voice engine / On-device translation), M6 (Export / import), M7 (Reset), S2 (Restart setup).
 
-Grouped list (Material headers / Cupertino inset groups). Changes save instantly; rows whose effect starts tomorrow say "Applies from tomorrow".
+Grouped list (Material headers / Cupertino inset groups). Changes save instantly; rows whose effect starts tomorrow say "Applies from tomorrow". A slider saves when the finger lets go, or a drag the scroll view takes over ends, with the value its thumb shows; its row shows each step as it moves, and a key's or a screen reader's step saves at once. One write a drag, where each step wrote user.db (#698).
 
 | Group | Row | Control | Setting |
 | --- | --- | --- | --- |
@@ -44,6 +44,7 @@ Details M3 settles (#146):
 - *Voice engine* reads "Supertonic · Anna" or "Phone voice", or, with Supertonic chosen but its model not on the phone, "Phone voice · Supertonic not downloaded": what speaks meanwhile (#345). It follows a download that lands, and a *Delete*, while the app runs, as T1's voice card does (#757).
 - A switch row flips from anywhere on it, as Material rows do; a screen reader hears the row as its switch, once (#345). A change of theme keeps the list where it was. *On-device translation* reads the model's state: "Hy-MT 1.5 · downloading 42%", "· ready", "· not downloaded", and so on.
 - The retention estimate (FR-M3-01) samples every n-th of at most 1,000 learned words (rated, not suspended), scaled back up. It counts what is revised: the course's words to learn and the learner's own, not a word a content update removed (BR-CONTENT-02, #867) or a lesson note or comparison (BR-CONTENT-04, #886). The stabilities are read once per visit; the slider re-sums them.
+- *Restart setup* opens once for two quick taps: the row holds until setup's page is up, the learner's values read in between (#704).
 - For FR-M3-03 the model is there when it is `ready`, or `updateAvailable` (the old one is whole). A download in progress is not, so the switch stays off and M4 opens.
 - *Translation* is hidden while the build doesn't offer Hy-MT's download (`ENABLE_HYMT_DOWNLOAD`, off in every v1.0 build, ADR 9) and no Hy-MT model is on the phone: the switch could never turn on. A model a flag-on build downloaded keeps the group, so it can still be turned off (#513). M4's Hy-MT card still reads "Not offered in this version of the app".
 - M4 and M6 are pushed over M3 (navigation.md), so back returns to Settings. A choice's list scrolls when it outgrows the sheet (a phone held sideways, 200 % text).

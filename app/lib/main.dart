@@ -34,7 +34,8 @@ import 'package:sogda/router/deep_links.dart' show readable, todayLink;
 import 'package:sogda/services/background_tasks.dart';
 import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
-import 'package:sogda/services/tts/tts_service.dart' show VoiceRelease;
+import 'package:sogda/services/tts/tts_service.dart'
+    show TtsService, VoiceRelease;
 import 'package:sogda/services/widget_snapshot.dart';
 
 export 'package:sogda/l10n/ui_language_locale.dart';
@@ -78,8 +79,8 @@ class BootstrapHost extends StatefulWidget {
 
   /// Overridden in tests. Defaults to the real [bootstrap].
   final Future<BootstrapResult> Function({
-    Brightness platformBrightness,
     void Function(UiLanguage)? onUiLanguage,
+    void Function()? onCourseUpdate,
   })?
   run;
 
@@ -105,6 +106,10 @@ class _BootstrapHostState extends State<BootstrapHost>
   /// The learner's language, once bootstrap has read it. Until then the
   /// splash follows the phone — there is nothing else to follow.
   Locale? _splashLocale;
+
+  /// Whether an app update is copying its new course in: the splash says so,
+  /// not "first start only" (#686 ST-9).
+  bool _updatingCourse = false;
 
   @override
   void initState() {
@@ -191,10 +196,11 @@ class _BootstrapHostState extends State<BootstrapHost>
   /// [bootstrap], or the test's stand-in: at launch, and again from the
   /// error screen's *Retry*.
   Future<BootstrapResult> _run() => (widget.run ?? bootstrap)(
-    platformBrightness:
-        WidgetsBinding.instance.platformDispatcher.platformBrightness,
     onUiLanguage: (ui) {
       if (mounted) setState(() => _splashLocale = ui.locale);
+    },
+    onCourseUpdate: () {
+      if (mounted) setState(() => _updatingCourse = true);
     },
   );
 
@@ -285,7 +291,7 @@ class _BootstrapHostState extends State<BootstrapHost>
       locale: _splashLocale,
       localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: supportedLocales,
-      home: const SplashProgressGate(),
+      home: SplashProgressGate(updating: _updatingCourse),
     ),
   };
 }
@@ -333,8 +339,13 @@ ProviderSubscription<SgMode> watchGlassTheme(
 /// player included, to release nothing (#906).
 VoiceRelease watchVoiceMemory(ProviderContainer container) {
   final observer = VoiceRelease(() async {
+    // The sessions are Supertonic's, whichever path opened them (#1035):
+    // a speaker, through the service, or M4's voice chips, which speak to
+    // the engine itself. In the app the two are one engine.
     if (container.exists(ttsProvider)) {
       await container.read(ttsProvider).release();
+    } else if (container.exists(supertonicTtsProvider)) {
+      await TtsService.releaseEngine(container.read(supertonicTtsProvider));
     }
   });
   WidgetsBinding.instance.addObserver(observer);
@@ -379,6 +390,8 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
   }
   // The schedule queues reminder_compose, on the work started above.
   if (!await background) return null;
+  // #626: and today's follows a day finished, or opened again, in the app.
+  followReminder(container, notifications);
   return remindersFor(container, notifications, work).follow();
 }
 

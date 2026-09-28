@@ -99,8 +99,8 @@ void main() {
     await tester.pumpWidget(
       BootstrapHost(
         run: ({
-          Brightness platformBrightness = Brightness.light,
           void Function(UiLanguage)? onUiLanguage,
+          void Function()? onCourseUpdate,
         }) => never.future,
       ),
     );
