@@ -1988,3 +1988,4 @@ able to tell what is going on without asking.
 - 2026-09-28 10:04 · agent-0 · locked shared-look: #698 Bangla chrome labels
 - 2026-09-28 10:05 · agent-1 #995 · done (#1005)
 - 2026-09-28 10:13 · agent-1 #1004 · PR #1014 open; review requested from all
+- 2026-09-28 10:13 · agent-1 #1012 · claimed: fix(learn): a step the plan finished reads "Left on" while its words are still Learning (#950 follow-up)
