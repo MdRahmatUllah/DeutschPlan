@@ -221,6 +221,76 @@ void main() {
     expect(FocusManager.instance.primaryFocus, isA<FocusScopeNode>());
   });
 
+  // #1039: a long press is a key's too, the context-menu key's or
+  // Shift+F10's, as a desktop's context menu opens.
+  final longPresses = <String, Widget Function(VoidCallback longPress)>{
+    'SgTappable': (longPress) => SgTappable(
+      onTap: () {},
+      onLongPress: longPress,
+      child: const SizedBox(width: 200, height: 48),
+    ),
+    'SgTappable with no tap': (longPress) => SgTappable(
+      onTap: null,
+      onLongPress: longPress,
+      child: const SizedBox(width: 200, height: 48),
+    ),
+    'SgSpeakerButton': (longPress) => SgSpeakerButton(
+      onPressed: () {},
+      onLongPress: longPress,
+      semanticLabel: 'Pronounce',
+    ),
+  };
+  final longPressKeys = <String, Future<void> Function(WidgetTester)>{
+    'the context-menu key': (tester) =>
+        tester.sendKeyEvent(LogicalKeyboardKey.contextMenu),
+    'Shift+F10': (tester) async {
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.f10);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+    },
+  };
+  for (final MapEntry(key: name, value: build) in longPresses.entries) {
+    for (final MapEntry(key: keyName, value: send) in longPressKeys.entries) {
+      testWidgets('#1039 $name: Tab reaches it, $keyName long-presses it', (
+        tester,
+      ) async {
+        var longPressed = 0;
+        await pump(tester, build(() => longPressed++));
+
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        await send(tester);
+        await tester.pump();
+        expect(longPressed, 1);
+      });
+    }
+  }
+
+  testWidgets('#1039 an umlaut key: the context-menu key types its capital', (
+    tester,
+  ) async {
+    final controller = TextEditingController();
+    addTearDown(controller.dispose);
+    await pump(tester, SgUmlautBar(controller: controller));
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.contextMenu);
+    await tester.pump();
+    expect(controller.text, 'Ä');
+  });
+
+  testWidgets('#1039 F10 without Shift is no long press', (tester) async {
+    var longPressed = 0;
+    await pump(tester, longPresses['SgTappable']!(() => longPressed++));
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.f10);
+    await tester.pump();
+    expect(longPressed, 0);
+  });
+
   testWidgets('#745 an umlaut key: Tab reaches it, Enter types it', (
     tester,
   ) async {

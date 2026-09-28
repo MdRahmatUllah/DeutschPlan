@@ -693,8 +693,8 @@ class _TrailingActionsState extends State<_TrailingActions> {
               children: <Widget>[
                 for (final (i, (label, run)) in widget.actions.indexed)
                   // Under the row until a swipe shows them: the row's long
-                  // press and its semantics actions do the same three (#1021;
-                  // a key reaches none yet, #1039).
+                  // press, its context-menu key (#1039) and its semantics
+                  // actions do the same three (#1021).
                   // ponytail: allow-bare-tap
                   GestureDetector(
                     onTap: () {

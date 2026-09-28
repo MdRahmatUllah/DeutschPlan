@@ -8,6 +8,7 @@ import 'package:drift/drift.dart'
         Table,
         TableInfo;
 import 'package:drift/native.dart' show NativeDatabase;
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +20,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -36,6 +38,7 @@ import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
 
+import '../core/keyboard.dart';
 import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
@@ -648,6 +651,49 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         () => db.customSelect('SELECT word_uid FROM review_log').get(),
       );
       expect(log, isEmpty);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('#1039 WCAG 2.1.1 a keyboard reaches them: Tab to the row, '
+        'the context-menu key opens its actions, Enter suspends it', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tabTo(
+        tester,
+        find.ancestor(of: word('das Haus'), matching: find.byType(SgTappable)),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.contextMenu);
+      await tester.pumpAndSettle();
+      for (final label in <String>[
+        l10n.backlogMarkKnown,
+        l10n.backlogSuspend,
+        l10n.backlogRemove,
+      ]) {
+        expect(find.widgetWithText(SgButton, label), findsOneWidget);
+      }
+
+      // Tab to Suspend in the sheet, and Enter.
+      bool onSuspend() {
+        var found = false;
+        FocusManager.instance.primaryFocus?.context?.visitAncestorElements((e) {
+          final widget = e.widget;
+          found = widget is SgButton && widget.label == l10n.backlogSuspend;
+          return !found;
+        });
+        return found;
+      }
+
+      for (var i = 0; i < 10 && !onSuspend(); i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+      }
+      expect(onSuspend(), isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await settle(tester);
+
+      expect(find.text(l10n.wordStatusSuspended), findsOneWidget);
       await tester.pump(const Duration(seconds: 5));
       await tester.pumpAndSettle();
     });
