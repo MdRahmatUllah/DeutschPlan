@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/reminder_scheduler.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -320,6 +321,14 @@ Future<bool> withBackgroundDatabase(
     final content = ContentDao(db);
     // Never started: installing the course is the app's first start's job.
     if (!(await content.installedFile()).existsSync()) return false;
+    // #1018: an update installed the app but not yet its course, which the
+    // next start does. The course here is an older build's, and this build's
+    // SQL fails on it (a column it lacks): left for the app, as an old
+    // user.db is.
+    if (await ContentUpdater(db, content).pending()) {
+      debugPrint("background: the course isn't this build's; left for the app");
+      return false;
+    }
     await content.attach();
     final settings = SettingsRepository(db);
     await settings.load();

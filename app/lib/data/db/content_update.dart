@@ -362,6 +362,14 @@ class ContentUpdater {
     );
   }
 
+  /// Whether the bundled course isn't the one installed, as [runIfNeeded]
+  /// checks it: an update the app's next start installs. Until then the installed course is an older
+  /// build's, which this build's SQL may not read (a background task, #1018).
+  Future<bool> pending() async {
+    final bundled = await _dao.bundledVersion();
+    return bundled.isNotEmpty && bundled != await _installedVersion();
+  }
+
   Future<File> _installedManifest() async =>
       File('${(await getApplicationSupportDirectory()).path}/$manifestFile');
 
