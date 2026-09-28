@@ -23,7 +23,7 @@ void main() {
   const today = '2026-09-21';
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_sentences');
+    directory = tempDir('sogda_sentences');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
@@ -41,11 +41,6 @@ INSERT INTO word_state (word_uid, status, introduced_on) VALUES
 
   tearDown(() async {
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<Set<(String, int)>> candidates({int gap = 14}) async =>

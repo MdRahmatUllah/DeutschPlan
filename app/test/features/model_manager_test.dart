@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -20,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../core/text_clipping.dart';
+import '../db/content_fixture.dart' show tempDir;
 import '../services/fake_tts.dart';
 import 'model_manager_fixtures.dart';
 import 'settings_fixtures.dart';
@@ -336,14 +336,7 @@ void main() {
     testWidgets('then deletes the model, which turns off what used it, and '
         'the voice lets go of its sessions', (tester) async {
       final settings = StubSettings();
-      final support = Directory.systemTemp.createTempSync('sg_m4');
-      addTearDown(() {
-        try {
-          support.deleteSync(recursive: true);
-        } on FileSystemException {
-          // Windows lets go a moment later.
-        }
-      });
+      final support = tempDir('sg_m4');
       final voice = FakeTts();
       await pump(
         tester,

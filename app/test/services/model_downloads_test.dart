@@ -17,6 +17,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     show AndroidFlutterLocalNotificationsPlugin;
 import 'package:flutter_test/flutter_test.dart';
 
+import '../db/content_fixture.dart' show tempDir;
+
 /// The download manager (#156, FR-M4-01) over a fake platform downloader: the
 /// notification, the record of what was in flight, *Wi-Fi only*, pause and
 /// resume, the progress a card draws, and nothing activated until it verifies.
@@ -61,7 +63,7 @@ void main() {
   ]);
 
   setUp(() async {
-    support = Directory.systemTemp.createTempSync('sg_downloads');
+    support = tempDir('sg_downloads');
     final db = AppDatabase.memory();
     addTearDown(db.close);
     settings = SettingsRepository(db);
@@ -78,14 +80,6 @@ void main() {
       const Duration(seconds: 2),
       notice,
     );
-  });
-
-  tearDown(() {
-    try {
-      support.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows lets go of the directory a moment later.
-    }
   });
 
   /// The downloader reports on [name], and the service has had its turn.

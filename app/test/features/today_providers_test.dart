@@ -42,7 +42,7 @@ void main() {
   const today = '2026-09-21';
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_today');
+    directory = tempDir('sogda_today');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     // The plan below revises r1 and r2 and has b1 and b2 waiting: words of
     // the step finished in August. The course must have them, or they are a
@@ -115,11 +115,6 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     container.dispose();
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   test("#729 a new word skipped to the backlog is done for the plan, but "
@@ -622,8 +617,7 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability, reps, l
     });
 
     test('the voice is not installed until its files are there', () async {
-      final support = Directory.systemTemp.createTempSync('sogda_voice');
-      addTearDown(() => support.deleteSync(recursive: true));
+      final support = tempDir('sogda_voice');
       final models = ProviderContainer(
         overrides: <Override>[
           settingsProvider.overrideWithValue(settings),

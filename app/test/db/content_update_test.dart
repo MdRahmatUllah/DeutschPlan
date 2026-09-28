@@ -149,7 +149,7 @@ void main() {
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    support = Directory.systemTemp.createTempSync('sogda_update');
+    support = tempDir('sogda_update');
     PathProviderPlatform.instance = _TempPaths(support.path);
 
     publish(course(version: '202601010000'));
@@ -169,11 +169,6 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler('flutter/assets', null);
     await db.close();
-    try {
-      support.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   test('an update with nothing to report is not shown', () async {

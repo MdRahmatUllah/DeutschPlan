@@ -56,7 +56,7 @@ void main() {
   });
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_reset_ui');
+    directory = tempDir('sogda_reset_ui');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase.memory();
     await db.customStatement(
@@ -80,7 +80,6 @@ void main() {
 
   tearDown(() async {
     await db.close();
-    directory.deleteSync(recursive: true);
   });
 
   Future<int> count(String table) async =>

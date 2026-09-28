@@ -34,7 +34,7 @@ void main() {
   late SettingsRepository settings;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_kind');
+    directory = tempDir('sogda_kind');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     final raw = sqlite.sqlite3.open(content.path);
     try {
@@ -81,11 +81,6 @@ INSERT INTO word_examples (word_uid, ord, german, english) VALUES
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   test(

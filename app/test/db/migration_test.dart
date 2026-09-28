@@ -10,6 +10,7 @@ import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' show sqlite3;
 
+import 'content_fixture.dart' show tempDir;
 import 'generated/schema.dart';
 
 /// `user-database.md`: "Every change ships a migration step in
@@ -128,7 +129,7 @@ void main() {
     // A learner's file one version back, with the connection the app opens,
     // foreign keys on: an exam attempt and its two answers.
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_migrate');
+      directory = tempDir('sogda_migrate');
       file = File('${directory.path}/user.db');
       final db = AppDatabase(NativeDatabase(file, setup: configureConnection));
       await db.customStatement(
@@ -141,14 +142,6 @@ void main() {
       );
       await db.customStatement('PRAGMA user_version = $previous');
       await db.close();
-    });
-
-    tearDown(() {
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     _Planted open(Future<void> Function(AppDatabase db, Migrator m) step) =>

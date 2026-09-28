@@ -28,7 +28,7 @@ void main() {
     late SearchRepository search;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_search');
+      directory = tempDir('sogda_search');
       final content = ContentFixture.write('${directory.path}/content.db').file;
 
       db = AppDatabase.memory();
@@ -40,11 +40,6 @@ void main() {
 
     tearDown(() async {
       await db.close();
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     group('BR-SEARCH-02 — exact', () {
@@ -402,7 +397,7 @@ void main() {
     late SearchRepository search;
 
     setUpAll(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_scale');
+      directory = tempDir('sogda_scale');
       _writeCourseSizedContent('${directory.path}/content.db');
 
       db = AppDatabase.memory();
@@ -414,11 +409,6 @@ void main() {
 
     tearDownAll(() async {
       await db.close();
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     test('the fixture really is course-sized', () async {

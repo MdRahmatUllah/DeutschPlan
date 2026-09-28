@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -22,6 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../db/content_fixture.dart' show tempDir;
 import '../services/fake_tts.dart';
 import '../timing.dart';
 
@@ -284,14 +284,7 @@ void main() {
     tester,
   ) async {
     final phone = FakeTts();
-    final support = Directory.systemTemp.createTempSync('sg_speak');
-    addTearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows lets go a moment later.
-      }
-    });
+    final support = tempDir('sg_speak');
     await pump(tester, [
       systemTtsProvider.overrideWithValue(phone),
       modelRepositoryProvider.overrideWith(

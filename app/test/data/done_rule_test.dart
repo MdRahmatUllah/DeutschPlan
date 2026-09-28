@@ -44,7 +44,7 @@ void main() {
     late GrammarRepository grammar;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_done_rule');
+      directory = tempDir('sogda_done_rule');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(
@@ -59,11 +59,6 @@ void main() {
     tearDown(() async {
       await settings.dispose();
       await db.close();
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     // Haus exactly at the threshold, Tür just under, Straße just over.

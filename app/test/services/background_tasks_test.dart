@@ -87,14 +87,12 @@ void main() {
     late File file;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_schema');
+      directory = tempDir('sogda_schema');
       file = File('${directory.path}/user.sqlite');
       final db = AppDatabase(DatabaseConnection(NativeDatabase(file)));
       await db.customSelect('SELECT 1').get();
       await db.close();
     });
-
-    tearDown(() => directory.deleteSync(recursive: true));
 
     test("a file at this build's schema is opened", () {
       expect(atCurrentSchema(file), isTrue);
@@ -130,7 +128,7 @@ void main() {
 
     setUp(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
-      support = Directory.systemTemp.createTempSync('sogda_skip');
+      support = tempDir('sogda_skip');
       PathProviderPlatform.instance = _Support(support.path);
       work = FakeWork();
       ran.clear();
@@ -142,15 +140,6 @@ void main() {
       );
       await db.customSelect('SELECT 1').get();
       await db.close();
-    });
-
-    tearDown(() {
-      try {
-        support.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases the file a moment after close(); the OS clears
-        // its temp directory.
-      }
     });
 
     test('user.db left at the old schema for the app', () async {
@@ -234,7 +223,7 @@ void main() {
     );
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_tasks');
+      directory = tempDir('sogda_tasks');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(
@@ -257,7 +246,6 @@ void main() {
     tearDown(() async {
       await settings.dispose();
       await db.close();
-      directory.deleteSync(recursive: true);
     });
 
     test("plan_pregenerate opens today's plan", () async {

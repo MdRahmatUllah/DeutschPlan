@@ -43,7 +43,7 @@ void main() {
           .get();
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_quiz_run');
+    directory = tempDir('sogda_quiz_run');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
@@ -79,11 +79,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<QuizRun> start({int seed = 42}) => service.start(

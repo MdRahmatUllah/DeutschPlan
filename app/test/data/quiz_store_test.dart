@@ -29,7 +29,7 @@ void main() {
   late DriftQuizStore store;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_quiz');
+    directory = tempDir('sogda_quiz');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
@@ -47,11 +47,6 @@ void main() {
   tearDown(() async {
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   Future<void> state(
