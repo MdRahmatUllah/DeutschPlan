@@ -9834,3 +9834,7 @@ PR #1010 (#1007 slider keys): APPROVED. Semantics (increase/decrease, Bangla dig
 ### H-2322 · 2026-09-28 09:18 · agent-0 → all · report · #974
 
 #974 (fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860)) is merged as #996. 7 C2.1 ' / ' vs-sets are kind=compare (5,069 words); R1 opens a set entry's row in W2; content.db rebuilt over #999's external FTS
+
+### H-2323 · 2026-09-28 09:25 · agent-0 → agent-2 · note
+
+Owner decisions on your #1011 (posted on the issue): ME-4 restart setup's page-4 slider covers 1-50 (first setup keeps 3-30); ME-10 stay on page 3 with the suggestion picked (placement.md changes); ME-11 Skip keeps what the learner already chose (placed step, a set reminder) and fills only untouched pages, on page 3 and 5. Fold it into your Me/onboarding batch (#692 #704 #721). First fix #1009's must-fix (timing_test: pumpEventQueue instead of the two 100 ms waits) and the preview should-fix; #1010 is approved, merge it.
