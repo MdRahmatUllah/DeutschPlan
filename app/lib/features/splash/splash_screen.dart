@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_brand.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 
@@ -100,7 +102,7 @@ class SplashScreen extends StatelessWidget {
     // the aurora is the paper, so the scaffold gets out of its way — the
     // backdrop's own transparent tone rather than a raw `Colors.transparent`,
     // which the theme could not follow.
-    return AdaptiveScaffold(
+    final Widget scaffold = AdaptiveScaffold(
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.color.primary,
@@ -108,6 +110,13 @@ class SplashScreen extends StatelessWidget {
           ? AuroraBackdrop(leading: tokens.color.primary, child: body)
           : body,
     );
+    // #1070: the status bar's icons for the fill, not the last app bar's.
+    return tokens.isGlass
+        ? scaffold
+        : AnnotatedRegion<SystemUiOverlayStyle>(
+            value: barsOver(tokens.color.primary),
+            child: scaffold,
+          );
   }
 }
 

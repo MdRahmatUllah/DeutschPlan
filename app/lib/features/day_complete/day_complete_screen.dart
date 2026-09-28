@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,6 +13,7 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/today/today_view.dart';
@@ -147,7 +149,7 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
       ),
     );
 
-    return AdaptiveScaffold(
+    final Widget scaffold = AdaptiveScaffold(
       backgroundColor: tokens.isGlass
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.color.easy,
@@ -162,6 +164,13 @@ class _DayCompleteScreenState extends ConsumerState<DayCompleteScreen>
             )
           : page,
     );
+    // #1070: the status bar's icons for the fill, not the last app bar's.
+    return tokens.isGlass
+        ? scaffold
+        : AnnotatedRegion<SystemUiOverlayStyle>(
+            value: barsOver(tokens.color.easy),
+            child: scaffold,
+          );
   }
 }
 
