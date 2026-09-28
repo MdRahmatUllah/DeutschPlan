@@ -35,7 +35,7 @@ screen for core features
 
 What does **not** need the network:
 
-- The course, all 5,076 words and their examples, which ship inside the app.
+- The course, all 5,069 words and their examples, which ship inside the app.
 - *Check for update* on a model, which reads the manifest bundled with the
   app; the manifest changes only with an app update.
 - Content updates, which arrive as app updates through the store.
@@ -47,8 +47,8 @@ What does **not** need the network:
 |---|---|---|
 | **App language** (all UI copy) | Yes: 972 strings | Yes: 972 strings, every number in Bangla digits |
 | **Meaning language** | Yes | Yes, or both together |
-| **Word meanings** | All 5,076 | All 5,076 |
-| **Pronunciation of each word** | — | All 5,076, in Bangla letters (on by default for বাংলা and Both) |
+| **Word meanings** | All 5,069 | All 5,069 |
+| **Pronunciation of each word** | — | All 5,069, in Bangla letters (on by default for বাংলা and Both) |
 | **Interference tips** | All 622 | All 622 |
 | **Example translations** (10,545) | All | None: English shows in every meaning language |
 | **Grammar rules** (182 topics) | All | None |
@@ -169,7 +169,7 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
 | | Count |
 |---|---|
 | Course steps | 12 (A1.1 … C2.2), in 6 CEFR levels |
-| Words and phrases | 5,076 to learn: A1 1,315 · A2 1,035 · B1 379 · B2 1,023 · C1 819 · C2 505, plus 160 lesson notes and comparisons |
+| Words and phrases | 5,069 to learn: A1 1,315 · A2 1,035 · B1 379 · B2 1,023 · C1 819 · C2 498, plus 167 lesson notes and comparisons |
 | Example sentences | 10,545 (two for almost every word) |
 | Grammar topics | 182: 10 or 11 per step from A1.1 to B1.2, 20 per step from B2.1 |
 | Word categories | 159 |

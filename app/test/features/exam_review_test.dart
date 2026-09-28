@@ -13,6 +13,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'exam_result_fixtures.dart';
 import 'settings_fixtures.dart';
+import '../core/semantics_checks.dart';
 import 'today_fixtures.dart' show artboardTopic;
 
 /// L14 · Exam review — #136 (`exam-results.md`, FR-L14-01). The review
@@ -105,6 +106,17 @@ void main() {
     await tap(tester, l10n.examNavFlagged(3));
     expect(find.text(header(3, l10n.examSectionVocabulary)), findsOneWidget);
     expect(find.text(header(9, l10n.examSectionVocabulary)), findsNothing);
+  });
+
+  testWidgets('#952 FR-L14-01 the filters read run by run, as they wrap', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester);
+    tester.view.physicalSize = const Size(300, 900) * 3;
+    await tester.pumpAndSettle();
+    expectWrapReadsAsDrawn(tester, find.text(l10n.examReviewAll(40)));
+    semantics.dispose();
   });
 
   testWidgets('FR-L14-01 a wrong word: the answers, its first example and '

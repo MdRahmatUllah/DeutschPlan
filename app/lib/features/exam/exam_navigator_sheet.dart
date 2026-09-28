@@ -89,7 +89,8 @@ class ExamNavigatorSheet extends StatelessWidget {
               final width = (box.maxWidth - gap * 7) / 8;
               return Wrap(
                 spacing: gap,
-                runSpacing: gap,
+                // The cells are 40 dp tall (#952).
+                runSpacing: AdaptiveTapTarget.runSpacing(40),
                 children: <Widget>[
                   for (final (i, cell) in cells.indexed)
                     _Cell(
