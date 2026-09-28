@@ -302,6 +302,25 @@ void main() {
       expect(shown(), 85);
     });
 
+    testWidgets('a drag let go and the screen left at once still saves: '
+        'nothing waits for a later frame', (tester) async {
+      await pump(tester);
+      final slider = sliderFor(l10n.settingsRetention);
+      final gesture = await tester.startGesture(
+        tester.getCenter(slider) + const Offset(10.6, 0),
+      );
+      await gesture.moveBy(const Offset(20, 0));
+      await gesture.moveBy(const Offset(9.4, 0));
+      await tester.pump();
+      expect(tester.widget<SgSlider>(slider).value, 94);
+
+      await gesture.up();
+      // Left before another frame: Settings and its providers are gone.
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      expect(settings.read(SettingKeys.desiredRetention), 0.94);
+    });
+
     testWidgets('a touch the scroll view takes over keeps, and saves, the '
         'value the thumb moved to', (tester) async {
       await pump(tester);
