@@ -301,6 +301,7 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
       container,
       PlatformReminderNotifications(),
       const WorkmanagerWork(),
+      widgets: const HomeWidgetStore(),
       open: bootstrap.router.go,
     ),
   );
@@ -312,7 +313,19 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
   // #638: Supertonic opens on the first clip a screen needs, not here, and
   // lets go of its sessions in the background or under memory pressure.
   watchVoiceMemory(container);
+  watchGlassTheme(container, bootstrap.glass);
 }
+
+/// #650: the glass frame watchdog watches only while glass is the theme, so
+/// a slow frame in light or dark never turns a later glass opaque.
+ProviderSubscription<SgMode> watchGlassTheme(
+  ProviderContainer container,
+  GlassCapability glass,
+) => container.listen<SgMode>(
+  themeProvider,
+  (_, mode) => glass.glassOnScreen = mode == SgMode.glass,
+  fireImmediately: true,
+);
 
 /// #638: the voice lets go of its sessions in the background and under
 /// memory pressure, for the app's life. Only a voice a screen has built: a
@@ -338,8 +351,20 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
   ProviderContainer container,
   ReminderNotifications notifications,
   BackgroundWork work, {
+  required WidgetStore widgets,
   required void Function(String location) open,
 }) async {
+  // #625: apart from the notifications, which the widget and the nightly
+  // plan_pregenerate don't need: a notifications plugin that fails to
+  // start must not leave them unqueued until the next launch.
+  final background =
+      startBackgroundWork(work, widgets, container.read(clockProvider)()).then(
+        (_) => true,
+        onError: (Object error) {
+          debugPrint('background: $error');
+          return false;
+        },
+      );
   // The link goes to the router as it is, not resolved here: the router
   // resolves it, and holds a running exam against it as against any
   // arrival (#676).
@@ -348,11 +373,12 @@ Future<StreamSubscription<SettingKey<Object?>>?> startReminders(
     // A tap that started the app arrives here, not through [init]'s
     // callback, which hears only taps while it runs.
     if (await notifications.launchedWith() case final link?) open(link);
-    await startBackgroundWork(work, container.read(clockProvider)());
   } on Object catch (error) {
     debugPrint('reminders: $error');
     return null;
   }
+  // The schedule queues reminder_compose, on the work started above.
+  if (!await background) return null;
   return remindersFor(container, notifications, work).follow();
 }
 

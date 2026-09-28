@@ -22,6 +22,7 @@ import 'package:sogda/features/today/today_providers.dart'
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/services/model_downloads.dart' show DownloadPhase;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -29,6 +30,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../db/content_fixture.dart';
+import 'model_manager_fixtures.dart' show FakeDownloads, FakeModels;
 import 'settings_fixtures.dart';
 import '../core/semantics_checks.dart';
 
@@ -58,7 +60,9 @@ void main() {
     ModelState? model,
     AdaptiveChrome chrome = AdaptiveChrome.material,
     Locale? locale,
-    bool voiceInstalled = true,
+    // Null reads it as the app does, from [extra]'s models and downloads.
+    bool? voiceInstalled = true,
+    List<Override> extra = const <Override>[],
   }) async {
     // Tall enough that every row is built: the table below reaches all of
     // them without scrolling.
@@ -79,7 +83,9 @@ void main() {
           settingsProvider.overrideWithValue(settings),
           learnedStabilitiesProvider.overrideWith((ref) async => stabilities),
           translationModelProvider.overrideWith((ref) async => model),
-          voiceInstalledProvider.overrideWith((ref) async => voiceInstalled),
+          if (voiceInstalled != null)
+            voiceInstalledProvider.overrideWith((ref) async => voiceInstalled),
+          ...extra,
         ],
         child: MaterialApp.router(
           builder: (context, child) =>
@@ -546,6 +552,29 @@ void main() {
     expect(find.text(l10n.settingsVoiceSupertonic('Anna')), findsNothing);
   });
 
+  testWidgets('#757 FR-M3 the voice lands while M3 is open: the row names it, '
+      'with no restart', (tester) async {
+    final models = FakeModels();
+    final downloads = FakeDownloads();
+    await pump(
+      tester,
+      voiceInstalled: null,
+      extra: <Override>[
+        modelRepositoryProvider.overrideWithValue(models),
+        modelDownloadsProvider.overrideWithValue(downloads),
+      ],
+    );
+    expect(find.text(l10n.settingsVoicePhoneForSupertonic), findsOneWidget);
+
+    models.voice = ModelStatus.ready;
+    downloads.live[ModelRepository.voiceModel]!.add((
+      phase: DownloadPhase.ready,
+      progress: 1,
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.settingsVoiceSupertonic('Anna')), findsOneWidget);
+  });
+
   testWidgets('#345 a change of theme keeps the list where it was', (
     tester,
   ) async {
@@ -678,17 +707,31 @@ void main() {
     expect(Fsrs(desiredRetention: 0.97).intervalDays(10), 3);
   });
 
-  test('FR-M3-01 sums over every word rated and not suspended', () async {
+  test('FR-M3-01 BR-CONTENT-02 BR-CONTENT-04 #867 #886 sums over every word '
+      'rated and not suspended that is revised: not a removed word or a '
+      'note', () async {
+    final content = ContentFixture.write(
+      '${tempDir('sg_m3_course').path}/content.db',
+    ).file;
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
+    );
+    // A row #630 made a lesson note after the learner had rated it.
+    await db.customStatement(
+      "UPDATE c.words SET kind = 'note' WHERE uid = '${ContentFixture.tuer}'",
+    );
     await db.customStatement('''
 INSERT INTO word_state (word_uid, status, stability, reps) VALUES
-  ('a', 'learning', 2.5, 1),
-  ('b', 'done', 30, 6),
-  ('c', 'suspended', 12, 3),
-  ('d', 'todo', 0, 0)
+  ('${ContentFixture.haus}', 'learning', 2.5, 1),
+  ('custom:1', 'done', 30, 6),
+  ('${ContentFixture.strasse}', 'suspended', 12, 3),
+  ('custom:2', 'todo', 0, 0),
+  ('${ContentFixture.tuer}', 'learning', 4, 2),
+  ('uid-removed', 'done', 40, 5)
 ''');
     expect(await WordRepository(db, settings).learnedStabilities(), <double>[
-      2.5,
       30,
+      2.5,
     ]);
   });
 
