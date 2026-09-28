@@ -1,12 +1,12 @@
 import 'dart:ui' show Tristate;
 
-import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/rendering.dart' show RenderBox, RenderObject;
 import 'package:flutter/semantics.dart'
     show DebugSemanticsDumpOrder, SemanticsAction, SemanticsNode;
 import 'package:flutter/widgets.dart' show Wrap;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
 
 /// The labels of tappable semantics nodes under another tappable node, from
 /// [root] down, or the whole tree (#749, #912). Empty when every button

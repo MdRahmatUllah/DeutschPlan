@@ -4,11 +4,11 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/setup_repository.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// `docs/02-data/user-database.md` holds the settings table, and the first
 /// group below reads it rather than restating it. A default copied into a test

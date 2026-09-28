@@ -1,3 +1,8 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart'
@@ -12,16 +17,11 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import 'quiz_fixtures.dart';
 import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// L7 · Custom quiz — #122 (`quiz.md`, FR-L2-04's *Custom* tile).
 void main() {

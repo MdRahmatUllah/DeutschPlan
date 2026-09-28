@@ -84,7 +84,7 @@ ready. Spec: [`splash.md`](../04-screens/splash.md).
 ### Onboarding · S2
 
 Five pages set the course up in about a minute, with safe defaults at every
-step. *Skip* (from page 3) applies the defaults for the rest.
+step. *Skip* (from page 3) finishes with what the learner has chosen, and the defaults for what they never touched (#1011).
 
 | Page | The learner chooses |
 |---|---|

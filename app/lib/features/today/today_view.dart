@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:sogda/domain/plan_engine.dart';
-import 'package:sogda/domain/plan_stats.dart' show dayDone;
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:sogda/domain/plan_engine.dart';
+import 'package:sogda/domain/plan_stats.dart' show dayDone;
 
 /// How far one block of today's plan has got.
 @immutable

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/plan_store.dart' show inCourse;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/plan_store.dart' show inCourse;
 
 /// What a rating does to a word's scheduling.
 ///

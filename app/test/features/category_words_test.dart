@@ -1,14 +1,19 @@
-import '../core/text_clipping.dart';
-
 import 'dart:async';
 import 'dart:io';
 
+import 'package:drift/drift.dart' show DatabaseConnection, Value;
+import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
-import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -17,24 +22,18 @@ import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
 import 'package:sogda/features/learn/category_words_screen.dart';
 import 'package:sogda/features/learn/step_words.dart' show StepWord;
+import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:drift/drift.dart' show DatabaseConnection, Value;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:sogda/features/words/word_detail_screen.dart';
 
+import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
+import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
 import 'word_fixtures.dart';
-import 'settings_fixtures.dart';
 
 /// L6 · Category words — #121.
 void main() {
@@ -496,7 +495,7 @@ void main() {
     late ProviderContainer container;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_category');
+      directory = tempDir('sogda_category');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(
@@ -516,11 +515,6 @@ void main() {
       container.dispose();
       await settings.dispose();
       await db.close();
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     Future<List<String>> meanings() async {

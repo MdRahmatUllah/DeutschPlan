@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' show Locale;
 
-import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:sogda/l10n/ui_digits.dart';
-import 'package:sogda/features/today/today_view.dart' show germanDate;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart' show Intl;
+import 'package:sogda/features/today/today_view.dart' show germanDate;
+import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_digits.dart';
 
 /// docs/05-dev-guide/coding-standards.md: "Copy lives in ARB files."
 /// German course text comes from content.db, never from ARB; fixed German UI

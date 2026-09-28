@@ -1,5 +1,5 @@
-import 'package:sogda/data/db/app_database.dart';
 import 'package:drift/drift.dart' show Value;
+import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';

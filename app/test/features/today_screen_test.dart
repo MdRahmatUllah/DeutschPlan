@@ -1,49 +1,45 @@
 import 'dart:async';
-
-import 'package:sogda/core/adaptive/adaptive.dart';
-import 'package:sogda/core/typography/sg_text.dart';
-import 'package:sogda/features/sentences/sentences_screen.dart';
-import 'package:sogda/services/start_report.dart';
-import 'package:sogda/core/components/sg_coach_mark.dart';
-
-import 'package:sogda/features/study/study_screen.dart';
-
-import '../core/text_clipping.dart';
-
 import 'dart:io';
 import 'dart:ui' show LocaleStringAttribute;
 
-import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:flutter/services.dart' show MethodChannel;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/features/today/today_screen.dart';
+import 'package:sogda/core/components/sg_coach_mark.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/learn/grammar_practice_screen.dart';
+import 'package:sogda/features/sentences/sentences_screen.dart';
+import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/today/today_components.dart';
 import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/app_router.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter/services.dart' show MethodChannel;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:sogda/features/learn/grammar_practice_screen.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:sogda/services/start_report.dart';
 
+import '../core/semantics_checks.dart';
+import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
-import '../core/semantics_checks.dart';
 
 /// T1 · Today in progress — #95.
 void main() {

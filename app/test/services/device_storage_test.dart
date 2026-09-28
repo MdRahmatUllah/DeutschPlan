@@ -1,6 +1,6 @@
-import 'package:sogda/services/device_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/services/device_storage.dart';
 
 /// M4's storage card and its space check (#156): the platform's answer, and
 /// the shortfall a disabled download button states.

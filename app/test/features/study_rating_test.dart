@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' show Tristate;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_rating_bar.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -24,15 +28,10 @@ import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
 import 'package:sogda/services/backup_files.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
-
-import '../services/fake_tts.dart';
 
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
+import '../services/fake_tts.dart';
 
 /// T2 · the rating bar, its interval previews and undo — #105.
 void main() {

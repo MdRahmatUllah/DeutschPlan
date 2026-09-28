@@ -2,35 +2,31 @@
 library;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
-import 'dart:convert';
-
-import 'package:sogda/data/repositories/backup_repository.dart';
-import 'package:sogda/bootstrap.dart';
-import 'package:share_plus/share_plus.dart' show XFile;
-import 'package:sogda/core/components/sg_button.dart';
-import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/theme/glass_capability.dart';
-import 'package:sogda/core/theme/theme_mode.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/db/content_dao.dart';
-import 'package:sogda/data/db/content_update.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/main.dart';
-import 'package:sogda/router/app_router.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart'
-    show Brightness, Locale, MaterialApp, Text;
+import 'package:material_ui/material_ui.dart' show Locale, MaterialApp, Text;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:sqlite3/sqlite3.dart';
+import 'package:share_plus/share_plus.dart' show XFile;
+import 'package:sogda/bootstrap.dart';
+import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/main.dart';
+import 'package:sogda/router/app_router.dart';
+import 'package:sqlite3/sqlite3.dart';
 
 import 'db/content_fixture.dart';
 import 'db/generated/schema_v1.dart' as v1;
@@ -52,17 +48,16 @@ void main() {
   late String manifestAsset;
 
   setUpAll(() {
-    final staging = Directory.systemTemp.createTempSync('sogda_asset');
+    final staging = tempDir('sogda_asset');
     final file = ContentFixture.write('${staging.path}/content.db').file;
     contentAsset = file.readAsBytesSync();
     manifestAsset =
         '{"content_version":"${ContentFixture.version}","words":{}}';
-    staging.deleteSync(recursive: true);
   });
 
   setUp(() {
-    support = Directory.systemTemp.createTempSync('sogda_support');
-    temp = Directory.systemTemp.createTempSync('sogda_temp');
+    support = tempDir('sogda_support');
+    temp = tempDir('sogda_temp');
     PathProviderPlatform.instance = _FakePathProvider(support, temp);
     _serveAssets(<String, Uint8List>{
       ContentDao.asset: contentAsset,
@@ -70,16 +65,7 @@ void main() {
     });
   });
 
-  tearDown(() {
-    _serveAssets(const <String, Uint8List>{});
-    for (final directory in <Directory>[support, temp]) {
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
-    }
-  });
+  tearDown(() => _serveAssets(const <String, Uint8List>{}));
 
   /// A database whose file lives in the fake app-support directory, so the
   /// attach and the copy go through the same paths they would on a phone.
@@ -94,14 +80,14 @@ void main() {
 
   Future<Bootstrap> run({
     AppDatabase Function()? open,
-    Brightness brightness = Brightness.light,
     void Function(UiLanguage)? onUiLanguage,
+    void Function()? onCourseUpdate,
   }) async {
     final result = await bootstrap(
       openDatabase: open ?? openReal,
-      platformBrightness: brightness,
       glass: GlassCapability(),
       onUiLanguage: onUiLanguage,
+      onCourseUpdate: onCourseUpdate,
     );
     expect(
       result,
@@ -132,7 +118,7 @@ void main() {
       addTearDown(ready.dispose);
 
       expect(File('${support.path}/content.db').existsSync(), isTrue);
-      expect(ready.contentVersion, ContentFixture.version);
+      expect(await _version(ready), ContentFixture.version);
 
       // Attached means readable, not merely present.
       final row = await ready.db
@@ -159,39 +145,6 @@ void main() {
       await (result as BootstrapReady).bootstrap.dispose();
       expect(glass.watchingFrames, isFalse);
       expect(() => glass.addListener(() {}), throwsFlutterError);
-    });
-
-    test('resolves the theme against the platform', () async {
-      final light = await run();
-      expect(light.themeMode, SgMode.light);
-      await light.dispose();
-
-      final dark = await run(brightness: Brightness.dark);
-      addTearDown(dark.dispose);
-      expect(dark.themeMode, SgMode.dark);
-    });
-
-    test('following the system is not the same as pinning it', () async {
-      // `theme_mode` defaults to system, which resolves to a fixed light or
-      // dark for the first frame — but the app has to keep following the
-      // platform afterwards, or turning the phone to dark would leave
-      // Sogda light until it was killed.
-      final ready = await run(brightness: Brightness.dark);
-      addTearDown(ready.dispose);
-
-      expect(ready.themeMode, SgMode.dark);
-      expect(ready.themeSetting, ThemeModeSetting.system);
-      expect(ready.themeSetting.followsPlatform, isTrue);
-    });
-
-    test('the learner"s own choice beats the platform', () async {
-      final first = await run();
-      await first.settings.write(SettingKeys.themeMode, ThemeModeSetting.light);
-      await first.dispose();
-
-      final second = await run(brightness: Brightness.dark);
-      addTearDown(second.dispose);
-      expect(second.themeMode, SgMode.light);
     });
 
     test('a learner who has not enrolled opens on onboarding', () async {
@@ -222,24 +175,27 @@ void main() {
       expect(second.router.routeInformationProvider.value.uri.path, '/today');
     });
 
-    test('it knows a first run from a later one', () async {
-      final first = await run();
-      expect(first.isFirstRun, isTrue);
+    test('#686 ST-9 neither a first start nor a warm one says the course is '
+        'updating', () async {
+      var updating = 0;
+      final first = await run(onCourseUpdate: () => updating++);
       await first.dispose();
+      expect(updating, 0, reason: 'a first start is the first caption');
 
-      final second = await run();
+      final second = await run(onCourseUpdate: () => updating++);
       addTearDown(second.dispose);
-      expect(second.isFirstRun, isFalse);
+      expect(updating, 0, reason: 'nothing was copied');
     });
 
-    test('an update that changed no words is still not a first run', () async {
+    test('#686 ST-9 an update that changed no words still says the course is '
+        'updating', () async {
       // The case the change cannot answer: a version bump with an identical
       // word list reports an empty change, exactly as a first install does.
       // Splash's "first start only" caption is what would be wrong.
       final first = await run();
       await first.dispose();
 
-      final staging = Directory.systemTemp.createTempSync('sogda_same');
+      final staging = tempDir('sogda_same');
       final next = ContentFixture.write('${staging.path}/content.db').file;
       final db = sqlite3.open(next.path);
       db.execute(
@@ -252,14 +208,13 @@ void main() {
           '{"content_version":"202603031200","words":{}}'.codeUnits,
         ),
       });
-      addTearDown(() => staging.deleteSync(recursive: true));
 
-      final second = await run();
+      var updating = 0;
+      final second = await run(onCourseUpdate: () => updating++);
       addTearDown(second.dispose);
 
-      expect(second.contentChange, isNotNull);
-      expect(second.contentChange!.isEmpty, isTrue);
-      expect(second.isFirstRun, isFalse);
+      expect(await _version(second), '202603031200');
+      expect(updating, 1);
     });
 
     test('a second launch does not reinstall the course', () async {
@@ -274,14 +229,15 @@ void main() {
       );
       installed.close();
 
-      final second = await run();
+      var updating = 0;
+      final second = await run(onCourseUpdate: () => updating++);
       addTearDown(second.dispose);
 
       final row = await second.db
           .customSelect("SELECT value FROM c.meta WHERE key = 'marker'")
           .getSingleOrNull();
       expect(row?.read<String>('value'), 'kept');
-      expect(second.contentChange, isNull);
+      expect(updating, 0);
     });
 
     test('a newer bundled course replaces the installed one', () async {
@@ -289,7 +245,7 @@ void main() {
       await first.dispose();
 
       // The pipeline's next build: same rows, later version.
-      final staging = Directory.systemTemp.createTempSync('sogda_next');
+      final staging = tempDir('sogda_next');
       final next = ContentFixture.write('${staging.path}/content.db').file;
       final db = sqlite3.open(next.path);
       db.execute(
@@ -302,13 +258,30 @@ void main() {
           '{"content_version":"202602021200","words":{}}'.codeUnits,
         ),
       });
-      addTearDown(() => staging.deleteSync(recursive: true));
 
-      final second = await run();
+      // #686 ST-9: heard before the copy, while the old course is installed,
+      // so the splash says so for the whole wait.
+      String? during;
+      final second = await run(
+        onCourseUpdate: () {
+          final installed = sqlite3.open(
+            '${support.path}/content.db',
+            mode: OpenMode.readOnly,
+          );
+          during =
+              installed
+                      .select(
+                        "SELECT value FROM meta WHERE key = 'content_version'",
+                      )
+                      .single['value']
+                  as String;
+          installed.close();
+        },
+      );
       addTearDown(second.dispose);
 
-      expect(second.contentVersion, '202602021200');
-      expect(second.contentChange, isNotNull);
+      expect(await _version(second), '202602021200');
+      expect(during, ContentFixture.version);
     });
   });
 
@@ -419,8 +392,8 @@ void main() {
     ]);
 
     // BR-CONTENT-03: recorded in v2's column, so Today's card shows it.
-    expect(ready.contentVersion, '202602021200');
-    final update = await ContentUpdater(db, ready.content).unseen();
+    expect(await _version(ready), '202602021200');
+    final update = await ContentUpdater(db, ContentDao(db)).unseen();
     expect(update?.added, ['w2']);
     expect(update?.changed, ['w1']);
   });
@@ -565,8 +538,7 @@ void main() {
       // A library without FTS5's trigram tokenizer can't be loaded in a test,
       // so the course's trigram index is a plain table here: its MATCH fails
       // the way a missing tokenizer does.
-      final staging = Directory.systemTemp.createTempSync('sogda_asset');
-      addTearDown(() => staging.deleteSync(recursive: true));
+      final staging = tempDir('sogda_asset');
       final path = '${staging.path}/content.db';
       ContentFixture.write(path);
       final course = sqlite3.open(path)
@@ -602,10 +574,13 @@ void main() {
       // threw would be a blank screen — the one thing FR-S1-03 forbids.
       _serveAssets(const <String, Uint8List>{});
 
-      await expectLater(
-        bootstrap(openDatabase: openReal, glass: GlassCapability()),
-        completion(isA<BootstrapFailed>()),
+      final result = await bootstrap(
+        openDatabase: openReal,
+        glass: GlassCapability(),
       );
+      expect(result, isA<BootstrapFailed>());
+      // Its user.db stays open until disposed, and holds its folder (#1019).
+      addTearDown((result as BootstrapFailed).failure.dispose);
     });
 
     test('retrying after a bad copy starts clean', () async {
@@ -630,7 +605,7 @@ void main() {
       });
       final ready = await run();
       addTearDown(ready.dispose);
-      expect(ready.contentVersion, ContentFixture.version);
+      expect(await _version(ready), ContentFixture.version);
     });
 
     test('#617 FR-S1-03 an update whose copy fails starts on the old course, '
@@ -648,7 +623,7 @@ void main() {
         ContentUpdater.manifestAsset: newerManifest,
       });
       final second = await run();
-      expect(second.contentVersion, ContentFixture.version);
+      expect(await _version(second), ContentFixture.version);
       expect(
         support.listSync().where((file) => file.path.endsWith('.new')),
         isEmpty,
@@ -669,7 +644,7 @@ void main() {
       });
       final third = await run();
       addTearDown(third.dispose);
-      expect(third.contentVersion, newer);
+      expect(await _version(third), newer);
     });
 
     test(
@@ -779,14 +754,8 @@ void main() {
       for (var i = 0; i < 3; i++) {
         if (i > 0) {
           // A first run again: an empty app-support folder.
-          final used = support;
-          support = Directory.systemTemp.createTempSync('sogda_support');
+          support = tempDir('sogda_support');
           PathProviderPlatform.instance = _FakePathProvider(support, temp);
-          try {
-            used.deleteSync(recursive: true);
-          } on FileSystemException {
-            // Windows releases it a moment later.
-          }
         }
         final first = await run();
         await first.dispose();
@@ -931,15 +900,9 @@ void main() {
       await settings.load();
       final ready = Bootstrap(
         db: db,
-        content: ContentDao(db),
         settings: settings,
         glass: GlassCapability(),
         router: buildRouter(),
-        contentVersion: ContentFixture.version,
-        contentChange: null,
-        themeMode: SgMode.light,
-        themeSetting: ThemeModeSetting.light,
-        isFirstRun: false,
         elapsed: Duration.zero,
       );
 
@@ -949,8 +912,8 @@ void main() {
         BootstrapHost(
           run:
               ({
-                Brightness platformBrightness = Brightness.light,
                 void Function(UiLanguage)? onUiLanguage,
+                void Function()? onCourseUpdate,
               }) async => runs++ == 0
               ? BootstrapFailed(failureOf(BootstrapStep.database))
               : BootstrapReady(ready),
@@ -983,8 +946,8 @@ void main() {
         BootstrapHost(
           run:
               ({
-                Brightness platformBrightness = Brightness.light,
                 void Function(UiLanguage)? onUiLanguage,
+                void Function()? onCourseUpdate,
               }) async {
                 // Settings read, then the course failed to install.
                 onUiLanguage?.call(UiLanguage.bangla);
@@ -1011,8 +974,8 @@ void main() {
         BootstrapHost(
           run:
               ({
-                Brightness platformBrightness = Brightness.light,
                 void Function(UiLanguage)? onUiLanguage,
+                void Function()? onCourseUpdate,
               }) async {
                 if (runs++ == 0) {
                   return BootstrapFailed(failureOf(BootstrapStep.database));
@@ -1041,8 +1004,8 @@ void main() {
         await tester.pumpWidget(
           BootstrapHost(
             run: ({
-              Brightness platformBrightness = Brightness.light,
               void Function(UiLanguage)? onUiLanguage,
+              void Function()? onCourseUpdate,
             }) async => BootstrapFailed(failureOf(BootstrapStep.database)),
           ),
         );
@@ -1120,15 +1083,9 @@ void main() {
       await settings.load();
       final ready = Bootstrap(
         db: db,
-        content: ContentDao(db),
         settings: settings,
         glass: GlassCapability(),
         router: buildRouter(),
-        contentVersion: ContentFixture.version,
-        contentChange: null,
-        themeMode: SgMode.light,
-        themeSetting: ThemeModeSetting.light,
-        isFirstRun: false,
         elapsed: Duration.zero,
       );
       await tester.pumpWidget(
@@ -1431,3 +1388,6 @@ class _Closes extends QueryInterceptor {
     return inner.close();
   }
 }
+
+/// The attached course's `content_version`.
+Future<String> _version(Bootstrap ready) => ContentDao(ready.db).version();

@@ -2,6 +2,8 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -10,8 +12,6 @@ import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/study/study_session.dart';
 import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'golden_harness.dart';
 

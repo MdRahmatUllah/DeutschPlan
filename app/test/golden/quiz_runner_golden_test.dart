@@ -2,15 +2,15 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/domain/quiz_builder.dart';
 import 'package:sogda/features/quiz/quiz_screen.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../features/quiz_fixtures.dart';
 import '../features/today_fixtures.dart';

@@ -1,9 +1,14 @@
 import 'dart:async';
 import 'dart:ui' show LocaleStringAttribute, StringAttribute;
 
-import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:flutter/gestures.dart' show TapGestureRecognizer;
+import 'package:flutter/semantics.dart' show AttributedString;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -22,11 +27,6 @@ import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter/gestures.dart' show TapGestureRecognizer;
-import 'package:flutter/semantics.dart' show AttributedString;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sentences_screen.g.dart';
 

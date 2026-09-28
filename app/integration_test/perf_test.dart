@@ -12,6 +12,10 @@
 // #818): the same run on a learner with a year behind them, seeded into
 // user.db before the app starts (year_profile.dart), so it opens on Today.
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -21,10 +25,6 @@ import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart' as app;
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import 'smoke.dart';
 import 'year_profile.dart';

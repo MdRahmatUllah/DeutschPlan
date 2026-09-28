@@ -2,6 +2,10 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart'
+    show BuildContext, TextField, Widget;
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
@@ -14,13 +18,8 @@ import 'package:sogda/features/study/study_rating.dart';
 import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/study/study_session.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart'
-    show BuildContext, TextField, Widget;
 
 import '../services/fake_tts.dart';
-
 import 'golden_harness.dart';
 
 /// T2 · StudyCloze — #104. The artboard's moment: "Rechnung" typed into the

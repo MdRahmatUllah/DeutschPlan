@@ -1,6 +1,6 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/domain/sentence_picker.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../timing.dart';
 

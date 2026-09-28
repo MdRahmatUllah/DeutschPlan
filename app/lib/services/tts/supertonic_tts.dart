@@ -5,6 +5,8 @@ import 'dart:isolate';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:flutter_onnxruntime/flutter_onnxruntime.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -13,8 +15,6 @@ import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/speech_audio.dart';
 import 'package:sogda/services/tts/supertonic_text.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
-import 'package:flutter_onnxruntime/flutter_onnxruntime.dart';
-import 'package:just_audio/just_audio.dart';
 
 /// Supertonic 3 on the phone's CPU (`tts.md`, #152): the downloaded model,
 /// speaking German in the learner's voice, each clip cached on disk.

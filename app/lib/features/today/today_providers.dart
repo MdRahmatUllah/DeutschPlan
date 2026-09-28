@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -7,8 +9,6 @@ import 'package:sogda/data/repositories/word_repository.dart' show WordStatus;
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/services/model_downloads.dart' show DownloadProgress;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'today_providers.g.dart';
 

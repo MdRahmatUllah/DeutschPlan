@@ -1,9 +1,9 @@
 import 'dart:ui' show ImageFilter;
 
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 
 /// What a [SgSurface] is being drawn as.
 ///

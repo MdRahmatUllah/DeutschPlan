@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
@@ -8,9 +11,6 @@ import 'package:sogda/features/onboarding/onboarding_notifier.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/features/onboarding/setup_flow.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'onboarding_start_page.g.dart';
 

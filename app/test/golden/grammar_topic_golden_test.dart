@@ -2,8 +2,8 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
-import 'package:sogda/features/learn/grammar_topic_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sogda/features/learn/grammar_topic_screen.dart';
 
 import '../features/today_fixtures.dart';
 import 'golden_harness.dart';

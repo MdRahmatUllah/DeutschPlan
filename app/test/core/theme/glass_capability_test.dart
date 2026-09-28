@@ -1,20 +1,20 @@
 import 'dart:io';
 import 'dart:ui' show FrameTiming;
 
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/main.dart' show watchGlassTheme;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// theming.md: "`GlassPanel` degrades to a 92 %-opaque tinted surface when:
 /// Android API < 31, the device missed the frame budget for 2 s, or the OS

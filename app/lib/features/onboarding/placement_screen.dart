@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
-import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
@@ -15,8 +17,6 @@ import 'package:sogda/domain/placement.dart';
 import 'package:sogda/features/onboarding/onboarding_start_page.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// S3 · the placement check. `Placement-android.html`, `placement.md`.
 ///
@@ -95,7 +95,15 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
     setState(() => _loading = true);
 
     PlacementItem? next;
-    if (!session.finished) next = session.next(await _pool(session.step));
+    try {
+      if (!session.finished) next = session.next(await _pool(session.step));
+    } on Object {
+      // #692 ME-12: a step's words that can't be read end the check as a
+      // course that can't be read does (FR-S3-04), rather than leave *Next*
+      // greyed out for good.
+      if (mounted) widget.onDone(null);
+      return;
+    }
     if (!mounted) return;
 
     if (next == null) {

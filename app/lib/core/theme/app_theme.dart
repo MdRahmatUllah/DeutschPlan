@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/app_fonts.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform;
-import 'package:material_ui/material_ui.dart';
 
 /// Builds the `ThemeData` for each mode and attaches its [SgTokens].
 ///

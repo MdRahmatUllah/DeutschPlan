@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
@@ -6,7 +7,6 @@ import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart';
 import 'package:sogda/domain/plan_engine.dart' show planDate;
-import 'package:drift/drift.dart';
 
 /// Rating a word: the piece between `domain/fsrs.dart` and `plan_items`.
 ///

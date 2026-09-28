@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart' show immutable;
+import 'package:go_router/go_router.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter/foundation.dart' show immutable;
-import 'package:go_router/go_router.dart';
 
 /// What the router has to ask the database before it opens a route.
 ///
