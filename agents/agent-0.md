@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#738 chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) — claimed 2026-09-28 04:22.
+#738 in review as PR #992: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

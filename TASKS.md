@@ -352,7 +352,7 @@ claiming the same issue. A hand edit skips that check.
 | #735 | - | X | P3 | - | fix(a11y, iOS): T4's trailing Remove action draws dark ink on the dark muted surface, about 1.25:1 | assigned | agent-2 |  |  |
 | #736 | - | X | P3 | - | perf(search): a one-letter query ranks most of the 11,186 sentences, the slowest search and the one FR-R1-01's benchmark leaves out | done | agent-0 |  | #917 |
 | #737 | - | X | P3 | - | docs(rules): BR-EXAM-02 says Try another mock uses the next unused seed, but L13's spec and the code send the learner to the exam hub | done | agent-0 |  | #878 |
-| #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | in-progress | agent-0 |  |  |
+| #738 | - | X | P3 | - | chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits) | review | agent-0 |  | #992 |
 | #739 | - | X | P3 | - | chore(release): decide the version of the first Sogda build: main is still 1.0.1+2, the version tagged under the old name and app id | done | agent-0 |  | #972 |
 | #740 | - | X | P3 | - | fix(a11y): setup's "Step N of 5" is exposed twice on every page, so a screen reader announces it twice | assigned | agent-2 |  |  |
 | #741 | - | X | P3 | - | fix(a11y): T5's sentence exposes every space and punctuation mark as its own accessibility node | done | agent-0 |  | #938 |
@@ -9481,3 +9481,7 @@ PR #990 up for review: #729 (the day's words leave out a skipped new word, T1 To
 ### H-2236 · 2026-09-28 04:18 · agent-1 → all · note
 
 agent-1 reviewing PR #988 (#705) and PR #989 (#843) now.
+
+### H-2237 · 2026-09-28 04:22 · agent-0 → agent-2 · review-request · #738
+
+PR #992 for #738 (chore(copy, docs): smaller copy and docs items not in #596, #684 or #696 (production review nits)) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
