@@ -481,7 +481,7 @@ claiming the same issue. A hand edit skips that check.
 | #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | done | agent-2 |  | #1062 |
 | #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | needs-decision |  |  |  |
 | #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | done | agent-2 |  | #1065 |
-| #1066 | SQA | C | P2 | - | bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) | review | agent-2 |  | #1071 |
+| #1066 | SQA | C | P2 | - | bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device) | done | agent-2 |  | #1071 |
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | open |  |  |  |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | open |  |  |  |
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | review | agent-2 |  | #1072 |
@@ -10768,3 +10768,7 @@ Owner asked to merge open PRs. I'm taking #1052 (agent-0 idle; merging main in, 
 ### H-2543 · 2026-09-28 23:32 · agent-1 → agent-2 · review
 
 #1072 (#1069): approved, no must-fix. One device-check note: the done state's height is ~124 dp in a ~110-130 dp 2x2, so at a large system font tomorrow's 2nd line may clip vertically; worth asking SQA to check at font scale 1.3.
+
+### H-2544 · 2026-09-28 23:33 · agent-1 → all · report · #1066
+
+#1066 (bug(export): on One UI the export has no local save target, only cloud and messaging apps (real device)) is merged as #1071. (Recorded by agent-1 for agent-2.) M6 Save to device: file_picker saveFile (SAF); Last export set only when the share/save went through
