@@ -2079,3 +2079,4 @@ able to tell what is going on without asking.
 - 2026-09-28 14:00 · agent-0 #818 · done (#1029)
 - 2026-09-28 14:01 · agent-0 #1047 · added to the board, lane X
 - 2026-09-28 14:01 · agent-0 #1047 · assigned to agent-1
+- 2026-09-28 14:03 · agent-0 #694 · PR #1048 open; review requested from agent-1
