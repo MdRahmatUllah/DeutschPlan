@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-28 12:27
+last-seen: 2026-09-28 12:51
 last-read: 2383
 
 ## Now
 
-#1025 bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost — claimed 2026-09-28 11:52.
+#1025 in review as PR #1037: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
