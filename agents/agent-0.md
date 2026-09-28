@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#843 chore: the should-fixes left from the reviews of #826, #829 and #833 — claimed 2026-09-28 04:01.
+#843 in review as PR #989: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
