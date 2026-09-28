@@ -2131,3 +2131,4 @@ able to tell what is going on without asking.
 - 2026-09-28 20:52 · agent-3 #1064 · added to the board, lane X
 - 2026-09-28 20:52 · agent-2 #1026 · released: Blocked: #843/#845 needs the owner to allow corrupting a user.db; ST-13 needs a free emulator. #871, ST-12, SV-9 passed (see the issue).
 - 2026-09-28 20:52 · agent-2 #1064 · claimed: fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour)
+- 2026-09-28 20:57 · agent-3 · SQA on Pixel_8 (5556, main 627846c9): #1031 closed (no regression, same-device bisect); #1030 numbers on #709 (no commit: Pixel_8 not within 30 % of 5558); verified #1035 #1045 #1047 #1049 #1055 #1025, device checks #999 #956 #1022 #1023 #1042 #1048 #1062 #1009 #930; filed #1064 (focus ring on coloured headers).
