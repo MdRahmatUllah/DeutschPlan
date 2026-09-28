@@ -10,6 +10,11 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/model_downloads.dart';
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, debugDefaultTargetPlatformOverride;
+import 'package:flutter/services.dart' show MethodCall, MethodChannel;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    show AndroidFlutterLocalNotificationsPlugin;
 import 'package:flutter_test/flutter_test.dart';
 
 /// The download manager (#156, FR-M4-01) over a fake platform downloader: the
@@ -112,6 +117,14 @@ void main() {
       await downloads.attach();
       expect(downloader.notification, 'models');
       expect(downloader.progressBar, isTrue);
+    });
+
+    test("#868 the downloader's copy of a file goes under models/, where "
+        'Delete and a landed download clear it', () async {
+      await downloads.attach();
+      expect(downloader.config, <(String, String)>[
+        (Config.tempFilePath, (await models.partialDirectory()).path),
+      ]);
     });
 
     test('#438 its texts stay true whatever happens next: no state, no '
@@ -244,6 +257,26 @@ void main() {
     await downloads.pause('hymt');
     await downloads.resume('hymt');
     expect(downloader.calls, <String>['pause hymt', 'resume hymt']);
+  });
+
+  group('#756 FR-M4-01 each attempt its own notification', () {
+    // The platform keeps a group's counts and last text for the process: a
+    // retry under the same group froze at the failed attempt's 11 %, and a
+    // download after Delete read "finished" at 5 %.
+    test('a first download, then a retry: each its own group, the last one '
+        'taken down', () async {
+      await downloads.attach();
+      await downloads.start('hymt');
+      expect(downloader.notification, 'models-1');
+      expect(notice.clears, 1);
+
+      await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'one.gguf');
+      await settled();
+      await downloads.retry('hymt');
+
+      expect(downloader.notification, 'models-2');
+      expect(notice.clears, 2);
+    });
   });
 
   group('#428 FR-M4-01 not enough space', () {
@@ -389,6 +422,7 @@ void main() {
         downloader,
         _Storage(free: 1 << 30),
         grace,
+        notice,
       );
       seen = <DownloadProgress>[];
       final sub = downloads.watch('hymt').listen(seen.add);
@@ -417,6 +451,21 @@ void main() {
       // The stopped files' partial bytes are gone: each starts again.
       expect(seen.last, (phase: DownloadPhase.waitingForWifi, progress: 0.0));
       expect(downloader.calls, isNot(contains('cancel hymt')));
+    });
+
+    test('#756 a file queued again stays in its attempt\'s notification: no '
+        'new group, nothing taken down', () async {
+      expect(downloader.notification, 'models-1');
+      downloader.isWiFi = false;
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'two.gguf');
+
+      expect(
+        downloader.queued.where((t) => t.filename == 'one.gguf'),
+        hasLength(2),
+      );
+      expect(downloader.notification, 'models-1');
+      expect(notice.clears, 1);
     });
 
     test(
@@ -703,6 +752,27 @@ void main() {
       await downloads.start('hymt');
     });
 
+    test('#868 a download that lands clears what an interrupted one left, '
+        'and nothing else', () async {
+      final partial = await models.partialDirectory();
+      File('${partial.path}/com.bbflight.background_downloader1')
+        ..createSync(recursive: true)
+        ..writeAsStringSync('half a file');
+      final orphan = File('${support.path}/com.bbflight.background_downloader2')
+        ..writeAsStringSync('from an older build');
+      final mine = File('${support.path}/user.sqlite')..writeAsStringSync('');
+
+      await land('one.gguf', one);
+      await land('two.gguf', two);
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'two.gguf');
+      await settled();
+
+      expect(partial.existsSync(), isFalse);
+      expect(orphan.existsSync(), isFalse);
+      expect(mine.existsSync(), isTrue);
+    });
+
     test('every file in and every checksum right: verified, then ready and '
         'in place', () async {
       final seen = <DownloadPhase>[];
@@ -735,6 +805,8 @@ void main() {
           'Voice & translation says when it is ready',
         ),
       ]);
+      // #756: said on this attempt's own notification.
+      expect(notice.groups, <String>[downloader.notification!]);
     });
 
     test('a file that does not verify: failed, and nothing in place', () async {
@@ -759,6 +831,44 @@ void main() {
       // `dumpsys notification` on the emulator: id=1009911796.
       expect(PlatformDownloadNotice.groupId('models'), 1009911796);
       expect(BackgroundModelDownloads.notificationGroup, 'models');
+    });
+
+    test("#756 the end: every download notification taken down, a relaunch's "
+        'too, then the one posted', () async {
+      // On the emulator: a task resumed after a relaunch kept its old
+      // attempt's group, whose notification the platform finished too, so
+      // two "Model download finished" stood side by side.
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      AndroidFlutterLocalNotificationsPlugin.registerWith();
+      const channel = MethodChannel(
+        'dexterous.com/flutter/local_notifications',
+      );
+      final calls = <MethodCall>[];
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call);
+        if (call.method != 'getActiveNotifications') return null;
+        return <Map<String, Object?>>[
+          <String, Object?>{'id': 5, 'channelId': 'background_downloader'},
+          <String, Object?>{'id': 9, 'channelId': 'reminders'},
+        ];
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+      await const PlatformDownloadNotice().ended('models-2', ('done', 'note'));
+
+      expect(calls.map((c) => c.method), <String>[
+        'getActiveNotifications',
+        'cancel',
+        'show',
+      ]);
+      expect((calls[1].arguments as Map<Object?, Object?>)['id'], 5);
+      expect(
+        (calls[2].arguments as Map<Object?, Object?>)['id'],
+        PlatformDownloadNotice.groupId('models-2'),
+      );
     });
 
     test('#506 no notice while another model is still downloading, then one '
@@ -940,8 +1050,20 @@ void main() {
 class _Notice implements DownloadNotice {
   final List<(String, String)> said = <(String, String)>[];
 
+  /// The group each end was said on.
+  final List<String> groups = <String>[];
+
+  /// How many times the notifications were taken down (#756).
+  int clears = 0;
+
   @override
-  Future<void> ended((String, String) text) async => said.add(text);
+  Future<void> ended(String group, (String, String) text) async {
+    groups.add(group);
+    said.add(text);
+  }
+
+  @override
+  Future<void> clear() async => clears++;
 }
 
 class _Downloader implements FileDownloader {
@@ -988,6 +1110,20 @@ class _Downloader implements FileDownloader {
   Future<List<bool>> enqueueAll(Iterable<Task> tasks) async {
     queued.addAll(tasks.cast<DownloadTask>());
     return <bool>[for (final _ in tasks) true];
+  }
+
+  /// The global config the app set (#868).
+  Object? config;
+
+  @override
+  Future<List<(String, String)>> configure({
+    dynamic globalConfig,
+    dynamic androidConfig,
+    dynamic iOSConfig,
+    dynamic desktopConfig,
+  }) async {
+    config = globalConfig;
+    return const <(String, String)>[];
   }
 
   @override

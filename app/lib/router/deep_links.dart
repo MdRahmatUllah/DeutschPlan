@@ -65,6 +65,23 @@ String resolveDeepLink(Uri link) {
   }
 }
 
+/// #980: whether [link] can be read. `sogda://word/%FF` parses, but its
+/// escape isn't UTF-8, and its first decode throws: in the router's redirect,
+/// and in every binding observer Flutter asks before the router, whose
+/// default `didPushRouteInformation` decodes it. Such a link is taken as
+/// [todayLink], as any link the app doesn't know lands on Today.
+bool readable(Uri link) {
+  try {
+    Uri.decodeComponent(link.toString());
+    return true;
+  } on FormatException {
+    return false;
+  }
+}
+
+/// `sogda://today`.
+final Uri todayLink = Uri(scheme: deepLinkScheme, host: 'today');
+
 /// `?speak=1` on a word link. `widget.md` FR-X1-02: "the app plays on open".
 const String speakParameter = 'speak';
 

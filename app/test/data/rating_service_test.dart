@@ -415,20 +415,40 @@ void main() {
 
     test("#728 an undo for one word leaves another word's rating on top "
         'alone', () async {
-      await rating.rate(uid, Rating.good, source: ReviewSource.daily);
-      await rating.rate(
+      final entry = await rating.rate(
+        uid,
+        Rating.good,
+        source: ReviewSource.daily,
+      );
+      final later = await rating.rate(
         ContentFixture.tuer,
         Rating.again,
         source: ReviewSource.daily,
       );
       final tuer = await stateOf(ContentFixture.tuer);
 
-      expect(await rating.undo(expectUid: uid), isNull);
+      expect(await rating.undo(entry: entry), isNull);
 
       expect(await logOf(uid), hasLength(1));
       expect(await logOf(ContentFixture.tuer), hasLength(1));
       expect((await stateOf(ContentFixture.tuer))!.lapses, tuer!.lapses);
-      expect(await rating.undo(expectUid: ContentFixture.tuer), isNotNull);
+      expect(await rating.undo(entry: later), isNotNull);
+    });
+
+    test('#888 and one for a rating leaves a later rating of the same word '
+        'alone', () async {
+      final entry = await rating.rate(
+        uid,
+        Rating.good,
+        source: ReviewSource.daily,
+      );
+      await rating.rate(uid, Rating.again, source: ReviewSource.quiz);
+      final quizzed = await stateOf(uid);
+
+      expect(await rating.undo(entry: entry), isNull);
+
+      expect(await logOf(uid), hasLength(2));
+      expect(await stateOf(uid), quizzed);
     });
   });
 

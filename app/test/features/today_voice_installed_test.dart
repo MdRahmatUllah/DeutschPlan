@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -7,6 +8,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/today/today_providers.dart';
+import 'package:sogda/services/model_downloads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -135,4 +137,33 @@ void main() {
 
     expect(await container.read(voiceInstalledProvider.future), isTrue);
   });
+
+  test(
+    '#663 #757 FR-T1-06 a download that lands is read again, with no '
+    "restart: Today stops offering the voice, and M3's row names it",
+    () async {
+      final downloads = StreamController<DownloadProgress>.broadcast();
+      addTearDown(downloads.close);
+      final live = ProviderContainer(
+        overrides: <Override>[
+          modelRepositoryProvider.overrideWithValue(models),
+          voiceDownloadProvider.overrideWith((ref) => downloads.stream),
+        ],
+      );
+      addTearDown(live.dispose);
+      // Held, as Today holds it for the app's life.
+      final held = live.listen(voiceInstalledProvider, (_, _) {});
+      addTearDown(held.close);
+      expect(await live.read(voiceInstalledProvider.future), isFalse);
+
+      downloads.add((phase: DownloadPhase.running, progress: 0.5));
+      final staging = await models.restartDownload(ModelRepository.voiceModel);
+      File('${staging.path}/voice.onnx').writeAsStringSync(content);
+      await models.activate(ModelRepository.voiceModel, variant);
+      downloads.add((phase: DownloadPhase.ready, progress: 1));
+      await pumpEventQueue();
+
+      expect(await live.read(voiceInstalledProvider.future), isTrue);
+    },
+  );
 }

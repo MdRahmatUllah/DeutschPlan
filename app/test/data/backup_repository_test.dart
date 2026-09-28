@@ -1455,6 +1455,30 @@ void main() {
         expect(now.read<int>('reps'), 1, reason: mode.name);
       }
     });
+
+    test('#808 FR-M6-04 a renamed grammar topic brings its schedule, its '
+        'practice log and its exam refs in under the uid it has now', () async {
+      await fillEverything();
+      await sql(
+        "UPDATE exam_answers SET section = 'grammar', item_ref = 'g1#12'",
+      );
+      final json = await backup.exportJson();
+
+      await backup.import(
+        json,
+        mode: ImportMode.replace,
+        aliases: const <String, String>{'g1': 'g1-renamed'},
+      );
+
+      for (final (table, column) in ContentUpdater.aliasedGrammarColumns) {
+        expect(await under(table, column, 'g1'), 0, reason: table);
+        expect(await under(table, column, 'g1-renamed'), 1, reason: table);
+      }
+      expect(
+        (await rowsOf('exam_answers')).single['item_ref'],
+        'g1-renamed#12',
+      );
+    });
   });
 
   test('the row keys cover every exported table', () {

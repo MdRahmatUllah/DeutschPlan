@@ -57,15 +57,33 @@ class GlassCapability extends ChangeNotifier {
   /// How long the device must keep missing frames before glass gives up.
   static const Duration sustainedMissWindow = Duration(seconds: 2);
 
+  /// A pause between two slow frames longer than this is the app sitting
+  /// idle, not a device falling behind: about two vsyncs (#650).
+  static const Duration idleGap = Duration(milliseconds: 32);
+
   bool _platformSupportsBlur;
   bool _reduceTransparency;
   bool _frameBudgetMissed = false;
 
+  /// When the current run of slow frames began, and when its last one ended.
   Duration? _missingSince;
+  Duration? _lastMissEnd;
+
+  /// [startFrameWatchdog] was called and [stopFrameWatchdog] was not.
+  bool _armed = false;
+
+  /// Glass is the theme on screen ([glassOnScreen]).
+  bool _onScreen = false;
+
+  /// The timings callback is registered.
   bool _watching = false;
 
   /// True when a glass panel may use a `BackdropFilter`.
-  bool get blurAllowed => reasons.isEmpty;
+  ///
+  /// Read by every [SgSurface] build, so it allocates nothing, unlike
+  /// [reasons] (#698).
+  bool get blurAllowed =>
+      _platformSupportsBlur && !_reduceTransparency && !_frameBudgetMissed;
 
   /// Every reason blur is currently off. Empty when glass renders fully.
   Set<GlassFallbackReason> get reasons => <GlassFallbackReason>{
@@ -87,8 +105,14 @@ class GlassCapability extends ChangeNotifier {
         'capabilities',
       );
       if (result == null) return;
-      _platformSupportsBlur = result['supportsBlur'] as bool? ?? true;
-      _reduceTransparency = result['reduceTransparency'] as bool? ?? false;
+      // A reply that is not a bool keeps the default rather than throwing: a
+      // cast error here failed bootstrap at step "settings" (#698).
+      if (result['supportsBlur'] case final bool value) {
+        _platformSupportsBlur = value;
+      }
+      if (result['reduceTransparency'] case final bool value) {
+        _reduceTransparency = value;
+      }
       notifyListeners();
     } on MissingPluginException {
       // No native side (tests, an unsupported platform): keep the defaults.
@@ -123,40 +147,84 @@ class GlassCapability extends ChangeNotifier {
   ///
   /// Once tripped it stays tripped for the session: flickering between frosted
   /// and opaque as the device recovers would be worse than either state.
+  ///
+  /// It watches only while [glassOnScreen] too (#650): frames drawn in light
+  /// or dark say nothing about what the blur costs, and a few slow ones there
+  /// used to leave a later switch to glass opaque until a restart.
   void startFrameWatchdog() {
-    if (_watching) return;
-    _watching = true;
-    SchedulerBinding.instance.addTimingsCallback(_onFrames);
+    _armed = true;
+    _syncWatching();
   }
 
+  /// Stops it for good, whatever [glassOnScreen] says: `perf_test.dart` holds
+  /// blur on for its glass runs.
   void stopFrameWatchdog() {
-    if (!_watching) return;
-    _watching = false;
-    SchedulerBinding.instance.removeTimingsCallback(_onFrames);
+    _armed = false;
+    _syncWatching();
+  }
+
+  /// Whether glass is the theme on screen, which the app sets from the theme
+  /// (`watchGlassTheme` in `main.dart`, #650).
+  set glassOnScreen(bool value) {
+    _onScreen = value;
+    _syncWatching();
+  }
+
+  /// Whether the timings callback is registered.
+  @visibleForTesting
+  bool get watchingFrames => _watching;
+
+  void _syncWatching() {
+    final watch = _armed && _onScreen && !_frameBudgetMissed;
+    if (watch == _watching) return;
+    _watching = watch;
+    // A run of slow frames never spans a time the watchdog was not looking.
+    _missingSince = null;
+    _lastMissEnd = null;
+    if (watch) {
+      SchedulerBinding.instance.addTimingsCallback(_onFrames);
+    } else {
+      SchedulerBinding.instance.removeTimingsCallback(_onFrames);
+    }
   }
 
   @visibleForTesting
   void reportFrames(List<FrameTiming> timings) => _onFrames(timings);
 
+  /// A frame misses when its build or its raster alone takes longer than
+  /// [frameBudget]. Not its whole span, vsync to raster end: a pipelined
+  /// frame at 60 fps builds one frame while the last one rasterises, so its
+  /// span can pass 16 ms with every phase on time (#650).
+  static bool _missed(FrameTiming timing) =>
+      timing.buildDuration > frameBudget || timing.rasterDuration > frameBudget;
+
   void _onFrames(List<FrameTiming> timings) {
     if (_frameBudgetMissed) return;
 
     for (final timing in timings) {
-      final total = timing.totalSpan;
-      if (total <= frameBudget) {
+      if (!_missed(timing)) {
         // One good frame ends the streak.
         _missingSince = null;
         continue;
       }
 
-      final stamp = timing.timestampInMicroseconds(FramePhase.rasterFinish);
-      final now = Duration(microseconds: stamp);
-      _missingSince ??= now;
-
-      if (now - _missingSince! >= sustainedMissWindow) {
-        _frameBudgetMissed = true;
+      final start = Duration(
+        microseconds: timing.timestampInMicroseconds(FramePhase.vsyncStart),
+      );
+      final end = Duration(
+        microseconds: timing.timestampInMicroseconds(FramePhase.rasterFinish),
+      );
+      // Two slow frames with the app idle between them are not a streak: the
+      // time between them was not a frame missed (#650).
+      if (_lastMissEnd case final last? when start - last > idleGap) {
         _missingSince = null;
-        stopFrameWatchdog();
+      }
+      _missingSince ??= start;
+      _lastMissEnd = end;
+
+      if (end - _missingSince! >= sustainedMissWindow) {
+        _frameBudgetMissed = true;
+        _syncWatching();
         notifyListeners();
         return;
       }

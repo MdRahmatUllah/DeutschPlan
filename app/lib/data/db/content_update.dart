@@ -222,6 +222,14 @@ class ContentUpdater {
     ('custom_words', 'matched_uid'),
   ];
 
+  /// Every user.db column holding a grammar topic's uid (#808). An exam's
+  /// grammar ref, `<topic uid>#<n>`, moves too, in [_moveAliased].
+  static const List<(String, String)> aliasedGrammarColumns =
+      <(String, String)>[
+        ('grammar_state', 'grammar_uid'),
+        ('grammar_practice_log', 'grammar_uid'),
+      ];
+
   /// The installed course's PIPE-09 `aliases`, old uid to uid now: an import
   /// moves a backup's rows along them, since a file exported under an older
   /// course names its words as that course did (#809). The kept manifest,
@@ -239,10 +247,11 @@ class ContentUpdater {
     return const <String, String>{};
   }
 
-  /// PIPE-09 (#648): a word whose uid changed between builds keeps the
-  /// learner's progress. The manifest's `aliases` map each old uid to the one
-  /// the word has now, and every row under an old uid moves to it, in one
-  /// transaction. Re-runnable: once moved, nothing is under the old uid.
+  /// PIPE-09 (#648): a word, or a grammar topic (#808), whose uid changed
+  /// between builds keeps the learner's progress. The manifest's `aliases`
+  /// map each old uid to the one it has now, and every row under an old uid
+  /// moves to it, in one transaction. Re-runnable: once moved, nothing is
+  /// under the old uid.
   ///
   /// OR IGNORE: where a row under the new uid already holds the key, it
   /// wins, and the old one stays where it was, as it would without the map.
@@ -251,7 +260,10 @@ class ContentUpdater {
     if (aliases is! Map<String, dynamic> || aliases.isEmpty) return;
     final json = jsonEncode(aliases);
     await _db.transaction(() async {
-      for (final (table, column) in aliasedColumns) {
+      for (final (table, column) in [
+        ...aliasedColumns,
+        ...aliasedGrammarColumns,
+      ]) {
         await _db.customStatement(
           'UPDATE OR IGNORE $table SET $column = '
           '(SELECT value FROM json_each(?1) WHERE key = $column) '
@@ -259,6 +271,15 @@ class ContentUpdater {
           <Object?>[json],
         );
       }
+      // A grammar item's ref keeps its `#<n>`: the topic moves, not the item.
+      const topic = "substr(item_ref, 1, instr(item_ref, '#') - 1)";
+      await _db.customStatement(
+        'UPDATE exam_answers SET item_ref = '
+        '(SELECT value FROM json_each(?1) WHERE key = $topic) '
+        "|| substr(item_ref, instr(item_ref, '#')) "
+        'WHERE $topic IN (SELECT key FROM json_each(?1))',
+        <Object?>[json],
+      );
     });
   }
 
