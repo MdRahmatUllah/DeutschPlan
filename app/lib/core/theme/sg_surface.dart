@@ -56,13 +56,18 @@ final class _Tint extends SgSurfaceKind {
 /// change a single screen file. Keep it that way: a screen that reaches for
 /// `BoxDecoration` itself is a screen that will need editing for the next mode.
 ///
-/// **Blur budget.** Under glass every `card` and `cardStrong` is its own
-/// `BackdropFilter`. `accessibility-performance.md` caps this at three blur
-/// layers on screen — header, one panel, tab bar — and asks for 60 fps with one
-/// `BackdropFilter` per list panel. A long list of glass cards (Backlog, Learn,
-/// the grammar library, search results) will blow that on a mid-range phone.
-/// Rows in a scrolling list should use [SgSurfaceKind.bar], which skips the
-/// drop shadow, or wait for the shared-backdrop mechanism in #34.
+/// **Blur budget.** Under glass every panel is a `BackdropFilter`, and
+/// `accessibility-performance.md` caps a screen at three blur passes — header,
+/// one panel, tab bar. So the panels in a screen's list share one read of the
+/// backdrop (#709): `AuroraBackdrop` puts the screen in a [BackdropGroup], and
+/// a panel in a scroll view takes `BackdropFilter.grouped`. The engine then
+/// reads the backdrop once, at the first grouped panel it draws, and blurs it
+/// once if their blurs are equal.
+///
+/// A grouped panel blurs that one read, not what was drawn after it, so a
+/// panel over something drawn later keeps a filter of its own: one outside a
+/// scroll view (a bar the list scrolls under), one inside another panel, and
+/// one in a sliver header (a band pinned over the rows).
 class SgSurface extends StatefulWidget {
   const SgSurface({
     required this.child,
@@ -231,8 +236,8 @@ class _SgSurfaceState extends State<SgSurface> {
       ),
       child: ClipRRect(
         borderRadius: borderRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+        child: _backdropFilter(
+          ImageFilter.blur(sigmaX: blur, sigmaY: blur),
           // The artboard writes this as two stacked layers:
           //   background: linear-gradient(…0.35 → transparent 40%),
           //               rgba(255,255,255,0.55);
@@ -277,6 +282,26 @@ class _SgSurfaceState extends State<SgSurface> {
         ),
       ),
     );
+  }
+
+  /// The screen's shared backdrop read when this panel may use it (#709),
+  /// its own otherwise: see the blur budget on [SgSurface].
+  Widget _backdropFilter(ImageFilter filter, {required Widget child}) {
+    if (Scrollable.maybeOf(context) == null) {
+      return BackdropFilter(filter: filter, child: child);
+    }
+    var shares = true;
+    context.visitAncestorElements((ancestor) {
+      final widget = ancestor.widget;
+      if (widget is SgSurface || widget is SliverPersistentHeader) {
+        shares = false;
+      }
+      // Nothing above the screen's group matters.
+      return shares && widget is! BackdropGroup;
+    });
+    return shares
+        ? BackdropFilter.grouped(filter: filter, child: child)
+        : BackdropFilter(filter: filter, child: child);
   }
 }
 
