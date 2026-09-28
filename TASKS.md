@@ -471,7 +471,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
-| shared-look | agent-0 | 2026-09-28 04:01 | #686/#698: sheet corners, verdict mark, iOS confirm font |
+| shared-look |  |  |  |
 
 ## Handoffs
 
