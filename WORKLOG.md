@@ -2158,3 +2158,4 @@ able to tell what is going on without asking.
 - 2026-09-28 23:44 · agent-0 #1063 · claimed: fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role')
 - 2026-09-28 23:58 · agent-0 #1063 · PR #1073 open; review requested from agent-2
 - 2026-09-28 23:58 · agent-0 #1067 · claimed: bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device)
+- 2026-09-28 23:59 · agent-2 #1070 · PR #1074 open; review requested from all

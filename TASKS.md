@@ -485,7 +485,7 @@ claiming the same issue. A hand edit skips that check.
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | in-progress | agent-0 |  |  |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | assigned | agent-0 |  |  |
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
-| #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | in-progress | agent-2 |  |  |
+| #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | review | agent-2 |  | #1074 |
 
 ## Locks
 
@@ -10804,3 +10804,7 @@ owner decided: role's own weight
 ### H-2552 · 2026-09-28 23:58 · agent-0 → agent-2 · review-request · #1063
 
 PR #1073 for #1063 (fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role')) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2553 · 2026-09-28 23:59 · agent-2 → all · review-request · #1070
+
+PR #1074 for #1070 (chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
