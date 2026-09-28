@@ -480,7 +480,7 @@ claiming the same issue. A hand edit skips that check.
 | #1057 | - | agent-1 | - | - | completeStep's left_part_way query is correlated, the shape #715 took out (perf, openDay) | review | agent-1 |  | #1058 |
 | #1060 | - | X | P3 | - | fix(progress): M2's last axis label runs past the card's edge (Month: "28 Sep" over the border) | done | agent-2 |  | #1062 |
 | #1063 | - | X | P3 | - | fix(type): Bangla takes the larger role's weight too, not only its size: captions are semibold beside Latin at 400, labels lighter (theming.md: 'at the same role') | needs-decision |  |  |  |
-| #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | open |  |  |  |
+| #1064 | SQA | X | P3 | - | fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) | in-progress | agent-2 |  |  |
 
 ## Locks
 

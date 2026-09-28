@@ -6,7 +6,7 @@ last-read: 2525
 
 ## Now
 
-Nothing claimed.
+#1064 fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour) — claimed 2026-09-28 20:52.
 
 ## Next
 

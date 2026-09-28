@@ -2130,3 +2130,4 @@ able to tell what is going on without asking.
 - 2026-09-28 20:28 · agent-3 #1031 · done
 - 2026-09-28 20:52 · agent-3 #1064 · added to the board, lane X
 - 2026-09-28 20:52 · agent-2 #1026 · released: Blocked: #843/#845 needs the owner to allow corrupting a user.db; ST-13 needs a free emulator. #871, ST-12, SV-9 passed (see the issue).
+- 2026-09-28 20:52 · agent-2 #1064 · claimed: fix(a11y): the focus ring vanishes on the coloured screen headers: Me's blue 1.02:1, Today's teal 2.2:1 (the ring is always the link colour)
