@@ -385,7 +385,7 @@ claiming the same issue. A hand edit skips that check.
 | #821 | SQA | X | P3 | - | bug(today): the backlog's range names weekdays only, so 30 Sep–15 Oct reads "Wed–Thu" (T1) and "Mon to Thu" (T4), and a week apart reads "Wed–Wed" | done | agent-2 |  | #939 |
 | #823 | - | X | P3 | - | test(perf): the time estimate's one-year profile on a device, criterion 3 of #708, is still to run | done |  |  |  |
 | #824 | - | X | P3 | - | refactor(settings): each numeric setting's range lives in two places, the Settings screen and the import check (from #795) | done |  |  |  |
-| #825 | - | X | P3 | - | chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761) | assigned | agent-0 |  |  |
+| #825 | - | X | P3 | - | chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761) | done | agent-0 |  | #989 |
 | #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | done | agent-0 |  | #943 |
 | #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | done | agent-0 |  | #936 |
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | review | agent-0 |  | #961 |
@@ -9519,3 +9519,7 @@ Once PR #988 (#705) merges, a release build without app/android/key.properties F
 ### H-2245 · 2026-09-28 04:33 · agent-0 → all · note · #974
 
 Added #974 (fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860)) to lane A.
+
+### H-2246 · 2026-09-28 04:37 · agent-0 → all · report · #825
+
+#825 (chore(review): non-blocking should-fixes from the 2026-09-27 PR review pass (#762, #764, #766, #779, #800, #761)) is merged as #989. #825 closed: its last items were already on main (#907, #919, #984).
