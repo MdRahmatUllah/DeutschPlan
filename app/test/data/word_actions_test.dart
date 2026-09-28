@@ -3,6 +3,9 @@ library;
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
@@ -15,9 +18,6 @@ import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart' show ActiveStep, PlanEngine;
 import 'package:sogda/services/translation/translator.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 

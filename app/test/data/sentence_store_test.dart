@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:drift/drift.dart'
+    show DatabaseConnection, Table, TableInfo, Variable;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
@@ -8,10 +12,6 @@ import 'package:sogda/data/repositories/sentence_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/plan_engine.dart' show PlanDate;
 import 'package:sogda/domain/sentence_picker.dart';
-import 'package:drift/drift.dart'
-    show DatabaseConnection, Table, TableInfo, Variable;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 

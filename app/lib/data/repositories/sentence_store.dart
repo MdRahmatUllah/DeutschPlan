@@ -1,7 +1,7 @@
+import 'package:drift/drift.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/domain/sentence_picker.dart';
-import 'package:drift/drift.dart';
 
 /// [SentenceStore] over drift: `word_examples` from the attached course,
 /// `word_state` and `sentence_log` from the learner's database.

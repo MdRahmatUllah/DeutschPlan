@@ -1,10 +1,10 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/setup_repository.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/services/notification_permission.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'onboarding_notifier.g.dart';
 

@@ -1,23 +1,32 @@
 import 'dart:async';
-
-import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
-import 'package:sogda/features/splash/splash_screen.dart';
-import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
-import 'package:flutter/services.dart';
-
 import 'dart:io';
 
-import 'package:sogda/data/repositories/backup_repository.dart';
-import 'package:sogda/core/theme/system_bars.dart';
-import 'package:sogda/core/adaptive/orientation.dart';
+// The widgets layer is the SDK's own, so its delegate still comes from
+// flutter_localizations; Material and Cupertino come from their packages.
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show GlobalCupertinoLocalizations;
+import 'package:flutter/foundation.dart' show kReleaseMode, debugPrint;
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'
+    show GlobalWidgetsLocalizations;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+// `Override` is not in the main barrel in Riverpod 3.
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sogda/bootstrap.dart';
-import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/adaptive/orientation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
+import 'package:sogda/data/repositories/backup_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/bootstrap/bootstrap_error_screen.dart';
+import 'package:sogda/features/splash/splash_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/router/app_router.dart';
@@ -27,17 +36,6 @@ import 'package:sogda/services/background_work.dart';
 import 'package:sogda/services/reminder_notifications.dart';
 import 'package:sogda/services/tts/tts_service.dart' show VoiceRelease;
 import 'package:sogda/services/widget_snapshot.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-// `Override` is not in the main barrel in Riverpod 3.
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
-// The widgets layer is the SDK's own, so its delegate still comes from
-// flutter_localizations; Material and Cupertino come from their packages.
-import 'package:cupertino_ui/cupertino_ui.dart'
-    show GlobalCupertinoLocalizations;
-import 'package:flutter_localizations/flutter_localizations.dart'
-    show GlobalWidgetsLocalizations;
 
 export 'package:sogda/l10n/ui_language_locale.dart';
 

@@ -1,17 +1,16 @@
 import 'dart:async';
-
 import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/tts/system_tts.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
-import 'package:flutter/services.dart' show PlatformException;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 /// The seams S2 page 5 stands on (#91). The page's own tests fake these;
 /// these are the real ones, with only the plugin behind each faked.

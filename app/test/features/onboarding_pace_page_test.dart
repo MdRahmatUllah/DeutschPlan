@@ -1,6 +1,10 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_slider.dart';
@@ -14,10 +18,6 @@ import 'package:sogda/features/onboarding/onboarding_start_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../core/semantics_checks.dart';
 

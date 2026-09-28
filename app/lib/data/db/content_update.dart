@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/db/content_dao.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show debugPrint, immutable;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
 
 /// What one content update changed.
 ///

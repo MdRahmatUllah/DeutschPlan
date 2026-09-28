@@ -1,6 +1,9 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter/services.dart' show MethodChannel;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -10,12 +13,9 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:sogda/services/start_report.dart';
-import 'package:flutter/services.dart' show MethodChannel;
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:sogda/services/start_report.dart';
 
 /// S2 · the onboarding shell and page 1 — #87.
 ///

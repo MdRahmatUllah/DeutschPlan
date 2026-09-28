@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:home_widget/home_widget.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart' show WordStatus;
@@ -11,10 +15,6 @@ import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
-import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:home_widget/home_widget.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'widget_snapshot.g.dart';
 

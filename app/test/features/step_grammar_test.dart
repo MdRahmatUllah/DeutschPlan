@@ -1,3 +1,9 @@
+import 'package:flutter/rendering.dart' show RenderParagraph;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -9,15 +15,9 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter/rendering.dart' show RenderParagraph;
-import 'package:material_ui/material_ui.dart';
 
-import 'today_fixtures.dart';
 import '../core/semantics_checks.dart';
+import 'today_fixtures.dart';
 
 /// L2 · Grammar tab — #115.
 void main() {

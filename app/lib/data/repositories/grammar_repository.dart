@@ -1,11 +1,11 @@
+import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart' show immutable;
 import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart'
     show WordStatus, statusForStability;
-import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart' show immutable;
+import 'package:sogda/domain/grammar_item_generator.dart';
 
 part 'grammar_repository.g.dart';
 

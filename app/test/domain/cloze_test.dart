@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:sogda/domain/cloze.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/domain/cloze.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 /// FR-T2-10 — the cloze card's gap.

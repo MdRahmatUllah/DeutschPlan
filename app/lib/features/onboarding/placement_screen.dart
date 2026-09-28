@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
-import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
@@ -15,8 +17,6 @@ import 'package:sogda/domain/placement.dart';
 import 'package:sogda/features/onboarding/onboarding_start_page.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// S3 · the placement check. `Placement-android.html`, `placement.md`.
 ///

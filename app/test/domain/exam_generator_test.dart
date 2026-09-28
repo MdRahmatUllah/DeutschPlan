@@ -1,9 +1,9 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/domain/answer_check.dart' show GermanAnswer, Verdict;
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart' show verdictFor;
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/domain/quiz_builder.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// Two letters for word [i]: the cloze rules read letters, not digits.
 String tag(int i) => String.fromCharCodes(<int>[97 + i ~/ 26, 97 + i % 26]);

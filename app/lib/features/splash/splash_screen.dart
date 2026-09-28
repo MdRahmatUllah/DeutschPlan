@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_mark.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
@@ -7,7 +8,6 @@ import 'package:sogda/core/theme/sg_brand.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// S1 · Splash. `docs/04-screens/splash.md`, artboards `Splash-android*.html`,
 /// with the brand kit's mark (#602).

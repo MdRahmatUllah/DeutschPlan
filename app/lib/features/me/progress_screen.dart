@@ -1,8 +1,13 @@
 import 'dart:math' as math;
 
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
-import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
@@ -18,11 +23,6 @@ import 'package:sogda/domain/progress_stats.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'progress_screen.g.dart';
 

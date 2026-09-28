@@ -6,13 +6,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/synthesis_cache.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_test/flutter_test.dart';
 
 /// `ModelRepository` and the on-device file store.
 ///

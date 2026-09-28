@@ -3,6 +3,9 @@ library;
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/plan_repository.dart'
@@ -12,9 +15,6 @@ import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/domain/plan_stats.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../db/content_fixture.dart';

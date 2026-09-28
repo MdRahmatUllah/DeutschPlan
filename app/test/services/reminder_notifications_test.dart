@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:sogda/router/deep_links.dart';
-import 'package:sogda/services/reminder_notifications.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/router/deep_links.dart';
+import 'package:sogda/services/reminder_notifications.dart';
 
 /// The reminder's notifications on the plugin itself, through its channel.
 void main() {

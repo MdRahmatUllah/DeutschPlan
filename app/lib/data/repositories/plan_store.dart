@@ -1,11 +1,11 @@
 import 'dart:convert';
 
+import 'package:drift/drift.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/domain/plan_stats.dart';
-import 'package:drift/drift.dart';
 
 /// BR-CONTENT-02 (#174, #456): [column] names a word of the learner's own, or
 /// a course word still in content.db. A word a content update removed keeps

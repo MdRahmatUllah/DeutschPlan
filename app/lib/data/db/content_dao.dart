@@ -1,17 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:drift/drift.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/domain/compare_set.dart';
 import 'package:sogda/domain/placement.dart';
 import 'package:sogda/domain/quiz_builder.dart' show QuizWord;
 import 'package:sogda/domain/text_norm.dart' show searchKey;
-import 'package:drift/drift.dart';
-
-import 'dart:convert';
-
-import 'package:sogda/data/db/content_update.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart' show OpenMode, sqlite3;
 
 part 'content_dao.g.dart';

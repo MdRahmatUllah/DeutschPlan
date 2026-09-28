@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:sogda/core/theme/app_theme.dart';
-import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
 
 /// The Light token set is the reference mode: the artboards were drawn in it,
 /// so every value must match `Foundations.html` in the android-light canvas.

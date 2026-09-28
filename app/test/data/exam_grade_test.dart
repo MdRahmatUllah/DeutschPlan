@@ -3,11 +3,11 @@ library;
 
 import 'dart:convert';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/domain/exam_generator.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:flutter_test/flutter_test.dart';
 
 /// `ExamRepository.grade` — #84.
 void main() {

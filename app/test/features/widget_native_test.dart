@@ -4,9 +4,9 @@ library;
 import 'dart:io';
 import 'dart:ui' show Color;
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/services/widget_snapshot.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// X1's native side (#160), which Dart can't reach at run time: this stops it
 /// drifting from the app, as `splash_native_test.dart` does for the launch
