@@ -178,8 +178,7 @@ class ExamQuestionView extends ConsumerWidget {
       GapQuestion(:final before, :final after, :final translation) => (
         l10n.examRunAskGap,
         _Gap(
-          before: before,
-          after: after,
+          sentence: '${before}_____$after',
           translation: translation,
           role: asked(SgTextRole.title),
         ),
@@ -190,8 +189,7 @@ class ExamQuestionView extends ConsumerWidget {
         GapFill(:final before, :final after, :final translation) => (
           itemKind(l10n, item),
           _Gap(
-            before: before,
-            after: after,
+            sentence: examGapped(before, after, gap: '_____'),
             translation: translation,
             role: asked(SgTextRole.title),
           ),
@@ -206,7 +204,10 @@ class ExamQuestionView extends ConsumerWidget {
         ) =>
           (
             itemKind(l10n, item),
-            _Gap(before: before, after: after, translation: translation),
+            _Gap(
+              sentence: examGapped(before, after, gap: '_____'),
+              translation: translation,
+            ),
             l10n.examRunTapOne,
             ChoiceTiles(options: options, picked: given, onPick: onGiven),
           ),
@@ -306,14 +307,13 @@ class _Field extends StatelessWidget {
 /// "Ich ____ gern einen Kaffee." and its translation.
 class _Gap extends StatelessWidget {
   const _Gap({
-    required this.before,
-    required this.after,
+    required this.sentence,
     required this.translation,
     this.role = SgTextRole.title,
   });
 
-  final String before;
-  final String after;
+  /// With its gap drawn in, and spaced as the sentence is (#738).
+  final String sentence;
   final String translation;
 
   /// The sentence's role: a step smaller while typing past 130 % (#573).
@@ -324,16 +324,7 @@ class _Gap extends StatelessWidget {
     final tokens = context.tokens;
     return Column(
       children: <Widget>[
-        SgText(
-          <String>[
-            if (before.isNotEmpty) before,
-            '_____',
-            if (after.isNotEmpty) after,
-          ].join(' '),
-          role: role,
-          weight: 600,
-          textAlign: TextAlign.center,
-        ),
+        SgText(sentence, role: role, weight: 600, textAlign: TextAlign.center),
         if (translation.isNotEmpty) ...<Widget>[
           const SizedBox(height: 6),
           SgText(
@@ -550,3 +541,14 @@ String examFormPrompt(AppLocalizations l10n, String prompt, FormLabel? form) =>
       FormLabel.superlative => l10n.quizFormSuperlative(prompt),
       null => prompt,
     };
+
+/// A grammar gap as L15 draws it: a space after the words before, and
+/// before the words after unless they start with punctuation. L12 and L14.
+/// (A Gap fill question's own before and after keep their spaces, so it is
+/// drawn as `before + gap + after`, #738.)
+String examGapped(String before, String after, {String gap = '___'}) {
+  final tail = after.isEmpty || RegExp(r'^[.,!?;:…]').hasMatch(after)
+      ? after
+      : ' $after';
+  return '${before.isEmpty ? '' : '$before '}$gap$tail';
+}

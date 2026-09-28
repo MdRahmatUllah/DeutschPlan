@@ -51,7 +51,7 @@ What each layer is, and the rule that keeps it that way:
 
 | Layer | Folder | What it holds | The rule, and why |
 |---|---|---|---|
-| Features | `app/lib/features/<group>/` | One folder per screen group: `backlog`, `bootstrap`, `day_complete`, `exam`, `learn`, `me`, `onboarding`, `quiz`, `search`, `sentences`, `splash`, `study`, `today`, `words` | Widgets read providers and act through notifiers and services; they never call a repository or run a query in `build()`. A screen's providers sit at the top of its own file (Today's are in `today_providers.dart`). |
+| Features | `app/lib/features/<group>/` | One folder per screen group: `backlog`, `bootstrap`, `day_complete`, `exam`, `learn`, `me`, `onboarding`, `quiz`, `search`, `sentences`, `splash`, `study`, `today`, `words` | Widgets read providers and act through notifiers, services, or a repository's provider in an event handler; they never build a repository, import drift, or run a query in `build()`. A screen's providers sit at the top of its own file (Today's are in `today_providers.dart`). |
 | Core | `app/lib/core/` | `adaptive/` (all platform chrome), `components/` (the Sg widgets), `providers/` (every repository and service provider), `theme/` (tokens, `SgSurface`, aurora, glass), `typography/` (`SgText`) | Shared by every screen, so a change here re-renders other screens' goldens (the `shared-look` lock, [06-quality](06-quality.md)). |
 | Router | `app/lib/router/` | `routes.dart` (typed routes, args, `open`/`instead` helpers), `app_router.dart`, `app_shell.dart`, `cross_tab.dart`, `route_guards.dart`, `back_behaviour.dart`, `deep_links.dart` | Navigation outside this folder uses the typed routes, their helpers or `context.jumpToTab`: no inline paths, so every destination is a route the tests can see. |
 | Data | `app/lib/data/db/`, `app/lib/data/repositories/` | `AppDatabase`, the `.drift` files, `ContentDao`, `ContentUpdater`; repositories and services such as `PlanRepository`, `RatingService`, `ExamRepository`, `SearchRepository`, `SettingsRepository` | The only layer that imports drift. Nothing writes to the course tables (ADR 26). |
@@ -144,7 +144,8 @@ State management is Riverpod 3, with code generation only
   theme or a language is read during `build`. A write persists and fires a
   change that providers follow.
 - **Actions are notifier methods** (`ref.read(studySessionProvider.notifier).rate(…)`);
-  widgets never write to repositories. A failed answer write goes through
+  a one-off write may also run in an event handler through the repository's
+  provider, never in `build()`. A failed answer write goes through
   `guardWrite` (`features/study/write_guard.dart`): the card stays, and a sheet
   offers *Retry* and *Export progress* (#174).
 - Drift row classes can't be provider return types, so they are wrapped in a

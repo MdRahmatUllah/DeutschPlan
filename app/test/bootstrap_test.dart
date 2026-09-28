@@ -548,6 +548,43 @@ void main() {
       );
     });
 
+    test('ADR 14 #596 a SQLite whose trigram search cannot answer fails the '
+        'start, not the first misspelt search', () async {
+      // A library without FTS5's trigram tokenizer can't be loaded in a test,
+      // so the course's trigram index is a plain table here: its MATCH fails
+      // the way a missing tokenizer does.
+      final staging = Directory.systemTemp.createTempSync('sogda_asset');
+      addTearDown(() => staging.deleteSync(recursive: true));
+      final path = '${staging.path}/content.db';
+      ContentFixture.write(path);
+      final course = sqlite3.open(path)
+        ..execute('DROP TABLE words_trigram')
+        ..execute(
+          'CREATE TABLE words_trigram (uid, german, english, search_key)',
+        )
+        ..execute(
+          'INSERT INTO words_trigram SELECT uid, german, english, search_key '
+          'FROM words',
+        );
+      course.close();
+      _serveAssets(<String, Uint8List>{
+        ContentDao.asset: File(path).readAsBytesSync(),
+        ContentUpdater.manifestAsset: Uint8List.fromList(
+          manifestAsset.codeUnits,
+        ),
+      });
+
+      final result = await bootstrap(
+        openDatabase: openReal,
+        glass: GlassCapability(),
+      );
+
+      expect(result, isA<BootstrapFailed>());
+      final failure = (result as BootstrapFailed).failure;
+      addTearDown(failure.dispose);
+      expect(failure.step, BootstrapStep.content);
+    });
+
     test('it never throws', () async {
       // The whole contract: `main` has no try/catch, and a bootstrap that
       // threw would be a blank screen — the one thing FR-S1-03 forbids.

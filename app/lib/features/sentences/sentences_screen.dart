@@ -27,7 +27,6 @@ import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 part 'sentences_screen.g.dart';
 
@@ -313,7 +312,7 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
           if (list == null && listState.hasError)
             Expanded(
               child: SgLoadFailed(
-                message: l10n.todayLoadFailed,
+                message: l10n.sentencesLoadFailed,
                 onRetry: () => ref.invalidate(practiceSentencesProvider),
               ),
             ),
@@ -681,12 +680,11 @@ class _TokenSheet extends ConsumerWidget {
               label: l10n.sentencesDuden,
               kind: SgButtonKind.secondary,
               onPressed: () {
+                // The in-app browser, as R1's and W1's chips (BR-SEARCH-04).
+                final open = ref.read(openWebProvider);
                 Navigator.of(context).pop();
                 unawaited(
-                  launchUrl(
-                    SearchRepository.webLinks(token)[WebSource.duden]!,
-                    mode: LaunchMode.externalApplication,
-                  ),
+                  open(SearchRepository.webLinks(token)[WebSource.duden]!),
                 );
               },
             ),

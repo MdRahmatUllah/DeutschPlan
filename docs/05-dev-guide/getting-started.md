@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Flutter 3.47.x stable (`flutter --version`), Dart 3.13.x. The exact version is pinned in `.fvmrc` at the repository root (currently **3.47.5**, which ships Dart 3.13.4). It is the SDK every build uses: check that `flutter --version` matches before the check below. Install that version however you like: *Using fvm* below is one way.
-- Android Studio (latest) with SDK 37 (`compileSdk` and `targetSdk`, ADR 19). The NDK is Flutter's own (`flutter.ndkVersion`). Xcode 16+ with an iOS 16 simulator. CocoaPods is no longer required: Swift Package Manager is the default since Flutter 3.44.
+- Android Studio (latest) with SDK 37 (`compileSdk` and `targetSdk`, ADR 19). The NDK is Flutter's own (`flutter.ndkVersion`). Only for iOS, which is Later (v1 is Android-only): Xcode 16+ with an iOS 16 simulator. CocoaPods is no longer required: Swift Package Manager is the default since Flutter 3.44.
 - Python 3.10+ with `openpyxl`, for the content pipeline and the tools' tests.
 - `make` is optional. Each target is spelled out below; without `make`, run those commands.
 
@@ -71,6 +71,7 @@ Every target runs from the repository root. Without `make`, run the command in t
 | `make lint` | analyzer and formatter check, the basic check's first two steps | `dart analyze --fatal-infos` (no path arguments, and not `flutter analyze`: ADR 18), then `dart format --output=none --set-exit-if-changed .` |
 | `make format` | apply the formatter | `dart format .` |
 | `make release-android` / `make release-ios` | see `release.md` | `python tools/release_android.py` (the bundle, `--release --obfuscate --split-debug-info=build/symbols`, then its 16 KB and key checks) / `flutter build ipa` with the same flags |
+| (no target) | a device-check APK. Without the owner's `android/key.properties` a release build fails unless it opts in to the debug key (#705, `release.md`) | `flutter build apk --release --target-platform android-x64 -P allowDebugSigning=true`, or `ORG_GRADLE_PROJECT_allowDebugSigning=true` in the environment |
 | `make clean` | remove build output | `flutter clean`, and delete `content/build/` |
 
 ## Project conventions checklist for a new screen

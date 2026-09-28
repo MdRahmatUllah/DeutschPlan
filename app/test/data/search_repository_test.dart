@@ -317,6 +317,19 @@ void main() {
         }
       });
 
+      test('#738 a control character is not a syntax error', () async {
+        // SQLite reads a MATCH as a C string: a NUL ends it inside the
+        // quoted term, which is then unterminated.
+        for (final query in const <String>[
+          '\u0000',
+          'Ha\u0000us',
+          'Haus\u0007',
+        ]) {
+          await expectLater(search.search(query), completes, reason: query);
+        }
+        expect((await search.search('Ha\u0000us')).isEmpty, isFalse);
+      });
+
       test('a word nobody has is no results, not an error', () async {
         final results = await search.search('Wohnungsgeberbestaetigung');
         expect(results.isEmpty, isTrue);

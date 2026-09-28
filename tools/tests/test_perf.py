@@ -364,3 +364,14 @@ def test_845_the_owners_checkout_refuses_the_emulator_an_agent_holds(measured, m
     old = perf.time.time() - perf.team.DEVICE_LOCK_STALE_SECONDS - 60
     os.utime(tmp_path / ".device.lock", (old, old))
     assert perf.main(["start"]) == 0
+
+
+def test_705_both_release_builds_opt_in_to_the_debug_key(monkeypatch):
+    commands = []
+    monkeypatch.setattr(perf, "run", commands.append)
+    monkeypatch.setattr(perf.shutil, "copyfile", lambda *args: None)
+    perf.build_splits()
+    perf.build_seed()
+    assert len(commands) == 2
+    for command in commands:
+        assert command[command.index("allowDebugSigning=true") - 1] == "-P"

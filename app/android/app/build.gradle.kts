@@ -10,12 +10,28 @@ plugins {
 }
 
 // #170: the owner's upload key, from android/key.properties when it is there
-// (docs/05-dev-guide/release.md). Without it a release build is signed with
-// the debug key, so `flutter build` and the device checks still work; Play
-// refuses a debug-signed upload, so nothing reaches it signed wrongly.
+// (docs/05-dev-guide/release.md). Without it a release build fails (#705),
+// unless it opts in to the debug key with -PallowDebugSigning, as the agents'
+// device-check builds do; Play refuses a debug-signed upload anyway.
 val keyProperties = Properties().apply {
     val file = rootProject.file("key.properties")
     if (file.exists()) FileInputStream(file).use { load(it) }
+}
+val allowDebugSigning = providers.gradleProperty("allowDebugSigning").orNull
+    .let { it != null && it != "false" }
+
+gradle.taskGraph.whenReady {
+    val release = listOf("assembleRelease", "bundleRelease")
+        .any { hasTask("${project.path}:$it") }
+    if (release && keyProperties.isEmpty && !allowDebugSigning) {
+        throw GradleException(
+            "No app/android/key.properties, so no upload key to sign this release " +
+                "build with (docs/05-dev-guide/release.md). For a local build signed " +
+                "with the debug key (a device check), opt in: " +
+                "`flutter build apk --release -P allowDebugSigning=true`, or set " +
+                "ORG_GRADLE_PROJECT_allowDebugSigning=true.",
+        )
+    }
 }
 
 android {

@@ -134,7 +134,7 @@ pytest. The owner said to tag it without waiting for SQA's 1.0.1 pass.
 
 ### The ADRs
 
-All 27 are in [`decisions.md`](../05-dev-guide/decisions.md).
+All 29 are in [`decisions.md`](../05-dev-guide/decisions.md).
 
 | Area | ADRs | The decision in short |
 |---|---|---|
@@ -184,7 +184,7 @@ the owner's.
 
 | Item | Who | State |
 |---|---|---|
-| **Sign with the upload key** | The owner | Release builds are debug-signed until `app/android/key.properties` exists; Play refuses a debug-signed upload ([`release.md`](../05-dev-guide/release.md), checklist step 5) |
+| **Sign with the upload key** | The owner | Until `app/android/key.properties` exists, a release build fails unless it opts in to the debug key (`-P allowDebugSigning=true`, #705); Play refuses a debug-signed upload ([`release.md`](../05-dev-guide/release.md), checklist step 5) |
 | **Cold and warm start on a real mid-range phone** | The owner | The emulator only tracks regressions; the absolute budgets (1.5 s cold, 500 ms warm) are checked on a phone (checklist step 6) |
 | **A native reader checks the Bangla store text** | Not assigned | [`store-listing.md`](../05-dev-guide/store-listing.md) asks for it before the first upload |
 | **SQA's 1.0.1 pass** | agent-3 | Pending. Its findings become 1.0.2 |
@@ -204,7 +204,8 @@ The milestone's open issues, each blocked on the owner or on a Mac:
 ### Noted in the specs, not scheduled
 
 - **Content:** B1 "to be expanded" (379 words); Bangla translations of
-  examples, grammar rules and category names; a `compare_group` and word
+  examples (T5's practice sentences are English-only in v1.x, the owner,
+  2026-09-27, #598), grammar rules and category names; a `compare_group` and word
   senses, so compare sets stop resolving a homograph to the wrong word.
 - **Learning:** FSRS weights optimised on the phone once a learner has 1,000
   reviews (ADR 7).

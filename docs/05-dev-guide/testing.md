@@ -1,9 +1,11 @@
 # Testing strategy
 
-| Layer | Tool | Coverage target | Examples |
+No coverage percentage is measured or enforced; what each layer must cover is named below (#696).
+
+| Layer | Tool | What it covers | Examples |
 | --- | --- | --- | --- |
-| Domain | `flutter_test` (pure Dart) | 95 % | FSRS reference values, plan engine scenarios with a fake clock, answer checking vectors, exam generator no-repeat property test over every step, grammar item generation over every topic in content |
-| Data | drift in-memory DB with the real content.db attached | 90 % | DAO queries, migrations from every previous schema fixture, export/import round trip |
+| Domain | `flutter_test` (pure Dart) | every engine and every rule it implements, by FR/BR id | FSRS reference values, plan engine scenarios with a fake clock, answer checking vectors, exam generator no-repeat property test over every step, grammar item generation over every topic in content |
+| Data | drift in-memory DB with the real content.db attached | every query a screen uses, every migration, the export/import round trip | DAO queries, migrations from every previous schema fixture, export/import round trip |
 | Widgets | `flutter_test`, with provider overrides and hand-written fakes for TTS, the translator and the downloader (`todayStub()`, `wordStub()`) | key flows | reveal → rate → undo; navigator jump; settings rows write keys |
 | Goldens | `matchesGoldenFile`, through `test/golden/golden_harness.dart` | every screen × light/dark/glass × phone/tablet | stored under `test/golden/goldens/` |
 | Integration | `integration_test` on the Android emulator (`tools/smoke.py`) | smoke | onboarding → first session → day complete; exam resume after kill |

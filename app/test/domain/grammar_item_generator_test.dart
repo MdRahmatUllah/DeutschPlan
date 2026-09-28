@@ -144,6 +144,69 @@ void main() {
     }
   });
 
+  group('#752 Pick the form borrows from the topic\'s step or before', () {
+    // An A1.1 topic; the course's only other sentence with "ist" is B2.2's.
+    final course = CourseText(
+      sentences: <({String german, String english})>[
+        (german: 'Die Bonität ist wichtig.', english: ''),
+      ],
+      sentenceSteps: <int>[8],
+      stepOrder: <String, int>{'A1.1': 1, 'B2.2': 8},
+    );
+    GrammarSource at(String step) => GrammarSource(
+      uid: 'g1',
+      topic: 'sein',
+      rule: 'ist',
+      exampleDe: 'Das Haus ist alt.',
+      exampleEn: 'x',
+      watchOut: 'y',
+      tags: const <String>['gap-fill', 'pick-the-form'],
+      levelCode: 'A1',
+      sublevelCode: step,
+    );
+    bool borrows(String step) => generateItems(
+      at(step),
+      seed: 1,
+      course: course,
+    ).whereType<PickTheForm>().any((pick) => pick.after.contains('wichtig'));
+
+    test('not a later step\'s sentence', () {
+      expect(course.sentencesWith('ist', upTo: 'A1.1'), isEmpty);
+      expect(borrows('A1.1'), isFalse);
+    });
+
+    test('its own step\'s, or an earlier one\'s', () {
+      expect(course.sentencesWith('ist', upTo: 'B2.2'), hasLength(1));
+      expect(course.sentencesWith('ist'), hasLength(1), reason: 'no limit');
+      expect(borrows('B2.2'), isTrue);
+    });
+
+    test('never a note: a pair of sounds, a gloss, a word in quotes', () {
+      for (final note in <String>[
+        'ich, Milch ↔ ach, Buch ist hier.',
+        'Das ist (sehr) gut.',
+        "Kein Wert ist 'die' Prognose.",
+      ]) {
+        final notes = CourseText(
+          sentences: <({String german, String english})>[
+            (german: note, english: ''),
+          ],
+        );
+        expect(
+          generateItems(
+            at('A1.1'),
+            seed: 1,
+            course: notes,
+          ).whereType<PickTheForm>().any(
+            (pick) => pick.after.isNotEmpty && note.contains(pick.after.trim()),
+          ),
+          isFalse,
+          reason: note,
+        );
+      }
+    });
+  });
+
   test('a capital stays a capital: Die → Das, not das', () {
     final pick = first<PickTheForm>(
       generateItems(
