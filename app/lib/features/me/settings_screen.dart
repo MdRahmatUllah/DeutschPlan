@@ -1,5 +1,9 @@
 import 'dart:async' show unawaited;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
@@ -19,10 +23,6 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:intl/intl.dart';
 
 part 'settings_screen.g.dart';
 
@@ -237,27 +237,31 @@ class SettingsScreen extends ConsumerWidget {
           _Group(
             title: l10n.settingsGroupRevision,
             rows: <Widget>[
-              _Row(
-                title: l10n.settingsRetention,
-                subtitle: stabilities == null
-                    ? l10n.settingsPercent(retention)
-                    : l10n.settingsRetentionLine(
-                        retention,
-                        Fsrs(desiredRetention: retention / 100)
-                            .reviewsPerDay(stabilities)
-                            .round(),
-                      ),
-                labelledByControl: true,
-                trailing: _slider(
-                  SgSlider(
-                    value: retention,
-                    min: (Fsrs.minRetention * 100).round(),
-                    max: (Fsrs.maxRetention * 100).round(),
-                    compact: true,
-                    label: l10n.settingsRetention,
-                    describe: l10n.settingsPercent,
-                    onChanged: (percent) =>
-                        set(SettingKeys.desiredRetention, percent / 100),
+              _Held(
+                value: retention,
+                builder: (retention, hold) => _Row(
+                  title: l10n.settingsRetention,
+                  subtitle: stabilities == null
+                      ? l10n.settingsPercent(retention)
+                      : l10n.settingsRetentionLine(
+                          retention,
+                          Fsrs(desiredRetention: retention / 100)
+                              .reviewsPerDay(stabilities)
+                              .round(),
+                        ),
+                  labelledByControl: true,
+                  trailing: _slider(
+                    SgSlider(
+                      value: retention,
+                      min: (Fsrs.minRetention * 100).round(),
+                      max: (Fsrs.maxRetention * 100).round(),
+                      compact: true,
+                      label: l10n.settingsRetention,
+                      describe: l10n.settingsPercent,
+                      onChanged: hold,
+                      onChangeEnd: (percent) =>
+                          set(SettingKeys.desiredRetention, percent / 100),
+                    ),
                   ),
                 ),
               ),
@@ -383,24 +387,25 @@ class SettingsScreen extends ConsumerWidget {
                 },
                 onTap: () => ModelsRoute.open(context),
               ),
-              _Row(
-                title: l10n.settingsSpeed,
-                subtitle: l10n.settingsSpeedLine(
-                  l10n.digits(
-                    _times(speedQuarters.clamp(speed.min, speed.max)),
-                  ),
-                ),
-                labelledByControl: true,
-                trailing: _slider(
-                  SgSlider(
-                    value: speedQuarters.clamp(speed.min, speed.max),
-                    min: speed.min,
-                    max: speed.max,
-                    compact: true,
-                    label: l10n.settingsSpeed,
-                    describe: (quarters) => l10n.digits('${_times(quarters)}×'),
-                    onChanged: (quarters) =>
-                        set(SettingKeys.ttsSpeed, quarters / 4),
+              _Held(
+                value: speedQuarters.clamp(speed.min, speed.max),
+                builder: (shown, hold) => _Row(
+                  title: l10n.settingsSpeed,
+                  subtitle: l10n.settingsSpeedLine(l10n.digits(_times(shown))),
+                  labelledByControl: true,
+                  trailing: _slider(
+                    SgSlider(
+                      value: shown,
+                      min: speed.min,
+                      max: speed.max,
+                      compact: true,
+                      label: l10n.settingsSpeed,
+                      describe: (quarters) =>
+                          l10n.digits('${_times(quarters)}×'),
+                      onChanged: hold,
+                      onChangeEnd: (quarters) =>
+                          set(SettingKeys.ttsSpeed, quarters / 4),
+                    ),
                   ),
                 ),
               ),
@@ -669,6 +674,40 @@ class SettingsScreen extends ConsumerWidget {
         ),
       );
     },
+  );
+}
+
+/// A slider row's value while the finger is on it (#698): the row shows it at
+/// once, the retention estimate and the speed with it, and the slider's
+/// `onChangeEnd` saves it when the finger lets go: one write a drag, where
+/// every step wrote user.db and woke every listener of the setting.
+class _Held extends StatefulWidget {
+  const _Held({required this.value, required this.builder});
+
+  /// The saved value.
+  final int value;
+
+  /// The row, showing [shown]; [hold] is its slider's `onChanged`.
+  final Widget Function(int shown, ValueChanged<int> hold) builder;
+
+  @override
+  State<_Held> createState() => _HeldState();
+}
+
+class _HeldState extends State<_Held> {
+  int? _held;
+
+  @override
+  void didUpdateWidget(_Held old) {
+    super.didUpdateWidget(old);
+    // The save came back (or another writer's did): the setting shows again.
+    if (widget.value != old.value) _held = null;
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(
+    _held ?? widget.value,
+    (value) => setState(() => _held = value),
   );
 }
 

@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/services/tts/nfkd_latin.dart';
 import 'package:sogda/services/tts/supertonic_text.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// Supertonic 3's text front end (#152), against vectors from the reference
 /// SDK: supertonic 1.3.1's `UnicodeProcessor` over the real

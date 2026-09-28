@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
@@ -15,14 +20,9 @@ import 'package:sogda/features/me/settings_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
 
-import '../db/content_fixture.dart';
 import '../core/text_clipping.dart' show AndroidTextScaler;
+import '../db/content_fixture.dart';
 
 /// The recordings, deleted without a disk: `reset_repository_test.dart`
 /// deletes real ones, and file I/O never finishes in a widget test's clock.
@@ -66,7 +66,7 @@ void main() {
   });
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_reset_ui');
+    directory = tempDir('sogda_reset_ui');
     final content = ContentFixture.write('${directory.path}/content.db').file;
     db = AppDatabase.memory();
     await db.customStatement(
@@ -90,7 +90,6 @@ void main() {
 
   tearDown(() async {
     await db.close();
-    directory.deleteSync(recursive: true);
   });
 
   Future<int> count(String table) async =>

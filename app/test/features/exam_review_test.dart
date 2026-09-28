@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
@@ -7,13 +10,10 @@ import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
+import '../core/semantics_checks.dart';
 import 'exam_result_fixtures.dart';
 import 'settings_fixtures.dart';
-import '../core/semantics_checks.dart';
 import 'today_fixtures.dart' show artboardTopic;
 
 /// L14 · Exam review — #136 (`exam-results.md`, FR-L14-01). The review

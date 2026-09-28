@@ -1,5 +1,5 @@
-import 'package:sogda/domain/placement.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/domain/placement.dart';
 
 /// S3 · the placement check — #93. `placement.md`: "Unit: level walk with
 /// scripted answers."

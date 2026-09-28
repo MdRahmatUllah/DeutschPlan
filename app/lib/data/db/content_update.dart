@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/db/content_dao.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show debugPrint, immutable;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
 
 /// What one content update changed.
 ///
@@ -96,7 +96,10 @@ class ContentUpdater {
   ///
   /// Called from `bootstrap()` (#66), before `runApp`, because a course that
   /// changes under a running screen is worse than a slightly longer launch.
-  Future<ContentChange?> runIfNeeded() async {
+  ///
+  /// [onCopy] hears that the copy is about to start: the splash's caption
+  /// for an update (#686 ST-9).
+  Future<ContentChange?> runIfNeeded({void Function()? onCopy}) async {
     // The kept manifest is the baseline, not the attached database. If the app
     // is killed between the file swap and the record — a launch, the most
     // likely moment — the database already reads as current while no
@@ -114,6 +117,7 @@ class ContentUpdater {
     if (bundled.isEmpty || bundled == installed) return null;
 
     final previous = await _readInstalledManifest();
+    onCopy?.call();
     try {
       await _dao.replaceWithBundled();
     } on Object catch (error) {

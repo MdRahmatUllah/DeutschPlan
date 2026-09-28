@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart' show ExamAttempt;
 import 'package:sogda/data/repositories/exam_repository.dart' show ExamScore;
@@ -8,7 +9,6 @@ import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/domain/quiz_builder.dart' show FormLabel;
 import 'package:sogda/services/exam_recorder.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// The ExamRunner artboard's attempt: A1.2 · Mock 2, 14:32 left.
 ExamAttempt artboardAttempt({

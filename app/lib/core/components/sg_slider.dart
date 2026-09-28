@@ -1,10 +1,10 @@
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
-import 'package:flutter/services.dart' show LogicalKeyboardKey;
-import 'package:material_ui/material_ui.dart';
 
 /// A whole-number slider in the Paper & Ink treatment.
 ///
@@ -15,7 +15,11 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// Settings draws a smaller one: [compact], a 4 dp track and a 20 dp thumb
 /// with no shadow.
-class SgSlider extends StatelessWidget {
+///
+/// As Material's `Slider`: [onChanged] at every step, for what shows the
+/// value, and [onChangeEnd] once, when the finger lets go, for what saves it
+/// (#698: Settings wrote user.db at every step of a drag).
+class SgSlider extends StatefulWidget {
   const SgSlider({
     required this.value,
     required this.min,
@@ -23,6 +27,7 @@ class SgSlider extends StatelessWidget {
     required this.onChanged,
     required this.label,
     super.key,
+    this.onChangeEnd,
     this.compact = false,
     this.describe,
   }) : assert(min < max, 'a slider needs somewhere to slide');
@@ -34,6 +39,12 @@ class SgSlider extends StatelessWidget {
   /// Null disables it.
   final ValueChanged<int>? onChanged;
 
+  /// The value a gesture ended on: a tap or a drag let go, and a drag the
+  /// scroll view took over, which keeps what the thumb shows, as Material's
+  /// does. A key's or a screen reader's step is a whole gesture: it is heard
+  /// right after its [onChanged]. Never for a gesture that moved nothing.
+  final ValueChanged<int>? onChangeEnd;
+
   /// What a screen reader calls it — "New words per day".
   final String label;
 
@@ -44,16 +55,39 @@ class SgSlider extends StatelessWidget {
   /// speech speed's 10 is "1.0×". The number itself otherwise.
   final String Function(int value)? describe;
 
+  /// The drawn height, which the focus ring hugs.
   static const double height = 32;
+
+  /// The touch target, and the screen reader's node: 48 dp tall
+  /// (`accessibility-performance.md`, #698), the drawn slider at its middle.
+  static const double target = 48;
+
   static const double track = 6;
   static const double thumb = 24;
   static const double compactTrack = 4;
   static const double compactThumb = 20;
 
   @override
+  State<SgSlider> createState() => _SgSliderState();
+}
+
+class _SgSliderState extends State<SgSlider> {
+  /// The last value this gesture sent through [SgSlider.onChanged], until it
+  /// ends. Kept here: the parent's value may not have come back yet when the
+  /// finger lifts (a tap's down and up arrive together).
+  int? _moved;
+
+  void _end() {
+    final moved = _moved;
+    _moved = null;
+    if (moved != null) widget.onChangeEnd?.call(moved);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final changed = onChanged;
+    final SgSlider(:value, :min, :max, :label, :describe, :compact) = widget;
+    final changed = widget.onChanged;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -69,7 +103,16 @@ class SgSlider extends StatelessWidget {
 
         void moveTo(double dx) {
           final next = valueAt(dx);
-          if (next != value) changed?.call(next);
+          if (next == value || changed == null) return;
+          _moved = next;
+          changed(next);
+        }
+
+        // A step from a key or a screen reader: a gesture of its own.
+        void step(int next) {
+          _moved = next;
+          changed?.call(next);
+          _end();
         }
 
         // #877: the label and the values tagged bn-BD where they are
@@ -91,63 +134,77 @@ class SgSlider extends StatelessWidget {
           attributedDecreasedValue: down == null
               ? null
               : SgScript.attributedLabel(said(down)),
-          onIncrease: changed != null && up != null ? () => changed(up) : null,
-          onDecrease: changed != null && down != null
-              ? () => changed(down)
-              : null,
+          onIncrease: changed != null && up != null ? () => step(up) : null,
+          onDecrease: changed != null && down != null ? () => step(down) : null,
           // #1007: a keyboard's arrows move it a step each way, as a screen
           // reader's increase and decrease do. Held at the ends rather than
           // passed on, so an arrow never moves the focus off it; up and down
           // stay a D-pad's, to leave it.
-          child: SgFocusable(
-            onPressed: null,
-            radius: BorderRadius.circular(height / 2),
-            keys: changed == null
-                ? const <ShortcutActivator, VoidCallback>{}
-                : <ShortcutActivator, VoidCallback>{
-                    const SingleActivator(LogicalKeyboardKey.arrowRight): () {
-                      if (up != null) changed(up);
-                    },
-                    const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
-                      if (down != null) changed(down);
-                    },
-                  },
-            child: GestureDetector(
-              // The Semantics above is the slider's whole contract — increase
-              // and decrease. Left in, the detector would also offer a screen
-              // reader "tap" and "scroll left/right", which do nothing useful.
-              excludeFromSemantics: true,
-              behavior: HitTestBehavior.opaque,
-              onTapDown: changed == null
-                  ? null
-                  : (details) => moveTo(details.localPosition.dx),
-              onHorizontalDragUpdate: changed == null
-                  ? null
-                  : (details) => moveTo(details.localPosition.dx),
-              child: SizedBox(
-                height: height,
-                width: width,
-                child: CustomPaint(
-                  painter: _SliderPainter(
-                    // Clamped: a value outside the range never draws off the
-                    // track (#692 ME-4 drew one at 155 %).
-                    fraction: ((value - min) / (max - min)).clamp(0.0, 1.0),
-                    rail: tokens.surface.track,
-                    fill: tokens.color.primary,
-                    thumbFill: tokens.surface.card,
-                    // Ink on paper; the glass hairline under glass, as the
-                    // glass artboards draw every raised control.
-                    thumbBorder: tokens.isGlass
-                        ? tokens.surface.outline
-                        : tokens.color.ink,
-                    thumbBorderWidth: tokens.isGlass
-                        ? tokens.surface.outlineWidth
-                        : 2,
-                    track: compact ? compactTrack : track,
-                    thumb: compact ? compactThumb : thumb,
-                    shadow: compact ? null : tokens.surface.shadow,
-                    shadowOffset: tokens.surface.shadowOffset,
-                    shadowBlur: tokens.surface.shadowBlur,
+          child: GestureDetector(
+            // The Semantics above is the slider's whole contract — increase
+            // and decrease. Left in, the detector would also offer a screen
+            // reader "tap" and "scroll left/right", which do nothing useful.
+            excludeFromSemantics: true,
+            behavior: HitTestBehavior.opaque,
+            onTapDown: changed == null
+                ? null
+                : (details) => moveTo(details.localPosition.dx),
+            onTapUp: changed == null ? null : (_) => _end(),
+            onHorizontalDragUpdate: changed == null
+                ? null
+                : (details) => moveTo(details.localPosition.dx),
+            onHorizontalDragEnd: changed == null ? null : (_) => _end(),
+            // A tap the scroll view took over ends here too, with the value
+            // its down moved to (#698: never one shown and not saved).
+            onHorizontalDragCancel: changed == null ? null : _end,
+            // The 48 dp target round the drawn 32 (#698); the ring hugs the
+            // drawn slider.
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: (SgSlider.target - SgSlider.height) / 2,
+              ),
+              child: SgFocusable(
+                onPressed: null,
+                radius: BorderRadius.circular(SgSlider.height / 2),
+                keys: changed == null
+                    ? const <ShortcutActivator, VoidCallback>{}
+                    : <ShortcutActivator, VoidCallback>{
+                        const SingleActivator(
+                          LogicalKeyboardKey.arrowRight,
+                        ): () {
+                          if (up != null) step(up);
+                        },
+                        const SingleActivator(
+                          LogicalKeyboardKey.arrowLeft,
+                        ): () {
+                          if (down != null) step(down);
+                        },
+                      },
+                child: SizedBox(
+                  height: SgSlider.height,
+                  width: width,
+                  child: CustomPaint(
+                    painter: _SliderPainter(
+                      // Clamped: a value outside the range never draws off the
+                      // track (#692 ME-4 drew one at 155 %).
+                      fraction: ((value - min) / (max - min)).clamp(0.0, 1.0),
+                      rail: tokens.surface.track,
+                      fill: tokens.color.primary,
+                      thumbFill: tokens.surface.card,
+                      // Ink on paper; the glass hairline under glass, as the
+                      // glass artboards draw every raised control.
+                      thumbBorder: tokens.isGlass
+                          ? tokens.surface.outline
+                          : tokens.color.ink,
+                      thumbBorderWidth: tokens.isGlass
+                          ? tokens.surface.outlineWidth
+                          : 2,
+                      track: compact ? SgSlider.compactTrack : SgSlider.track,
+                      thumb: compact ? SgSlider.compactThumb : SgSlider.thumb,
+                      shadow: compact ? null : tokens.surface.shadow,
+                      shadowOffset: tokens.surface.shadowOffset,
+                      shadowBlur: tokens.surface.shadowBlur,
+                    ),
                   ),
                 ),
               ),

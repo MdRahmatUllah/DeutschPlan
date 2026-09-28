@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:convert/convert.dart' show AccumulatorSink;
 import 'package:crypto/crypto.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
 
 /// The states `model-manager.md` lists, in the order a model moves through
 /// them.

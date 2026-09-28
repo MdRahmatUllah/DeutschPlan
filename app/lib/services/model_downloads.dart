@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/services/device_storage.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// What a model's download is doing (FR-M4-01, #156), for M4's card.
 enum DownloadPhase {

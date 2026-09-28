@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart' show Fake;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -9,8 +11,6 @@ import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
 import 'package:sogda/services/tts/tts_engine.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart' show Fake;
 
 import '../services/fake_tts.dart';
 import 'settings_fixtures.dart';

@@ -1,5 +1,5 @@
-import 'package:sogda/domain/plan_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/domain/plan_stats.dart';
 
 /// FR-S2-04 — the estimate on S2 page 4.
 void main() {

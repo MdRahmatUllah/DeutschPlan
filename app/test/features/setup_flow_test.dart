@@ -1,5 +1,10 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -11,11 +16,6 @@ import 'package:sogda/features/onboarding/onboarding_notifier.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/features/onboarding/setup_flow.dart';
 import 'package:sogda/features/today/today_providers.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../db/content_fixture.dart';
@@ -35,7 +35,7 @@ void main() {
   late ProviderContainer container;
 
   setUp(() async {
-    directory = Directory.systemTemp.createTempSync('sogda_setup');
+    directory = tempDir('sogda_setup');
     final content = ContentFixture.write('${directory.path}/content.db').file;
 
     // The fixture has three words; a seven-a-day first day needs more.
@@ -90,11 +90,6 @@ VALUES (?, ?, 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
     container.dispose();
     await settings.dispose();
     await db.close();
-    try {
-      directory.deleteSync(recursive: true);
-    } on FileSystemException {
-      // Windows releases it a moment later.
-    }
   });
 
   OnboardingNotifier draft() => container.read(onboardingProvider.notifier);

@@ -4,7 +4,7 @@
 
 **Reached from.** M1, gear on T1. **Leads to.** M5 (Study days & reminder), M4 (Voice engine / On-device translation), M6 (Export / import), M7 (Reset), S2 (Restart setup).
 
-Grouped list (Material headers / Cupertino inset groups). Changes save instantly; rows whose effect starts tomorrow say "Applies from tomorrow".
+Grouped list (Material headers / Cupertino inset groups). Changes save instantly; rows whose effect starts tomorrow say "Applies from tomorrow". A slider saves when the finger lets go, or a drag the scroll view takes over ends, with the value its thumb shows; its row shows each step as it moves, and a key's or a screen reader's step saves at once. One write a drag, where each step wrote user.db (#698).
 
 | Group | Row | Control | Setting |
 | --- | --- | --- | --- |

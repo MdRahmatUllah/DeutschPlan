@@ -3,15 +3,15 @@ library;
 
 import 'dart:io';
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
-import 'package:drift/native.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../db/content_fixture.dart';
 
@@ -44,7 +44,7 @@ void main() {
     late GrammarRepository grammar;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_done_rule');
+      directory = tempDir('sogda_done_rule');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(
@@ -59,11 +59,6 @@ void main() {
     tearDown(() async {
       await settings.dispose();
       await db.close();
-      try {
-        directory.deleteSync(recursive: true);
-      } on FileSystemException {
-        // Windows releases it a moment later.
-      }
     });
 
     // Haus exactly at the threshold, Tür just under, Straße just over.

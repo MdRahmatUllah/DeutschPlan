@@ -2,52 +2,48 @@
 library;
 
 import 'dart:async';
-
-import 'package:sogda/features/exam/exam_runner_screen.dart';
-import 'package:sogda/features/study/study_screen.dart';
-import 'package:sogda/features/me/settings_screen.dart';
-import 'package:sogda/features/today/today_screen.dart';
-
-import '../features/today_fixtures.dart';
-
 import 'dart:io';
 
-import 'package:sogda/core/theme/app_theme.dart';
-import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/exam_repository.dart';
-import 'package:sogda/data/repositories/plan_repository.dart';
-import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/features/onboarding/onboarding_meaning_page.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPageTransition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
-import 'package:sogda/features/onboarding/onboarding_voice_page.dart';
-import 'package:sogda/features/onboarding/onboarding_notifier.dart';
-import 'package:sogda/features/onboarding/setup_flow.dart';
-import 'package:sogda/features/onboarding/placement_screen.dart';
-import 'package:sogda/domain/placement.dart';
-
-import '../domain/placement_test.dart' show wordFor;
-
-import 'package:sogda/features/onboarding/onboarding_start_page.dart';
-import 'package:sogda/features/onboarding/onboarding_pace_page.dart';
-import 'package:sogda/data/db/content_dao.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/plan_repository.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/placement.dart';
+import 'package:sogda/features/exam/exam_runner_screen.dart';
+import 'package:sogda/features/learn/learn_screen.dart';
+import 'package:sogda/features/me/settings_screen.dart';
+import 'package:sogda/features/onboarding/onboarding_meaning_page.dart';
+import 'package:sogda/features/onboarding/onboarding_notifier.dart';
+import 'package:sogda/features/onboarding/onboarding_pace_page.dart';
+import 'package:sogda/features/onboarding/onboarding_start_page.dart';
+import 'package:sogda/features/onboarding/onboarding_voice_page.dart';
+import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
+import 'package:sogda/features/onboarding/placement_screen.dart';
+import 'package:sogda/features/onboarding/setup_flow.dart';
+import 'package:sogda/features/quiz/quiz_screen.dart';
+import 'package:sogda/features/search/search_screen.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:sogda/features/quiz/quiz_screen.dart';
 import 'package:sogda/router/app_router.dart';
 import 'package:sogda/router/app_shell.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
-import 'package:sogda/features/learn/learn_screen.dart';
-import 'package:sogda/features/search/search_screen.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPageTransition;
-import 'package:go_router/go_router.dart';
-import 'package:material_ui/material_ui.dart';
+
+import '../domain/placement_test.dart' show wordFor;
+import '../features/today_fixtures.dart';
 
 /// `navigation.md`'s guards — #68.
 ///

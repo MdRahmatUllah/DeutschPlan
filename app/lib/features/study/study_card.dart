@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -14,9 +17,6 @@ import 'package:sogda/data/repositories/word_repository.dart' show customId;
 import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:flutter/services.dart' show Clipboard, ClipboardData;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// What the speaker says for [word]: the article with it, as it is learned.
 String spokenForm(Word word) =>

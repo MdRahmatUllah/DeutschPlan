@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/bootstrap.dart';
 import 'package:sogda/core/adaptive/orientation.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/main.dart' show BootstrapHost;
-import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 /// #577, the owner's call: a phone stays portrait, a tablet turns.
 void main() {
@@ -99,8 +99,8 @@ void main() {
     await tester.pumpWidget(
       BootstrapHost(
         run: ({
-          Brightness platformBrightness = Brightness.light,
           void Function(UiLanguage)? onUiLanguage,
+          void Function()? onCourseUpdate,
         }) => never.future,
       ),
     );

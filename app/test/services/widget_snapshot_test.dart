@@ -1,6 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart'
+    show MethodCall, MethodChannel, PlatformException;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show Locale;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -11,12 +17,6 @@ import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/services/widget_snapshot.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter/services.dart'
-    show MethodCall, MethodChannel, PlatformException;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show Locale;
 
 import '../db/content_fixture.dart';
 import '../features/today_fixtures.dart';
@@ -189,7 +189,7 @@ void main() {
         );
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_widget');
+      directory = tempDir('sogda_widget');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase.memory();
       await db.customStatement(
@@ -213,7 +213,6 @@ void main() {
       container.dispose();
       await settings.dispose();
       await db.close();
-      directory.deleteSync(recursive: true);
     });
 
     Future<WidgetWord?> word() async {
@@ -336,7 +335,7 @@ void main() {
     late DateTime now;
 
     setUp(() async {
-      directory = Directory.systemTemp.createTempSync('sogda_midnight');
+      directory = tempDir('sogda_midnight');
       final content = ContentFixture.write('${directory.path}/content.db').file;
       db = AppDatabase.memory();
       await db.customStatement(
@@ -376,7 +375,6 @@ void main() {
       container.dispose();
       await settings.dispose();
       await db.close();
-      directory.deleteSync(recursive: true);
     });
 
     test("never writes yesterday's date over the new day's", () async {

@@ -1,6 +1,10 @@
 @TestOn('vm')
 library;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_slider.dart';
@@ -14,10 +18,6 @@ import 'package:sogda/features/onboarding/onboarding_start_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../core/semantics_checks.dart';
 
@@ -401,6 +401,37 @@ void main() {
           hasDecreaseAction: true,
         ),
       );
+
+      handle.dispose();
+    });
+
+    testWidgets('#698 the slider is a 48 dp target, to a finger and a screen '
+        'reader, around the 32 dp it draws', (tester) async {
+      final handle = tester.ensureSemantics();
+      await pump(tester);
+      final slider = find.byType(SgSlider);
+
+      expect(tester.getSize(slider).height, 48);
+      expect(
+        tester
+            .getSemantics(
+              find
+                  .descendant(
+                    of: slider,
+                    matching: find.byType(GestureDetector),
+                  )
+                  .first,
+            )
+            .rect
+            .height,
+        48,
+      );
+      // 20 dp under the track's middle, at its far end.
+      await tester.tapAt(
+        tester.getRect(slider).centerRight + const Offset(-1, 20),
+      );
+      await tester.pump();
+      expect(draft().dailyNew, 30);
 
       handle.dispose();
     });

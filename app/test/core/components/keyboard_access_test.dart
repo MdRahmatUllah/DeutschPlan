@@ -1,5 +1,7 @@
 import 'package:flutter/semantics.dart' show SemanticsAction;
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
@@ -15,8 +17,6 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
-import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 
 /// #745 · WCAG 2.1.1: what a finger presses, a keyboard or a D-pad presses
 /// too. Tab reaches each custom control, and Enter, Space and the D-pad's
@@ -107,8 +107,10 @@ void main() {
   }
 
   testWidgets('#1007 SgSlider: Tab reaches it, the arrows move it a step '
-      'each way, and it holds at its ends with the focus kept', (tester) async {
+      'each way, and it holds at its ends with the focus kept; #698 each '
+      'step is a whole gesture, ended as it moves', (tester) async {
     var value = 5;
+    final ends = <int>[];
     await pump(
       tester,
       StatefulBuilder(
@@ -120,6 +122,7 @@ void main() {
             max: 6,
             label: 'Pace',
             onChanged: (next) => setState(() => value = next),
+            onChangeEnd: ends.add,
           ),
         ),
       ),
@@ -145,6 +148,7 @@ void main() {
     await press(LogicalKeyboardKey.arrowLeft);
     expect(value, 4, reason: 'held at the bottom');
     expect(onSlider(), isTrue);
+    expect(ends, <int>[6, 5, 4], reason: 'a held arrow ends nothing');
   });
 
   testWidgets('#1011 ME-4 from a value outside its range, a step lands '

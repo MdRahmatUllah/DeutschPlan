@@ -1,12 +1,12 @@
 import 'dart:ui' show LocaleStringAttribute, StringAttribute;
 
-import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/typography/app_fonts.dart';
-import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/rendering.dart' show RenderParagraph, RenderProxyBox;
 import 'package:flutter/semantics.dart' show AttributedString;
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 
 /// One role of the type scale, named so callers ask for a role rather than a
 /// number. `docs/01-architecture/theming.md` defines all seven.
@@ -520,6 +520,48 @@ class SgText extends StatelessWidget {
       height: token.heightFactor,
       fontVariations: AppFonts.weight(token.weight),
       color: color ?? tokens.color.ink,
+    );
+  }
+}
+
+/// A label Material chrome draws in its own style: a segment's, a tab's, a
+/// dialog action's (#698). Its Bangla one role up, as [SgText] sets it
+/// (`theming.md`), where the chrome's style had set it at the Latin's size;
+/// everything else stays the chrome's: its colour in each state, its weight.
+/// [role] is the role the chrome's style stands for.
+class SgChromeLabel extends StatelessWidget {
+  const SgChromeLabel(
+    this.text, {
+    required this.role,
+    super.key,
+    this.softWrap,
+    this.overflow,
+  });
+
+  final String text;
+  final SgTextRole role;
+  final bool? softWrap;
+  final TextOverflow? overflow;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!SgScript.hasBengali(text)) {
+      return Text(text, softWrap: softWrap, overflow: overflow);
+    }
+    final larger = role.oneStepLarger.token(context.tokens.typography);
+    return Text.rich(
+      TextSpan(
+        children: SgScript.spans(
+          text,
+          latin: const TextStyle(),
+          bengali: TextStyle(
+            fontSize: larger.size,
+            height: larger.heightFactor,
+          ),
+        ),
+      ),
+      softWrap: softWrap,
+      overflow: overflow,
     );
   }
 }
