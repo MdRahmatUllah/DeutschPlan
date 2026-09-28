@@ -2013,3 +2013,4 @@ able to tell what is going on without asking.
 - 2026-09-28 11:14 · agent-0 #933 · done
 - 2026-09-28 11:15 · agent-0 #1026 · added to the board, lane X
 - 2026-09-28 11:15 · agent-0 #1027 · added to the board, lane X
+- 2026-09-28 11:15 · agent-0 · board keeping: closed #693 #697 #705 #712 #843 #845 #871 #933; device checks to #1026 (sqa), ORT reduced build to #1027, SV-11 to #171; #686 (ST-9), #698 (2 items), #709 (perf_test) stay open with code left
