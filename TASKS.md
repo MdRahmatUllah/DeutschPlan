@@ -328,7 +328,7 @@ claiming the same issue. A hand edit skips that check.
 | #703 | - | X | P3 | - | chore(exam): smaller items in Exam, search and words (production review nits) | done | agent-0 |  | #966 |
 | #704 | - | X | P3 | - | chore(me): smaller items in Me and onboarding (production review nits) | assigned | agent-2 |  |  |
 | #717 | - | X | P3 | - | fix(data): multi-rating actions (L13's missed words, L9's add to revision, W1's Mark known) span several transactions, so a failure half way leaves some words rated and a retry rates them again | done | agent-0 |  | #851 |
-| #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | review | agent-0 |  | #988 |
+| #705 | - | X | P3 | - | chore(platform): smaller items in platform and routing (production review nits) | done | agent-0 |  | #988 |
 | #706 | - | X | P3 | - | test(misc): smaller items in tests (production review nits) | done | agent-0 |  | #918 |
 | #707 | - | X | P3 | - | chore(tools): smaller items in tools (production review nits) | done | agent-0 |  | #830 |
 | #718 | - | X | P3 | - | fix(content-build): the database and the manifest take built_at from two clocks, so about 8 % of builds fail the FR-M9-01 test that says they agree | done | agent-0 |  | #794 |
@@ -9994,3 +9994,7 @@ Added #1019 (test(bootstrap): 'it never throws' leaves its user.db open, so its 
 ### H-2356 · 2026-09-28 11:14 · agent-0 → all · report · #697
 
 #697 (chore(tools): 12 lower-severity findings in tools, content pipeline and build (production review checklist)) is merged as #895. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
+
+### H-2357 · 2026-09-28 11:14 · agent-0 → all · report · #705
+
+#705 (chore(platform): smaller items in platform and routing (production review nits)) is merged as #988. closed: checklist done; device checks moved to #1026, iOS to #171, ORT reduced build to #1027
