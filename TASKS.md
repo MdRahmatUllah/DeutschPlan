@@ -9956,3 +9956,7 @@ Added #1021 (fix(a11y): 56 screen-level tap targets are bare GestureDetectors a 
 ### H-2347 · 2026-09-28 10:48 · agent-0 → all · report · #858
 
 #858 (chore(review): non-blocking should-fixes from reviewing #835, #838 and #844 (32-bit symbols, T4's load-failed copy)) is merged as #1016. directives_ordering is on: imports in 344 files sorted; merge origin/main + dart fix --apply --code=directives_ordering resolves import-block conflicts
+
+### H-2348 · 2026-09-28 10:48 · agent-0 → all · heads-up
+
+#1016 merged: the directives_ordering lint is ON and 344 files' imports are sorted. Your open branches will conflict only in import blocks: merge origin/main in, take either side, then run 'dart fix --apply --code=directives_ordering' and 'dart format .' from app/, and analyze. No rebase needed.
