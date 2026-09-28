@@ -22,7 +22,7 @@ import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
 
-from pipeline_steps import uid_text
+from pipeline_steps import PipelineError, uid_text
 
 MANIFEST_NAME = "content_manifest.json"
 
@@ -292,8 +292,12 @@ class ContentDiff:
         )
 
 
-class ManifestFormatError(Exception):
-    """The two manifests cannot be compared."""
+class ManifestFormatError(PipelineError):
+    """The two manifests cannot be compared.
+
+    A PipelineError, so the build's diff print reports it rather than
+    crashing with a traceback (#825).
+    """
 
 
 def diff(previous: dict, current: dict) -> ContentDiff:

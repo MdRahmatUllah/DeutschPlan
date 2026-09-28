@@ -149,6 +149,14 @@ class TestTheSeedSet:
             for word_text in words:
                 assert any(p.search(word_text) for p in patterns), word_text
 
+        # #933: each stress tip is about the verb it sits on, not another
+        # verb's example ("überholen" once got "überSETzen").
+        for word_text in always["separable"]:
+            for tip in read_tips(SEED):
+                if "separable" in (tip.tags or "") and re.search(tip.match, word_text, re.IGNORECASE):
+                    verb = word_text.split()[0].lower()
+                    assert verb in tip.tip_en.lower(), f"{word_text}: {tip.tip_en}"
+
     def test_every_pattern_compiles_and_is_anchored_or_suffixed(self):
         import re
 
@@ -409,7 +417,9 @@ class TestTheShippedCourse:
             assert tips("Tag der Deutschen Einheit") == []
             # #637: a stress tip only where stress decides.
             assert any("Stress decides" in tip for tip in tips("übersetzen"))
-            assert any("separable" in tip for tip in tips("unterstellen"))
+            assert any("Stress decides" in tip for tip in tips("unterstellen"))
+            # #933: überholen's own tip, not übersetzen's.
+            assert any("überHOlen" in tip for tip in tips("überholen"))
             for verb in ("überzeugen", "unterschreiben", "umsteigen", "sich unterhalten"):
                 assert not any(
                     "Stress decides" in tip or "separable" in tip for tip in tips(verb)

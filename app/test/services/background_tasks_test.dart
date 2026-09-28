@@ -16,6 +16,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show Locale;
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart' show sqlite3;
 
 import '../data/reminder_scheduler_test.dart' show FakeReminders, FakeWork;
@@ -111,6 +113,76 @@ void main() {
 
     test('no file: nothing to open', () {
       expect(atCurrentSchema(File('${directory.path}/none.sqlite')), isFalse);
+    });
+  });
+
+  group("#625 a skipped plan_pregenerate still queues tomorrow's", () {
+    late Directory support;
+    late FakeWork work;
+    final ran = <BackgroundTask>[];
+
+    Future<void> skip(BackgroundTask task) => runInBackground(
+      task,
+      work: work,
+      clock: () => DateTime(2026, 9, 21, 0, 5),
+      run: (_) async => ran.add(task),
+    );
+
+    setUp(() async {
+      TestWidgetsFlutterBinding.ensureInitialized();
+      support = Directory.systemTemp.createTempSync('sogda_skip');
+      PathProviderPlatform.instance = _Support(support.path);
+      work = FakeWork();
+      ran.clear();
+      // user.db at this schema; no course beside it.
+      final db = AppDatabase(
+        DatabaseConnection(
+          NativeDatabase(File('${support.path}/${AppDatabase.fileName}')),
+        ),
+      );
+      await db.customSelect('SELECT 1').get();
+      await db.close();
+    });
+
+    tearDown(() {
+      try {
+        support.deleteSync(recursive: true);
+      } on FileSystemException {
+        // Windows releases the file a moment after close(); the OS clears
+        // its temp directory.
+      }
+    });
+
+    test('user.db left at the old schema for the app', () async {
+      sqlite3.open('${support.path}/${AppDatabase.fileName}')
+        ..userVersion = AppDatabase.latestSchemaVersion - 1
+        ..close();
+
+      await skip(BackgroundTask.planPregenerate);
+
+      expect(ran, isEmpty);
+      expect(
+        work.queued[BackgroundTask.planPregenerate],
+        const Duration(days: 1),
+      );
+    });
+
+    test('no course yet', () async {
+      await skip(BackgroundTask.planPregenerate);
+
+      expect(ran, isEmpty);
+      expect(
+        work.queued[BackgroundTask.planPregenerate],
+        const Duration(days: 1),
+      );
+    });
+
+    test('the other tasks queue nothing: the app and plan_pregenerate do '
+        'that', () async {
+      await skip(BackgroundTask.widgetRefresh);
+      await skip(BackgroundTask.reminderCompose);
+
+      expect(work.queued, isEmpty);
     });
   });
 
@@ -322,6 +394,18 @@ void main() {
       expect(work.queued, isEmpty);
     });
 
+    test('#711 widget_refresh with the widget gone: its hourly run goes, and '
+        'nothing is written', () async {
+      view = artboardToday();
+      widgets.onHome = false;
+      work.hourlyTasks.add(BackgroundTask.widgetRefresh);
+
+      await run(BackgroundTask.widgetRefresh);
+
+      expect(widgets.saved, isEmpty);
+      expect(work.hourlyTasks, isEmpty);
+    });
+
     test('#159 plan_pregenerate rewrites the widget for the new day', () async {
       now = DateTime(2026, 9, 21, 0, 5);
       view = artboardToday();
@@ -329,4 +413,17 @@ void main() {
       expect(widgets.last['date'], today);
     });
   });
+}
+
+/// `getApplicationSupportDirectory()`, and drift's temp, in a temp directory.
+class _Support extends PathProviderPlatform with MockPlatformInterfaceMixin {
+  _Support(this.path);
+
+  final String path;
+
+  @override
+  Future<String?> getApplicationSupportPath() async => path;
+
+  @override
+  Future<String?> getTemporaryPath() async => path;
 }

@@ -147,6 +147,29 @@ class TestDiff:
         with pytest.raises(ManifestFormatError, match="every word as removed"):
             diff(old, self.base())
 
+    def test_825_the_build_reports_a_format_change_instead_of_crashing(self, tmp_path, capsys):
+        # The build's diff print catches PipelineError only: a format bump
+        # would otherwise reach the author as a traceback.
+        import yaml
+        from excel_to_sqlite import main as build_main
+
+        write_all(tmp_path)
+        manifest = tmp_path / "manifest.yaml"
+        manifest.write_text(
+            yaml.safe_dump({"workbooks": [{"file": str(tmp_path / n)} for n in BOOK_LEVELS]}),
+            encoding="utf-8",
+        )
+        first = tmp_path / "first" / "content.db"
+        assert build_main(["--manifest", str(manifest), "--out", str(first), "--previous", str(tmp_path / "none")]) == 0
+        committed = first.parent / "content_manifest.json"
+        committed.write_text(
+            json.dumps({**json.loads(committed.read_text(encoding="utf-8")), "format": 0}),
+            encoding="utf-8",
+        )
+        out = tmp_path / "second" / "content.db"
+        assert build_main(["--manifest", str(manifest), "--out", str(out), "--previous", str(first.parent)]) == 1
+        assert "every word as removed" in capsys.readouterr().err
+
 
 class TestGrammarIsTrackedToo:
     """`grammar_state.grammar_uid` points at these, so a topic that vanishes
