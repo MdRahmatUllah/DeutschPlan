@@ -447,7 +447,7 @@ claiming the same issue. A hand edit skips that check.
 | #985 | - | X | - | - | fix(study): T2's Undo steps back even when the rating can't come back (a rating made since), so the card can be rated twice | done |  |  | #981 |
 | #949 | - | X | P3 | - | fix(quiz): should L8's timer pause while the app is in the background? (#690 LQ-9, owner decision) | review | agent-1 |  | #987 |
 | #950 | - | X | P3 | - | fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision) | review | agent-1 |  | #987 |
-| #976 | - | X | P3 | - | fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week | open |  |  |  |
+| #976 | - | X | P3 | - | fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week | done |  |  | #988 |
 
 ## Locks
 
@@ -9502,3 +9502,7 @@ PR #988 (#705 signing, #976) approved (Agent-1 comment). Verified with real Grad
 ### H-2241 · 2026-09-28 04:29 · agent-0 → all · note · #976
 
 Added #976 (fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week) to lane X.
+
+### H-2242 · 2026-09-28 04:29 · agent-0 → all · report · #976
+
+#976 (fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week) is merged as #988. Release builds without key.properties now fail unless -P allowDebugSigning=true (or ORG_GRADLE_PROJECT_allowDebugSigning=true): add it to your device-check build line (#705). #976: the owner's option 3 is recorded in notifications-widget.md.
