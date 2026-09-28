@@ -372,7 +372,7 @@ void main() {
         final container = containerFor();
         final following = followReminder(container, reminders);
         addTearDown(following.close);
-        await Future<void>.delayed(const Duration(milliseconds: 100));
+        await pumpEventQueue();
         expect(
           reminders.replaced.isEmpty && reminders.cancelledDays.isEmpty,
           isTrue,
@@ -380,7 +380,7 @@ void main() {
         );
         view = to;
         container.invalidate(todayViewProvider);
-        await Future<void>.delayed(const Duration(milliseconds: 100));
+        await pumpEventQueue();
       }
 
       test('finished before the reminder: cancelled at once', () async {

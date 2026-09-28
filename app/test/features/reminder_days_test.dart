@@ -228,6 +228,11 @@ void main() {
       expect(find.text(l10n.onboardingReminderBlocked), findsOneWidget);
       expect(find.text(l10n.reminderDaysGranted), findsNothing);
       expect(find.text(l10n.reminderDaysOpenSettings), findsOneWidget);
+      expect(
+        find.text(l10n.reminderDaysTonight),
+        findsNothing,
+        reason: 'no preview of a reminder the phone will drop',
+      );
       expect(permission.asked, 0, reason: 'read, never asked');
     });
 

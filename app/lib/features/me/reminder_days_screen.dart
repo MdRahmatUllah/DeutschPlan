@@ -113,7 +113,8 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
     final tokens = context.tokens;
 
     final mask = settings.read(SettingKeys.studyDaysMask);
-    final on = settings.read(SettingKeys.reminderEnabled);
+    // #692 ME-8: blocked by the phone reads as off, preview and all.
+    final on = settings.read(SettingKeys.reminderEnabled) && !_blocked;
     final onlyWhenDue = settings.read(SettingKeys.reminderOnlyWhenDue);
     final clock = settings.read(SettingKeys.reminderTime);
     final time = MaterialLocalizations.of(context).formatTimeOfDay(
@@ -186,7 +187,7 @@ class _ReminderDaysState extends ConsumerState<ReminderDaysScreen> {
                       : l10n.onboardingReminderOff,
                   labelledByControl: true,
                   trailing: AdaptiveSwitch(
-                    value: on && !_blocked,
+                    value: on,
                     onChanged: (value) => unawaited(_reminder(on: value)),
                     semanticLabel: l10n.onboardingReminder,
                   ),
