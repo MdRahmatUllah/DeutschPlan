@@ -39,8 +39,9 @@ their constraints, and the product is built around them:
 | **Bangla speakers** (first) | Meanings in Bangla, or Bangla and English together; the pronunciation of all 5,069 words in Bangla letters; the app itself in Bangla, with Bangla digits; interference tips (false friends, traps) in Bangla | Meaning language বাংলা or Both; app language বাংলা |
 | **English speakers** (second) | Meanings and the app in English; the Bangla pronunciation line off by default | Meaning language English |
 
-The meaning language and the app language are separate settings. Setup's
-one choice sets both, and Settings can change them apart
+The meaning language and the app language are separate settings. Setup asks
+for each (the app language first, the phone's by default), and Settings can
+change them apart
 ([`settings.md`](../04-screens/settings.md)).
 
 ## The value proposition

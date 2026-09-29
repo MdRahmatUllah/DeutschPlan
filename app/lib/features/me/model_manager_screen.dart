@@ -927,13 +927,20 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shown = children;
+    // #1078: one under the other at large text, as #165's rows: half the
+    // card's width left Polish's "Sprawdź" no room at 200 %.
+    final large = SgScript.large(context);
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: Row(
+      child: Flex(
+        direction: large ? Axis.vertical : Axis.horizontal,
+        crossAxisAlignment: large
+            ? CrossAxisAlignment.stretch
+            : CrossAxisAlignment.center,
         children: <Widget>[
           for (var i = 0; i < shown.length; i++) ...<Widget>[
-            if (i > 0) const SizedBox(width: 8),
-            Expanded(child: shown[i]),
+            if (i > 0) const SizedBox(width: 8, height: 8),
+            if (large) shown[i] else Expanded(child: shown[i]),
           ],
         ],
       ),

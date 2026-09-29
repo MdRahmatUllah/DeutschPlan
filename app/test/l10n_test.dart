@@ -238,6 +238,25 @@ void main() {
     expect(supportedLocales.first, const Locale('en'));
   });
 
+  test("#1078 Android's own strings (the widget picker's) are in every app "
+      'language', () {
+    const res = 'android/app/src/main/res';
+    Set<String> names(String folder) => <String>{
+      for (final match in RegExp(
+        r'<string name="(\w+)"',
+      ).allMatches(File('$res/$folder/strings.xml').readAsStringSync()))
+        match.group(1)!,
+    };
+    final english = names('values');
+    for (final locale in supportedLocales.skip(1)) {
+      expect(
+        names('values-${locale.languageCode}'),
+        english,
+        reason: 'values-${locale.languageCode}/strings.xml',
+      );
+    }
+  });
+
   group('#1078 a plural has every form its language needs', () {
     // CLDR's cardinal categories: Bangla and English have one/other, Polish
     // one/few/many/other (1 słowo, 2 słowa, 5 słów), and a form left out
@@ -265,6 +284,27 @@ void main() {
         expect(missing, isEmpty, reason: missing.join('\n'));
       });
     }
+  });
+
+  test('#1078 one Polish word per term (docs/00-product/glossary.md)', () {
+    // The glossary's Polish column: each rejected spelling is one the draft
+    // used, or the English left in.
+    const rejected = <String, String>{
+      'Opanowane': 'Znane',
+      'Backlog': 'Zaległości',
+      'egzamin testowy': 'egzamin próbny',
+    };
+    final pl = jsonDecode(
+      File('lib/l10n/app_pl.arb').readAsStringSync(),
+    ) as Map<String, Object?>;
+    final offenders = <String>[
+      for (final MapEntry(:key, :value) in pl.entries)
+        if (!key.startsWith('@'))
+          for (final MapEntry(key: word, value: instead) in rejected.entries)
+            if ((value! as String).toLowerCase().contains(word.toLowerCase()))
+              '$key says $word: say $instead',
+    ];
+    expect(offenders, isEmpty, reason: offenders.join('\n'));
   });
 
   test('#1078 Polish counts read right at its few/many edges', () async {

@@ -41,8 +41,9 @@
 
 ## Localisation
 
-- UI languages: English and Bangla (ARB). German UI is a possible later immersion mode.
-- The meaning language (EN / বাংলা / both) is separate from the UI language.
+- UI languages: English, Bangla and Polish (ARB, #1078), each a `UiLanguage`; `supportedLocales` is every one, English first. German UI is a possible later immersion mode.
+- The meaning language (EN / বাংলা / both) is separate from the UI language, and neither sets the other (#1078). A first run starts in the phone's language when Sogda speaks it, English otherwise.
+- Polish plurals have four forms (`one`, `few`, `many`, `other`: 1 słowo, 2 słowa, 5 słów); a word that no longer fits beside a button at large text goes under it (`SgScript.large`), as #165's rows do. Western digits in Polish: the Bangla digit rule is Bangla's alone.
 - The Today date is always German on purpose. Every number in Bangla UI text is in Bangla digits (owner, #425), and Bangla numerals never go inside German content. A step's code (A1.1) and a product's version (Hy-MT 1.5) are names, and keep theirs.
 
 ## Offline

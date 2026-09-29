@@ -60,7 +60,10 @@ class SgPill extends StatelessWidget {
               children: <Widget>[
                 Icon(icon, size: 16, color: colour),
                 const SizedBox(width: 4),
-                text,
+                // #1078: wraps where the pill's column is narrower than the
+                // label, as the pill without an icon does: Polish's
+                // *Zdany 78%* ran past L10's at 200 %.
+                Flexible(child: text),
               ],
             ),
     );

@@ -40,3 +40,29 @@ one (#684). `test/l10n_test.dart` fails on the rejected spellings.
 | Mock | মক | |
 | Today, Learn, Search, Me (tabs) | আজ, শিখুন, খুঁজুন, আমি | the English names |
 | Again, Hard, Good, Easy (ratings) | আবার, কঠিন, ভালো, সহজ | the English names |
+
+## Polish UI terms
+
+One Polish word per term, as for Bangla (#1078). Messages speak to the learner
+as *ty*, and avoid a past tense that needs a gender ("Ukończono…", a noun, or
+"label: {count}"). A message that names a tab or a button uses the Polish
+label. `test/l10n_test.dart` fails on the rejected spellings and on an English
+tab or rating label inside a Polish message. Drafted by an agent: a native
+speaker reviews them before release.
+
+| English | Polski | Not |
+| --- | --- | --- |
+| Step (a course unit) | etap | krok (a setup page's "Krok 1 z 5" only) |
+| Backlog | zaległości | Backlog |
+| Revision, revise; a review | powtórka, powtarzać | |
+| Due; left ("3 left") | do powtórki; zostało 3 | |
+| To do (a word's status) | Do nauki | |
+| Learning (a word's status) | W nauce | |
+| Done (a word's status) | Znane | Opanowane (too long for M1's counts at 150 %) |
+| Suspended | Wstrzymane | |
+| Voice | głos | |
+| Mock | egzamin próbny | egzamin testowy |
+| Streak | seria | |
+| Meaning language; app language | język znaczeń; język aplikacji | |
+| Today, Learn, Search, Me (tabs) | Dziś, Nauka, Szukaj, Profil | the English names |
+| Again, Hard, Good, Easy (ratings) | Znowu, Trudne, Dobre, Łatwe | the English names |

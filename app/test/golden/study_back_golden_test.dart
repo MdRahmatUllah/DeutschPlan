@@ -2,6 +2,8 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'dart:ui' show Locale;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -109,6 +111,15 @@ void main() {
   );
 
   goldenTest('study_back', builder: (_) => screen());
+  // #1078: in Polish, as a Polish phone's first run shows it.
+  goldenTest(
+    'study_back_pl',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('pl'),
+    builder: (_) => screen(),
+  );
 
   // BR-CONTENT-02: a meaning a course update changed this week.
   goldenTest(

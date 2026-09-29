@@ -82,10 +82,12 @@ void main() {
     AppDatabase Function()? open,
     void Function(UiLanguage)? onUiLanguage,
     void Function()? onCourseUpdate,
+    Locale phone = const Locale('en', 'US'),
   }) async {
     final result = await bootstrap(
       openDatabase: open ?? openReal,
       glass: GlassCapability(),
+      phoneLocale: phone,
       onUiLanguage: onUiLanguage,
       onCourseUpdate: onCourseUpdate,
     );
@@ -431,6 +433,30 @@ void main() {
       addTearDown(ready.dispose);
 
       expect(heard, UiLanguage.bangla);
+    });
+
+    test('#1078 a first run starts in the phone\'s language when Sogda '
+        'speaks it, English otherwise, and the phone never overrides a '
+        'choice after', () async {
+      UiLanguage? heard;
+      final polish = await run(
+        phone: const Locale('pl', 'PL'),
+        onUiLanguage: (ui) => heard = ui,
+      );
+      expect(heard, UiLanguage.polish);
+      expect(polish.settings.read(SettingKeys.uiLanguage), UiLanguage.polish);
+      await polish.settings.write(SettingKeys.uiLanguage, UiLanguage.english);
+      await polish.dispose();
+
+      final again = await run(
+        phone: const Locale('pl', 'PL'),
+        onUiLanguage: (ui) => heard = ui,
+      );
+      addTearDown(again.dispose);
+      expect(heard, UiLanguage.english, reason: 'the learner chose English');
+
+      expect(uiLanguageFor(const Locale('de', 'DE')), UiLanguage.english);
+      expect(uiLanguageFor(const Locale('bn', 'BD')), UiLanguage.bangla);
     });
   });
 
