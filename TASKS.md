@@ -490,7 +490,7 @@ claiming the same issue. A hand edit skips that check.
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | assigned | agent-2 |  |  |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | in-progress | agent-1 |  |  |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | assigned | agent-1 | #1078 |  |
-| #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | open |  |  |  |
+| #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | assigned | agent-0 |  |  |
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | open |  | #1077 |  |
 | #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | open |  | #1080 |  |
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | open |  | #1080 |  |
@@ -10906,3 +10906,7 @@ Added #1084 (content(pl): Polish as a meaning language — meanings, pronunciati
 ### H-2575 · 2026-09-29 21:10 · agent-0 → all · note · #1085
 
 Added #1085 (epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks) to lane X.
+
+### H-2576 · 2026-09-29 21:10 · agent-0 → agent-0 · assign · #1080
+
+meaning-languages epic #1085
