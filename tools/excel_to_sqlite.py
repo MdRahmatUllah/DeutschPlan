@@ -35,7 +35,13 @@ from content_manifest import (
 )
 from content_writer import BuildInputs, build
 from pipeline_steps import (
+    GRAMMAR_PARTS,
     GRAMMAR_TEXT_FIELDS,
+    LANGUAGE_CODES,
+    LANGUAGES,
+    LEGACY_FIELDS,
+    WORD_PARTS,
+    gate_languages,
     assign_tags,
     LEVELS,
     check_formula_prefixes,
@@ -80,14 +86,16 @@ HEADER_MAP: dict[str, list[str]] = {
     "forms": ["Plural / Forms", "Plural/Forms", "Plural", "Forms"],
     "pos": ["POS", "Part of speech"],
     "pron_bn": ["Pronunciation (Bangla)", "Pronunciation (BN)"],
-    "english": ["English"],
-    "bangla": ["Bangla meaning", "Bangla"],
+    # #1080: `Meaning (X)` is a meaning language's column; today's headers
+    # are English's and Bangla's.
+    "english": ["English", "Meaning (English)"],
+    "bangla": ["Bangla meaning", "Bangla", "Meaning (Bangla)"],
     "freq": ["Freq", "Frequency"],
     "level": ["Level"],
     "category": ["Category"],
     "week": ["Week"],
     "examples_de": ["Examples (DE)", "Example (DE)"],
-    "examples_en": ["Examples (EN)", "Example (EN)"],
+    "examples_en": ["Examples (EN)", "Example (EN)", "Examples (English)"],
     "collocations": ["Collocations"],
     "synonyms_register": ["Synonyms / register", "Synonyms/register"],
 }
@@ -104,11 +112,11 @@ UNREAD_HEADERS = frozenset({"id", "status", "times logged", "#", "notes"})
 GRAMMAR_HEADER_MAP: dict[str, list[str]] = {
     "week": ["Week"],
     "level": ["Level"],
-    "topic": ["Topic"],
-    "rule": ["Rule"],
+    "topic": ["Topic", "Topic (English)"],
+    "rule": ["Rule", "Rule (English)"],
     "example_de": ["Example (DE)", "Examples (DE)"],
-    "example_en": ["Example (EN)", "Examples (EN)"],
-    "watch_out": ["Watch out", "Watch Out"],
+    "example_en": ["Example (EN)", "Examples (EN)", "Example (English)"],
+    "watch_out": ["Watch out", "Watch Out", "Watch out (English)"],
 }
 
 REQUIRED_GRAMMAR_FIELDS = ("topic",)
@@ -162,6 +170,9 @@ class Word:
     #: PIPE-10: vocab, note or compare; a correction may set it (#630).
     kind: str | None = None
     examples: list = field(default_factory=list)
+    #: (part, code) -> text: a meaning language's columns but English's and
+    #: Bangla's, which are the fields above (#1080, `LEGACY_FIELDS`).
+    texts: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -182,6 +193,8 @@ class GrammarRow:
     level_code: str | None = None
     seq: int | None = None
     tags: str | None = None
+    #: As `Word.texts`: `Topic (Russian)`'s text is ("topic", "ru")'s.
+    texts: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -269,10 +282,28 @@ def _resolve(value: str) -> Path:
     return candidate if candidate.is_absolute() else REPO_ROOT / candidate
 
 
+def _language_column(header: str, parts: dict[str, str]) -> tuple[str, str] | None:
+    """#1080: `Meaning (Russian)` is ("meaning", "Russian"), when "Meaning"
+    is one of the sheet's [parts]; anything else is None."""
+    match = re.fullmatch(r"(.+?)\s*\((.+)\)", header)
+    words = {word.lower(): part for part, word in parts.items()}
+    if match and match.group(1).lower() in words:
+        return words[match.group(1).lower()], match.group(2).strip()
+    return None
+
+
 def _header_index(
-    sheet, header_map: dict[str, list[str]], required: tuple[str, ...], where: str
-) -> tuple[dict[str, int], int, list[str]]:
+    sheet,
+    header_map: dict[str, list[str]],
+    required: tuple[str, ...],
+    where: str,
+    parts: dict[str, str] | None = None,
+) -> tuple[dict, int, list[str]]:
     """Finds the header row and maps each field to its column index.
+
+    A meaning language's column (#1080), one of [parts] with the language's
+    English name, is mapped by (part, code): `Meaning (Russian)` is
+    ("meaning", "ru"). A name `LANGUAGES` does not know stops the build.
 
     Also returns the header row's cells no map knows and `UNREAD_HEADERS`
     does not name: a renamed column shows up there (#714).
@@ -286,22 +317,36 @@ def _header_index(
         for field, names in header_map.items()
         for name in names
     }
+    known = {name.lower(): language.code for name, language in LANGUAGES.items()}
 
     for row_number, row in enumerate(sheet.iter_rows(min_row=1, max_row=10), start=1):
-        found: dict[str, int] = {}
+        found: dict = {}
         unknown: list[str] = []
+        languages: list[tuple[str, str, int]] = []
         for column, cell in enumerate(row, start=1):
             if not isinstance(cell.value, str) or not cell.value.strip():
                 continue
             header = cell.value.strip()
             field_name = wanted.get(header.lower())
+            language = None if field_name else _language_column(header, parts or {})
             # First spelling wins, so a workbook carrying both "Plural" and
             # "Forms" does not flip between them depending on column order.
             if field_name and field_name not in found:
                 found[field_name] = column
+            elif language:
+                languages.append((*language, column))
             elif not field_name and header.lower() not in UNREAD_HEADERS:
                 unknown.append(header)
         if all(name in found for name in required):
+            for part, name, column in languages:
+                if name.lower() not in known:
+                    raise PipelineError(
+                        f"{where}: {parts[part]} ({name}) names no language "
+                        f"the pipeline knows. Headers name a language in "
+                        f"English, one of: {', '.join(LANGUAGES)}; a new one "
+                        f"goes in LANGUAGES in pipeline_steps.py."
+                    )
+                found.setdefault((part, known[name.lower()]), column)
             return found, row_number, unknown
 
     missing = ", ".join(required)
@@ -400,7 +445,7 @@ def read_workbook(path: Path) -> SourceBook:
 def _read_words(sheet, source: SourceBook) -> list[Word]:
     file_name = source.file
     index, header_row, unknown = _header_index(
-        sheet, HEADER_MAP, REQUIRED_WORD_FIELDS, f"{file_name}!{WORDS_SHEET}"
+        sheet, HEADER_MAP, REQUIRED_WORD_FIELDS, f"{file_name}!{WORDS_SHEET}", WORD_PARTS
     )
     source.columns[WORDS_SHEET] = set(index)
     source.unmatched[WORDS_SHEET] = unknown
@@ -454,15 +499,29 @@ def _read_words(sheet, source: SourceBook) -> list[Word]:
                 examples_en=_text(_cell(row, index, "examples_en")),
                 collocations=_text(_cell(row, index, "collocations")),
                 synonyms_register=_text(_cell(row, index, "synonyms_register")),
+                texts=_texts(row, index),
             )
         )
     return words
 
 
+def _texts(row, index: dict) -> dict:
+    """A row's meaning-language cells, (part, code) -> text, the blank left out."""
+    return {
+        key: text
+        for key in index
+        if isinstance(key, tuple) and (text := _text(_cell(row, index, key)))
+    }
+
+
 def _read_grammar(sheet, source: SourceBook) -> list[GrammarRow]:
     file_name = source.file
     index, header_row, unknown = _header_index(
-        sheet, GRAMMAR_HEADER_MAP, REQUIRED_GRAMMAR_FIELDS, f"{file_name}!{GRAMMAR_SHEET}"
+        sheet,
+        GRAMMAR_HEADER_MAP,
+        REQUIRED_GRAMMAR_FIELDS,
+        f"{file_name}!{GRAMMAR_SHEET}",
+        GRAMMAR_PARTS,
     )
     source.columns[GRAMMAR_SHEET] = set(index)
     source.unmatched[GRAMMAR_SHEET] = unknown
@@ -485,6 +544,7 @@ def _read_grammar(sheet, source: SourceBook) -> list[GrammarRow]:
                 example_de=_text(_cell(row, index, "example_de")),
                 example_en=_text(_cell(row, index, "example_en")),
                 watch_out=_text(_cell(row, index, "watch_out")),
+                texts=_texts(row, index),
             )
         )
     return rows
@@ -552,9 +612,22 @@ def check_columns(
     """
     without = without or {}
     maps = {WORDS_SHEET: HEADER_MAP, GRAMMAR_SHEET: GRAMMAR_HEADER_MAP}
+    parts = {**WORD_PARTS, **GRAMMAR_PARTS}
     problems, warnings = [], []
     for sheet, header_map in maps.items():
-        every = set(header_map)
+        # #1080: a meaning language's columns, `Meaning (Russian)`, in every
+        # workbook if in one. None has a `without:`.
+        languages = {
+            column
+            for source in sources
+            for column in source.columns.get(sheet, set())
+            if isinstance(column, tuple)
+        }
+        names = {
+            **{f: header_map[f][0] for f in header_map},
+            **{(p, c): f"{parts[p]} ({LANGUAGE_CODES[c].name})" for p, c in languages},
+        }
+        every = set(header_map) | languages
         for source in sources:
             unknown = source.unmatched.get(sheet, [])
             if unknown:
@@ -565,13 +638,14 @@ def check_columns(
             missing = sorted(
                 every
                 - source.columns.get(sheet, set())
-                - without.get(source.file, set())
+                - without.get(source.file, set()),
+                key=str,
             )
             if not missing:
                 continue
             problem = (
                 f"{source.file}!{sheet} has no "
-                f"{_quoted(header_map[f][0] for f in missing)} "
+                f"{_quoted(names[f] for f in missing)} "
                 f"column{'s' if len(missing) > 1 else ''}"
             )
             if unknown:
@@ -764,22 +838,46 @@ def _report(warnings: list[str]) -> None:
     )
 
 
+def languages_found(sources: list[SourceBook]) -> dict[str, set[str]]:
+    """#1080: each meaning language the workbooks carry, by code, and the
+    parts it has columns for. English's and Bangla's are today's headers."""
+    by_field = {field: key for key, field in LEGACY_FIELDS.items()}
+    found: dict[str, set[str]] = {}
+    for source in sources:
+        for columns in source.columns.values():
+            for column in columns:
+                key = column if isinstance(column, tuple) else by_field.get(column)
+                if key:
+                    found.setdefault(key[1], set()).add(key[0])
+    return found
+
+
 def collect(
     sources: list[SourceBook],
     splits: dict[str, LevelSplit],
     tips: list | None = None,
+    allow_partial: tuple[str, ...] = (),
 ) -> BuildInputs:
-    """Flattens the per-workbook records into what the writer takes."""
+    """Flattens the per-workbook records into what the writer takes, the
+    meaning languages through PIPE-08's gate (#1080)."""
     # One clock read for the whole build (#718): meta.built_at, the
     # manifest's built_at and content_version all come from it, so the two
     # files can never disagree by the second between two calls.
     now = datetime.now(timezone.utc).replace(microsecond=0)
+    words = [word for source in sources for word in source.words]
+    grammar = [row for source in sources for row in source.grammar]
+    languages, report = gate_languages(
+        words, grammar, languages_found(sources), allow_partial
+    )
+    for line in report:
+        print(line, file=sys.stderr)
     return BuildInputs(
-        words=[word for source in sources for word in source.words],
-        grammar=[row for source in sources for row in source.grammar],
+        words=words,
+        grammar=grammar,
         categories=[c for source in sources for c in source.categories],
         splits=splits,
         tips=tips or [],
+        languages=languages,
         sources=[{"file": s.file, "sha256": s.sha256} for s in sources],
         # UTC. The app compares this string against the installed copy to
         # decide whether to replace it, so a local clock would let a build in
@@ -921,6 +1019,14 @@ def main(argv: list[str] | None = None) -> int:
         help="build even when a workbook lacks a column another has "
         "(its words ship without it)",
     )
+    parser.add_argument(
+        "--allow-partial",
+        action="append",
+        default=[],
+        metavar="CODE",
+        help="build meaning language CODE (ru, pl …) although it is not 100 %% "
+        "complete, for testing only: a partial language never ships (#1080)",
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -950,7 +1056,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"(listed above as 'unmatched tip'). Fix the match, or delete "
                 f"the row until the course has the word."
             )
-        inputs = collect(sources, splits, resolved)
+        inputs = collect(sources, splits, resolved, tuple(args.allow_partial))
         aliases = link_previous(
             inputs,
             previous,

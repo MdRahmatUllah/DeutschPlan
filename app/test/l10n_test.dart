@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' show Intl;
 import 'package:sogda/features/today/today_view.dart' show germanDate;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/main.dart' show supportedLocales;
 
 /// docs/05-dev-guide/coding-standards.md: "Copy lives in ARB files."
 /// German course text comes from content.db, never from ARB; fixed German UI
@@ -132,8 +133,8 @@ void main() {
     });
   });
 
-  test('#166 a string Bangla leaves as English is German on purpose, a name '
-      'or a unit; any other one is untranslated', () {
+  test('#166 #1078 a string a translation leaves as English is German on '
+      'purpose, a name or a unit; any other one is untranslated', () {
     // German the learner is looking at stays German in every UI language:
     // the greeting, the banners, the parts of speech, the exam verdicts
     // (accessibility-performance.md). Names and units stay as they are.
@@ -174,10 +175,24 @@ void main() {
       'examResultFailed',
       'widgetWordOfDay',
     };
+    // What each language writes as English does, and Bangla doesn't: the
+    // units and the loanwords Polish shares with it.
+    const samePerLanguage = <String, Set<String>>{
+      'bn': <String>{},
+      'pl': <String>{
+        'todayEstimate',
+        'studyIntervalDays',
+        'quizResultTime',
+        'quizSecondsLeft',
+        'progressHours',
+        'progressMinutes',
+        'stepTabQuiz',
+        'exportImportImportHeading',
+      },
+    };
     Map<String, Object?> read(String path) =>
         jsonDecode(File(path).readAsStringSync()) as Map<String, Object?>;
     final en = read('lib/l10n/app_en.arb');
-    final bn = read('lib/l10n/app_bn.arb');
     // What is left of a message once its placeholders and ICU syntax are
     // gone: a template like "{done} / {total}" is the same in every
     // language, but a plural's branches are words to translate.
@@ -187,21 +202,137 @@ void main() {
         .replaceAll(RegExp(r'(=\d+|\w+)\s*{'), '')
         .replaceAll(RegExp('[{}]'), '');
 
-    final untranslated = <String>[
-      for (final key in en.keys)
-        if (!key.startsWith('@') &&
-            !onPurpose.contains(key) &&
-            bn[key] == en[key] &&
-            RegExp('[A-Za-zÄÖÜäöüß]').hasMatch(words(en[key]! as String)))
-          key,
+    for (final MapEntry(key: language, value: same)
+        in samePerLanguage.entries) {
+      final other = read('lib/l10n/app_$language.arb');
+      final untranslated = <String>[
+        for (final key in en.keys)
+          if (!key.startsWith('@') &&
+              !onPurpose.contains(key) &&
+              !same.contains(key) &&
+              other[key] == en[key] &&
+              RegExp('[A-Za-zÄÖÜäöüß]').hasMatch(words(en[key]! as String)))
+            key,
+      ];
+      expect(
+        untranslated,
+        isEmpty,
+        reason:
+            'the same in $language as in English: translate them, or add '
+            'them to onPurpose if they are German content, a name or a unit',
+      );
+    }
+  });
+
+  test('#1078 every ARB is a supported locale, English first', () {
+    // A new language's ARB with no UiLanguage behind it is never shown; one
+    // left out of supportedLocales falls back to English.
+    final arbs = <String>{
+      for (final file in Directory('lib/l10n').listSync().whereType<File>())
+        if (file.path.endsWith('.arb'))
+          RegExp(r'app_(\w+)\.arb$').firstMatch(file.path)!.group(1)!,
+    };
+    expect(<String>{
+      for (final locale in supportedLocales) locale.languageCode,
+    }, arbs);
+    expect(supportedLocales.first, const Locale('en'));
+  });
+
+  test("#1078 Android's own strings (the widget picker's) are in every app "
+      'language', () {
+    const res = 'android/app/src/main/res';
+    Set<String> names(String folder) => <String>{
+      for (final match in RegExp(
+        r'<string name="(\w+)"',
+      ).allMatches(File('$res/$folder/strings.xml').readAsStringSync()))
+        match.group(1)!,
+    };
+    final english = names('values');
+    for (final locale in supportedLocales.skip(1)) {
+      expect(
+        names('values-${locale.languageCode}'),
+        english,
+        reason: 'values-${locale.languageCode}/strings.xml',
+      );
+    }
+  });
+
+  group('#1078 a plural has every form its language needs', () {
+    // CLDR's cardinal categories: Bangla and English have one/other, Polish
+    // one/few/many/other (1 słowo, 2 słowa, 5 słów), and a form left out
+    // falls back to `other`.
+    const forms = <String, List<String>>{
+      'pl': <String>['one', 'few', 'many', 'other'],
+    };
+    final en = jsonDecode(
+      File('lib/l10n/app_en.arb').readAsStringSync(),
+    ) as Map<String, Object?>;
+    for (final MapEntry(key: language, value: needed) in forms.entries) {
+      test(language, () {
+        final arb = jsonDecode(
+          File('lib/l10n/app_$language.arb').readAsStringSync(),
+        ) as Map<String, Object?>;
+        final missing = <String>[
+          for (final key in en.keys)
+            if (!key.startsWith('@') &&
+                (en[key]! as String).contains(', plural,'))
+              for (final form in needed)
+                if (!RegExp('(?<![\\w=])$form\\s*\\{')
+                    .hasMatch(arb[key]! as String))
+                  '$key: $form',
+        ];
+        expect(missing, isEmpty, reason: missing.join('\n'));
+      });
+    }
+  });
+
+  test('#1078 one Polish word per term (docs/00-product/glossary.md)', () {
+    // The glossary's Polish column: each rejected spelling is one the draft
+    // used, or the English left in.
+    const rejected = <String, String>{
+      'Opanowane': 'Znane',
+      'Backlog': 'Zaległości',
+      'egzamin testowy': 'egzamin próbny',
+    };
+    final pl = jsonDecode(
+      File('lib/l10n/app_pl.arb').readAsStringSync(),
+    ) as Map<String, Object?>;
+    final offenders = <String>[
+      for (final MapEntry(:key, :value) in pl.entries)
+        if (!key.startsWith('@'))
+          for (final MapEntry(key: word, value: instead) in rejected.entries)
+            if ((value! as String).toLowerCase().contains(word.toLowerCase()))
+              '$key says $word: say $instead',
     ];
-    expect(
-      untranslated,
-      isEmpty,
-      reason:
-          'the same in Bangla as in English: translate them, or add them '
-          'to onPurpose if they are German content, a name or a unit',
-    );
+    expect(offenders, isEmpty, reason: offenders.join('\n'));
+  });
+
+  test('#1078 Polish counts read right at its few/many edges', () async {
+    // 1 słowo, 2–4 słowa, 5–21 słów, 22–24 słowa again; 12–14 are many.
+    final pl = await AppLocalizations.delegate.load(const Locale('pl'));
+    const want = <int, String>{
+      1: '1 słowo',
+      2: '2 słowa',
+      5: '5 słów',
+      12: '12 słów',
+      22: '22 słowa',
+      25: '25 słów',
+    };
+    for (final MapEntry(key: count, value: words) in want.entries) {
+      expect(pl.onboardingStepWords(count), words, reason: '$count');
+    }
+    // A count with no plural of its own is said without a verb to agree:
+    // "zostało 3" is wrong Polish (the S24 check, #1089).
+    for (final count in <int>[1, 3, 22]) {
+      for (final line in <String>[
+        pl.todayContinue(count),
+        pl.learnTodayLeft(count),
+        pl.widgetLeft(count),
+      ]) {
+        expect(line, isNot(contains('ostało')), reason: line);
+        expect(line.toLowerCase(), contains('jeszcze $count'), reason: line);
+      }
+    }
   });
 
   group('#684 #696 CD-2 Bangla names things as the Bangla UI shows them', () {
@@ -214,7 +345,8 @@ void main() {
         if (!key.startsWith('@')) key: value! as String,
     };
 
-    test('#684 no English tab or button label inside a Bangla message', () {
+    test('#684 #1078 no English tab or button label inside a translated '
+        'message', () {
       // "Not yet", "Good or Easy", "Learn" and "Today" were quoted in English
       // to a learner whose buttons and tabs read এখনো না, ভালো, সহজ, শিখুন, আজ.
       const labels = <String>[
@@ -228,16 +360,21 @@ void main() {
         'ratingEasy',
         'sentencesNotYet',
       ];
-      final offenders = <String>[
-        for (final MapEntry(:key, :value) in messages.entries)
-          for (final label in labels)
-            if (RegExp(
-              '(?<![A-Za-z])${RegExp.escape(en[label]! as String)}'
-              '(?![A-Za-z])',
-            ).hasMatch(value))
-              '$key names "${en[label]}": say "${bn[label]}"',
-      ];
-      expect(offenders, isEmpty, reason: offenders.join('\n'));
+      for (final language in <String>['bn', 'pl']) {
+        final arb = read('lib/l10n/app_$language.arb');
+        final offenders = <String>[
+          for (final MapEntry(:key, :value) in arb.entries)
+            if (!key.startsWith('@'))
+              for (final label in labels)
+                if (RegExp(
+                  '(?<![A-Za-z])${RegExp.escape(en[label]! as String)}'
+                  '(?![A-Za-z])',
+                ).hasMatch(value! as String))
+                  '$language: $key names "${en[label]}": say '
+                      '"${arb[label]}"',
+        ];
+        expect(offenders, isEmpty, reason: offenders.join('\n'));
+      }
     });
 
     test(
@@ -281,6 +418,7 @@ void main() {
       for (final (arb, language) in <(Map<String, Object?>, String)>[
         (en, 'en'),
         (bn, 'bn'),
+        (read('lib/l10n/app_pl.arb'), 'pl'),
       ]) {
         // M1's legend explains the labels of the counts above it.
         for (final status in <String>[

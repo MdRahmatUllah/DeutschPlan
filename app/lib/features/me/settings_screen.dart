@@ -22,6 +22,7 @@ import 'package:sogda/features/today/today_providers.dart'
     show voiceInstalledProvider;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
+import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
 
@@ -151,10 +152,6 @@ class SettingsScreen extends ConsumerWidget {
       MeaningLanguage.english => l10n.settingsEnglish,
       MeaningLanguage.bangla => l10n.settingsBangla,
       MeaningLanguage.both => l10n.settingsBoth,
-    };
-    String uiName(UiLanguage language) => switch (language) {
-      UiLanguage.english => l10n.settingsEnglish,
-      UiLanguage.bangla => l10n.settingsBangla,
     };
     String themeName(ThemeModeSetting mode) => switch (mode) {
       ThemeModeSetting.system => l10n.settingsThemeSystem,
@@ -333,14 +330,15 @@ class SettingsScreen extends ConsumerWidget {
               ),
               _Row(
                 title: l10n.settingsUiLanguage,
-                value: uiName(ui),
+                // #1078: each named in itself, as a learner looks for it.
+                value: ui.nativeName,
                 onTap: () async {
                   final chosen = await _choose(
                     context,
                     l10n.settingsUiLanguage,
                     <(UiLanguage, String)>[
                       for (final language in UiLanguage.values)
-                        (language, uiName(language)),
+                        (language, language.nativeName),
                     ],
                     ui,
                   );
@@ -368,14 +366,16 @@ class SettingsScreen extends ConsumerWidget {
                   }
                 },
               ),
-              _Row(
-                title: l10n.settingsShowPronBn,
-                labelledByControl: true,
-                trailing: toggle(
-                  SettingKeys.showPronBn,
-                  l10n.settingsShowPronBn,
+              // #1077: offered only while Bangla is a meaning language.
+              if (meaning.hasBangla)
+                _Row(
+                  title: l10n.settingsShowPronBn,
+                  labelledByControl: true,
+                  trailing: toggle(
+                    SettingKeys.showPronBn,
+                    l10n.settingsShowPronBn,
+                  ),
                 ),
-              ),
             ],
           ),
           _Group(

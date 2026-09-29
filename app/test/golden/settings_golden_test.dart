@@ -25,6 +25,15 @@ void main() {
   }
 
   goldenTest('settings', builder: screen);
+  // #1078: in Polish, as a Polish phone's first run shows it.
+  goldenTest(
+    'settings_pl',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('pl'),
+    builder: screen,
+  );
   // #165: at 200 % text.
   goldenTest(
     'settings_200',

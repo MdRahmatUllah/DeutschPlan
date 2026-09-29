@@ -62,9 +62,9 @@ DEFAULT_TIPS = _manifest_tips()
 #: change one constant, not two.
 EXPECTED_STEPS = len(SUBLEVELS)
 
-#: The three search tables. An empty one is a whole search tier that silently
+#: The search tables. An empty one is a whole search tier that silently
 #: returns nothing.
-FTS_TABLES = ("words_fts", "words_trigram", "examples_fts")
+FTS_TABLES = ("words_fts", "words_trigram", "examples_fts", "meanings_fts")
 
 #: How many offending rows a failure lists before it says "and N more". An
 #: author fixing a spreadsheet needs examples, not five thousand lines.
@@ -277,6 +277,7 @@ def check_fts_is_populated(db: sqlite3.Connection) -> list[Failure]:
         "words_fts": "words",
         "words_trigram": "words",
         "examples_fts": "word_examples",
+        "meanings_fts": "word_meanings",
     }
 
     failures = []
@@ -361,14 +362,15 @@ def check_tips_fit_their_word_class(
         pos = tip_pos(tip.tags)
         if pos is None:
             continue
+        texts = list(tip.texts.values())
         rows = [
             f"{german} ({word_pos})"
             for german, word_pos in db.execute(
-                "SELECT w.german, w.pos FROM interference_tips t "
+                "SELECT DISTINCT w.german, w.pos FROM word_tips t "
                 "JOIN words w ON w.uid = t.word_uid "
-                "WHERE t.tip_en = ? AND coalesce(w.pos, '') <> ? "
-                "ORDER BY w.seq",
-                (tip.tip_en, pos),
+                f"WHERE t.tip IN ({', '.join('?' * len(texts))}) "
+                "AND coalesce(w.pos, '') <> ? ORDER BY w.seq",
+                (*texts, pos),
             )
         ]
         if rows:
@@ -651,9 +653,9 @@ def check_no_denylisted_terms(
         ]
         if not columns:
             continue
-        # The word's uid where there is one: it is what corrections.yaml is
+        # The word's or topic's uid where there is one: it is what corrections.yaml is
         # keyed by.
-        key = next((c for c in ("word_uid", "uid") if c in columns), "rowid")
+        key = next((c for c in ("word_uid", "uid", "grammar_uid") if c in columns), "rowid")
         rows = db.execute(
             f"SELECT {key}, {', '.join(columns)} FROM \"{table}\""
         ).fetchall()

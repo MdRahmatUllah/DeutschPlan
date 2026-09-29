@@ -1,10 +1,11 @@
--- The three full-text tables, one per tier of `docs/03-domain/search.md`.
+-- The full-text tables: one per tier of `docs/03-domain/search.md`, and the
+-- meaning languages' (#1080).
 --
 -- Separate from content_schema.sql because they are derived: each indexes the
--- rows of `words` or `word_examples`, and is rebuilt from them rather than
+-- rows of `words`, `word_examples` or `word_meanings`, and is rebuilt from them rather than
 -- written alongside them.
 --
--- All three are external-content FTS5 tables (#712): the index only, the text
+-- All are external-content FTS5 tables (#712): the index only, the text
 -- read from `words` and `word_examples` by rowid when a query needs it (the
 -- `uid` a MATCH joins back on, `highlight()`). A copy of the text in each was
 -- 1.9 MB of a 7.5 MB file. External content needs triggers to stay in step
@@ -52,6 +53,17 @@ CREATE VIRTUAL TABLE words_trigram USING fts5(
   search_key,
   content = 'words',
   tokenize = 'trigram'
+);
+
+-- Every shipped meaning language's meanings (#1080), `lang` carried so a
+-- query can keep to the learner's. Tier 1 and 2's tokenizer, which keeps a
+-- Bangla or Devanagari word's marks.
+CREATE VIRTUAL TABLE meanings_fts USING fts5(
+  word_uid UNINDEXED,
+  lang UNINDEXED,
+  meaning,
+  content = 'word_meanings',
+  tokenize = 'unicode61 remove_diacritics 2 categories ''L* N* Co Mn Mc'''
 );
 
 -- Tier 4: "in sentences".

@@ -405,15 +405,31 @@ void main() {
     expect(settings.read(SettingKeys.uiLanguage), UiLanguage.english);
 
     await choose(l10n.settingsMeaning, l10n.settingsEnglish);
-    await choose(l10n.settingsUiLanguage, l10n.settingsBangla);
+    await choose(l10n.settingsUiLanguage, 'বাংলা');
     expect(settings.read(SettingKeys.uiLanguage), UiLanguage.bangla);
     expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.english);
   });
 
-  testWidgets('#537 FR-M3-04 the Bangla pronunciation follows the meaning '
-      "language in setup only: M3's meaning row leaves the learner's switch", (
+  testWidgets('#1078 M3 lists every app language, each named in itself', (
     tester,
   ) async {
+    await pump(tester);
+    expect(find.text('English'), findsOneWidget, reason: "the row's value");
+
+    await tester.tap(find.text(l10n.settingsUiLanguage));
+    await tester.pumpAndSettle();
+    for (final name in <String>['English', 'বাংলা', 'Polski']) {
+      expect(find.text(name), findsWidgets, reason: name);
+    }
+    await tester.tap(find.text('Polski'));
+    await tester.pumpAndSettle();
+    expect(settings.read(SettingKeys.uiLanguage), UiLanguage.polish);
+    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.both);
+  });
+
+  testWidgets('#537 #1077 FR-M3-04 the Bangla pronunciation switch is offered '
+      "only while Bangla is a meaning language; M3's meaning row leaves the "
+      "learner's switch as set", (tester) async {
     await pump(tester);
     Future<void> choose(String row, String option) async {
       await tester.tap(find.text(row));
@@ -425,12 +441,16 @@ void main() {
     expect(settings.read(SettingKeys.showPronBn), isTrue);
     await choose(l10n.settingsMeaning, l10n.settingsEnglish);
     expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.english);
+    // English only: no Bangla pronunciation to switch, the row gone at once.
+    expect(find.text(l10n.settingsShowPronBn), findsNothing);
     expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
-    await tester.tap(switchFor(l10n.settingsShowPronBn));
-    await tester.pumpAndSettle();
+
     await choose(l10n.settingsMeaning, l10n.settingsBangla);
     expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.bangla);
-    expect(settings.read(SettingKeys.showPronBn), isFalse, reason: 'as set');
+    expect(find.text(l10n.settingsShowPronBn), findsOneWidget);
+    await tester.tap(switchFor(l10n.settingsShowPronBn));
+    await tester.pumpAndSettle();
+    expect(settings.read(SettingKeys.showPronBn), isFalse);
   });
 
   testWidgets('the exam percentages, in fives across their ranges', (

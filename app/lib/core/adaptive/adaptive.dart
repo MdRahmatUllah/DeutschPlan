@@ -4,11 +4,13 @@ import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
 import 'package:flutter/rendering.dart'
     show BoxHitTestResult, MatrixUtils, RenderProxyBox;
 import 'package:flutter/semantics.dart' show SemanticsConfiguration;
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 
@@ -111,46 +113,58 @@ class AdaptiveScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final background = backgroundColor ?? tokens.surface.paper;
+    // #1070: the status bar's icons for what is behind it: the tab's strip
+    // once scrolled (#317), else the page. Flutter sends a style only where
+    // it finds one, so without the page's a header's outlived it, scrolled
+    // away or on the next screen. A header over it sets its own. Under glass
+    // the page is see-through, and its paper decides.
+    final behindBar =
+        statusBarColour ??
+        (background.a == 1 ? background : tokens.surface.paper);
 
-    return Scaffold(
-      backgroundColor: background,
-      body: Column(
-        children: <Widget>[
-          if (title != null || leading != null || actions.isNotEmpty)
-            SafeArea(bottom: false, child: _bar(context)),
-          Expanded(
-            child: bottomBar == null
-                ? SafeArea(
-                    top: false,
-                    child: statusBarColour == null
-                        ? body
-                        : _StatusStrip(colour: statusBarColour!, child: body),
-                  )
-                // The bar below takes the system inset, so the body — and a
-                // tab's own scaffold inside it — must not take it again. The
-                // same for the keyboard: this scaffold already rises above
-                // it, and a tab's scaffold that rose again left R1's results
-                // a sliver between the field and the keyboard.
-                : MediaQuery(
-                    data: MediaQuery.of(context)
-                        .removePadding(removeBottom: true)
-                        .removeViewInsets(removeBottom: true),
-                    child: body,
-                  ),
-          ),
-          // The keyboard covers the tab bar rather than lifting it (#390):
-          // a screen being typed in needs the room, and the tabs are no use
-          // until the keyboard goes.
-          if (bottomBar != null && MediaQuery.viewInsetsOf(context).bottom == 0)
-            // Without the top inset: the body runs edge to edge, so the status
-            // bar's height reaches down here, and Material's NavigationBar
-            // pads its own top by it — a status bar's worth of empty bar.
-            MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: SafeArea(top: false, child: bottomBar!),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: barsOver(behindBar),
+      child: Scaffold(
+        backgroundColor: background,
+        body: Column(
+          children: <Widget>[
+            if (title != null || leading != null || actions.isNotEmpty)
+              SafeArea(bottom: false, child: _bar(context)),
+            Expanded(
+              child: bottomBar == null
+                  ? SafeArea(
+                      top: false,
+                      child: statusBarColour == null
+                          ? body
+                          : _StatusStrip(colour: statusBarColour!, child: body),
+                    )
+                  // The bar below takes the system inset, so the body — and a
+                  // tab's own scaffold inside it — must not take it again. The
+                  // same for the keyboard: this scaffold already rises above
+                  // it, and a tab's scaffold that rose again left R1's results
+                  // a sliver between the field and the keyboard.
+                  : MediaQuery(
+                      data: MediaQuery.of(context)
+                          .removePadding(removeBottom: true)
+                          .removeViewInsets(removeBottom: true),
+                      child: body,
+                    ),
             ),
-        ],
+            // The keyboard covers the tab bar rather than lifting it (#390):
+            // a screen being typed in needs the room, and the tabs are no use
+            // until the keyboard goes.
+            if (bottomBar != null &&
+                MediaQuery.viewInsetsOf(context).bottom == 0)
+              // Without the top inset: the body runs edge to edge, so the status
+              // bar's height reaches down here, and Material's NavigationBar
+              // pads its own top by it — a status bar's worth of empty bar.
+              MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: SafeArea(top: false, child: bottomBar!),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -749,6 +763,65 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
       );
     }
     final keys = widget.tabs.keys.toList();
+    // 14 on the artboard, between the label and body roles.
+    final labelStyle = SgText.styleFor(
+      tokens,
+      SgTextRole.label,
+    ).copyWith(fontSize: 14);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Past 130 % text, four labels no longer fit a phone's width and the
+        // fixed tabs faded them to "Word", "Gram" (#314): they scroll
+        // instead. So does a bar whose labels don't fit an equal share of it
+        // at any size (#1078): Polish's "Gramatyka" on a 384 dp phone.
+        final scroll =
+            SgScript.large(context) ||
+            !_fit(context, labelStyle, constraints.maxWidth);
+        return _bar(context, keys, labelStyle, scroll: scroll);
+      },
+    );
+  }
+
+  /// Whether every label fits an equal share of [width], with the tab's own
+  /// 16 dp a side (`kTabLabelPadding`), measured as `SgChromeLabel` draws
+  /// it: Bangla a role up.
+  bool _fit(BuildContext context, TextStyle style, double width) {
+    if (!width.isFinite) return true;
+    final share = width / widget.tabs.length - 32;
+    final larger = SgTextRole.label.oneStepLarger.token(
+      context.tokens.typography,
+    );
+    for (final label in widget.tabs.values) {
+      final painter = TextPainter(
+        text: TextSpan(
+          style: style,
+          children: SgScript.spans(
+            label,
+            latin: const TextStyle(),
+            bengali: TextStyle(
+              fontSize: larger.size,
+              height: larger.heightFactor,
+            ),
+          ),
+        ),
+        textDirection: Directionality.of(context),
+        textScaler: MediaQuery.textScalerOf(context),
+        maxLines: 1,
+      )..layout();
+      final wide = painter.width > share;
+      painter.dispose();
+      if (wide) return false;
+    }
+    return true;
+  }
+
+  Widget _bar(
+    BuildContext context,
+    List<T> keys,
+    TextStyle labelStyle, {
+    required bool scroll,
+  }) {
+    final tokens = context.tokens;
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: tokens.surface.outline)),
@@ -756,19 +829,11 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
       child: TabBar(
         controller: _controller,
         onTap: (index) => widget.onChanged(keys[index]),
-        // Past 130 % text, four labels no longer fit a phone's width and the
-        // fixed tabs faded them to "Word", "Gram" (#314): they scroll instead.
-        // ponytail: a threshold, not a measurement; measure the labels if a
-        // bar with other labels or counts needs it.
-        isScrollable: SgScript.large(context),
-        tabAlignment: SgScript.large(context) ? TabAlignment.start : null,
+        isScrollable: scroll,
+        tabAlignment: scroll ? TabAlignment.start : null,
         labelColor: tokens.color.ink,
         unselectedLabelColor: tokens.color.textSecondary,
-        // 14 on the artboard, between the label and body roles.
-        labelStyle: SgText.styleFor(
-          tokens,
-          SgTextRole.label,
-        ).copyWith(fontSize: 14),
+        labelStyle: labelStyle,
         indicator: UnderlineTabIndicator(
           borderSide: BorderSide(color: tokens.color.ink, width: 3),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),

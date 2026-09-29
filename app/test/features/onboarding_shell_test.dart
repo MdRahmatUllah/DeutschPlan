@@ -2,17 +2,25 @@
 library;
 
 import 'package:flutter/services.dart' show MethodChannel;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/start_report.dart';
@@ -486,17 +494,34 @@ void main() {
   });
 
   group('page 1 · Welcome', () {
-    Future<void> pumpWelcome(WidgetTester tester, {VoidCallback? onStart}) =>
-        tester
-            .pumpWidget(
-              MaterialApp(
-                theme: AppTheme.light(),
-                localizationsDelegates: appLocalizationsDelegates,
-                supportedLocales: supportedLocales,
-                home: OnboardingWelcomePage(onStart: onStart),
-              ),
-            )
-            .then((_) => tester.pump());
+    late SettingsRepository settings;
+
+    // The app's own wiring: the locale follows `ui_language`, as the root's.
+    Future<void> pumpWelcome(
+      WidgetTester tester, {
+      VoidCallback? onStart,
+    }) async {
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: <Override>[settingsProvider.overrideWithValue(settings)],
+          child: Consumer(
+            builder: (context, ref, _) => MaterialApp(
+              theme: AppTheme.light(),
+              locale: ref.watch(languagesProvider).ui.locale,
+              localizationsDelegates: appLocalizationsDelegates,
+              supportedLocales: supportedLocales,
+              home: OnboardingWelcomePage(onStart: onStart),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
 
     testWidgets('#462 a first run\'s cold start ends when it is drawn', (
       tester,
@@ -549,11 +574,34 @@ void main() {
       expect(started, 1);
     });
 
-    testWidgets('it writes no setting, so it offers no Skip', (tester) async {
+    testWidgets('it offers no Skip: the language is already set', (
+      tester,
+    ) async {
       await pumpWelcome(tester);
 
       expect(find.widgetWithText(SgButton, l10n.skip), findsNothing);
       expect(find.widgetWithText(SgButton, l10n.back), findsNothing);
+    });
+
+    testWidgets('#1078 FR-S2 the app language comes first, each named in '
+        'itself, and the page speaks the one tapped at once', (tester) async {
+      await pumpWelcome(tester);
+      for (final name in <String>['English', 'বাংলা', 'Polski']) {
+        expect(find.widgetWithText(SgChip, name), findsOneWidget);
+      }
+      expect(find.text(l10n.onboardingWelcomeStart), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(SgChip, 'Polski'));
+      await tester.pump();
+      await tester.pump();
+
+      expect(settings.read(SettingKeys.uiLanguage), UiLanguage.polish);
+      final pl = await AppLocalizations.delegate.load(const Locale('pl'));
+      expect(find.text(pl.onboardingWelcomeStart), findsOneWidget);
+      expect(
+        tester.widget<SgChip>(find.widgetWithText(SgChip, 'Polski')).selected,
+        isTrue,
+      );
     });
   });
 }

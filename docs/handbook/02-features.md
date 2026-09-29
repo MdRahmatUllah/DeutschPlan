@@ -88,8 +88,8 @@ step. *Skip* (from page 3) finishes with what the learner has chosen, and the de
 
 | Page | The learner chooses |
 |---|---|
-| 1 Welcome | — (three promises: offline, 12 exam-structured steps, progress stays on the phone) |
-| 2 Meaning language | English, বাংলা or Both. This also sets the app's language, and turns the Bangla pronunciation line on for বাংলা or Both |
+| 1 Welcome | The app language (English, বাংলা, Polski; the phone's by default when Sogda speaks it), then three promises: offline, 12 exam-structured steps, progress stays on the phone |
+| 2 Meaning language | English, বাংলা or Both. It turns the Bangla pronunciation line on for বাংলা or Both; the app language stays as page 1 set it |
 | 3 Starting point | One of the 12 steps (A1.1 pre-selected), or *Not sure? Take a 3-minute check* (S3) |
 | 4 Daily pace | New words a day (3–30; presets Relaxed 5, Steady 7, Intensive 15) with a live estimate ("A1.1 takes about 91 days at 7 words a day", from `courseDays`), revisions a day (10), and the study days |
 | 5 Reminder & voice | A daily reminder (off by default, 19:30) and the optional Supertonic voice: *Download now* or *Later*, with a "Guten Tag!" sample in the phone's voice |
@@ -426,7 +426,7 @@ Every change saves at once; the plan's own changes apply from tomorrow
 |---|---|
 | Daily plan | New words a day (1–50), revisions (0–100), practice sentences (0–20), study days and reminder (M5), move to the next step automatically, pause new words when the backlog is large |
 | Revision | Target retention (80–97 %, with an estimate of reviews a day), mark Done after N days remembered (3–60), swipe to rate, my words in quizzes |
-| Display | Meaning language (EN, বাংলা, Both), app language (EN, বাংলা), theme (System, Light, Dark, Glass), show the Bangla pronunciation |
+| Display | Meaning language (EN, বাংলা, Both), app language (English, বাংলা, Polski), theme (System, Light, Dark, Glass), show the Bangla pronunciation |
 | Audio | Voice engine (M4), speech speed (0.5–1.5×), auto-play the headword and the first example, listening questions |
 | Exams | Unlock mock exams at (50–100 %), pass mark (50–90 %), timer on by default |
 | Data | Export / import (M6), Reset (M7), Restart setup (S2) |

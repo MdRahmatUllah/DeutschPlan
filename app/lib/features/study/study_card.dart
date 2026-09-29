@@ -172,7 +172,10 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     final l10n = AppLocalizations.of(context);
     final word = widget.word;
     final settings = ref.watch(settingsProvider);
-    final pron = settings.read(SettingKeys.showPronBn);
+    // Watched: a meaning language changed in M3 reaches the card at once.
+    final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+    // #1077: the Bangla pronunciation only while Bangla is a meaning language.
+    final pron = settings.read(SettingKeys.showPronBn) && meaning.hasBangla;
     // Watched from the front, so the back has its examples when it opens.
     final extras = ref.watch(studyBackProvider(word.uid)).value;
     final updated =
@@ -282,7 +285,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                 padding: const EdgeInsets.only(top: 14),
                 child: StudyBack(
                   word: word,
-                  meaning: settings.read(SettingKeys.meaningLanguage),
+                  meaning: meaning,
                   extras: extras,
                   updated: updated,
                   onPlay: (sentence) => unawaited(_speak(text: sentence)),

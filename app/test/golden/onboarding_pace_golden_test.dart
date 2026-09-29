@@ -2,6 +2,8 @@
 // so it is a root scope in fact. The lint cannot tell from inside a builder.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'dart:ui' show Locale;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/data/db/content_dao.dart';
@@ -18,6 +20,20 @@ import 'golden_harness.dart';
 void main() {
   goldenTest(
     'onboarding_pace',
+    builder: (context) => ProviderScope(
+      overrides: <Override>[
+        courseStepsProvider.overrideWith((ref) async => _shipped),
+      ],
+      child: OnboardingPacePage(onContinue: () {}, onBack: () {}),
+    ),
+  );
+  // #1078: in Polish, as a Polish phone's first run shows it.
+  goldenTest(
+    'onboarding_pace_pl',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('pl'),
     builder: (context) => ProviderScope(
       overrides: <Override>[
         courseStepsProvider.overrideWith((ref) async => _shipped),
