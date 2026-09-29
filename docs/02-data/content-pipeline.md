@@ -7,7 +7,9 @@ Excel is the authoring tool; the app never opens a workbook. `tools/excel_to_sql
 ```
 content/manifest.yaml
   workbooks:
-    - file: data/German_B1_Tracker.xlsx # contains A1, A2, B1 (level per word row)
+    - file: data/German_A1_Tracker.xlsx
+    - file: data/German_A2_Tracker.xlsx
+    - file: data/German_B1_Tracker.xlsx
     - file: data/German_B2_Tracker.xlsx
     - file: data/German_C1_Tracker.xlsx
     - file: data/German_C2_Tracker.xlsx
@@ -20,7 +22,7 @@ Each workbook MUST contain the sheets **All Words**, **Grammar** and the **C-…
 
 A renamed header is a column the build no longer reads, so the build refuses one (#714):
 
-- A workbook whose *All Words* or *Grammar* lacks a column the maps read stops the build, naming the file, the columns and the headers in that row it did not know. Every column of the maps, not only those another workbook has: a header renamed in every workbook at once (a find-and-replace across the trackers) leaves none carrying it (#837). A column a workbook never had is listed under its entry's `without:` in `content/manifest.yaml` (B1 has no Collocations or Synonyms / register), by field name: a list, or one field as a string (`without: collocations`). A column no workbook has is listed under every entry's. `--allow-missing-columns` builds past it once, and each workbook without the column ships its words without it.
+- A workbook whose *All Words* or *Grammar* lacks a column the maps read stops the build, naming the file, the columns and the headers in that row it did not know. Every column of the maps, not only those another workbook has: a header renamed in every workbook at once (a find-and-replace across the trackers) leaves none carrying it (#837). A column a workbook never had is listed under its entry's `without:` in `content/manifest.yaml` (none does today: since the A1+A2+B1 book was split into three, every tracker carries Collocations and Synonyms / register), by field name: a list, or one field as a string (`without: collocations`). A column no workbook has is listed under every entry's. `--allow-missing-columns` builds past it once, and each workbook without the column ships its words without it.
 - The German, English, Level and POS headers are required in every workbook, whatever the others carry: POS is part of the uid (PIPE-03), and a renamed POS header would give every word of the workbook a new one. The POS *cell* may be blank.
 - Every header no map reads is reported (`warning: unknown header: …`), except the tracker's own `ID`, `Status`, `Times logged`, `#` and `Notes`.
 
@@ -113,7 +115,7 @@ links:
 - `content/build/content.db` — copied to `app/assets/db/content.db` by hand after the build (step 2 below).
 - `content/build/content_manifest.json` — counts, boundaries (kept by the next build, PIPE-02), uid list with its `words` and `meanings` digests, the `aliases` of PIPE-09, build time.
 
-## Adding a fifth workbook
+## Adding a workbook
 
 1. Put the `.xlsx` in `data/` and add it to `content/manifest.yaml` (and to the workbook list in `tools/tests/test_shipped_content.py`). A column the maps read that the workbook doesn't have goes under its entry's `without:`, by field name (`without: [collocations, synonyms_register]`), or the build stops on it as a renamed header (#714).
 2. Build, verify, copy: `python tools/excel_to_sqlite.py`, `python tools/verify_content.py`, then copy `content/build/content.db` and `content/build/content_manifest.json` to `app/assets/db/`.

@@ -48,6 +48,8 @@ def test_634_it_names_the_workbooks_it_was_built_from_by_their_sha256(course):
     sources = json.loads(meta)
     assert sources == manifest["sources"]
     assert [source["file"] for source in sources] == [
+        "German_A1_Tracker.xlsx",
+        "German_A2_Tracker.xlsx",
         "German_B1_Tracker.xlsx",
         "German_B2_Tracker.xlsx",
         "German_C1_Tracker.xlsx",

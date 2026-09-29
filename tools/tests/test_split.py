@@ -301,19 +301,20 @@ class TestGrammar:
         assert [r.level_code for r in rows] == ["B2", "B2"]
 
     def test_the_fallback_is_the_book_level_not_its_earliest(self, tmp_path):
-        # German_B1_Tracker carries A1 and A2 on the way to B1. An unlabelled
-        # topic in it is a B1 topic; filing it under A1 would teach it in the
-        # very first step.
+        # A book that carries A1 and A2 on the way to B1, as the combined
+        # tracker did until it was split. An unlabelled topic in it is a B1
+        # topic; filing it under A1 would teach it in the very first step.
         from excel_to_sqlite import derive, read_workbook  # noqa: PLC0415
 
-        from fixtures.make_workbooks import write_all
+        from fixtures.make_workbooks import write_all, write_workbook
 
         directory = tmp_path  # pytest removes it; mkdtemp leaked (#707)
         write_all(directory)
+        write_workbook(directory / "German_A1-B1_Tracker.xlsx", ["A1", "A2", "B1"])
         sources = [
             read_workbook(directory / name)
             for name in (
-                "German_B1_Tracker.xlsx",
+                "German_A1-B1_Tracker.xlsx",
                 "German_B2_Tracker.xlsx",
                 "German_C1_Tracker.xlsx",
                 "German_C2_Tracker.xlsx",

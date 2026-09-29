@@ -1,7 +1,7 @@
 """The workbook reader, against workbooks openpyxl actually wrote.
 
 `tools/fixtures/make_workbooks.py` writes stand-ins with the shape
-`content-pipeline.md` describes, because the four real trackers are not in the
+`content-pipeline.md` describes, because the real trackers are not in the
 repository. Testing the reader against mocks would prove nothing about headers
 read by name, about a title row above the header, or about openpyxl.
 """
@@ -65,10 +65,16 @@ def test_the_header_row_is_found_below_a_title_row(first_book):
     assert first_book.words[0].english
 
 
-def test_pipe_01_level_comes_from_the_cell_not_the_sheet(first_book):
-    # The fixture writes "B1 (Phase 2)", which still means B1. The phase label
-    # must not become the level, and must not stop the level being read.
-    assert {w.level for w in first_book.words} == {"A1", "A2", "B1"}
+def test_pipe_01_level_comes_from_the_cell_not_the_sheet(tmp_path):
+    # A book may carry several levels, as the A1+A2+B1 tracker did until it was
+    # split: each word's level is its own cell. The fixture writes "B1 (Phase 2)",
+    # which still means B1. The phase label must not become the level, and must
+    # not stop the level being read.
+    from fixtures.make_workbooks import write_workbook  # noqa: PLC0415
+
+    path = tmp_path / "German_A1-B1_Tracker.xlsx"
+    write_workbook(path, ["A1", "A2", "B1"])
+    assert {w.level for w in read_workbook(path).words} == {"A1", "A2", "B1"}
 
 
 DOC = (
@@ -277,7 +283,7 @@ class TestFailures:
     def test_837_a_header_renamed_in_every_book_at_once_stops_the_build(
         self, books: Path, tmp_path: Path
     ):
-        # A find-and-replace across the four trackers leaves no book carrying
+        # A find-and-replace across the trackers leaves no book carrying
         # the column, so comparing the books found nothing missing.
         renamed = {
             name: _rename_header(books / name, "Bangla meaning", "Bangla (BN)", tmp_path)
