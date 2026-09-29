@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-29 20:59
+last-seen: 2026-09-29 21:00
 last-read: 2568
 
 ## Now
 
-Nothing claimed.
+#1078 feat(l10n): the app in Polish, and the groundwork for any further app language — claimed 2026-09-29 21:00.
 
 ## Next
 
