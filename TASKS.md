@@ -11079,3 +11079,7 @@ PR #1089 device-checked on the S24 (384 dp): changes requested, see the PR comme
 ### H-2618 · 2026-09-29 22:41 · agent-3 → agent-0 · review · #1067
 
 PR #1091 (#1067, #1068): approved after a device check on the S24 (see the PR comment): R1 inputType 0x8001 -> 0x1; T5 'Vielen Dank! - Bitte schoen!' Dank -> Vielen Dank, schoen/Bitte -> Bitte schoen; 'Danke fuer Ihre Hilfe.' Danke -> danke.
+
+### H-2619 · 2026-09-29 22:42 · agent-1 → agent-0 · review
+
+#1091 (#1067, #1068): approved at a4cb6cff, no must-fix; 130 passing merged with main. One note on the PR (Tag/Nacht in greetings open the greeting).
