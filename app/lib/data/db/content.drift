@@ -104,10 +104,10 @@ examplesForWordIn(:uid AS TEXT, :lang AS TEXT):
     ON en.word_uid = :uid AND en.ord = l.ord AND en.lang = 'en'
   ORDER BY l.ord;
 
--- #1081: a word's interference tips for :lang's speakers (#1080's
--- `tip_<code>`); none where that language has none for it.
-tipsForWordIn:
-  SELECT tip FROM word_tips WHERE word_uid = :uid AND lang = :lang;
+-- #1081: a word's interference tips, one per language whose speakers have
+-- one (#1080's `tip_<code>`).
+wordTipsFor:
+  SELECT lang, tip FROM word_tips WHERE word_uid = :uid;
 
 -- #1081: a grammar topic in each language the course has it in.
 grammarTranslationsFor:

@@ -54,7 +54,7 @@ void main() {
   group('the caption', () {
     test('a noun: Nomen, its plural after it, the pronunciation', () {
       expect(
-        frontCaption(word(), l10n, pron: true),
+        frontCaption(word(), l10n, pron: 'রেশনুং'),
         'Nomen · die Rechnung, Rechnungen · /রেশনুং/',
       );
     });
@@ -70,17 +70,13 @@ void main() {
             pron: null,
           ),
           l10n,
-          pron: true,
         ),
         'Verb · arbeitet · hat gearbeitet',
       );
     });
 
-    test('show_pron_bn off leaves the pronunciation out', () {
-      expect(
-        frontCaption(word(), l10n, pron: false),
-        'Nomen · die Rechnung, Rechnungen',
-      );
+    test('no guide, no pronunciation', () {
+      expect(frontCaption(word(), l10n), 'Nomen · die Rechnung, Rechnungen');
     });
   });
 

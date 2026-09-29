@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart' show immutable;
+import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 
 /// A word's text in one meaning language (#1080's `word_meanings`).
 typedef WordMeaningText = ({String meaning, String? pronunciation});
@@ -24,6 +27,72 @@ class CourseMeanings {
   /// none (English's, until #1082).
   String? pronunciation(String uid, String lang) =>
       _byWord[uid]?[lang]?.pronunciation;
+}
+
+/// #1081: a word's meanings in the learner's languages. T2's card, W1, the
+/// lists' rows and the home-screen widget show a word through it.
+@immutable
+class Meanings {
+  const Meanings(this.choice, [this.course = CourseMeanings.none]);
+
+  final MeaningChoice choice;
+
+  /// The languages beyond English and Bangla; [CourseMeanings.none] while
+  /// the choice has none.
+  final CourseMeanings course;
+
+  /// [word]'s meaning in [lang], or null where the course has none.
+  // ponytail: English and Bangla from the word's own row, which the pipeline
+  // fills from the same columns and a learner's own word has alone. #1096
+  // reads them from `word_meanings` when it drops the columns.
+  String? of(Word word, String lang) => switch (lang) {
+    'en' => word.english,
+    'bn' => word.bangla,
+    _ => course.meaning(word.uid, lang),
+  };
+
+  /// The meanings shown, primary first: English where the primary has none,
+  /// as a Bangla-only learner has always had it, then the secondary's where
+  /// it has one.
+  List<({String lang, String text})> lines(Word word) {
+    final primary = of(word, choice.primary);
+    final first = primary == null
+        ? (lang: 'en', text: word.english)
+        : (lang: choice.primary, text: primary);
+    final code = choice.secondary;
+    final second = code == null || code == first.lang ? null : of(word, code);
+    return <({String lang, String text})>[
+      first,
+      if (second != null) (lang: code!, text: second),
+    ];
+  }
+
+  /// [lines] on one line, for a list's row or a sheet: "table · টেবিল"
+  /// (#689 TD-15).
+  String line(Word word) =>
+      <String>[for (final l in lines(word)) l.text].join(' · ');
+
+  /// The pronunciation guide: the primary's, or the secondary's where the
+  /// primary has none (English's, until #1082). Bangla's only while [bangla]
+  /// (`show_pron_bn`, the learner's choice within Bangla, #1077).
+  String? pronunciation(Word word, {required bool bangla}) {
+    for (final lang in choice.languages) {
+      final guide = lang == 'bn'
+          ? (bangla ? word.pronBn : null)
+          : course.pronunciation(word.uid, lang);
+      if (guide != null && guide.isNotEmpty) return guide;
+    }
+    return null;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Meanings &&
+      other.choice == choice &&
+      identical(other.course, course);
+
+  @override
+  int get hashCode => Object.hash(choice, identityHashCode(course));
 }
 
 /// The course's meanings, read once per content database.

@@ -57,7 +57,11 @@ void main() {
       (const MeaningChoice('en'), MeaningLanguage.english),
     ]) {
       await writeMeaningChoice(settings, choice);
-      expect(settings.read(SettingKeys.meaningLanguage), old, reason: '$choice');
+      expect(
+        settings.read(SettingKeys.meaningLanguage),
+        old,
+        reason: '$choice',
+      );
     }
   });
 

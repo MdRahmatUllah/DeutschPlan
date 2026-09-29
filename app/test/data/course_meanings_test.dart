@@ -76,17 +76,18 @@ void main() {
     expect(await lines('en'), <String?>['The house is big.', null]);
   });
 
-  test("#1081 a word's tips are its language's speakers' own", () async {
+  test("#1081 a word's tips, each its language's speakers' own", () async {
     final dao = await open(russian: true);
-    Future<List<String>> tips(String uid, String lang) =>
-        dao.tipsForWordIn(uid, lang).get();
-    expect(await tips(ContentFixture.strasse, 'bn'), <String>[
-      'Straße হলো die।',
-    ]);
-    expect(await tips(ContentFixture.strasse, 'ru'), isEmpty);
-    expect(await tips(ContentFixture.tuer, 'ru'), <String>[
-      'die Tür — женский род, как «дверь».',
-    ]);
+    Future<Map<String, String>> tips(String uid) async => {
+      for (final t in await dao.wordTipsFor(uid).get()) t.lang: t.tip,
+    };
+    expect(await tips(ContentFixture.strasse), <String, String>{
+      'en': 'Straße is die, not der.',
+      'bn': 'Straße হলো die।',
+    });
+    expect(await tips(ContentFixture.tuer), <String, String>{
+      'ru': 'die Tür — женский род, как «дверь».',
+    });
   });
 
   test('#1081 a grammar topic in each language it ships in', () async {

@@ -119,7 +119,7 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
       tokens,
       asked(SgTextRole.title),
     ).copyWith(fontWeight: FontWeight.w500);
-    final english = example.english;
+    final translation = example.translation;
 
     return StudyCardFrame(
       article: word.article,
@@ -185,10 +185,10 @@ class _StudyClozeCardState extends ConsumerState<StudyClozeCard> {
                 );
               },
             ),
-            if (english != null) ...<Widget>[
+            if (translation != null) ...<Widget>[
               SizedBox(height: typing ? 2 : 6),
               SgText(
-                english,
+                translation,
                 role: asked(SgTextRole.body),
                 color: tokens.color.textSecondary,
               ),

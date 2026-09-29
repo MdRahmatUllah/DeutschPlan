@@ -29,10 +29,12 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/data/repositories/exam_run_service.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
@@ -290,6 +292,37 @@ ContentUpdater contentUpdater(Ref ref) => ContentUpdater(
 Future<Set<String>> recentlyUpdated(Ref ref) => ref
     .watch(contentUpdaterProvider)
     .recentlyUpdated(ref.watch(clockProvider)());
+
+/// #1081: every meaning the course ships, read once per database.
+@riverpod
+Future<CourseMeanings> courseMeanings(Ref ref) =>
+    loadCourseMeanings(ref.watch(contentDaoProvider));
+
+/// #1081: the learner's meaning languages and the course's meanings in them,
+/// which every screen showing a meaning reads. Followed, as [Languages] is:
+/// M3, an import or a reset changes them under an open screen.
+///
+/// English and Bangla come from the word's own row, so the course's are read
+/// only for a language beyond them; until they are, a word shows English.
+@riverpod
+Meanings meanings(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  _followSettings(ref, settings, const <SettingKey<Object?>>{
+    SettingKeys.meaningLanguage,
+    SettingKeys.meaningPrimary,
+    SettingKeys.meaningSecondary,
+  });
+  final choice = meaningChoiceOf(settings);
+  // ponytail: English's pronunciation guide (#1082) is in the course only:
+  // when it ships, 'en' leaves this check.
+  if (choice.languages.every((lang) => lang == 'en' || lang == 'bn')) {
+    return Meanings(choice);
+  }
+  return Meanings(
+    choice,
+    ref.watch(courseMeaningsProvider).value ?? CourseMeanings.none,
+  );
+}
 
 @riverpod
 WordRepository wordRepository(Ref ref) =>

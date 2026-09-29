@@ -10,6 +10,8 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/study/study_back.dart';
@@ -30,22 +32,32 @@ void main() {
 
   group('the back, from the course', () {
     late AppDatabase db;
+    late SettingsRepository settings;
     late ProviderContainer container;
 
     setUp(() async {
       db = AppDatabase.memory();
       final directory = tempDir('sg_back');
-      final content = ContentFixture.write('${directory.path}/content.db');
+      final content = ContentFixture.write(
+        '${directory.path}/content.db',
+        russian: true,
+      );
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
       );
+      settings = SettingsRepository(db);
+      await settings.load();
       container = ProviderContainer(
-        overrides: <Override>[appDatabaseProvider.overrideWithValue(db)],
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+        ],
       );
     });
 
     tearDown(() async {
       container.dispose();
+      await settings.dispose();
       await db.close();
     });
 
@@ -61,18 +73,42 @@ void main() {
           studyBackProvider(ContentFixture.haus).future,
         );
         expect(back.examples, <StudyExample>[
-          (german: 'Das Haus ist groß.', english: 'The house is big.'),
-          (german: 'Ich sehe das Haus.', english: null),
+          (german: 'Das Haus ist groß.', translation: 'The house is big.'),
+          (german: 'Ich sehe das Haus.', translation: null),
         ]);
         expect(back.tip, isNull);
       },
     );
 
+    test('#1081 the examples in the primary language, English where it has '
+        'none', () async {
+      await writeMeaningChoice(settings, const MeaningChoice('ru', 'en'));
+      final back = await container.read(
+        studyBackProvider(ContentFixture.haus).future,
+      );
+      expect(back.examples, <StudyExample>[
+        (german: 'Das Haus ist groß.', translation: 'Дом большой.'),
+        (german: 'Ich sehe das Haus.', translation: null),
+      ]);
+      await writeMeaningChoice(settings, const MeaningChoice('bn', 'en'));
+      final bangla = await container.read(
+        studyBackProvider(ContentFixture.haus).future,
+      );
+      expect(
+        bangla.examples.first.translation,
+        'The house is big.',
+        reason: 'the course has no Bangla examples (#598)',
+      );
+    });
+
     test('and the interference tip, when the word has one', () async {
       final back = await container.read(
         studyBackProvider(ContentFixture.strasse).future,
       );
-      expect(back.tip, (en: 'Straße is die, not der.', bn: 'Straße হলো die।'));
+      expect(back.tip, <String, String>{
+        'en': 'Straße is die, not der.',
+        'bn': 'Straße হলো die।',
+      });
     });
   });
 
@@ -104,17 +140,17 @@ void main() {
       examples: <StudyExample>[
         (
           german: 'Ich habe die Rechnung noch nicht bezahlt.',
-          english: "I haven't paid the bill yet.",
+          translation: "I haven't paid the bill yet.",
         ),
         (
           german: 'Können wir bitte die Rechnung haben?',
-          english: 'Could we have the bill, please?',
+          translation: 'Could we have the bill, please?',
         ),
       ],
-      tip: (
-        en: 'Rechnung is a bill, not a calculation.',
-        bn: 'রেশনুং মানে বিল।',
-      ),
+      tip: <String, String>{
+        'en': 'Rechnung is a bill, not a calculation.',
+        'bn': 'রেশনুং মানে বিল।',
+      },
     );
 
     /// Flipped by the tests to turn the card over in place, as the session
@@ -126,6 +162,8 @@ void main() {
       Word? word,
       bool revealed = true,
       MeaningLanguage meaning = MeaningLanguage.both,
+      MeaningChoice? choice,
+      CourseMeanings course = CourseMeanings.none,
       bool autoplayExample = false,
       bool broken = false,
       VoidCallback? onReveal,
@@ -140,6 +178,7 @@ void main() {
         await settings.write(SettingKeys.autoplayHeadword, false);
         await settings.write(SettingKeys.autoplayExample, autoplayExample);
         await settings.write(SettingKeys.meaningLanguage, meaning);
+        if (choice != null) await writeMeaningChoice(settings, choice);
       });
       addTearDown(
         () => tester.runAsync(() async {
@@ -161,6 +200,7 @@ void main() {
               return extras;
             }),
             recentlyUpdatedProvider.overrideWith((ref) async => updated),
+            courseMeaningsProvider.overrideWith((ref) async => course),
           ],
           child: MaterialApp(
             theme: AppTheme.light(),
@@ -229,6 +269,43 @@ void main() {
         meaning: MeaningLanguage.bangla,
       );
       expect(find.text('bill, invoice'), findsOneWidget);
+    });
+
+    testWidgets('#1081 Russian, then English: the primary first, with its '
+        'pronunciation guide; no Bangla, and the English tip only', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        choice: const MeaningChoice('ru', 'en'),
+        course: const CourseMeanings(<String, Map<String, WordMeaningText>>{
+          'rechnung': <String, WordMeaningText>{
+            'ru': (meaning: 'счёт', pronunciation: 'рэхнунг'),
+          },
+        }),
+      );
+      expect(find.text('счёт'), findsOneWidget);
+      expect(find.text('bill, invoice'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('bill, invoice')).dy,
+        greaterThan(tester.getTopLeft(find.text('счёт')).dy),
+      );
+      expect(find.text('বিল, চালান'), findsNothing);
+      expect(find.textContaining('/рэхнунг/'), findsOneWidget);
+      expect(find.textContaining('রেশনুং'), findsNothing);
+      expect(
+        find.text(l10n.studyTip('Rechnung is a bill, not a calculation.')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('#1081 Russian where the course has none: English', (
+      tester,
+    ) async {
+      await pump(tester, choice: const MeaningChoice('ru'));
+      expect(find.text('bill, invoice'), findsOneWidget);
+      expect(find.text('বিল, চালান'), findsNothing);
+      expect(find.byType(SgCallout), findsNothing, reason: 'no Russian tip');
     });
 
     testWidgets('the interference tip is a Tangerine callout under them', (
