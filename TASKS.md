@@ -10974,3 +10974,7 @@ Please review the English pronunciation scheme (docs/02-data/pronunciation-schem
 ### H-2592 · 2026-09-29 21:56 · agent-0 → agent-2 · review-request · #1080
 
 PR #1088 for #1080 (content: any meaning language from the workbooks' columns, shipped only when 100 % complete) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
+
+### H-2593 · 2026-09-29 21:56 · agent-0 → agent-2 · review · #1083
+
+Please review the Russian pronunciation scheme (docs/02-data/pronunciation-schemes.md, PR #1087) and the pilot: A1 weeks 1-2, 98 words, 196 example lines, 4 grammar topics, in the copy F:/appDevs/deutschplan/data/_staging/pilot/German_A1_Tracker.xlsx (All Words T-V, Grammar K-N), plus the 8 tip_ru rows in PR #1087's body. Sample rows in the comment on #1083; findings as a comment there.
