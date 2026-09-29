@@ -62,8 +62,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
+            android:ellipsize="end"
             android:maxLines="3"
-            android:text="@string/widget_description"
+            android:text="@string/widget_preview_line"
             android:textColor="@color/widget_secondary"
             android:textSize="11sp" />
     </LinearLayout>
