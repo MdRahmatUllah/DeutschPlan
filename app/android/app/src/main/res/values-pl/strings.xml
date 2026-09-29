@@ -2,4 +2,5 @@
 <resources>
     <string name="widget_description">Plan na dziś i słowo dnia</string>
     <string name="widget_empty">Otwórz aplikację Sogda, aby zaplanować dzień</string>
+    <string name="widget_preview_line">Plan na dziś</string>
 </resources>
