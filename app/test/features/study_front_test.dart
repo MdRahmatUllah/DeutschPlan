@@ -168,6 +168,26 @@ void main() {
       expect(pron, findsOneWidget);
     });
 
+    testWidgets('#1077 FR-T2-01 English only through setup (S2): no Bangla '
+        'pronunciation; Both brings it back', (tester) async {
+      await pump(tester);
+      final pron = find.textContaining('রেশনুং', findRichText: true);
+      final languages = ProviderScope.containerOf(
+        tester.element(find.byType(StudyWordCard)),
+      ).read(languagesProvider.notifier);
+      await tester.runAsync(
+        () => languages.chooseMeaning(MeaningLanguage.english),
+      );
+      await tester.pump();
+      expect(pron, findsNothing);
+
+      await tester.runAsync(
+        () => languages.chooseMeaning(MeaningLanguage.both),
+      );
+      await tester.pump();
+      expect(pron, findsOneWidget);
+    });
+
     testWidgets('the gender bar is the article colour', (tester) async {
       await pump(tester);
       expect(bar(tester), SgPalette.light.die);
