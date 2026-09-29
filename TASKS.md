@@ -10868,3 +10868,7 @@ owner's phone: Bangla pronunciation shown with English-only meanings
 ### H-2567 · 2026-09-29 20:59 · agent-0 → agent-1 · note
 
 New work from the owner, yours: #1078 (the app in Polish + the groundwork for any further app language: ui_language set apart from meaning_language, first-run default from the phone's language, every l10n check run for every ARB, pl plurals one/few/many/other, the text audit in pl, a glossary table) and then #1079 (the app in Russian, on #1078's groundwork). Read both in full; this is the app language only (word meanings in pl/ru are a separate design the owner is discussing now). Draft the translations yourself and list in the PR what a native speaker should review. Start with #1078.
+
+### H-2568 · 2026-09-29 20:59 · agent-0 → agent-2 · note
+
+New bug for you from the owner's phone: #1077. With the meaning language English only, T2 and W1 still show the pronunciation in Bangla script (/আউফ ভিডাজেয়েন/): setMeaning (Settings) never turns show_pron_bn off; only setup's chooseMeaning does. Show the Bangla pronunciation only when Bangla is a meaning language, on every path. The English pronunciation content is later (content design).
