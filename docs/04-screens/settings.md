@@ -18,7 +18,8 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | | Mark Done after N days remembered | stepper 3–60 | `done_stability_days` |
 | | Swipe to rate | switch, "Left = Again, right = Good" | `swipe_to_rate` |
 | | My words in quizzes | switch, "All-learned quizzes also ask the words you saved" (FR-R2-04, #363) | `quiz_custom_words` |
-| Display | Meaning language | EN / বাংলা / Both | `meaning_language` |
+| Display | Meaning language | the course's languages, each named in itself (English / বাংলা / …) | `meaning_primary` |
+| | Second meaning language | None, or any other language the course ships | `meaning_secondary` |
 | | App language | English / বাংলা / Polski, each named in itself (#1078) | `ui_language` |
 | | Theme | System / Light / Dark / Glass | `theme_mode` |
 | | Show Bangla pronunciation | switch, offered only while Bangla is a meaning language (#1077); setup's meaning language sets it (off for English only), and M3's *Meaning language* row leaves it to the learner (#527, #537) | `show_pron_bn` |
@@ -37,8 +38,8 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 Details M3 settles (#146):
 - The rows are the table's, in its order. The artboards leave some out (practice sentences, the backlog pause, Mark Done, app language, Bangla pronunciation, listening questions); each sits where the table puts it, drawn as its neighbours are.
 - "Applies from tomorrow" is on *New words per day* and *Revisions per day*, the two BR-PLAN-08 names that M3 shows (the study days are M5's). *New words per day* also moves the open enrollment's `daily_new`, which is the pace the plan engine reads, as restart setup does; today's plan is left as it is.
-- *Meaning language* is every meaning the app shows: T2's back and W1 put Both on two lines, and a list's row (T4, L2, L6, R1) or T5's word sheet on one, "table · টেবিল", as the home-screen widget does (#689 TD-15). English stands in where the course has no Bangla.
-- *Unlock mock exams at* and *Pass mark* show the value and a chevron, as the artboards draw them, and open a choice in steps of five across the ranges above. *Meaning language*, *App language* and *Theme* open the same kind of choice. The two languages are set apart here; S2's one choice sets both.
+- The meaning languages (#1081) are every meaning the app shows: T2's back and W1 put the first and the second on two lines, and a list's row (T4, L2, L6, R1) or T5's word sheet on one, "table · টেবিল", as the home-screen widget does (#689 TD-15). English stands in where the course has no meaning in the first. An example's translation, a grammar topic and the pronunciation guide are the first language's (English, or the second's guide, where it has none); an interference tip shows for each chosen language that has one. Picking the second as the first swaps the two. Until either row is used, both are read from `meaning_language` (English, Bangla, Both → en, bn, en + bn).
+- *Unlock mock exams at* and *Pass mark* show the value and a chevron, as the artboards draw them, and open a choice in steps of five across the ranges above. *Meaning language*, *Second meaning language*, *App language* and *Theme* open the same kind of choice. The meaning and the app's language are set apart, here and in S2 (#1078).
 - *Speech speed* runs 0.5–1.5× in quarters, with the artboard's 1.0× at the middle: the grid the study menu's 0.75 / 1 / 1.25 are on, so both read a stored speed the same.
 - *Study days & reminder* reads "Mon–Sat · 19:30 · only when something is due": a run of three or more days as a range (across the week's end too, "Fri–Mon"), otherwise the days listed ("Mon, Wed, Fri"), "Every day" for all seven; then the time in the phone's format, or "no reminder".
 - *Voice engine* reads "Supertonic · Anna" or "Phone voice", or, with Supertonic chosen but its model not on the phone, "Phone voice · Supertonic not downloaded": what speaks meanwhile (#345). It follows a download that lands, and a *Delete*, while the app runs, as T1's voice card does (#757).
@@ -56,6 +57,6 @@ Details M3 settles (#146):
 - FR-M3-01 The retention subtitle estimates reviews/day = Σ over learned words of 1 ÷ intervalDays(stability) at the chosen retention (sampled, cached).
 - FR-M3-02 Theme changes apply immediately app-wide (`themeProvider`).
 - FR-M3-03 Turning translation on without a model opens M4 and leaves the switch off until the model is ready.
-- FR-M3-04 *Show Bangla pronunciation* follows the meaning language in setup only (S2 page 2: off for English only). M3's *Meaning language* row leaves the switch as the learner set it (#537). The switch is offered only while Bangla is a meaning language, and the pronunciation shows only then, whatever the switch says: an English-only learner, however the language was set (setup, M3, an import, a reset), sees no Bangla script (#1077, `MeaningLanguage.hasBangla`). An English-alphabet guide for them is content still to come (the multi-language design).
+- FR-M3-04 *Show Bangla pronunciation* follows the meaning language in setup only (S2 page 2: off for English only). M3's *Meaning language* row leaves the switch as the learner set it (#537). The switch is offered only while Bangla is a meaning language, and the pronunciation shows only then, whatever the switch says: an English-only learner, however the language was set (setup, M3, an import, a reset), sees no Bangla script (#1077, `MeaningChoice.hasBangla`). An English-alphabet guide for them is content still to come (the multi-language design).
 
 **Tests.** each row writes its key; FR-M3-01 estimate; goldens top/bottom × 3 themes.

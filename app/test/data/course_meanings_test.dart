@@ -59,6 +59,37 @@ void main() {
     );
   });
 
+  test("#1077 #1081 the guide is the first language's, else the second's; "
+      "Bangla's only while its switch is on", () {
+    const word = Word(
+      kind: 'vocab',
+      uid: 'haus',
+      sublevelCode: 'A1.1',
+      levelCode: 'A1',
+      seq: 1,
+      seqInSublevel: 1,
+      german: 'Haus',
+      english: 'house',
+      bangla: 'বাড়ি',
+      pronBn: 'হাউস',
+      searchKey: 'haus',
+      searchKeyAlt: 'haus',
+    );
+    const course = CourseMeanings(<String, Map<String, WordMeaningText>>{
+      'haus': <String, WordMeaningText>{
+        'ru': (meaning: 'дом', pronunciation: 'хаус'),
+      },
+    });
+    String? guide(MeaningChoice choice, {bool bangla = true}) =>
+        Meanings(choice, course).pronunciation(word, bangla: bangla);
+
+    expect(guide(const MeaningChoice('en', 'bn')), 'হাউস', reason: 'en none');
+    expect(guide(const MeaningChoice('en', 'bn'), bangla: false), isNull);
+    expect(guide(const MeaningChoice('en')), isNull, reason: 'no Bangla');
+    expect(guide(const MeaningChoice('ru', 'bn')), 'хаус');
+    expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хаус');
+  });
+
   test('#1081 a course without Russian has none', () async {
     final dao = await open();
     final meanings = await loadCourseMeanings(dao);

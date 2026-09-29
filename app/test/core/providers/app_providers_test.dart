@@ -11,6 +11,7 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/quiz_builder.dart' show QuizDirection;
@@ -176,10 +177,19 @@ void main() {
         await other.write(SettingKeys.uiLanguage, UiLanguage.bangla);
         await other.write(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
       });
+      // An older build's backup: the old key alone (#1081).
       expect(ref.read(languagesProvider), (
-        meaning: MeaningLanguage.bangla,
+        meaning: const MeaningChoice('bn'),
         ui: UiLanguage.bangla,
       ));
+
+      await writeElsewhere(
+        (other) => writeMeaningChoice(other, const MeaningChoice('ru', 'en')),
+      );
+      expect(
+        ref.read(languagesProvider).meaning,
+        const MeaningChoice('ru', 'en'),
+      );
     });
   });
 

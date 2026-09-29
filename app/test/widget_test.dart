@@ -47,6 +47,9 @@ void main() {
     final app = SogdaApp();
     await tester.pumpWidget(
       ProviderScope(
+        // No course is attached, so Today's reads of it fail every time: a
+        // retry would fail again, and its timer outlives the test.
+        retry: (_, _) => null,
         overrides: <Override>[
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),

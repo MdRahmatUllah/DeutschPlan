@@ -94,10 +94,9 @@ allWordMeanings:
 -- English where :lang has no examples of its own (Bangla, #598).
 -- The word's lines first, so drift's parameters read (uid, lang).
 examplesForWordIn(:uid AS TEXT, :lang AS TEXT):
-  WITH lines AS (SELECT ord, german FROM word_examples WHERE word_uid = :uid)
   SELECT l.ord AS ord, l.german AS german,
          coalesce(t.translation, en.translation) AS translation
-  FROM lines l
+  FROM (SELECT ord, german FROM word_examples WHERE word_uid = :uid) l
   LEFT JOIN word_example_translations t
     ON t.word_uid = :uid AND t.ord = l.ord AND t.lang = :lang
   LEFT JOIN word_example_translations en

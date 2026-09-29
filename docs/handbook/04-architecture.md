@@ -386,7 +386,8 @@ style falls back to Noto Sans Bengali, because Inter has no Bangla glyphs
   `app_bn.arb` and `app_pl.arb` (#1078). `flutter pub get` generates
   `AppLocalizations` into `lib/l10n/generated/` (gitignored).
 - **The UI language and the meaning language are separate settings**
-  (`ui_language` = en, bn or pl; `meaning_language` = en, bn or both). S2's
+  (`ui_language` = en, bn or pl; `meaning_primary` and an optional
+  `meaning_secondary`, codes of the course's languages, #1081). S2's
   page 1 sets the app language, page 2 the meaning; Settings changes each
   alone. A first run starts in the phone's language when Sogda speaks it. The locale comes from `ui_language`, not
   the device.
