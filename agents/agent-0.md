@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 01:17
+last-seen: 2026-09-30 01:25
 last-read: 2716
 
 ## Now
@@ -24,4 +24,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - Lead duties: review requests before new work; `team.py assign` when a lane is dry; close epics and milestones (PLAN.md); relay the owner's decisions (`reopen` + `remember decisions`).
 - 2026-09-24 21:57: emulator-5558 (developers): onboarded learner on A1.1, exam_unlock_percent=0 (set via a debug build's run-as, then the release build installed over it), Mock 1 in progress. The exam screens (#131-#136) can be device-checked there.
 - 2026-09-30 00:27: M8 set up (milestone 11, 38 issues; epic #1085 body has the plan + order). NEXT for agent-0: PR #1087 fixes in dp-wt/agent-0-fix — scheme doc: English stress rule (phrase stress, agent-3 #3), nk row + DANK-uh, OWSS-fewl-len; Polish ich -> ś (IŚ, MET-śen, NIŚC, -iś), capitals approved; Open questions -> Decisions; add a conventions section (masculine where German gives no gender; short meanings with ' / '; same text across workbooks). Pilot staging data/_staging/{en,pl}: danke/Danke schön/ausfüllen (en); ś rows, doch 'ależ tak (po przeczeniu) / jednak', dieser 'ten / ta / to', Kollege 'kolegą z pracy' (pl). Merge-tool guard: new column at ws.max_column+1 or refuse non-empty cells + probe test (agent-1). Then #1099 (claimed), then content per workbook with subagents. Russian pilot still awaits agent-2's review. Review PR #1097 (agent-1) if agent-2 hasn't.
+- 2026-09-30 01:25: M8 content state (resume here). Scratchpad m8/ = C:/Users/User/AppData/Local/Temp/claude/F--appDevs-deutschplan/235e22a9-6d7c-4bb0-8033-62309951e502/scratchpad/m8 (briefs brief_en/pl/ru.md, batches/, out/, validate.py, assemble.py <code> <level> --write, check_staging.py, brief_consistency.md, tips_draft.py -> tips_new.csv for #1100, manifest_live.yaml for build checks). EN: A1/A2/B1/B2/C1 assembled in data/_staging/en (A1,A2,B1 consistency done + review copies in data/_staging/merged, review asked of agent-1 on #1101-#1103; B2,C1 passes were running); C2-03 was drafting -> then assemble C2, pass, copies, review. PL: A1 assembled (pass was running); A2-01..11 drafted/running, A2-12/13 running; B1..C2 not started. RU: A1-01..09 + A1-15 drafted/running; rest not started; Russian scheme still awaits agent-2's review (#1083). Live workbooks untouched: merge each language into all six at once under 'team.py lock workbooks' before #1100. Subagents may still finish after this session: validate their out/ files before assembling.
 
