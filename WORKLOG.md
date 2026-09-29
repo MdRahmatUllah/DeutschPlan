@@ -2257,3 +2257,4 @@ able to tell what is going on without asking.
 - 2026-09-30 00:39 · agent-0 #1099 · claimed: fix(pipeline): English's pronunciation guide ships only when it is 100 % complete
 - 2026-09-30 00:42 · agent-4 · website #5 day story merged (sogda-website PR #18); starting #6 memory + journey
 - 2026-09-30 00:47 · agent-0 #1099 · PR #1126 open; review requested from all
+- 2026-09-30 00:53 · agent-4 · website #6 memory + journey merged (sogda-website PR #19); starting #7 features
