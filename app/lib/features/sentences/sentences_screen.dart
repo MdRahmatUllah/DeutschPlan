@@ -446,12 +446,17 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
   void _play({double pace = 1}) =>
       unawaited(say(ref, context, widget.item.sentence.german, pace: pace));
 
-  /// FR-T5-03: the word's course meaning, or a way to look it up. [first]:
-  /// the sentence's first word, where a du-imperative stands (#724).
-  Future<void> _lookUp(String token, {required bool first}) async {
+  /// FR-T5-03: the word's course meaning, or a way to look it up. [at] 0
+  /// is the sentence's first word, where a du-imperative stands (#724);
+  /// [sentence], its words, holds a phrase around it (#1067).
+  Future<void> _lookUp(
+    String token, {
+    required List<String> sentence,
+    required int at,
+  }) async {
     final word = await ref
         .read(contentDaoProvider)
-        .wordForToken(token, first: first);
+        .wordForToken(token, first: at == 0, sentence: sentence, at: at);
     if (!mounted) return;
     await Adaptive.showSheet<void>(
       context: context,
@@ -469,13 +474,14 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
     final spans = <TextSpan>[];
     var at = 0;
     final words = RegExp(r'\p{L}+', unicode: true).allMatches(text);
+    final sentence = <String>[for (final match in words) match[0]!];
     for (final (i, match) in words.indexed) {
       if (match.start > at) {
         spans.add(_between(text.substring(at, match.start)));
       }
       final token = match[0]!;
       final tap = TapGestureRecognizer()
-        ..onTap = () => unawaited(_lookUp(token, first: i == 0));
+        ..onTap = () => unawaited(_lookUp(token, sentence: sentence, at: i));
       _taps.add(tap);
       final target =
           gap != null && match.start >= gap.start && match.end <= gap.end;

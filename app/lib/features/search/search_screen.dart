@@ -460,6 +460,9 @@ class _Header extends StatelessWidget {
                         // fresh open only; coming back keeps query and scroll.
                         autofocus: true,
                         textInputAction: TextInputAction.search,
+                        // #1068: a German term isn't corrected into the
+                        // phone's language; suggestions stay, for English.
+                        autocorrect: false,
                         // #691 EX-13: what is searched, whole.
                         inputFormatters: <TextInputFormatter>[
                           LengthLimitingTextInputFormatter(
