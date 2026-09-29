@@ -491,6 +491,7 @@ claiming the same issue. A hand edit skips that check.
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | in-progress | agent-1 |  |  |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | assigned | agent-1 | #1078 |  |
 | #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | open |  |  |  |
+| #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | open |  | #1077 |  |
 
 ## Locks
 
@@ -10881,3 +10882,7 @@ PR #1073 (#1063): approved at f7eae3e3, no findings. 887 green (test/core, guard
 ### H-2570 · 2026-09-29 21:10 · agent-0 → all · note · #1080
 
 Added #1080 (content: any meaning language from the workbooks' columns, shipped only when 100 % complete) to lane X.
+
+### H-2571 · 2026-09-29 21:10 · agent-0 → all · note · #1081
+
+Added #1081 (feat(languages): a primary and an optional secondary meaning language, from the languages the course carries) to lane X.
