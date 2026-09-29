@@ -9,8 +9,9 @@ is off, #302). `accessibility-performance.md` has the budgets.
 
     size      the release APKs split per ABI: the arm64-v8a one's size
     frames    integration_test/perf_test.dart under `flutter drive --profile`
-              on a fresh install: five cards rated (card), L2's word list
-              flung under glass (list), and R1's search timed per keystroke
+              on a fresh install: five cards rated (card), L2's word list,
+              L1's step list and Today flung under glass (list, learn,
+              today), and R1's search timed per keystroke
     start     the x86_64 split on a fresh install, S2 walked with its
               defaults (A1.1, the default theme, day 1 unstudied): cold and
               warm `am start -W`, the median of five each
@@ -289,15 +290,17 @@ def search_metrics(keystrokes: list[list]) -> dict[str, float]:
 
 
 def frames_from(data: dict) -> dict[str, float]:
-    """What perf_test.dart reported → the metrics. A list trace that ran
+    """What perf_test.dart reported → the metrics. A glass trace that ran
     without its BackdropFilter measured something else: it is never compared,
     and never written as the baseline."""
     glass = data["glass"]
     if not glass["blur"]:
-        raise SystemExit(f"glass did not blur ({', '.join(glass['reasons'])}): the list trace is not the budgeted one")
+        raise SystemExit(f"glass did not blur ({', '.join(glass['reasons'])}): the glass traces are not the budgeted ones")
     return {
         **frame_metrics("card", data["card"]),
         **frame_metrics("list", data["list"]),
+        **frame_metrics("learn", data["learn"]),  # #1030: L1 and Today under glass
+        **frame_metrics("today", data["today"]),
         **search_metrics(data["search"]["keystrokes"]),
     }
 

@@ -70,6 +70,8 @@ def response(blur: bool) -> dict:
     return {
         "card": SUMMARY,
         "list": SUMMARY,
+        "learn": SUMMARY,
+        "today": SUMMARY,
         "glass": {"blur": blur, "reasons": [] if blur else ["frameBudget"]},
         "search": {"keystrokes": [["H", [20.0, 10.0, 12.0]], ["Ha", [9.0, 8.0, 30.0]]]},
     }
@@ -150,7 +152,21 @@ def test_the_response_becomes_the_card_list_and_search_metrics():
     assert metrics["card.raster_p90_ms"] == 11.0
     assert metrics["list.build_avg_ms"] == 3.1
     assert metrics["search.max_ms"] == 12.0
-    assert len(metrics) == 8 + 8 + 3
+    assert len(metrics) == 4 * 8 + 3
+
+
+def test_1030_l1_and_today_are_flung_under_glass_with_baselines_of_their_own():
+    metrics = perf.frames_from(response(blur=True))
+    doc = json.loads(perf.BASELINE.read_text(encoding="utf-8"))
+    for screen in ("learn", "today"):
+        assert metrics[f"{screen}.raster_avg_ms"] == 6.4
+        assert perf.lookup(doc["margins"], f"{screen}.raster_avg_ms") == 0.5
+        assert perf.lookup(doc["budgets"], f"{screen}.raster_avg_ms") == 16
+        assert perf.lookup(doc["margins"], f"year.{screen}.missed_raster") is None
+    # Every frame metric perf_test reports is compared, the new ones included,
+    # and on the year profile too (#818).
+    assert [m for m in metrics if m not in doc["metrics"]] == []
+    assert [m for m in metrics if "year." + m not in doc["metrics"]] == []
 
 
 def test_a_list_trace_without_blur_is_never_measured():
@@ -197,7 +213,7 @@ def test_a_group_with_no_entry_is_an_error_not_information():
 
 def test_the_baseline_has_a_margin_for_every_group_and_the_budgets():
     doc = json.loads(perf.BASELINE.read_text(encoding="utf-8"))
-    for group in ("size", "start", "card", "list", "search"):
+    for group in ("size", "start", "card", "list", "learn", "today", "search"):
         assert doc["margins"][group] > 0
         assert group in doc["budgets"] or any(k.startswith(group + ".") for k in doc["budgets"])
     assert doc["budgets"]["start.cold_ms"] == 1500
