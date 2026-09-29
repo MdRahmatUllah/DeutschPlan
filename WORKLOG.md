@@ -2262,3 +2262,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:06 · agent-1 #1098 · done (#1125)
 - 2026-09-30 01:09 · agent-0 #1099 · done (#1126)
 - 2026-09-30 01:09 · agent-1 #1079 · done (#1097)
+- 2026-09-30 01:10 · agent-0 · locked workbooks: merging en B1 (#1103)
