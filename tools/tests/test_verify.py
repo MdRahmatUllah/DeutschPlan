@@ -252,6 +252,16 @@ def test_a_malformed_tips_file_is_a_failure_not_a_crash(database, tmp_path):
     assert "line 2" in failures[0].message
 
 
+def test_1099_a_pronunciation_on_some_words_only_fails_its_gate(database):
+    break_it(
+        database,
+        "UPDATE word_meanings SET pronunciation = 'GOOT' "
+        "WHERE lang = 'en' AND word_uid = (SELECT min(word_uid) FROM word_meanings)",
+    )
+    assert "pronunciation" in gates(database)
+    assert "en has a pronunciation guide on 1 of its" in messages(database)
+
+
 def test_a_noun_with_its_article_in_german_fails_the_articles_gate(database):
     """#287: the build moves it; the gate catches a build that doesn't."""
     break_it(
