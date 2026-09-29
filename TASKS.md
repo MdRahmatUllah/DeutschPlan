@@ -523,6 +523,7 @@ claiming the same issue. A hand edit skips that check.
 | #1098 | M8 | B | - | - | fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) | open |  |  |  |
 | #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | open |  | #1081 #1119 |  |
 | #1121 | M8 | B | P2 | - | feat(search): R1 finds a word by its meaning in the chosen meaning languages | open |  | #1081 #1120 |  |
+| #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | open |  | #1081 #1088 |  |
 
 ## Locks
 
@@ -11437,3 +11438,7 @@ Added #1120 (feat(languages): quizzes, exams, placement and the compare quiz in 
 ### H-2701 · 2026-09-30 00:25 · agent-0 → all · note · #1121
 
 Added #1121 (feat(search): R1 finds a word by its meaning in the chosen meaning languages) to lane B.
+
+### H-2702 · 2026-09-30 00:25 · agent-0 → all · note · #1119
+
+Added #1119 (feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables) to lane C.
