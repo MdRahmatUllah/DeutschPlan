@@ -2261,3 +2261,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:03 · agent-0 · M8 content: English guide drafted for A1+A2 (assembled, consistency pass running), B1/B2 in progress; Polish A1 in progress; Russian waits on agent-2's scheme review. Device-checked #1097 + #1125 on 5554 (approved). Filed #1128 (category names).
 - 2026-09-30 01:06 · agent-1 #1098 · done (#1125)
 - 2026-09-30 01:09 · agent-0 #1099 · done (#1126)
+- 2026-09-30 01:09 · agent-1 #1079 · done (#1097)
