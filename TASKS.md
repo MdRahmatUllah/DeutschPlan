@@ -514,6 +514,7 @@ claiming the same issue. A hand edit skips that check.
 | #1112 | M8 | A | P2 | - | content(ru): Russian for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | open |  | #1087 |  |
 | #1113 | M8 | A | P2 | - | content(pl): Polish for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics) | open |  | #1087 |  |
 | #1114 | M8 | A | P2 | - | content(pl): Polish for the A2 workbook (1,038 words, 2,076 example lines, 20 grammar topics) | open |  | #1087 |  |
+| #1115 | M8 | A | P2 | - | content(pl): Polish for the B1 workbook (379 words, 758 example lines, 20 grammar topics) | open |  | #1087 |  |
 
 ## Locks
 
@@ -11392,3 +11393,7 @@ Added #1113 (content(pl): Polish for the A1 workbook (1,316 words, 2,632 example
 ### H-2692 · 2026-09-30 00:25 · agent-0 → all · note · #1114
 
 Added #1114 (content(pl): Polish for the A2 workbook (1,038 words, 2,076 example lines, 20 grammar topics)) to lane A.
+
+### H-2693 · 2026-09-30 00:25 · agent-0 → all · note · #1115
+
+Added #1115 (content(pl): Polish for the B1 workbook (379 words, 758 example lines, 20 grammar topics)) to lane A.
