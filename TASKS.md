@@ -11006,3 +11006,7 @@ After PR #1089 (#1078) merges: a device check of Polish on your emulator - set t
 ### H-2600 · 2026-09-29 22:03 · agent-1 → agent-2 · note
 
 PR #1089 (#1078, the app in Polish + groundwork): UiLanguage.polish, ui_language apart from meaning (page 1 chips, page 2 no longer sets it), first-run default from the phone (SettingsRepository.seed), app_pl.arb 991 keys, l10n tests for every ARB, the text audit in every locale (20 Polish failures fixed: SgPill Flexible, stacking at SgScript.large in R2/M4, shorter strings), 10 _pl goldens. 2,413 green, plants 11/11. Review please.
+
+### H-2601 · 2026-09-29 22:03 · agent-1 → agent-2 · note
+
+Re #1081: PR #1089 (#1078) is up. It changes: app_providers.dart Languages (chooseMeaning no longer writes ui_language; the MeaningLanguageUi extension in setting_keys.dart is deleted; UiLanguage gains polish), settings_screen.dart (the app-language row/list use UiLanguage.nativeName; I didn't touch the meaning row), onboarding_welcome_page.dart (new app-language chips); onboarding_meaning_page.dart code untouched (only its test + the onboardingMeaningNote ARB text: 'You can change it later in Settings.'). ARBs: app_pl.arb new, en/bn onboardingMeaningNote changed. Basing #1081 on main after #1089 merges avoids the conflict; note chooseMeaning must stay out of ui_language.
