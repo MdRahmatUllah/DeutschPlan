@@ -45,6 +45,16 @@ void main() {
     builder: (context) => runner(StubExamRun()),
     act: pickDie,
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'exam_runner_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    builder: (context) => runner(StubExamRun()),
+    act: pickDie,
+  );
   // #165: at 200 % text.
   goldenTest(
     'exam_runner_200',

@@ -19,7 +19,7 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | | Swipe to rate | switch, "Left = Again, right = Good" | `swipe_to_rate` |
 | | My words in quizzes | switch, "All-learned quizzes also ask the words you saved" (FR-R2-04, #363) | `quiz_custom_words` |
 | Display | Meaning language | EN / বাংলা / Both | `meaning_language` |
-| | App language | English / বাংলা / Polski, each named in itself (#1078) | `ui_language` |
+| | App language | English / বাংলা / Polski / Русский, each named in itself (#1078, #1079) | `ui_language` |
 | | Theme | System / Light / Dark / Glass | `theme_mode` |
 | | Show Bangla pronunciation | switch, offered only while Bangla is a meaning language (#1077); setup's meaning language sets it (off for English only), and M3's *Meaning language* row leaves it to the learner (#527, #537) | `show_pron_bn` |
 | Audio | Voice engine | Supertonic · Anna / Phone voice → M4 | `tts_engine`, `tts_voice` |

@@ -1,4 +1,4 @@
-# Localisation. UI languages are English, Bangla and Polish (docs/01-architecture/
+# Localisation. UI languages are English, Bangla, Polish and Russian (docs/01-architecture/
 # accessibility-performance.md). German course text comes from content.db and is
 # never an ARB key; fixed German UI copy ("Tag geschafft!") IS an ARB key and is
 # marked as such in its @-description (docs/05-dev-guide/coding-standards.md).

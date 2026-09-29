@@ -175,10 +175,9 @@ void main() {
       'examResultFailed',
       'widgetWordOfDay',
     };
-    // What each language writes as English does, and Bangla doesn't: the
-    // units and the loanwords Polish shares with it.
+    // What a language writes as English does: the units and the loanwords
+    // Polish shares with it. Every app language is checked, listed or not.
     const samePerLanguage = <String, Set<String>>{
-      'bn': <String>{},
       'pl': <String>{
         'todayEstimate',
         'studyIntervalDays',
@@ -202,8 +201,10 @@ void main() {
         .replaceAll(RegExp(r'(=\d+|\w+)\s*{'), '')
         .replaceAll(RegExp('[{}]'), '');
 
-    for (final MapEntry(key: language, value: same)
-        in samePerLanguage.entries) {
+    for (final language in <String>[
+      for (final locale in supportedLocales.skip(1)) locale.languageCode,
+    ]) {
+      final same = samePerLanguage[language] ?? const <String>{};
       final other = read('lib/l10n/app_$language.arb');
       final untranslated = <String>[
         for (final key in en.keys)
@@ -259,10 +260,11 @@ void main() {
 
   group('#1078 a plural has every form its language needs', () {
     // CLDR's cardinal categories: Bangla and English have one/other, Polish
-    // one/few/many/other (1 słowo, 2 słowa, 5 słów), and a form left out
-    // falls back to `other`.
+    // and Russian one/few/many/other (1 słowo, 2 słowa, 5 słów; 1 слово,
+    // 2 слова, 5 слов), and a form left out falls back to `other`.
     const forms = <String, List<String>>{
       'pl': <String>['one', 'few', 'many', 'other'],
+      'ru': <String>['one', 'few', 'many', 'other'],
     };
     final en = jsonDecode(
       File('lib/l10n/app_en.arb').readAsStringSync(),
@@ -286,23 +288,31 @@ void main() {
     }
   });
 
-  test('#1078 one Polish word per term (docs/00-product/glossary.md)', () {
-    // The glossary's Polish column: each rejected spelling is one the draft
-    // used, or the English left in.
-    const rejected = <String, String>{
-      'Opanowane': 'Znane',
-      'Backlog': 'Zaległości',
-      'egzamin testowy': 'egzamin próbny',
+  test('#1078 #1079 one word per term in Polish and Russian '
+      '(docs/00-product/glossary.md)', () {
+    // The glossary's columns: each rejected spelling is one a draft used, or
+    // the English left in.
+    const rejected = <String, Map<String, String>>{
+      'pl': <String, String>{
+        'Opanowane': 'Znane',
+        'Backlog': 'Zaległości',
+        'egzamin testowy': 'egzamin próbny',
+      },
+      'ru': <String, String>{
+        'бэклог': 'пропущенное',
+        'мок-экзамен': 'пробный экзамен',
+        'Сделано': 'Выучено',
+      },
     };
-    final pl = jsonDecode(
-      File('lib/l10n/app_pl.arb').readAsStringSync(),
-    ) as Map<String, Object?>;
     final offenders = <String>[
-      for (final MapEntry(:key, :value) in pl.entries)
-        if (!key.startsWith('@'))
-          for (final MapEntry(key: word, value: instead) in rejected.entries)
-            if ((value! as String).toLowerCase().contains(word.toLowerCase()))
-              '$key says $word: say $instead',
+      for (final MapEntry(key: language, value: words) in rejected.entries)
+        for (final MapEntry(:key, :value) in (jsonDecode(
+          File('lib/l10n/app_$language.arb').readAsStringSync(),
+        ) as Map<String, Object?>).entries)
+          if (!key.startsWith('@'))
+            for (final MapEntry(key: word, value: instead) in words.entries)
+              if ((value! as String).toLowerCase().contains(word.toLowerCase()))
+                '$language: $key says $word: say $instead',
     ];
     expect(offenders, isEmpty, reason: offenders.join('\n'));
   });
@@ -335,6 +345,23 @@ void main() {
     }
   });
 
+  test('#1079 Russian counts read right at its few/many edges', () async {
+    // 1 and 21 слово; 2–4 and 22–24 слова; 5–20, 11–14 and 25 слов.
+    final ru = await AppLocalizations.delegate.load(const Locale('ru'));
+    const want = <int, String>{
+      1: '1 слово',
+      2: '2 слова',
+      5: '5 слов',
+      11: '11 слов',
+      21: '21 слово',
+      22: '22 слова',
+      25: '25 слов',
+    };
+    for (final MapEntry(key: count, value: words) in want.entries) {
+      expect(ru.onboardingStepWords(count), words, reason: '$count');
+    }
+  });
+
   group('#684 #696 CD-2 Bangla names things as the Bangla UI shows them', () {
     Map<String, Object?> read(String path) =>
         jsonDecode(File(path).readAsStringSync()) as Map<String, Object?>;
@@ -360,7 +387,9 @@ void main() {
         'ratingEasy',
         'sentencesNotYet',
       ];
-      for (final language in <String>['bn', 'pl']) {
+      for (final language in <String>[
+        for (final locale in supportedLocales.skip(1)) locale.languageCode,
+      ]) {
         final arb = read('lib/l10n/app_$language.arb');
         final offenders = <String>[
           for (final MapEntry(:key, :value) in arb.entries)
@@ -419,6 +448,7 @@ void main() {
         (en, 'en'),
         (bn, 'bn'),
         (read('lib/l10n/app_pl.arb'), 'pl'),
+        (read('lib/l10n/app_ru.arb'), 'ru'),
       ]) {
         // M1's legend explains the labels of the counts above it.
         for (final status in <String>[

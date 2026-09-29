@@ -586,7 +586,7 @@ void main() {
     testWidgets('#1078 FR-S2 the app language comes first, each named in '
         'itself, and the page speaks the one tapped at once', (tester) async {
       await pumpWelcome(tester);
-      for (final name in <String>['English', 'বাংলা', 'Polski']) {
+      for (final name in UiLanguage.values.map((l) => l.nativeName)) {
         expect(find.widgetWithText(SgChip, name), findsOneWidget);
       }
       expect(find.text(l10n.onboardingWelcomeStart), findsOneWidget);

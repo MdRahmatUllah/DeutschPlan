@@ -833,7 +833,14 @@ class _Row extends StatelessWidget {
     final tokens = context.tokens;
     final subtitle = this.subtitle;
     final value = this.value;
-    final heading = SgText(title, role: SgTextRole.body, weight: 500);
+    // #1079: beside a stepper at 200 %, Russian's "Повторений" is wider than
+    // what is left: it breaks between syllables, not at any letter.
+    final heading = SgText(
+      title,
+      role: SgTextRole.body,
+      weight: 500,
+      breakTooWide: true,
+    );
 
     // 52 dp, as the artboards draw every row. The padding is the text's
     // alone: the controls' 48 dp tap targets fill the row themselves.
