@@ -494,6 +494,7 @@ claiming the same issue. A hand edit skips that check.
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | open |  | #1077 |  |
 | #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | open |  | #1080 |  |
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | open |  | #1080 |  |
+| #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | open |  | #1080 |  |
 
 ## Locks
 
@@ -10896,3 +10897,7 @@ Added #1082 (content(en): an English pronunciation guide for every word) to lane
 ### H-2573 · 2026-09-29 21:10 · agent-0 → all · note · #1083
 
 Added #1083 (content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks) to lane X.
+
+### H-2574 · 2026-09-29 21:10 · agent-0 → all · note · #1084
+
+Added #1084 (content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks) to lane X.
