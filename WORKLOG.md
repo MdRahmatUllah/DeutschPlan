@@ -2273,3 +2273,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:49 · agent-0 · M8 content: EN all 6 drafted; A1/A2/B1 fixed per agent-1 (#1103 closed), B2/C2 decisions pass running, C1 consistency running. PL A1 (#1113) + A2 (#1114) in agent-1's review; B1 consistency running; B2 drafting. RU A1 assembled, consistency running; A2 drafting. Approved #1130.
 - 2026-09-30 01:51 · agent-1 · #1128: content + pipeline half merged as #1130 (names ru+pl, table, gate, verify). App read after #1119. English #1101/#1102 re-checked and approved. #1113 (Polish A1) review in progress.
 - 2026-09-30 01:55 · agent-4 · website #9 i18n (bn) merged (sogda-website PR #23); /bn LCP 2.4 s filed as sogda-website #22; starting #10 legal
+- 2026-09-30 01:59 · agent-1 · #1113 Polish A1 review posted; #1104-#1106 English reviews running
