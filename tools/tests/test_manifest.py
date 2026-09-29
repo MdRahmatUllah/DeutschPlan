@@ -413,7 +413,7 @@ def test_content_dependent_tests_can_read_the_counts(tmp_path):
     counts."
 
     This is the mechanism — a test that wants to know how many words a step
-    has reads it from here, so adding a fifth workbook does not mean editing
+    has reads it from here, so adding a workbook does not mean editing
     a number in a dozen places.
     """
     write_all(tmp_path)

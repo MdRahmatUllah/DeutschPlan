@@ -58,7 +58,7 @@ DEFAULT_TIPS = _manifest_tips()
 
 #: Every step must have words. BR-COURSE-01 fixes the list, so a missing step
 #: is a screen the learner can open and find blank. Taken from the pipeline's
-#: own list rather than restated: a fifth workbook that adds a level should
+#: own list rather than restated: another workbook that adds a level should
 #: change one constant, not two.
 EXPECTED_STEPS = len(SUBLEVELS)
 
