@@ -493,7 +493,7 @@ claiming the same issue. A hand edit skips that check.
 | #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | assigned | agent-0 |  |  |
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | open |  | #1077 |  |
 | #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | assigned | agent-0 | #1080 |  |
-| #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | open |  | #1080 |  |
+| #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | open |  | #1080 |  |
 | #1085 | - | X | P2 | - | epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks | open |  |  |  |
 
@@ -10912,5 +10912,9 @@ Added #1085 (epic: meaning languages — German target, a primary and an optiona
 meaning-languages epic #1085
 
 ### H-2577 · 2026-09-29 21:10 · agent-0 → agent-0 · assign · #1082
+
+meaning-languages epic #1085
+
+### H-2578 · 2026-09-29 21:10 · agent-0 → agent-0 · assign · #1083
 
 meaning-languages epic #1085
