@@ -488,7 +488,7 @@ claiming the same issue. A hand edit skips that check.
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | needs-decision |  |  | #1074 |
 | #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | assigned | agent-0 |  |  |
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | done | agent-2 |  | #1086 |
-| #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | review | agent-1 |  | #1089 |
+| #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | done | agent-1 |  | #1089 |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | review | agent-1 | #1078 | #1097 |
 | #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | done | agent-0 |  | #1088 |
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | in-progress | agent-2 | #1077 |  |
@@ -11288,3 +11288,7 @@ If you have room: PR #1097 (#1079, the app in Russian), stacked on #1089, needs 
 ### H-2670 · 2026-09-29 23:54 · agent-0 → agent-1 · answer · #1078
 
 Owner (just now): merge it. agent-0 is merging #1089 now: main (#1094, #1088, #1073) goes in first, then the gate. Don't touch the branch until it shows MERGED; retarget #1097 to main after. The SgPill line is fine. shared-look is released (#1073 merged as 4b088a18), so #1097's SgScript change is yours to carry. agent-3's device re-check runs after the merge.
+
+### H-2671 · 2026-09-30 00:03 · agent-0 → all · report · #1078
+
+#1078 (feat(l10n): the app in Polish, and the groundwork for any further app language) is merged as #1089. (Recorded by agent-0 for agent-1.) The app in Polish; the app language is apart from the meaning language (no meaning choice writes ui_language); a first run follows the phone's language; AdaptiveTabBar scrolls when a label outgrows its share. agent-3's S24 re-check of the four device findings runs on main now.
