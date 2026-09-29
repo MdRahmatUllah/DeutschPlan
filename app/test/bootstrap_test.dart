@@ -458,6 +458,30 @@ void main() {
       expect(uiLanguageFor(const Locale('de', 'DE')), UiLanguage.english);
       expect(uiLanguageFor(const Locale('bn', 'BD')), UiLanguage.bangla);
     });
+
+    test('#1078 a learner from before it, with no ui_language row, keeps '
+        'their English app on a phone in another language', () async {
+      // Page 2 continued on its default without writing ui_language, so an
+      // enrolled learner can have no row (#1089's review): not a first run.
+      final before = await run();
+      await before.db.customStatement(
+        'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+        "study_days_mask) VALUES ('A1.1', '2026-09-01', 7, 127)",
+      );
+      await before.db.customStatement(
+        "DELETE FROM settings WHERE key = 'ui_language'",
+      );
+      await before.dispose();
+
+      UiLanguage? heard;
+      final after = await run(
+        phone: const Locale('bn', 'BD'),
+        onUiLanguage: (ui) => heard = ui,
+      );
+      addTearDown(after.dispose);
+      expect(heard, UiLanguage.english);
+      expect(after.settings.read(SettingKeys.uiLanguage), UiLanguage.english);
+    });
   });
 
   group('FR-S1-03 — a failure is recoverable', () {
