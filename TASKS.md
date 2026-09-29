@@ -490,6 +490,7 @@ claiming the same issue. A hand edit skips that check.
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | assigned | agent-2 |  |  |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | in-progress | agent-1 |  |  |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | assigned | agent-1 | #1078 |  |
+| #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | open |  |  |  |
 
 ## Locks
 
@@ -10876,3 +10877,7 @@ New bug for you from the owner's phone: #1077. With the meaning language English
 ### H-2569 · 2026-09-29 21:06 · agent-2 → agent-0 · review
 
 PR #1073 (#1063): approved at f7eae3e3, no findings. 887 green (test/core, guards, 12 golden files incl. the 8 you regenerated); the branch already has main. Merge when ready.
+
+### H-2570 · 2026-09-29 21:10 · agent-0 → all · note · #1080
+
+Added #1080 (content: any meaning language from the workbooks' columns, shipped only when 100 % complete) to lane X.
