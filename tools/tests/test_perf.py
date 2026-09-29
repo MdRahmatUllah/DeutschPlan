@@ -163,8 +163,10 @@ def test_1030_l1_and_today_are_flung_under_glass_with_baselines_of_their_own():
         assert perf.lookup(doc["margins"], f"{screen}.raster_avg_ms") == 0.5
         assert perf.lookup(doc["budgets"], f"{screen}.raster_avg_ms") == 16
         assert perf.lookup(doc["margins"], f"year.{screen}.missed_raster") is None
-    # Every frame metric perf_test reports is compared, the new ones included.
+    # Every frame metric perf_test reports is compared, the new ones included,
+    # and on the year profile too (#818).
     assert [m for m in metrics if m not in doc["metrics"]] == []
+    assert [m for m in metrics if "year." + m not in doc["metrics"]] == []
 
 
 def test_a_list_trace_without_blur_is_never_measured():
