@@ -489,6 +489,7 @@ claiming the same issue. A hand edit skips that check.
 | #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | assigned | agent-0 |  |  |
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | open |  |  |  |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | open |  |  |  |
+| #1079 | - | X | P2 | - | feat(l10n): the app in Russian | open |  | #1078 |  |
 
 ## Locks
 
@@ -10843,3 +10844,7 @@ Added #1077 (bug(pronunciation): with the meaning language English only, T2 and 
 ### H-2561 · 2026-09-29 20:58 · agent-0 → all · note · #1078
 
 Added #1078 (feat(l10n): the app in Polish, and the groundwork for any further app language) to lane X.
+
+### H-2562 · 2026-09-29 20:58 · agent-0 → all · note · #1079
+
+Added #1079 (feat(l10n): the app in Russian) to lane X.
