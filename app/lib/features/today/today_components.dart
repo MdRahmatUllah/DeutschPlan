@@ -228,6 +228,9 @@ class ProgressRingCard extends StatelessWidget {
                         ).format(parsePlanDate(view.date)),
                       ),
                       role: SgTextRole.body,
+                      // #1079: beside the ring at 200 %, Russian's
+                      // "воскресенье" is wider than the line.
+                      breakTooWide: true,
                     ),
                     Semantics(
                       link: true,

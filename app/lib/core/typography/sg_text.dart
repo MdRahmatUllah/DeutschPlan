@@ -288,7 +288,13 @@ abstract final class SgScript {
   static bool largeTypingInView(BuildContext context) =>
       large(context) && View.of(context).viewInsets.bottom > 0;
 
-  static const String _vowels = 'aeiouyäöüAEIOUYÄÖÜ';
+  // #1078, #1079: Polish's and Russian's too, so the app's own copy in them
+  // breaks between syllables at large text, as German does.
+  static const String _vowels = 'aeiouyäöüAEIOUYÄÖÜąęóĄĘÓаеёиоуыэюяАЕЁИОУЫЭЮЯ';
+
+  /// Russian letters a line must not start with: a break before one goes a
+  /// letter earlier ("се-нье", not "сен-ье").
+  static const String _noLineStart = 'ьъйЬЪЙ';
 
   /// The consonants that can open a German syllable together, besides any
   /// one alone: a break goes before the longest of them that ends a run.
@@ -322,6 +328,9 @@ abstract final class SgScript {
           start = end - length;
           break;
         }
+      }
+      while (start > i && _noLineStart.contains(word[start])) {
+        start--;
       }
       if (start >= 2 && word.length - start >= 2) breaks.add(start);
       i = end;

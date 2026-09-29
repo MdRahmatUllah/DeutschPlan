@@ -10,6 +10,7 @@ extension UiLanguageLocale on UiLanguage {
     UiLanguage.english => const Locale('en'),
     UiLanguage.bangla => const Locale('bn'),
     UiLanguage.polish => const Locale('pl'),
+    UiLanguage.russian => const Locale('ru'),
   };
 
   /// The language's name in itself, the same in every app language (#1078):
@@ -18,6 +19,7 @@ extension UiLanguageLocale on UiLanguage {
     UiLanguage.english => 'English',
     UiLanguage.bangla => 'বাংলা',
     UiLanguage.polish => 'Polski',
+    UiLanguage.russian => 'Русский',
   };
 }
 

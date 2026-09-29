@@ -1049,6 +1049,20 @@ void main() {
       expect(SgScript.allowBreaks('Wohnung'), 'Wohnung');
     });
 
+    test("#1079 the app's Russian and Polish copy breaks between syllables "
+        'too, and never starts a line with ь, ъ or й', () {
+      String shown(String word) => SgScript.allowBreaks(
+        word,
+        threshold: 4,
+      ).replaceAll(SgScript.softHyphen, '|');
+      // The rating bar's labels at 200 %: whole letters were cut before.
+      expect(shown('Хорошо'), 'Хо|ро|шо');
+      expect(shown('Трудно'), 'Труд|но');
+      expect(shown('воскресенье'), 'воск|ре|се|нье');
+      expect(shown('Выходной'), 'Вы|ход|ной');
+      expect(shown('Łatwe'), 'Łat|we');
+    });
+
     test('#405 a long compound breaks where a syllable begins', () {
       String shown(String word) =>
           SgScript.allowBreaks(word).replaceAll(SgScript.softHyphen, '|');

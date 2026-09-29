@@ -86,6 +86,15 @@ void main() {
     locale: const Locale('pl'),
     builder: front,
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'study_front_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    builder: front,
+  );
   // #165: at 200 % text.
   goldenTest(
     'study_front_200',

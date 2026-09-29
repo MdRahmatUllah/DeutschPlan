@@ -41,6 +41,20 @@ void main() {
       child: OnboardingPacePage(onContinue: () {}, onBack: () {}),
     ),
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'onboarding_pace_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    builder: (context) => ProviderScope(
+      overrides: <Override>[
+        courseStepsProvider.overrideWith((ref) async => _shipped),
+      ],
+      child: OnboardingPacePage(onContinue: () {}, onBack: () {}),
+    ),
+  );
 }
 
 const List<CourseStep> _shipped = <CourseStep>[

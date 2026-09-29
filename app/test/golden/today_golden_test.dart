@@ -30,6 +30,16 @@ void main() {
     builder: (context) =>
         ProviderScope(overrides: todayStub(), child: const TodayScreen()),
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'today_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    builder: (context) =>
+        ProviderScope(overrides: todayStub(), child: const TodayScreen()),
+  );
   // #165: at 200 % text.
   goldenTest(
     'today_200',

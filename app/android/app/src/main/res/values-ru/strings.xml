@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">План на сегодня и слово дня</string>
+    <string name="widget_empty">Открой Sogda, чтобы спланировать день</string>
+</resources>

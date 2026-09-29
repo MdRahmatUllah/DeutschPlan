@@ -420,6 +420,9 @@ class MeWordsCard extends StatelessWidget {
             label,
             role: SgTextRole.caption,
             color: tokens.color.textSecondary,
+            // #1079: a third of the card at large text; Russian's "Выучено"
+            // breaks between syllables there, not at any letter.
+            breakTooWide: true,
           ),
         ],
       ),
