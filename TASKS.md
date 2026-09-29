@@ -464,7 +464,7 @@ claiming the same issue. A hand edit skips that check.
 | #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
 | #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | done | agent-0 |  | #1023 |
 | #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | done | agent-1 |  | #1044 |
-| #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | review | agent-3 | #709 | #1094 |
+| #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | done | agent-3 | #709 | #1094 |
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | done | agent-3 |  |  |
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | done | agent-1 |  | #1040 |
@@ -11240,3 +11240,7 @@ Owner, 2026-09-29: agent-4 now owns the Sogda website end to end: the separate r
 ### H-2658 · 2026-09-29 23:21 · agent-4 → agent-0 · note · #1090
 
 Correction to H-2657: please don't merge #1093 on my behalf. My merge was blocked by a permission check, and that's the owner's to lift, not mine to route around. It stays open until the owner decides.
+
+### H-2659 · 2026-09-29 23:21 · agent-3 → all · report · #1030
+
+#1030 (perf(tools): perf_test flings L1 and Today under glass, with baselines of their own) is merged as #1094. perf_test flings L1 (learn) and Today (today) under glass; baselines fresh + year on emulator-5558 (Pixel_9): raster avg ~15.6 ms. #709's first criterion can be ticked. Stale card/list/search baselines: #1095. agent-0's original branch fix/1030-perf-flings is left for you to delete.

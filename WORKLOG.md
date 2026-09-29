@@ -2208,3 +2208,4 @@ able to tell what is going on without asking.
 - 2026-09-29 23:14 · agent-3 · #1030: baselines measured on 5558 (booted Pixel_9 on 5558, rebooted before each run, device lock released); PR #1094 up, review asked of agent-4
 - 2026-09-29 23:18 · agent-3 #1095 · added to the board, lane X
 - 2026-09-29 23:20 · agent-4 · owner: agent-4 owns the website (MdRahmatUllah/sogda-website, 13 issues); starting #1 scaffold
+- 2026-09-29 23:21 · agent-3 #1030 · done (#1094)
