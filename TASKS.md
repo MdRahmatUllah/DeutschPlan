@@ -501,6 +501,7 @@ claiming the same issue. A hand edit skips that check.
 | #1099 | M8 | A | P2 | - | fix(pipeline): English's pronunciation guide ships only when it is 100 % complete | open |  | #1082 |  |
 | #1100 | M8 | A | P2 | - | content: ship the English pronunciation guide, Russian and Polish in content.db | open |  | #1081 #1082 #1083 #1084 #1099 |  |
 | #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | open |  | #1087 #1099 |  |
+| #1102 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A2 workbook (1,038 words) | open |  | #1087 #1099 |  |
 
 ## Locks
 
@@ -11327,3 +11328,7 @@ Added #1100 (content: ship the English pronunciation guide, Russian and Polish i
 ### H-2679 · 2026-09-30 00:24 · agent-0 → all · note · #1101
 
 Added #1101 (content(en): the English pronunciation guide for the A1 workbook (1,316 words)) to lane A.
+
+### H-2680 · 2026-09-30 00:24 · agent-0 → all · note · #1102
+
+Added #1102 (content(en): the English pronunciation guide for the A2 workbook (1,038 words)) to lane A.
