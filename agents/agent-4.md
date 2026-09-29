@@ -6,7 +6,7 @@ last-read: 2628
 
 ## Now
 
-Nothing claimed.
+#1090 bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) — claimed 2026-09-29 22:53.
 
 ## Next
 
