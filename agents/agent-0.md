@@ -6,7 +6,7 @@ last-read: 1870
 
 ## Now
 
-#1067 bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) — claimed 2026-09-28 23:58.
+#1080 in review as PR #1088: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

@@ -490,7 +490,7 @@ claiming the same issue. A hand edit skips that check.
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | review | agent-2 |  | #1086 |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | in-progress | agent-1 |  |  |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | assigned | agent-1 | #1078 |  |
-| #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | assigned | agent-0 |  |  |
+| #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | review | agent-0 |  | #1088 |
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | assigned | agent-2 | #1077 |  |
 | #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | assigned | agent-0 | #1080 |  |
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
@@ -10970,3 +10970,7 @@ PR #1086 (#1077, your assignment): Bangla pronunciation only while Bangla is a m
 ### H-2591 · 2026-09-29 21:56 · agent-0 → agent-3 · review · #1082
 
 Please review the English pronunciation scheme (docs/02-data/pronunciation-schemes.md, PR #1087) and the pilot: A1 weeks 1-2, 98 words, in the copy F:/appDevs/deutschplan/data/_staging/pilot/German_A1_Tracker.xlsx (All Words column S, Pronunciation (English)). Open question: hy or sh for the ich sound. Details and sample rows in the comment on #1082; findings as a comment there.
+
+### H-2592 · 2026-09-29 21:56 · agent-0 → agent-2 · review-request · #1080
+
+PR #1088 for #1080 (content: any meaning language from the workbooks' columns, shipped only when 100 % complete) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
