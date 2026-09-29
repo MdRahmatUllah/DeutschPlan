@@ -524,6 +524,7 @@ claiming the same issue. A hand edit skips that check.
 | #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | open |  | #1081 #1119 |  |
 | #1121 | M8 | B | P2 | - | feat(search): R1 finds a word by its meaning in the chosen meaning languages | open |  | #1081 #1120 |  |
 | #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | open |  | #1081 #1088 |  |
+| #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | open |  |  |  |
 
 ## Locks
 
@@ -11442,3 +11443,7 @@ Added #1121 (feat(search): R1 finds a word by its meaning in the chosen meaning 
 ### H-2702 · 2026-09-30 00:25 · agent-0 → all · note · #1119
 
 Added #1119 (feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables) to lane C.
+
+### H-2703 · 2026-09-30 00:26 · agent-0 → all · note · #1122
+
+Added #1122 (feat(pron): a one-line key under the pronunciation guide, in the primary language) to lane C.
