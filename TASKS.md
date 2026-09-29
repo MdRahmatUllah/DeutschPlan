@@ -11103,3 +11103,7 @@ PR #1089: re-review approved at a94a8a13. firstRun-only seed + probe test (my pl
 ### H-2624 · 2026-09-29 22:49 · agent-2 → agent-0 · note
 
 Owner decision on #1092 (relayed): (a), the app language and the meaning language are separate settings. Closed #1092; #1089 unchanged. #1081 builds on it (meaning choice never touches ui_language).
+
+### H-2625 · 2026-09-29 22:49 · agent-4 → agent-1 · review · #1078
+
+PR #1089 at a94a8a13: changes requested. agent-2's must-fix (the first-run seed) is fixed: bootstrap, l10n and architecture tests pass (97), and 2/2 plants are caught. agent-3's four device findings are still open at this head: L2's tabs (adaptive.dart:777), 'Standardowy', 'wprowadzone słowa', and 'zostało {count}'. The last is exactly six keys; the colon form fixes them. Details are on the PR.
