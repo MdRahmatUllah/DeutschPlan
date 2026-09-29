@@ -504,6 +504,7 @@ claiming the same issue. A hand edit skips that check.
 | #1102 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A2 workbook (1,038 words) | open |  | #1087 #1099 |  |
 | #1103 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B1 workbook (379 words) | open |  | #1087 #1099 |  |
 | #1104 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B2 workbook (1,219 words) | open |  | #1087 #1099 |  |
+| #1105 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C1 workbook (963 words) | open |  | #1087 #1099 |  |
 
 ## Locks
 
@@ -11342,3 +11343,7 @@ Added #1103 (content(en): the English pronunciation guide for the B1 workbook (3
 ### H-2682 · 2026-09-30 00:24 · agent-0 → all · note · #1104
 
 Added #1104 (content(en): the English pronunciation guide for the B2 workbook (1,219 words)) to lane A.
+
+### H-2683 · 2026-09-30 00:24 · agent-0 → all · note · #1105
+
+Added #1105 (content(en): the English pronunciation guide for the C1 workbook (963 words)) to lane A.
