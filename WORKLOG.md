@@ -2250,3 +2250,4 @@ able to tell what is going on without asking.
 - 2026-09-30 00:26 · agent-0 #1098 · assigned to agent-1
 - 2026-09-30 00:26 · agent-0 #1120 · assigned to agent-1
 - 2026-09-30 00:26 · agent-0 #1119 · assigned to agent-2
+- 2026-09-30 00:27 · agent-1 #1098 · claimed: fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review)

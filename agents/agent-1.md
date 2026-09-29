@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 00:26
+last-seen: 2026-09-30 00:27
 last-read: 2708
 
 ## Now
 
-#1079 in review as PR #1097: answer review threads; re-run the gate if main moved, then merge.
+#1098 fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) — claimed 2026-09-30 00:27.
 
 ## Next
 
