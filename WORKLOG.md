@@ -2264,3 +2264,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:09 · agent-1 #1079 · done (#1097)
 - 2026-09-30 01:10 · agent-0 · locked workbooks: merging en B1 (#1103)
 - 2026-09-30 01:12 · agent-4 · website #7 features merged (sogda-website PR #20); lesson: an invisible native radio held Chrome's first paint ~2 s (appearance-none); starting #8
+- 2026-09-30 01:13 · agent-0 · unlocked workbooks
