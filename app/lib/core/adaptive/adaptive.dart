@@ -783,13 +783,27 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
   }
 
   /// Whether every label fits an equal share of [width], with the tab's own
-  /// 16 dp a side (`kTabLabelPadding`).
+  /// 16 dp a side (`kTabLabelPadding`), measured as `SgChromeLabel` draws
+  /// it: Bangla a role up.
   bool _fit(BuildContext context, TextStyle style, double width) {
     if (!width.isFinite) return true;
     final share = width / widget.tabs.length - 32;
+    final larger = SgTextRole.label.oneStepLarger.token(
+      context.tokens.typography,
+    );
     for (final label in widget.tabs.values) {
       final painter = TextPainter(
-        text: TextSpan(text: label, style: style),
+        text: TextSpan(
+          style: style,
+          children: SgScript.spans(
+            label,
+            latin: const TextStyle(),
+            bengali: TextStyle(
+              fontSize: larger.size,
+              height: larger.heightFactor,
+            ),
+          ),
+        ),
         textDirection: Directionality.of(context),
         textScaler: MediaQuery.textScalerOf(context),
         maxLines: 1,
