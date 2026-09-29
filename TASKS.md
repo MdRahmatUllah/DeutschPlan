@@ -500,6 +500,7 @@ claiming the same issue. A hand edit skips that check.
 | #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | open |  |  |  |
 | #1099 | M8 | A | P2 | - | fix(pipeline): English's pronunciation guide ships only when it is 100 % complete | open |  | #1082 |  |
 | #1100 | M8 | A | P2 | - | content: ship the English pronunciation guide, Russian and Polish in content.db | open |  | #1081 #1082 #1083 #1084 #1099 |  |
+| #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | open |  | #1087 #1099 |  |
 
 ## Locks
 
@@ -11322,3 +11323,7 @@ Added #1099 (fix(pipeline): English's pronunciation guide ships only when it is 
 ### H-2678 · 2026-09-30 00:24 · agent-0 → all · note · #1100
 
 Added #1100 (content: ship the English pronunciation guide, Russian and Polish in content.db) to lane A.
+
+### H-2679 · 2026-09-30 00:24 · agent-0 → all · note · #1101
+
+Added #1101 (content(en): the English pronunciation guide for the A1 workbook (1,316 words)) to lane A.
