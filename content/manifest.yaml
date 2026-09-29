@@ -3,14 +3,13 @@
 # Order matters: it is the fallback level order for grammar rows that do not
 # name a level of their own (content-pipeline.md).
 #
-# Paths are relative to the repository root; the workbooks live in data/. Adding a fifth workbook is four
-# steps — see "Adding a fifth workbook" in docs/02-data/content-pipeline.md.
+# Paths are relative to the repository root; the workbooks live in data/. Adding a workbook is four
+# steps — see "Adding a workbook" in docs/02-data/content-pipeline.md.
 
 workbooks:
-  - file: data/German_B1_Tracker.xlsx # contains A1, A2, B1 (level per word row)
-    # Columns this book never had. Any other column one book lacks and
-    # another has stops the build: it is a renamed header (#714).
-    without: [collocations, synonyms_register]
+  - file: data/German_A1_Tracker.xlsx
+  - file: data/German_A2_Tracker.xlsx
+  - file: data/German_B1_Tracker.xlsx
   - file: data/German_B2_Tracker.xlsx
   - file: data/German_C1_Tracker.xlsx
   - file: data/German_C2_Tracker.xlsx

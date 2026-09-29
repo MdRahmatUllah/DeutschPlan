@@ -254,8 +254,9 @@ def resolve_grammar_levels(rows: Iterable, fallback: str) -> None:
     """Fills in the level for grammar rows that name none.
 
     The fallback is the last (highest) level of the workbook the row came
-    from: an unlabelled topic in German_B1_Tracker is a B1 topic, since that
-    book carries A1 and A2 on the way to B1 (`excel_to_sqlite.derive`).
+    from: an unlabelled topic in a book carrying A1 and A2 on the way to B1
+    (as the combined tracker did until it was split) is a B1 topic
+    (`excel_to_sqlite.derive`).
     """
     for row in rows:
         if not getattr(row, "level", None):

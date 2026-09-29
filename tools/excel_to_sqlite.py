@@ -72,7 +72,7 @@ DEFAULT_PREVIOUS = REPO_ROOT / "app" / "assets" / "db"
 # contract, and it is why a missing required header is a hard failure rather
 # than a silent None.
 #
-# Several headers have drifted across the four workbooks, so each field lists
+# Several headers have drifted across the workbooks, so each field lists
 # every spelling seen. The first is the canonical one the doc names.
 HEADER_MAP: dict[str, list[str]] = {
     "article": ["Article"],
@@ -634,9 +634,9 @@ def derive(
     for source in sources:
         # content-pipeline.md: the manifest order is the fallback level order,
         # which points at the book rather than at its earliest level. An
-        # unlabelled topic in German_B1_Tracker is a B1 topic — that book
-        # carries A1 and A2 on the way to B1, and filing the topic under A1
-        # would teach it in the very first step.
+        # unlabelled topic in a book carrying A1 and A2 on the way to B1 (as
+        # the combined tracker did until it was split) is a B1 topic, and
+        # filing the topic under A1 would teach it in the very first step.
         levels_here = [
             lvl for lvl in LEVELS if any(w.level == lvl for w in source.words)
         ]
