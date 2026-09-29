@@ -321,6 +321,18 @@ void main() {
     for (final MapEntry(key: count, value: words) in want.entries) {
       expect(pl.onboardingStepWords(count), words, reason: '$count');
     }
+    // A count with no plural of its own is said without a verb to agree:
+    // "zostało 3" is wrong Polish (the S24 check, #1089).
+    for (final count in <int>[1, 3, 22]) {
+      for (final line in <String>[
+        pl.todayContinue(count),
+        pl.learnTodayLeft(count),
+        pl.widgetLeft(count),
+      ]) {
+        expect(line, isNot(contains('ostało')), reason: line);
+        expect(line.toLowerCase(), contains('jeszcze $count'), reason: line);
+      }
+    }
   });
 
   group('#684 #696 CD-2 Bangla names things as the Bangla UI shows them', () {
