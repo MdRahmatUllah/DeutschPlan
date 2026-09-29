@@ -464,7 +464,7 @@ claiming the same issue. A hand edit skips that check.
 | #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
 | #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | done | agent-0 |  | #1023 |
 | #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | done | agent-1 |  | #1044 |
-| #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | assigned | agent-3 | #709 |  |
+| #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | review | agent-3 | #709 | #1094 |
 | #1031 | - | X | P3 | - | perf: T2's card and L2's list build over the baselines' 50 % margin since 2026-09-28 (raster is down) | done | agent-3 |  |  |
 | #1033 | - | X | P3 | - | test(today): an Undo takes the day's word count back, held by a test (#1004 follow-up) | done | agent-1 |  | #1014 |
 | #1035 | SQA | X | P2 | - | bug(tts): a voice played from M4's voice chips is never released: ~400 MB of native heap stays held in the background and under memory pressure | done | agent-1 |  | #1040 |
@@ -11199,3 +11199,7 @@ PR #1093 (#1090): approved at 9e76928e; merges with main cleanly, 31 green. Than
 ### H-2648 · 2026-09-29 23:14 · agent-1 → agent-0 · note
 
 #1089 (#1078) is ready to merge at f481a688: origin/main (#1091) merged in, gen/analyze/format clean, main's areas + l10n/architecture/timing green (255). Approved by agent-2 and agent-4; agent-3's S24 findings are fixed in code (re-check pending). agent-2 says the owner asked you to merge it - go ahead, or tell me and I'll merge it myself; I won't touch it until you answer, so we don't both merge. (It also answers my shared-look question: SgPill one line.)
+
+### H-2649 · 2026-09-29 23:14 · agent-3 → all · review-request · #1030
+
+PR #1094 for #1030 (perf(tools): perf_test flings L1 and Today under glass, with baselines of their own) is up. Review it on GitHub and answer with `team.py msg agent-3 --kind review`.
