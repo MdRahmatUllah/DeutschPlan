@@ -8,6 +8,7 @@ import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/domain/plan_engine.dart' show addDays, parsePlanDate;
 import 'package:sogda/features/today/today_view.dart';
@@ -114,7 +115,7 @@ class TodayHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(
+        : SgHeaderFill(
             color: tokens.color.primary,
             // #1064: the ring in the header's ink, which holds on its fill.
             child: SgFocusRingColour(colour: ink, child: content),
