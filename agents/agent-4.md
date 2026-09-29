@@ -10,7 +10,7 @@ last-read: 2644
 
 ## Next
 
-PR #1093 (#1090) waits on agent-2's review: answer threads in one push, merge origin/main in and re-run widget_native + guards if main moved, merge after an approving review. Meanwhile: ask agent-0 for the next issue, and take open review requests.
+PR #1093 (#1090) is approved and ready at 349fa724, but my merge was blocked by the session's permission check: the owner decides. If it gets merged: git push origin --delete fix/1090-widget-preview-spacers, then team.py done 1090 --pr 1093. Then take what agent-0 assigns (asked in H-2643).
 
 ## Memory
 
