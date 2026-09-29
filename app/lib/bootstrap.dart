@@ -212,19 +212,6 @@ Future<BootstrapResult> bootstrap({
     await db.fileSchemaVersion();
     opened = db;
 
-    // #1078: a first run starts in the phone's language when Sogda speaks
-    // it. Written once, so the phone never overrides the learner's choice.
-    await SettingsRepository.seed(
-      db,
-      SettingKeys.uiLanguage,
-      uiLanguageFor(phoneLocale ?? PlatformDispatcher.instance.locale),
-    );
-    // One row, not the settings step: FR-S1-01 keeps its order, and only the
-    // splash needs this early.
-    onUiLanguage?.call(
-      await SettingsRepository.peek(db, SettingKeys.uiLanguage),
-    );
-
     step = BootstrapStep.content;
     final content = ContentDao(db);
     final updater = ContentUpdater(db, content);
@@ -234,6 +221,23 @@ Future<BootstrapResult> bootstrap({
     // yes. A first start's copy is the splash's own caption; only a course
     // that was there is being updated.
     final firstRun = !(await content.installedFile()).existsSync();
+
+    // #1078: a first run starts in the phone's language when Sogda speaks
+    // it. Only a first run: before #1078 page 2 continued on its default
+    // without writing `ui_language`, so a learner with no row has an English
+    // app, and an update must not turn it into the phone's (#1089's review).
+    if (firstRun) {
+      await SettingsRepository.seed(
+        db,
+        SettingKeys.uiLanguage,
+        uiLanguageFor(phoneLocale ?? PlatformDispatcher.instance.locale),
+      );
+    }
+    // One row, not the settings step: FR-S1-01 keeps its order, and only the
+    // splash needs this early, before the course is copied in.
+    onUiLanguage?.call(
+      await SettingsRepository.peek(db, SettingKeys.uiLanguage),
+    );
 
     // Attach first: on a first run this is what writes the asset to disk, and
     // the updater's replace path detaches before it renames.

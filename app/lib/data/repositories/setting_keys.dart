@@ -172,6 +172,16 @@ enum MeaningLanguage { english, bangla, both }
 /// `ui_language_locale.dart`, and its ARB.
 enum UiLanguage { english, bangla, polish, russian }
 
+/// #1077: whether Bangla is one of the meaning languages. The Bangla
+/// pronunciation shows only then, whatever `show_pron_bn` says: the switch
+/// is the learner's choice within Bangla, and an English-only learner may
+/// read no Bangla at all, however the language was set (setup, M3, an
+/// import, a reset). Its own extension since #1078 took the meaning's
+/// hold on the app language away.
+extension MeaningLanguageBangla on MeaningLanguage {
+  bool get hasBangla => this != MeaningLanguage.english;
+}
+
 /// `system` follows the platform; the other three are the modes in
 /// `theming.md`.
 enum ThemeModeSetting { system, light, dark, glass }
