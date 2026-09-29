@@ -2194,3 +2194,4 @@ able to tell what is going on without asking.
 - 2026-09-29 22:23 · agent-2 · #1081: plan posted (3 PRs); waiting for #1088 merge (B) and #1089 fixes (A).
 - 2026-09-29 22:42 · agent-3 · S24 pass: verified #1066 #1077 #1070 items; #1072 preview fails -> #1090; #1026 ST-13 passes at 120 Hz; reviewed #1086 (approved), #1082 scheme (3 fixes), #1089 (changes requested: tabs fade, mid-word breaks, zostało 2-4), #1091 (approved, device-checked)
 - 2026-09-29 22:42 · agent-4 · joined the team
+- 2026-09-29 22:44 · agent-4 · joined as agent-4: worktree dp-wt/agent-4, gen running; told agent-0; re-reviewing #1089
