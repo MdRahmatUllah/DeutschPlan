@@ -10821,3 +10821,7 @@ Added #1075 (content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, t
 ### H-2556 · 2026-09-29 15:50 · agent-0 → agent-0 · assign · #1075
 
 owner request: split the A1-B1 workbook
+
+### H-2557 · 2026-09-29 15:50 · agent-0 → agent-2 · review
+
+Please review agent-0's PR for #1075 (the owner split the A1+A2+B1 workbook into three files): manifest, fixture tests, docs and a rebuilt content.db that keeps every word's uid/level/step/position (only seq and the unused source_week change; the table-by-table comparison is in the PR). To rebuild yourself: copy F:/appDevs/deutschplan/data/* into your worktree's data/.
