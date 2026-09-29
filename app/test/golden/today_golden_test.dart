@@ -2,6 +2,8 @@
 // so there is no parent scope for the lint's dependency list to describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
+import 'dart:ui' show Locale;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sogda/features/today/today_screen.dart';
 
@@ -15,6 +17,16 @@ import 'golden_harness.dart';
 void main() {
   goldenTest(
     'today',
+    builder: (context) =>
+        ProviderScope(overrides: todayStub(), child: const TodayScreen()),
+  );
+  // #1078: in Polish, as a Polish phone's first run shows it.
+  goldenTest(
+    'today_pl',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('pl'),
     builder: (context) =>
         ProviderScope(overrides: todayStub(), child: const TodayScreen()),
   );

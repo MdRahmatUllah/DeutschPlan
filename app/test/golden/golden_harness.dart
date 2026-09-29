@@ -146,6 +146,9 @@ Widget goldenApp({
 /// [still] false lets a one-off animation play — T6's confetti, which the
 /// artboard draws at rest. Only for modes without a drifting aurora: it
 /// never settles.
+///
+/// [locale] draws the goldens in that app language (#1078), as the phone's:
+/// the harness's app follows the phone, as a first run's does.
 void goldenTest(
   String name, {
   required WidgetBuilder builder,
@@ -157,24 +160,26 @@ void goldenTest(
   List<Override>? overrides,
   bool textAudit = true,
   double? textScale,
-  // Why a case sits out the audit's Bangla pass (#581): only an iOS case,
-  // iOS being Later (the owner, 2026-09-26), with its issue.
-  String? noBanglaAudit,
+  Locale? locale,
+  // Why a case sits out the audit's translated passes (#581, #1078): only an
+  // iOS case, iOS being Later (the owner, 2026-09-26), with its issue.
+  String? noLocaleAudit,
 }) {
   // #165: the same screen at 150 % and 200 % text, on the phone in light:
   // nothing cut, no word broken mid-word, no layout error. The text size is
   // the axis here, not the theme; one golden per screen and chrome carries
   // it, so a variant that only restages a state can opt out.
-  // The Bangla pass's one escape is an iOS case, iOS being Later (#581).
-  assert(noBanglaAudit == null || chrome == AdaptiveChrome.cupertino);
+  // A translated pass's one escape is an iOS case, iOS being Later (#581).
+  assert(noLocaleAudit == null || chrome == AdaptiveChrome.cupertino);
   if (textAudit) {
     // #581: in Bangla too, whose copy is a role larger (`theming.md`) and
     // which half the learners read; English never showed #580's failures.
-    for (final locale in <Locale?>[null, const Locale('bn')]) {
+    // #1078: and in every app language after it: Polish runs ~25 % longer.
+    for (final locale in <Locale?>[null, ...supportedLocales.skip(1)]) {
       for (final scale in textAuditScales) {
         final unaudited = locale == null || scale != textAuditScales.last
             ? null
-            : noBanglaAudit;
+            : noLocaleAudit;
         testWidgets(
           '$name · text ${(scale * 100).round()} %'
           '${locale == null ? '' : ' · ${locale.languageCode}'}'
@@ -230,6 +235,10 @@ void goldenTest(
         (tester) async {
           // #165: a golden at a learner's larger text size.
           if (textScale != null) textAt(tester, textScale);
+          if (locale != null) {
+            tester.platformDispatcher.localesTestValue = <Locale>[locale];
+            addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+          }
           await tester.pumpGolden(
             builder: builder,
             mode: mode,

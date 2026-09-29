@@ -127,4 +127,34 @@ void main() {
       isTrue,
     );
   });
+
+  test('#1090 the widget\'s own layouts use only the classes RemoteViews '
+      'inflates, so the picker never says "Couldn\'t add widget."', () {
+    // developer.android.com/develop/ui/views/appwidgets/layouts: anything
+    // else, a plain View included, fails LayoutInflater's filter.
+    // The last four since Android 12.
+    const allowed =
+        'FrameLayout LinearLayout RelativeLayout GridLayout AnalogClock Button '
+        'Chronometer ImageButton ImageView ProgressBar TextClock TextView '
+        'ViewStub AdapterViewFlipper GridView ListView StackView ViewFlipper '
+        'CheckBox RadioButton RadioGroup Switch';
+    final info = File('android/app/src/main/res/xml/sogda_widget_info.xml')
+        .readAsStringSync();
+    // initialLayout is Glance's own; only the layouts in res/ are ours.
+    final ours = [
+      for (final m in RegExp(r'@layout/(\w+)').allMatches(info))
+        File('android/app/src/main/res/layout/${m.group(1)}.xml'),
+    ].where((f) => f.existsSync()).toList();
+    expect(ours, isNotEmpty);
+    for (final file in ours) {
+      final tags = RegExp(r'<([A-Za-z][\w.]*)')
+          .allMatches(file.readAsStringSync())
+          .map((m) => m.group(1));
+      expect(
+        tags.where((t) => !allowed.split(' ').contains(t)),
+        isEmpty,
+        reason: file.path,
+      );
+    }
+  });
 }

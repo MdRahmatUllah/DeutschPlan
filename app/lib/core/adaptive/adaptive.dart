@@ -763,6 +763,65 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
       );
     }
     final keys = widget.tabs.keys.toList();
+    // 14 on the artboard, between the label and body roles.
+    final labelStyle = SgText.styleFor(
+      tokens,
+      SgTextRole.label,
+    ).copyWith(fontSize: 14);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Past 130 % text, four labels no longer fit a phone's width and the
+        // fixed tabs faded them to "Word", "Gram" (#314): they scroll
+        // instead. So does a bar whose labels don't fit an equal share of it
+        // at any size (#1078): Polish's "Gramatyka" on a 384 dp phone.
+        final scroll =
+            SgScript.large(context) ||
+            !_fit(context, labelStyle, constraints.maxWidth);
+        return _bar(context, keys, labelStyle, scroll: scroll);
+      },
+    );
+  }
+
+  /// Whether every label fits an equal share of [width], with the tab's own
+  /// 16 dp a side (`kTabLabelPadding`), measured as `SgChromeLabel` draws
+  /// it: Bangla a role up.
+  bool _fit(BuildContext context, TextStyle style, double width) {
+    if (!width.isFinite) return true;
+    final share = width / widget.tabs.length - 32;
+    final larger = SgTextRole.label.oneStepLarger.token(
+      context.tokens.typography,
+    );
+    for (final label in widget.tabs.values) {
+      final painter = TextPainter(
+        text: TextSpan(
+          style: style,
+          children: SgScript.spans(
+            label,
+            latin: const TextStyle(),
+            bengali: TextStyle(
+              fontSize: larger.size,
+              height: larger.heightFactor,
+            ),
+          ),
+        ),
+        textDirection: Directionality.of(context),
+        textScaler: MediaQuery.textScalerOf(context),
+        maxLines: 1,
+      )..layout();
+      final wide = painter.width > share;
+      painter.dispose();
+      if (wide) return false;
+    }
+    return true;
+  }
+
+  Widget _bar(
+    BuildContext context,
+    List<T> keys,
+    TextStyle labelStyle, {
+    required bool scroll,
+  }) {
+    final tokens = context.tokens;
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: tokens.surface.outline)),
@@ -770,19 +829,11 @@ class _AdaptiveTabBarState<T extends Object> extends State<AdaptiveTabBar<T>>
       child: TabBar(
         controller: _controller,
         onTap: (index) => widget.onChanged(keys[index]),
-        // Past 130 % text, four labels no longer fit a phone's width and the
-        // fixed tabs faded them to "Word", "Gram" (#314): they scroll instead.
-        // ponytail: a threshold, not a measurement; measure the labels if a
-        // bar with other labels or counts needs it.
-        isScrollable: SgScript.large(context),
-        tabAlignment: SgScript.large(context) ? TabAlignment.start : null,
+        isScrollable: scroll,
+        tabAlignment: scroll ? TabAlignment.start : null,
         labelColor: tokens.color.ink,
         unselectedLabelColor: tokens.color.textSecondary,
-        // 14 on the artboard, between the label and body roles.
-        labelStyle: SgText.styleFor(
-          tokens,
-          SgTextRole.label,
-        ).copyWith(fontSize: 14),
+        labelStyle: labelStyle,
         indicator: UnderlineTabIndicator(
           borderSide: BorderSide(color: tokens.color.ink, width: 3),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),

@@ -10,8 +10,8 @@
 
 | Page | Content | Setting written |
 | --- | --- | --- |
-| 1 Welcome | Three points: offline · exam-structured 12 steps · progress stays on the phone. Button *Let's start*; under it the link *Restore a backup* (#822, below) | — (a restore: the file's) |
-| 2 Meaning language | Cards English / বাংলা / Both with sample `die Wohnung → …`; note "This also sets the app language". The Bangla pronunciation follows: off for English only, on for বাংলা or Both (#527) | `meaning_language`, `ui_language`, `show_pron_bn` |
+| 1 Welcome | The app language first (#1078): a caption *App language* over one chip per language, each named in itself (English · বাংলা · Polski), the current one ticked; a tap switches the whole app at once, this page included. Then three points: offline · exam-structured 12 steps · progress stays on the phone. Button *Let's start*; under it the link *Restore a backup* (#822, below) | `ui_language` (a restore: the file's) |
+| 2 Meaning language | Cards English / বাংলা / Both with sample `die Wohnung → …`; note "You can change it later in Settings." The meaning language alone: page 1 set the app's, and Polish screens with English meanings stay Polish (#1078). The Bangla pronunciation follows: off for English only, on for বাংলা or Both (#527) | `meaning_language`, `show_pron_bn` |
 | 3 Starting point | 12 step chips in level rows with word counts (A1.1 pre-selected); link *Not sure? Take a 3-minute check* → S3 | chosen step |
 | 4 Daily pace | New words slider 3–30 (in restart setup Settings' 1–50, where the learner's pace may already be: the owner, 2026-09-28, #1011 ME-4) with live estimate "A1.1 takes about 91 days at 7 words a day" (637 words; the artboard's 69 counted 480); presets Relaxed 5 · Steady 7 · Intensive 15; revisions stepper (10) with note "Due cards beyond this wait for tomorrow"; weekday chips | `daily_new`, `revise_count`, `study_days_mask` |
 | 5 Reminder & voice | Reminder switch (off) + time 19:30, note about permission; *Hear it: „Guten Tag!"* (system voice); Supertonic card (its size from the model manifest, about 400 MB, #245; Wi-Fi only, the default voice style F1) with *Download now* / *Later*; button *Start learning* | `reminder_*`, starts download |
@@ -34,6 +34,8 @@
 **Restore a backup (#822, the owner's decision).** Page 1's link, for a learner moving phones, before setup writes a setting of its own: the system file picker, then the file becomes this phone's data, as M6's *Replace* (`export-import.md`, FR-M6-04) in one transaction, with no confirm (there is nothing on the phone yet to lose). A file with a step opens Today and skips the rest of setup; a file with none carries on to page 2. A file that isn't a Sogda export, or is from a newer Sogda, writes nothing and says so over *Let's start* (M6's words); so does an import that fails. Backing out of the picker does nothing. Restart setup never shows it: there it would replace the learner's progress.
 
 **Business rules.** BR-COURSE-04, BR-PLAN-08.
+
+**First run (#1078).** Before page 1 draws, the app language is the phone's when Sogda speaks it (English, বাংলা, Polski; `bootstrap` writes `ui_language` once, if it has no value), and English otherwise. A phone set to Polish opens setup in Polish; the learner's choice after is never overridden.
 
 **States.** Restart-setup mode hides page 1 and pre-fills current values; page 5's card reads the voice's real state, as above.
 

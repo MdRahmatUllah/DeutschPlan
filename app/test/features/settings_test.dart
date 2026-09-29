@@ -405,9 +405,26 @@ void main() {
     expect(settings.read(SettingKeys.uiLanguage), UiLanguage.english);
 
     await choose(l10n.settingsMeaning, l10n.settingsEnglish);
-    await choose(l10n.settingsUiLanguage, l10n.settingsBangla);
+    await choose(l10n.settingsUiLanguage, 'বাংলা');
     expect(settings.read(SettingKeys.uiLanguage), UiLanguage.bangla);
     expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.english);
+  });
+
+  testWidgets('#1078 M3 lists every app language, each named in itself', (
+    tester,
+  ) async {
+    await pump(tester);
+    expect(find.text('English'), findsOneWidget, reason: "the row's value");
+
+    await tester.tap(find.text(l10n.settingsUiLanguage));
+    await tester.pumpAndSettle();
+    for (final name in <String>['English', 'বাংলা', 'Polski']) {
+      expect(find.text(name), findsWidgets, reason: name);
+    }
+    await tester.tap(find.text('Polski'));
+    await tester.pumpAndSettle();
+    expect(settings.read(SettingKeys.uiLanguage), UiLanguage.polish);
+    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.both);
   });
 
   testWidgets('#537 #1077 FR-M3-04 the Bangla pronunciation switch is offered '

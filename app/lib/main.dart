@@ -422,7 +422,10 @@ Widget appFor(
 };
 
 /// Supported UI languages, English first — see `supportedLocales` in [SogdaApp].
-const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('bn')];
+/// Every [UiLanguage], so a new one needs no edit here (#1078).
+final List<Locale> supportedLocales = <Locale>[
+  for (final language in UiLanguage.values) language.locale,
+];
 
 /// The delegates every `MaterialApp` here takes — not gen_l10n's own list.
 ///

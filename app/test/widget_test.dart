@@ -119,11 +119,10 @@ void main() {
     );
   });
 
-  testWidgets('the app speaks ui_language, and page 2 changes it at once', (
-    tester,
-  ) async {
-    // S2 page 2: "This also sets the app language." Without `locale:` the
-    // setting was stored and nothing read it — the app followed the phone.
+  testWidgets('#1078 the app speaks ui_language, page 1 changes it at once, '
+      'and page 2 leaves it', (tester) async {
+    // Without `locale:` the setting was stored and nothing read it — the app
+    // followed the phone.
     await pumpApp(tester);
     Locale? locale() =>
         tester.widget<MaterialApp>(find.byType(MaterialApp)).locale;
@@ -132,18 +131,19 @@ void main() {
     final container = ProviderScope.containerOf(
       tester.element(find.byType(MaterialApp)),
     );
-    unawaited(
-      container
-          .read(languagesProvider.notifier)
-          .chooseMeaning(MeaningLanguage.bangla),
-    );
+    final languages = container.read(languagesProvider.notifier);
+    unawaited(languages.setUi(UiLanguage.polish));
     await tester.pump();
 
-    expect(locale(), const Locale('bn'));
+    expect(locale(), const Locale('pl'));
     expect(
       AppLocalizations.of(tester.element(find.byType(AppShell))).localeName,
-      'bn',
+      'pl',
     );
+
+    unawaited(languages.chooseMeaning(MeaningLanguage.bangla));
+    await tester.pump();
+    expect(locale(), const Locale('pl'), reason: 'the meaning moved alone');
   });
 
   testWidgets('#166 the meaning language and the app language switch apart, '

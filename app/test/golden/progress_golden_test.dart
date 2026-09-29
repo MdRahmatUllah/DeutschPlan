@@ -31,6 +31,15 @@ void main() {
   );
 
   goldenTest('progress', builder: screen);
+  // #1078: in Polish, as a Polish phone's first run shows it.
+  goldenTest(
+    'progress_pl',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('pl'),
+    builder: screen,
+  );
   // #1060: the Month range, its last label ("28 Sep") inside the card.
   goldenTest(
     'progress_month',
