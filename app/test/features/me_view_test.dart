@@ -55,7 +55,8 @@ VALUES (?, 'A0.9', 'A1', ?, ?, ?, ?, ?, ?, 'vocab')
     // A1.1 since the 1st, at 7 a day. Two new words from last week still
     // open — one of them skipped — one done, and today's two not started.
     await db.customStatement(
-      "INSERT INTO enrollments VALUES ('A1.1', '2026-09-01', 7, 127, NULL)",
+      "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+      "study_days_mask, completed_on) VALUES ('A1.1', '2026-09-01', 7, 127, NULL)",
     );
     await settings.write(
       SettingKeys.lastPlannedDate,

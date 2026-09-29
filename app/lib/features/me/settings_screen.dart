@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -7,6 +9,7 @@ import 'package:sogda/core/components/sg_slider.dart';
 import 'package:sogda/core/components/sg_stepper.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -77,6 +80,16 @@ class SettingsEditor extends _$SettingsEditor {
         .read(setupRepositoryProvider)
         .setStudyDays(mask, today: ref.read(todayProvider));
   }
+
+  /// FR-M5-01: [day] (0 is Monday) switched against the mask as it is now,
+  /// not the one M5 was drawn with: two quick taps are two days (#692 ME-9).
+  // ponytail: a second tap within the first's history write (milliseconds,
+  // before it writes the setting) still reads the old mask; chain the
+  // toggles if that is ever seen.
+  Future<void> toggleStudyDay(int day) => studyDays(
+    ref.read(settingsSourceProvider).read(SettingKeys.studyDaysMask) ^
+        (1 << day),
+  );
 
   /// FR-M3-03: on only once the model is ready. False otherwise, with the
   /// switch left off, and M3 opens M4 to get it.
@@ -355,14 +368,16 @@ class SettingsScreen extends ConsumerWidget {
                   }
                 },
               ),
-              _Row(
-                title: l10n.settingsShowPronBn,
-                labelledByControl: true,
-                trailing: toggle(
-                  SettingKeys.showPronBn,
-                  l10n.settingsShowPronBn,
+              // #1077: offered only while Bangla is a meaning language.
+              if (meaning.hasBangla)
+                _Row(
+                  title: l10n.settingsShowPronBn,
+                  labelledByControl: true,
+                  trailing: toggle(
+                    SettingKeys.showPronBn,
+                    l10n.settingsShowPronBn,
+                  ),
                 ),
-              ),
             ],
           ),
           _Group(
@@ -527,7 +542,7 @@ class SettingsScreen extends ConsumerWidget {
               _Row(
                 title: l10n.settingsRestart,
                 subtitle: l10n.settingsRestartNote,
-                onTap: () => OnboardingRoute.restartSetup(context),
+                onTap: () => unawaited(_restart(context)),
               ),
             ],
           ),
@@ -571,6 +586,8 @@ class SettingsScreen extends ConsumerWidget {
         if (mask & (1 << day) != 0) day,
     ];
     // 1 January 2024 was a Monday: the locale's own short weekday names.
+    // Not M5's chip names ("Mo", "বৃহঃ"), which are as short as a chip is
+    // narrow: a line of text reads "Mon–Sat" (#704, declined).
     final weekday = DateFormat.E(Localizations.localeOf(context).toString());
     String name(int day) => weekday.format(DateTime(2024, 1, 1 + day));
 
@@ -637,8 +654,7 @@ class SettingsScreen extends ConsumerWidget {
                         container: true,
                         button: true,
                         selected: value == current,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
+                        child: SgTappable(
                           onTap: () => Navigator.of(sheet).pop(value),
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(minHeight: 48),
@@ -774,6 +790,24 @@ class _Group extends StatelessWidget {
   }
 }
 
+/// #704: Restart setup reads the learner's values before it pushes its
+/// page, and a second tap in between pushed a second. Held until that page is
+/// up. (Reset's sheet needs none: a second tap opens no second sheet.)
+bool _restarting = false;
+
+Future<void> _restart(BuildContext context) async {
+  if (_restarting) return;
+  _restarting = true;
+  try {
+    await OnboardingRoute.restartSetup(context);
+  } finally {
+    // Until the page it pushed is up: go_router builds it on the next
+    // frame, and M3 is the current route until then.
+    await WidgetsBinding.instance.endOfFrame;
+    _restarting = false;
+  }
+}
+
 /// One setting: its name, a line under it, and its control — or, for a row
 /// that opens something, the value and a chevron.
 class _Row extends StatelessWidget {
@@ -862,13 +896,15 @@ class _Row extends StatelessWidget {
     return Semantics(
       container: true,
       button: onTap != null,
-      child: tap == null
+      child: onTap != null
+          ? SgTappable(onTap: onTap, child: row)
+          : tap == null
           ? row
+          // A switch row's tap is its switch's: the switch is the Tab stop
+          // (#1021), and a screen reader has it. ponytail: allow-bare-tap
           : GestureDetector(
               behavior: HitTestBehavior.opaque,
-              // A switch row's tap is its switch's, which a screen reader
-              // already has.
-              excludeFromSemantics: onTap == null,
+              excludeFromSemantics: true,
               onTap: tap,
               child: row,
             ),

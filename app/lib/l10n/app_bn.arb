@@ -763,7 +763,7 @@
   "reminderGrammar": "ব্যাকরণ বাকি: {topic}",
   "exportImportTitle": "এক্সপোর্ট / ইমপোর্ট",
   "exportImportExportHeading": "এক্সপোর্ট",
-  "exportImportExportBody": "একটি JSON ফাইলে শব্দের অবস্থা, রিভিউ লগ, পরিকল্পনা, কুইজ ও পরীক্ষার ইতিহাস, সেটিংস আর আমার শব্দ। শেয়ার শিট খোলে — Files বা Drive-এ রাখুন, অথবা নিজেকে ইমেইল করুন।",
+  "exportImportExportBody": "একটি JSON ফাইলে শব্দের অবস্থা, রিভিউ লগ, পরিকল্পনা, কুইজ ও পরীক্ষার ইতিহাস, সেটিংস আর আমার শব্দ। Drive-এ শেয়ার করুন বা নিজেকে ইমেইল করুন, অথবা এই ফোনেই সংরক্ষণ করুন।",
   "exportImportExport": "অগ্রগতি এক্সপোর্ট করুন",
   "exportImportExportSized": "অগ্রগতি এক্সপোর্ট করুন · {size}",
   "exportImportSizeKb": "{kb} KB",
@@ -771,6 +771,7 @@
   "exportImportLastNever": "শেষ এক্সপোর্ট: কখনো না",
   "exportImportLast": "শেষ এক্সপোর্ট: {date}",
   "exportImportRecordings": "স্পিকিংয়ের রেকর্ডিং এই ফোনেই থাকে: ফাইলের জন্য সেগুলো অনেক বড়।",
+  "exportImportSave": "ফোনে সংরক্ষণ করুন",
   "exportImportExportFailed": "এক্সপোর্ট শেষ হয়নি। আবার চেষ্টা করুন।",
   "exportImportImportHeading": "ইমপোর্ট",
   "exportImportChoose": "একটি ফাইল বাছুন",
@@ -936,6 +937,8 @@
   "modelNotifyFailedNote": "“ভয়েস ও অনুবাদ” থেকে আবার চেষ্টা করুন",
   "progressRingLabel": "{total}টির মধ্যে {completed}টি",
   "progressBarLabel": "{done}টি শেখা হয়েছে, {learning}টি শিখছি, {todo}টি শেখা বাকি",
+  "modelsTitleVoice": "ভয়েস",
+  "modelsFooterVoice": "ভয়েস পুরোপুরি ফোনে চলে। এটি মুছলে ফোনের জার্মান ভয়েস ব্যবহার হবে।",
   "modelsTitle": "ভয়েস ও অনুবাদ",
   "modelsStorage": "ফোনের স্টোরেজ",
   "modelsStorageFree": "{total}-এর মধ্যে {free} খালি",
@@ -986,5 +989,6 @@
   "modelsFooter": "দুটি মডেলই পুরোপুরি ফোনে চলে। ভয়েস মুছলে ফোনের জার্মান ভয়েস ব্যবহার হবে; অনুবাদ মডেল মুছলে অনুবাদ বন্ধ হবে।",
   "modelsStartFailed": "ডাউনলোড শুরু করা যায়নি",
   "modelsSampleFailed": "নমুনাটি বাজানো যায়নি",
-  "modelsDeleteKeep": "রেখে দিন"
+  "modelsDeleteKeep": "রেখে দিন",
+  "modelsDeleteFailed": "মডেলের সব ফাইল মোছা যায়নি। আবার চেষ্টা করুন।"
 }

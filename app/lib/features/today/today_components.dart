@@ -5,8 +5,10 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/domain/plan_engine.dart' show addDays, parsePlanDate;
 import 'package:sogda/features/today/today_view.dart';
@@ -113,7 +115,11 @@ class TodayHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.primary, child: content);
+        : SgHeaderFill(
+            color: tokens.color.primary,
+            // #1064: the ring in the header's ink, which holds on its fill.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 }
 
@@ -164,9 +170,9 @@ class ProgressRingCard extends StatelessWidget {
               child: Semantics(
                 button: onStart != null,
                 onTap: onStart,
-                child: GestureDetector(
+                child: SgTappable(
+                  radius: BorderRadius.circular(ringSize / 2),
                   onTap: onStart,
-                  behavior: HitTestBehavior.opaque,
                   // Tweens from 0 on open, and on to the new count after a
                   // session. Still under reduce motion.
                   child: TweenAnimationBuilder<double>(
@@ -225,9 +231,8 @@ class ProgressRingCard extends StatelessWidget {
                     ),
                     Semantics(
                       link: true,
-                      child: GestureDetector(
+                      child: SgTappable(
                         onTap: onStudyDays,
-                        behavior: HitTestBehavior.opaque,
                         // A caption drawn, a 48 dp (44 pt) target touched:
                         // its own box, as a target grown past its parent's
                         // takes no taps there (#689 TD-14).
@@ -913,9 +918,9 @@ class _IconAction extends StatelessWidget {
       onTap: onTap,
       child: AdaptiveTooltip(
         message: label,
-        child: GestureDetector(
+        child: SgTappable(
+          radius: BorderRadius.circular(22),
           onTap: onTap,
-          behavior: HitTestBehavior.opaque,
           child: SizedBox.square(
             dimension: 44,
             child: Icon(icon, size: 24, color: colour),

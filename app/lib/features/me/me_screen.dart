@@ -10,8 +10,10 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -299,8 +301,7 @@ class MeHeader extends StatelessWidget {
                     hint: l10n.meEditName,
                     onTap: onEditName,
                     excludeSemantics: true,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: SgTappable(
                       onTap: onEditName,
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(minHeight: 48),
@@ -349,7 +350,11 @@ class MeHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.der, child: content);
+        : SgHeaderFill(
+            color: tokens.color.der,
+            // #1064: the ring in the header's ink, which holds on its fill.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 
   /// "19 Aug 2026".
@@ -806,8 +811,8 @@ class _Badge extends StatelessWidget {
       label: l10n.meBadge(step.code, state),
       onTap: onTap,
       excludeSemantics: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: SgTappable(
+        radius: BorderRadius.circular(6),
         onTap: onTap,
         child: SizedBox(
           height: 48,
@@ -871,8 +876,7 @@ class _Links extends StatelessWidget {
             Semantics(
               container: true,
               button: true,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: SgTappable(
                 onTap: () => context.jumpToTab(route),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 52),

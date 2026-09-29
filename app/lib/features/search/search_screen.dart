@@ -12,8 +12,10 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -51,6 +53,9 @@ Stream<SearchView> searchResults(Ref ref, String query, {String? step}) async* {
   // Read before the first await: a query typed past disposes this one, and
   // a ref used after that throws.
   final words = ref.watch(wordRepositoryProvider);
+  // Watched (#694 CC-4): a change in Settings re-emits the list at once,
+  // not at the next write to its words.
+  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
   final results = await ref
       .watch(searchRepositoryProvider)
       .search(query, step: step);
@@ -66,7 +71,7 @@ Stream<SearchView> searchResults(Ref ref, String query, {String? step}) async* {
       .map(
         (words) => SearchView(
           words: <SearchRow>[
-            for (final word in withMeanings(ref, words))
+            for (final word in withMeanings(meaning, words))
               (word: word, tier: tiers[word.word.uid]!),
           ],
           sentences: results.sentences,
@@ -497,8 +502,8 @@ class _Header extends StatelessWidget {
                             excludeSemantics: true,
                             child: AdaptiveTooltip(
                               message: l10n.searchClear,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
+                              child: SgTappable(
+                                radius: BorderRadius.circular(24),
                                 onTap: onClear,
                                 child: SizedBox(
                                   width: 48,
@@ -537,7 +542,14 @@ class _Header extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.die, child: content);
+        : SgHeaderFill(
+            color: tokens.color.die,
+            // #1064: the ring in the dark ink, as W1 on die: 3:1 in both themes.
+            child: SgFocusRingColour(
+              colour: tokens.color.onPrimary,
+              child: content,
+            ),
+          );
   }
 }
 
@@ -659,8 +671,7 @@ class _Results extends StatelessWidget {
             Semantics(
               container: true,
               button: true,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: SgTappable(
                 onTap: () {
                   onUse();
                   // A set entry's row opens W2, any other W1 (#738).
@@ -833,8 +844,7 @@ class _SentenceRow extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: SgTappable(
         onTap: () {
           onUse();
           WordRoute.open(context, sentence.wordUid);
@@ -1037,8 +1047,7 @@ class _MyWordRow extends StatelessWidget {
       child: Semantics(
         button: true,
         onTap: () => EditCustomWordRoute.open(context, word.id),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        child: SgTappable(
           onTap: () => EditCustomWordRoute.open(context, word.id),
           child: Container(
             constraints: const BoxConstraints(minHeight: WordRow.height),

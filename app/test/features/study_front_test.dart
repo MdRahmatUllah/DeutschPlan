@@ -9,6 +9,7 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -139,6 +140,54 @@ void main() {
         )
         .color;
 
+    testWidgets('#1077 FR-T2-01 English only, as M3 leaves it (the switch '
+        'still on): no Bangla pronunciation; it returns the moment Bangla is '
+        'a meaning language again', (tester) async {
+      await pump(tester);
+      final pron = find.textContaining('রেশনুং', findRichText: true);
+      expect(pron, findsOneWidget, reason: 'both, the default');
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(StudyWordCard)),
+      );
+      await tester.runAsync(
+        () => container
+            .read(languagesProvider.notifier)
+            .setMeaning(MeaningLanguage.english),
+      );
+      await tester.pump();
+      expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
+      expect(pron, findsNothing);
+
+      await tester.runAsync(
+        () => container
+            .read(languagesProvider.notifier)
+            .setMeaning(MeaningLanguage.bangla),
+      );
+      await tester.pump();
+      expect(pron, findsOneWidget);
+    });
+
+    testWidgets('#1077 FR-T2-01 English only through setup (S2): no Bangla '
+        'pronunciation; Both brings it back', (tester) async {
+      await pump(tester);
+      final pron = find.textContaining('রেশনুং', findRichText: true);
+      final languages = ProviderScope.containerOf(
+        tester.element(find.byType(StudyWordCard)),
+      ).read(languagesProvider.notifier);
+      await tester.runAsync(
+        () => languages.chooseMeaning(MeaningLanguage.english),
+      );
+      await tester.pump();
+      expect(pron, findsNothing);
+
+      await tester.runAsync(
+        () => languages.chooseMeaning(MeaningLanguage.both),
+      );
+      await tester.pump();
+      expect(pron, findsOneWidget);
+    });
+
     testWidgets('the gender bar is the article colour', (tester) async {
       await pump(tester);
       expect(bar(tester), SgPalette.light.die);
@@ -204,6 +253,64 @@ void main() {
 
       expect(copied, <String>['die Rechnung']);
       expect(find.text(l10n.studyCopied('die Rechnung')), findsOneWidget);
+    });
+
+    testWidgets('#1039 FR-T2-09 WCAG 2.1.1 a keyboard copies it: the '
+        "context-menu key from the card's own focus, and Shift+F10 on its "
+        'one Tab stop', (tester) async {
+      final copied = <String>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            copied.add(
+              (call.arguments as Map<Object?, Object?>)['text']! as String,
+            );
+          }
+          return null;
+        },
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+      await pump(tester);
+      await tester.pump();
+
+      // The card takes the focus as it comes (#162): the key works at once.
+      await tester.sendKeyEvent(LogicalKeyboardKey.contextMenu);
+      await tester.pump();
+      expect(copied, <String>['die Rechnung']);
+
+      // One full round of Tab stops on the headword once.
+      bool onHeadword(FocusNode node) => find
+          .descendant(
+            of: find.byElementPredicate((e) => e == node.context),
+            matching: find.byType(SgHeadword),
+          )
+          .evaluate()
+          .isNotEmpty;
+      final stops = <FocusNode>[];
+      for (var i = 0; i < 10; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        final node = FocusManager.instance.primaryFocus!;
+        if (stops.contains(node)) break;
+        stops.add(node);
+      }
+      expect(stops.where(onHeadword), hasLength(1));
+
+      while (!onHeadword(FocusManager.instance.primaryFocus!)) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+      }
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.f10);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.pump();
+      expect(copied, <String>['die Rechnung', 'die Rechnung']);
     });
 
     testWidgets('the speaker plays the word with its article', (tester) async {

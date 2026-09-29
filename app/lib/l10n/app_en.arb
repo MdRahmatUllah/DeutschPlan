@@ -2612,7 +2612,7 @@
   },
   "stepLeft": "Left on {date}",
   "@stepLeft": {
-    "description": "L2 pace line for a step the learner left (another step started) while some of its words are To do or Learning (#950).",
+    "description": "L2 pace line for a step the learner left (another step started) while some of its words were never planned (#950, #1012, #1028).",
     "placeholders": {
       "date": {
         "type": "String"
@@ -4842,7 +4842,7 @@
   "@exportImportExportHeading": {
     "description": "M6's export card heading, shown in capitals."
   },
-  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings and my words. Opens the share sheet — save to Files or Drive, or email it to yourself.",
+  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings and my words. Share it to Drive or email it to yourself, or save it on this phone.",
   "@exportImportExportBody": {
     "description": "M6's export card text (FR-M6-01)."
   },
@@ -4894,6 +4894,10 @@
   "exportImportRecordings": "Speaking recordings stay on this phone: they're too big for the file.",
   "@exportImportRecordings": {
     "description": "M6: FR-M6-01 says recordings are not exported, and the UI says so."
+  },
+  "exportImportSave": "Save to device",
+  "@exportImportSave": {
+    "description": "M6's second export button: the system save dialog, the file kept on this phone (#1066)."
   },
   "exportImportExportFailed": "The export didn't finish. Try again.",
   "@exportImportExportFailed": {
@@ -5909,6 +5913,14 @@
       }
     }
   },
+  "modelsTitleVoice": "Voice",
+  "@modelsTitleVoice": {
+    "description": "M4's title in a build without translation (#1070, ADR 9)."
+  },
+  "modelsFooterVoice": "The voice runs entirely on the phone. Deleting it falls back to the phone's German voice.",
+  "@modelsFooterVoice": {
+    "description": "M4's footer in a build without translation (#1070)."
+  },
   "modelsTitle": "Voice & translation",
   "@modelsTitle": {
     "description": "M4's title (FR-M4, #155)."
@@ -6219,5 +6231,9 @@
   "modelsDeleteKeep": "Keep",
   "@modelsDeleteKeep": {
     "description": "The delete confirmation's cancel: keep the model."
+  },
+  "modelsDeleteFailed": "Couldn't delete all of the model's files. Try again.",
+  "@modelsDeleteFailed": {
+    "description": "M4 toast when deleting a model's files fails part-way (#721)."
   }
 }

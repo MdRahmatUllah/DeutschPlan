@@ -22,6 +22,11 @@ abstract interface class BackupFiles {
   /// Writes [json] to a temporary file called [name] and opens the share
   /// sheet. False when the learner dismissed it.
   Future<bool> share(String name, String json);
+
+  /// #1066: the system's save dialog (Android's Storage Access Framework),
+  /// [json] as [name] where the learner picks: One UI's share sheet offers
+  /// no local target. False when the learner backed out.
+  Future<bool> save(String name, String json);
 }
 
 /// The most a backup can be (#657). Ten years of daily study is some 35 MB
@@ -42,6 +47,19 @@ Future<String> readCapped(Stream<List<int>> bytes, {int cap = maxBytes}) async {
   return utf8.decode(read.takeBytes());
 }
 
+/// [json] as [name] in [temporary]'s `exports` folder, emptied first: an
+/// export's copy is handed to the share sheet (which keeps its own), and the
+/// one before it is gone once there is a new one, rather than piling up in
+/// the cache for good (#704).
+Future<File> exportCopy(Directory temporary, String name, String json) async {
+  final folder = Directory('${temporary.path}/exports');
+  if (folder.existsSync()) folder.deleteSync(recursive: true);
+  folder.createSync(recursive: true);
+  final file = File('${folder.path}/$name');
+  await file.writeAsString(json, flush: true);
+  return file;
+}
+
 /// [BackupFiles] on `file_picker` and `share_plus`. Nothing here makes a
 /// request: the learner picks where the file goes (BR-PRIV-01, -02).
 class PlatformBackupFiles implements BackupFiles {
@@ -60,8 +78,7 @@ class PlatformBackupFiles implements BackupFiles {
   Future<bool> share(String name, String json) async {
     // Temporary storage: a copy handed to another app, not state, as the
     // bootstrap error screen's export is.
-    final file = File('${(await getTemporaryDirectory()).path}/$name');
-    await file.writeAsString(json, flush: true);
+    final file = await exportCopy(await getTemporaryDirectory(), name, json);
     final result = await SharePlus.instance.share(
       ShareParams(
         files: <XFile>[XFile(file.path, mimeType: 'application/json')],
@@ -69,4 +86,13 @@ class PlatformBackupFiles implements BackupFiles {
     );
     return result.status != ShareResultStatus.dismissed;
   }
+
+  @override
+  Future<bool> save(String name, String json) async =>
+      await FilePicker.saveFile(
+        fileName: name,
+        bytes: utf8.encode(json),
+        mimeType: 'application/json',
+      ) !=
+      null;
 }

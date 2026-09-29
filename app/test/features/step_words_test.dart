@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -7,11 +8,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/plan_engine.dart' show PlanDate, PlanEngine;
 import 'package:sogda/features/learn/step_detail_screen.dart';
 import 'package:sogda/features/learn/step_words.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
@@ -20,8 +23,10 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 
+import '../core/keyboard.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
+import 'settings_fixtures.dart';
 import 'today_fixtures.dart';
 import 'word_fixtures.dart';
 
@@ -363,6 +368,32 @@ void main() {
     );
   });
 
+  testWidgets('#1021 FR-L2-02 Tab reaches a word row and then its speaker, '
+      'and Enter on the row opens W1', (tester) async {
+    await pump(
+      tester,
+      overrides: over(<StepWord>[for (var i = 0; i < 5; i++) word(i)]),
+    );
+    final first = find.byType(WordRow).first;
+    await tabTo(
+      tester,
+      find.ancestor(of: first, matching: find.byType(SgTappable)),
+    );
+    await tabTo(
+      tester,
+      find.descendant(of: first, matching: find.byType(SgTappable)),
+    );
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<WordDetailView>(find.byType(WordDetailView)).uid,
+      'w0',
+    );
+  });
+
   for (final locale in <Locale>[Locale('bn'), Locale('en')]) {
     testWidgets('#815 FR-L2-02 a step not started, at 200 % on a 731 dp '
         'phone (${locale.languageCode}): every word can be scrolled to', (
@@ -486,6 +517,30 @@ void main() {
     expect(find.text(l10n.stepStart), findsOneWidget);
   });
 
+  testWidgets('#694 CC-3 FR-L2-03 a Start that fails to save says so; Retry '
+      'starts the step', (tester) async {
+    final engine = _Engine();
+    await pump(
+      tester,
+      code: 'A2.2',
+      overrides: <Override>[
+        ...over(const <StepWord>[]),
+        settingsProvider.overrideWithValue(StubSettings()),
+        planEngineProvider.overrideWithValue(engine),
+      ],
+    );
+    await tester.tap(find.text(l10n.stepStart));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.stepStart).last);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+    expect(engine.switched, isEmpty);
+
+    await tester.tap(find.text(l10n.retry));
+    await tester.pumpAndSettle();
+    expect(engine.switched, <String>['A2.2']);
+  });
+
   testWidgets('FR-L2-03 Start: the current step completes today and this '
       'one opens, and the banner goes', (tester) async {
     late AppDatabase db;
@@ -564,4 +619,27 @@ void main() {
     );
     expect(find.byType(StartBanner), findsNothing);
   });
+}
+
+/// FR-L2-03's switch, whose first write fails (#694).
+class _Engine implements PlanEngine {
+  final List<String> switched = <String>[];
+  int failures = 1;
+
+  @override
+  Future<void> switchStep(
+    String code,
+    PlanDate today, {
+    required int dailyNew,
+    required int studyDaysMask,
+  }) async {
+    if (failures > 0) {
+      failures--;
+      throw StateError('disk I/O error');
+    }
+    switched.add(code);
+  }
+
+  @override
+  Object? noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

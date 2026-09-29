@@ -92,9 +92,16 @@ class BackupRepository {
   /// `translation_cache` is a cache and `undo_stack` is this session's, so
   /// neither means anything on another phone. FR-M6-01 names both. An import
   /// empties `undo_stack` (#688 DA-5) and leaves the cache.
+  ///
+  /// `content_updates` is this phone's own course history: each update it
+  /// installed, when it saw it, and whether its card went. An import leaves
+  /// it, and a file's rows (older exports carry them) are not read: a
+  /// Replace from an older course swapped in that course's history, and
+  /// Today's card described an update two builds old (#1025).
   static const Set<String> excluded = <String>{
     'translation_cache',
     'undo_stack',
+    'content_updates',
   };
 
   /// Every table an export carries, in dependency order — parents before the
@@ -117,7 +124,6 @@ class BackupRepository {
     'exam_attempts',
     'exam_answers',
     'daily_stats',
-    'content_updates',
   ];
 
   /// What makes a row the same row across two phones.
@@ -141,7 +147,6 @@ class BackupRepository {
     'exam_answers': <String>['attempt_id', 'ord'],
     'custom_words': <String>['created_at', 'german'],
     'daily_stats': <String>['day'],
-    'content_updates': <String>['version'],
   };
 
   /// Tables whose `id` is meaningless off this device, and the child table

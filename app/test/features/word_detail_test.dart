@@ -705,6 +705,23 @@ void main() {
       expect(actions.undone, <String>['markKnown']);
     });
 
+    testWidgets('#694 CC-3 an action that fails to save says so; Retry '
+        'writes it, with its Undo', (tester) async {
+      await pump(tester);
+      actions.failures = 1;
+      await tapAction(tester, l10n.wordMarkKnown);
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+      expect(actions.calls, isEmpty);
+
+      await tester.tap(find.text(l10n.retry));
+      await tester.pumpAndSettle();
+      expect(actions.calls, <String>['markKnown uid-strasse 2026-09-21']);
+      expect(
+        find.text(l10n.wordMarkedKnown('die Straße')).hitTestable(),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('BR-STATUS-03 Suspend; a suspended word offers Resume', (
       tester,
     ) async {
@@ -848,6 +865,35 @@ void main() {
         ('Die Straße ist wegen Bauarbeiten gesperrt.', 'bn'),
         ('Wir wohnen in einer ruhigen Straße.', 'bn'),
       ]);
+      expect(find.text('অনুবাদ'), findsNWidgets(2));
+    });
+
+    testWidgets('#694 CC-3 a second tap on Translate while one runs '
+        'translates nothing twice', (tester) async {
+      final asked = <(String, String)>[];
+      final gate = Completer<void>();
+      await pump(
+        tester,
+        detail: artboardWordDetail(translate: true),
+        extra: <Override>[
+          translationRepositoryProvider.overrideWithValue(
+            _Translations((text, to) {
+              asked.add((text, to));
+              return 'অনুবাদ';
+            }, gate: gate.future),
+          ),
+        ],
+      );
+      await tester.ensureVisible(action(l10n.wordTranslate));
+      await tester.pumpAndSettle();
+      await tester.tap(action(l10n.wordTranslate));
+      await tester.pump();
+      await tester.tap(action(l10n.wordTranslate));
+      await tester.pump();
+      gate.complete();
+      await tester.pumpAndSettle();
+
+      expect(asked, hasLength(2), reason: 'each example once');
       expect(find.text('অনুবাদ'), findsNWidgets(2));
     });
 
@@ -1020,6 +1066,52 @@ void main() {
     semantics.dispose();
   });
 
+  test(
+    '#1077 FR-W1-01 English only, as M3 leaves it (the switch still on): '
+    "W1's caption has no Bangla pronunciation; it returns with Bangla",
+    () async {
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      final content = ContentFixture.write(
+        '${tempDir('sg_pron').path}/content.db',
+      );
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+      );
+      final settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      final container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+          contentUpdaterProvider.overrideWithValue(
+            _Aliased(db, const <String, String>{}),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      final hold = container.listen(
+        wordDetailProvider(ContentFixture.haus),
+        (_, _) {},
+      );
+      addTearDown(hold.close);
+      Future<WordDetail?> read() =>
+          container.read(wordDetailProvider(ContentFixture.haus).future);
+
+      expect((await read())!.pron, isTrue, reason: 'both, the default');
+      await container
+          .read(languagesProvider.notifier)
+          .setMeaning(MeaningLanguage.english);
+      expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
+      expect((await read())!.pron, isFalse);
+      await container
+          .read(languagesProvider.notifier)
+          .setMeaning(MeaningLanguage.both);
+      expect((await read())!.pron, isTrue);
+    },
+  );
+
   test('#854 PIPE-09 an old uid, from a link written before an update '
       're-keyed its word, opens the word it became', () async {
     final db = AppDatabase.memory();
@@ -1069,7 +1161,14 @@ class _Actions implements WordActions {
 
   void release() => _gate?.complete();
 
+  /// How many actions fail before one goes through (#694).
+  int failures = 0;
+
   Future<Undo> _record(String call) async {
+    if (failures > 0) {
+      failures--;
+      throw StateError('disk I/O error');
+    }
     calls.add(call);
     if (hold) {
       _gate = Completer<void>();
@@ -1085,6 +1184,12 @@ class _Actions implements WordActions {
     required String today,
     required String step,
   }) => _record('addToToday $uid $step $today');
+
+  @override
+  Future<Undo> addAllToToday(
+    List<({String uid, String step})> words, {
+    required String today,
+  }) => throw UnimplementedError();
 
   @override
   Future<Undo> markKnown(String uid, {required String today}) =>
@@ -1107,16 +1212,22 @@ class _Actions implements WordActions {
 }
 
 class _Translations implements TranslationRepository {
-  _Translations(this.answer);
+  _Translations(this.answer, {this.gate});
 
   final String Function(String text, String to) answer;
+
+  /// While not complete, every translation waits for it.
+  final Future<void>? gate;
 
   @override
   Future<String?> translate(
     String text, {
     required String from,
     required String to,
-  }) async => answer(text, to);
+  }) async {
+    await gate;
+    return answer(text, to);
+  }
 }
 
 /// The course's PIPE-09 aliases, as a kept manifest would give them (#854).

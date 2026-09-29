@@ -31,6 +31,8 @@ void main() {
 
   StepProgress step({
     int todo = 296,
+    int? unplanned,
+    bool? leftPartWay,
     int learning = 60,
     String? startedOn = '2026-08-19',
     String? completedOn,
@@ -44,6 +46,8 @@ void main() {
     levelCode: level,
     words: 540,
     todo: todo,
+    unplanned: unplanned ?? todo,
+    leftPartWay: leftPartWay,
     learning: learning,
     done: 540 - learning - todo,
     grammar: 10,
@@ -100,20 +104,73 @@ void main() {
       );
     });
 
-    test('#950 FR-L2-01 a step left with words To do or Learning was left, '
-        'not completed, unless its exam passed', () {
+    test('#950 #1012 FR-L2-01 a step left by switching with words To do was '
+        'left; one the plan finished is completed, words Learning and all', () {
       expect(
         paceLine(l10n, en, step(completedOn: '2026-09-27')),
         'Left on 27 Sep',
+        reason: '296 words never met',
       );
       expect(
         paceLine(l10n, en, step(completedOn: '2026-09-27', todo: 0)),
-        'Left on 27 Sep',
+        'Completed 27 Sep · revision continues',
         reason: 'every word met, 60 still learning',
+      );
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', todo: 0, learning: 0),
+        ),
+        'Completed 27 Sep · revision continues',
+        reason: 'all Done',
       );
       expect(
         paceLine(l10n, en, step(completedOn: '2026-09-27', passedSeed: 2)),
         'Completed 27 Sep · Mock 2 passed · revision continues',
+      );
+    });
+
+    test('#1047 FR-L2-01 as recorded when it ended, whatever its words '
+        'say now', () {
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', unplanned: 1, leftPartWay: false),
+        ),
+        'Completed 27 Sep · revision continues',
+        reason: 'finished by the plan, a word reset since',
+      );
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', unplanned: 0, leftPartWay: true),
+        ),
+        'Left on 27 Sep',
+      );
+    });
+
+    test('#1028 FR-L2-01 a step the plan finished with words still To do, '
+        "planned and in the backlog, is completed; one left with words "
+        'never planned was left', () {
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', todo: 3, unplanned: 0),
+        ),
+        'Completed 27 Sep · revision continues',
+        reason: 'every word planned, 3 skipped to the backlog',
+      );
+      expect(
+        paceLine(
+          l10n,
+          en,
+          step(completedOn: '2026-09-27', todo: 3, unplanned: 1),
+        ),
+        'Left on 27 Sep',
       );
     });
 

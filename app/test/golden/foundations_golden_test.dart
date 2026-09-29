@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
@@ -9,6 +10,7 @@ import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/features/me/me_screen.dart' show MeHeader;
 
 import 'golden_harness.dart';
 
@@ -41,6 +43,72 @@ void main() {
               SgChip(label: 'A2.1', onTap: () {}),
             ],
           ),
+        ),
+      ),
+    ),
+  );
+
+  // #1049: a switch takes the focus itself; the ring hugs its track, and
+  // neither Material's halo nor iOS's own border is drawn beside it.
+  for (final chrome in AdaptiveChrome.values) {
+    goldenTest(
+      chrome == AdaptiveChrome.material
+          ? 'foundations_focus_switch'
+          : 'foundations_focus_switch_ios',
+      devices: const <GoldenDevice>[GoldenDevice.phone],
+      chrome: chrome,
+      textAudit: false,
+      act: (tester) => tester.sendKeyEvent(LogicalKeyboardKey.tab),
+      builder: (context) => Scaffold(
+        backgroundColor: context.tokens.surface.paper,
+        // As a screen has it: in a row the screen reader hears as the switch.
+        body: Center(
+          child: Semantics(
+            container: true,
+            child: Padding(
+              padding: EdgeInsets.all(context.tokens.spacing.lg),
+              child: SizedBox(
+                height: 56,
+                child: Row(
+                  children: <Widget>[
+                    const Expanded(
+                      child: SgText(
+                        'Continue into the next step',
+                        role: SgTextRole.body,
+                      ),
+                    ),
+                    AdaptiveSwitch(
+                      value: true,
+                      onChanged: (_) {},
+                      semanticLabel: 'Continue into the next step',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // #1064: the ring on a coloured header, in the header's ink: Me's first
+  // Tab stop, *Add your name*, on the blue.
+  goldenTest(
+    'foundations_focus_header',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    act: (tester) => tester.sendKeyEvent(LogicalKeyboardKey.tab),
+    builder: (context) => Scaffold(
+      backgroundColor: context.tokens.surface.paper,
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: MeHeader(
+          name: null,
+          streak: 3,
+          since: null,
+          daysStudied: 0,
+          onEditName: () {},
         ),
       ),
     ),

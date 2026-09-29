@@ -320,10 +320,36 @@ def test_818_a_year_metric_takes_its_fresh_twins_margin_and_budget():
     assert perf.lookup(doc["margins"], "year.start.cold_ms") == doc["margins"]["start"]
     assert perf.lookup(doc["budgets"], "year.start.cold_ms") == 1500
     assert perf.lookup(doc["margins"], "year.card.missed_build") is None
-    # Its own baseline: a year's start is not a fresh one's.
+    # Its own baseline: a year's start is not a fresh one's. A year metric
+    # with no baseline yet is new, not a failure.
+    doc["metrics"] = {k: v for k, v in doc["metrics"].items() if not k.startswith(perf.YEAR)}
     doc["metrics"]["year.start.cold_ms"] = 900
     assert perf.report({"year.start.cold_ms": 1000, "year.search.max_ms": 60}, doc)
     assert not perf.report({"year.start.cold_ms": 1400}, doc)
+
+
+def test_818_the_discarded_first_start_may_outlast_am_start(monkeypatch):
+    """After the seed, the first launch took 14.5 s to its first frame and
+    `am start -W` stopped waiting. It is not measured, so it doesn't stop the run."""
+    timeout = AM_START.replace("Status: ok", "Status: timeout").replace("COLD", "UNKNOWN (-1)").replace("TotalTime: 812\n", "")
+    colds = [timeout]
+
+    class Dev:
+        def run(self, *args):
+            pass
+
+        def install(self, apk):
+            return True
+
+        def sh(self, *args):
+            if args[:2] == ("am", "start"):
+                return (colds.pop() if colds else AM_START) if "-S" in args else AM_START.replace("COLD", "HOT")
+            return {"dumpsys": ACTIVITIES, "logcat": LOGCAT if "-d" in args else ""}.get(args[0], "")
+
+    monkeypatch.setattr(perf, "seed_year", lambda dev: None)
+    monkeypatch.setattr(perf.time, "sleep", lambda seconds: None)
+    assert perf.measure_start(Dev(), build=False, year=True) == {"start.cold_ms": 1634, "start.warm_ms": 812}
+    assert not colds
 
 
 @pytest.fixture
@@ -354,10 +380,11 @@ def test_818_the_year_profile_seeds_first_and_reports_year_metrics(measured, bas
 
 
 def test_818_a_fresh_run_neither_seeds_nor_prefixes(measured, baseline):
+    year_before = json.loads(baseline.read_text(encoding="utf-8"))["metrics"].get("year.card.build_avg_ms")
     assert perf.main(["frames", "--update-baseline"]) == 0
     assert "build_seed" not in measured and ("frames", False) in measured
     metrics = json.loads(baseline.read_text(encoding="utf-8"))["metrics"]
-    assert metrics["card.build_avg_ms"] == 4.0 and "year.card.build_avg_ms" not in metrics
+    assert metrics["card.build_avg_ms"] == 4.0 and metrics.get("year.card.build_avg_ms") == year_before
 
 
 def test_845_the_owners_checkout_refuses_the_emulator_an_agent_holds(measured, monkeypatch, tmp_path):

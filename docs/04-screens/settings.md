@@ -21,7 +21,7 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | Display | Meaning language | EN / বাংলা / Both | `meaning_language` |
 | | App language | EN / বাংলা | `ui_language` |
 | | Theme | System / Light / Dark / Glass | `theme_mode` |
-| | Show Bangla pronunciation | switch; setup's meaning language sets it (off for English only), and M3's *Meaning language* row leaves it to the learner (#527, #537) | `show_pron_bn` |
+| | Show Bangla pronunciation | switch, offered only while Bangla is a meaning language (#1077); setup's meaning language sets it (off for English only), and M3's *Meaning language* row leaves it to the learner (#527, #537) | `show_pron_bn` |
 | Audio | Voice engine | Supertonic · Anna / Phone voice → M4 | `tts_engine`, `tts_voice` |
 | | Speech speed | slider, "1.0× · long-press any speaker for 0.75×" | `tts_speed` |
 | | Auto-play headword / first example | switches | `autoplay_*` |
@@ -44,6 +44,7 @@ Details M3 settles (#146):
 - *Voice engine* reads "Supertonic · Anna" or "Phone voice", or, with Supertonic chosen but its model not on the phone, "Phone voice · Supertonic not downloaded": what speaks meanwhile (#345). It follows a download that lands, and a *Delete*, while the app runs, as T1's voice card does (#757).
 - A switch row flips from anywhere on it, as Material rows do; a screen reader hears the row as its switch, once (#345). A change of theme keeps the list where it was. *On-device translation* reads the model's state: "Hy-MT 1.5 · downloading 42%", "· ready", "· not downloaded", and so on.
 - The retention estimate (FR-M3-01) samples every n-th of at most 1,000 learned words (rated, not suspended), scaled back up. It counts what is revised: the course's words to learn and the learner's own, not a word a content update removed (BR-CONTENT-02, #867) or a lesson note or comparison (BR-CONTENT-04, #886). The stabilities are read once per visit; the slider re-sums them.
+- *Restart setup* opens once for two quick taps: the row holds until setup's page is up, the learner's values read in between (#704).
 - For FR-M3-03 the model is there when it is `ready`, or `updateAvailable` (the old one is whole). A download in progress is not, so the switch stays off and M4 opens.
 - *Translation* is hidden while the build doesn't offer Hy-MT's download (`ENABLE_HYMT_DOWNLOAD`, off in every v1.0 build, ADR 9) and no Hy-MT model is on the phone: the switch could never turn on. A model a flag-on build downloaded keeps the group, so it can still be turned off (#513). M4's Hy-MT card still reads "Not offered in this version of the app".
 - M4 and M6 are pushed over M3 (navigation.md), so back returns to Settings. A choice's list scrolls when it outgrows the sheet (a phone held sideways, 200 % text).
@@ -55,6 +56,6 @@ Details M3 settles (#146):
 - FR-M3-01 The retention subtitle estimates reviews/day = Σ over learned words of 1 ÷ intervalDays(stability) at the chosen retention (sampled, cached).
 - FR-M3-02 Theme changes apply immediately app-wide (`themeProvider`).
 - FR-M3-03 Turning translation on without a model opens M4 and leaves the switch off until the model is ready.
-- FR-M3-04 *Show Bangla pronunciation* follows the meaning language in setup only (S2 page 2: off for English only). M3's *Meaning language* row leaves the switch as the learner set it (#537).
+- FR-M3-04 *Show Bangla pronunciation* follows the meaning language in setup only (S2 page 2: off for English only). M3's *Meaning language* row leaves the switch as the learner set it (#537). The switch is offered only while Bangla is a meaning language, and the pronunciation shows only then, whatever the switch says: an English-only learner, however the language was set (setup, M3, an import, a reset), sees no Bangla script (#1077, `MeaningLanguage.hasBangla`). An English-alphabet guide for them is content still to come (the multi-language design).
 
 **Tests.** each row writes its key; FR-M3-01 estimate; goldens top/bottom × 3 themes.

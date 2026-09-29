@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show FileSystemException;
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
@@ -102,15 +103,52 @@ class BackgroundModelDownloads implements ModelDownloads {
     DeviceStorage? storage,
     this._wifiGrace = const Duration(seconds: 2),
     DownloadNotice? notice,
+    bool Function(String modelId)? isOffered,
   ]) : _downloader = downloader ?? FileDownloader(),
        _storage = storage ?? const PlatformDeviceStorage(),
-       _notice = notice ?? const PlatformDownloadNotice();
+       _notice = notice ?? const PlatformDownloadNotice(),
+       _offered = isOffered ?? offered;
 
   final ModelRepository _models;
   final SettingsRepository _settings;
   final FileDownloader _downloader;
   final DeviceStorage _storage;
   final DownloadNotice _notice;
+
+  /// FR-M4-04's gate, here and not only on M4's buttons (#692 ME-3): a
+  /// download this build doesn't offer is refused, whatever asks for it,
+  /// files or a record left by a build with the flag on included. ADR 9 and
+  /// the Tencent licence's exclusions.
+  final bool Function(String modelId) _offered;
+
+  /// #1036 (#692 ME-3): a download this build doesn't offer, left in flight
+  /// by a build that did (a record, a task the system killed, files half
+  /// there), is cancelled, its records deleted and its staging cleared, so
+  /// the downloader's restart can't resume it and nothing of it lands. The
+  /// model is then not downloaded or, with files that landed before, ready
+  /// with *Delete*.
+  Future<void> _dropUnoffered() async {
+    final groups = <String>{
+      for (final record in await _downloader.database.allRecords())
+        record.group,
+    };
+    for (final group in groups.where((group) => !_offered(group))) {
+      await _downloader.cancelAll(group: group);
+      await _downloader.database.deleteAllRecords(group: group);
+      final staging = await _models.stagingFor(group);
+      try {
+        if (staging.existsSync()) staging.deleteSync(recursive: true);
+      } on FileSystemException {
+        // The next launch clears it; this one must still start the rest.
+      }
+    }
+  }
+
+  void _refuseUnoffered(String modelId) {
+    if (!_offered(modelId)) {
+      throw StateError('$modelId is not offered in this build (FR-M4-04)');
+    }
+  }
 
   /// The one notification every model file shares.
   static const String notificationGroup = 'models';
@@ -164,6 +202,8 @@ class BackgroundModelDownloads implements ModelDownloads {
       ],
     );
     _updates = _downloader.updates.listen((update) => unawaited(_on(update)));
+    // Before the downloader queues anything again (#1036).
+    await _dropUnoffered();
     // The downloader's own record: a task the system or the learner killed
     // is scheduled again, and one that finished while the app was away says
     // so now.
@@ -172,7 +212,12 @@ class BackgroundModelDownloads implements ModelDownloads {
     // its record stands in for the update (#156, AC 1).
     final manifest = await _models.manifest();
     for (final record in await _downloader.database.allRecords()) {
-      if (manifest.model(record.group) == null) continue;
+      // Nor one this build doesn't offer: `start()` replays the updates
+      // stored while no engine listened, which writes a gated model's records
+      // again after the drop (#1036).
+      if (manifest.model(record.group) == null || !_offered(record.group)) {
+        continue;
+      }
       final files = _files.putIfAbsent(record.group, () => <String, _File>{});
       final known = files[record.task.filename];
       // What this launch has heard since, or a later attempt, stands.
@@ -203,6 +248,7 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// that fails.
   @override
   Future<void> start(String modelId) async {
+    _refuseUnoffered(modelId);
     if (_starting.contains(modelId) || _inFlight(modelId)) return;
     _starting.add(modelId);
     try {
@@ -340,11 +386,13 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   @override
   Future<void> resume(String modelId) async {
+    _refuseUnoffered(modelId);
     await _downloader.resumeAll(group: modelId);
   }
 
   @override
   Future<void> retry(String modelId) async {
+    _refuseUnoffered(modelId);
     final files = _files[modelId];
     if (files == null) {
       // A checksum failed (verifying forgets the files), or nothing is known:
@@ -396,6 +444,9 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   Future<void> _on(TaskUpdate update) async {
     final modelId = update.task.group;
+    // #1036: a download this build doesn't offer never lands, whatever
+    // reports on it late.
+    if (!_offered(modelId)) return;
     final files = _files.putIfAbsent(modelId, () => <String, _File>{});
     final name = update.task.filename;
     final before = files[name];

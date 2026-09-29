@@ -316,6 +316,9 @@ class StubExamRun implements ExamRunService {
   /// Makes the next submits throw, as a failed write would.
   bool failSubmit = false;
 
+  /// How many time writes fail before one goes through (#694).
+  int failTimes = 0;
+
   /// Holds a submit open until it completes.
   Completer<void>? holdSubmit;
 
@@ -390,7 +393,13 @@ class StubExamRun implements ExamRunService {
     int attemptId, {
     int running = 0,
     int paused = 0,
-  }) async => times.add((running, paused));
+  }) async {
+    if (failTimes > 0) {
+      failTimes--;
+      throw StateError('disk full');
+    }
+    times.add((running, paused));
+  }
 
   @override
   Future<void> abandon(int attemptId) async {

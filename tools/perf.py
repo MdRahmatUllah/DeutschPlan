@@ -239,11 +239,13 @@ def measure_start(dev: device.Device, build: bool = True, year: bool = False) ->
 
     firsts: list[int] = []
 
-    def cold() -> int:
+    def cold(measured: bool = True) -> int:
         dev.sh("logcat", "-c")
         # -S: force-stopped first. TotalTime is S1's first frame, kept to
         # show against Today's.
-        firsts.append(total_time(dev.sh("am", "start", "-S", "-W", *launcher, "-n", ACTIVITY), "COLD"))
+        am = dev.sh("am", "start", "-S", "-W", *launcher, "-n", ACTIVITY)
+        if measured:
+            firsts.append(total_time(am, "COLD"))
         return await_fully_drawn(lambda: dev.sh("logcat", "-d"))
 
     def warm() -> int:
@@ -261,11 +263,14 @@ def measure_start(dev: device.Device, build: bool = True, year: bool = False) ->
         time.sleep(2)
         return ms
 
-    cold()  # the first run of a new APK: ART's work, not the app's
-    firsts.clear()
+    # The first run of a new APK: ART's work, not the app's, so not measured.
+    # On a year it also plans the day over that history (#818), and took
+    # 14.5 s to its first frame on emulator-5558, past what `am start -W`
+    # waits for (`Status: timeout`): only its Fully drawn is read, and printed.
+    first = cold(measured=False)
     colds = [cold() for _ in range(RUNS)]
     warms = [warm() for _ in range(RUNS)]
-    print(f"cold {colds} ms (first frame {firsts} ms), warm {warms} ms")
+    print(f"cold {colds} ms (first frame {firsts} ms; the discarded first run {first} ms), warm {warms} ms")
     return {"start.cold_ms": statistics.median(colds), "start.warm_ms": statistics.median(warms)}
 
 

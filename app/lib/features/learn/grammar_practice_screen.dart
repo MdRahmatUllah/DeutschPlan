@@ -9,8 +9,10 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/domain/answer_check.dart';
@@ -21,7 +23,6 @@ import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
-import 'package:sogda/router/routes.dart';
 
 part 'grammar_practice_screen.g.dart';
 
@@ -177,21 +178,7 @@ class _GrammarPracticeScreenState extends ConsumerState<GrammarPracticeScreen> {
   }
 
   /// Every topic done: T6 if that completes the day, else back.
-  Future<void> _finish() async {
-    final today = _day;
-    ref.invalidate(studyNextProvider(today));
-    // Listened to while it answers: read alone, an auto-disposing provider
-    // can go before its future does.
-    final hold = ref.listenManual(studyNextProvider(today), (_, _) {});
-    final next = await ref.read(studyNextProvider(today).future);
-    hold.close();
-    if (!mounted) return;
-    if (next.dayDone && next.sentences == 0) {
-      DayCompleteRoute.instead(context, today);
-    } else {
-      unawaited(Navigator.of(context).maybePop());
-    }
-  }
+  Future<void> _finish() => leaveSession(context, ref, _day);
 
   void _seeRule(TopicWithState topic) => unawaited(
     Adaptive.showSheet<void>(
@@ -377,8 +364,8 @@ class PracticeHeader extends StatelessWidget {
                   excludeSemantics: true,
                   child: AdaptiveTooltip(
                     message: closeLabel ?? l10n.practiceClose,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: SgTappable(
+                      radius: BorderRadius.circular(24),
                       onTap: onClose,
                       child: SizedBox.square(
                         dimension: 48,
@@ -423,7 +410,11 @@ class PracticeHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.accent, child: content);
+        : SgHeaderFill(
+            color: tokens.color.accent,
+            // #1064: the ring in the header's ink, which holds on its fill.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 }
 

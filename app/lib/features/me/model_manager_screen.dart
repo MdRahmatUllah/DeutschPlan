@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_pill.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -78,10 +79,6 @@ ModelCardStatus cardStatusOf(ModelCard card) {
           : ModelCardStatus.notDownloaded,
   };
 }
-
-/// Whether this build offers [modelId]'s download (FR-M4-04).
-bool offered(String modelId) =>
-    modelId != ModelRepository.translationModel || enableHymtDownload;
 
 /// [id]'s card, as its download moves: the files on the phone read again
 /// whenever the download manager says something.
@@ -181,13 +178,20 @@ class ModelManagerScreen extends ConsumerWidget {
         .watch(modelCardProvider(ModelRepository.translationModel))
         .value;
     final space = ref.watch(phoneSpaceProvider).value;
+    // #1070, as M3's Translation group (#513, ADR 9): Hy-MT shows only in a
+    // build that offers it, or with a model a build that did left on the
+    // phone.
+    final translationShown =
+        enableHymtDownload ||
+        (translation != null &&
+            translation.installed.status != ModelStatus.notDownloaded);
     final onPhone = <ModelCard?>[
       voice,
       translation,
     ].fold<int>(0, (sum, card) => sum + (card?.installed.bytesOnDisk ?? 0));
 
     final scaffold = AdaptiveScaffold(
-      title: l10n.modelsTitle,
+      title: translationShown ? l10n.modelsTitle : l10n.modelsTitleVoice,
       leading: AdaptiveBackButton(
         label: l10n.settingsTitle,
         onPressed: () => Navigator.of(context).maybePop(),
@@ -204,12 +208,12 @@ class ModelManagerScreen extends ConsumerWidget {
             _ModelCardView(voice),
             const SizedBox(height: 10),
           ],
-          if (translation != null) ...<Widget>[
+          if (translation != null && translationShown) ...<Widget>[
             _ModelCardView(translation),
             const SizedBox(height: 10),
           ],
           SgText(
-            l10n.modelsFooter,
+            translationShown ? l10n.modelsFooter : l10n.modelsFooterVoice,
             role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
@@ -363,8 +367,7 @@ class _ModelCardView extends ConsumerWidget {
               label: l10n.modelsLicenceRead(licence.kind),
               excludeSemantics: true,
               onTap: () => unawaited(showLicence(context, licence)),
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: SgTappable(
                 onTap: () => unawaited(showLicence(context, licence)),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -468,6 +471,9 @@ class _ModelCardView extends ConsumerWidget {
       }
     }
 
+    // FR-M4-04, #692 ME-3: a model this build doesn't offer can be deleted,
+    // and nothing that downloads it again: no Update, Retry or Resume.
+    final gated = !offered(id);
     final deleteButton = _Action(
       label: l10n.modelsDelete(freed),
       onPressed: () => unawaited(_delete(context)),
@@ -497,12 +503,13 @@ class _ModelCardView extends ConsumerWidget {
           _Actions(
             children: <Widget>[
               deleteButton,
-              _Action(
-                label: l10n.modelsUpdate(size),
-                white: true,
-                // FR-M4 *Not enough space*: an update is a download too.
-                onPressed: short ? null : () => unawaited(act(download)),
-              ),
+              if (!gated)
+                _Action(
+                  label: l10n.modelsUpdate(size),
+                  white: true,
+                  // FR-M4 *Not enough space*: an update is a download too.
+                  onPressed: short ? null : () => unawaited(act(download)),
+                ),
             ],
           ),
         ];
@@ -519,18 +526,19 @@ class _ModelCardView extends ConsumerWidget {
           ),
           _Actions(
             children: <Widget>[
-              _Action(
-                label: live?.phase == DownloadPhase.paused
-                    ? l10n.modelsResume
-                    : l10n.modelsPause,
-                onPressed: () => unawaited(
-                  act(
-                    () => live?.phase == DownloadPhase.paused
-                        ? downloads.resume(id)
-                        : downloads.pause(id),
+              if (!gated || live?.phase != DownloadPhase.paused)
+                _Action(
+                  label: live?.phase == DownloadPhase.paused
+                      ? l10n.modelsResume
+                      : l10n.modelsPause,
+                  onPressed: () => unawaited(
+                    act(
+                      () => live?.phase == DownloadPhase.paused
+                          ? downloads.resume(id)
+                          : downloads.pause(id),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ];
@@ -541,21 +549,22 @@ class _ModelCardView extends ConsumerWidget {
           note(l10n.modelsFailedNote),
           _Actions(
             children: <Widget>[
-              _Action(
-                label: l10n.retry,
-                // A download that failed is retried; files on the phone that
-                // broke are fetched again from the start, space checked.
-                onPressed: () => unawaited(
-                  act(() async {
-                    await askToNotifyDownload(
-                      container.read(notificationPermissionProvider),
-                    );
-                    return card.live == null
-                        ? downloads.start(id)
-                        : downloads.retry(id);
-                  }),
+              if (!gated)
+                _Action(
+                  label: l10n.retry,
+                  // A download that failed is retried; files on the phone that
+                  // broke are fetched again from the start, space checked.
+                  onPressed: () => unawaited(
+                    act(() async {
+                      await askToNotifyDownload(
+                        container.read(notificationPermissionProvider),
+                      );
+                      return card.live == null
+                          ? downloads.start(id)
+                          : downloads.retry(id);
+                    }),
+                  ),
                 ),
-              ),
               if (card.installed.bytesOnDisk > 0) deleteButton,
             ],
           ),
@@ -572,7 +581,6 @@ class _ModelCardView extends ConsumerWidget {
           ),
         ];
       case ModelCardStatus.notDownloaded:
-        final gated = !_isVoice && !enableHymtDownload;
         return <Widget>[
           if (gated) note(l10n.modelsHymtGated),
           _Actions(
@@ -608,16 +616,23 @@ class _ModelCardView extends ConsumerWidget {
       destructive: true,
     );
     if (confirmed != true) return;
-    await container.read(modelRepositoryProvider).delete(card.entry);
-    // With `tts_engine` now the phone's, nothing would ask Supertonic again:
-    // asked once, it finds its model gone and lets go of its ~400 MB of
-    // sessions and its clips.
-    if (_isVoice) await container.read(supertonicTtsProvider).isAvailable();
-    container
-      ..invalidate(modelCardProvider(card.entry.id))
-      ..invalidate(phoneSpaceProvider)
-      // Today's voice card and M3's row: a delete is no download (#757).
-      ..invalidate(voiceInstalledProvider);
+    try {
+      await container.read(modelRepositoryProvider).delete(card.entry);
+      // With `tts_engine` now the phone's, nothing would ask Supertonic
+      // again: asked once, it finds its model gone and lets go of its
+      // ~400 MB of sessions and its clips.
+      if (_isVoice) await container.read(supertonicTtsProvider).isAvailable();
+    } on Object catch (error) {
+      // #721: said, not silent; the card below shows what is left.
+      debugPrint('model delete: $error');
+      if (context.mounted) SgToast.show(context, l10n.modelsDeleteFailed);
+    } finally {
+      container
+        ..invalidate(modelCardProvider(card.entry.id))
+        ..invalidate(phoneSpaceProvider)
+        // Today's voice card and M3's row: a delete is no download (#757).
+        ..invalidate(voiceInstalledProvider);
+    }
   }
 
   /// *Check for update*: the manifest the app carries is read again, and a

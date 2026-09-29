@@ -8,6 +8,7 @@ import 'package:drift/drift.dart'
         Table,
         TableInfo;
 import 'package:drift/native.dart' show NativeDatabase;
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +20,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -36,6 +38,7 @@ import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/routes.dart';
 
+import '../core/keyboard.dart';
 import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
@@ -322,11 +325,11 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expectAllLinesShown(tester);
     });
 
-    testWidgets('#821 BR-PLAN-05 a backlog from more than six days back says '
-        'its dates, not "Wed to Wed"', (tester) async {
+    testWidgets('#821 #1055 BR-PLAN-05 a backlog from more than six days '
+        'back says its dates, day first, not "Wed to Wed"', (tester) async {
       await pump(tester, firstDay: '2026-09-02');
       expect(
-        find.text(l10n.backlogIntroTwo('Sep 2', 'Sep 16')),
+        find.text(l10n.backlogIntroTwo('2 Sep', '16 Sep')),
         findsOneWidget,
       );
     });
@@ -608,6 +611,30 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       await tester.pumpAndSettle();
     });
 
+    testWidgets('#694 CC-3 an action that fails to save says so, and the '
+        'word stays; Retry writes it', (tester) async {
+      await pump(tester);
+      await tester.runAsync(
+        () => db.customStatement(
+          'CREATE TEMP TRIGGER fail_known BEFORE INSERT ON review_log '
+          "BEGIN SELECT RAISE(ABORT, 'disk full'); END",
+        ),
+      );
+      await longPress(tester, l10n.backlogMarkKnown);
+      expect(find.text(l10n.saveAnswerFailed), findsOneWidget);
+      expect(word('das Haus'), findsOneWidget);
+
+      await tester.runAsync(
+        () => db.customStatement('DROP TRIGGER fail_known'),
+      );
+      await tester.tap(find.text(l10n.retry));
+      await settle(tester);
+      expect(word('das Haus'), findsNothing);
+      expect(find.text(l10n.studyKnown('das Haus')), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('#679 the Undo still works once T4 is closed', (tester) async {
       // The bar outlives T4, and T4's notifier goes with the screen.
       await pump(tester);
@@ -624,6 +651,49 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         () => db.customSelect('SELECT word_uid FROM review_log').get(),
       );
       expect(log, isEmpty);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('#1039 WCAG 2.1.1 a keyboard reaches them: Tab to the row, '
+        'the context-menu key opens its actions, Enter suspends it', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tabTo(
+        tester,
+        find.ancestor(of: word('das Haus'), matching: find.byType(SgTappable)),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.contextMenu);
+      await tester.pumpAndSettle();
+      for (final label in <String>[
+        l10n.backlogMarkKnown,
+        l10n.backlogSuspend,
+        l10n.backlogRemove,
+      ]) {
+        expect(find.widgetWithText(SgButton, label), findsOneWidget);
+      }
+
+      // Tab to Suspend in the sheet, and Enter.
+      bool onSuspend() {
+        var found = false;
+        FocusManager.instance.primaryFocus?.context?.visitAncestorElements((e) {
+          final widget = e.widget;
+          found = widget is SgButton && widget.label == l10n.backlogSuspend;
+          return !found;
+        });
+        return found;
+      }
+
+      for (var i = 0; i < 10 && !onSuspend(); i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+      }
+      expect(onSuspend(), isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await settle(tester);
+
+      expect(find.text(l10n.wordStatusSuspended), findsOneWidget);
       await tester.pump(const Duration(seconds: 5));
       await tester.pumpAndSettle();
     });
@@ -900,15 +970,16 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expect(say('2026-09-20'), 'Sun');
     });
 
-    test('from a week back, the date: a weekday would name two days', () {
-      expect(say('2026-09-14'), 'Sep 14');
-      expect(say('2026-08-30'), 'Aug 30');
+    test('from a week back, the date: a weekday would name two days; day '
+        'first, as the rest of the app (#1055)', () {
+      expect(say('2026-09-14'), '14 Sep');
+      expect(say('2026-08-30'), '30 Aug');
     });
 
     test('in the UI language', () {
       expect(
         say('2026-09-14', 'bn'),
-        DateFormat.MMMd('bn').format(DateTime(2026, 9, 14)),
+        DateFormat('d MMM', 'bn').format(DateTime(2026, 9, 14)),
       );
       expect(say('2026-09-14', 'bn'), isNot(contains('14')));
     });

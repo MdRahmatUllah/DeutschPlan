@@ -127,7 +127,8 @@ ORDER BY l.ord, s.ord
         );
       } else {
         await _db.customStatement(
-          'UPDATE enrollments SET started_on = ?2, completed_on = NULL '
+          'UPDATE enrollments SET started_on = ?2, completed_on = NULL, '
+          'left_part_way = NULL '
           'WHERE sublevel_code = ?1',
           <Object>[step, today],
         );
@@ -151,7 +152,7 @@ ORDER BY l.ord, s.ord
   }
 
   /// FR-M7-02: user.db as a first start has it, but for [kept]: every table
-  /// an export carries and the two it leaves out.
+  /// an export carries and the three it leaves out.
   Future<void> resetEverything() async {
     await _db.transaction(() async {
       // Children first: the foreign keys are on.

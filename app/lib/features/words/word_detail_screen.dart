@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/services.dart' show Clipboard, ClipboardData;
+import 'package:flutter/services.dart'
+    show Clipboard, ClipboardData, SystemUiOverlayStyle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,8 +14,10 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
 import 'package:sogda/data/repositories/search_repository.dart';
@@ -26,6 +29,7 @@ import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/plan_engine.dart' show daysBetween;
 import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/features/study/study_card.dart';
+import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/features/words/word_row.dart';
@@ -68,6 +72,8 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
   // closed mid-query disposes it, and a ref used after that throws.
   final dao = ref.watch(contentDaoProvider);
   final settings = ref.watch(settingsProvider);
+  // Watched: a meaning language changed in M3 reaches an open W1 (#1077).
+  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
   final words = ref.watch(wordRepositoryProvider);
   final updater = ref.watch(contentUpdaterProvider);
   // #854: an old uid, from a link written before an update re-keyed its
@@ -97,8 +103,10 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
                 word: word,
                 examples: examples,
                 tip: tip,
-                meaning: settings.read(SettingKeys.meaningLanguage),
-                pron: settings.read(SettingKeys.showPronBn),
+                meaning: meaning,
+                // #1077: only while Bangla is a meaning language.
+                pron:
+                    settings.read(SettingKeys.showPronBn) && meaning.hasBangla,
                 translate: settings.read(SettingKeys.mtEnabled),
               ),
       );
@@ -111,8 +119,18 @@ class ExampleTranslations extends _$ExampleTranslations {
   @override
   Map<String, String> build(String uid) => const <String, String>{};
 
+  /// The run under way: a second tap on *Translate* while it runs waits
+  /// for it, and translates nothing twice (#694 CC-3).
+  Future<void>? _running;
+
   /// Runs [germans] through the translator, cached, into [to].
-  Future<void> translate(List<String> germans, {required String to}) async {
+  Future<void> translate(List<String> germans, {required String to}) =>
+      _running ??= _translate(
+        germans,
+        to: to,
+      ).whenComplete(() => _running = null);
+
+  Future<void> _translate(List<String> germans, {required String to}) async {
     final translations = ref.read(translationRepositoryProvider);
     final found = <String, String>{...state};
     for (final german in germans) {
@@ -537,12 +555,19 @@ class _Header extends ConsumerWidget {
         child: framed,
       );
     }
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: gender ?? tokens.surface.muted,
-        border: Border(bottom: BorderSide(color: tokens.color.ink, width: 2)),
+    // #1070: as a page, W1's header is under the status bar.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: barsOver(gender ?? tokens.surface.muted),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: gender ?? tokens.surface.muted,
+          border: Border(bottom: BorderSide(color: tokens.color.ink, width: 2)),
+        ),
+        // #1064: on a gender colour the ring takes the header's ink.
+        child: onFill == null
+            ? framed
+            : SgFocusRingColour(colour: onFill, child: framed),
       ),
-      child: framed,
     );
   }
 }
@@ -686,7 +711,13 @@ class _ActionsState extends ConsumerState<_Actions> {
     final container = ProviderScope.containerOf(context, listen: false);
     void replan() => container.invalidate(todayPlanProvider);
     try {
-      final undo = await action(ref.read(wordActionsProvider));
+      // A write that fails says so, with Retry and Export (#694 CC-3).
+      late Undo undo;
+      final written = await guardWrite(context, () async {
+        undo = await action(ref.read(wordActionsProvider));
+        return true;
+      });
+      if (!written) return;
       replan();
       if (!mounted) return;
       unawaited(
@@ -926,8 +957,7 @@ class _CompareLink extends StatelessWidget {
       label: label,
       onTap: open,
       excludeSemantics: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: SgTappable(
         onTap: open,
         child: ConstrainedBox(
           // 48 dp to hit, however short the line is drawn.

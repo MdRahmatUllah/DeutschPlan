@@ -65,6 +65,27 @@
     "search.max_ms": 32.64,
     "search.first_ms": 314.21,
     "start.cold_ms": 2799,
-    "start.warm_ms": 1048
+    "start.warm_ms": 1048,
+    "year.card.build_avg_ms": 21.422,
+    "year.card.build_p90_ms": 25.925,
+    "year.card.build_p99_ms": 106.156,
+    "year.card.raster_avg_ms": 31.376,
+    "year.card.raster_p90_ms": 57.908,
+    "year.card.raster_p99_ms": 146.913,
+    "year.card.missed_build": 15,
+    "year.card.missed_raster": 66,
+    "year.list.build_avg_ms": 1.974,
+    "year.list.build_p90_ms": 3.621,
+    "year.list.build_p99_ms": 7.641,
+    "year.list.raster_avg_ms": 16.257,
+    "year.list.raster_p90_ms": 20.865,
+    "year.list.raster_p99_ms": 29.874,
+    "year.list.missed_build": 2,
+    "year.list.missed_raster": 314,
+    "year.search.median_ms": 21.73,
+    "year.search.max_ms": 38.9,
+    "year.search.first_ms": 53.18,
+    "year.start.cold_ms": 2405,
+    "year.start.warm_ms": 1036
   }
 }

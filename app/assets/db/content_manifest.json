@@ -441,14 +441,14 @@
   },
   "boundaries": {
     "A1.2": 14,
-    "A2.2": 39,
-    "B1.2": 53,
+    "A2.2": 12,
+    "B1.2": 5,
     "B2.2": 21,
     "C1.2": 21,
     "C2.2": 21
   },
-  "built_at": "2026-09-28T07:05:17+00:00",
-  "content_version": "20260928070517",
+  "built_at": "2026-09-29T13:29:56+00:00",
+  "content_version": "20260929132956",
   "counts": {
     "examples": 10545,
     "grammar": 182,
@@ -5880,8 +5880,16 @@
   },
   "sources": [
     {
+      "file": "German_A1_Tracker.xlsx",
+      "sha256": "00f32332877442156f45d61ee9d702908bbaa7b4a2c80ad22d6e349f2b4fc04b"
+    },
+    {
+      "file": "German_A2_Tracker.xlsx",
+      "sha256": "0cf6414a8cbb52d1aa8d06f9039ee0cf5fd6f6b94392f9b6b6b2dcfe689b66a3"
+    },
+    {
       "file": "German_B1_Tracker.xlsx",
-      "sha256": "210591db3d84336bcb20affcc3db0c65598a9ce15ad1dba3b976263631c57012"
+      "sha256": "530889049b9a5f3e71d3c8412811a4ba3dc4e11a3ecb1329d3c14969fca407f5"
     },
     {
       "file": "German_B2_Tracker.xlsx",

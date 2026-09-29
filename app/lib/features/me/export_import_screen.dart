@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -115,9 +116,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
   ImportMode _mode = ImportMode.merge;
   bool _busy = false;
 
-  /// FR-M6-01: the file to the share sheet, and the day remembered once the
-  /// learner sent it somewhere.
-  Future<void> _export() async {
+  /// FR-M6-01: the file to the share sheet, or saved on the phone (#1066),
+  /// and the day remembered once the learner sent or saved it.
+  Future<void> _export({bool save = false}) async {
     if (_busy) return;
     final l10n = AppLocalizations.of(context);
     final backups = ref.read(backupRepositoryProvider);
@@ -130,7 +131,8 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       final json = await backups.exportJson(
         contentVersion: await content.version(),
       );
-      if (await files.share(ExportImportScreen.fileName(now), json)) {
+      final name = ExportImportScreen.fileName(now);
+      if (await (save ? files.save(name, json) : files.share(name, json))) {
         await settings.write(SettingKeys.lastExport, now);
       }
     } on Object catch (error) {
@@ -181,6 +183,9 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
       _file = file;
       _preview = preview;
       _problem = problem;
+      // #721: each file starts on Merge, the default; *Replace* is chosen
+      // for a file, never carried over from the last one.
+      _mode = ImportMode.merge;
     });
   }
 
@@ -255,6 +260,13 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
                     : l10n.exportImportExportSized(_size(l10n, size)),
                 drawnHeight: 48,
                 onPressed: _busy ? null : () => unawaited(_export()),
+              ),
+              // #1066: a copy on the phone itself, where the share sheet
+              // has no local target (One UI).
+              SgButton(
+                label: l10n.exportImportSave,
+                kind: SgButtonKind.secondary,
+                onPressed: _busy ? null : () => unawaited(_export(save: true)),
               ),
               _Caption(
                 last == null
@@ -505,8 +517,7 @@ class _Choice extends StatelessWidget {
       label: label,
       onTap: onTap,
       excludeSemantics: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: SgTappable(
         onTap: onTap,
         child: ConstrainedBox(
           // accessibility-performance.md: 48 dp on Android, 44 pt on iOS.
@@ -562,8 +573,7 @@ class _Link extends StatelessWidget {
     label: label,
     onTap: onTap,
     excludeSemantics: true,
-    child: GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    child: SgTappable(
       onTap: onTap,
       child: ConstrainedBox(
         constraints: BoxConstraints(minHeight: context.isCupertino ? 44 : 48),

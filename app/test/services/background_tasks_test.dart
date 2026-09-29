@@ -11,6 +11,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/today/today_providers.dart';
@@ -166,6 +167,24 @@ void main() {
       );
     });
 
+    test("#1018 a course older than this build: left for the app's next "
+        "start, and tomorrow's run queued", () async {
+      // The course of the build before, installed beside a user.db at this
+      // schema: the manifest the app keeps names an older version than the
+      // one this build bundles.
+      File('${support.path}/${ContentDao.fileName}').writeAsBytesSync(<int>[]);
+      File('${support.path}/${ContentUpdater.manifestFile}')
+          .writeAsStringSync('{"content_version": "202001010000"}');
+
+      await skip(BackgroundTask.planPregenerate);
+
+      expect(ran, isEmpty);
+      expect(
+        work.queued[BackgroundTask.planPregenerate],
+        const Duration(days: 1),
+      );
+    });
+
     test('the other tasks queue nothing: the app and plan_pregenerate do '
         'that', () async {
       await skip(BackgroundTask.widgetRefresh);
@@ -206,8 +225,9 @@ void main() {
           appDatabaseProvider.overrideWithValue(db),
           settingsProvider.overrideWithValue(settings),
           clockProvider.overrideWithValue(() => now),
-          if (view case final view?)
-            todayViewProvider.overrideWith((ref) async => view),
+          // Read when built, so a test can change the day under it (#626).
+          if (view != null)
+            todayViewProvider.overrideWith((ref) async => view!),
         ],
       );
       addTearDown(container.dispose);
@@ -232,7 +252,8 @@ void main() {
       settings = SettingsRepository(db);
       await settings.load();
       await db.customStatement(
-        "INSERT INTO enrollments VALUES ('A1.1', '$today', 7, 127, NULL)",
+        "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+        "study_days_mask, completed_on) VALUES ('A1.1', '$today', 7, 127, NULL)",
       );
       await settings.write(SettingKeys.reminderEnabled, true);
       await settings.write(SettingKeys.reminderTime, (hour: 19, minute: 30));
@@ -336,17 +357,64 @@ void main() {
       expect(reminders.cancelledDays, <DateTime>[reminder]);
     });
 
-    test(
-      'nothing due, and reminder_only_when_due off: the plain one stays',
-      () async {
-        view = artboardDone();
-        await settings.write(SettingKeys.reminderOnlyWhenDue, false);
-        await run(BackgroundTask.reminderCompose);
+    test('#626 nothing due, and reminder_only_when_due off: the plain one, '
+        'not a plan written into it earlier', () async {
+      view = artboardDone();
+      await settings.write(SettingKeys.reminderOnlyWhenDue, false);
+      await run(BackgroundTask.reminderCompose);
+
+      expect(reminders.replaced.keys, <DateTime>[reminder]);
+      expect(
+        reminders.replaced[reminder]?.body,
+        "Today's plan is ready. "
+        'A few minutes is enough.',
+      );
+      expect(reminders.cancelledDays, isEmpty);
+    });
+
+    group("#626 in the app, today's reminder follows the day", () {
+      /// [followReminder] over a container whose today is [view], changed
+      /// by [then].
+      Future<void> follow(TodayView from, TodayView to) async {
+        view = from;
+        final container = containerFor();
+        final following = followReminder(container, reminders);
+        addTearDown(following.close);
+        await pumpEventQueue();
+        expect(
+          reminders.replaced.isEmpty && reminders.cancelledDays.isEmpty,
+          isTrue,
+          reason: "the start's answer is the sync's and its compose's",
+        );
+        view = to;
+        container.invalidate(todayViewProvider);
+        await pumpEventQueue();
+      }
+
+      test('finished before the reminder: cancelled at once', () async {
+        await follow(artboardToday(reviseDone: 0, newDone: 0), artboardDone());
+
+        expect(reminders.cancelledDays, <DateTime>[reminder]);
+        expect(reminders.replaced, isEmpty);
+      });
+
+      test('opened again (an Undo): its plan written back', () async {
+        await follow(artboardDone(), artboardToday(reviseDone: 0, newDone: 0));
+
+        expect(reminders.replaced.keys, <DateTime>[reminder]);
+        expect(reminders.cancelledDays, isEmpty);
+      });
+
+      test('a rating that leaves the day open writes nothing', () async {
+        await follow(
+          artboardToday(reviseDone: 0, newDone: 0),
+          artboardToday(reviseDone: 3, newDone: 0),
+        );
 
         expect(reminders.replaced, isEmpty);
         expect(reminders.cancelledDays, isEmpty);
-      },
-    );
+      });
+    });
 
     test('a rest day: cancelled, even with revisions to do', () async {
       view = artboardRest();

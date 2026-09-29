@@ -130,8 +130,9 @@ The learner's data, created from `app/lib/data/db/user_schema.drift`
 - **Transactions.** A rating is one transaction (word_state, review_log,
   plan_items, daily_stats, undo_stack); a day's plan is one; exam answers are
   written one question at a time.
-- **Backups.** Export writes every table except `translation_cache` and
-  `undo_stack` to JSON with the schema version; import replaces or merges
+- **Backups.** Export writes every table except `translation_cache`,
+  `undo_stack` and `content_updates` (this phone's course history, #1025) to
+  JSON with the schema version; import replaces or merges
   (the most recent `last_review` wins per word).
 
 ## content.db

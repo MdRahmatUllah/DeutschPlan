@@ -8,8 +8,10 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_engine.dart' show parsePlanDate;
@@ -249,13 +251,17 @@ class StepHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.accent, child: content);
+        : SgHeaderFill(
+            color: tokens.color.accent,
+            // #1064: the ring in the header's ink, which holds on its fill.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 }
 
 /// FR-L2-01's line: when the step began and how long its To-do words will
 /// take at its pace, or when it was completed and which mock passed, or
-/// left with words still to learn.
+/// left with words never planned.
 String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
   String day(String date) =>
       DateFormat('d MMM', locale.toString()).format(parsePlanDate(date));
@@ -263,10 +269,12 @@ String paceLine(AppLocalizations l10n, Locale locale, StepProgress step) {
     if (step.passedSeed case final mock?) {
       return l10n.stepCompletedPassed(day(completed), mock);
     }
-    // #950 (the owner): an enrollment's end is "Completed" only once every
-    // word is Done; before that the step was left, as *Start* on another
-    // step leaves it (FR-L2-03).
-    return step.todo + step.learning == 0
+    // #950, #1012 (the owner): a step the plan finished is completed, words
+    // still Learning, or planned and not yet met, and all (#1028); one with
+    // words never planned was left part-way, as *Start* on another step
+    // leaves it (FR-L2-03).
+    // #1047: as recorded when it ended; one ended before v4 by its words.
+    return !(step.leftPartWay ?? step.unplanned > 0)
         ? l10n.stepCompleted(day(completed))
         : l10n.stepLeft(day(completed));
   }

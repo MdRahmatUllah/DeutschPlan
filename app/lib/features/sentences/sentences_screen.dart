@@ -11,6 +11,7 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -205,19 +206,7 @@ class _SentencesScreenState extends ConsumerState<SentencesScreen> {
   Future<void> _finish() async {
     if (_leaving) return;
     _leaving = true;
-    final today = _day;
-    ref.invalidate(studyNextProvider(today));
-    // Listened to while it answers: read alone, an auto-disposing provider
-    // can go before its future does.
-    final hold = ref.listenManual(studyNextProvider(today), (_, _) {});
-    final next = await ref.read(studyNextProvider(today).future);
-    hold.close();
-    if (!mounted) return;
-    if (next.dayDone && next.sentences == 0) {
-      DayCompleteRoute.instead(context, today);
-    } else {
-      unawaited(Navigator.of(context).maybePop());
-    }
+    await leaveSession(context, ref, _day);
   }
 
   @override
@@ -719,9 +708,9 @@ class _Answer extends StatelessWidget {
       label: label,
       onTap: onPressed,
       child: ExcludeSemantics(
-        child: GestureDetector(
+        child: SgTappable(
+          radius: BorderRadius.circular(tokens.shape.button),
           onTap: onPressed,
-          behavior: HitTestBehavior.opaque,
           // 48, grown with the text size: a fixed 48 cut "Understood" at
           // 150 % (#165).
           child: Container(
@@ -777,9 +766,9 @@ class _IconButton extends StatelessWidget {
     label: label,
     child: AdaptiveTooltip(
       message: label,
-      child: GestureDetector(
+      child: SgTappable(
+        radius: BorderRadius.circular(24),
         onTap: onPressed,
-        behavior: HitTestBehavior.opaque,
         child: SizedBox(
           width: 48,
           height: 48,

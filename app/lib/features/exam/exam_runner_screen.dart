@@ -9,8 +9,10 @@ import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_run_service.dart';
 import 'package:sogda/domain/exam_generator.dart'
@@ -233,11 +235,19 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
     if (running == 0 && paused == 0) return;
     _runPending = 0;
     _pausePending = 0;
-    await _service.recordTime(
-      widget.attemptId,
-      running: running,
-      paused: paused,
-    );
+    try {
+      await _service.recordTime(
+        widget.attemptId,
+        running: running,
+        paused: paused,
+      );
+    } on Object catch (error) {
+      // Kept for the next flush, never lost (#694 CC-3): the clock's own
+      // write, every few seconds, asks no one.
+      debugPrint('exam time: $error');
+      _runPending += running;
+      _pausePending += paused;
+    }
   }
 
   bool get _typedHere {
@@ -346,7 +356,6 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
       for (final (i, q) in questions.indexed)
         if (examNumbered(q.item)) i,
     ];
-    final left = _timed ? examClock(_left.value) : null;
     final pick = await Adaptive.showSheet<NavChoice>(
       context: context,
       builder: (_) => ExamNavigatorSheet(
@@ -355,7 +364,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
             (answered: _given[i] != null, flagged: _flagged[i]),
         ],
         current: numbered.contains(_at) ? numbered.indexOf(_at) : null,
-        left: left,
+        // The clock itself, not its time now: the title ticks (#1003).
+        left: _timed ? _left : null,
       ),
     );
     if (pick == null || !mounted) return;
@@ -617,8 +627,8 @@ class _ExamRunnerScreenState extends ConsumerState<ExamRunnerScreen> {
                       message: _flagged[_at]
                           ? l10n.examRunFlagged
                           : l10n.examRunFlag,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
+                      child: SgTappable(
+                        radius: BorderRadius.circular(24),
                         onTap: () => unawaited(_toggleFlag()),
                         child: SizedBox.square(
                           dimension: 48,
@@ -882,8 +892,8 @@ class _Band extends StatelessWidget {
                   excludeSemantics: true,
                   child: AdaptiveTooltip(
                     message: l10n.examRunPause,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: SgTappable(
+                      radius: BorderRadius.circular(24),
                       onTap: onPause,
                       child: SizedBox.square(
                         dimension: 48,
@@ -909,8 +919,8 @@ class _Band extends StatelessWidget {
                   excludeSemantics: true,
                   child: AdaptiveTooltip(
                     message: l10n.examNavOpen,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: SgTappable(
+                      radius: BorderRadius.circular(24),
                       onTap: onNavigator,
                       child: SizedBox.square(
                         dimension: 48,
@@ -931,6 +941,6 @@ class _Band extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(color: tokens.color.der, child: content);
+        : SgHeaderFill(color: tokens.color.der, child: content);
   }
 }

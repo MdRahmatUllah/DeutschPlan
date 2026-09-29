@@ -298,6 +298,16 @@ void main() {
       expect(run.times, [(10, 0)]);
     });
 
+    testWidgets('#694 CC-3 FR-L12-03 a time write that fails loses no '
+        'second: the next tick writes them with its own', (tester) async {
+      await pump(tester);
+      run.failTimes = 1;
+      await tester.pump(const Duration(seconds: 10));
+      expect(run.times, isEmpty);
+      await tester.pump(const Duration(seconds: 1));
+      expect(run.times, [(11, 0)]);
+    });
+
     testWidgets('at 0:00 the exam submits itself', (tester) async {
       await pump(
         tester,
@@ -625,6 +635,20 @@ void main() {
         reason: 'the question on screen',
       );
       semantics.dispose();
+    });
+
+    testWidgets('#1003 its title counts down with the exam bar while the '
+        'sheet stays open', (tester) async {
+      await pump(tester);
+      await open(tester);
+      expect(find.text(l10n.examNavLeft('14:32')), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text(l10n.examNavLeft('14:31')), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.text(l10n.examNavLeft('14:29')), findsOneWidget);
+      expect(find.text('14:29'), findsOneWidget, reason: 'the bar behind it');
+      expect(find.text(l10n.examNavTitle), findsOneWidget, reason: 'open');
     });
 
     testWidgets('#952 the numbers read row by row, as the grid draws them', (

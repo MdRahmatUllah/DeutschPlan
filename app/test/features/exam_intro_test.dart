@@ -27,6 +27,7 @@ void main() {
   setUp(() {
     StubExamStart.begun.clear();
     StubExamStart.fail = false;
+    StubExamStart.error = Exception('no database');
   });
 
   /// At the phone size, or [wide] for tests that read the section names:
@@ -218,6 +219,17 @@ void main() {
 
     testWidgets('a failure says so and stays', (tester) async {
       StubExamStart.fail = true;
+      await pump(tester);
+      await begin(tester);
+
+      expect(find.text(l10n.examIntroFailed), findsOneWidget);
+      expect(went, isNull);
+    });
+
+    testWidgets('#694 CC-3 a throw that is no Exception says so too: a '
+        "deep link's seed outside 1..3", (tester) async {
+      StubExamStart.fail = true;
+      StubExamStart.error = RangeError.range(4, 1, 3, 'seed');
       await pump(tester);
       await begin(tester);
 

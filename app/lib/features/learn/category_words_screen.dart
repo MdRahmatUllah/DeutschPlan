@@ -10,6 +10,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
@@ -26,10 +27,15 @@ part 'category_words_screen.g.dart';
 /// L6's rows: every word of category [id], suspended ones included, by step,
 /// then frequency, then reading order (FR-L6-01).
 @riverpod
-Stream<List<StepWord>> categoryWords(Ref ref, int id) => ref
-    .watch(wordRepositoryProvider)
-    .watchCategory(id)
-    .map((words) => withMeanings(ref, words));
+Stream<List<StepWord>> categoryWords(Ref ref, int id) {
+  // Watched (#694 CC-4): a change in Settings re-emits the list at once,
+  // not at the next write to its words.
+  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+  return ref
+      .watch(wordRepositoryProvider)
+      .watchCategory(id)
+      .map((words) => withMeanings(meaning, words));
+}
 
 /// L6's level chips: All · A1 · A2 · B1 · B2+, where B2+ is B2 to C2.
 enum LevelFilter {
@@ -192,8 +198,7 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
                       itemCount: shown.length,
                       itemBuilder: (context, index) {
                         final row = shown[index];
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
+                        return SgTappable(
                           onTap: () => WordRoute.open(context, row.word.uid),
                           child: WordRow(
                             word: row.word,

@@ -6,6 +6,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart'
     show SgPlayingBars, SgSpeakerState;
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -200,8 +201,8 @@ class WordPlayButton extends ConsumerWidget {
         label: AppLocalizations.of(context).summaryPlay(word),
         child: AdaptiveTooltip(
           message: AppLocalizations.of(context).summaryPlay(word),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
+          child: SgTappable(
+            radius: BorderRadius.circular(20),
             onTap: () => unawaited(say(ref, context, word)),
             child: SizedBox(
               width: 40,

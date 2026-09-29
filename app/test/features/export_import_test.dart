@@ -82,6 +82,17 @@ class FakeBackupFiles implements BackupFiles {
     shared.add((name: name, json: json));
     return shares;
   }
+
+  /// Whether the save dialog saved rather than was backed out of (#1066).
+  bool saves = true;
+
+  final List<PickedBackup> saved = <PickedBackup>[];
+
+  @override
+  Future<bool> save(String name, String json) async {
+    saved.add((name: name, json: json));
+    return saves;
+  }
 }
 
 /// The recordings, deleted without a disk: file I/O never finishes in a
@@ -263,6 +274,34 @@ void main() {
       expect(settings.read(SettingKeys.lastExport), isNull);
       expect(find.text(l10n.exportImportLastNever), findsOneWidget);
     });
+
+    testWidgets('#1066 FR-M6-01 Save to device: the dated file to the save '
+        'dialog, not the share sheet, and the day kept', (tester) async {
+      await pump(tester);
+      await tester.tap(find.text(l10n.exportImportSave));
+      await tester.pumpAndSettle();
+
+      expect(files.shared, isEmpty);
+      final file = files.saved.single;
+      expect(file.name, 'sogda-2026-09-21.json');
+      final backup = jsonDecode(file.json) as Map<String, Object?>;
+      expect(backup['content_version'], ContentFixture.version);
+      expect(settings.read(SettingKeys.lastExport), DateTime(2026, 9, 21));
+      expect(find.text(l10n.exportImportLast('21 Sep')), findsOneWidget);
+    });
+
+    testWidgets('#1066 a save dialog backed out of is not an export', (
+      tester,
+    ) async {
+      files.saves = false;
+      await pump(tester);
+      await tester.tap(find.text(l10n.exportImportSave));
+      await tester.pumpAndSettle();
+
+      expect(files.saved, hasLength(1));
+      expect(settings.read(SettingKeys.lastExport), isNull);
+      expect(find.text(l10n.exportImportLastNever), findsOneWidget);
+    });
   });
 
   group('FR-M6-02 the preview', () {
@@ -380,6 +419,22 @@ void main() {
 
       expect(find.text(l10n.exportImportNotABackup), findsOneWidget);
       expect(find.text(l10n.exportImportDoMerge), findsNothing);
+    });
+
+    testWidgets('#721 each file chosen starts on Merge, not on the last '
+        "file's Replace", (tester) async {
+      await pump(tester);
+      await choose(tester, await otherPhone());
+      await tester.tap(find.text(l10n.exportImportReplace));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.exportImportDoReplace), findsOneWidget);
+
+      files.picked = (name: 'sogda-2026-09-21.json', json: await otherPhone());
+      await tester.tap(find.text(l10n.exportImportChooseOther));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.exportImportDoMerge), findsOneWidget);
+      expect(find.text(l10n.exportImportDoReplace), findsNothing);
     });
 
     testWidgets('backing out of the picker keeps the file chosen', (

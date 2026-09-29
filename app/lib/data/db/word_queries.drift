@@ -155,6 +155,7 @@ stepProgress:
     COALESCE(w.todo, 0) AS todo,
     COALESCE(w.learning, 0) AS learning,
     COALESCE(w.done, 0) AS done,
+    COALESCE(w.unplanned, 0) AS unplanned,
     (SELECT COUNT(*) FROM grammar_topics g
       JOIN grammar_state gs ON gs.grammar_uid = g.uid
       WHERE g.sublevel_code = sl.code
@@ -165,6 +166,7 @@ stepProgress:
       ORDER BY a.finished_at, a.id LIMIT 1) AS passed_seed,
     e.started_on AS started_on,
     e.completed_on AS completed_on,
+    e.left_part_way AS left_part_way,
     e.daily_new AS daily_new,
     e.study_days_mask AS study_days_mask
   FROM sublevels sl
@@ -182,9 +184,17 @@ stepProgress:
         AND s.stability < :doneAfter THEN 1 ELSE 0 END) AS learning,
       SUM(CASE WHEN s.status != 'suspended'
         AND NOT (s.introduced_on IS NULL AND s.reps = 0)
-        AND s.stability >= :doneAfter THEN 1 ELSE 0 END) AS done
+        AND s.stability >= :doneAfter THEN 1 ELSE 0 END) AS done,
+      -- #1028: To do and never planned: what a step left by switching
+      -- part-way still has, and one the plan finished doesn't. One pass
+      -- over the new rows, not a lookup per word (no index by word).
+      SUM(CASE WHEN p.word_uid IS NULL AND (s.word_uid IS NULL
+        OR (s.status != 'suspended' AND s.introduced_on IS NULL
+          AND s.reps = 0)) THEN 1 ELSE 0 END) AS unplanned
     FROM words wd
     LEFT JOIN word_state s ON s.word_uid = wd.uid
+    LEFT JOIN (SELECT DISTINCT word_uid FROM plan_items WHERE kind = 'new') p
+      ON p.word_uid = wd.uid
     WHERE wd.kind = 'vocab'
     GROUP BY wd.sublevel_code
   ) w ON w.sublevel_code = sl.code

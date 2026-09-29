@@ -8,6 +8,7 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_speaker_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -171,7 +172,10 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     final l10n = AppLocalizations.of(context);
     final word = widget.word;
     final settings = ref.watch(settingsProvider);
-    final pron = settings.read(SettingKeys.showPronBn);
+    // Watched: a meaning language changed in M3 reaches the card at once.
+    final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+    // #1077: the Bangla pronunciation only while Bangla is a meaning language.
+    final pron = settings.read(SettingKeys.showPronBn) && meaning.hasBangla;
     // Watched from the front, so the back has its examples when it opens.
     final extras = ref.watch(studyBackProvider(word.uid)).value;
     final updated =
@@ -210,18 +214,27 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                     // accessibility-performance.md: after a rating the focus
                     // moves to the next card, which is a new one (T2's
                     // switcher), so a screen reader follows (#162).
-                    Focus(
-                      autofocus: true,
-                      // FR-T2-09: a long-press copies the word.
-                      child: Semantics(
-                        onLongPressHint: l10n.studyCopyHint,
-                        child: GestureDetector(
-                          onLongPress: _copy,
-                          child: SgHeadword(
-                            word.german,
-                            article: word.article,
-                            plural: word.forms,
-                            role: SgTextRole.display,
+                    // FR-T2-09: a long-press copies the word, as do the
+                    // context-menu key and Shift+F10 (#1039). The card's own
+                    // focus sits under them, so the keys work as the card
+                    // comes, and Tab stops on the headword once, not twice.
+                    SgFocusable(
+                      onPressed: null,
+                      onLongPress: _copy,
+                      radius: BorderRadius.zero,
+                      child: Focus(
+                        autofocus: true,
+                        skipTraversal: true,
+                        child: Semantics(
+                          onLongPressHint: l10n.studyCopyHint,
+                          child: GestureDetector(
+                            onLongPress: _copy,
+                            child: SgHeadword(
+                              word.german,
+                              article: word.article,
+                              plural: word.forms,
+                              role: SgTextRole.display,
+                            ),
                           ),
                         ),
                       ),
@@ -272,7 +285,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                 padding: const EdgeInsets.only(top: 14),
                 child: StudyBack(
                   word: word,
-                  meaning: settings.read(SettingKeys.meaningLanguage),
+                  meaning: meaning,
                   extras: extras,
                   updated: updated,
                   onPlay: (sentence) => unawaited(_speak(text: sentence)),
@@ -297,7 +310,8 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
             ),
     );
 
-    // *Show meaning* is the labelled way to turn it; the tap is a shortcut.
+    // *Show meaning* is the labelled way to turn it, and the Tab stop that
+    // does (#1021); the tap is a shortcut. ponytail: allow-bare-tap
     return GestureDetector(
       onTap: widget.revealed ? null : widget.onReveal,
       excludeFromSemantics: true,

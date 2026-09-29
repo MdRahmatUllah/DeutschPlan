@@ -158,6 +158,7 @@ class _UmlautKey extends StatelessWidget {
         child: ExcludeSemantics(
           child: SgFocusable(
             onPressed: onTap,
+            onLongPress: onLongPress,
             radius: BorderRadius.circular(tokens.shape.chip),
             child: GestureDetector(
               onTap: onTap,

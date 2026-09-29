@@ -11,6 +11,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_progress_ring.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
@@ -196,7 +197,7 @@ String _when(BuildContext context, ProgressRange range, PlanDate start) {
       DateTime.saturday => l10n.weekdayShortSat,
       _ => l10n.weekdayShortSun,
     },
-    ProgressRange.month => DateFormat.MMMd(locale).format(date),
+    ProgressRange.month => DateFormat('d MMM', locale).format(date),
     ProgressRange.all => DateFormat.MMM(locale).format(date),
   };
 }
@@ -365,10 +366,22 @@ class _CardsChart extends StatelessWidget {
                         if (i < 0 || i >= bars.length || !named(i)) {
                           return const SizedBox.shrink();
                         }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 6),
+                        final label = _when(context, range, bars[i].start);
+                        // #1060: centred on the last bar, Month's "28 Sep"
+                        // ran past the card; an edge label moves inside.
+                        // Keyed by its bar and its text: fl_chart measures a
+                        // title once per state, so a reused one would keep
+                        // the old width.
+                        return SideTitleWidget(
+                          key: ValueKey<(int, String)>((i, label)),
+                          meta: meta,
+                          space: 6,
+                          fitInside: SideTitleFitInsideData.fromTitleMeta(
+                            meta,
+                            distanceFromEdge: 0,
+                          ),
                           child: SgText(
-                            _when(context, range, bars[i].start),
+                            label,
                             role: SgTextRole.caption,
                             color: tokens.color.textSecondary,
                           ),
@@ -563,8 +576,7 @@ class _ByStep extends StatelessWidget {
             Semantics(
               container: true,
               button: true,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: SgTappable(
                 onTap: () => context.jumpToTab(LearnStepRoute(code: step.code)),
                 child: ConstrainedBox(
                   // accessibility-performance.md: 48 dp on Android, 44 pt

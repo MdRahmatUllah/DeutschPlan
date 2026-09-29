@@ -37,6 +37,9 @@ class FakePermission implements NotificationPermission {
   }
 
   @override
+  Future<bool> granted() async => allowed;
+
+  @override
   Future<bool> openSettings() async {
     opened++;
     return true;
@@ -64,7 +67,8 @@ void main() {
       "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
     );
     await db.customStatement(
-      "INSERT INTO enrollments VALUES ('A1.1', '2026-09-01', 7, 127, NULL)",
+      "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+      "study_days_mask, completed_on) VALUES ('A1.1', '2026-09-01', 7, 127, NULL)",
     );
     settings = SettingsRepository(db);
     await settings.load();
@@ -144,6 +148,19 @@ void main() {
       );
     });
 
+    testWidgets('#692 ME-9 two quick taps are two days, not the second '
+        'alone', (tester) async {
+      await pump(tester);
+
+      // No frame between them: the second tap meets M5 as it was drawn.
+      await tester.tap(find.text(l10n.weekdayShortSun));
+      await tester.tap(find.text(l10n.weekdayShortSat));
+      await tester.pumpAndSettle();
+
+      expect(settings.read(SettingKeys.studyDaysMask), 31);
+      expect(await enrolledMask(), 31);
+    });
+
     testWidgets('the last study day stays', (tester) async {
       await settings.write(SettingKeys.studyDaysMask, 1);
       await pump(tester);
@@ -199,6 +216,41 @@ void main() {
       expect(find.text(l10n.onboardingReminderBlocked), findsOneWidget);
       await tester.tap(find.text(l10n.reminderDaysOpenSettings));
       expect(permission.opened, 1);
+    });
+
+    testWidgets("#692 ME-8 on, but revoked in the phone's settings: it "
+        'reads off, blocked, and says where to allow it', (tester) async {
+      await settings.write(SettingKeys.reminderEnabled, true);
+      permission.allowed = false;
+      await pump(tester);
+
+      expect(tester.widget<AdaptiveSwitch>(reminderSwitch).value, isFalse);
+      expect(find.text(l10n.onboardingReminderBlocked), findsOneWidget);
+      expect(find.text(l10n.reminderDaysGranted), findsNothing);
+      expect(find.text(l10n.reminderDaysOpenSettings), findsOneWidget);
+      expect(
+        find.text(l10n.reminderDaysTonight),
+        findsNothing,
+        reason: 'no preview of a reminder the phone will drop',
+      );
+      expect(permission.asked, 0, reason: 'read, never asked');
+    });
+
+    testWidgets('#692 ME-8 and allowed there, back in the app: on again, '
+        'with nothing tapped', (tester) async {
+      await settings.write(SettingKeys.reminderEnabled, true);
+      permission.allowed = false;
+      await pump(tester);
+
+      permission.allowed = true;
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<AdaptiveSwitch>(reminderSwitch).value, isTrue);
+      expect(find.text(l10n.reminderDaysGranted), findsOneWidget);
+      expect(find.text(l10n.reminderDaysOpenSettings), findsNothing);
+      expect(settings.read(SettingKeys.reminderEnabled), isTrue);
     });
 
     testWidgets('Open settings is a button of its own, not the whole card', (

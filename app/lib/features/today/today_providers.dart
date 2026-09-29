@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
+import 'package:sogda/data/repositories/plan_store.dart' show DriftPlanStore;
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart' show WordStatus;
 import 'package:sogda/domain/plan_engine.dart';
@@ -39,23 +40,11 @@ Stream<Set<(String, String)>> todayOpen(Ref ref) => ref
       },
     );
 
-/// Today's new words skipped to the backlog and not studied since (#729):
-/// handled for the plan, as BR-PLAN-10 counts them, but not studied, so the
-/// day's "17 words" leaves them out.
+/// The words studied today, as it changes: the day's "17 words" (#1004).
 @riverpod
-Stream<int> todaySkippedNew(Ref ref) => ref
+Stream<int> todayWordsStudied(Ref ref) => ref
     .watch(planRepositoryProvider)
-    .watchPlan(ref.watch(todayProvider))
-    .map(
-      (items) => items
-          .where(
-            (item) =>
-                item.kind == PlanKind.newWord.wire &&
-                item.completedAt == null &&
-                item.skipped != 0,
-          )
-          .length,
-    );
+    .watchWordsStudiedOn(ref.watch(todayProvider));
 
 /// How many of today's practice sentences have been rated, as it changes:
 /// T5 finishing moves Today's sentence card without Today having to ask.
@@ -71,6 +60,15 @@ Stream<Set<String>> todayGrammarDue(Ref ref) => ref
     .watch(grammarRepositoryProvider)
     .watchDue(ref.watch(todayProvider))
     .map((topics) => <String>{for (final topic in topics) topic.uid});
+
+/// #1045: the topics practised today, as they change: one practised from
+/// L2 or L4 though not due joins the day's topics at once, where the plan
+/// took it in only when the day was built again (#754).
+@riverpod
+Stream<Set<String>> todayGrammarPractised(Ref ref) => DriftPlanStore(
+  ref.watch(appDatabaseProvider),
+  ref.watch(settingsProvider),
+).watchGrammarPractisedOn(ref.watch(todayProvider));
 
 /// The voice's download, as the manager reports it (FR-M4-01).
 @riverpod
@@ -138,7 +136,8 @@ Future<TodayView> todayView(Ref ref) async {
   final rating = ref.watch(todaySentencesRatedProvider.future);
   final waiting = ref.watch(todayBacklogProvider.future);
   final grammarChanges = ref.watch(todayGrammarDueProvider.future);
-  final skipping = ref.watch(todaySkippedNewProvider.future);
+  final practising = ref.watch(todayGrammarPractisedProvider.future);
+  final studying = ref.watch(todayWordsStudiedProvider.future);
 
   final plan = await planning;
   final open = await changes;
@@ -154,16 +153,18 @@ Future<TodayView> todayView(Ref ref) async {
   ];
   final openRevise = stillOpen(PlanKind.revise, plan.revise);
   final openNew = stillOpen(PlanKind.newWord, plan.newToday);
-  // The day's topics are the ones due when it opened; one practised since is
-  // done, and one falling due later in the day waits for tomorrow's plan.
+  // The day's topics are the ones due when it opened, and any practised
+  // that day, the moment it is (#754, #1045); one practised since is done,
+  // and one falling due later in the day waits for tomorrow's plan.
   final dueNow = await grammarChanges;
+  final dayTopics = <String>{...plan.grammarDue, ...await practising};
   final openGrammar = <String>[
-    for (final uid in plan.grammarDue)
+    for (final uid in dayTopics)
       if (dueNow.contains(uid)) uid,
   ];
 
   final backlog = await waiting;
-  final skippedNew = await skipping;
+  final wordsStudied = await studying;
   final started = await plans.courseStartedOn();
   final step = plan.activeStep;
   final counts = step == null ? null : await words.statusCounts(step);
@@ -239,11 +240,11 @@ Future<TodayView> todayView(Ref ref) async {
       done: plan.newToday.length - openNew.length,
       total: plan.newToday.length,
     ),
-    newSkipped: skippedNew,
+    words: wordsStudied,
     openRevise: openRevise,
     openNew: openNew,
     grammarDue: openGrammar,
-    grammarDone: plan.grammarDue.length - openGrammar.length,
+    grammarDone: dayTopics.length - openGrammar.length,
     sentences: BlockProgress(done: rated, total: sentences.length),
     isStudyDay: plan.isStudyDay,
     backlog: backlog.length,

@@ -8,10 +8,12 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
+import 'package:sogda/domain/plan_engine.dart' show ActiveStep;
 
 import '../db/content_fixture.dart';
 
@@ -407,6 +409,83 @@ void main() {
         expect((a12.todo, a12.learning, a12.done), (0, 0, 0));
       },
     );
+
+    test('#1028 unplanned: the To-do words no plan has ever held', () async {
+      expect((await course()).first.unplanned, 2);
+
+      // Haus planned, then skipped to the backlog: To do, but planned.
+      await db.customInsert(
+        'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, '
+        "skipped) VALUES ('2026-01-05', '${ContentFixture.haus}', 'new', "
+        "'A1.1', 1)",
+        updates: <TableInfo<Table, Object?>>{db.planItems},
+      );
+      final first = (await course()).first;
+      expect((first.todo, first.unplanned), (2, 1));
+
+      // Tür met: learning, no longer To do.
+      await state(ContentFixture.tuer, stability: 1);
+      expect((await course()).first.unplanned, 0);
+    });
+
+    group('#1047 how an enrollment ended, recorded then', () {
+      Future<void> planNew(String uid) => db.customInsert(
+        'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+        "VALUES ('2026-01-05', '$uid', 'new', 'A1.1')",
+        updates: <TableInfo<Table, Object?>>{db.planItems},
+      );
+
+      setUp(() async {
+        await DriftPlanStore(db, settings).enroll(
+          const ActiveStep(
+            sublevelCode: 'A1.1',
+            startedOn: '2026-01-01',
+            dailyNew: 7,
+            studyDaysMask: 127,
+          ),
+        );
+      });
+
+      test('finished by the plan, every word planned: finished, and a Reset '
+          'word after it changes nothing', () async {
+        await planNew(ContentFixture.haus);
+        await planNew(ContentFixture.tuer);
+        await DriftPlanStore(db, settings).completeStep('A1.1', '2026-01-06');
+        expect((await course()).first.leftPartWay, isFalse);
+
+        // Reset word: its state and its new rows go, and it is To do again.
+        await db.customUpdate(
+          "DELETE FROM plan_items WHERE word_uid = '${ContentFixture.haus}'",
+          updates: <TableInfo<Table, Object?>>{db.planItems},
+        );
+        final step = (await course()).first;
+        expect(step.unplanned, 1);
+        expect(step.leftPartWay, isFalse, reason: 'as recorded when it ended');
+      });
+
+      test('left by switching with a word never planned: left', () async {
+        await planNew(ContentFixture.haus);
+        await DriftPlanStore(db, settings).completeStep('A1.1', '2026-01-06');
+        expect((await course()).first.leftPartWay, isTrue);
+      });
+
+      test('open, or reopened: nothing recorded', () async {
+        expect((await course()).first.leftPartWay, isNull);
+
+        final store = DriftPlanStore(db, settings);
+        await store.completeStep('A1.1', '2026-01-06');
+        expect((await course()).first.leftPartWay, isTrue);
+        await store.enroll(
+          const ActiveStep(
+            sublevelCode: 'A1.1',
+            startedOn: '2026-01-07',
+            dailyNew: 7,
+            studyDaysMask: 127,
+          ),
+        );
+        expect((await course()).first.leftPartWay, isNull);
+      });
+    });
 
     test('BR-STATUS-02 done follows done_stability_days', () async {
       await state(ContentFixture.haus, stability: 10);
