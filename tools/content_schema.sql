@@ -140,3 +140,62 @@ CREATE TABLE interference_tips (
   tip_bn   TEXT,
   PRIMARY KEY (word_uid, tip_en)
 );
+
+-- Meaning languages (#1080): the languages a word is explained in, German
+-- being the one learnt. Each ships only when its workbook columns are 100 %
+-- complete (PIPE-08). English's and Bangla's texts are also in the columns
+-- above (`words.english`, `bangla`, `pron_bn`, `word_examples.english`,
+-- `grammar_topics`, `interference_tips`) until the app reads these (#1081).
+--
+-- `course_languages`, not `languages`: drift names a table's class after it,
+-- and the app has a `Languages` provider already. The tables no FTS index
+-- reads by rowid are WITHOUT ROWID: their key is the lookup, and a rowid
+-- table would keep it twice (370 KB of the file).
+CREATE TABLE course_languages (
+  code     TEXT PRIMARY KEY NOT NULL,
+  name     TEXT NOT NULL,
+  own_name TEXT NOT NULL,
+  script   TEXT NOT NULL,
+  ord      INTEGER NOT NULL
+);
+
+-- `pronunciation` is null where the language has no pronunciation guide yet:
+-- English (#1082).
+CREATE TABLE word_meanings (
+  word_uid      TEXT NOT NULL REFERENCES words (uid) ON DELETE CASCADE,
+  lang          TEXT NOT NULL REFERENCES course_languages (code),
+  meaning       TEXT NOT NULL,
+  pronunciation TEXT,
+  PRIMARY KEY (word_uid, lang)
+);
+
+-- Line `ord` of `word_examples`, in `lang`. A language without an examples
+-- column has no rows: its learners read English's. `translation`, not
+-- `text`, for the reason `skill_prompts.prompt` is (ADR 25).
+CREATE TABLE word_example_translations (
+  word_uid    TEXT NOT NULL REFERENCES words (uid) ON DELETE CASCADE,
+  ord         INTEGER NOT NULL,
+  lang        TEXT NOT NULL REFERENCES course_languages (code),
+  translation TEXT NOT NULL,
+  PRIMARY KEY (word_uid, ord, lang)
+) WITHOUT ROWID;
+
+-- A grammar topic in `lang`; none for a language without grammar columns.
+CREATE TABLE grammar_translations (
+  grammar_uid TEXT NOT NULL REFERENCES grammar_topics (uid) ON DELETE CASCADE,
+  lang        TEXT NOT NULL REFERENCES course_languages (code),
+  topic       TEXT NOT NULL,
+  rule        TEXT,
+  example     TEXT,
+  watch_out   TEXT,
+  PRIMARY KEY (grammar_uid, lang)
+) WITHOUT ROWID;
+
+-- interference_tips.csv's `tip_<code>` columns: a tip for that language's
+-- speakers, as a Russian false friend is not a Bangla one.
+CREATE TABLE word_tips (
+  word_uid TEXT NOT NULL REFERENCES words (uid) ON DELETE CASCADE,
+  lang     TEXT NOT NULL REFERENCES course_languages (code),
+  tip      TEXT NOT NULL,
+  PRIMARY KEY (word_uid, lang, tip)
+) WITHOUT ROWID;
