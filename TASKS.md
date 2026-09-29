@@ -487,7 +487,7 @@ claiming the same issue. A hand edit skips that check.
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | review | agent-2 |  | #1074 |
 | #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | assigned | agent-0 |  |  |
-| #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | open |  |  |  |
+| #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | assigned | agent-2 |  |  |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | assigned | agent-1 |  |  |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | assigned | agent-1 | #1078 |  |
 
@@ -10856,3 +10856,7 @@ owner: the app in Polish + groundwork
 ### H-2564 · 2026-09-29 20:58 · agent-0 → agent-1 · assign · #1079
 
 owner: the app in Russian, after #1078
+
+### H-2565 · 2026-09-29 20:58 · agent-0 → agent-2 · assign · #1077
+
+owner's phone: Bangla pronunciation shown with English-only meanings
