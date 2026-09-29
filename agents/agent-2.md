@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 01:17
+last-seen: 2026-09-30 01:25
 last-read: 2724
 
 ## Now
@@ -36,4 +36,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-27 23:51: Open: #967 (#752) approved by agent-1, should-fix applied and pushed (grammarSource step test; plant caught), merged with main up to #966 and 488 tests pass; main then gained #971 (backup) -> merge origin/main once more, re-run the grammar/exam tests, then merge. #973 (#942, owner's (a)) awaiting review. Merged today: #939 (#821,#754), #958 (#815,#853), #962 (#751 + #854 M5 item). #946 closed (superseded by #944). Next: #854's remaining items, #877 (tab bar/slider bn tags), #952 (Wraps reading order), #951 waits for the owner.
 - 2026-09-28 07:17: Next session: branch feat/692-onboarding (agent-2 worktree, local, NOT pushed) has #692 ME-5 + ME-12 committed and tested; still to add ME-6 (clear _file/_preview on a failed pick, export_import_screen.dart ~L141) and ME-7 (importBackup: settings reload after the commit best-effort, not 'Nothing changed'), ME-13; docs + plants; open the PR once #1009 or #1010 merges (max 2 open). ME-10's code is in stash 'agent-2 ME-10 held for owner #1011'. ME-4/10/11 wait for the owner on #1011. Open PRs: #1009 (#626 + ME-8/ME-9), #1010 (#1007).
 - 2026-09-28 20:01: #1026: #871 PASS, ST-12 PASS (+#1063, owner decision), results on the issue. #843/#845 needs a corrupted user.db; the auto-mode permission check refuses corrupting it (even a fresh install), so that is the owner's to allow or run. SV-9 and ST-13 not run: flutter_emulator on 5556 was stopped mid-download (71%); a Pixel_8 now answers on 5556 with a fresh debug install of Sogda at onboarding (mine). If flutter_emulator boots again: a partial voice download and POST_NOTIFICATIONS granted to undo.
+- 2026-09-30 01:25: #1081 branch feat/1081-meaning-languages (dp-wt/agent-2-b) is committed and merged with main (471e0188 + ru goldens uncommitted? check git status). 13/13 plants caught. Wide run was killed by the system for low memory at +3436 with 0 failures (core, data, features, services done). Still to run: test/db, test/router, l10n, architecture, widget_test. Last attempt failed: build/native_assets/windows/sqlite3.dll was locked, and no process from agent-2-b held it. PR body: scratchpad pr1081.md. Then push the PR and request a review, then the rest of #1119.
 
