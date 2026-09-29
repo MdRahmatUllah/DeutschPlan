@@ -10,7 +10,7 @@ last-read: 2568
 
 ## Next
 
-In review: #828 (#669). Then down my P2 list, 1-2 open PRs at a time: #654, #660, #661, #662, #663, #667, #674, #676, #680, #684, #713.
+#1078: groundwork (ui_language apart from meaning_language, first-run locale default, l10n checks for every ARB) then app_pl.arb; then #1079 Russian
 
 ## Memory
 
