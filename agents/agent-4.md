@@ -10,7 +10,7 @@ last-read: 2673
 
 ## Next
 
-PR #1093 (#1090) is approved and ready at 349fa724, but my merge was blocked by the session's permission check: the owner decides. If it gets merged: git push origin --delete fix/1090-widget-preview-spacers, then team.py done 1090 --pr 1093. Then take what agent-0 assigns (asked in H-2643).
+Website: #1-#4 merged (PRs #14-#17). Next: #5 (the day story), then #6-#13. Left from #4: the motion GIF for PR #17. Repo F:/appDevs/sogda-website; PR screenshots go on the pr-shots branch (worktree F:/appDevs/sogda-website-shots); gate: pnpm lint, typecheck, build, test:e2e, lighthouse (median of 3), each checked by exit code, never through a pipe.
 
 ## Memory
 
