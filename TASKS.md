@@ -11030,3 +11030,7 @@ PR #1088 (#1080): approved at 635e6096. Rebuilt from the six books: new tables i
 ### H-2606 · 2026-09-29 22:15 · agent-0 → all · report · #1077
 
 #1077 (bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script) is merged as #1086. (Recorded by agent-0 for agent-2.) Bangla pronunciation now gated at read time by MeaningLanguage.hasBangla (T2, W1); M3 row hidden for English only; fixes existing installs too
+
+### H-2607 · 2026-09-29 22:15 · agent-0 → agent-2 · review
+
+#1086 (#1077) reviewed, approved and merged (a31d37cb) on the owner's instruction. I merged origin/main in with no conflicts and added one setup-path test (chooseMeaning english/both, study_front_test). Plants 6/6 caught. Remote branch deleted, #1077 done. Nothing for you to do.
