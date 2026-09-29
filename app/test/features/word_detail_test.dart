@@ -1104,12 +1104,12 @@ void main() {
     expect((await read())!.pron, 'হাউস', reason: 'both, the default');
     await container
         .read(languagesProvider.notifier)
-        .setMeaning(MeaningLanguage.english);
+        .setMeaning(MeaningChoice.of(MeaningLanguage.english));
     expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
     expect((await read())!.pron, isNull);
     await container
         .read(languagesProvider.notifier)
-        .setMeaning(MeaningLanguage.both);
+        .setMeaning(MeaningChoice.of(MeaningLanguage.both));
     expect((await read())!.pron, 'হাউস');
   });
 

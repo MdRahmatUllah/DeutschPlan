@@ -14,6 +14,7 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/backlog/backlog_screen.dart';
@@ -141,7 +142,9 @@ void main() {
       'pl',
     );
 
-    unawaited(languages.chooseMeaning(MeaningLanguage.bangla));
+    unawaited(
+      languages.chooseMeaning(MeaningChoice.of(MeaningLanguage.bangla)),
+    );
     await tester.pump();
     expect(locale(), const Locale('pl'), reason: 'the meaning moved alone');
   });
@@ -155,14 +158,14 @@ void main() {
       tester.element(find.byType(MaterialApp)),
     );
     final languages = container.read(languagesProvider.notifier);
-    MeaningLanguage meaning() => container.read(languagesProvider).meaning;
+    MeaningChoice meaning() => container.read(languagesProvider).meaning;
 
     // বাংলা copy with English meanings.
     await languages.setUi(UiLanguage.bangla);
-    await languages.setMeaning(MeaningLanguage.english);
+    await languages.setMeaning(MeaningChoice.of(MeaningLanguage.english));
     await tester.pump();
     expect(locale(), const Locale('bn'));
-    expect(meaning(), MeaningLanguage.english);
+    expect(meaning(), MeaningChoice.of(MeaningLanguage.english));
 
     // English copy with Bangla meanings: each moved alone.
     await languages.setUi(UiLanguage.english);
@@ -170,12 +173,12 @@ void main() {
     expect(locale(), const Locale('en'));
     expect(
       meaning(),
-      MeaningLanguage.english,
+      MeaningChoice.of(MeaningLanguage.english),
       reason:
           'the app language '
           'left the meanings alone',
     );
-    await languages.setMeaning(MeaningLanguage.bangla);
+    await languages.setMeaning(MeaningChoice.of(MeaningLanguage.bangla));
     await tester.pump();
     expect(
       locale(),
@@ -184,7 +187,7 @@ void main() {
           'the meanings left the '
           'app language alone',
     );
-    expect(meaning(), MeaningLanguage.bangla);
+    expect(meaning(), MeaningChoice.of(MeaningLanguage.bangla));
   });
 
   testWidgets('following the system keeps following it', (tester) async {

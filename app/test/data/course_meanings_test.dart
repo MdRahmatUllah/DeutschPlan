@@ -1,12 +1,10 @@
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 
@@ -101,26 +99,26 @@ void main() {
     final settings = SettingsRepository(dao.attachedDatabase);
     await settings.load();
     addTearDown(settings.dispose);
-    final container = ProviderContainer(
-      overrides: <Override>[
-        appDatabaseProvider.overrideWithValue(dao.attachedDatabase),
-        settingsProvider.overrideWithValue(settings),
-      ],
-    );
-    addTearDown(container.dispose);
-    final hold = container.listen(grammarRepositoryProvider, (_, _) {});
-    addTearDown(hold.close);
-    Future<String?> topic() async =>
-        (await container.read(grammarRepositoryProvider).find('g1'))
-            ?.topic
-            .topic;
+    final grammar = GrammarRepository(dao.attachedDatabase, settings);
+    Future<String?> topic() async => (await grammar.find('g1'))?.topic.topic;
 
     expect(await topic(), 'Wortstellung im Hauptsatz', reason: 'en + bn');
+    // An open screen's stream follows the change.
+    final watched = <String?>[];
+    final watching = grammar
+        .watchTopic('g1')
+        .listen((t) => watched.add(t?.topic.topic));
+    addTearDown(watching.cancel);
+    await pumpEventQueue();
     await writeMeaningChoice(settings, const MeaningChoice('ru', 'en'));
-    await container.read(grammarTextsProvider('ru').future);
     expect(await topic(), 'Порядок слов');
+    expect(
+      (await grammar.step('A1.1')).single.topic.rule,
+      'Глагол стоит вторым.',
+    );
+    await pumpEventQueue();
+    expect(watched.last, 'Порядок слов');
     await writeMeaningChoice(settings, const MeaningChoice('bn'));
-    await container.read(grammarTextsProvider('bn').future);
     expect(await topic(), 'Wortstellung im Hauptsatz', reason: 'no Bangla');
   });
 

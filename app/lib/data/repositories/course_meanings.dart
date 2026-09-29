@@ -3,6 +3,25 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 
+/// A meaning language the course ships (`course_languages`), named in
+/// itself as a learner looks for it: English, বাংলা, Русский.
+typedef CourseLanguageName = ({String code, String ownName});
+
+/// English and Bangla, which every course ships: the pickers' list while the
+/// course's own is not read, or on one without the table.
+const List<CourseLanguageName> baseLanguages = <CourseLanguageName>[
+  (code: 'en', ownName: 'English'),
+  (code: 'bn', ownName: 'বাংলা'),
+];
+
+/// [code]'s own name in [languages], or the code where the list has none.
+String ownNameOf(String code, List<CourseLanguageName> languages) {
+  for (final language in languages) {
+    if (language.code == code) return language.ownName;
+  }
+  return code;
+}
+
 /// A word's text in one meaning language (#1080's `word_meanings`).
 typedef WordMeaningText = ({String meaning, String? pronunciation});
 

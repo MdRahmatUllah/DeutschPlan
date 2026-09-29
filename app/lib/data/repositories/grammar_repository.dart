@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart'
@@ -68,102 +69,148 @@ class PracticeResult {
 @DriftAccessor(include: <String>{'../db/grammar_queries.drift'})
 class GrammarRepository extends DatabaseAccessor<AppDatabase>
     with _$GrammarRepositoryMixin {
-  GrammarRepository(
-    super.db,
-    this._settings, [
-    this._texts = const <String, GrammarText>{},
-  ]);
+  GrammarRepository(super.db, this._settings);
 
   final SettingsRepository _settings;
 
-  /// #1081: the topics in the primary meaning language, by uid. A topic it
-  /// has none for stays in English, the course's own.
-  final Map<String, GrammarText> _texts;
+  /// #1081: the primary meaning language, which the topics read in.
+  String get _lang => meaningChoiceOf(_settings).primary;
 
   double get _doneAfter =>
       _settings.read(SettingKeys.doneStabilityDays).toDouble();
 
-  /// Runs [query] again whenever the learner moves `done_stability_days`.
+  /// What the topic queries read: `done_stability_days`, and the primary
+  /// meaning language (#1081).
+  static const Set<SettingKey<Object?>> _read = <SettingKey<Object?>>{
+    SettingKeys.doneStabilityDays,
+    SettingKeys.meaningLanguage,
+    SettingKeys.meaningPrimary,
+  };
+
+  /// Runs [query] again whenever the learner moves `done_stability_days` or
+  /// the primary meaning language.
   ///
-  /// The threshold is a query variable, so a stream built once would keep the
-  /// value it was built with and every status on an open screen would be
-  /// stale until the screen was rebuilt (BR-STATUS-02). [row] is per-query
+  /// Both are query variables, so a stream built once would keep the values
+  /// it was built with and every status on an open screen would be stale
+  /// until the screen was rebuilt (BR-STATUS-02). [row] is per-query
   /// because drift gives each one its own result class.
   Stream<List<TopicWithState>> _watchTopics<T>(
-    Stream<List<T>> Function(double) query,
+    Stream<List<T>> Function(double, String) query,
     TopicWithState Function(T) row,
   ) => _settings
-      .switchOn(
-        SettingKeys.doneStabilityDays,
-        (int days) => query(days.toDouble()),
-      )
+      .switchOnAny(_read, () => query(_doneAfter, _lang))
       .map((rows) => rows.map(row).toList());
 
+  /// [topic] in the primary meaning language where the course has it
+  /// ([text]); English, the course's own, where it has none.
   TopicWithState _topic(
     GrammarTopic topic,
     GrammarStateData? state,
     String derivedStatus,
+    GrammarText? text,
   ) => TopicWithState(
-    topic: _inPrimary(topic),
-    state: state,
-    status: WordStatus.parse(derivedStatus),
-  );
-
-  GrammarTopic _inPrimary(GrammarTopic topic) {
-    final text = _texts[topic.uid];
-    return text == null
+    topic: text == null
         ? topic
         : topic.copyWith(
             topic: text.topic,
             rule: Value<String?>(text.rule ?? topic.rule),
             exampleEn: Value<String?>(text.example ?? topic.exampleEn),
             watchOut: Value<String?>(text.watchOut ?? topic.watchOut),
-          );
-  }
+          ),
+    state: state,
+    status: WordStatus.parse(derivedStatus),
+  );
+
+  static GrammarText? _text(
+    String? topic,
+    String? rule,
+    String? example,
+    String? watchOut,
+  ) => topic == null
+      ? null
+      : (topic: topic, rule: rule, example: example, watchOut: watchOut);
 
   /// [watchStep], once.
   Future<List<TopicWithState>> step(String code) async => <TopicWithState>[
     for (final row in await topicsWithStateForStep(
-      _settings.read(SettingKeys.doneStabilityDays).toDouble(),
+      _doneAfter,
+      _lang,
       code,
     ).get())
-      _topic(row.g, row.s, row.derivedStatus),
+      _topic(
+        row.g,
+        row.s,
+        row.derivedStatus,
+        _text(row.trTopic, row.trRule, row.trExample, row.trWatchOut),
+      ),
   ];
 
   Stream<List<TopicWithState>> watchStep(String code) => _watchTopics(
-    (days) => topicsWithStateForStep(days, code).watch(),
-    (row) => _topic(row.g, row.s, row.derivedStatus),
+    (days, lang) => topicsWithStateForStep(days, lang, code).watch(),
+    (row) => _topic(
+      row.g,
+      row.s,
+      row.derivedStatus,
+      _text(row.trTopic, row.trRule, row.trExample, row.trWatchOut),
+    ),
   );
 
   /// Every topic of the course, level by level, in teaching order: L3.
   Stream<List<TopicWithState>> watchAll() => _watchTopics(
-    (days) => allTopicsWithState(days).watch(),
-    (row) => _topic(row.g, row.s, row.derivedStatus),
+    (days, lang) => allTopicsWithState(days, lang).watch(),
+    (row) => _topic(
+      row.g,
+      row.s,
+      row.derivedStatus,
+      _text(row.trTopic, row.trRule, row.trExample, row.trWatchOut),
+    ),
   );
 
   /// Everything due on or before [today]. The plan engine's `ensureGrammarDue`
   /// reads this, and Step detail shows the same list.
   Stream<List<TopicWithState>> watchDue(String today) => _watchTopics(
-    (days) => dueTopics(days, today).watch(),
-    (row) => _topic(row.g, row.s, row.derivedStatus),
+    (days, lang) => dueTopics(days, lang, today).watch(),
+    (row) => _topic(
+      row.g,
+      row.s,
+      row.derivedStatus,
+      _text(row.trTopic, row.trRule, row.trExample, row.trWatchOut),
+    ),
   );
 
   Stream<TopicWithState?> watchTopic(String uid) => _settings
-      .switchOn(
-        SettingKeys.doneStabilityDays,
-        (int days) => topicWithState(days.toDouble(), uid).watch(),
-      )
+      .switchOnAny(_read, () => topicWithState(_doneAfter, _lang, uid).watch())
       .map(
         (rows) => rows.isEmpty
             ? null
-            : _topic(rows.single.g, rows.single.s, rows.single.derivedStatus),
+            : _topic(
+                rows.single.g,
+                rows.single.s,
+                rows.single.derivedStatus,
+                _text(
+                  rows.single.trTopic,
+                  rows.single.trRule,
+                  rows.single.trExample,
+                  rows.single.trWatchOut,
+                ),
+              ),
       );
 
   Future<TopicWithState?> find(String uid) async {
-    final rows = await topicWithState(_doneAfter, uid).get();
+    final rows = await topicWithState(_doneAfter, _lang, uid).get();
     return rows.isEmpty
         ? null
-        : _topic(rows.single.g, rows.single.s, rows.single.derivedStatus);
+        : _topic(
+            rows.single.g,
+            rows.single.s,
+            rows.single.derivedStatus,
+            _text(
+              rows.single.trTopic,
+              rows.single.trRule,
+              rows.single.trExample,
+              rows.single.trWatchOut,
+            ),
+          );
   }
 
   Stream<List<GrammarPracticeLogData>> watchPractice(

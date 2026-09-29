@@ -13,7 +13,6 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/placement.dart';
 import 'package:sogda/features/onboarding/onboarding_start_page.dart';
 import 'package:sogda/features/words/speak.dart';
@@ -73,9 +72,9 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
         steps: <String>[for (final step in steps) step.code],
         seed: widget.seed ?? ref.read(clockProvider)().microsecondsSinceEpoch,
         // Page 2's choice: Bangla meanings for a learner who reads them in
-        // Bangla. Both keeps English, which keeps the options short.
-        useBangla:
-            ref.read(languagesProvider).meaning == MeaningLanguage.bangla,
+        // Bangla first. English then Bangla keeps English, which keeps the
+        // options short.
+        useBangla: ref.read(languagesProvider).meaning.primary == 'bn',
       );
       await _advance();
     } on Object {
