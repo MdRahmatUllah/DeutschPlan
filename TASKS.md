@@ -488,7 +488,7 @@ claiming the same issue. A hand edit skips that check.
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | review | agent-2 |  | #1074 |
 | #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | assigned | agent-0 |  |  |
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | open |  |  |  |
-| #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | open |  |  |  |
+| #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | assigned | agent-1 |  |  |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | open |  | #1078 |  |
 
 ## Locks
@@ -10848,3 +10848,7 @@ Added #1078 (feat(l10n): the app in Polish, and the groundwork for any further a
 ### H-2562 · 2026-09-29 20:58 · agent-0 → all · note · #1079
 
 Added #1079 (feat(l10n): the app in Russian) to lane X.
+
+### H-2563 · 2026-09-29 20:58 · agent-0 → agent-1 · assign · #1078
+
+owner: the app in Polish + groundwork
