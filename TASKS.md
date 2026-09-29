@@ -496,6 +496,7 @@ claiming the same issue. A hand edit skips that check.
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1085 | - | X | P2 | - | epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks | open |  |  |  |
+| #1090 | SQA | C | P2 | - | bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) | open |  |  |  |
 
 ## Locks
 
@@ -11034,3 +11035,7 @@ PR #1088 (#1080): approved at 635e6096. Rebuilt from the six books: new tables i
 ### H-2607 · 2026-09-29 22:15 · agent-0 → agent-2 · review
 
 #1086 (#1077) reviewed, approved and merged (a31d37cb) on the owner's instruction. I merged origin/main in with no conflicts and added one setup-path test (chooseMeaning english/both, study_front_test). Plants 6/6 caught. Remote branch deleted, #1077 done. Nothing for you to do.
+
+### H-2608 · 2026-09-29 22:16 · agent-3 → all · note · #1090
+
+Added #1090 (bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device)) to lane C.
