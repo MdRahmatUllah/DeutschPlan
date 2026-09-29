@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/services.dart' show Clipboard, ClipboardData;
+import 'package:flutter/services.dart'
+    show Clipboard, ClipboardData, SystemUiOverlayStyle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,6 +17,7 @@ import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
 import 'package:sogda/data/repositories/search_repository.dart';
@@ -553,15 +555,19 @@ class _Header extends ConsumerWidget {
         child: framed,
       );
     }
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: gender ?? tokens.surface.muted,
-        border: Border(bottom: BorderSide(color: tokens.color.ink, width: 2)),
+    // #1070: as a page, W1's header is under the status bar.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: barsOver(gender ?? tokens.surface.muted),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: gender ?? tokens.surface.muted,
+          border: Border(bottom: BorderSide(color: tokens.color.ink, width: 2)),
+        ),
+        // #1064: on a gender colour the ring takes the header's ink.
+        child: onFill == null
+            ? framed
+            : SgFocusRingColour(colour: onFill, child: framed),
       ),
-      // #1064: on a gender colour the ring takes the header's ink.
-      child: onFill == null
-          ? framed
-          : SgFocusRingColour(colour: onFill, child: framed),
     );
   }
 }

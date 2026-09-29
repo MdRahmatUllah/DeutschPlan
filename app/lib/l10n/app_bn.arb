@@ -937,6 +937,8 @@
   "modelNotifyFailedNote": "“ভয়েস ও অনুবাদ” থেকে আবার চেষ্টা করুন",
   "progressRingLabel": "{total}টির মধ্যে {completed}টি",
   "progressBarLabel": "{done}টি শেখা হয়েছে, {learning}টি শিখছি, {todo}টি শেখা বাকি",
+  "modelsTitleVoice": "ভয়েস",
+  "modelsFooterVoice": "ভয়েস পুরোপুরি ফোনে চলে। এটি মুছলে ফোনের জার্মান ভয়েস ব্যবহার হবে।",
   "modelsTitle": "ভয়েস ও অনুবাদ",
   "modelsStorage": "ফোনের স্টোরেজ",
   "modelsStorageFree": "{total}-এর মধ্যে {free} খালি",
