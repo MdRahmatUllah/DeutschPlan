@@ -463,18 +463,18 @@ class SgText extends StatelessWidget {
 
     // Applied to every style, not just the Latin one: a weight silently
     // dropped on mixed strings would be dropped on most of this app's copy.
-    TextStyle dressed(SgTextRole forRole) {
-      final style = styleFor(tokens, forRole, color: color ?? tokens.color.ink)
-          .copyWith(
-            fontStyle: italic ? FontStyle.italic : FontStyle.normal,
-            letterSpacing: letterSpacing,
-          );
+    TextStyle dressed(TextStyle style) {
+      style = style.copyWith(
+        fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+        letterSpacing: letterSpacing,
+      );
       return weight == null
           ? style
           : style.copyWith(fontVariations: AppFonts.weight(weight!));
     }
 
-    final base = dressed(role);
+    final ink = color ?? tokens.color.ink;
+    final base = dressed(styleFor(tokens, role, color: ink));
     // A line that ends at a syllable shows its "-" (#419), in German, the
     // app's copy or Bangla among them (#502), and not when a caller labels
     // the whole.
@@ -505,7 +505,7 @@ class SgText extends StatelessWidget {
     final spans = SgScript.spans(
       text,
       latin: base,
-      bengali: dressed(role.oneStepLarger),
+      bengali: dressed(banglaStyleFor(tokens, role, color: ink)),
       german: german,
     );
     return hyphenated(
@@ -530,6 +530,22 @@ class SgText extends StatelessWidget {
       fontVariations: AppFonts.weight(token.weight),
       color: color ?? tokens.color.ink,
     );
+  }
+
+  /// Bangla's [TextStyle] at [role] (`theming.md`): the next role up's size
+  /// and line height, and the role's own weight, as the Latin beside it
+  /// (the owner, #1063).
+  static TextStyle banglaStyleFor(
+    SgTokens tokens,
+    SgTextRole role, {
+    Color? color,
+  }) {
+    final larger = role.oneStepLarger.token(tokens.typography);
+    return styleFor(
+      tokens,
+      role,
+      color: color,
+    ).copyWith(fontSize: larger.size, height: larger.heightFactor);
   }
 }
 
@@ -656,8 +672,7 @@ class SgOneLine extends StatelessWidget {
     // Measured as it will be drawn: `Text` merges the ambient text style —
     // a Material body's letter spacing — and a measure without it cut the
     // line a few pixels too late, clipping a letter in half.
-    TextStyle styled(SgTextRole at, {double? size}) {
-      final own = SgText.styleFor(context.tokens, at, color: color);
+    TextStyle styled(TextStyle own, {double? size}) {
       return DefaultTextStyle.of(context).style.merge(
         own.copyWith(
           fontSize: size,
@@ -666,9 +681,13 @@ class SgOneLine extends StatelessWidget {
       );
     }
 
-    final style = styled(role, size: size);
+    final tokens = context.tokens;
+    final style = styled(
+      SgText.styleFor(tokens, role, color: color),
+      size: size,
+    );
     // Bangla one step larger, as SgText sets it (`theming.md`).
-    final larger = styled(role.oneStepLarger);
+    final larger = styled(SgText.banglaStyleFor(tokens, role, color: color));
     TextSpan span(String line) => !SgScript.hasBengali(line)
         ? TextSpan(text: line, style: style)
         : TextSpan(

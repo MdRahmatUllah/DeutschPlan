@@ -16,14 +16,24 @@ Column names are backticked; `tools/tests/test_schema.py` reads them out of this
 | `word_examples` | (`word_uid`, `ord`) PK, `german`, `english` | Example sentences |
 | `grammar_topics` | `uid` PK, `sublevel_code`, `level_code`, `seq`, `source_week`, `topic`, `rule`, `example_de`, `example_en`, `watch_out`, `tags` | Grammar |
 | `skill_prompts` | (`level_code`, `ord`), `prompt` | Empty (#294): the workbooks' only skills content is a fixed four-line weekly checklist, the same every week, not imported because nothing shows it. Kept in the schema; nothing reads it |
-| `interference_tips` | `word_uid`, `tip_en`, `tip_bn` | L1-specific traps (from CSV) |
+| `interference_tips` | `word_uid`, `tip_en`, `tip_bn` | L1-specific traps (from CSV): the tips with English text. Kept until the app reads `word_tips` (#1081) |
+| `course_languages` | `code` PK (BCP 47: en, bn, ru …), `name` (English, as the headers spell it), `own_name` (Русский), `script` (ISO 15924: Latn, Beng, Cyrl …), `ord` | The meaning languages that ship (#1080): each is 100 % complete in every part it has (PIPE-08). English first, then the pipeline's `LANGUAGES` order. Not `languages`: drift names a table's class after it, and the app has a `Languages` provider |
+| `word_meanings` | (`word_uid`, `lang`) PK, `meaning`, `pronunciation` | A word's meaning and pronunciation guide in each shipped language; `pronunciation` is null for English until it has one (#1082). English's and Bangla's are `words.english`, `bangla` and `pron_bn`, text for text |
+| `word_example_translations` | (`word_uid`, `ord`, `lang`) PK, `translation` | Line `ord` of `word_examples` in `lang`. A language without an examples column (Bangla) has no rows: its learners read English's (#598). English's are `word_examples.english`. `translation`, not `text` (ADR 25). WITHOUT ROWID |
+| `grammar_translations` | (`grammar_uid`, `lang`) PK, `topic`, `rule`, `example`, `watch_out` | A grammar topic in `lang`, `example` translating `example_de`; none for a language without grammar columns. English's are `grammar_topics`' own. WITHOUT ROWID |
+| `word_tips` | (`word_uid`, `lang`, `tip`) PK | The CSV's `tip_<code>` columns, for the shipped languages: a tip for that language's speakers. WITHOUT ROWID |
 | `words_fts` | `uid` UNINDEXED, `german`, `english`, `bangla`, `search_key` — FTS5 `unicode61 remove_diacritics 2 categories 'L* N* Co Mn Mc'`: marks are part of a token, so a Bangla word keeps its vowel signs, hasanta and nukta and "মে"* is the words that start so (#713) | Exact / prefix search |
 | `words_trigram` | `uid` UNINDEXED, `german`, `english`, `search_key` — FTS5 `trigram` | Fuzzy candidates |
 | `examples_fts` | `word_uid` UNINDEXED, `german`, `english` — FTS5 `unicode61 remove_diacritics 2` | "In sentences" tier |
+| `meanings_fts` | `word_uid` UNINDEXED, `lang` UNINDEXED, `meaning` — FTS5, `words_fts`' tokenizer | Every shipped language's meanings (#1080); `lang` keeps a query to the learner's |
 
-The three FTS5 tables are external content (#712): `content='words'` (`content='word_examples'` for `examples_fts`), the index alone, with each column's text read from its table by rowid when a query needs it (the `uid` a MATCH joins back on, `highlight()`). A copy of the text in each was 1.9 MB of the file. The file is read-only on the device, so the build fills them once, last, with FTS5's `rebuild`, and PIPE-08 checks each index against its table.
+The FTS5 tables are external content (#712): `content='words'` (`content='word_examples'` for `examples_fts`, `content='word_meanings'` for `meanings_fts`), the index alone, with each column's text read from its table by rowid when a query needs it (the `uid` a MATCH joins back on, `highlight()`). A copy of the text in each was 1.9 MB of the file. The file is read-only on the device, so the build fills them once, last, with FTS5's `rebuild`, and PIPE-08 checks each index against its table.
 
 Indexes: `words(sublevel_code, seq_in_sublevel)`, `words(search_key)`, `words(search_key_alt)`, `words(bangla)` (tier 1 matches the Bangla meaning as typed; without it the OR scanned every word, #712), `words(category_id)`, `grammar_topics(sublevel_code, seq)`.
+
+### Meaning languages
+
+German is the language learnt; a meaning language is one a word is explained in (#1080, epic #1085). `course_languages` lists those the course carries, and `word_meanings`, `word_example_translations`, `grammar_translations` and `word_tips` hold their texts by `lang`. A part a language has no columns for has no rows, and the app shows English's. The pipeline writes a language only when it is complete (`content-pipeline.md`, "Meaning languages"). English's and Bangla's texts are in the old columns too (`words.english`, `bangla`, `pron_bn`, `word_examples.english`, `grammar_topics`, `interference_tips`), which the app reads until #1081 moves it to these tables; a follow-up then drops them. Adding a language changes no uid and no `content_manifest.json` digest, so a content update that adds one keeps every learner's progress and marks no word *Updated*.
 
 ## Access from Dart
 

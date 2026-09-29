@@ -19,8 +19,10 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/features/learn/learn_screen.dart';
 import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/today/today_components.dart';
+import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart' as app;
@@ -65,7 +67,7 @@ void main() {
   }
 
   testWidgets(
-    'Y06: the card transition, the glass word list and search, measured',
+    'Y06: the card transition, L2, L1 and Today under glass, and search, measured',
     timeout: const Timeout(Duration(minutes: 10)),
     (tester) async {
       if (_year) await seedInstalledApp();
@@ -112,12 +114,26 @@ void main() {
         'blur': glass.blurAllowed,
         'reasons': <String>[for (final reason in glass.reasons) reason.name],
       };
-      await trace('list', () async {
-        for (var fling = 0; fling < 8; fling++) {
-          await tester.fling(list, Offset(0, fling < 4 ? -600 : 600), 3000);
-          await tester.pump(const Duration(milliseconds: 1500));
-        }
-      });
+      await trace('list', () => _fling(tester, list));
+
+      // (b') #1030: L1's step list and Today, under glass too: the screens
+      // with the most glass panels (#709).
+      const LearnRoute().go(tester.element(list));
+      final steps = find.descendant(
+        of: find.byType(LearnScreen),
+        matching: find.byType(ListView),
+      );
+      await pumpUntil(tester, find.byType(StepTile));
+      await tester.pump(const Duration(seconds: 2));
+      await trace('learn', () => _fling(tester, steps));
+      const TodayRoute().go(tester.element(steps));
+      final today = find.descendant(
+        of: find.byType(TodayScreen),
+        matching: find.byType(ListView),
+      );
+      await pumpUntil(tester, today);
+      await tester.pump(const Duration(seconds: 2));
+      await trace('today', () => _fling(tester, today));
 
       // (c) R1's own call against the real content.db, at each keystroke:
       // the whole list three times over, not each query three times running,
@@ -148,6 +164,14 @@ void main() {
       await theme.choose(ThemeModeSetting.system);
     },
   );
+}
+
+/// Eight flings, four down the list and four back up.
+Future<void> _fling(WidgetTester tester, Finder list) async {
+  for (var fling = 0; fling < 8; fling++) {
+    await tester.fling(list, Offset(0, fling < 4 ? -600 : 600), 3000);
+    await tester.pump(const Duration(milliseconds: 1500));
+  }
 }
 
 /// T2, face down: *Show meaning*; face up: *Good* — disabled until the

@@ -401,9 +401,15 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
         grammarTopics,
         skillPrompts,
         interferenceTips,
+        courseLanguages,
+        wordMeanings,
+        wordExampleTranslations,
+        grammarTranslations,
+        wordTips,
         wordsFts,
         wordsTrigram,
         examplesFts,
+        meaningsFts,
       ];
 
   Future<void> detach() => customStatement('DETACH DATABASE $schema');

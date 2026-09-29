@@ -174,6 +174,43 @@ void main() {
       }
     });
 
+    testWidgets('#1063 Bangla keeps the role\'s own weight: a caption is 400 '
+        'and a label 600, as in English; SgOneLine agrees', (tester) async {
+      for (final (role, weight) in <(SgTextRole, double)>[
+        (SgTextRole.caption, 400),
+        (SgTextRole.label, 600),
+        (SgTextRole.bodyLarge, 400),
+      ]) {
+        for (final widget in <Widget>[
+          SgText('A1.1 · ফ্ল্যাট', role: role),
+          SgOneLine('A1.1 · ফ্ল্যাট', role: role),
+        ]) {
+          await pump(tester, SizedBox(width: 300, child: widget));
+          final spans = <TextSpan>[];
+          tester
+              .renderObject<RenderParagraph>(find.byType(RichText))
+              .text
+              .visitChildren((span) {
+                if (span is TextSpan && span.text != null) spans.add(span);
+                return true;
+              });
+          final what = '$role ${widget.runtimeType}';
+          expect(
+            spans.any((s) => SgScript.hasBengali(s.text!)),
+            isTrue,
+            reason: what,
+          );
+          for (final span in spans) {
+            expect(
+              span.style!.fontVariations!.single.value,
+              weight,
+              reason: '$what "${span.text}"',
+            );
+          }
+        }
+      }
+    });
+
     testWidgets('German renders at its role and Bangla one step above it', (
       tester,
     ) async {
