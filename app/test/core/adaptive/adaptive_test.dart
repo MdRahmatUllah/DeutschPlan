@@ -1283,6 +1283,53 @@ void main() {
     expect(controller().index, 2);
   });
 
+  testWidgets('#1078 a tab bar whose labels outgrow an equal share scrolls at '
+      "100 % too: Polish's L2 on a 384 dp phone (the S24)", (tester) async {
+    tester.view
+      ..physicalSize = const Size(384 * 3, 800 * 3)
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    Future<bool> scrolls(Map<String, String> tabs) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: AdaptiveChromeScope(
+            chrome: AdaptiveChrome.material,
+            child: Scaffold(
+              body: AdaptiveTabBar<String>(
+                tabs: tabs,
+                value: tabs.keys.first,
+                onChanged: (_) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      return tester.widget<TabBar>(find.byType(TabBar)).isScrollable;
+    }
+
+    expect(
+      await scrolls(const <String, String>{
+        'w': 'Words',
+        'g': 'Grammar',
+        'q': 'Quiz',
+        'e': 'Exams',
+      }),
+      isFalse,
+      reason: "English fits: the artboard's fixed tabs",
+    );
+    expect(
+      await scrolls(const <String, String>{
+        'w': 'Słowa',
+        'g': 'Gramatyka',
+        'q': 'Quiz',
+        'e': 'Egzaminy',
+      }),
+      isTrue,
+      reason: 'faded to "Gramaty…" on the device',
+    );
+  });
+
   testWidgets("#698 the iOS confirm is in the app's font, Bangla behind it, "
       'as the typed confirm is (#432)', (tester) async {
     await tester.pumpWidget(

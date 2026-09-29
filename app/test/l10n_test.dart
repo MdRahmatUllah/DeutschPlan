@@ -331,6 +331,18 @@ void main() {
     for (final MapEntry(key: count, value: words) in want.entries) {
       expect(pl.onboardingStepWords(count), words, reason: '$count');
     }
+    // A count with no plural of its own is said without a verb to agree:
+    // "zostało 3" is wrong Polish (the S24 check, #1089).
+    for (final count in <int>[1, 3, 22]) {
+      for (final line in <String>[
+        pl.todayContinue(count),
+        pl.learnTodayLeft(count),
+        pl.widgetLeft(count),
+      ]) {
+        expect(line, isNot(contains('ostało')), reason: line);
+        expect(line.toLowerCase(), contains('jeszcze $count'), reason: line);
+      }
+    }
   });
 
   test('#1079 Russian counts read right at its few/many edges', () async {
