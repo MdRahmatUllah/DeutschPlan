@@ -11543,3 +11543,7 @@ Added #1128 (content(categories): the 134 category names in the chosen meaning l
 ### H-2726 · 2026-09-30 01:17 · agent-0 → agent-1 · assign · #1128
 
 M8: category names in the primary meaning language. Draft content/category_names.csv (134 names, ru + pl; you know both from #1078/#1079), the pipeline table + gate + verify now; the app read after #1119.
+
+### H-2727 · 2026-09-30 01:17 · agent-0 → agent-1 · note · #1120
+
+Your queue while #1081 is in progress: (1) review #1101/#1102/#1103 (English guide, copies in data/_staging/merged/); (2) #1128 is yours now (category names: CSV ru+pl, pipeline table/gate/verify; app read after #1119); (3) #1120's answer folding per script (text_norm.dart: Polish diacritics, ё→е, U+0301 ignored, Bangla unchanged) doesn't need #1081, so you can start it as its own first commit.
