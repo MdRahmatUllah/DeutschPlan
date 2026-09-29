@@ -5,4 +5,7 @@
 <resources>
     <string name="widget_description">Today\'s plan and the word of the day</string>
     <string name="widget_empty">Open Sogda to plan your day</string>
+    <!-- The picker preview's line beside the ring (#1098): short, as the
+         whole description lost "of the day" at three lines on the S24. -->
+    <string name="widget_preview_line">Today\'s plan</string>
 </resources>
