@@ -11,6 +11,29 @@ import 'package:sogda/domain/answer_check.dart';
 /// here. A learner told they were right when they were not never learns the
 /// word.
 void main() {
+  group('#1120 BR-ANS-01 a meaning in Polish or Russian, typed without its '
+      'marks', () {
+    test('Polish: every diacritic folds, ł included', () {
+      expect(checkMeaning('zolty', 'żółty'), Verdict.correct);
+      expect(checkMeaning('żółty', 'żółty'), Verdict.correct);
+      expect(checkMeaning('lawka', 'ławka'), Verdict.correct);
+      expect(checkMeaning('dom', 'dom / mieszkanie'), Verdict.correct);
+    });
+
+    test('Russian: ё is е, and a stress mark is ignored', () {
+      expect(checkMeaning('елка', 'ёлка'), Verdict.correct);
+      expect(checkMeaning('ёлка', 'елка'), Verdict.correct);
+      expect(checkMeaning('дом', 'до\u0301м'), Verdict.correct);
+      expect(checkMeaning('кот', 'дом'), Verdict.wrong);
+    });
+
+    test('Bangla and German answers are untouched', () {
+      expect(checkMeaning('বাড়ি', 'বাড়ি'), Verdict.correct);
+      expect(checkMeaning('বারি', 'বাড়ি'), isNot(Verdict.correct));
+      expect(checkGerman('Hause', 'Haus'), isNot(Verdict.correct));
+    });
+  });
+
   group('BR-ANS-01 — DE→EN meanings', () {
     test('any synonym in the list counts', () {
       const expected = 'house / home, building';
