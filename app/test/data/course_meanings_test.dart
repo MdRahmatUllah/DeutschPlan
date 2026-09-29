@@ -1,9 +1,14 @@
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
 
 import '../db/content_fixture.dart';
 
@@ -90,12 +95,45 @@ void main() {
     });
   });
 
-  test('#1081 a grammar topic in each language it ships in', () async {
+  test('#1081 a grammar topic reads in the primary language, English where '
+      'it has none', () async {
     final dao = await open(russian: true);
-    final rows = await dao.grammarTranslationsFor('g1').get();
-    expect(
-      {for (final r in rows) r.lang: r.topic},
-      <String, String>{'en': 'Wortstellung im Hauptsatz', 'ru': 'Порядок слов'},
+    final settings = SettingsRepository(dao.attachedDatabase);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(dao.attachedDatabase),
+        settingsProvider.overrideWithValue(settings),
+      ],
     );
+    addTearDown(container.dispose);
+    final hold = container.listen(grammarRepositoryProvider, (_, _) {});
+    addTearDown(hold.close);
+    Future<String?> topic() async =>
+        (await container.read(grammarRepositoryProvider).find('g1'))
+            ?.topic
+            .topic;
+
+    expect(await topic(), 'Wortstellung im Hauptsatz', reason: 'en + bn');
+    await writeMeaningChoice(settings, const MeaningChoice('ru', 'en'));
+    await container.read(grammarTextsProvider('ru').future);
+    expect(await topic(), 'Порядок слов');
+    await writeMeaningChoice(settings, const MeaningChoice('bn'));
+    await container.read(grammarTextsProvider('bn').future);
+    expect(await topic(), 'Wortstellung im Hauptsatz', reason: 'no Bangla');
+  });
+
+  test('#1081 the grammar topics in a language', () async {
+    final dao = await open(russian: true);
+    Future<Map<String, String>> topics(String lang) async => {
+      for (final r in await dao.grammarTranslationsIn(lang).get())
+        r.grammarUid: r.topic,
+    };
+    expect(await topics('ru'), <String, String>{'g1': 'Порядок слов'});
+    expect(await topics('en'), <String, String>{
+      'g1': 'Wortstellung im Hauptsatz',
+    });
+    expect(await topics('bn'), isEmpty);
   });
 }

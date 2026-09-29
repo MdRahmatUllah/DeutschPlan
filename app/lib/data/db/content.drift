@@ -109,9 +109,9 @@ examplesForWordIn(:uid AS TEXT, :lang AS TEXT):
 wordTipsFor:
   SELECT lang, tip FROM word_tips WHERE word_uid = :uid;
 
--- #1081: a grammar topic in each language the course has it in.
-grammarTranslationsFor:
-  SELECT * FROM grammar_translations WHERE grammar_uid = :uid;
+-- #1081: the grammar topics the course has in :lang.
+grammarTranslationsIn:
+  SELECT * FROM grammar_translations WHERE lang = :lang;
 
 -- W2 (#142): the course words a set's member may be — its own search key,
 -- not a phrase, not another set — the set's step first, then the course's

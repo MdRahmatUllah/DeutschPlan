@@ -335,10 +335,35 @@ Stream<List<StepProgress>> stepProgress(Ref ref) =>
     ref.watch(wordRepositoryProvider).watchStepProgress();
 
 @riverpod
-GrammarRepository grammarRepository(Ref ref) => GrammarRepository(
-  ref.watch(appDatabaseProvider),
-  ref.watch(settingsProvider),
-);
+GrammarRepository grammarRepository(Ref ref) {
+  // #1081: a topic in the primary meaning language, English where it has
+  // none; the course's own columns are English.
+  final primary = ref.watch(meaningsProvider).choice.primary;
+  return GrammarRepository(
+    ref.watch(appDatabaseProvider),
+    ref.watch(settingsProvider),
+    primary == 'en'
+        ? const <String, GrammarText>{}
+        : ref.watch(grammarTextsProvider(primary)).value ??
+              const <String, GrammarText>{},
+  );
+}
+
+/// #1081: the course's grammar topics in [lang], by uid.
+@riverpod
+Future<Map<String, GrammarText>> grammarTexts(
+  Ref ref,
+  String lang,
+) async => <String, GrammarText>{
+  for (final text
+      in await ref.watch(contentDaoProvider).grammarTranslationsIn(lang).get())
+    text.grammarUid: (
+      topic: text.topic,
+      rule: text.rule,
+      example: text.example,
+      watchOut: text.watchOut,
+    ),
+};
 
 @riverpod
 PlanRepository planRepository(Ref ref) =>

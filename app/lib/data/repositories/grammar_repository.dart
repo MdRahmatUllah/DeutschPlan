@@ -33,6 +33,15 @@ class TopicWithState {
   List<String> get tags => topic.tags.split(',');
 }
 
+/// #1081: a grammar topic's text in one meaning language
+/// (`grammar_translations`).
+typedef GrammarText = ({
+  String topic,
+  String? rule,
+  String? example,
+  String? watchOut,
+});
+
 /// How one practice run went, as it goes into `grammar_practice_log`.
 @immutable
 class PracticeResult {
@@ -59,9 +68,17 @@ class PracticeResult {
 @DriftAccessor(include: <String>{'../db/grammar_queries.drift'})
 class GrammarRepository extends DatabaseAccessor<AppDatabase>
     with _$GrammarRepositoryMixin {
-  GrammarRepository(super.db, this._settings);
+  GrammarRepository(
+    super.db,
+    this._settings, [
+    this._texts = const <String, GrammarText>{},
+  ]);
 
   final SettingsRepository _settings;
+
+  /// #1081: the topics in the primary meaning language, by uid. A topic it
+  /// has none for stays in English, the course's own.
+  final Map<String, GrammarText> _texts;
 
   double get _doneAfter =>
       _settings.read(SettingKeys.doneStabilityDays).toDouble();
@@ -87,10 +104,22 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
     GrammarStateData? state,
     String derivedStatus,
   ) => TopicWithState(
-    topic: topic,
+    topic: _inPrimary(topic),
     state: state,
     status: WordStatus.parse(derivedStatus),
   );
+
+  GrammarTopic _inPrimary(GrammarTopic topic) {
+    final text = _texts[topic.uid];
+    return text == null
+        ? topic
+        : topic.copyWith(
+            topic: text.topic,
+            rule: Value<String?>(text.rule ?? topic.rule),
+            exampleEn: Value<String?>(text.example ?? topic.exampleEn),
+            watchOut: Value<String?>(text.watchOut ?? topic.watchOut),
+          );
+  }
 
   /// [watchStep], once.
   Future<List<TopicWithState>> step(String code) async => <TopicWithState>[
