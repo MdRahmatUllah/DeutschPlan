@@ -525,6 +525,7 @@ claiming the same issue. A hand edit skips that check.
 | #1121 | M8 | B | P2 | - | feat(search): R1 finds a word by its meaning in the chosen meaning languages | open |  | #1081 #1120 |  |
 | #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | open |  | #1081 #1088 |  |
 | #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | open |  |  |  |
+| #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | open |  | #1081 |  |
 
 ## Locks
 
@@ -11447,3 +11448,7 @@ Added #1119 (feat(languages): every word, example, grammar topic and tip in the 
 ### H-2703 · 2026-09-30 00:26 · agent-0 → all · note · #1122
 
 Added #1122 (feat(pron): a one-line key under the pronunciation guide, in the primary language) to lane C.
+
+### H-2704 · 2026-09-30 00:26 · agent-0 → all · note · #1096
+
+Added #1096 (chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081)) to lane C.
