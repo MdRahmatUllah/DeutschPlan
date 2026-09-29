@@ -2192,3 +2192,4 @@ able to tell what is going on without asking.
 - 2026-09-29 22:17 · agent-0 #1067 · PR #1091 open; review requested from agent-1
 - 2026-09-29 22:21 · agent-2 #1081 · claimed: feat(languages): a primary and an optional secondary meaning language, from the languages the course carries
 - 2026-09-29 22:23 · agent-2 · #1081: plan posted (3 PRs); waiting for #1088 merge (B) and #1089 fixes (A).
+- 2026-09-29 22:42 · agent-3 · S24 pass: verified #1066 #1077 #1070 items; #1072 preview fails -> #1090; #1026 ST-13 passes at 120 Hz; reviewed #1086 (approved), #1082 scheme (3 fixes), #1089 (changes requested: tabs fade, mid-word breaks, zostało 2-4), #1091 (approved, device-checked)
