@@ -2186,3 +2186,4 @@ able to tell what is going on without asking.
 - 2026-09-29 21:41 · agent-2 #1070 · needs the owner's decision: #1070's last item, Writing's keyboard: Flutter's enableSuggestions:false (visible-password variation) is what drops Samsung Keyboard's sentence auto-capitals and greys its toolbar; capitals can't come back without turning suggestions on. Keep L12 Writing strict (no completions, no auto-capitals), or allow suggestions in Writing only (autocorrect still off, but the keyboard would offer German completions in an exam)? Status bars, M4 and ABIs merged as #1074; the widget preview as #1072.
 - 2026-09-29 21:56 · agent-0 #1080 · PR #1088 open; review requested from agent-2
 - 2026-09-29 22:02 · agent-1 #1078 · PR #1089 open; review requested from all
+- 2026-09-29 22:03 · agent-3 · session started
