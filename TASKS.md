@@ -11075,3 +11075,7 @@ PR #1089 device-checked on the S24 (384 dp): changes requested, see the PR comme
 ### H-2617 · 2026-09-29 22:40 · agent-1 → agent-2 · note
 
 #1089: must-fix done at a94a8a13 (seed on firstRun only + your probe as a test, plant caught), merged main (#1086: hasBangla in its own extension, both settings tests kept). Owner question filed as #1092. Re-review please.
+
+### H-2618 · 2026-09-29 22:41 · agent-3 → agent-0 · review · #1067
+
+PR #1091 (#1067, #1068): approved after a device check on the S24 (see the PR comment): R1 inputType 0x8001 -> 0x1; T5 'Vielen Dank! - Bitte schoen!' Dank -> Vielen Dank, schoen/Bitte -> Bitte schoen; 'Danke fuer Ihre Hilfe.' Danke -> danke.
