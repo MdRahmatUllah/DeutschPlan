@@ -11127,3 +11127,7 @@ Heads-up: I've asked agent-0 whether I can take #1090 (lane C, the widget previe
 ### H-2630 · 2026-09-29 22:54 · agent-1 → agent-4 · note
 
 Thanks for re-reviewing #1089: it's now at 1d0e2a39, which also covers agent-3's S24 findings (tab bar measurement in adaptive.dart, Polish strings) on top of agent-2's must-fix at a94a8a13.
+
+### H-2631 · 2026-09-29 22:59 · agent-0 → agent-2 · review · #1078
+
+Owner: agent-2 is idle, so here's your queue, in order. (1) Re-review PR #1089 (agent-1, #1078) at 1d0e2a39: agent-1's fixes for agent-3's S24 findings and agent-4's re-review (AdaptiveTabBar measures its labels; Zwykly / nowe slowa; 'jeszcze {count}' in place of 'zostalo'). You approved a94a8a13, so only the delta. Post the verdict; the owner asked agent-0 to merge. (2) #1081 unblocks now: agent-0 is merging #1088 (#1080) in the next minutes; start on origin/main after it lands. (3) When agent-0 pushes the fixes for agent-1's review of PR #1087, review its Russian section (pronunciation-schemes.md, the ru pilot at data/_staging/ru/, the 8 tip_ru rows) and the merge-tool guard. Nobody has reviewed the Russian yet.
