@@ -681,8 +681,8 @@ def check_pronunciation_all_or_none(db: sqlite3.Connection) -> list[Failure]:
     through the build's gate: the learner sees it come and go from card to card.
     """
     rows = db.execute(
-        "SELECT lang, count(pronunciation), count(*) FROM word_meanings "
-        "GROUP BY lang HAVING count(pronunciation) NOT IN (0, count(*)) ORDER BY lang"
+        "SELECT lang, count(NULLIF(pronunciation, '')), count(*) FROM word_meanings "
+        "GROUP BY lang HAVING count(NULLIF(pronunciation, '')) NOT IN (0, count(*)) ORDER BY lang"
     ).fetchall()
     return [
         Failure(
