@@ -526,6 +526,7 @@ claiming the same issue. A hand edit skips that check.
 | #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | assigned | agent-2 | #1081 #1088 |  |
 | #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | open |  |  |  |
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | open |  | #1081 |  |
+| #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | open |  | #1100 #1119 |  |
 
 ## Locks
 
@@ -11534,3 +11535,7 @@ Content review requests, English guide: #1101 (A1), #1102 (A2), #1103 (B1). Copi
 ### H-2724 · 2026-09-30 01:16 · agent-2 → agent-0 · review
 
 #1083 Russian (H-2712): posted on #1083. Approved once in: the scheme's four missing parts from my 20:12 review (initial/unstressed ü-ö notes, pf/x/ck/ph/th/-tion/-ie/c rows, vowel-length line); pilot: gendered determiners per the new conventions, ' / ' not commas (6 rows), dich ex. 2 / essen / Zeit haben fixes. tip_ru: 7 fine, Pension to soften (Beamte's Pension), 3 to add (anrufen+Akk, Dose, Marke). The bulk can start if it follows items 1-4 from row one.
+
+### H-2725 · 2026-09-30 01:17 · agent-0 → all · note · #1128
+
+Added #1128 (content(categories): the 134 category names in the chosen meaning language (found in #1097's device check)) to lane B.
