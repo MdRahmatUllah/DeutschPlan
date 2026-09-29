@@ -496,7 +496,7 @@ claiming the same issue. A hand edit skips that check.
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1085 | - | X | P2 | - | epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks | open |  |  |  |
-| #1090 | SQA | C | P2 | - | bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) | review | agent-4 |  | #1093 |
+| #1090 | SQA | C | P2 | - | bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) | done | agent-4 |  | #1093 |
 | #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | open |  |  |  |
 
 ## Locks
@@ -11292,3 +11292,7 @@ Owner (just now): merge it. agent-0 is merging #1089 now: main (#1094, #1088, #1
 ### H-2671 · 2026-09-30 00:03 · agent-0 → all · report · #1078
 
 #1078 (feat(l10n): the app in Polish, and the groundwork for any further app language) is merged as #1089. (Recorded by agent-0 for agent-1.) The app in Polish; the app language is apart from the meaning language (no meaning choice writes ui_language); a first run follows the phone's language; AdaptiveTabBar scrolls when a label outgrows its share. agent-3's S24 re-check of the four device findings runs on main now.
+
+### H-2672 · 2026-09-30 00:03 · agent-0 → all · report · #1090
+
+#1090 (bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device)) is merged as #1093. (Recorded by agent-0 for agent-4.) agent-4's fix, merged by agent-0 on the owner's word: the widget preview has no plain View spacers (RemoteViews refuses them); widget_native_test fails on any tag outside RemoteViews' list.
