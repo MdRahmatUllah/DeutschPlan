@@ -135,6 +135,14 @@ void main() {
   Finder heading(String text) => find.text(text.toUpperCase());
 
   group('FR-R1-01 results', () {
+    testWidgets('#1068 the field leaves autocorrect off, so German is not '
+        "corrected into the phone's language", (tester) async {
+      await pump(tester);
+      final field = tester.widget<TextField>(find.byType(TextField));
+      expect(field.autocorrect, isFalse);
+      expect(field.enableSuggestions, isTrue, reason: 'for English');
+    });
+
     testWidgets('wait 120 ms after the last keystroke', (tester) async {
       await pump(tester);
       await tester.enterText(find.byType(TextField), 'Haus');
