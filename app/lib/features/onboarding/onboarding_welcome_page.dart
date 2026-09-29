@@ -2,20 +2,24 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart' show UiLanguage;
 import 'package:sogda/features/me/export_import_screen.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/services/start_report.dart';
 
 /// S2 page 1 · Welcome. `OnboardingWelcome-android.html`.
 ///
-/// Three promises and one button. The page writes no setting — it is the only
-/// one of the five that does not, which is why it has no *Skip*: there is
-/// nothing to default.
+/// Three promises and one button, under the app language (#1078): the first
+/// thing a learner reads, in a list where each language names itself, and
+/// the rest of setup reads in it. Written as it is tapped. The page has no
+/// *Skip*: the language is already the phone's, or English (bootstrap).
 ///
 /// And *Restore a backup* (#822, the owner's option 3): a learner moving
 /// phones brings their data in before setup writes a setting of its own.
@@ -105,6 +109,7 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const SizedBox(height: 4),
+          const _AppLanguage(),
           _Promise(
             icon: Icons.download_outlined,
             text: l10n.onboardingPromiseOffline,
@@ -116,6 +121,49 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
           _Promise(
             icon: Icons.lock_outline,
             text: l10n.onboardingPromisePrivate,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The app language, each named in itself (#1078).
+class _AppLanguage extends ConsumerWidget {
+  const _AppLanguage();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = context.tokens;
+    final ui = ref.watch(languagesProvider).ui;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SgText(
+            l10n.settingsUiLanguage,
+            role: SgTextRole.caption,
+            weight: 700,
+            color: tokens.color.textSecondary,
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: <Widget>[
+              for (final language in UiLanguage.values)
+                SgChip(
+                  label: language.nativeName,
+                  kind: SgChipKind.filter,
+                  selected: language == ui,
+                  onTap: () => unawaited(
+                    ref.read(languagesProvider.notifier).setUi(language),
+                  ),
+                ),
+            ],
           ),
         ],
       ),

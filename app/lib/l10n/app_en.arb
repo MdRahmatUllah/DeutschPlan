@@ -425,9 +425,9 @@
   "@onboardingMeaningBoth": {
     "description": "S2 page 2 option: English and Bangla meanings together."
   },
-  "onboardingMeaningNote": "This also sets the app language. You can change both later in Settings.",
+  "onboardingMeaningNote": "You can change it later in Settings.",
   "@onboardingMeaningNote": {
-    "description": "S2 page 2, under the options."
+    "description": "S2 page 2, under the options. The meaning language only: page 1 sets the app language (#1078)."
   },
   "onboardingMeaningSample": "{german} → {meaning}",
   "@onboardingMeaningSample": {

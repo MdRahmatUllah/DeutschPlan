@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:drift/drift.dart' show InsertMode;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 
@@ -49,6 +50,16 @@ class SettingsRepository {
     )..where((t) => t.key.equals(key.name))).getSingleOrNull();
     return row == null ? key.defaultValue : key.decode(row.value);
   }
+
+  /// Stores [value] for [key] unless something is stored already: a first
+  /// run's default the key's own can't know (#1078, the app language from
+  /// the phone's). Before [load], as [peek]; never over a learner's choice.
+  static Future<void> seed<T>(AppDatabase db, SettingKey<T> key, T value) => db
+      .into(db.settings)
+      .insert(
+        SettingsCompanion.insert(key: key.name, value: key.encode(value)!),
+        mode: InsertMode.insertOrIgnore,
+      );
 
   /// The current value, or the documented default when nothing is stored.
   T read<T>(SettingKey<T> key) {

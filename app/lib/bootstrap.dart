@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' show Locale, PlatformDispatcher;
 
 import 'package:flutter/foundation.dart' show immutable;
 // `Override` is not in the main barrel in Riverpod 3.
@@ -15,6 +16,7 @@ import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/router/app_router.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
@@ -181,12 +183,14 @@ const Duration glassTimeout = Duration(milliseconds: 150);
 /// in, so the splash can say so rather than "first start only" (#686 ST-9).
 /// Never on a first start, whose copy the splash's own caption names.
 ///
-/// [openDatabase] and [glass] exist for tests;
+/// [openDatabase], [glass] and [phoneLocale] (the phone's language, for a
+/// first run's app language) exist for tests;
 /// everything else here is real I/O, and a test that faked the database would
 /// be testing its own fake.
 Future<BootstrapResult> bootstrap({
   AppDatabase Function()? openDatabase,
   GlassCapability? glass,
+  Locale? phoneLocale,
   void Function(UiLanguage)? onUiLanguage,
   void Function()? onCourseUpdate,
 }) async {
@@ -208,6 +212,13 @@ Future<BootstrapResult> bootstrap({
     await db.fileSchemaVersion();
     opened = db;
 
+    // #1078: a first run starts in the phone's language when Sogda speaks
+    // it. Written once, so the phone never overrides the learner's choice.
+    await SettingsRepository.seed(
+      db,
+      SettingKeys.uiLanguage,
+      uiLanguageFor(phoneLocale ?? PlatformDispatcher.instance.locale),
+    );
     // One row, not the settings step: FR-S1-01 keeps its order, and only the
     // splash needs this early.
     onUiLanguage?.call(

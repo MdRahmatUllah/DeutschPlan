@@ -9,5 +9,21 @@ extension UiLanguageLocale on UiLanguage {
   Locale get locale => switch (this) {
     UiLanguage.english => const Locale('en'),
     UiLanguage.bangla => const Locale('bn'),
+    UiLanguage.polish => const Locale('pl'),
+  };
+
+  /// The language's name in itself, the same in every app language (#1078):
+  /// a learner finds their own in a list they can't read yet.
+  String get nativeName => switch (this) {
+    UiLanguage.english => 'English',
+    UiLanguage.bangla => 'বাংলা',
+    UiLanguage.polish => 'Polski',
   };
 }
+
+/// The app language a first run starts in (#1078): the phone's, when Sogda
+/// speaks it, and English otherwise.
+UiLanguage uiLanguageFor(Locale phone) => UiLanguage.values.firstWhere(
+  (language) => language.locale.languageCode == phone.languageCode,
+  orElse: () => UiLanguage.english,
+);
