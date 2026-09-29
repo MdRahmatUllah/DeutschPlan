@@ -518,6 +518,7 @@ claiming the same issue. A hand edit skips that check.
 | #1116 | M8 | A | P2 | - | content(pl): Polish for the B2 workbook (1,219 words, 2,438 example lines, 40 grammar topics) | open |  | #1087 |  |
 | #1117 | M8 | A | P2 | - | content(pl): Polish for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics) | open |  | #1087 |  |
 | #1118 | M8 | A | P2 | - | content(pl): Polish for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | open |  | #1087 |  |
+| #1123 | M8 | A | P2 | - | chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages | open |  |  |  |
 
 ## Locks
 
@@ -11412,3 +11413,7 @@ Added #1117 (content(pl): Polish for the C1 workbook (963 words, 1,926 example l
 ### H-2696 · 2026-09-30 00:25 · agent-0 → all · note · #1118
 
 Added #1118 (content(pl): Polish for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics)) to lane A.
+
+### H-2697 · 2026-09-30 00:25 · agent-0 → all · note · #1123
+
+Added #1123 (chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages) to lane A.
