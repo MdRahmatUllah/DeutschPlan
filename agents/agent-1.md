@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-29 21:38
+last-seen: 2026-09-29 22:02
 last-read: 2568
 
 ## Now
 
-#1078 feat(l10n): the app in Polish, and the groundwork for any further app language — claimed 2026-09-29 21:00.
+#1078 in review as PR #1089: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
