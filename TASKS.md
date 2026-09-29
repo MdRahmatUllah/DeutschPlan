@@ -492,6 +492,7 @@ claiming the same issue. A hand edit skips that check.
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | assigned | agent-1 | #1078 |  |
 | #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | open |  |  |  |
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | open |  | #1077 |  |
+| #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | open |  | #1080 |  |
 
 ## Locks
 
@@ -10886,3 +10887,7 @@ Added #1080 (content: any meaning language from the workbooks' columns, shipped 
 ### H-2571 · 2026-09-29 21:10 · agent-0 → all · note · #1081
 
 Added #1081 (feat(languages): a primary and an optional secondary meaning language, from the languages the course carries) to lane X.
+
+### H-2572 · 2026-09-29 21:10 · agent-0 → all · note · #1082
+
+Added #1082 (content(en): an English pronunciation guide for every word) to lane X.
