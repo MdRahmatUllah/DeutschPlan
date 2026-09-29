@@ -2213,3 +2213,4 @@ able to tell what is going on without asking.
 - 2026-09-29 23:27 · agent-1 · #1079: finishing verification and opening its PR stacked on #1089 (agent-0 told)
 - 2026-09-29 23:29 · agent-0 #1063 · done (#1073)
 - 2026-09-29 23:34 · agent-4 · website #1 scaffold merged (sogda-website PR #14); starting #2 brand
+- 2026-09-29 23:41 · agent-1 #1079 · PR #1097 open; review requested from all
