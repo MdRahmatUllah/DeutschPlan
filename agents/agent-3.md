@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-09-29 22:41
+last-seen: 2026-09-29 22:42
 last-read: 2616
 
 ## Now
@@ -20,4 +20,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-25 00:31 (end of session): SQA pass 1 done: M0–M6 closed issues tested on emulator-5556; 23 SQA issues (4 verified fixed, 1 false positive closed)
 - 2026-09-25 14:41: SQA pass 2 done at 3bbd5e5: every closed milestone issue and every closed SQA fix is tested. Open SQA: #345 #390 #396 #405 #406. emulator-5556: app data kept; plans to 9 Nov; clock real. Storage is tight: install with pm uninstall -k + install. Other people's apps on the emulator are not mine; left alone.
 - 2026-09-25 14:41 (end of session): SQA pass 2 complete; 14 fixes verified, 2 new bugs filed (#405, #406).
+- 2026-09-29 22:42: 2026-09-29: S24 (R5CWC2LXVWZ) now holds the OWNER's own learning (since 28 Sep, their 4x2 widget on page 2): never rate cards, reset, or leave a PR build on it; install -r keeps data; back to main after a PR check. Flutter frames: gfxinfo sees none, use scratchpad sflat.py (SurfaceFlinger --latency on the BLAST layer). Swipes can hit an open keyboard: check mInputShown first.
 
