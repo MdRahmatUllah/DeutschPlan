@@ -288,6 +288,43 @@ void main() {
     });
     tearDownAll(() => real.close());
 
+    test(
+      '#1067 FR-T5-03 a word of a course entry of two words or more, '
+      'whole in the sentence, opens the entry; not whole, it does not',
+      () async {
+        final dao = ContentDao(real);
+        Future<String?> key(String text, int at) async {
+          final sentence = <String>[
+            for (final match in RegExp(
+              r'\p{L}+',
+              unicode: true,
+            ).allMatches(text))
+              match[0]!,
+          ];
+          return (await dao.wordForToken(
+            sentence[at],
+            first: at == 0,
+            sentence: sentence,
+            at: at,
+          ))?.searchKey;
+        }
+
+        const thanks = 'Vielen Dank und auf Wiedersehen!';
+        expect(await key(thanks, 0), 'vielen dank');
+        expect(await key(thanks, 1), 'vielen dank');
+        expect(await key(thanks, 2), 'und');
+        expect(await key(thanks, 3), 'auf wiedersehen');
+        expect(await key(thanks, 4), 'auf wiedersehen');
+        expect(await key('Die U-Bahn kommt.', 2), 'u bahn', reason: 'a noun');
+        expect(await key('Wie viel kostet das?', 0), 'wie viel');
+        // Not whole: "Dank" without "Vielen", "auf" before another word.
+        const apart = 'Der Dank kommt auf den Tisch.';
+        expect(await key(apart, 1), isNull, reason: 'Dank alone');
+        expect(await key(apart, 3), 'auf', reason: 'the preposition');
+        expect(await key('Er sagt Wiedersehen.', 2), isNull);
+      },
+    );
+
     test('FR-T5-03 a split verb, a particle and -t are not other words, and '
         'a word beats a phrase', () async {
       final dao = ContentDao(real);
