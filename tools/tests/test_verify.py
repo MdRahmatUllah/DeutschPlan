@@ -217,15 +217,15 @@ class TestTheCli:
 
 def test_a_noun_rule_on_a_verb_fails_the_tips_gate(database):
     """#321: the build keeps "gender" tips to nouns; the gate catches a
-    build that doesn't."""
+    build that doesn't, in any language's text (#1080)."""
     from pipeline_steps import read_tips, tip_pos
     from verify_content import DEFAULT_TIPS
 
     rule = next(t for t in read_tips(DEFAULT_TIPS) if tip_pos(t.tags) == "noun")
     break_it(
         database,
-        "INSERT INTO interference_tips (word_uid, tip_en, tip_bn) "
-        "SELECT uid, '" + rule.tip_en.replace("'", "''") + "', NULL "
+        "INSERT INTO word_tips (word_uid, lang, tip) "
+        "SELECT uid, 'bn', '" + rule.tip_bn.replace("'", "''") + "' "
         "FROM words WHERE pos = 'verb' LIMIT 1",
     )
     assert "tips" in gates(database)
