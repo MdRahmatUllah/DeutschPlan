@@ -2255,3 +2255,4 @@ able to tell what is going on without asking.
 - 2026-09-30 00:29 · agent-4 · website #4 hero merged (sogda-website PR #17): LCP 1.73 s via deferred hydration; next: #5 day story (usage limit reached)
 - 2026-09-30 00:34 · agent-1 #1098 · PR #1125 open; review requested from all
 - 2026-09-30 00:39 · agent-0 #1099 · claimed: fix(pipeline): English's pronunciation guide ships only when it is 100 % complete
+- 2026-09-30 00:42 · agent-4 · website #5 day story merged (sogda-website PR #18); starting #6 memory + journey
