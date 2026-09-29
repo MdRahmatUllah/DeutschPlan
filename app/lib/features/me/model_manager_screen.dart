@@ -178,13 +178,20 @@ class ModelManagerScreen extends ConsumerWidget {
         .watch(modelCardProvider(ModelRepository.translationModel))
         .value;
     final space = ref.watch(phoneSpaceProvider).value;
+    // #1070, as M3's Translation group (#513, ADR 9): Hy-MT shows only in a
+    // build that offers it, or with a model a build that did left on the
+    // phone.
+    final translationShown =
+        enableHymtDownload ||
+        (translation != null &&
+            translation.installed.status != ModelStatus.notDownloaded);
     final onPhone = <ModelCard?>[
       voice,
       translation,
     ].fold<int>(0, (sum, card) => sum + (card?.installed.bytesOnDisk ?? 0));
 
     final scaffold = AdaptiveScaffold(
-      title: l10n.modelsTitle,
+      title: translationShown ? l10n.modelsTitle : l10n.modelsTitleVoice,
       leading: AdaptiveBackButton(
         label: l10n.settingsTitle,
         onPressed: () => Navigator.of(context).maybePop(),
@@ -201,12 +208,12 @@ class ModelManagerScreen extends ConsumerWidget {
             _ModelCardView(voice),
             const SizedBox(height: 10),
           ],
-          if (translation != null) ...<Widget>[
+          if (translation != null && translationShown) ...<Widget>[
             _ModelCardView(translation),
             const SizedBox(height: 10),
           ],
           SgText(
-            l10n.modelsFooter,
+            translationShown ? l10n.modelsFooter : l10n.modelsFooterVoice,
             role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),

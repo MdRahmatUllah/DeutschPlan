@@ -1,6 +1,6 @@
 """Writes workbooks with the shape `content-pipeline.md` describes.
 
-The four real trackers are not in the repository. Without something to read,
+The real trackers are not in the repository. Without something to read,
 the pipeline could only be tested against its own mocks, which would prove
 nothing about openpyxl, about headers read by name, or about the sheet layout.
 
@@ -23,10 +23,12 @@ from pathlib import Path
 
 from openpyxl import Workbook
 
-# Level, and how many weeks of it each workbook carries. The real split is
-# A1+A2+B1 in the first book and one level in each of the others.
+# The levels each workbook carries: one level a book, as the real trackers
+# are since the A1+A2+B1 book was split into three.
 BOOK_LEVELS: dict[str, list[str]] = {
-    "German_B1_Tracker.xlsx": ["A1", "A2", "B1"],
+    "German_A1_Tracker.xlsx": ["A1"],
+    "German_A2_Tracker.xlsx": ["A2"],
+    "German_B1_Tracker.xlsx": ["B1"],
     "German_B2_Tracker.xlsx": ["B2"],
     "German_C1_Tracker.xlsx": ["C1"],
     "German_C2_Tracker.xlsx": ["C2"],
@@ -228,7 +230,7 @@ def _force_text(sheet, column: int) -> None:
 
 
 def write_all(directory: Path) -> list[Path]:
-    """Writes all four fixture workbooks into `directory`."""
+    """Writes every fixture workbook of BOOK_LEVELS into `directory`."""
     return [
         _written(directory / name, levels) for name, levels in BOOK_LEVELS.items()
     ]

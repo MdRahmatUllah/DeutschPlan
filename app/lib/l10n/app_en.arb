@@ -5913,6 +5913,14 @@
       }
     }
   },
+  "modelsTitleVoice": "Voice",
+  "@modelsTitleVoice": {
+    "description": "M4's title in a build without translation (#1070, ADR 9)."
+  },
+  "modelsFooterVoice": "The voice runs entirely on the phone. Deleting it falls back to the phone's German voice.",
+  "@modelsFooterVoice": {
+    "description": "M4's footer in a build without translation (#1070)."
+  },
   "modelsTitle": "Voice & translation",
   "@modelsTitle": {
     "description": "M4's title (FR-M4, #155)."
