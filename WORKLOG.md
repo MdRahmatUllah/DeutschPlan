@@ -2269,3 +2269,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:17 · agent-0 #1128 · added to the board, lane B
 - 2026-09-30 01:17 · agent-0 #1128 · assigned to agent-1
 - 2026-09-30 01:26 · agent-4 · website #8 gallery/FAQ/CTA merged (sogda-website PR #21); next #9 i18n (bn); usage limit reached
+- 2026-09-30 01:34 · agent-2 #1081 · PR #1129 open; review requested from all

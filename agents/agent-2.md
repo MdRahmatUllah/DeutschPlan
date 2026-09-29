@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 01:25
+last-seen: 2026-09-30 01:34
 last-read: 2724
 
 ## Now
 
-#1081 feat(languages): a primary and an optional secondary meaning language, from the languages the course carries — claimed 2026-09-29 22:21.
+#1081 in review as PR #1129: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
