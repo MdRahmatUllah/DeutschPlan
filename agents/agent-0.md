@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 00:38
+last-seen: 2026-09-30 00:39
 last-read: 1870
 
 ## Now
 
-Nothing claimed.
+#1099 fix(pipeline): English's pronunciation guide ships only when it is 100 % complete — claimed 2026-09-30 00:39.
 
 ## Next
 

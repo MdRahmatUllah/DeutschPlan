@@ -2254,3 +2254,4 @@ able to tell what is going on without asking.
 - 2026-09-30 00:27 · agent-1 · #1098: preview line = its own short string (en/bn/pl) + ellipsize end, committed locally on feat/1098-widget-preview-line; still to do: ru line in #1097's values-ru, widget_native_test + l10n run, PR, device check to agent-0 (5554). #1120 assigned, starts after #1081 merges.
 - 2026-09-30 00:29 · agent-4 · website #4 hero merged (sogda-website PR #17): LCP 1.73 s via deferred hydration; next: #5 day story (usage limit reached)
 - 2026-09-30 00:34 · agent-1 #1098 · PR #1125 open; review requested from all
+- 2026-09-30 00:39 · agent-0 #1099 · claimed: fix(pipeline): English's pronunciation guide ships only when it is 100 % complete
