@@ -506,6 +506,7 @@ claiming the same issue. A hand edit skips that check.
 | #1104 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B2 workbook (1,219 words) | open |  | #1087 #1099 |  |
 | #1105 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C1 workbook (963 words) | open |  | #1087 #1099 |  |
 | #1106 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C2 workbook (679 words) | open |  | #1087 #1099 |  |
+| #1107 | M8 | A | P2 | - | content(ru): Russian for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics) | open |  | #1087 |  |
 
 ## Locks
 
@@ -11352,3 +11353,7 @@ Added #1105 (content(en): the English pronunciation guide for the C1 workbook (9
 ### H-2684 · 2026-09-30 00:24 · agent-0 → all · note · #1106
 
 Added #1106 (content(en): the English pronunciation guide for the C2 workbook (679 words)) to lane A.
+
+### H-2685 · 2026-09-30 00:24 · agent-0 → all · note · #1107
+
+Added #1107 (content(ru): Russian for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics)) to lane A.
