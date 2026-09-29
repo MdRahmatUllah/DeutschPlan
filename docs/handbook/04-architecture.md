@@ -381,13 +381,14 @@ style falls back to Noto Sans Bengali, because Inter has no Bangla glyphs
 
 ## Localisation
 
-- **Two UI languages**, English and Bangla, in `app_en.arb` (the template,
-  where every key has an `@key` description naming its screen) and
-  `app_bn.arb`: 972 keys each at v1.0.1. `flutter pub get` generates
+- **Three UI languages**, English, Bangla and Polish, in `app_en.arb` (the
+  template, where every key has an `@key` description naming its screen),
+  `app_bn.arb` and `app_pl.arb` (#1078). `flutter pub get` generates
   `AppLocalizations` into `lib/l10n/generated/` (gitignored).
 - **The UI language and the meaning language are separate settings**
-  (`ui_language`, `meaning_language` = en, bn or both). S2's first choice sets
-  both; Settings changes each alone. The locale comes from `ui_language`, not
+  (`ui_language` = en, bn or pl; `meaning_language` = en, bn or both). S2's
+  page 1 sets the app language, page 2 the meaning; Settings changes each
+  alone. A first run starts in the phone's language when Sogda speaks it. The locale comes from `ui_language`, not
   the device.
 - `appLocalizationsDelegates` in `main.dart` must be used by every
   `MaterialApp`, because `material_ui` and `cupertino_ui` look up their own

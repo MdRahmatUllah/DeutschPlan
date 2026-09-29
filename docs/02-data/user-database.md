@@ -48,7 +48,7 @@ A write is in memory before it is on disk. A write that fails, or a transaction 
 | `swipe_to_rate` | 0 | Settings |
 | `quiz_custom_words` | 0 | Settings — FR-R2-04's all-learned quizzes ask my words too |
 | `meaning_language` | `both` | Onboarding, Settings |
-| `ui_language` | `en` | Onboarding, Settings |
+| `ui_language` | `en` (a first run: the phone's language when Sogda speaks it, en or bn or pl, #1078) | Onboarding page 1, Settings |
 | `theme_mode` | `system` (light / dark / glass) | Settings |
 | `show_pron_bn` | 1 | Settings; S2's meaning language sets it (off for English only, #527) |
 | `tts_engine` / `tts_voice` / `tts_speed` | supertonic / Anna / 1.0 | Settings, Model manager |

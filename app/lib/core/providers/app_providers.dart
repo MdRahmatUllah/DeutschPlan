@@ -197,7 +197,9 @@ class ThemeFollowsPlatform extends _$ThemeFollowsPlatform {
 }
 
 /// The two languages: the meaning printed beside each German word, and the
-/// app's own. Kept together because S2 sets both from one choice.
+/// app's own. Kept together because the root and the pickers read both; each
+/// is set on its own (#1078): S2's page 1 and M3 the app's, page 2 and M3 the
+/// meaning's.
 ///
 /// A notifier for the same reason as [Theme]: the root reads [UiLanguage] for
 /// the locale, and a write has to reach it on the next frame, not the next
@@ -220,9 +222,11 @@ class Languages extends _$Languages {
   }
 
   /// S2 page 2. Written as it is tapped rather than held for the finish with
-  /// the plan: the page promises it sets the app language, and the next page
-  /// is the proof. A language is not a plan setting, so #92's one transaction
-  /// is not where it belongs.
+  /// the plan: a language is not a plan setting, so #92's one transaction is
+  /// not where it belongs.
+  ///
+  /// It leaves the app language alone (#1078): page 1 chose it, and Polish
+  /// screens with English meanings stay Polish.
   ///
   /// Invalidated before the disk write finishes, not after: `write` puts the
   /// value in memory first, so the tick and the new locale land on the next
@@ -235,7 +239,6 @@ class Languages extends _$Languages {
     final settings = ref.read(settingsProvider);
     final written = Future.wait(<Future<void>>[
       settings.write(SettingKeys.meaningLanguage, meaning),
-      settings.write(SettingKeys.uiLanguage, meaning.uiLanguage),
       settings.write(
         SettingKeys.showPronBn,
         meaning != MeaningLanguage.english,

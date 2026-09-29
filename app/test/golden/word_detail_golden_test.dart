@@ -26,6 +26,16 @@ void main() {
     overrides: overrides(),
     builder: (_) => const _Opener(),
   );
+  // #1078: in Polish, as a Polish phone's first run shows it.
+  goldenTest(
+    'word_detail_pl',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('pl'),
+    overrides: overrides(),
+    builder: (_) => const _Opener(),
+  );
 
   // Cupertino presents the sheet with its own popup.
   goldenTest(

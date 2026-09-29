@@ -35,6 +35,16 @@ void main() {
     builder: (context) => runner(StubExamRun()),
     act: pickDie,
   );
+  // #1078: in Polish, as a Polish phone's first run shows it.
+  goldenTest(
+    'exam_runner_pl',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('pl'),
+    builder: (context) => runner(StubExamRun()),
+    act: pickDie,
+  );
   // #165: at 200 % text.
   goldenTest(
     'exam_runner_200',

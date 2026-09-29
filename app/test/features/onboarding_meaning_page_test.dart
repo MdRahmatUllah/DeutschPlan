@@ -151,34 +151,27 @@ void main() {
       }
     });
 
-    testWidgets('writes meaning_language and ui_language', (tester) async {
-      // "This also sets the app language." Both gives English, the
-      // `ui_language` default — the app can only speak one.
+    testWidgets('#1078 writes meaning_language and leaves the app language '
+        'page 1 chose', (tester) async {
+      // Polish screens with English meanings stay Polish: the meaning
+      // language no longer sets the app's.
       await pump(tester);
+      await settings.write(SettingKeys.uiLanguage, UiLanguage.polish);
 
-      for (final (title, meaning, ui)
-          in <(String, MeaningLanguage, UiLanguage)>[
-            (
-              l10n.onboardingMeaningBangla,
-              MeaningLanguage.bangla,
-              UiLanguage.bangla,
-            ),
-            (
-              l10n.onboardingMeaningEnglish,
-              MeaningLanguage.english,
-              UiLanguage.english,
-            ),
-            (
-              l10n.onboardingMeaningBoth,
-              MeaningLanguage.both,
-              UiLanguage.english,
-            ),
-          ]) {
+      for (final (title, meaning) in <(String, MeaningLanguage)>[
+        (l10n.onboardingMeaningBangla, MeaningLanguage.bangla),
+        (l10n.onboardingMeaningEnglish, MeaningLanguage.english),
+        (l10n.onboardingMeaningBoth, MeaningLanguage.both),
+      ]) {
         await tester.tap(find.text(title));
         await tester.pump();
 
         expect(settings.read(SettingKeys.meaningLanguage), meaning);
-        expect(settings.read(SettingKeys.uiLanguage), ui, reason: title);
+        expect(
+          settings.read(SettingKeys.uiLanguage),
+          UiLanguage.polish,
+          reason: title,
+        );
       }
     });
 

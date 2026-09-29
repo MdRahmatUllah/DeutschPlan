@@ -165,24 +165,20 @@ class DateSetting extends SettingKey<DateTime?> {
 enum MeaningLanguage { english, bangla, both }
 
 /// The app's own language. German strings live in content, not in the ARBs.
-enum UiLanguage { english, bangla }
-
-/// S2 page 2: "This also sets the app language."
 ///
-/// *Both* gives English, the `ui_language` default: the app can only speak
-/// one, and *Both* lists English first. ponytail: a guess the docs leave
-/// open — if Bangla-first readers pick *Both*, this is the line to change.
-extension MeaningLanguageUi on MeaningLanguage {
-  UiLanguage get uiLanguage => switch (this) {
-    MeaningLanguage.bangla => UiLanguage.bangla,
-    MeaningLanguage.english || MeaningLanguage.both => UiLanguage.english,
-  };
+/// Its own setting, apart from [MeaningLanguage] (#1078): Polish screens with
+/// English meanings is what the two exist for. A new language is a value
+/// here, its code in [SettingKeys.uiLanguage], its locale and name in
+/// `ui_language_locale.dart`, and its ARB.
+enum UiLanguage { english, bangla, polish }
 
-  /// #1077: whether Bangla is one of the meaning languages. The Bangla
-  /// pronunciation shows only then, whatever `show_pron_bn` says: the switch
-  /// is the learner's choice within Bangla, and an English-only learner may
-  /// read no Bangla at all, however the language was set (setup, M3, an
-  /// import, a reset).
+/// #1077: whether Bangla is one of the meaning languages. The Bangla
+/// pronunciation shows only then, whatever `show_pron_bn` says: the switch
+/// is the learner's choice within Bangla, and an English-only learner may
+/// read no Bangla at all, however the language was set (setup, M3, an
+/// import, a reset). Its own extension since #1078 took the meaning's
+/// hold on the app language away.
+extension MeaningLanguageBangla on MeaningLanguage {
   bool get hasBangla => this != MeaningLanguage.english;
 }
 
@@ -276,7 +272,11 @@ abstract final class SettingKeys {
     'ui_language',
     UiLanguage.english,
     UiLanguage.values,
-    <UiLanguage, String>{UiLanguage.english: 'en', UiLanguage.bangla: 'bn'},
+    <UiLanguage, String>{
+      UiLanguage.english: 'en',
+      UiLanguage.bangla: 'bn',
+      UiLanguage.polish: 'pl',
+    },
   );
   static const themeMode = EnumSetting<ThemeModeSetting>(
     'theme_mode',

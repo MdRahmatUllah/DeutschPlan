@@ -684,6 +684,66 @@ class _Match extends StatelessWidget {
     final name = article == null || article!.isEmpty
         ? german
         : '$article $german';
+    final words = <Widget>[
+      Icon(Icons.check, size: 20, color: tokens.color.correctText),
+      const SizedBox(width: 10),
+      Expanded(
+        child: Semantics(
+          container: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: <Widget>[
+                  SgText(
+                    // ponytail: allow-literal — ARB text and a space, no number.
+                    '$title ',
+                    role: SgTextRole.label,
+                  ),
+                  SgHeadword(
+                    german,
+                    article: article,
+                    plural: plural,
+                    role: SgTextRole.label,
+                    weight: 600,
+                  ),
+                ],
+              ),
+              SgText(
+                l10n.addWordLogHint,
+                role: SgTextRole.caption,
+                color: tokens.color.textSecondary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ];
+    final actions = <Widget>[
+      // The link is drawn as a line of text; the target makes it 48 dp to
+      // press (#478).
+      AdaptiveTapTarget(
+        child: Semantics(
+          label: l10n.addWordOpenLabel(name),
+          button: true,
+          onTap: onOpen,
+          excludeSemantics: true,
+          child: SgButton(
+            label: l10n.addWordOpen,
+            kind: SgButtonKind.text,
+            expand: false,
+            onPressed: onOpen,
+          ),
+        ),
+      ),
+      const SizedBox(width: 4),
+      SgChip(
+        label: l10n.addWordLogIt,
+        kind: SgChipKind.filter,
+        onTap: busy ? null : onLog,
+      ),
+    ];
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
       decoration: BoxDecoration(
@@ -691,66 +751,20 @@ class _Match extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: tokens.color.ink, width: 1.5),
       ),
-      child: Row(
-        children: <Widget>[
-          Icon(Icons.check, size: 20, color: tokens.color.correctText),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Semantics(
-              container: true,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: <Widget>[
-                      SgText(
-                        // ponytail: allow-literal — ARB text and a space, no number.
-                        '$title ',
-                        role: SgTextRole.label,
-                      ),
-                      SgHeadword(
-                        german,
-                        article: article,
-                        plural: plural,
-                        role: SgTextRole.label,
-                        weight: 600,
-                      ),
-                    ],
-                  ),
-                  SgText(
-                    l10n.addWordLogHint,
-                    role: SgTextRole.caption,
-                    color: tokens.color.textSecondary,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // The link is drawn as a line of text; the target makes it 48 dp to
-          // press (#478).
-          AdaptiveTapTarget(
-            child: Semantics(
-              label: l10n.addWordOpenLabel(name),
-              button: true,
-              onTap: onOpen,
-              excludeSemantics: true,
-              child: SgButton(
-                label: l10n.addWordOpen,
-                kind: SgButtonKind.text,
-                expand: false,
-                onPressed: onOpen,
-              ),
-            ),
-          ),
-          const SizedBox(width: 4),
-          SgChip(
-            label: l10n.addWordLogIt,
-            kind: SgChipKind.filter,
-            onTap: busy ? null : onLog,
-          ),
-        ],
-      ),
+      // #1078: at large text the actions go under the words, as #165's rows
+      // do: beside them, Polish's at 200 % left the words a sliver.
+      child: SgScript.large(context)
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Row(children: words),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: actions,
+                ),
+              ],
+            )
+          : Row(children: <Widget>[...words, ...actions]),
     );
   }
 }
