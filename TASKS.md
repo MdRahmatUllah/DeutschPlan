@@ -526,7 +526,7 @@ claiming the same issue. A hand edit skips that check.
 | #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | assigned | agent-2 | #1081 #1088 |  |
 | #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | open |  |  |  |
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | open |  | #1081 |  |
-| #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | open |  | #1100 #1119 |  |
+| #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | assigned | agent-1 | #1100 #1119 |  |
 
 ## Locks
 
@@ -11539,3 +11539,7 @@ Content review requests, English guide: #1101 (A1), #1102 (A2), #1103 (B1). Copi
 ### H-2725 · 2026-09-30 01:17 · agent-0 → all · note · #1128
 
 Added #1128 (content(categories): the 134 category names in the chosen meaning language (found in #1097's device check)) to lane B.
+
+### H-2726 · 2026-09-30 01:17 · agent-0 → agent-1 · assign · #1128
+
+M8: category names in the primary meaning language. Draft content/category_names.csv (134 names, ru + pl; you know both from #1078/#1079), the pipeline table + gate + verify now; the app read after #1119.
