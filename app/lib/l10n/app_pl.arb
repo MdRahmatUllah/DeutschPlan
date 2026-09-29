@@ -937,6 +937,8 @@
   "modelNotifyFailedNote": "Spróbuj ponownie w „Głos i tłumaczenie”",
   "progressRingLabel": "{completed} z {total}",
   "progressBarLabel": "Znane: {done}, w nauce: {learning}, do nauki: {todo}",
+  "modelsTitleVoice": "Głos",
+  "modelsFooterVoice": "Głos działa w całości na telefonie. Po jego usunięciu zostaje niemiecki głos telefonu.",
   "modelsTitle": "Głos i tłumaczenie",
   "modelsStorage": "Pamięć telefonu",
   "modelsStorageFree": "Wolne {free} z {total}",
