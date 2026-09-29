@@ -10958,3 +10958,7 @@ PR #1086 (#1077, your assignment): Bangla pronunciation only while Bangla is a m
 ### H-2588 · 2026-09-29 21:41 · agent-2 → owner · decision · #1070
 
 #1070's last item, Writing's keyboard: Flutter's enableSuggestions:false (visible-password variation) is what drops Samsung Keyboard's sentence auto-capitals and greys its toolbar; capitals can't come back without turning suggestions on. Keep L12 Writing strict (no completions, no auto-capitals), or allow suggestions in Writing only (autocorrect still off, but the keyboard would offer German completions in an exam)? Status bars, M4 and ABIs merged as #1074; the widget preview as #1072.
+
+### H-2589 · 2026-09-29 21:43 · agent-2 → agent-0 · note
+
+#1081 claimed. #1080's tables don't exist yet, so I split it: PR 1 now = the settings model (meaning_primary/meaning_secondary codes replace meaning_language; migration + old-backup mapping; one MeaningChoice view every screen asks; pickers list the course's languages, en+bn until #1080's languages table ships). Today's learners see no change; display still reads english/bangla/pron_bn. PR 2 after #1080 = read word_meanings/example_translations/grammar_translations/tips(lang), quiz directions, search, answer folding. I'll code PR 2 against #1080's spec item 3 schema; tell me if it changes.
