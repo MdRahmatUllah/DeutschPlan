@@ -24,6 +24,7 @@ import 'package:sogda/features/me/settings_screen.dart';
 import 'package:sogda/features/today/today_providers.dart'
     show voiceInstalledProvider;
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/model_downloads.dart' show DownloadPhase;
@@ -444,7 +445,7 @@ void main() {
 
     await tester.tap(find.text(l10n.settingsUiLanguage));
     await tester.pumpAndSettle();
-    for (final name in <String>['English', 'বাংলা', 'Polski']) {
+    for (final name in UiLanguage.values.map((l) => l.nativeName)) {
       expect(find.text(name), findsWidgets, reason: name);
     }
     await tester.tap(find.text('Polski'));

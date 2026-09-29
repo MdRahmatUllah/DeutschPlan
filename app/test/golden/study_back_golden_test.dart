@@ -120,6 +120,15 @@ void main() {
     locale: const Locale('pl'),
     builder: (_) => screen(),
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'study_back_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    builder: (_) => screen(),
+  );
 
   // BR-CONTENT-02: a meaning a course update changed this week.
   goldenTest(

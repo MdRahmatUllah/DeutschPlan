@@ -170,7 +170,7 @@ enum MeaningLanguage { english, bangla, both }
 /// English meanings is what the two exist for. A new language is a value
 /// here, its code in [SettingKeys.uiLanguage], its locale and name in
 /// `ui_language_locale.dart`, and its ARB.
-enum UiLanguage { english, bangla, polish }
+enum UiLanguage { english, bangla, polish, russian }
 
 /// #1077: whether Bangla is one of the meaning languages. The Bangla
 /// pronunciation shows only then, whatever `show_pron_bn` says: the switch
@@ -282,6 +282,7 @@ abstract final class SettingKeys {
       UiLanguage.english: 'en',
       UiLanguage.bangla: 'bn',
       UiLanguage.polish: 'pl',
+      UiLanguage.russian: 'ru',
     },
   );
   static const themeMode = EnumSetting<ThemeModeSetting>(

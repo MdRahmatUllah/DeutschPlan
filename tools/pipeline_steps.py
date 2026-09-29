@@ -1165,9 +1165,20 @@ def gate_languages(
             if gaps:
                 short.append(f"{book}: {', '.join(gaps)}")
 
+        held = ""
+        if language.code == "en" and short and "en" not in allow_partial:
+            # #1099: English always ships (it is the course's own text), but a part
+            # it never had, as the pronunciation guide, only once it is complete.
+            new_parts = parts - {part for part, code in LEGACY_FIELDS if code == "en"}
+            partial = sorted(part for part in new_parts if totals[part][0] < totals[part][1])
+            for row in (*words, *grammar):
+                for part in partial:
+                    row.texts.pop((part, "en"), None)
+            if partial:
+                held = "; " + ", ".join(PART_NAMES[part] for part in partial) + " held back"
         complete = language.code == "en" or not short
         if complete:
-            verdict = "ships"
+            verdict = "ships" + held
         elif language.code in allow_partial:
             verdict = "partial, built for testing (--allow-partial)"
         else:

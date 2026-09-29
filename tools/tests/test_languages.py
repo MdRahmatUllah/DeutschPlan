@@ -229,6 +229,40 @@ class TestTheGate:
         assert [language.code for language in shipped] == ["en"]
         assert "language Russian (ru): meanings 180/180, pronunciations 0/180, held back" in report[1]
 
+    @staticmethod
+    def english_guides(russian, filled: int | None):
+        """The fixture's words, the first [filled] (all, for None) with an English guide."""
+        from excel_to_sqlite import derive
+
+        sources = [read_workbook(russian / name) for name in BOOK_LEVELS]
+        derive(sources)
+        words = [word for source in sources for word in source.words]
+        for word in words[:filled]:
+            word.texts[("pronunciation", "en")] = "GOOT"
+        return words
+
+    @pytest.mark.parametrize("allow", [(), ("en",)])
+    def test_1099_a_partial_english_guide_is_held_back_but_english_ships(self, russian, allow):
+        from pipeline_steps import gate_languages
+
+        words = self.english_guides(russian, 10)
+        shipped, report = gate_languages(words, [], {"en": {"meaning", "pronunciation"}}, allow)
+        assert [language.code for language in shipped] == ["en"]
+        kept = sum(("pronunciation", "en") in word.texts for word in words)
+        if allow:
+            assert kept == 10 and "pronunciations 10/180, ships" in report[0]
+        else:
+            assert kept == 0
+            assert "pronunciations 10/180, ships; pronunciations held back" in report[0]
+
+    def test_1099_a_complete_english_guide_ships(self, russian):
+        from pipeline_steps import gate_languages
+
+        words = self.english_guides(russian, None)
+        _, report = gate_languages(words, [], {"en": {"meaning", "pronunciation"}})
+        assert all(("pronunciation", "en") in word.texts for word in words)
+        assert report[0].endswith("pronunciations 180/180, ships")
+
     def test_1080_allow_partial_names_a_language_the_workbooks_carry(self, russian, tmp_path, capsys):
         out = tmp_path / "content.db"
         argv = ["--manifest", str(manifest(russian)), "--out", str(out), "--previous", str(tmp_path / "none")]

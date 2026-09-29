@@ -27,6 +27,17 @@ void main() {
     builder: (context) =>
         OnboardingWelcomePage(onStart: () {}, onRestored: () {}),
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'onboarding_welcome_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    overrides: <Override>[languagesProvider.overrideWith(_English.new)],
+    builder: (context) =>
+        OnboardingWelcomePage(onStart: () {}, onRestored: () {}),
+  );
 }
 
 class _English extends Languages {

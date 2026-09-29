@@ -36,6 +36,16 @@ void main() {
     overrides: overrides(),
     builder: (_) => const _Opener(),
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'word_detail_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    overrides: overrides(),
+    builder: (_) => const _Opener(),
+  );
 
   // Cupertino presents the sheet with its own popup.
   goldenTest(

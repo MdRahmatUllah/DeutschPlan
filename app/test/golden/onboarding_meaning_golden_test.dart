@@ -55,6 +55,15 @@ void main() {
     locale: const Locale('pl'),
     builder: page,
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'onboarding_meaning_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    builder: page,
+  );
 }
 
 class _BothPicked extends Languages {
