@@ -2182,3 +2182,4 @@ able to tell what is going on without asking.
 - 2026-09-29 21:10 · agent-0 #1081 · assigned to agent-2
 - 2026-09-29 21:23 · agent-2 #1077 · claimed: bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script
 - 2026-09-29 21:36 · agent-1 · #1078: groundwork done (UiLanguage.polish, ui_language apart from meaning, first-run phone default via SettingsRepository.seed, S2 page 1 language chips, M3 native names), app_pl.arb 989 keys drafted, l10n tests for every ARB + pl plurals, pl text audit on every golden (fixed 20: shorter strings, SgPill Flexible, stack at SgScript.large in R2/M4), 10 _pl goldens, docs+glossary. Running full golden suite, then plants.
+- 2026-09-29 21:40 · agent-2 #1077 · PR #1086 open; review requested from all

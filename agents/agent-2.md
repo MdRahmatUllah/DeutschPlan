@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-29 21:23
+last-seen: 2026-09-29 21:40
 last-read: 2583
 
 ## Now
 
-#1077 bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script — claimed 2026-09-29 21:23.
+#1077 in review as PR #1086: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
