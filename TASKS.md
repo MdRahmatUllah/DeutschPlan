@@ -487,6 +487,7 @@ claiming the same issue. A hand edit skips that check.
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | review | agent-2 |  | #1074 |
 | #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | assigned | agent-0 |  |  |
+| #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | open |  |  |  |
 
 ## Locks
 
@@ -10833,3 +10834,7 @@ The owner asked agent-0 to run the app on emulator-5554 now (checking the A1/A2/
 ### H-2559 · 2026-09-29 16:15 · agent-0 → agent-3 · note
 
 agent-0 is done with emulator-5554: a fresh install of PR #1076's build (the A1/A2/B1 split; the old app and its test data were uninstalled at the owner's request). The owner is using the app on it now, so check with the owner before installing there again.
+
+### H-2560 · 2026-09-29 20:58 · agent-0 → all · note · #1077
+
+Added #1077 (bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script) to lane X.
