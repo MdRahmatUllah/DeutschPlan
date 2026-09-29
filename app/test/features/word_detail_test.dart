@@ -1066,6 +1066,52 @@ void main() {
     semantics.dispose();
   });
 
+  test(
+    '#1077 FR-W1-01 English only, as M3 leaves it (the switch still on): '
+    "W1's caption has no Bangla pronunciation; it returns with Bangla",
+    () async {
+      final db = AppDatabase.memory();
+      addTearDown(db.close);
+      final content = ContentFixture.write(
+        '${tempDir('sg_pron').path}/content.db',
+      );
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+      );
+      final settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      final container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+          contentUpdaterProvider.overrideWithValue(
+            _Aliased(db, const <String, String>{}),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      final hold = container.listen(
+        wordDetailProvider(ContentFixture.haus),
+        (_, _) {},
+      );
+      addTearDown(hold.close);
+      Future<WordDetail?> read() =>
+          container.read(wordDetailProvider(ContentFixture.haus).future);
+
+      expect((await read())!.pron, isTrue, reason: 'both, the default');
+      await container
+          .read(languagesProvider.notifier)
+          .setMeaning(MeaningLanguage.english);
+      expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
+      expect((await read())!.pron, isFalse);
+      await container
+          .read(languagesProvider.notifier)
+          .setMeaning(MeaningLanguage.both);
+      expect((await read())!.pron, isTrue);
+    },
+  );
+
   test('#854 PIPE-09 an old uid, from a link written before an update '
       're-keyed its word, opens the word it became', () async {
     final db = AppDatabase.memory();

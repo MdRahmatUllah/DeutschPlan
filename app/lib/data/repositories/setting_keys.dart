@@ -177,6 +177,13 @@ extension MeaningLanguageUi on MeaningLanguage {
     MeaningLanguage.bangla => UiLanguage.bangla,
     MeaningLanguage.english || MeaningLanguage.both => UiLanguage.english,
   };
+
+  /// #1077: whether Bangla is one of the meaning languages. The Bangla
+  /// pronunciation shows only then, whatever `show_pron_bn` says: the switch
+  /// is the learner's choice within Bangla, and an English-only learner may
+  /// read no Bangla at all, however the language was set (setup, M3, an
+  /// import, a reset).
+  bool get hasBangla => this != MeaningLanguage.english;
 }
 
 /// `system` follows the platform; the other three are the modes in
