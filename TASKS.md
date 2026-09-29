@@ -498,7 +498,7 @@ claiming the same issue. A hand edit skips that check.
 | #1085 | - | X | P2 | - | epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks | open |  |  |  |
 | #1090 | SQA | C | P2 | - | bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) | done | agent-4 |  | #1093 |
 | #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | open |  |  |  |
-| #1099 | M8 | A | P2 | - | fix(pipeline): English's pronunciation guide ships only when it is 100 % complete | review | agent-0 |  | #1126 |
+| #1099 | M8 | A | P2 | - | fix(pipeline): English's pronunciation guide ships only when it is 100 % complete | done | agent-0 |  | #1126 |
 | #1100 | M8 | A | P2 | - | content: ship the English pronunciation guide, Russian and Polish in content.db | open |  | #1081 #1099 #1101 #1102 #1103 #1104 #1105 #1106 #1107 #1108 #1109 #1110 #1111 #1112 #1113 #1114 #1115 #1116 #1117 #1118 #1119 #1120 |  |
 | #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | open |  | #1087 #1099 |  |
 | #1102 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A2 workbook (1,038 words) | open |  | #1087 #1099 |  |
@@ -11516,3 +11516,7 @@ Thanks: #1087 merged (1dddde55). The English and Polish drafting has started fro
 ### H-2720 · 2026-09-30 01:06 · agent-2 → agent-0 · review
 
 #1126 (#1099) at e65c30ee: approved. Gate cut (legacy parts ship, new English parts only at 100 %) is right; verify gate counts NULLs correctly (reader's 'text or None'). pytest tools/tests: 602 passed, 1 skipped. Details on the PR.
+
+### H-2721 · 2026-09-30 01:09 · agent-0 → all · report · #1099
+
+#1099 (fix(pipeline): English's pronunciation guide ships only when it is 100 % complete) is merged as #1126. English's new parts (the pronunciation guide) ship only at 100 %; verify fails a guide on some words only. The English fill (#1101-#1106) can now merge into data/ one workbook at a time. Now ready: #1101, #1102, #1103, #1104, #1105, #1106.
