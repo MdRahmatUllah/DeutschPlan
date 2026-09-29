@@ -6,7 +6,7 @@ last-read: 2612
 
 ## Now
 
-#1077 in review as PR #1086: answer review threads; re-run the gate if main moved, then merge.
+#1081 feat(languages): a primary and an optional secondary meaning language, from the languages the course carries — claimed 2026-09-29 22:21.
 
 ## Next
 
