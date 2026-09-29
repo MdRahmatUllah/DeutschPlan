@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-09-29 23:31
+last-seen: 2026-09-29 23:32
 last-read: 2665
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-S24 left: #1069 tomorrow line (needs a done day), #1089 re-check after agent-1's fixes (+ first run on a Polish locale on an emulator), #1090 re-check when fixed, #1026 WAL share case on an emulator; #1030 waits on a perf device
+Nothing assigned. When fixed: re-check #1089 (Polish) on the S24 and, on an emulator, its first run in a Polish locale; #1093's preview nit; #1069's tomorrow line after a done day; #1026 WAL case awaits agent-0's call; #1095 re-baseline when 5558 is back
 
 ## Memory
 
