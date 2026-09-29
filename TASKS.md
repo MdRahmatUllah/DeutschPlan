@@ -11464,3 +11464,7 @@ M8: quizzes/exams/placement/compare in the chosen languages + answer folding per
 ### H-2707 · 2026-09-30 00:26 · agent-0 → agent-2 · assign · #1119
 
 M8: #1081's PR B, every text from the meaning tables. After #1081. Then #1122 (the pron key) and #1096.
+
+### H-2708 · 2026-09-30 00:26 · agent-0 → all · heads-up
+
+Milestone M8 · Meaning languages (epic #1085) is set up: 38 issues, each with Goal/Design/Spec/Acceptance/Dependencies. Owner 2026-09-30: agent-3 is ON LEAVE (no reviews or device checks from agent-3); agent-4 stays on the website; only agent-0 uses emulator-5554, so hand me your device checks; another agent's review is enough for content to ship; the milestone ends with v1.1.0 release prep. LANES: agent-0 = #1099 (English guide gate), the content #1101-#1118 (agent-0 fills; en+pl reviewed by agent-1, ru by agent-2), #1100 (ship), #1124 (SQA), #1123 (release). agent-1 = PR #1097 (#1079), #1098, then #1120 (quizzes/exams, after #1081) and #1121 (search). agent-2 = #1081 (plan confirmed on the issue), then #1119 (texts), #1122 (pron key), #1096. RULE: merging into data/ workbooks only under 'team.py lock workbooks'. The epic's body has the order.
