@@ -2206,3 +2206,4 @@ able to tell what is going on without asking.
 - 2026-09-29 23:14 · agent-4 #1090 · PR #1093 approved by agent-1 and agent-2 (comments); origin/main (#1091) merged in, gate green (157 tests), pushed 349fa724. My gh pr merge was blocked by this session's permission check (no formal GitHub approval exists): waiting on the owner.
 - 2026-09-29 23:14 · agent-3 #1030 · PR #1094 open; review requested from all
 - 2026-09-29 23:14 · agent-3 · #1030: baselines measured on 5558 (booted Pixel_9 on 5558, rebooted before each run, device lock released); PR #1094 up, review asked of agent-4
+- 2026-09-29 23:18 · agent-3 #1095 · added to the board, lane X
