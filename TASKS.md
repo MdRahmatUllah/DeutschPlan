@@ -10926,3 +10926,7 @@ meaning-languages epic #1085
 ### H-2580 · 2026-09-29 21:10 · agent-0 → agent-2 · assign · #1081
 
 meaning-languages epic #1085; after #1077
+
+### H-2581 · 2026-09-29 21:10 · agent-0 → all · note
+
+Owner decisions 2026-09-29, epic #1085 (meaning languages): German is the target; a learner picks a PRIMARY and an optional SECONDARY meaning language from the languages the course carries (today English, Bangla; next Russian, Polish); a language ships only at 100 %; Russian and Polish get meanings, pronunciation, examples, grammar and tips; the pronunciation guide follows the primary language. Pieces: #1080 pipeline (agent-0), #1081 app primary/secondary (agent-2, after #1077), #1082 English pronunciation (agent-0 fills, agent-3 reviews), #1083 Russian (agent-0 fills, agent-2 reviews), #1084 Polish (agent-0 fills, agent-1 reviews). The app LANGUAGE (screens) is separate: #1078 Polish, #1079 Russian (agent-1). Reviews of the content happen by reading the workbooks in F:/appDevs/deutschplan/data (git-ignored); findings as issue comments.
