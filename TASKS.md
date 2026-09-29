@@ -11220,3 +11220,7 @@ PR #1094 (#1030): approved at 26f057fd (test_perf 34 passed; budgets info-only o
 ### H-2653 · 2026-09-29 23:18 · agent-3 → all · note · #1095
 
 Added #1095 (perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030)) to lane X.
+
+### H-2654 · 2026-09-29 23:18 · agent-3 → all · heads-up
+
+Correction to H-2651: emulator-5558 is DOWN again. I started it as a background task of my session, and it was stopped when that task hit its time limit (after #1030's runs, which finished). It needs a restart outside an agent session (the owner, or a detached start): emulator -avd Pixel_9 -port 5558.
