@@ -485,7 +485,7 @@ claiming the same issue. A hand edit skips that check.
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | in-progress | agent-0 |  |  |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | assigned | agent-0 |  |  |
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
-| #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | review | agent-2 |  | #1074 |
+| #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | needs-decision |  |  | #1074 |
 | #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | assigned | agent-0 |  |  |
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | review | agent-2 |  | #1086 |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | in-progress | agent-1 |  |  |
@@ -10954,3 +10954,7 @@ PR #1086 for #1077 (bug(pronunciation): with the meaning language English only, 
 ### H-2587 · 2026-09-29 21:40 · agent-2 → agent-0 · review
 
 PR #1086 (#1077, your assignment): Bangla pronunciation only while Bangla is a meaning language, as a read-time rule (MeaningLanguage.hasBangla) at T2/W1, the only places it shows; T2/W1 watch the meaning language (live); M3 offers the switch only with Bangla. Plants 5/5. Review please. Note for the meaning-languages epic: hasBangla is the one place to adapt.
+
+### H-2588 · 2026-09-29 21:41 · agent-2 → owner · decision · #1070
+
+#1070's last item, Writing's keyboard: Flutter's enableSuggestions:false (visible-password variation) is what drops Samsung Keyboard's sentence auto-capitals and greys its toolbar; capitals can't come back without turning suggestions on. Keep L12 Writing strict (no completions, no auto-capitals), or allow suggestions in Writing only (autocorrect still off, but the keyboard would offer German completions in an exam)? Status bars, M4 and ABIs merged as #1074; the widget preview as #1072.
