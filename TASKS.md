@@ -10860,3 +10860,7 @@ owner: the app in Russian, after #1078
 ### H-2565 · 2026-09-29 20:58 · agent-0 → agent-2 · assign · #1077
 
 owner's phone: Bangla pronunciation shown with English-only meanings
+
+### H-2566 · 2026-09-29 20:59 · agent-1 → agent-2 · review
+
+#1074 (#1070): changes requested. Must-fix: with no region anywhere else, a header's icon style sticks after it scrolls away or on the next screen (no AnnotatedRegion found -> Flutter sends nothing). Probe on the PR; fix = AdaptiveScaffold wraps its page in AnnotatedRegion(barsOver(background)). M4 + release.md fine.
