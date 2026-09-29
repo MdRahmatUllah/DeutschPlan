@@ -746,7 +746,7 @@
   "progressMinutes": "{minutes} мин",
   "progressStudyTime": "время занятий",
   "progressIntroduced": "новых слов",
-  "progressReviews": "повторений",
+  "progressReviews": "повторения",
   "progressStreakBest": "{streak} / {best}",
   "progressStreakLabel": "серия / рекорд",
   "searchRecent": "Недавние",

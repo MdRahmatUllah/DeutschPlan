@@ -2,4 +2,5 @@
 <resources>
     <string name="widget_description">План на сегодня и слово дня</string>
     <string name="widget_empty">Открой Sogda, чтобы спланировать день</string>
+    <string name="widget_preview_line">План на сегодня</string>
 </resources>
