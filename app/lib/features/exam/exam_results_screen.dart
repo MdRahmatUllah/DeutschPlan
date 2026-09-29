@@ -12,6 +12,7 @@ import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/domain/exam_generator.dart';
@@ -470,7 +471,7 @@ class _Hero extends StatelessWidget {
     );
     return tokens.isGlass
         ? SgSurface(kind: SgSurfaceKind.tint(colour), radius: 0, child: content)
-        : ColoredBox(color: colour, child: content);
+        : SgHeaderFill(color: colour, child: content);
   }
 }
 

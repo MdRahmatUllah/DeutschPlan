@@ -506,8 +506,8 @@ void main() {
         ),
       );
       expect(enableHymtDownload, isFalse, reason: 'off by default');
-      expect(find.text(l10n.modelsHymtGated), findsOneWidget);
-      expect(button(tester, l10n.modelsDownload('1.1 GB')).onPressed, isNull);
+      // No card offers it at all (#1070).
+      expect(find.text(l10n.modelsDownload('1.1 GB')), findsNothing);
       await tester.tap(find.text(l10n.modelsDownload('399 MB')));
       await tester.pumpAndSettle();
       expect(downloads.calls, <String>['start supertonic3']);
@@ -527,6 +527,23 @@ void main() {
     });
   });
 
+  testWidgets('#1070 FR-M4-04 without the flag and with no Hy-MT on the '
+      "phone, M4 is the voice's alone: no Hy-MT card, its title and footer "
+      "the voice's", (tester) async {
+    await pump(
+      tester,
+      modelManagerStub(
+        voice: cardOf(voiceEntry),
+        translation: cardOf(translationEntry),
+      ),
+    );
+    expect(find.text(l10n.modelsTranslationTitle), findsNothing);
+    expect(find.text(l10n.modelsHymtGated), findsNothing);
+    expect(find.text(l10n.modelsTitleVoice), findsOneWidget);
+    expect(find.text(l10n.modelsFooterVoice), findsOneWidget);
+    expect(find.text(l10n.modelsVoiceTitle), findsOneWidget);
+  });
+
   testWidgets('FR-M4-04 without the flag, a full phone still says the '
       "translation model isn't offered, not that it lacks space", (
     tester,
@@ -538,7 +555,6 @@ void main() {
       ),
     );
     expect(find.text(l10n.modelsStatusNoSpace), findsNothing);
-    expect(find.text(l10n.modelsHymtGated), findsOneWidget);
     expect(find.text(l10n.modelsNoSpaceNote('1.4 GB')), findsNothing);
   });
 
