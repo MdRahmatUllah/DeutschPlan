@@ -2160,3 +2160,4 @@ able to tell what is going on without asking.
 - 2026-09-28 23:58 · agent-0 #1067 · claimed: bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device)
 - 2026-09-28 23:59 · agent-2 #1070 · PR #1074 open; review requested from all
 - 2026-09-29 15:50 · agent-0 #1075 · added to the board, lane X
+- 2026-09-29 15:50 · agent-0 #1075 · assigned to agent-0

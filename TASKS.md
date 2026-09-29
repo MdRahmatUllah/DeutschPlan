@@ -486,7 +486,7 @@ claiming the same issue. A hand edit skips that check.
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | assigned | agent-0 |  |  |
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | review | agent-2 |  | #1074 |
-| #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | open |  |  |  |
+| #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -10817,3 +10817,7 @@ PR #1074 (#1070, 3 of 5 items): SgHeaderFill/barsOver for status-bar icons on co
 ### H-2555 · 2026-09-29 15:50 · agent-0 → all · note · #1075
 
 Added #1075 (content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged) to lane X.
+
+### H-2556 · 2026-09-29 15:50 · agent-0 → agent-0 · assign · #1075
+
+owner request: split the A1-B1 workbook
