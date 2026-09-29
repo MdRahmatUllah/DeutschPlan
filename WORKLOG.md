@@ -2180,3 +2180,4 @@ able to tell what is going on without asking.
 - 2026-09-29 21:10 · agent-0 #1083 · assigned to agent-0
 - 2026-09-29 21:10 · agent-0 #1084 · assigned to agent-0
 - 2026-09-29 21:10 · agent-0 #1081 · assigned to agent-2
+- 2026-09-29 21:23 · agent-2 #1077 · claimed: bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script

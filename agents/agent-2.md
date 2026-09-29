@@ -6,7 +6,7 @@ last-read: 2583
 
 ## Now
 
-#1070 in review as PR #1074: answer review threads; re-run the gate if main moved, then merge.
+#1077 bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script — claimed 2026-09-29 21:23.
 
 ## Next
 
