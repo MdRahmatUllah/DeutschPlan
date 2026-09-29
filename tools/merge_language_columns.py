@@ -121,6 +121,11 @@ def merge_sheet(ws, language: str, entries: list[dict], key: tuple[str, ...],
         col = cols.get(header)
         if col is None:
             col = cols[header] = max(cols.values()) + 1
+            # the check skips the written columns, so a cell there would be lost unseen
+            taken = [r for r in range(1, ws.max_row + 1) if ws.cell(r, col).value is not None]
+            if taken:
+                raise MergeError(f"{language} {ws.title}: the new column {header} would overwrite "
+                                 f"{get_column_letter(col)}{taken[0]}, which has no header but a value")
             ws.cell(hrow, col).value = header
             ws.cell(hrow, col)._style = copy(ws.cell(hrow, cols[like])._style)
             ws.column_dimensions[get_column_letter(col)].width = width

@@ -175,6 +175,17 @@ def test_it_never_writes_its_input(src):
         merge(src, src, [RU])
 
 
+def test_a_value_in_an_unheaded_column_stops_the_merge(src, tmp_path):
+    # agent-1's probe on #1087: a note just past the last header would be overwritten
+    wb = load_workbook(src)
+    wb["All Words"]["I6"] = "a note"
+    wb.save(src)
+    out = tmp_path / "out.xlsx"
+    with pytest.raises(MergeError, match="would overwrite I6"):
+        merge(src, out, [RU])
+    assert not out.exists()
+
+
 def test_a_key_on_two_rows_stops_the_merge(src, tmp_path):
     wb = load_workbook(src)
     wb["All Words"].append([4, None, "ich", "pron", "ইশ", "I", "Ich.", "I."])

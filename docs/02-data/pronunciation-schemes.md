@@ -7,13 +7,13 @@ Rules for every scheme:
 - The guide spells the **German cell only**, never the article: *das Abendessen* → `AH-bent-es-sen`.
 - **Standard German**, as a careful speaker says it: final b/d/g are hardened, -ig ends in the ich sound, r after a vowel at the end of a word or word part is vocalised.
 - **One sound, one spelling.** A reviewer can check a row against the tables below; a sound spelt two ways is a finding.
-- A doubled consonant in German is written once (Russian, Polish) or split across the syllable break (English `BIT-tuh`, which only shows the short vowel: say the t once).
+- A doubled consonant in German is written once (Russian, Polish) or split across the syllable break (English `BIT-tuh`, `OWSS-fewl-len`, which only shows the short vowel: say the consonant once).
 
-The pilot (A1 weeks 1–2, 98 words) follows these tables. The reviewers (#1082 agent-3, #1083 agent-2, #1084 agent-1) approve each scheme before the bulk work.
+The pilot (A1 weeks 1–2, 98 words) follows these tables. The reviewers approved each scheme before the bulk work: English agent-3 (#1082), Polish agent-1 (#1084), Russian agent-2 (#1083). Their changes are in the tables below; *Decisions* at the end records the choices.
 
 ## English (#1082)
 
-A respelling in ordinary English letters. **Stress:** syllables are joined by hyphens and the stressed syllable is in capitals. A one-word entry always has one capitalised syllable, even when it has only one (`IHY`, `YAH`). In a phrase, each word that carries stress has one; small unstressed words (articles, pronouns, prepositions, auxiliaries) stay lowercase: `owf VEE-der-zay-en`, `ess toot meer LAIT`.
+A respelling in ordinary English letters. **Stress:** syllables are joined by hyphens and the stressed syllable is in capitals. A one-word entry always has one capitalised syllable, even when it has only one (`IHY`, `YAH`). In a phrase, **the words that carry the phrase's stress get the capitals; the rest stay lowercase**. That means the small words (articles, pronouns, prepositions, auxiliaries), and also a verb after its object when the stress falls on the object: `owf VEE-der-zay-en`, `ess toot meer LAIT`, `inss BET gay-en`, `POW-zuh makh-en`, `meer gayt ess GOOT` against `vee GAYT ess ee-nen`.
 
 Every `r` in the respelling follows one rule: **starting a syllable it is the German throat r; ending a syllable it is silent, as in British *beer*, *more*, *fur*.** That is what lets `ur` (ö), `er` (final -er) and `BEER` (Bier) work.
 
@@ -56,6 +56,7 @@ Every `r` in the respelling follows one rule: **starting a syllable it is the Ge
 | h after a vowel | — | silent: the vowel is long | geht → `GAYT` |
 | qu | kv | | Quark → `KVARK` |
 | ng | ng | *singer*, never *finger* | lange → `LANG-uh` |
+| nk | nk, kept in one syllable | *thank*: the n is the ng sound | danke → `DANK-uh`, trinken → `TRINK-en` |
 
 Ten worked examples:
 
@@ -129,7 +130,7 @@ Ten worked examples:
 
 ## Polish (#1084)
 
-Polish spelling for German sounds. **Stress:** syllables are joined by hyphens and the stressed syllable is in capitals, as in the English guide: `auf WI-da-ze-en`, `ICH`, `es tut mija LAJT`. #1084 proposed underlining the stressed syllable in the cell; a cell's underline is formatting, which the pipeline does not carry into `content.db` and the app cannot show, so capitals take its place (the reviewer and the owner decide).
+Polish spelling for German sounds. **Stress:** syllables are joined by hyphens and the stressed syllable is in capitals, as in the English guide: `auf WI-da-ze-en`, `IŚ`, `es tut mija LAJT`. #1084 proposed underlining the stressed syllable in the cell. A cell's underline is formatting, which the pipeline does not carry into `content.db` and the app cannot show, so capitals take its place (approved by agent-1). A phrase follows the English guide's rule: only the words that carry the phrase's stress get capitals.
 
 Polish reads *zi, si, ci, ni* as ź, ś, ć, ń, and *i* before a vowel as a softening sign. So in this guide **zi, si, ci, ni, di, ti are hard**, as in foreign words (*taxi*, *Zimbabwe*), and *i* before a vowel is written **ij** (`BIJA`, `mija`).
 
@@ -150,7 +151,7 @@ Polish reads *zi, si, ci, ni* as ź, ś, ć, ń, and *i* before a vowel as a sof
 | r after a vowel, ending a word or word part | a (ija after i) | | er → `EA`, Bier → `BIJA` |
 | r elsewhere | r | a light throat r, not rolled | Straße → `SZTRA-se` |
 | ch after a, o, u, au | ch | as Polish ch | Buch → `BUCH` |
-| ch after i, e, ä, ö, ü, ei, eu, l, n, r; -chen; -ig at the end | ch | **soft**: close to ś, like the ch of *Chiny* | ich → `ICH`, Mädchen → `MET-chen` |
+| ch after i, e, ä, ö, ü, ei, eu, l, n, r; -chen; -ig at the end | ś | close to the German sound. A Polish ch here would be read hard, as the ach sound | ich → `IŚ`, Mädchen → `MET-śen`, nichts → `NIŚC`, König → `KÖ-niś` |
 | chs | ks | | sechs → `ZEKS` |
 | sch | sz | | schön → `SZÖN` |
 | tsch | cz | | Tschüss → `CZÜS` |
@@ -171,7 +172,7 @@ Ten worked examples:
 | German | Polish guide | How |
 | --- | --- | --- |
 | Auf Wiedersehen | `auf WI-da-ze-en` | au → au; w → w; ie → i; -er of *wieder* → a; s + vowel → z; stress on *wie*, *auf* unstressed |
-| ich | `ICH` | ch after i: the soft ch |
+| ich | `IŚ` | ch after i → ś |
 | Buch | `BUCH` | ch after u: Polish ch |
 | Tschüss | `CZÜS` | tsch → cz; ü stays ü |
 | schön | `SZÖN` | sch → sz; ö stays ö |
@@ -179,14 +180,26 @@ Ten worked examples:
 | Straße | `SZTRA-se` | st at the start → szt; ß → s |
 | Bier | `BIJA` | ie → i; final r → a, with j between the vowels |
 | Abend | `A-bent` | final d → t |
-| Mädchen | `MET-chen` | ä → e; d before ch → t; -chen: the soft ch |
+| Mädchen | `MET-śen` | ä → e; d before ch → t; -chen → śen |
 
-## Open questions for the reviewers
+## Decisions
 
-- **English ich sound:** `hy` (*huge*) keeps it apart from `sh`, as #1082 asks; the course's own grammar rule and the Bangla guide say *ish*. `sh` is easier to read, `hy` is the right sound.
-- **Polish ich sound:** `ch` with the note, as #1084 proposes; `ś` (`IŚ`, `MET-śen`) would need no note but is a different sound.
-- **Polish stress:** capitals instead of underlining (above).
-- **Russian e:** `э` everywhere (accurate, keeps consonants hard) rather than the more familiar `е`.
+- **English ich sound: `hy`** (agent-3, #1082). With `sh`, *Kirche* and *Kirsche*, or *Fächer* and *Fischer*, would be spelt the same. The in-app key (#1122) teaches `hy` once.
+- **Polish ich sound: `ś`** (agent-1, #1084). The learner sees only the cell, so a note can't carry it, and a Polish reader says `ICH` with the hard ach sound. `ś` is close to [ç], as Polish German teaching describes it.
+- **Polish stress: capitals** instead of underlining (agent-1, #1084).
+- **Russian e: `э` everywhere**, which keeps consonants hard, rather than the more familiar `е` (for agent-2's review, #1083).
+- **Known limit, Polish `ci`:** `ci` for [tsi] (`AN-ci-en`) will be read as ć by most Poles. `cy` would get the vowel wrong instead. Every word has its German audio beside the guide, so the guide supports the audio and doesn't replace it.
+
+## Conventions for the other columns
+
+The meaning, example and grammar columns of every language (#1083, #1084) follow these, so the bulk and its review hold one rule:
+
+- **Sense:** a meaning matches the row's English (and Bangla) sense, never another sense of the German word. It stays short, about 40 characters at most, with alternatives separated by ` / `. A gendered German determiner or pronoun gets the gendered forms (`ten / ta / to`).
+- **Pinned senses:** when the target word is wider than the German (Polish *kolega* is also "friend"), the example pins it (`kolegą z pracy`).
+- **Examples:** faithful and natural, one line per German line, in the same order, with no numbering. *du* is ты / ty; *Sie* is вы / Pan, Pani.
+- **Gender:** where the German gives none (*ich*, *du*, a past tense or an adjective about the speaker or the learner), the translation uses the **masculine**: *Nic nie słyszałem*, *Kiedy zacząłeś?*, *Я ничего не слышал*.
+- **Grammar:** terms as the language's own textbooks name them. German examples stay German, and only their translations are in the language.
+- **One word, one text:** a word in several workbooks (the same German + POS + English) gets the same text in each, because the build merges them by uid.
 
 ## How the columns get into the workbooks
 
