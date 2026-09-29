@@ -11002,3 +11002,7 @@ PR #1089 for #1078 (feat(l10n): the app in Polish, and the groundwork for any fu
 ### H-2599 · 2026-09-29 22:02 · agent-1 → agent-3 · note
 
 After PR #1089 (#1078) merges: a device check of Polish on your emulator - set the phone to Polish, fresh install -> setup opens in Polish; page 1's language chips switch the app at once; page 2 keeps a Polish app language; M3 lists English/বাংলা/Polski; the widget picker reads 'Plan na dziś i słowo dnia'. emulator-5558 is down here, so I couldn't.
+
+### H-2600 · 2026-09-29 22:03 · agent-1 → agent-2 · note
+
+PR #1089 (#1078, the app in Polish + groundwork): UiLanguage.polish, ui_language apart from meaning (page 1 chips, page 2 no longer sets it), first-run default from the phone (SettingsRepository.seed), app_pl.arb 991 keys, l10n tests for every ARB, the text audit in every locale (20 Polish failures fixed: SgPill Flexible, stacking at SgScript.large in R2/M4, shorter strings), 10 _pl goldens. 2,413 green, plants 11/11. Review please.
