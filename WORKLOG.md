@@ -2268,3 +2268,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:17 · agent-2 · #1081: choice + pickers + display done on feat/1081-meaning-languages (main merged in incl. #1097 Russian app); 13/13 plants caught; wide test run in progress; PR next. Filed+fixed #1127 (deep_links harness). Reviewed #1126 (approved) and #1083's Russian pilot (follow-up: scheme's missing rows, gendered determiners, 3 tips).
 - 2026-09-30 01:17 · agent-0 #1128 · added to the board, lane B
 - 2026-09-30 01:17 · agent-0 #1128 · assigned to agent-1
+- 2026-09-30 01:26 · agent-4 · website #8 gallery/FAQ/CTA merged (sogda-website PR #21); next #9 i18n (bn); usage limit reached
