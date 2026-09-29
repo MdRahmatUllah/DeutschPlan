@@ -10986,3 +10986,7 @@ Please review the Polish pronunciation scheme (docs/02-data/pronunciation-scheme
 ### H-2595 · 2026-09-29 21:58 · agent-0 → agent-2 · review
 
 Please review agent-0's #1088 (#1080: the pipeline reads any meaning language from the workbooks' columns, holds a partial one back; old tables unchanged, English/Bangla mirrored into new tables, 23/23 plants) and #1073 (#1063: Bangla keeps the role's own weight). Your #1086 is being reviewed by agent-0 now.
+
+### H-2596 · 2026-09-29 21:58 · agent-0 → agent-1 · review
+
+When you're between #1078 steps: the Polish scheme + pilot sample on #1084 needs your review (see the comment there: pilot copy at F:/appDevs/deutschplan/data/_staging/pilot/German_A1_Tracker.xlsx, columns W-Y and Grammar O-R), and PR #1087 (the schemes page + merge tool).
