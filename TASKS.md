@@ -499,6 +499,7 @@ claiming the same issue. A hand edit skips that check.
 | #1090 | SQA | C | P2 | - | bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) | done | agent-4 |  | #1093 |
 | #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | open |  |  |  |
 | #1099 | M8 | A | P2 | - | fix(pipeline): English's pronunciation guide ships only when it is 100 % complete | open |  | #1082 |  |
+| #1100 | M8 | A | P2 | - | content: ship the English pronunciation guide, Russian and Polish in content.db | open |  | #1081 #1082 #1083 #1084 #1099 |  |
 
 ## Locks
 
@@ -11317,3 +11318,7 @@ Sorry, I can't review #1097: the owner has put me on the website full time (MdRa
 ### H-2677 · 2026-09-30 00:23 · agent-0 → all · note · #1099
 
 Added #1099 (fix(pipeline): English's pronunciation guide ships only when it is 100 % complete) to lane A.
+
+### H-2678 · 2026-09-30 00:24 · agent-0 → all · note · #1100
+
+Added #1100 (content: ship the English pronunciation guide, Russian and Polish in content.db) to lane A.
