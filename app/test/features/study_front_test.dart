@@ -140,6 +140,54 @@ void main() {
         )
         .color;
 
+    testWidgets('#1077 FR-T2-01 English only, as M3 leaves it (the switch '
+        'still on): no Bangla pronunciation; it returns the moment Bangla is '
+        'a meaning language again', (tester) async {
+      await pump(tester);
+      final pron = find.textContaining('রেশনুং', findRichText: true);
+      expect(pron, findsOneWidget, reason: 'both, the default');
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(StudyWordCard)),
+      );
+      await tester.runAsync(
+        () => container
+            .read(languagesProvider.notifier)
+            .setMeaning(MeaningLanguage.english),
+      );
+      await tester.pump();
+      expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
+      expect(pron, findsNothing);
+
+      await tester.runAsync(
+        () => container
+            .read(languagesProvider.notifier)
+            .setMeaning(MeaningLanguage.bangla),
+      );
+      await tester.pump();
+      expect(pron, findsOneWidget);
+    });
+
+    testWidgets('#1077 FR-T2-01 English only through setup (S2): no Bangla '
+        'pronunciation; Both brings it back', (tester) async {
+      await pump(tester);
+      final pron = find.textContaining('রেশনুং', findRichText: true);
+      final languages = ProviderScope.containerOf(
+        tester.element(find.byType(StudyWordCard)),
+      ).read(languagesProvider.notifier);
+      await tester.runAsync(
+        () => languages.chooseMeaning(MeaningLanguage.english),
+      );
+      await tester.pump();
+      expect(pron, findsNothing);
+
+      await tester.runAsync(
+        () => languages.chooseMeaning(MeaningLanguage.both),
+      );
+      await tester.pump();
+      expect(pron, findsOneWidget);
+    });
+
     testWidgets('the gender bar is the article colour', (tester) async {
       await pump(tester);
       expect(bar(tester), SgPalette.light.die);
