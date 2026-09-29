@@ -538,6 +538,7 @@ One holder at a time; `team.py lock <resource> -m why` / `unlock <resource>`.
 - `shared-look`: a change to `core/theme`, `core/components`, `core/adaptive`,
   `core/typography` or `golden_harness.dart` that re-renders OTHER screens'
   goldens (adding an optional parameter for your own screen does not need it).
+- `workbooks`: writing into `data/German_*_Tracker.xlsx` (M8's language columns, `tools/merge_language_columns.py`), so two merges never overwrite each other.
 
 The emulator lock is local, not here: `team.py device`.
 
@@ -548,6 +549,7 @@ The emulator lock is local, not here: `team.py device`.
 | pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
+| workbooks |  |  |  |
 
 ## Handoffs
 
