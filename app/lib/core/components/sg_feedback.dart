@@ -487,17 +487,18 @@ extension on SgVerdictRow {
   /// the answer, in ink. Bangla one role up and in its voice, as [SgText]
   /// sets it; the answer in a German voice only when it is German (#539).
   List<TextSpan> _runs(SgTokens tokens, Color colour) {
-    TextStyle at(SgTextRole role) => SgText.styleFor(
+    final latin = SgText.styleFor(
       tokens,
-      role,
+      SgTextRole.body,
       color: colour,
     ).copyWith(fontWeight: FontWeight.w600);
-    final latin = at(SgTextRole.body);
-    List<TextSpan> copy(String text) => SgScript.spans(
-      text,
-      latin: latin,
-      bengali: at(SgTextRole.body.oneStepLarger),
-    );
+    final bengali = SgText.banglaStyleFor(
+      tokens,
+      SgTextRole.body,
+      color: colour,
+    ).copyWith(fontWeight: FontWeight.w600);
+    List<TextSpan> copy(String text) =>
+        SgScript.spans(text, latin: latin, bengali: bengali);
     final runs = <TextSpan>[];
     var from = 0;
     for (final part in emphasis) {
@@ -508,8 +509,7 @@ extension on SgVerdictRow {
         SgScript.spans(
           part,
           latin: latin.copyWith(color: tokens.color.ink),
-          bengali: at(SgTextRole.body.oneStepLarger)
-              .copyWith(color: tokens.color.ink),
+          bengali: bengali.copyWith(color: tokens.color.ink),
           german: germanEmphasis,
         ),
       );
