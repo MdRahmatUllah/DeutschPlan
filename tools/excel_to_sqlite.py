@@ -47,6 +47,8 @@ from pipeline_steps import (
     check_formula_prefixes,
     read_tips,
     resolve_tips,
+    read_category_names,
+    gate_category_names,
     PipelineError,
     assign_examples,
     assign_kinds,
@@ -227,6 +229,9 @@ class Manifest:
     workbooks: list[Path]
     tips: Path | None
     corrections: Path | None = None
+    #: `content/category_names.csv` (#1128): the category names in the
+    #: meaning languages.
+    category_names: Path | None = None
     #: Per workbook file name: the fields it is known to lack, from its
     #: entry's `without:` (#714). B1 has no Collocations column, and that is
     #: the book, not a rename.
@@ -269,9 +274,11 @@ def read_manifest(path: Path) -> Manifest:
 
     tips = raw.get("tips")
     corrections = raw.get("corrections")
+    category_names = raw.get("category_names")
     return Manifest(
         workbooks=books,
         tips=_resolve(tips) if tips else None,
+        category_names=_resolve(category_names) if category_names else None,
         corrections=_resolve(corrections) if corrections else None,
         without=without,
     )
@@ -857,6 +864,7 @@ def collect(
     splits: dict[str, LevelSplit],
     tips: list | None = None,
     allow_partial: tuple[str, ...] = (),
+    category_names: dict[str, dict[str, str]] | None = None,
 ) -> BuildInputs:
     """Flattens the per-workbook records into what the writer takes, the
     meaning languages through PIPE-08's gate (#1080)."""
@@ -869,12 +877,21 @@ def collect(
     languages, report = gate_languages(
         words, grammar, languages_found(sources), allow_partial
     )
-    for line in report:
+    categories = [c for source in sources for c in source.categories]
+    # #1128: every category the writer gives an id, tabs and words' alike.
+    names, names_report = gate_category_names(
+        category_names or {},
+        [c.name for c in categories] + [w.category for w in words if w.category],
+        [language.code for language in languages],
+        allow_partial,
+    )
+    for line in (*report, *names_report):
         print(line, file=sys.stderr)
     return BuildInputs(
         words=words,
         grammar=grammar,
-        categories=[c for source in sources for c in source.categories],
+        categories=categories,
+        category_names=names,
         splits=splits,
         tips=tips or [],
         languages=languages,
@@ -1056,7 +1073,13 @@ def main(argv: list[str] | None = None) -> int:
                 f"(listed above as 'unmatched tip'). Fix the match, or delete "
                 f"the row until the course has the word."
             )
-        inputs = collect(sources, splits, resolved, tuple(args.allow_partial))
+        inputs = collect(
+            sources,
+            splits,
+            resolved,
+            tuple(args.allow_partial),
+            read_category_names(manifest.category_names),
+        )
         aliases = link_previous(
             inputs,
             previous,
