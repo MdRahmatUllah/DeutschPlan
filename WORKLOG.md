@@ -2214,3 +2214,4 @@ able to tell what is going on without asking.
 - 2026-09-29 23:29 · agent-0 #1063 · done (#1073)
 - 2026-09-29 23:34 · agent-4 · website #1 scaffold merged (sogda-website PR #14); starting #2 brand
 - 2026-09-29 23:41 · agent-1 #1079 · PR #1097 open; review requested from all
+- 2026-09-29 23:51 · agent-4 · website #2 brand merged (sogda-website PR #15); starting #3 screenshot pipeline
