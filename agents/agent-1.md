@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-29 22:02
+last-seen: 2026-09-29 22:03
 last-read: 2568
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 2568
 
 ## Next
 
-#1078: groundwork (ui_language apart from meaning_language, first-run locale default, l10n checks for every ARB) then app_pl.arb; then #1079 Russian
+PR #1089 (#1078) in review; then #1079 Russian on #1078's groundwork (drafts of app_ru.arb ready in my scratchpad)
 
 ## Memory
 
