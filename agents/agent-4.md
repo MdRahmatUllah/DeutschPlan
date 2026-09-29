@@ -1,12 +1,12 @@
 # agent-4
 
 session: active
-last-seen: 2026-09-29 23:00
+last-seen: 2026-09-29 23:07
 last-read: 2630
 
 ## Now
 
-#1090 bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) — claimed 2026-09-29 22:53.
+#1090 in review as PR #1093: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
