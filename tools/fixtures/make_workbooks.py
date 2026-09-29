@@ -1,6 +1,6 @@
 """Writes workbooks with the shape `content-pipeline.md` describes.
 
-The four real trackers are not in the repository. Without something to read,
+The real trackers are not in the repository. Without something to read,
 the pipeline could only be tested against its own mocks, which would prove
 nothing about openpyxl, about headers read by name, or about the sheet layout.
 
@@ -23,10 +23,12 @@ from pathlib import Path
 
 from openpyxl import Workbook
 
-# Level, and how many weeks of it each workbook carries. The real split is
-# A1+A2+B1 in the first book and one level in each of the others.
+# The levels each workbook carries: one level a book, as the real trackers
+# are since the A1+A2+B1 book was split into three.
 BOOK_LEVELS: dict[str, list[str]] = {
-    "German_B1_Tracker.xlsx": ["A1", "A2", "B1"],
+    "German_A1_Tracker.xlsx": ["A1"],
+    "German_A2_Tracker.xlsx": ["A2"],
+    "German_B1_Tracker.xlsx": ["B1"],
     "German_B2_Tracker.xlsx": ["B2"],
     "German_C1_Tracker.xlsx": ["C1"],
     "German_C2_Tracker.xlsx": ["C2"],
@@ -174,7 +176,36 @@ def _grammar_rows(level: str, weeks: int) -> list[list[object]]:
     ]
 
 
-def write_workbook(path: Path, levels: list[str]) -> None:
+def _language_cells(row: list, headers: list[str], name: str, parts: list[str]) -> list:
+    """#1080: a meaning language's columns, every cell filled: its meaning
+    and pronunciation, and each German line's translation, "[name] …"."""
+    cell = dict(zip(headers, row))
+    german = {"Examples": "Examples (DE)", "Example": "Example (DE)"}
+    english = {
+        "Meaning": "English",
+        "Pronunciation": "English",
+        "Topic": "Topic",
+        "Rule": "Rule",
+        "Watch out": "Watch out",
+    }
+    out = []
+    for part in parts:
+        if part in german:
+            lines = (cell[german[part]] or "").splitlines()
+            out.append("\n".join(f"[{name}] {line}" for line in lines) or None)
+        else:
+            text = cell[english[part]]
+            out.append(f"[{name} {part.lower()}] {text}" if text else None)
+    return out
+
+
+LANGUAGE_WORD_PARTS = ["Meaning", "Pronunciation", "Examples"]
+LANGUAGE_GRAMMAR_PARTS = ["Topic", "Rule", "Example", "Watch out"]
+
+
+def write_workbook(path: Path, levels: list[str], languages: tuple[str, ...] = ()) -> None:
+    """[languages] are meaning languages beyond English and Bangla, by
+    English name ("Russian"), with every column of theirs filled (#1080)."""
     book = Workbook()
     book.remove(book.active)
 
@@ -182,16 +213,26 @@ def write_workbook(path: Path, levels: list[str]) -> None:
     # A title row above the header, which the real workbooks carry and which is
     # why the reader searches for the header rather than assuming row 1.
     words.append([f"Vocabulary tracker — {', '.join(levels)}"])
-    words.append(WORD_HEADERS)
+    words.append(
+        WORD_HEADERS
+        + [f"{part} ({name})" for name in languages for part in LANGUAGE_WORD_PARTS]
+    )
     for level in levels:
         for row in _word_rows(level, WEEKS_PER_LEVEL):
+            for name in languages:
+                row += _language_cells(row, WORD_HEADERS, name, LANGUAGE_WORD_PARTS)
             words.append(row)
     _force_text(words, WORD_HEADERS.index("Collocations") + 1)
 
     grammar = book.create_sheet("Grammar")
-    grammar.append(GRAMMAR_HEADERS)
+    grammar.append(
+        GRAMMAR_HEADERS
+        + [f"{part} ({name})" for name in languages for part in LANGUAGE_GRAMMAR_PARTS]
+    )
     for level in levels:
         for row in _grammar_rows(level, WEEKS_PER_LEVEL):
+            for name in languages:
+                row += _language_cells(row, GRAMMAR_HEADERS, name, LANGUAGE_GRAMMAR_PARTS)
             grammar.append(row)
 
     # Not a real W01: prompt-like cells the pipeline must ignore (#294). A
@@ -227,15 +268,16 @@ def _force_text(sheet, column: int) -> None:
                 cell.data_type = "s"
 
 
-def write_all(directory: Path) -> list[Path]:
-    """Writes all four fixture workbooks into `directory`."""
+def write_all(directory: Path, languages: tuple[str, ...] = ()) -> list[Path]:
+    """Writes every fixture workbook of BOOK_LEVELS into `directory`."""
     return [
-        _written(directory / name, levels) for name, levels in BOOK_LEVELS.items()
+        _written(directory / name, levels, languages)
+        for name, levels in BOOK_LEVELS.items()
     ]
 
 
-def _written(path: Path, levels: list[str]) -> Path:
-    write_workbook(path, levels)
+def _written(path: Path, levels: list[str], languages: tuple[str, ...]) -> Path:
+    write_workbook(path, levels, languages)
     return path
 
 

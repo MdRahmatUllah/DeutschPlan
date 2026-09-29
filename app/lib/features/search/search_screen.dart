@@ -15,6 +15,7 @@ import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -459,6 +460,9 @@ class _Header extends StatelessWidget {
                         // fresh open only; coming back keeps query and scroll.
                         autofocus: true,
                         textInputAction: TextInputAction.search,
+                        // #1068: a German term isn't corrected into the
+                        // phone's language; suggestions stay, for English.
+                        autocorrect: false,
                         // #691 EX-13: what is searched, whole.
                         inputFormatters: <TextInputFormatter>[
                           LengthLimitingTextInputFormatter(
@@ -541,7 +545,7 @@ class _Header extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : ColoredBox(
+        : SgHeaderFill(
             color: tokens.color.die,
             // #1064: the ring in the dark ink, as W1 on die: 3:1 in both themes.
             child: SgFocusRingColour(

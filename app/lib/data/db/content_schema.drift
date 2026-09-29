@@ -105,6 +105,47 @@ CREATE TABLE interference_tips (
   PRIMARY KEY (word_uid, tip_en)
 );
 
+CREATE TABLE course_languages (
+  code     TEXT PRIMARY KEY NOT NULL,
+  name     TEXT NOT NULL,
+  own_name TEXT NOT NULL,
+  script   TEXT NOT NULL,
+  ord      INTEGER NOT NULL
+);
+
+CREATE TABLE word_meanings (
+  word_uid      TEXT NOT NULL REFERENCES words (uid) ON DELETE CASCADE,
+  lang          TEXT NOT NULL REFERENCES course_languages (code),
+  meaning       TEXT NOT NULL,
+  pronunciation TEXT,
+  PRIMARY KEY (word_uid, lang)
+);
+
+CREATE TABLE word_example_translations (
+  word_uid    TEXT NOT NULL REFERENCES words (uid) ON DELETE CASCADE,
+  ord         INTEGER NOT NULL,
+  lang        TEXT NOT NULL REFERENCES course_languages (code),
+  translation TEXT NOT NULL,
+  PRIMARY KEY (word_uid, ord, lang)
+) WITHOUT ROWID;
+
+CREATE TABLE grammar_translations (
+  grammar_uid TEXT NOT NULL REFERENCES grammar_topics (uid) ON DELETE CASCADE,
+  lang        TEXT NOT NULL REFERENCES course_languages (code),
+  topic       TEXT NOT NULL,
+  rule        TEXT,
+  example     TEXT,
+  watch_out   TEXT,
+  PRIMARY KEY (grammar_uid, lang)
+) WITHOUT ROWID;
+
+CREATE TABLE word_tips (
+  word_uid TEXT NOT NULL REFERENCES words (uid) ON DELETE CASCADE,
+  lang     TEXT NOT NULL REFERENCES course_languages (code),
+  tip      TEXT NOT NULL,
+  PRIMARY KEY (word_uid, lang, tip)
+) WITHOUT ROWID;
+
 CREATE VIRTUAL TABLE words_fts USING fts5(
   uid UNINDEXED,
   german,
@@ -122,6 +163,14 @@ CREATE VIRTUAL TABLE words_trigram USING fts5(
   search_key,
   content = 'words',
   tokenize = 'trigram'
+);
+
+CREATE VIRTUAL TABLE meanings_fts USING fts5(
+  word_uid UNINDEXED,
+  lang UNINDEXED,
+  meaning,
+  content = 'word_meanings',
+  tokenize = 'unicode61 remove_diacritics 2 categories ''L* N* Co Mn Mc'''
 );
 
 CREATE VIRTUAL TABLE examples_fts USING fts5(

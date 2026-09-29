@@ -254,8 +254,9 @@ def resolve_grammar_levels(rows: Iterable, fallback: str) -> None:
     """Fills in the level for grammar rows that name none.
 
     The fallback is the last (highest) level of the workbook the row came
-    from: an unlabelled topic in German_B1_Tracker is a B1 topic, since that
-    book carries A1 and A2 on the way to B1 (`excel_to_sqlite.derive`).
+    from: an unlabelled topic in a book carrying A1 and A2 on the way to B1
+    (as the combined tracker did until it was split) is a B1 topic
+    (`excel_to_sqlite.derive`).
     """
     for row in rows:
         if not getattr(row, "level", None):
@@ -989,6 +990,203 @@ def assign_examples(words: Sequence) -> None:
         word.examples = pair_examples(word.examples_de, word.examples_en)
 
 
+# Meaning languages (#1080): the languages a German word is explained in.
+#
+# Each has its own columns in the workbooks, named by its English name:
+# `Meaning (Russian)`. A new language is new columns, and an entry here if it
+# is not one yet.
+
+
+@dataclass(frozen=True)
+class Language:
+    #: BCP 47, the `lang` of every table that holds a language's text.
+    code: str
+    #: Its English name, as the workbooks' headers spell it.
+    name: str
+    #: Its name in itself, for a learner choosing it.
+    own_name: str
+    #: ISO 15924.
+    script: str
+
+
+#: The languages a header may name, keyed by the English name. The order is
+#: `course_languages.ord`.
+LANGUAGES: dict[str, Language] = {
+    language.name: language
+    for language in (
+        Language("en", "English", "English", "Latn"),
+        Language("bn", "Bangla", "বাংলা", "Beng"),
+        Language("ru", "Russian", "Русский", "Cyrl"),
+        Language("pl", "Polish", "Polski", "Latn"),
+        Language("uk", "Ukrainian", "Українська", "Cyrl"),
+        Language("tr", "Turkish", "Türkçe", "Latn"),
+        Language("ar", "Arabic", "العربية", "Arab"),
+        Language("fa", "Persian", "فارسی", "Arab"),
+        Language("hi", "Hindi", "हिन्दी", "Deva"),
+        Language("ur", "Urdu", "اردو", "Arab"),
+        Language("es", "Spanish", "Español", "Latn"),
+        Language("fr", "French", "Français", "Latn"),
+        Language("it", "Italian", "Italiano", "Latn"),
+        Language("pt", "Portuguese", "Português", "Latn"),
+        Language("ro", "Romanian", "Română", "Latn"),
+        Language("nl", "Dutch", "Nederlands", "Latn"),
+        Language("el", "Greek", "Ελληνικά", "Grek"),
+        Language("cs", "Czech", "Čeština", "Latn"),
+        Language("hu", "Hungarian", "Magyar", "Latn"),
+        Language("bg", "Bulgarian", "Български", "Cyrl"),
+        Language("sr", "Serbian", "Српски", "Cyrl"),
+        Language("hr", "Croatian", "Hrvatski", "Latn"),
+        Language("sq", "Albanian", "Shqip", "Latn"),
+        Language("zh", "Chinese", "中文", "Hans"),
+        Language("ja", "Japanese", "日本語", "Jpan"),
+        Language("ko", "Korean", "한국어", "Kore"),
+        Language("vi", "Vietnamese", "Tiếng Việt", "Latn"),
+        Language("id", "Indonesian", "Bahasa Indonesia", "Latn"),
+        Language("ta", "Tamil", "தமிழ்", "Taml"),
+        Language("ne", "Nepali", "नेपाली", "Deva"),
+    )
+}
+LANGUAGE_CODES: dict[str, Language] = {l.code: l for l in LANGUAGES.values()}
+
+#: A language's columns: the part, and the header word before its name.
+WORD_PARTS = {"meaning": "Meaning", "pronunciation": "Pronunciation", "examples": "Examples"}
+GRAMMAR_PARTS = {"topic": "Topic", "rule": "Rule", "example": "Example", "watch_out": "Watch out"}
+
+#: Where English's and Bangla's texts are on a row: the fields today's
+#: headers are read into, which corrections, merges and the old
+#: `words.english`/`bangla`/`pron_bn` columns use. Every other text is in the
+#: row's `texts`, by (part, code).
+LEGACY_FIELDS = {
+    ("meaning", "en"): "english",
+    ("examples", "en"): "examples_en",
+    ("meaning", "bn"): "bangla",
+    ("pronunciation", "bn"): "pron_bn",
+    ("topic", "en"): "topic",
+    ("rule", "en"): "rule",
+    ("example", "en"): "example_en",
+    ("watch_out", "en"): "watch_out",
+}
+
+#: What a grammar part translates: a row needs it wherever this has text.
+GRAMMAR_SOURCE = {"topic": "topic", "rule": "rule", "example": "example_de", "watch_out": "watch_out"}
+
+#: How the gate's report names each part.
+PART_NAMES = {
+    "meaning": "meanings",
+    "pronunciation": "pronunciations",
+    "examples": "examples",
+    "topic": "grammar topics",
+    "rule": "rules",
+    "example": "grammar examples",
+    "watch_out": "watch-outs",
+}
+
+
+def text_of(row, part: str, code: str) -> str | None:
+    """A word's or grammar row's [part] in language [code], or None."""
+    field = LEGACY_FIELDS.get((part, code))
+    return getattr(row, field) if field else row.texts.get((part, code))
+
+
+def translation_lines(word, code: str) -> list[str]:
+    """PIPE-06 for any language: line i translates the German example i."""
+    return _lines(text_of(word, "examples", code))[: len(word.examples)]
+
+
+def coverage(words: Sequence, grammar: Sequence, code: str, parts: set[str]) -> dict:
+    """PIPE-08 (#1080): per workbook and part, `[have, of]`: how many of the
+    texts language [code] needs in the [parts] it has, it has.
+
+    A meaning and a pronunciation a word; a translation a German example
+    line; a grammar part wherever the row's English (its German, for the
+    example) has text.
+    """
+    counts: dict[str, dict[str, list[int]]] = {}
+
+    def add(row, part: str, have: int, of: int) -> None:
+        tally = counts.setdefault(row.source_file, {}).setdefault(part, [0, 0])
+        tally[0] += have
+        tally[1] += of
+
+    for word in words:
+        for part in ("meaning", "pronunciation"):
+            if part in parts:
+                add(word, part, text_of(word, part, code) is not None, 1)
+        if "examples" in parts:
+            add(word, "examples", len(translation_lines(word, code)), len(word.examples))
+    for row in grammar:
+        for part, source in GRAMMAR_SOURCE.items():
+            if part in parts and getattr(row, source):
+                add(row, part, text_of(row, part, code) is not None, 1)
+    return counts
+
+
+def gate_languages(
+    words: Sequence,
+    grammar: Sequence,
+    found: dict[str, set[str]],
+    allow_partial: Iterable[str] = (),
+) -> tuple[list[Language], list[str]]:
+    """PIPE-08 (#1080): the languages that ship, in `LANGUAGES` order, and a
+    report line each.
+
+    [found] is each language's code and the parts it has columns for. A
+    language ships when it is 100 % complete in every part it has, meaning
+    and pronunciation always among them; one that is not is held back, and
+    `--allow-partial <code>` ([allow_partial]) builds it anyway, for testing.
+    English always ships: it is the course's own text.
+    """
+    allow_partial = set(allow_partial)
+    if allow_partial - set(found):
+        raise PipelineError(
+            f"--allow-partial {', '.join(sorted(allow_partial - set(found)))}: "
+            f"the workbooks carry no such language (they carry "
+            f"{', '.join(sorted(found))})."
+        )
+
+    shipped, report = [], []
+    for language in LANGUAGES.values():
+        if language.code not in found:
+            continue
+        parts = set(found[language.code])
+        if language.code != "en":
+            parts |= {"meaning", "pronunciation"}
+        per_book = coverage(words, grammar, language.code, parts)
+        totals: dict[str, list[int]] = {}
+        short: list[str] = []
+        for book, tallies in per_book.items():
+            gaps = []
+            for part, (have, of) in tallies.items():
+                total = totals.setdefault(part, [0, 0])
+                total[0] += have
+                total[1] += of
+                if have < of:
+                    gaps.append(f"{PART_NAMES[part]} {have:,}/{of:,}")
+            if gaps:
+                short.append(f"{book}: {', '.join(gaps)}")
+
+        complete = language.code == "en" or not short
+        if complete:
+            verdict = "ships"
+        elif language.code in allow_partial:
+            verdict = "partial, built for testing (--allow-partial)"
+        else:
+            verdict = (
+                f"held back ({'; '.join(short)}). --allow-partial "
+                f"{language.code} builds it, for testing only"
+            )
+        counted = ", ".join(
+            f"{PART_NAMES[part]} {have:,}/{of:,}"
+            for part in PART_NAMES
+            if part in totals
+            for have, of in [totals[part]]
+        )
+        report.append(f"language {language.name} ({language.code}): {counted}, {verdict}")
+        if complete or language.code in allow_partial:
+            shipped.append(language)
+    return shipped, report
+
+
 # Interference tips: the L1 traps a Bangla speaker walks into.
 #
 # `content/interference_tips.csv` is authored by hand, with three ways to say
@@ -1016,14 +1214,28 @@ def tip_pos(tags: str | None) -> str | None:
     return None
 
 
+class _TipTexts:
+    #: Code -> the tip for that language's speakers: the CSV's `tip_<code>`
+    #: columns (#1080). A tip may be for one language only: a Russian false
+    #: friend is not a Bangla one.
+    texts: dict[str, str]
+
+    @property
+    def tip_en(self) -> str | None:
+        return self.texts.get("en")
+
+    @property
+    def tip_bn(self) -> str | None:
+        return self.texts.get("bn")
+
+
 @dataclass(frozen=True)
-class Tip:
+class Tip(_TipTexts):
     """One row of the CSV, before it is attached to any word."""
 
     match_type: str
     match: str
-    tip_en: str
-    tip_bn: str | None
+    texts: dict[str, str]
     #: Not shipped: content.db has no tags column. They group the tips for
     #: whoever maintains the file, and `gender`/`separable` limit a tip to a
     #: word class at build time (`TAG_POS`, #321).
@@ -1032,15 +1244,15 @@ class Tip:
 
 
 @dataclass(frozen=True)
-class ResolvedTip:
+class ResolvedTip(_TipTexts):
     word_uid: str
-    tip_en: str
-    tip_bn: str | None
+    texts: dict[str, str]
 
 
 def read_tips(path) -> list[Tip]:
     """Reads the CSV. A malformed row fails the build, naming the line."""
     import csv
+    import re
 
     if path is None:
         return []
@@ -1054,17 +1266,36 @@ def read_tips(path) -> list[Tip]:
     # utf-8-sig: Excel's "CSV UTF-8" starts the file with a BOM, which would
     # otherwise become part of the first header, "match_type" (#697 TL-13).
     with path.open(encoding="utf-8-sig", newline="") as handle:
-        for number, row in enumerate(csv.DictReader(handle), start=2):
+        reader = csv.DictReader(handle)
+        columns = {
+            name: match.group(1)
+            for name in reader.fieldnames or []
+            if (match := re.fullmatch(r"tip_(\w+)", name.strip()))
+        }
+        unknown = sorted(set(columns.values()) - set(LANGUAGE_CODES))
+        if unknown:
+            raise PipelineError(
+                f"{path.name}: {', '.join(f'tip_{code}' for code in unknown)} "
+                f"names no language the pipeline knows. Known codes: "
+                f"{', '.join(LANGUAGE_CODES)}."
+            )
+        for number, row in enumerate(reader, start=2):
+            texts = {
+                code: text
+                for name, code in columns.items()
+                if (text := (row.get(name) or "").strip())
+            }
             missing = [
                 column
-                for column in ("match_type", "match", "tip_en")
+                for column in ("match_type", "match")
                 if not (row.get(column) or "").strip()
-            ]
+            ] + ([] if texts else ["a tip_<code> text"])
             if missing:
                 raise PipelineError(
                     f"{path.name} line {number}: missing "
                     f"{', '.join(missing)}. Every tip needs a match type, "
-                    f"something to match, and English text."
+                    f"something to match, and its text in at least one "
+                    f"language."
                 )
 
             match_type = row["match_type"].strip()
@@ -1078,8 +1309,7 @@ def read_tips(path) -> list[Tip]:
                 Tip(
                     match_type=match_type,
                     match=row["match"].strip(),
-                    tip_en=row["tip_en"].strip(),
-                    tip_bn=(row.get("tip_bn") or "").strip() or None,
+                    texts=texts,
                     tags=(row.get("tags") or "").strip() or None,
                     row=number,
                 )
@@ -1121,16 +1351,13 @@ def resolve_tips(tips: Sequence, words: Sequence) -> tuple[list[ResolvedTip], li
             continue
 
         for word in matched:
-            # (word_uid, tip_en) is the primary key: two CSV rows that say the
-            # same thing about the same word are one tip, not a constraint
-            # failure at write time.
-            key = (word.uid, tip.tip_en)
+            # Two CSV rows that say the same thing about the same word are
+            # one tip, not a constraint failure at write time.
+            key = (word.uid, tuple(sorted(tip.texts.items())))
             if key in seen:
                 continue
             seen.add(key)
-            resolved.append(
-                ResolvedTip(word_uid=word.uid, tip_en=tip.tip_en, tip_bn=tip.tip_bn)
-            )
+            resolved.append(ResolvedTip(word_uid=word.uid, texts=tip.texts))
 
     return resolved, warnings
 

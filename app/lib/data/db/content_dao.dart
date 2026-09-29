@@ -41,8 +41,12 @@ typedef ContentFacts = ({
 class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   ContentDao(super.db);
 
-  /// FR-T5-03: the course word a sentence's token belongs to (#324): its
-  /// search key itself; else a form the course gives in `words.forms`
+  /// FR-T5-03: the course word a sentence's token belongs to (#324): a
+  /// course entry of two words or more, a phrase or not, that stands whole
+  /// in the [sentence] (its words, in order) around the token at [at], the
+  /// longest first (#1067: "Dank" in "Vielen Dank und auf Wiedersehen!" is
+  /// *vielen Dank*, "Bahn" in "Die U-Bahn kommt." *U-Bahn*); else its search
+  /// key itself; else a form the course gives in `words.forms`
   /// ("ist" for *sein*, "gibt" for *geben*, "Häuser" for *Haus*); else the
   /// longest key, three letters at least, that the token is plus an
   /// inflection ending ("Wohnungen" for *Wohnung*, "leichter" for
@@ -59,9 +63,37 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   // *stillen*, "Anstoß erregen…" *anstoßen*, "dank + Dativ…" *danken* (3 of
   // the 35 first words this step matches in the course); telling them apart
   // needs the part of speech of a word the course doesn't have.
-  Future<Word?> wordForToken(String token, {bool first = false}) async {
+  Future<Word?> wordForToken(
+    String token, {
+    bool first = false,
+    List<String> sentence = const <String>[],
+    int at = 0,
+  }) async {
     final key = searchKey(token, stripArticle: false);
     if (key.isEmpty) return null;
+    if (sentence.length > 1) {
+      final keys = <String>[
+        for (final word in sentence) searchKey(word, stripArticle: false),
+      ];
+      final phrases = await customSelect(
+        "SELECT * FROM words WHERE instr(search_key, ' ') "
+        "AND ' ' || search_key || ' ' LIKE '% ' || ?1 || ' %' "
+        'ORDER BY length(search_key) DESC, seq',
+        variables: <Variable<Object>>[Variable<String>(key)],
+        readsFrom: <ResultSetImplementation<Object, Object>>{words},
+      ).get();
+      for (final row in phrases) {
+        final phrase = row.read<String>('search_key');
+        final length = phrase.split(' ').length;
+        for (var start = at - length + 1; start <= at; start++) {
+          if (start >= 0 &&
+              start + length <= keys.length &&
+              keys.sublist(start, start + length).join(' ') == phrase) {
+            return words.map(row.data);
+          }
+        }
+      }
+    }
     Future<Word?> where(String sql, List<Variable<Object>> variables) async {
       final row = await customSelect(
         'SELECT * FROM words WHERE $sql ORDER BY length(search_key) DESC, seq '
@@ -369,9 +401,15 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
         grammarTopics,
         skillPrompts,
         interferenceTips,
+        courseLanguages,
+        wordMeanings,
+        wordExampleTranslations,
+        grammarTranslations,
+        wordTips,
         wordsFts,
         wordsTrigram,
         examplesFts,
+        meaningsFts,
       ];
 
   Future<void> detach() => customStatement('DETACH DATABASE $schema');

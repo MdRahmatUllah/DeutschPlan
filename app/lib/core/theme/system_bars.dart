@@ -16,3 +16,30 @@ const SystemUiOverlayStyle transparentSystemBars = SystemUiOverlayStyle(
   systemStatusBarContrastEnforced: false,
   systemNavigationBarContrastEnforced: false,
 );
+
+/// #1070: the status bar's icons over [fill]: dark on a light fill, light on
+/// a dark one. Left to the last app bar's style, they stayed white on
+/// Learn's yellow, T6's lime and S1's cyan in dark mode.
+SystemUiOverlayStyle barsOver(Color fill) {
+  final light = ThemeData.estimateBrightnessForColor(fill) == Brightness.light;
+  return transparentSystemBars.copyWith(
+    statusBarIconBrightness: light ? Brightness.dark : Brightness.light,
+    // iOS names the bar's background instead.
+    statusBarBrightness: light ? Brightness.light : Brightness.dark,
+  );
+}
+
+/// A coloured header drawn under the status bar: its fill, with the status
+/// bar's icons set for it (#1070).
+class SgHeaderFill extends StatelessWidget {
+  const SgHeaderFill({required this.color, required this.child, super.key});
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+    value: barsOver(color),
+    child: ColoredBox(color: color, child: child),
+  );
+}

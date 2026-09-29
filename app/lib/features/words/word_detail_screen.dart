@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/services.dart' show Clipboard, ClipboardData;
+import 'package:flutter/services.dart'
+    show Clipboard, ClipboardData, SystemUiOverlayStyle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,6 +17,7 @@ import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
 import 'package:sogda/data/repositories/search_repository.dart';
@@ -70,6 +72,8 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
   // closed mid-query disposes it, and a ref used after that throws.
   final dao = ref.watch(contentDaoProvider);
   final settings = ref.watch(settingsProvider);
+  // Watched: a meaning language changed in M3 reaches an open W1 (#1077).
+  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
   final words = ref.watch(wordRepositoryProvider);
   final updater = ref.watch(contentUpdaterProvider);
   // #854: an old uid, from a link written before an update re-keyed its
@@ -99,8 +103,10 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
                 word: word,
                 examples: examples,
                 tip: tip,
-                meaning: settings.read(SettingKeys.meaningLanguage),
-                pron: settings.read(SettingKeys.showPronBn),
+                meaning: meaning,
+                // #1077: only while Bangla is a meaning language.
+                pron:
+                    settings.read(SettingKeys.showPronBn) && meaning.hasBangla,
                 translate: settings.read(SettingKeys.mtEnabled),
               ),
       );
@@ -549,15 +555,19 @@ class _Header extends ConsumerWidget {
         child: framed,
       );
     }
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: gender ?? tokens.surface.muted,
-        border: Border(bottom: BorderSide(color: tokens.color.ink, width: 2)),
+    // #1070: as a page, W1's header is under the status bar.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: barsOver(gender ?? tokens.surface.muted),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: gender ?? tokens.surface.muted,
+          border: Border(bottom: BorderSide(color: tokens.color.ink, width: 2)),
+        ),
+        // #1064: on a gender colour the ring takes the header's ink.
+        child: onFill == null
+            ? framed
+            : SgFocusRingColour(colour: onFill, child: framed),
       ),
-      // #1064: on a gender colour the ring takes the header's ink.
-      child: onFill == null
-          ? framed
-          : SgFocusRingColour(colour: onFill, child: framed),
     );
   }
 }

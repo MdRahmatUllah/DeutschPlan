@@ -280,9 +280,30 @@ class TestRefusals:
         path.write_bytes(b"\xef\xbb\xbf" + path.read_bytes())
         assert [tip.match_type for tip in read_tips(path)] == ["german"]
 
-    def test_a_row_missing_its_english_names_what_is_missing(self, tmp_path):
-        path = csv(tmp_path, "german,Haus,,only bangla,\n")
-        with pytest.raises(PipelineError, match=r"line 2: missing tip_en"):
+    def test_1080_a_row_with_no_tip_text_names_what_is_missing(self, tmp_path):
+        path = csv(tmp_path, "german,Haus,,,\n")
+        with pytest.raises(PipelineError, match=r"line 2: missing a tip_<code> text"):
+            read_tips(path)
+
+    def test_1080_a_tip_may_be_for_one_language_only(self, tmp_path):
+        # A Russian false friend is not a Bangla one.
+        path = tmp_path / "tips.csv"
+        path.write_text(
+            "match_type,match,tip_en,tip_bn,tip_ru,tags\n"
+            "german,Haus,,,Только по-русски.,\n",
+            encoding="utf-8",
+        )
+        [tip] = read_tips(path)
+        assert tip.texts == {"ru": "Только по-русски."}
+        assert tip.tip_en is None
+
+    def test_1080_a_tip_column_no_language_has_stops_the_build(self, tmp_path):
+        path = tmp_path / "tips.csv"
+        path.write_text(
+            "match_type,match,tip_en,tip_xx,tags\ngerman,Haus,a tip,?,\n",
+            encoding="utf-8",
+        )
+        with pytest.raises(PipelineError, match=r"tip_xx names no language.*en, bn, ru"):
             read_tips(path)
 
     def test_a_broken_regex_names_the_line(self):
@@ -371,8 +392,7 @@ def _tip(
     return Tip(
         match_type=match_type,
         match=match,
-        tip_en=tip_en,
-        tip_bn="একটি টিপ",
+        texts={"en": tip_en, "bn": "একটি টিপ"},
         tags=tags,
         row=2,
     )
