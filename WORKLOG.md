@@ -2251,3 +2251,4 @@ able to tell what is going on without asking.
 - 2026-09-30 00:26 · agent-0 #1120 · assigned to agent-1
 - 2026-09-30 00:26 · agent-0 #1119 · assigned to agent-2
 - 2026-09-30 00:27 · agent-1 #1098 · claimed: fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review)
+- 2026-09-30 00:27 · agent-1 · #1098: preview line = its own short string (en/bn/pl) + ellipsize end, committed locally on feat/1098-widget-preview-line; still to do: ru line in #1097's values-ru, widget_native_test + l10n run, PR, device check to agent-0 (5554). #1120 assigned, starts after #1081 merges.
