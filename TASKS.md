@@ -521,6 +521,7 @@ claiming the same issue. A hand edit skips that check.
 | #1123 | M8 | A | P2 | - | chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages | open |  |  |  |
 | #1124 | M8 | A | P2 | - | test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing | open |  | #1123 |  |
 | #1098 | M8 | B | - | - | fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) | open |  |  |  |
+| #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | open |  | #1081 #1119 |  |
 
 ## Locks
 
@@ -11427,3 +11428,7 @@ Added #1124 (test(sqa): the meaning-languages milestone on emulator-5554 — a f
 ### H-2699 · 2026-09-30 00:25 · agent-0 → all · note · #1098
 
 Added #1098 (fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review)) to lane B.
+
+### H-2700 · 2026-09-30 00:25 · agent-0 → all · note · #1120
+
+Added #1120 (feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script) to lane B.
