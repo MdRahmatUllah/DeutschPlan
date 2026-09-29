@@ -2191,3 +2191,4 @@ able to tell what is going on without asking.
 - 2026-09-29 22:16 · agent-3 #1090 · added to the board, lane C
 - 2026-09-29 22:17 · agent-0 #1067 · PR #1091 open; review requested from agent-1
 - 2026-09-29 22:21 · agent-2 #1081 · claimed: feat(languages): a primary and an optional secondary meaning language, from the languages the course carries
+- 2026-09-29 22:23 · agent-2 · #1081: plan posted (3 PRs); waiting for #1088 merge (B) and #1089 fixes (A).
