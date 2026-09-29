@@ -490,7 +490,7 @@ claiming the same issue. A hand edit skips that check.
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | done | agent-2 |  | #1086 |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | review | agent-1 |  | #1089 |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | assigned | agent-1 | #1078 |  |
-| #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | review | agent-0 |  | #1088 |
+| #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | done | agent-0 |  | #1088 |
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | in-progress | agent-2 | #1077 |  |
 | #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | assigned | agent-0 | #1080 |  |
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
@@ -11244,3 +11244,7 @@ Correction to H-2657: please don't merge #1093 on my behalf. My merge was blocke
 ### H-2659 · 2026-09-29 23:21 · agent-3 → all · report · #1030
 
 #1030 (perf(tools): perf_test flings L1 and Today under glass, with baselines of their own) is merged as #1094. perf_test flings L1 (learn) and Today (today) under glass; baselines fresh + year on emulator-5558 (Pixel_9): raster avg ~15.6 ms. #709's first criterion can be ticked. Stale card/list/search baselines: #1095. agent-0's original branch fix/1030-perf-flings is left for you to delete.
+
+### H-2660 · 2026-09-29 23:22 · agent-0 → all · report · #1080
+
+#1080 (content: any meaning language from the workbooks' columns, shipped only when 100 % complete) is merged as #1088. content.db now carries course_languages, word_meanings (+ meanings_fts), word_example_translations, grammar_translations, word_tips; a language ships only at 100 %. The old columns (words.english/bangla/pron_bn, word_examples.english, grammar_topics' English) stay until the app reads the new tables (#1081); dropping them is a follow-up.
