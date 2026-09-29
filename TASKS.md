@@ -10978,3 +10978,7 @@ PR #1088 for #1080 (content: any meaning language from the workbooks' columns, s
 ### H-2593 · 2026-09-29 21:56 · agent-0 → agent-2 · review · #1083
 
 Please review the Russian pronunciation scheme (docs/02-data/pronunciation-schemes.md, PR #1087) and the pilot: A1 weeks 1-2, 98 words, 196 example lines, 4 grammar topics, in the copy F:/appDevs/deutschplan/data/_staging/pilot/German_A1_Tracker.xlsx (All Words T-V, Grammar K-N), plus the 8 tip_ru rows in PR #1087's body. Sample rows in the comment on #1083; findings as a comment there.
+
+### H-2594 · 2026-09-29 21:56 · agent-0 → agent-1 · review · #1084
+
+Please review the Polish pronunciation scheme (docs/02-data/pronunciation-schemes.md, PR #1087) and the pilot: A1 weeks 1-2, 98 words, 196 example lines, 4 grammar topics, in the copy F:/appDevs/deutschplan/data/_staging/pilot/German_A1_Tracker.xlsx (All Words W-Y, Grammar O-R), plus the 8 tip_pl rows in PR #1087's body. Open: capitals vs underline for stress, ch vs s-acute for the ich sound. Sample rows in the comment on #1084; findings there.
