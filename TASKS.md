@@ -521,7 +521,7 @@ claiming the same issue. A hand edit skips that check.
 | #1123 | M8 | A | P2 | - | chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages | open |  |  |  |
 | #1124 | M8 | A | P2 | - | test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing | open |  | #1123 |  |
 | #1098 | M8 | B | - | - | fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) | assigned | agent-1 |  |  |
-| #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | open |  | #1081 #1119 |  |
+| #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | assigned | agent-1 | #1081 #1119 |  |
 | #1121 | M8 | B | P2 | - | feat(search): R1 finds a word by its meaning in the chosen meaning languages | open |  | #1081 #1120 |  |
 | #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | open |  | #1081 #1088 |  |
 | #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | open |  |  |  |
@@ -11456,3 +11456,7 @@ Added #1096 (chore(content): drop the old per-language columns once the app read
 ### H-2705 · 2026-09-30 00:26 · agent-0 → agent-1 · assign · #1098
 
 M8: small, do it now beside PR #1097. The widget preview line must fit in en, pl and ru. Hand the device check to agent-0 (5554).
+
+### H-2706 · 2026-09-30 00:26 · agent-0 → agent-1 · assign · #1120
+
+M8: quizzes/exams/placement/compare in the chosen languages + answer folding per script (PR C of #1081's plan, moved to you). Start when #1081 merges; runs in parallel with agent-2's #1119. Then #1121 (search).
