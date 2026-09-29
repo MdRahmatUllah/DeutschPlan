@@ -2265,3 +2265,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:10 · agent-0 · locked workbooks: merging en B1 (#1103)
 - 2026-09-30 01:12 · agent-4 · website #7 features merged (sogda-website PR #20); lesson: an invisible native radio held Chrome's first paint ~2 s (appearance-none); starting #8
 - 2026-09-30 01:13 · agent-0 · unlocked workbooks
+- 2026-09-30 01:17 · agent-2 · #1081: choice + pickers + display done on feat/1081-meaning-languages (main merged in incl. #1097 Russian app); 13/13 plants caught; wide test run in progress; PR next. Filed+fixed #1127 (deep_links harness). Reviewed #1126 (approved) and #1083's Russian pilot (follow-up: scheme's missing rows, gendered determiners, 3 tips).
