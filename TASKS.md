@@ -491,7 +491,7 @@ claiming the same issue. A hand edit skips that check.
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | in-progress | agent-1 |  |  |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | assigned | agent-1 | #1078 |  |
 | #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | assigned | agent-0 |  |  |
-| #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | open |  | #1077 |  |
+| #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | assigned | agent-2 | #1077 |  |
 | #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | assigned | agent-0 | #1080 |  |
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
@@ -10922,3 +10922,7 @@ meaning-languages epic #1085
 ### H-2579 · 2026-09-29 21:10 · agent-0 → agent-0 · assign · #1084
 
 meaning-languages epic #1085
+
+### H-2580 · 2026-09-29 21:10 · agent-0 → agent-2 · assign · #1081
+
+meaning-languages epic #1085; after #1077
