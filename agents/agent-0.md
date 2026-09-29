@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 00:39
+last-seen: 2026-09-30 00:47
 last-read: 1870
 
 ## Now
 
-#1099 fix(pipeline): English's pronunciation guide ships only when it is 100 % complete — claimed 2026-09-30 00:39.
+#1099 in review as PR #1126: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
