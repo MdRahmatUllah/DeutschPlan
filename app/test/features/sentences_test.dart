@@ -526,6 +526,28 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       expect(find.text('to come'), findsOneWidget);
     });
 
+    testWidgets('#1067 a word of a phrase whole in the sentence is the '
+        'phrase', (tester) async {
+      await pump(
+        tester,
+        sql: <String>[
+          "UPDATE c.word_examples SET german = 'Die Straße? Vielen Dank!' "
+              "WHERE word_uid = '$strasse'",
+          'INSERT INTO c.words (uid, sublevel_code, level_code, seq, '
+              'seq_in_sublevel, german, pos, english, search_key, '
+              "search_key_alt, kind) VALUES ('uid-vielen-dank', 'A1.1', 'A1', "
+              "21, 21, 'vielen Dank', 'phrase', 'thank you very much', "
+              "'vielen dank', 'vielen dank', 'vocab')",
+        ],
+      );
+      await tester.runAsync(() async {
+        await tester.tapOnText(find.textRange.ofSubstring('Dank'));
+        await pumpEventQueue();
+      });
+      await tester.pumpAndSettle();
+      expect(find.text('thank you very much'), findsOneWidget);
+    });
+
     testWidgets('a word the course lacks: Duden, in the in-app browser as '
         "R1's chips (#738 BR-SEARCH-04)", (tester) async {
       opened.clear();
