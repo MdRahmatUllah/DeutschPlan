@@ -72,6 +72,8 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
   // closed mid-query disposes it, and a ref used after that throws.
   final dao = ref.watch(contentDaoProvider);
   final settings = ref.watch(settingsProvider);
+  // Watched: a meaning language changed in M3 reaches an open W1 (#1077).
+  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
   final words = ref.watch(wordRepositoryProvider);
   final updater = ref.watch(contentUpdaterProvider);
   // #854: an old uid, from a link written before an update re-keyed its
@@ -101,8 +103,10 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
                 word: word,
                 examples: examples,
                 tip: tip,
-                meaning: settings.read(SettingKeys.meaningLanguage),
-                pron: settings.read(SettingKeys.showPronBn),
+                meaning: meaning,
+                // #1077: only while Bangla is a meaning language.
+                pron:
+                    settings.read(SettingKeys.showPronBn) && meaning.hasBangla,
                 translate: settings.read(SettingKeys.mtEnabled),
               ),
       );

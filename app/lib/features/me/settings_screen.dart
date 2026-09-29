@@ -368,14 +368,16 @@ class SettingsScreen extends ConsumerWidget {
                   }
                 },
               ),
-              _Row(
-                title: l10n.settingsShowPronBn,
-                labelledByControl: true,
-                trailing: toggle(
-                  SettingKeys.showPronBn,
-                  l10n.settingsShowPronBn,
+              // #1077: offered only while Bangla is a meaning language.
+              if (meaning.hasBangla)
+                _Row(
+                  title: l10n.settingsShowPronBn,
+                  labelledByControl: true,
+                  trailing: toggle(
+                    SettingKeys.showPronBn,
+                    l10n.settingsShowPronBn,
+                  ),
                 ),
-              ),
             ],
           ),
           _Group(
