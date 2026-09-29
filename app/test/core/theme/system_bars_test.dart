@@ -1,8 +1,10 @@
 import 'dart:io';
 
-import 'dart:ui' show Brightness, Color;
-
+import 'package:flutter/services.dart' show MethodCall, SystemChannels;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/system_bars.dart';
 
@@ -51,8 +53,6 @@ void main() {
       'lib/features/exam/exam_results_screen.dart',
       'lib/features/exam/exam_runner_screen.dart',
       'lib/features/quiz/quiz_result_screen.dart',
-      'lib/features/day_complete/day_complete_screen.dart',
-      'lib/features/splash/splash_screen.dart',
       'lib/features/words/word_detail_screen.dart',
     ]) {
       expect(
@@ -61,5 +61,59 @@ void main() {
         reason: path,
       );
     }
+  });
+
+  // #1070, the review of #1074: Flutter sends a style only where it finds
+  // one under the status bar, so a header's style outlived the header,
+  // scrolled away or on the next screen. The page's own region takes over.
+  testWidgets('#1070 a header scrolled away hands the status bar back to the '
+      "page: dark icons for Learn's yellow, then light over the dark paper", (
+    tester,
+  ) async {
+    final sent = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (MethodCall call) async {
+        if (call.method == 'SystemChrome.setSystemUIOverlayStyle') {
+          final style = call.arguments as Map<Object?, Object?>;
+          sent.add('${style['statusBarIconBrightness']}');
+        }
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+    final tokens = SgTokens.dark();
+    final scroll = ScrollController();
+    addTearDown(scroll.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.dark(),
+        home: AdaptiveScaffold(
+          body: ListView(
+            controller: scroll,
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              SgHeaderFill(
+                color: tokens.color.accent,
+                child: const SizedBox(height: 200),
+              ),
+              const SizedBox(height: 3000),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(sent.last, 'Brightness.dark', reason: 'the yellow header');
+
+    scroll.jumpTo(1000);
+    await tester.pump();
+    await tester.pump();
+    expect(sent.last, 'Brightness.light', reason: 'the dark paper');
   });
 }

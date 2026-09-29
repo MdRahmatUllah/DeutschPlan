@@ -4,11 +4,13 @@ import 'package:cupertino_ui/cupertino_ui.dart' as cupertino;
 import 'package:flutter/rendering.dart'
     show BoxHitTestResult, MatrixUtils, RenderProxyBox;
 import 'package:flutter/semantics.dart' show SemanticsConfiguration;
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 
@@ -111,46 +113,58 @@ class AdaptiveScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final background = backgroundColor ?? tokens.surface.paper;
+    // #1070: the status bar's icons for what is behind it: the tab's strip
+    // once scrolled (#317), else the page. Flutter sends a style only where
+    // it finds one, so without the page's a header's outlived it, scrolled
+    // away or on the next screen. A header over it sets its own. Under glass
+    // the page is see-through, and its paper decides.
+    final behindBar =
+        statusBarColour ??
+        (background.a == 1 ? background : tokens.surface.paper);
 
-    return Scaffold(
-      backgroundColor: background,
-      body: Column(
-        children: <Widget>[
-          if (title != null || leading != null || actions.isNotEmpty)
-            SafeArea(bottom: false, child: _bar(context)),
-          Expanded(
-            child: bottomBar == null
-                ? SafeArea(
-                    top: false,
-                    child: statusBarColour == null
-                        ? body
-                        : _StatusStrip(colour: statusBarColour!, child: body),
-                  )
-                // The bar below takes the system inset, so the body — and a
-                // tab's own scaffold inside it — must not take it again. The
-                // same for the keyboard: this scaffold already rises above
-                // it, and a tab's scaffold that rose again left R1's results
-                // a sliver between the field and the keyboard.
-                : MediaQuery(
-                    data: MediaQuery.of(context)
-                        .removePadding(removeBottom: true)
-                        .removeViewInsets(removeBottom: true),
-                    child: body,
-                  ),
-          ),
-          // The keyboard covers the tab bar rather than lifting it (#390):
-          // a screen being typed in needs the room, and the tabs are no use
-          // until the keyboard goes.
-          if (bottomBar != null && MediaQuery.viewInsetsOf(context).bottom == 0)
-            // Without the top inset: the body runs edge to edge, so the status
-            // bar's height reaches down here, and Material's NavigationBar
-            // pads its own top by it — a status bar's worth of empty bar.
-            MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: SafeArea(top: false, child: bottomBar!),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: barsOver(behindBar),
+      child: Scaffold(
+        backgroundColor: background,
+        body: Column(
+          children: <Widget>[
+            if (title != null || leading != null || actions.isNotEmpty)
+              SafeArea(bottom: false, child: _bar(context)),
+            Expanded(
+              child: bottomBar == null
+                  ? SafeArea(
+                      top: false,
+                      child: statusBarColour == null
+                          ? body
+                          : _StatusStrip(colour: statusBarColour!, child: body),
+                    )
+                  // The bar below takes the system inset, so the body — and a
+                  // tab's own scaffold inside it — must not take it again. The
+                  // same for the keyboard: this scaffold already rises above
+                  // it, and a tab's scaffold that rose again left R1's results
+                  // a sliver between the field and the keyboard.
+                  : MediaQuery(
+                      data: MediaQuery.of(context)
+                          .removePadding(removeBottom: true)
+                          .removeViewInsets(removeBottom: true),
+                      child: body,
+                    ),
             ),
-        ],
+            // The keyboard covers the tab bar rather than lifting it (#390):
+            // a screen being typed in needs the room, and the tabs are no use
+            // until the keyboard goes.
+            if (bottomBar != null &&
+                MediaQuery.viewInsetsOf(context).bottom == 0)
+              // Without the top inset: the body runs edge to edge, so the status
+              // bar's height reaches down here, and Material's NavigationBar
+              // pads its own top by it — a status bar's worth of empty bar.
+              MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: SafeArea(top: false, child: bottomBar!),
+              ),
+          ],
+        ),
       ),
     );
   }
