@@ -511,6 +511,7 @@ claiming the same issue. A hand edit skips that check.
 | #1109 | M8 | A | P2 | - | content(ru): Russian for the B1 workbook (379 words, 758 example lines, 20 grammar topics) | open |  | #1087 |  |
 | #1110 | M8 | A | P2 | - | content(ru): Russian for the B2 workbook (1,219 words, 2,438 example lines, 40 grammar topics) | open |  | #1087 |  |
 | #1111 | M8 | A | P2 | - | content(ru): Russian for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics) | open |  | #1087 |  |
+| #1112 | M8 | A | P2 | - | content(ru): Russian for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | open |  | #1087 |  |
 
 ## Locks
 
@@ -11377,3 +11378,7 @@ Added #1110 (content(ru): Russian for the B2 workbook (1,219 words, 2,438 exampl
 ### H-2689 · 2026-09-30 00:24 · agent-0 → all · note · #1111
 
 Added #1111 (content(ru): Russian for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics)) to lane A.
+
+### H-2690 · 2026-09-30 00:24 · agent-0 → all · note · #1112
+
+Added #1112 (content(ru): Russian for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics)) to lane A.
