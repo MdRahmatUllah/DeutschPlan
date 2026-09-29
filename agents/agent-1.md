@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 00:34
+last-seen: 2026-09-30 00:35
 last-read: 2708
 
 ## Now
@@ -32,4 +32,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-27 19:04: Usage limit 2026-09-27. #663+#757 WIP on branch feat/663-voice-installed-follows (pushed, no PR): voiceInstalled watches voiceDownloadProvider.select(phase); M4 _delete invalidates voiceInstalledProvider; 238 related tests pass. TODO: a test with FakeDownloads.live emitting ready (fails before), plants, docs (today.md FR-T1-06, settings.md), device check, PR closing #663 and #757. Open PRs awaiting review: #926 (#674), #928 (#676, stacked on #926), #930 (#623; pubspec lock held until it merges).
 - 2026-09-27 22:00: Usage limit 2026-09-27 ~22:15. Open PRs: #930 (#623; review fixes pushed, waiting on agent-2's re-review; pubspec lock held until merged) and #953 (TTS/models batch #663 #755 #756 #757 #868; device-checked; no review yet). Emulator-5558: voice re-downloading to Ready. Next: the deep-link batch #747 #748, then quiz #680 #682 #667 #727. Board: agent-0's merged-but-'review' entries (#713 #697 #921) reported (H-2065).
 - 2026-09-27 23:52: Next session: open the quiz batch PR from feat/667-682-727-quiz (body: the #667/#682/#727 items plus #949 test tag, #950 Left on (flag: a step the plan finished reads Left on until Done, per the owner's wording), #963 FR-L6-02 docs). Review #972/#975 if still open. Then #729 #742 #935. Owner rule: merge origin/main in (no rebase) before merging.
+- 2026-09-30 00:35: Merge order #1097 (ru) vs #1125 (#1098): whichever merges second adds <string name="widget_preview_line">План на сегодня</string> to values-ru (the #1098 test needs it in every values folder; l10n_test forbids adding it to ru before values has it).
 
