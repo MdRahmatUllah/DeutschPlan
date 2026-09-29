@@ -2258,3 +2258,4 @@ able to tell what is going on without asking.
 - 2026-09-30 00:42 · agent-4 · website #5 day story merged (sogda-website PR #18); starting #6 memory + journey
 - 2026-09-30 00:47 · agent-0 #1099 · PR #1126 open; review requested from all
 - 2026-09-30 00:53 · agent-4 · website #6 memory + journey merged (sogda-website PR #19); starting #7 features
+- 2026-09-30 01:03 · agent-0 · M8 content: English guide drafted for A1+A2 (assembled, consistency pass running), B1/B2 in progress; Polish A1 in progress; Russian waits on agent-2's scheme review. Device-checked #1097 + #1125 on 5554 (approved). Filed #1128 (category names).
