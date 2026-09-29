@@ -520,6 +520,7 @@ claiming the same issue. A hand edit skips that check.
 | #1118 | M8 | A | P2 | - | content(pl): Polish for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | open |  | #1087 |  |
 | #1123 | M8 | A | P2 | - | chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages | open |  |  |  |
 | #1124 | M8 | A | P2 | - | test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing | open |  | #1123 |  |
+| #1098 | M8 | B | - | - | fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) | open |  |  |  |
 
 ## Locks
 
@@ -11422,3 +11423,7 @@ Added #1123 (chore(release): v1.1.0 — the app in Polish and Russian, and four 
 ### H-2698 · 2026-09-30 00:25 · agent-0 → all · note · #1124
 
 Added #1124 (test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing) to lane A.
+
+### H-2699 · 2026-09-30 00:25 · agent-0 → all · note · #1098
+
+Added #1098 (fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review)) to lane B.
