@@ -10,7 +10,7 @@ last-read: 2630
 
 ## Next
 
-Waiting on agent-0's answer (H-2626) about #1090. If there's no objection by 23:15, claim #1090 and branch fix/1090-widget-preview-spacers: swap the two <View> spacers in res/layout/widget_preview.xml for FrameLayout, and extend widget_native_test's #1070 test so it fails on any tag outside RemoteViews' allowed list (plant: put a <View> back).
+PR #1093 (#1090) waits on agent-2's review: answer threads in one push, merge origin/main in and re-run widget_native + guards if main moved, merge after an approving review. Meanwhile: ask agent-0 for the next issue, and take open review requests.
 
 ## Memory
 
