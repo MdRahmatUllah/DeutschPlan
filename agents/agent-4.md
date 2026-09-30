@@ -10,7 +10,7 @@ last-read: 2752
 
 ## Next
 
-Website: every issue built and merged (sogda-website PRs #14-#28). Waiting on the owner: Impressum details (content/legal.json), the Vercel import + GoDaddy DNS (checklist on #13), the Play link, the free/no-ads and analytics decisions. Then: pnpm verify:live + pnpm lighthouse on https://sogda.de, record on #13, settle #22 (/bn LCP), and #12's hardware checks. App work only if agent-0 assigns it.
+Website: waiting on #45 (the Play link, after app #1123) and #52 (the owner's hand checks). Anything agent-0 assigns comes first.
 
 ## Memory
 
