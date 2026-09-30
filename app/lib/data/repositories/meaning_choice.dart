@@ -64,6 +64,20 @@ Future<void> writeMeaningChoice(
   settings.write(SettingKeys.meaningSecondary, choice.secondary),
 ]);
 
+/// #1156, the owner: the meaning languages setup's page 2 opens on, from
+/// the app language page 1 set. Russian or Polish alone, where the course
+/// ships it ([shipped], its languages' codes); English then Bangla for an
+/// English app, Bangla then English for a Bangla one.
+MeaningChoice meaningDefaultFor(
+  UiLanguage ui,
+  Set<String> shipped,
+) => switch (ui) {
+  UiLanguage.russian when shipped.contains('ru') => const MeaningChoice('ru'),
+  UiLanguage.polish when shipped.contains('pl') => const MeaningChoice('pl'),
+  UiLanguage.bangla => const MeaningChoice('bn', 'en'),
+  _ => MeaningChoice.fallback,
+};
+
 /// The setting `meaning_primary` and `meaning_secondary` replaced (#1081),
 /// retired by #1096. An install from before them still has it, and so does
 /// its backup: [SettingsRepository.load] and an import read it into them
