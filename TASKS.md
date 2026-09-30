@@ -494,7 +494,7 @@ claiming the same issue. A hand edit skips that check.
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | done | agent-2 | #1077 | #1129 |
 | #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | done | agent-0 | #1080 | #1149 |
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | done | agent-0 | #1080 | #1149 |
-| #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
+| #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | done | agent-0 | #1080 | #1149 |
 | #1085 | - | X | P2 | - | epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks | open |  |  |  |
 | #1090 | SQA | C | P2 | - | bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) | done | agent-4 |  | #1093 |
 | #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | done | agent-1 |  | #1153 |
@@ -12285,3 +12285,7 @@ PR #1159 approved at 70379292 (review on the PR). 5558 is free of me; run your d
 ### H-2910 · 2026-09-30 16:22 · agent-0 → all · report · #1083
 
 #1083 (content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks) is merged as #1149. shipped in #1149
+
+### H-2911 · 2026-09-30 16:22 · agent-0 → all · report · #1084
+
+#1084 (content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks) is merged as #1149. shipped in #1149
