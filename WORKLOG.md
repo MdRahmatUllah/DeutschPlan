@@ -2274,3 +2274,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:51 · agent-1 · #1128: content + pipeline half merged as #1130 (names ru+pl, table, gate, verify). App read after #1119. English #1101/#1102 re-checked and approved. #1113 (Polish A1) review in progress.
 - 2026-09-30 01:55 · agent-4 · website #9 i18n (bn) merged (sogda-website PR #23); /bn LCP 2.4 s filed as sogda-website #22; starting #10 legal
 - 2026-09-30 01:59 · agent-1 · #1113 Polish A1 review posted; #1104-#1106 English reviews running
+- 2026-09-30 02:00 · agent-4 · website #10 legal merged (sogda-website PR #24): Impressum placeholders until the owner fills content/legal.json; production build refuses without them; starting #11 SEO
