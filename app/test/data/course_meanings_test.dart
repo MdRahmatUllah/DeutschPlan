@@ -121,37 +121,37 @@ void main() {
 
   test('#1119 the whole course loads its meanings once, quickly, with two '
       'languages beyond English and Bangla: about 10,500 rows', () async {
-    // The shipped course with Russian and Polish for every word, as #1100
-    // will ship them: English's and Bangla's have no rows (#1096).
+    // The shipped course, Russian and Polish for every word (#1100); English's
+    // rows are its guides, Bangla's none (#1096).
     final course = File('assets/db/content.db')
         .copySync('${tempDir('sogda_course_ru_pl').path}/content.db');
     final raw = sqlite3.open(course.path);
-    try {
-      raw.execute('''
-        INSERT INTO course_languages (code, name, own_name, script, ord) VALUES
-          ('ru', 'Russian', 'Русский', 'Cyrl', 3),
-          ('pl', 'Polish', 'Polski', 'Latn', 4);
-        INSERT INTO word_meanings (word_uid, lang, meaning, pronunciation)
-          SELECT uid, code, english || ' ' || code, german
-          FROM words, (SELECT 'ru' AS code UNION ALL SELECT 'pl');
-      ''');
-    } finally {
-      raw.close();
-    }
-    var rows = 0;
+    final uids = [
+      for (final row in raw.select('SELECT uid FROM words'))
+        row['uid'] as String,
+    ];
+    raw.close();
+    var meanings = CourseMeanings.none;
     final best = await fastestOf(3, () async {
       // A database of its own each time: the load is kept per database.
       final db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(course)}' AS c",
       );
-      final meanings = await loadCourseMeanings(ContentDao(db));
-      rows = meanings.length;
+      meanings = await loadCourseMeanings(ContentDao(db));
       await db.close();
     });
     // ignore: avoid_print
-    print('#1119 CourseMeanings: $rows words in ${best.inMilliseconds} ms');
-    expect(rows, greaterThan(5000));
+    print(
+      '#1119 CourseMeanings: ${meanings.length} words in '
+      '${best.inMilliseconds} ms',
+    );
+    expect(uids.length, greaterThan(5000));
+    expect(
+      uids.where((uid) => meanings.meaningsOf(uid).keys.toSet().length != 2),
+      isEmpty,
+      reason: 'every word in Russian and Polish',
+    );
     expect(best, lessThan(const Duration(milliseconds: 500)));
   });
 
