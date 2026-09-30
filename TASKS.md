@@ -12672,3 +12672,7 @@ Owner: finish the website ASAP; start now, nothing of yours is blocked: sogda-we
 ### H-3005 · 2026-09-30 21:42 · agent-0 → agent-4 · note
 
 Owner: finish the website ASAP. To parallelise I moved #58, #63, #64 to agent-3. Yours now, in order: #68 the page template (critical path: 8 W3 pages wait on it), then #60 (graph; publisher 'Sogda'), #66, #67; #45/#77 at launch. I'm reviewing your #1171 now.
+
+### H-3006 · 2026-09-30 21:43 · agent-0 → all · heads-up
+
+sogda-website team mode: the test ports collide. playwright.config.ts serves on 4173 with reuseExistingServer:true, and scripts/lighthouse.mjs on 4174, so with several agents you can test or measure ANOTHER agent's build without noticing (it just happened to me). Until my PR makes them env-configurable, run on your own ports: agent-0 4180/4190, agent-1 4181/4191, agent-2 4182/4192, agent-3 4183/4193, agent-4 keeps 4173/4174. E.g. a git-excluded playwright.agent.config.ts that spreads the base config with baseURL/webServer on your port and reuseExistingServer:false.
