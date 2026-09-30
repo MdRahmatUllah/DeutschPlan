@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#1120 PR 1: quiz directions + sheet + store + names + folding + placement. Then PR 2: exams (attempt language column) + compare. #1136 in review (main fix).
+While #1139 is in review: #1120 PR 2 (exams: exam_attempts gets its language (user-db lock), generator lang, intro; W2 + compare quiz in the primary). Then #1121.
 
 ## Memory
 
