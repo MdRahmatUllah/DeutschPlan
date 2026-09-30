@@ -37,11 +37,15 @@ their constraints, and the product is built around them:
 | Group | What they get | Settings |
 |---|---|---|
 | **Bangla speakers** (first) | Meanings in Bangla, or Bangla and English together; the pronunciation of all 5,069 words in Bangla letters; the app itself in Bangla, with Bangla digits; interference tips (false friends, traps) in Bangla | Meaning language বাংলা or Both; app language বাংলা |
-| **English speakers** (second) | Meanings and the app in English; the Bangla pronunciation line off by default | Meaning language English |
+| **English speakers** (second) | Meanings and the app in English; the pronunciation as an English respelling (v1.1.0), the Bangla line off by default | Meaning language English |
+| **Russian speakers** (v1.1.0) | Meanings, the pronunciation in Russian letters, example sentences, grammar rules, interference tips and category names in Russian; the app in Russian | Meaning language Русский; app language Русский |
+| **Polish speakers** (v1.1.0) | The same in Polish, the pronunciation in Polish spelling; the app in Polish | Meaning language Polski; app language Polski |
 
 The meaning language and the app language are separate settings. Setup asks
 for each (the app language first, the phone's by default), and Settings can
-change them apart
+change them apart. Since v1.1.0 the meaning language is a first language and
+an optional second shown under it: any one or two of English, Bangla,
+Russian and Polish (#1081)
 ([`settings.md`](../04-screens/settings.md)).
 
 ## The value proposition
@@ -268,6 +272,21 @@ The owner's stated direction (2026-09-26, #595) is to go beyond German and
 Bangla: more languages to learn, and more meaning languages later. This
 section says what in the current design already helps, and what would have
 to change. It is an analysis, not a plan.
+
+**Meaning languages: done in v1.1.0** (M8, epic #1085). Russian and Polish
+came through the workbooks' columns, and Polish and Russian became app
+languages. The fixed columns and enums in the table's meaning-language
+column below are what it replaced:
+- meanings, examples, grammar, tips and category names by language
+  (`word_meanings`, `word_example_translations`, `grammar_translations`,
+  `word_tips`, `category_translations`), each shipped only when complete
+  (PIPE-08);
+- a first and an optional second language (`MeaningChoice`);
+- quiz directions by language (`de>ru`, `ru>de`);
+- typed answers folded per script.
+
+A next meaning language is a workbook column, a review and a content build.
+The column for more languages to learn stands as written.
 
 ### What already helps
 
