@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 02:10
+last-seen: 2026-09-30 02:17
 last-read: 2740
 
 ## Now
 
-#1134 test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table — claimed 2026-09-30 02:10.
+#1134 in review as PR #1136: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
