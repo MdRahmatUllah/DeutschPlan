@@ -146,44 +146,27 @@ class TestTheGate:
         assert "language Russian (ru): meanings 180/180, pronunciations 180/180, examples 360/360, grammar topics 36/36" in err
         assert [row[0] for row in db.execute("SELECT code FROM course_languages ORDER BY ord")] == ["en", "bn", "ru"]
         assert db.execute("SELECT own_name, script FROM course_languages WHERE code = 'ru'").fetchone() == ("Русский", "Cyrl")
-        assert langs(db, "word_meanings") == {"en": 180, "bn": 180, "ru": 180}
+        # English's and Bangla's texts are the course's own columns, not rows
+        # (#1096); English has no pronunciation guide here to need one.
+        assert langs(db, "word_meanings") == {"ru": 180}
         # Bangla has no examples or grammar columns: its learners read English's.
-        assert langs(db, "word_example_translations") == {"en": 180, "ru": 360}
-        assert langs(db, "grammar_translations") == {"en": 36, "ru": 36}
+        assert langs(db, "word_example_translations") == {"ru": 360}
+        assert langs(db, "grammar_translations") == {"ru": 36}
         tip_rows = langs(db, "word_tips")
-        assert tip_rows["ru"] > tip_rows["en"] == tip_rows["bn"] > 0
-        # The old table keeps the tips that have English, and only those.
-        assert db.execute("SELECT count(*) FROM interference_tips").fetchone()[0] == tip_rows["en"]
-
-        # Search covers every shipped language's meanings.
-        hit = db.execute(
-            "SELECT m.lang FROM meanings_fts f JOIN word_meanings m ON m.rowid = f.rowid "
-            "WHERE meanings_fts MATCH 'meaning : \"Russian\"' LIMIT 1"
+        english, bangla = db.execute(
+            "SELECT count(tip_en), count(tip_bn) FROM interference_tips"
         ).fetchone()
-        assert hit == ("ru",)
+        assert set(tip_rows) == {"ru"} and tip_rows["ru"] > english == bangla > 0
 
-    def test_1080_english_and_bangla_are_the_old_columns_texts(self, russian, tmp_path):
+    def test_1096_english_and_bangla_are_the_courses_own_columns_not_rows(self, russian, tmp_path):
         db = build(tmp_path, manifest(russian))
-        differ = db.execute(
-            "SELECT count(*) FROM words w "
-            "JOIN word_meanings e ON e.word_uid = w.uid AND e.lang = 'en' "
-            "JOIN word_meanings b ON b.word_uid = w.uid AND b.lang = 'bn' "
-            "WHERE e.meaning IS NOT w.english OR e.pronunciation IS NOT NULL "
-            "OR b.meaning IS NOT w.bangla OR b.pronunciation IS NOT w.pron_bn"
-        ).fetchone()[0]
-        assert differ == 0
-        examples = db.execute(
-            "SELECT count(*) FROM word_examples x LEFT JOIN word_example_translations t "
-            "ON t.word_uid = x.word_uid AND t.ord = x.ord AND t.lang = 'en' "
-            "WHERE t.translation IS NOT x.english"
-        ).fetchone()[0]
-        assert examples == 0
-        grammar = db.execute(
-            "SELECT count(*) FROM grammar_topics g LEFT JOIN grammar_translations t "
-            "ON t.grammar_uid = g.uid AND t.lang = 'en' WHERE t.topic IS NOT g.topic "
-            "OR t.rule IS NOT g.rule OR t.example IS NOT g.example_en OR t.watch_out IS NOT g.watch_out"
-        ).fetchone()[0]
-        assert grammar == 0
+        for table in ("word_meanings", "word_example_translations", "grammar_translations", "word_tips"):
+            assert {"en", "bn"}.isdisjoint(langs(db, table)), table
+        # Both still ship, and their texts are the columns'.
+        assert [row[0] for row in db.execute("SELECT code FROM course_languages ORDER BY ord")][:2] == ["en", "bn"]
+        assert db.execute(
+            "SELECT count(*) FROM words WHERE english = '' OR bangla IS NULL OR pron_bn IS NULL"
+        ).fetchone()[0] == 0
 
     def test_1080_a_language_under_100_percent_is_held_back(self, russian, tmp_path, capsys):
         def one_blank(book):

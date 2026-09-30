@@ -153,9 +153,11 @@ CREATE TABLE interference_tips (
 
 -- Meaning languages (#1080): the languages a word is explained in, German
 -- being the one learnt. Each ships only when its workbook columns are 100 %
--- complete (PIPE-08). English's and Bangla's texts are also in the columns
--- above (`words.english`, `bangla`, `pron_bn`, `word_examples.english`,
--- `grammar_topics`, `interference_tips`) until the app reads these (#1081).
+-- complete (PIPE-08). A text the columns above hold is there alone, not
+-- rows here (#1096): English's meaning, examples, grammar and tips
+-- (`words.english`, `word_examples.english`, `grammar_topics`,
+-- `interference_tips.tip_en`), and Bangla's meaning, guide and tips
+-- (`words.bangla`, `pron_bn`, `interference_tips.tip_bn`).
 --
 -- `course_languages`, not `languages`: drift names a table's class after it,
 -- and the app has a `Languages` provider already. The tables no FTS index
@@ -169,15 +171,17 @@ CREATE TABLE course_languages (
   ord      INTEGER NOT NULL
 );
 
--- `pronunciation` is null where the language has no pronunciation guide yet:
--- English (#1082).
+-- The languages beyond English and Bangla, whose meanings are the words'
+-- own columns (#1096). English has a row only for a word with its
+-- pronunciation guide (#1082), no column's: its meaning is repeated here
+-- for the NOT NULL.
 CREATE TABLE word_meanings (
   word_uid      TEXT NOT NULL REFERENCES words (uid) ON DELETE CASCADE,
   lang          TEXT NOT NULL REFERENCES course_languages (code),
   meaning       TEXT NOT NULL,
   pronunciation TEXT,
   PRIMARY KEY (word_uid, lang)
-);
+) WITHOUT ROWID;
 
 -- Line `ord` of `word_examples`, in `lang`. A language without an examples
 -- column has no rows: its learners read English's. `translation`, not

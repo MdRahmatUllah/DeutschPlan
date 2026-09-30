@@ -215,18 +215,36 @@ class TestTheCli:
         assert "examples:" in err and "search:" in err
 
 
-def test_a_noun_rule_on_a_verb_fails_the_tips_gate(database):
+@pytest.mark.parametrize(
+    "tip_rows",
+    [
+        # English's and Bangla's tips are interference_tips' columns (#1096).
+        ["INSERT INTO interference_tips (word_uid, tip_en, tip_bn) SELECT uid, {en}, {bn} "],
+        # Another language's are word_tips' rows.
+        [
+            "INSERT INTO course_languages (code, name, own_name, script, ord) "
+            "VALUES ('ru', 'Russian', 'Русский', 'Cyrl', 3)",
+            "INSERT INTO word_tips (word_uid, lang, tip) SELECT uid, 'ru', {bn} ",
+        ],
+    ],
+    ids=["english and bangla", "another language"],
+)
+def test_a_noun_rule_on_a_verb_fails_the_tips_gate(database, tip_rows):
     """#321: the build keeps "gender" tips to nouns; the gate catches a
-    build that doesn't, in any language's text (#1080)."""
+    build that doesn't, in any language's text (#1080), wherever it is kept."""
     from pipeline_steps import read_tips, tip_pos
     from verify_content import DEFAULT_TIPS
 
+    def quoted(text: str) -> str:
+        return "'" + text.replace("'", "''") + "'"
+
     rule = next(t for t in read_tips(DEFAULT_TIPS) if tip_pos(t.tags) == "noun")
+    *first, tip = tip_rows
     break_it(
         database,
-        "INSERT INTO word_tips (word_uid, lang, tip) "
-        "SELECT uid, 'bn', '" + rule.tip_bn.replace("'", "''") + "' "
-        "FROM words WHERE pos = 'verb' LIMIT 1",
+        *first,
+        tip.format(en=quoted(rule.tip_en), bn=quoted(rule.tip_bn))
+        + "FROM words WHERE pos = 'verb' LIMIT 1",
     )
     assert "tips" in gates(database)
     assert f"line {rule.row}" in messages(database)
@@ -253,10 +271,12 @@ def test_a_malformed_tips_file_is_a_failure_not_a_crash(database, tmp_path):
 
 
 def test_1099_a_pronunciation_on_some_words_only_fails_its_gate(database):
+    # English has a row only for a word with its guide (#1096): one row is
+    # one word of all of them.
     break_it(
         database,
-        "UPDATE word_meanings SET pronunciation = 'GOOT' "
-        "WHERE lang = 'en' AND word_uid = (SELECT min(word_uid) FROM word_meanings)",
+        "INSERT INTO word_meanings (word_uid, lang, meaning, pronunciation) "
+        "SELECT uid, 'en', english, 'GOOT' FROM words ORDER BY uid LIMIT 1",
     )
     assert "pronunciation" in gates(database)
     assert "en has a pronunciation guide on 1 of its" in messages(database)

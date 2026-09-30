@@ -64,7 +64,7 @@ EXPECTED_STEPS = len(SUBLEVELS)
 
 #: The search tables. An empty one is a whole search tier that silently
 #: returns nothing.
-FTS_TABLES = ("words_fts", "words_trigram", "examples_fts", "meanings_fts")
+FTS_TABLES = ("words_fts", "words_trigram", "examples_fts")
 
 #: How many offending rows a failure lists before it says "and N more". An
 #: author fixing a spreadsheet needs examples, not five thousand lines.
@@ -277,7 +277,6 @@ def check_fts_is_populated(db: sqlite3.Connection) -> list[Failure]:
         "words_fts": "words",
         "words_trigram": "words",
         "examples_fts": "word_examples",
-        "meanings_fts": "word_meanings",
     }
 
     failures = []
@@ -366,7 +365,10 @@ def check_tips_fit_their_word_class(
         rows = [
             f"{german} ({word_pos})"
             for german, word_pos in db.execute(
-                "SELECT DISTINCT w.german, w.pos FROM word_tips t "
+                # English's and Bangla's tips are `interference_tips`' (#1096).
+                "SELECT DISTINCT w.german, w.pos FROM (SELECT word_uid, tip FROM word_tips "
+                "UNION ALL SELECT word_uid, tip_en FROM interference_tips "
+                "UNION ALL SELECT word_uid, tip_bn FROM interference_tips) t "
                 "JOIN words w ON w.uid = t.word_uid "
                 f"WHERE t.tip IN ({', '.join('?' * len(texts))}) "
                 "AND coalesce(w.pos, '') <> ? ORDER BY w.seq",
@@ -679,10 +681,13 @@ def check_pronunciation_all_or_none(db: sqlite3.Connection) -> list[Failure]:
 
     A guide on some words and not others is a half-filled column that got
     through the build's gate: the learner sees it come and go from card to card.
+    English has a row only where it has a guide (#1096), so it counts against
+    every word.
     """
     rows = db.execute(
-        "SELECT lang, count(NULLIF(pronunciation, '')), count(*) FROM word_meanings "
-        "GROUP BY lang HAVING count(NULLIF(pronunciation, '')) NOT IN (0, count(*)) ORDER BY lang"
+        "SELECT lang, count(NULLIF(pronunciation, '')) AS have, "
+        "CASE lang WHEN 'en' THEN (SELECT count(*) FROM words) ELSE count(*) END AS total "
+        "FROM word_meanings GROUP BY lang HAVING have NOT IN (0, total) ORDER BY lang"
     ).fetchall()
     return [
         Failure(
