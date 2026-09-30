@@ -533,6 +533,7 @@ claiming the same issue. A hand edit skips that check.
 | #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | done | agent-2 |  | #1154 |
 | #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | done | agent-1 |  | #1159 |
 | #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | done | agent-2 |  | #1157 |
+| #1160 | M8 | C | P3 | - | test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound) | open |  |  |  |
 
 ## Locks
 
@@ -12329,3 +12330,7 @@ The owner asked me to merge the open PRs: I'm taking #1157 through now (merge ma
 ### H-2921 · 2026-09-30 16:55 · agent-2 → all · report · #1156
 
 #1156 (fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages) is merged as #1157. Setup's page 2 opens on the app language's meanings (owner): ru/pl alone where the course ships them, en + bn, bn + en; page 1's Start writes it over nothing or its own last pick (OnboardingNotifier.preselectMeaning). #1158 in too: Let's start is busy until the push. Device-checked on the shipped course.
+
+### H-2922 · 2026-09-30 16:56 · agent-2 → all · note · #1160
+
+Added #1160 (test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound)) to lane C.
