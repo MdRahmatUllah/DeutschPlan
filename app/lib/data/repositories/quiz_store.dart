@@ -1,4 +1,5 @@
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -9,7 +10,7 @@ import 'package:sogda/domain/quiz_builder.dart';
 /// The quiz builder's view of the course (`quiz-engine.md`, #81): the
 /// queries in `word_queries.drift`, shaped into [QuizWord]s.
 class DriftQuizStore implements QuizStore {
-  DriftQuizStore(this._words, this._settings, this._content);
+  DriftQuizStore(this._words, this._settings, this._content, [this._course]);
 
   final WordRepository _words;
   final SettingsRepository _settings;
@@ -17,6 +18,14 @@ class DriftQuizStore implements QuizStore {
   /// The course, for W2's sets: the app's one, so its forms index is built
   /// once.
   final ContentDao _content;
+
+  /// The course's meanings beyond English and Bangla (#1120), read while the
+  /// learner has chosen such a language; null otherwise, and the words carry
+  /// only their own two.
+  final Future<CourseMeanings>? _course;
+
+  Future<CourseMeanings> get _meanings async =>
+      await _course ?? CourseMeanings.none;
 
   @override
   Future<Map<String, List<QuizWord>>> sharedMeanings() =>
@@ -31,6 +40,7 @@ class DriftQuizStore implements QuizStore {
           }
         : const <String>{};
     final category = int.tryParse(ref ?? '');
+    final course = await _meanings;
     return <QuizWord>[
       for (final row in await _words.quizWords().get())
         if (switch (source) {
@@ -55,6 +65,7 @@ class DriftQuizStore implements QuizStore {
               final instant? => planDate(DateTime.parse(instant).toLocal()),
               null => null,
             },
+            meanings: course.meaningsOf(row.uid),
           ),
       // FR-R2-04 (#363): the learner's own words, opted in, in all-learned
       // quizzes, and in a compare set that names them: L9's *Retry
@@ -81,19 +92,23 @@ class DriftQuizStore implements QuizStore {
   }
 
   @override
-  Future<List<QuizWord>> stepWords(String step) async => <QuizWord>[
-    for (final row in await _words.quizPool(step).get())
-      QuizWord(
-        uid: row.uid,
-        german: row.german,
-        english: row.english,
-        step: row.step,
-        article: row.article,
-        pos: row.pos,
-        bangla: row.bangla,
-        synonyms: row.synonyms,
-      ),
-  ];
+  Future<List<QuizWord>> stepWords(String step) async {
+    final course = await _meanings;
+    return <QuizWord>[
+      for (final row in await _words.quizPool(step).get())
+        QuizWord(
+          uid: row.uid,
+          german: row.german,
+          english: row.english,
+          step: row.step,
+          article: row.article,
+          pos: row.pos,
+          bangla: row.bangla,
+          synonyms: row.synonyms,
+          meanings: course.meaningsOf(row.uid),
+        ),
+    ];
+  }
 
   @override
   Future<CompareSet?> compareSet(String uid) => _content.compareSet(uid);

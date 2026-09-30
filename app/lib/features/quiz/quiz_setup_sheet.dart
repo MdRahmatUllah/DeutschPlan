@@ -9,8 +9,8 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:sogda/data/repositories/quiz_store.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/domain/quiz_builder.dart';
 import 'package:sogda/features/learn/step_quiz.dart';
 import 'package:sogda/features/learn/step_words.dart';
@@ -21,14 +21,18 @@ import 'package:sogda/router/routes.dart';
 
 part 'quiz_setup_sheet.g.dart';
 
-/// The six directions L7 offers. Forms has its own tile on L2.
-const List<QuizDirection> customDirections = <QuizDirection>[
-  QuizDirection.deEn,
-  QuizDirection.deBn,
-  QuizDirection.enDe,
-  QuizDirection.articles,
-  QuizDirection.listening,
-  QuizDirection.mixed,
+/// The directions L7 offers [choice]'s learner, as `QuizArgs` carries them
+/// (#1120): German → the primary, German → the secondary when there is
+/// one, the primary → German, Articles, Listening and Mixed. Forms has its
+/// own tile on L2.
+List<String> customDirections(MeaningChoice choice) => <String>[
+  askWire(QuizDirection.toMeaning, choice.primary),
+  if (choice.secondary case final secondary?)
+    askWire(QuizDirection.toMeaning, secondary),
+  askWire(QuizDirection.fromMeaning, choice.primary),
+  QuizDirection.articles.name,
+  QuizDirection.listening.name,
+  QuizDirection.mixed.name,
 ];
 
 /// BR-QUIZ-01's lengths.
@@ -47,11 +51,7 @@ typedef QuizCategory = ({
 /// [step]'s categories, the step's biggest first, with their learned words.
 @riverpod
 Future<List<QuizCategory>> quizCategories(Ref ref, String step) async {
-  final store = DriftQuizStore(
-    ref.watch(wordRepositoryProvider),
-    ref.watch(settingsProvider),
-    ref.watch(contentDaoProvider),
-  );
+  final store = ref.watch(quizStoreProvider);
   return <QuizCategory>[
     for (final c in await ref.watch(stepCategoriesProvider(step).future))
       await store
@@ -69,7 +69,7 @@ Future<List<QuizCategory>> quizCategories(Ref ref, String step) async {
 
 /// The quiz L7's *Start* builds, for any of its combinations.
 QuizArgs customQuiz({
-  required QuizDirection direction,
+  required String direction,
   required int length,
   required QuizSource source,
   required String step,
@@ -77,7 +77,7 @@ QuizArgs customQuiz({
   int? category,
   int? seed,
 }) => QuizArgs(
-  direction: direction.name,
+  direction: direction,
   source: source.name,
   sourceRef: switch (source) {
     QuizSource.stepLearned => step,
@@ -122,17 +122,16 @@ class QuizSetupSheet extends ConsumerStatefulWidget {
   ConsumerState<QuizSetupSheet> createState() => _QuizSetupSheetState();
 }
 
-/// The direction a quiz starts on (`quiz.md`, #387, #667): the learner's
-/// meaning language, DE → বাংলা for a Bangla learner, DE → EN otherwise.
-/// L7's first chip, and every one-tap quiz: L2's tiles and L6's *Quiz*.
-QuizDirection meaningDirection(WidgetRef ref) =>
-    ref.read(settingsSourceProvider).read(SettingKeys.meaningLanguage) ==
-        MeaningLanguage.bangla
-    ? QuizDirection.deBn
-    : QuizDirection.deEn;
+/// The direction a quiz starts on (`quiz.md`, #387, #667, #1120): German
+/// → the learner's first meaning language, as `QuizArgs` carries it. L7's
+/// first chip, and every one-tap quiz: L2's tiles and L6's *Quiz*.
+String meaningDirection(WidgetRef ref) => askWire(
+  QuizDirection.toMeaning,
+  meaningChoiceOf(ref.read(settingsSourceProvider)).primary,
+);
 
 class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
-  late QuizDirection _direction = meaningDirection(ref);
+  late String _direction = meaningDirection(ref);
   int _length = 20;
   QuizSource _source = QuizSource.stepLearned;
   bool _timer = false;
@@ -141,6 +140,9 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
+    final choice = meaningChoiceOf(ref.watch(settingsSourceProvider));
+    final languages = ref.watch(courseLanguagesProvider).value ?? baseLanguages;
+    final ask = parseAsk(_direction, primary: () => choice.primary);
     // The third source (#337): of the step's categories, the one with the
     // most of this step's words learned, the step's biggest on a tie. Closed,
     // with the reason, until the chosen direction can ask as many of its
@@ -153,7 +155,10 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
           (best, c) => best == null || c.inStep > best.inStep ? c : best,
         );
     final categoryLearned =
-        category?.learned.where((w) => applies(_direction, w)).length ?? 0;
+        category?.learned
+            .where((w) => applies(ask.direction, w, ask.lang))
+            .length ??
+        0;
     final categoryOpen = categoryLearned >= StepQuizTab.minimumLearned;
     // A direction that closes it takes the quiz back to the step's words.
     final source = _source == QuizSource.category && !categoryOpen
@@ -221,9 +226,9 @@ class _QuizSetupSheetState extends ConsumerState<QuizSetupSheet> {
                   SgText(l10n.quizSetupTitle, role: SgTextRole.title),
                   const SizedBox(height: 4),
                   section(l10n.quizSetupDirection, <Widget>[
-                    for (final direction in customDirections)
+                    for (final direction in customDirections(choice))
                       chip(
-                        quizDirectionName(l10n, direction.name),
+                        quizDirectionName(l10n, direction, languages),
                         selected: _direction == direction,
                         onTap: () => setState(() => _direction = direction),
                       ),

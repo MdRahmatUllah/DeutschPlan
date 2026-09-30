@@ -11,6 +11,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/quiz_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -194,6 +196,125 @@ VALUES ('uid-heim', 'A1.2', 'A1', 9, 9, 'das', 'Heim', 'noun', 'house',
     ]);
   });
 
+  group('#1120 a course that ships Russian', () {
+    late AppDatabase ru;
+    late SettingsRepository ruSettings;
+
+    setUp(() async {
+      final content = ContentFixture.write(
+        '${directory.path}/ru.db',
+        russian: true,
+      ).file;
+      ru = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+      await ru.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
+      );
+      // A second word the Russian дом means, whose English is another.
+      await ru.customStatement('''
+INSERT INTO c.words (uid, sublevel_code, level_code, seq, seq_in_sublevel,
+  article, german, pos, english, bangla, search_key, search_key_alt, kind)
+VALUES ('uid-heim', 'A1.1', 'A1', 9, 9, 'das', 'Heim', 'noun', 'home',
+  'নীড়', 'heim', 'heim', 'vocab')
+''');
+      await ru.customStatement(
+        "INSERT INTO c.word_meanings (word_uid, lang, meaning) "
+        "VALUES ('uid-heim', 'ru', 'дом')",
+      );
+      await ru
+          .into(ru.wordState)
+          .insert(
+            WordStateCompanion.insert(
+              wordUid: ContentFixture.haus,
+              status: const Value('learning'),
+              stability: const Value(3),
+              reps: const Value(2),
+              lastReview: Value(
+                DateTime(2026, 9, 10, 20).toUtc().toIso8601String(),
+              ),
+            ),
+          );
+      ruSettings = SettingsRepository(ru);
+      await ruSettings.load();
+    });
+
+    tearDown(() async {
+      await ruSettings.dispose();
+      await ru.close();
+    });
+
+    DriftQuizStore storeOf(ContentDao dao, {bool course = true}) =>
+        DriftQuizStore(
+          WordRepository(ru, ruSettings),
+          ruSettings,
+          dao,
+          course ? loadCourseMeanings(dao) : null,
+        );
+
+    test('a word carries its Russian, learned or in a pool; English and '
+        'Bangla stay its own', () async {
+      final store = storeOf(ContentDao(ru));
+      final haus = (await store.learned(QuizSource.allLearned)).single;
+      expect(haus.meanings, <String, String>{'ru': 'дом'});
+      expect((haus.meaningIn('en'), haus.meaningIn('bn')), ('house', 'বাড়ি'));
+      final pool = await store.stepWords('A1.1');
+      expect(
+        pool.firstWhere((w) => w.uid == ContentFixture.tuer).meaningIn('ru'),
+        'дверь',
+      );
+    });
+
+    test('a Russian cell two words share makes both right, and the English '
+        'under it says which', () async {
+      final store = storeOf(ContentDao(ru));
+      final shared = await store.sharedMeanings();
+      expect(shared['дом']!.map((w) => w.headword), <String>[
+        'das Haus',
+        'das Heim',
+      ]);
+      Future<QuizItem> ask(List<String> languages) async =>
+          (await QuizBuilder(store, languages: languages).build(
+            direction: QuizDirection.fromMeaning,
+            lang: 'ru',
+            source: QuizSource.allLearned,
+            length: 1,
+            seed: 3,
+            today: '2026-09-21',
+          )).items.single;
+      final alone = await ask(<String>['ru']);
+      expect(alone.prompt, 'дом');
+      expect(alone.also.map((a) => a.german), <String>['das Heim']);
+      final withEnglish = await ask(<String>['ru', 'en']);
+      expect(withEnglish.hint, 'house');
+      expect(withEnglish.also, isEmpty, reason: '"house" is not das Heim');
+    });
+
+    test("the app's store reads the course only for a learner who reads a "
+        'language beyond English and Bangla', () async {
+      final container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(ru),
+          settingsProvider.overrideWithValue(ruSettings),
+        ],
+      );
+      addTearDown(container.dispose);
+      Future<Map<String, String>> meanings() async =>
+          (await container
+                  .read(quizStoreProvider)
+                  .learned(QuizSource.allLearned))
+              .single
+              .meanings;
+
+      expect(await meanings(), isEmpty, reason: 'English and Bangla');
+      await writeMeaningChoice(ruSettings, const MeaningChoice('ru', 'en'));
+      await pumpEventQueue();
+      expect(await meanings(), <String, String>{'ru': 'дом'});
+      expect(container.read(quizBuilderProvider).languages, <String>[
+        'ru',
+        'en',
+      ]);
+    });
+  });
+
   test("a step's pool is every word of it, whatever its status", () async {
     await state(ContentFixture.tuer, 'suspended');
     final pool = await store.stepWords('A1.1');
@@ -205,7 +326,8 @@ VALUES ('uid-heim', 'A1.2', 'A1', 9, 9, 'das', 'Heim', 'noun', 'house',
     await state(ContentFixture.haus, 'learning');
     await state(ContentFixture.strasse, 'learning');
     final quiz = await QuizBuilder(store).build(
-      direction: QuizDirection.enDe,
+      direction: QuizDirection.fromMeaning,
+      lang: 'en',
       source: QuizSource.allLearned,
       length: 10,
       seed: 3,

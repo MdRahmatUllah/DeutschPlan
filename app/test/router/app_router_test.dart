@@ -576,8 +576,10 @@ class _OneStepDao extends ContentDao {
   _OneStepDao(super.db);
 
   @override
-  Future<List<PlacementWord>> placementPool(String step) async =>
-      <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];
+  Future<List<PlacementWord>> placementPool(
+    String step, {
+    String lang = 'en',
+  }) async => <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];
 }
 
 class _FixedLanguages extends Languages {

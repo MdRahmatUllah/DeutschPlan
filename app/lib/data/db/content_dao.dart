@@ -165,31 +165,61 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
 
   Future<Map<String, String>>? _formIndex;
 
-  /// EN → DE's other right answers (#832): the course's words by meaning
-  /// cell, English or Bangla, for each cell two words or more share — "you"
-  /// is du, dich and Sie. A cell is compared as written. Built once per DAO.
+  /// A meaning → DE's other right answers (#832): the course's words by
+  /// meaning cell, English, Bangla or (#1120) one of the course's other
+  /// languages, for each cell two words or more share — "you" is du, dich
+  /// and Sie. A cell is compared as written. Built once per DAO.
   Future<Map<String, List<QuizWord>>> sharedMeanings() => _shared ??= () async {
+    const sharing =
+        "kind = 'vocab' AND (english IN (SELECT english "
+        "FROM words WHERE kind = 'vocab' GROUP BY english HAVING COUNT(*) > 1) "
+        "OR bangla IN (SELECT bangla FROM words WHERE kind = 'vocab' "
+        'AND bangla IS NOT NULL GROUP BY bangla HAVING COUNT(*) > 1) '
+        'OR uid IN (SELECT word_uid FROM word_meanings '
+        'WHERE (lang, meaning) IN (SELECT lang, meaning FROM word_meanings '
+        "WHERE lang NOT IN ('en', 'bn') "
+        'GROUP BY lang, meaning HAVING COUNT(*) > 1)))';
+    final tables = <ResultSetImplementation<Object, Object>>{
+      words,
+      wordMeanings,
+    };
+    // Their meanings in the other languages (English and Bangla are the
+    // word's own columns): a hint in one filters them.
+    final others = <String, Map<String, String>>{};
+    for (final row in await customSelect(
+      'SELECT word_uid, lang, meaning FROM word_meanings '
+      "WHERE lang NOT IN ('en', 'bn') "
+      'AND word_uid IN (SELECT uid FROM words WHERE $sharing)',
+      readsFrom: tables,
+    ).get()) {
+      (others[row.read<String>('word_uid')] ??= <String, String>{})[row
+          .read<String>('lang')] = row.read<String>(
+        'meaning',
+      );
+    }
     final rows = await customSelect(
       'SELECT uid, sublevel_code, article, german, pos, english, bangla '
-      "FROM words WHERE kind = 'vocab' AND (english IN (SELECT english "
-      "FROM words WHERE kind = 'vocab' GROUP BY english HAVING COUNT(*) > 1) "
-      "OR bangla IN (SELECT bangla FROM words WHERE kind = 'vocab' "
-      'AND bangla IS NOT NULL GROUP BY bangla HAVING COUNT(*) > 1)) '
-      'ORDER BY seq',
-      readsFrom: <ResultSetImplementation<Object, Object>>{words},
+      'FROM words WHERE $sharing ORDER BY seq',
+      readsFrom: tables,
     ).get();
     final shared = <String, List<QuizWord>>{};
     for (final row in rows) {
+      final uid = row.read<String>('uid');
       final word = QuizWord(
-        uid: row.read<String>('uid'),
+        uid: uid,
         german: row.read<String>('german'),
         english: row.read<String>('english'),
         step: row.read<String>('sublevel_code'),
         article: row.readNullable<String>('article'),
         pos: row.readNullable<String>('pos'),
         bangla: row.readNullable<String>('bangla'),
+        meanings: others[uid] ?? const <String, String>{},
       );
-      for (final cell in <String>{word.english, ?word.bangla}) {
+      for (final cell in <String>{
+        word.english,
+        ?word.bangla,
+        ...word.meanings.values,
+      }) {
         (shared[cell] ??= <QuizWord>[]).add(word);
       }
     }
@@ -277,15 +307,26 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   }
 
   /// S3's pool for one step: its words, with their example sentences for a
-  /// gap item. Read-only, like everything on the attached course.
-  Future<List<PlacementWord>> placementPool(String step) async {
+  /// gap item, and (#1120) their meanings in [lang] when it is one of the
+  /// course's other languages. Read-only, like everything on the attached
+  /// course.
+  Future<List<PlacementWord>> placementPool(
+    String step, {
+    String lang = 'en',
+  }) async {
     final rows = await customSelect(
       'SELECT w.uid, w.article, w.german, w.english, w.bangla, w.pos, '
-      'e.german AS example '
+      'e.german AS example, m.meaning AS other '
       'FROM words w LEFT JOIN word_examples e ON e.word_uid = w.uid '
+      // English and Bangla are the word's own columns.
+      'LEFT JOIN word_meanings m ON m.word_uid = w.uid AND m.lang = ?2 '
+      "AND ?2 NOT IN ('en', 'bn') "
       "WHERE w.sublevel_code = ?1 AND w.kind = 'vocab' "
       'ORDER BY w.seq_in_sublevel, e.ord',
-      variables: <Variable<Object>>[Variable<String>(step)],
+      variables: <Variable<Object>>[
+        Variable<String>(step),
+        Variable<String>(lang),
+      ],
     ).get();
 
     final words = <String, PlacementWord>{};
@@ -302,6 +343,7 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
           bangla: row.readNullable<String>('bangla'),
           pos: row.readNullable<String>('pos') ?? '',
           examples: examples.putIfAbsent(uid, () => <String>[]),
+          meanings: <String, String>{lang: ?row.readNullable<String>('other')},
         ),
       );
       final example = row.readNullable<String>('example');

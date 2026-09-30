@@ -336,7 +336,7 @@ void main() {
             pos: 'noun',
           ),
       ];
-      final session = PlacementSession(steps: steps, seed: 1, useBangla: true);
+      final session = PlacementSession(steps: steps, seed: 1, lang: 'bn');
       final item = session.next(pool)!;
 
       expect(item.kind, PlacementKind.meaning);
@@ -345,6 +345,34 @@ void main() {
       for (final option in item.options) {
         expect(
           option.startsWith('বিশেষ্য') || option == 'noun 0',
+          isTrue,
+          reason: option,
+        );
+      }
+    });
+
+    test('#1120 meanings come in Polish for a Polish learner, English where '
+        'none', () {
+      final pool = <PlacementWord>[
+        for (var i = 0; i < 5; i++)
+          PlacementWord(
+            uid: 'n$i',
+            german: 'Nomen$i',
+            english: 'noun $i',
+            bangla: 'বিশেষ্য $i',
+            pos: 'noun',
+            meanings: <String, String>{if (i > 0) 'pl': 'rzeczownik $i'},
+          ),
+      ];
+      final session = PlacementSession(steps: steps, seed: 1, lang: 'pl');
+      final item = session.next(pool)!;
+
+      expect(item.kind, PlacementKind.meaning);
+      final expected = item.word.meanings['pl'] ?? item.word.english;
+      expect(item.options[item.answer], expected);
+      for (final option in item.options) {
+        expect(
+          option.startsWith('rzeczownik') || option == 'noun 0',
           isTrue,
           reason: option,
         );

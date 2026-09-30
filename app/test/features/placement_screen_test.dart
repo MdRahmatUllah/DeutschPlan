@@ -515,7 +515,10 @@ class _PoolDao extends ContentDao {
   bool fail = false;
 
   @override
-  Future<List<PlacementWord>> placementPool(String step) async {
+  Future<List<PlacementWord>> placementPool(
+    String step, {
+    String lang = 'en',
+  }) async {
     if (fail) throw StateError('no words for $step');
     asked.add(step);
     return <PlacementWord>[for (var i = 0; i < 12; i++) wordFor(step, i)];

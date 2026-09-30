@@ -9,6 +9,7 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/quiz/quiz_names.dart';
@@ -29,7 +30,7 @@ Stream<LastQuiz?> lastStepQuiz(Ref ref, String code) =>
 QuizArgs stepQuiz(
   String code, {
   required int length,
-  String direction = 'deEn',
+  String direction = 'de>en',
 }) => QuizArgs(
   direction: direction,
   source: 'stepLearned',
@@ -62,7 +63,7 @@ class StepQuizTab extends ConsumerWidget {
       stepQuiz(
         step.code,
         length: length,
-        direction: direction ?? meaningDirection(ref).name,
+        direction: direction ?? meaningDirection(ref),
       ),
     );
 
@@ -137,7 +138,11 @@ class StepQuizTab extends ConsumerWidget {
           ),
         if (last != null) ...<Widget>[
           const SizedBox(height: 10),
-          LastQuizCard(quiz: last),
+          LastQuizCard(
+            quiz: last,
+            languages:
+                ref.watch(courseLanguagesProvider).value ?? baseLanguages,
+          ),
         ],
       ],
     );
@@ -210,9 +215,16 @@ class QuizTile extends StatelessWidget {
 /// Lime from 80 %, Sun from 50 %, Coral under. Halves are L9's too: 8.5 is
 /// not 9, nor its colour (#335).
 class LastQuizCard extends StatelessWidget {
-  const LastQuizCard({required this.quiz, super.key});
+  const LastQuizCard({
+    required this.quiz,
+    super.key,
+    this.languages = baseLanguages,
+  });
 
   final LastQuiz quiz;
+
+  /// The course's languages, whose own names name a quiz's (#1120).
+  final List<CourseLanguageName> languages;
 
   @override
   Widget build(BuildContext context) {
@@ -278,7 +290,7 @@ class LastQuizCard extends StatelessWidget {
                       ? l10n.quizLastLineForms(date)
                       : l10n.quizLastLine(
                           kind,
-                          quizDirectionName(l10n, quiz.direction),
+                          quizDirectionName(l10n, quiz.direction, languages),
                           date,
                         ),
                   role: SgTextRole.caption,

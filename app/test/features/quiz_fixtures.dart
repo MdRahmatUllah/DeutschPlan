@@ -13,7 +13,8 @@ import 'package:sogda/domain/quiz_builder.dart';
 /// The QuizRunner artboard's run: Standard · DE → EN over A2.1, twenty
 /// items. The seventh asks "rental contract, lease" for der Mietvertrag.
 Quiz artboardQuiz() => Quiz(
-  direction: QuizDirection.deEn,
+  direction: QuizDirection.toMeaning,
+  lang: 'en',
   source: QuizSource.stepLearned,
   sourceRef: 'A2.1',
   seed: 7,
@@ -23,7 +24,8 @@ Quiz artboardQuiz() => Quiz(
           ? const QuizItem(
               ord: 7,
               wordUid: 'w7',
-              direction: QuizDirection.enDe,
+              direction: QuizDirection.fromMeaning,
+              lang: 'en',
               prompt: 'rental contract, lease',
               expected: 'der Mietvertrag',
               hint: 'ভাড়ার চুক্তি',
@@ -31,7 +33,8 @@ Quiz artboardQuiz() => Quiz(
           : QuizItem(
               ord: ord,
               wordUid: 'w$ord',
-              direction: QuizDirection.deEn,
+              direction: QuizDirection.toMeaning,
+              lang: 'en',
               prompt: 'das Wort$ord',
               expected: 'word $ord',
             ),
@@ -104,8 +107,9 @@ class StubQuizRun implements QuizRunService {
   }
 
   /// Each start's direction, source, ref, length and seed.
-  final List<(QuizDirection, QuizSource, String?, int, int)> started =
-      <(QuizDirection, QuizSource, String?, int, int)>[];
+  /// Each start: its direction as `QuizArgs` carries it (#1120), then the rest.
+  final List<(String, QuizSource, String?, int, int)> started =
+      <(String, QuizSource, String?, int, int)>[];
 
   /// Each answer's ord, what was given and its verdict.
   final List<(int, String, Verdict)> answers = <(int, String, Verdict)>[];
@@ -131,8 +135,9 @@ class StubQuizRun implements QuizRunService {
     required int seed,
     required PlanDate today,
     String? sourceRef,
+    String? lang,
   }) async {
-    started.add((direction, source, sourceRef, length, seed));
+    started.add((askWire(direction, lang), source, sourceRef, length, seed));
     if (error case final error?) throw error;
     return QuizRun(quiz: quiz, attemptId: quiz.items.isEmpty ? null : 1);
   }

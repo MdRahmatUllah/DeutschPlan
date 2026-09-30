@@ -20,6 +20,7 @@ class PlacementWord {
     this.article,
     this.bangla,
     this.examples = const <String>[],
+    this.meanings = const <String, String>{},
   });
 
   final String uid;
@@ -35,6 +36,17 @@ class PlacementWord {
 
   /// German example sentences, for a gap item.
   final List<String> examples;
+
+  /// Its meanings in the course's languages beyond English and Bangla, by
+  /// code (#1120).
+  final Map<String, String> meanings;
+
+  /// Its meaning in [lang]; null where it has none.
+  String? meaningIn(String lang) => switch (lang) {
+    'en' => english,
+    'bn' => bangla,
+    _ => meanings[lang],
+  };
 }
 
 /// The three kinds `placement.md` names.
@@ -92,7 +104,7 @@ class PlacementSession {
   PlacementSession({
     required List<String> steps,
     required this.seed,
-    this.useBangla = false,
+    this.lang = 'en',
   }) : assert(steps.isNotEmpty, 'a check needs somewhere to start'),
        _steps = List<String>.unmodifiable(steps),
        _random = Random(seed);
@@ -112,14 +124,13 @@ class PlacementSession {
   /// FR-S3-02: the same seed draws the same items in the same order.
   final int seed;
 
-  /// The meaning options in Bangla — page 2's choice, made just before this.
-  /// A learner who reads meanings in Bangla would otherwise be tested on
-  /// their English, and placed below their German. Where a word has no
-  /// Bangla, its English stands in.
-  final bool useBangla;
+  /// The meaning options' language: the first of page 2's choice, made just
+  /// before this (#1120). A learner who reads meanings in Bangla or Russian
+  /// would otherwise be tested on their English, and placed below their
+  /// German. Where a word has none in it, its English stands in.
+  final String lang;
 
-  String _meaningOf(PlacementWord word) =>
-      useBangla ? (word.bangla ?? word.english) : word.english;
+  String _meaningOf(PlacementWord word) => word.meaningIn(lang) ?? word.english;
   final Random _random;
 
   int _index = 0;

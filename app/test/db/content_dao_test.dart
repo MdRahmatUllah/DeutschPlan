@@ -229,6 +229,29 @@ void main() {
       expect(pool.map((w) => w.uid).toSet(), hasLength(pool.length));
     });
 
+    test("#1120 S3's pool carries the learner's first language's meanings, "
+        'when it is one beyond English and Bangla', () async {
+      final russian = ContentFixture.write(
+        '${directory.path}/ru.db',
+        russian: true,
+      ).file;
+      final ru = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+      await ru.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(russian)}' AS c",
+      );
+      final course = ContentDao(ru);
+      final pool = await course.placementPool('A1.1', lang: 'ru');
+      final haus = pool.firstWhere((w) => w.uid == ContentFixture.haus);
+      expect(haus.meaningIn('ru'), 'дом');
+      expect(pool.map((w) => w.uid).toSet(), hasLength(pool.length));
+      expect(
+        (await course.placementPool('A1.1')).first.meanings,
+        isEmpty,
+        reason: 'English: the word row',
+      );
+      await ru.close();
+    });
+
     test('an interference tip reaches its word', () async {
       final tips = await dao.tipsForWord(ContentFixture.strasse).get();
       expect(tips.single.tipBn, isNotNull);

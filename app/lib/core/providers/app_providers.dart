@@ -610,31 +610,44 @@ SentencePicker sentencePicker(Ref ref) {
 ///
 /// It copies two settings, so it follows them as the planner does (#342):
 /// its consumers auto-dispose today, but a copy that outlives a write would
-/// quiz in the old meaning language (#698).
+/// quiz in the old meaning languages (#698).
 @riverpod
 QuizBuilder quizBuilder(Ref ref) {
   final settings = ref.watch(settingsProvider);
   _followSettings(ref, settings, const <SettingKey<Object?>>{
     SettingKeys.desiredRetention,
-    SettingKeys.meaningLanguage,
+    ..._meaningKeys,
   });
   return QuizBuilder(
-    DriftQuizStore(
-      ref.watch(wordRepositoryProvider),
-      settings,
-      ref.watch(contentDaoProvider),
-    ),
+    ref.watch(quizStoreProvider),
     fsrs: Fsrs(desiredRetention: settings.read(SettingKeys.desiredRetention)),
-    meanings: switch (settings.read(SettingKeys.meaningLanguage)) {
-      MeaningLanguage.english => const <QuizDirection>{QuizDirection.deEn},
-      MeaningLanguage.bangla => const <QuizDirection>{QuizDirection.deBn},
-      MeaningLanguage.both => const <QuizDirection>{
-        QuizDirection.deEn,
-        QuizDirection.deBn,
-      },
-    },
+    languages: meaningChoiceOf(settings).languages,
   );
 }
+
+/// The quiz builder's words (#1120): with the course's meanings in the
+/// learner's languages beyond English and Bangla, read only while one is
+/// chosen, so a quiz in English or Bangla reads what it always has.
+@riverpod
+DriftQuizStore quizStore(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  _followSettings(ref, settings, _meaningKeys);
+  return DriftQuizStore(
+    ref.watch(wordRepositoryProvider),
+    settings,
+    ref.watch(contentDaoProvider),
+    _needsCourse(meaningChoiceOf(settings))
+        ? ref.watch(courseMeaningsProvider.future)
+        : null,
+  );
+}
+
+/// The settings a [MeaningChoice] is read from.
+const Set<SettingKey<Object?>> _meaningKeys = <SettingKey<Object?>>{
+  SettingKeys.meaningLanguage,
+  SettingKeys.meaningPrimary,
+  SettingKeys.meaningSecondary,
+};
 
 /// M2's reads (#145): the days, the revision ratings, the totals.
 @riverpod
