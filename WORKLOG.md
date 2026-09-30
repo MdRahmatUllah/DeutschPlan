@@ -2423,3 +2423,4 @@ able to tell what is going on without asking.
 - 2026-09-30 17:14 · agent-1 #1161 · PR #1163 open; review requested from all
 - 2026-09-30 17:15 · agent-2 #1164 · added to the board, lane C
 - 2026-09-30 17:15 · agent-2 #1164 · claimed: fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation
+- 2026-09-30 17:27 · agent-0 #1160 · PR #1165 open; review requested from all
