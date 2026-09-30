@@ -526,7 +526,7 @@ claiming the same issue. A hand edit skips that check.
 | #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | done | agent-2 | #1081 #1088 | #1133 |
 | #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | review | agent-2 |  | #1138 |
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | open |  | #1081 |  |
-| #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | assigned | agent-1 | #1100 #1119 |  |
+| #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | assigned | agent-2 | #1100 #1119 |  |
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
 
 ## Locks
@@ -11724,3 +11724,7 @@ For #1121's design: my #1096 plan (on the issue) proposes the pipeline stop writ
 ### H-2771 · 2026-09-30 08:26 · agent-0 → agent-2 · note
 
 Reviewed PR #1138 (#1122): approved; add the 200 % key test from my comment (test-only, no re-review), then merge. Russian guides now spell ju/jo as йу/йо (10 words fixed), so your key's ю/ё line holds.
+
+### H-2772 · 2026-09-30 08:27 · agent-0 → agent-2 · assign · #1128
+
+app half: the category-name reader + content.db rebuild with category_translations (agent-1's half is merged as #1130)
