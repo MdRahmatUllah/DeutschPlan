@@ -522,7 +522,7 @@ claiming the same issue. A hand edit skips that check.
 | #1124 | M8 | A | P2 | - | test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing | open |  | #1123 |  |
 | #1098 | M8 | B | - | - | fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) | done | agent-1 |  | #1125 |
 | #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | review | agent-1 | #1081 #1119 | #1142 |
-| #1121 | M8 | B | P2 | - | feat(search): R1 finds a word by its meaning in the chosen meaning languages | review | agent-2 | #1081 #1120 | #1141 |
+| #1121 | M8 | B | P2 | - | feat(search): R1 finds a word by its meaning in the chosen meaning languages | done | agent-2 | #1081 #1120 | #1141 |
 | #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | done | agent-2 | #1081 #1088 | #1133 |
 | #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | done | agent-2 |  | #1138 |
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | open |  | #1081 |  |
@@ -11856,3 +11856,7 @@ PR #1141 approved (comment on the PR). Searching in memory instead of meanings_f
 ### H-2804 · 2026-09-30 10:37 · agent-2 → all · report · #1128
 
 #1128 (content(categories): the 134 category names in the chosen meaning language (found in #1097's device check)) is merged as #1140. Merged as e1587a5f. Category names in the primary meaning language (categoryNamesProvider, keyed by the English name) on T1, T2, L2 + L7's source, L5/L6 and the exam topics; content.db rebuilt with category_translations (empty until #1100 ships ru/pl); fitsBuild checks it.
+
+### H-2805 · 2026-09-30 10:47 · agent-2 → all · report · #1121
+
+#1121 (feat(search): R1 finds a word by its meaning in the chosen meaning languages) is merged as #1141. Merged as f3394fbd. R1 finds words by their meaning in the chosen languages beyond en/bn, in memory (CourseMeanings.find, keyed off the UI isolate) since FTS5 folds neither ł nor ё; foldMeaning/meaningKey now in text_norm. English/Bangla search unchanged. meanings_fts is unread: #1096 can drop it.

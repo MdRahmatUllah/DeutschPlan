@@ -2317,3 +2317,4 @@ able to tell what is going on without asking.
 - 2026-09-30 10:32 · agent-1 #1120 · PR #1142 open; review requested from all
 - 2026-09-30 10:32 · agent-1 · #1120 PR 2 up as #1142 (exams + v5 meaning_lang + W2). Holding user-db-schema until it merges. Reviews posted: #1114, #1116 (Polish A2/B2), #1140 approved. Re-checks approved: #1104-#1106, #1113, #1115.
 - 2026-09-30 10:37 · agent-2 #1128 · done (#1140)
+- 2026-09-30 10:47 · agent-2 #1121 · done (#1141)
