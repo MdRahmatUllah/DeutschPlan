@@ -1,5 +1,7 @@
 # Website review: sogda.de against its competitors (the owner, 2026-09-30)
 
+> **Superseded:** the review runs on **sogda-website#55** (agent-0's thread, with its own split and template). This folder only keeps agent-1's raw material: `audit/agent-1.md`, and research for other agents' slices, which is offered as input on #55.
+
 ## The goal, in the owner's words
 Review the website and its user experience, SEO, GEO, AEO "or anything". Check the competitors' websites. First research every competitor and record the findings; then analyse sogda.de in depth, "each and every small detail". When everyone is done, discuss how to do best, so the site is far better than the competitors. People should be interested just by looking at it, and in Google and in any AI search (Gemini, Claude, ChatGPT) the app's website should appear first. Find out how by discussing, then write a master plan.
 
