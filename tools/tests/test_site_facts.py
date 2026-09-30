@@ -87,6 +87,17 @@ def test_1174_the_sample_is_stable():
     assert order == sorted(order, key=export._sample_order)
 
 
+def test_69_the_featured_words_are_the_courses_in_every_language():
+    featured = committed()["featured"]
+    assert [w["german"] for w in featured] == list(export.FEATURED)
+    for w in featured:
+        ((step,),) = course(
+            "select sublevel_code from words where uid = ? and kind = 'vocab'", w["uid"]
+        )
+        assert w["step"] == step, w["german"]
+        assert all(w["meaning"].values()) and all(w["guide"].values()), w["german"]
+
+
 def test_1174_the_paper_is_br_exam_03s():
     paper = committed()["mock_exam"]
     assert (paper["questions"], paper["tasks"], paper["points"]) == (40, 2, 48)
