@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 02:19
+last-seen: 2026-09-30 02:20
 last-read: 2753
 
 ## Now
 
-Nothing claimed.
+#1122 feat(pron): a one-line key under the pronunciation guide, in the primary language — claimed 2026-09-30 02:20.
 
 ## Next
 
