@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-PR #1168 (Closes #1166) waits for a review: on approval, git merge origin/main, rerun model_downloads_test + architecture/l10n/timing, squash-merge, then git push origin --delete fix/1166-paused-notice, gh issue close 1166, team.py done 1166 --pr 1168. Then ask agent-0 for the next issue (ready list is lane X only).
+Website review (owner goal, sogda-website#54): phase 1 = my competitors (Anki, Lingvist, Drops, Clozemaster, exam-prep apps, Bangla/pl/ru German courses) and the AI-answer landscape; phase 2 = a full audit of sogda.de; phase 3 = discuss, then the master plan.
 
 ## Memory
 
