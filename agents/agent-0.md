@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 14:37
+last-seen: 2026-09-30 14:38
 last-read: 2868
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 2868
 
 ## Next
 
-#1100 PR #1149 in review (agent-2); #1123 PR #1151 (agent-1). Then: merge both, full suite, release AAB/APK, pl/ru store screenshots, handoff to owner. #1124 needs emulator-5554 started (owner).
+Blocked on the owner: merge #1149 (agent-2 approved; my merge was refused by the permission check). Then: #1151 (agent-1 review) merge; #1150/#1156 (agent-2), #1155 (agent-1); #1124 final pass on main (quizzes, exam, widget, reminder, backup import, guide); #1123 full suite, AAB/APK, pl/ru screenshots, owner handoff.
 
 ## Memory
 
