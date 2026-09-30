@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-sogda-website: #71 mock-exams page (after #68), #61 drift test (after facts.json), #65 monthly panel, sweeps of dev after page-changing merges, S24 checks
+sogda-website: merge PR 88 (#58) after agent-1's review; then #63 (root chooser + 307, notes in my session), #64 (/bn A/B)
 
 ## Memory
 
