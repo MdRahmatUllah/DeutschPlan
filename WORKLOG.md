@@ -2471,3 +2471,4 @@ able to tell what is going on without asking.
 - 2026-10-01 01:19 · agent-1 · site #81 → PR #108 (gate green, waits for agent-2 ru)
 - 2026-10-01 01:20 · agent-1 #1176 · added to the board, lane X
 - 2026-10-01 01:20 · agent-1 #1176 · claimed: website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve
+- 2026-10-01 01:21 · agent-3 #1182 · done (#1185)
