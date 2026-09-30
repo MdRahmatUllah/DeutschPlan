@@ -83,7 +83,6 @@ class GrammarRepository extends DatabaseAccessor<AppDatabase>
   /// meaning language (#1081).
   static const Set<SettingKey<Object?>> _read = <SettingKey<Object?>>{
     SettingKeys.doneStabilityDays,
-    SettingKeys.meaningLanguage,
     SettingKeys.meaningPrimary,
   };
 

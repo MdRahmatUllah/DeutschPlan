@@ -47,8 +47,7 @@ A write is in memory before it is on disk. A write that fails, or a transaction 
 | `done_stability_days` | 7 | Settings |
 | `swipe_to_rate` | 0 | Settings |
 | `quiz_custom_words` | 0 | Settings — FR-R2-04's all-learned quizzes ask my words too |
-| `meaning_primary` / `meaning_secondary` | — / — (read from `meaning_language` until the primary is written: en, bn, en + bn) | Onboarding, Settings — #1081's meaning languages by code (`course_languages`); an empty secondary is none |
-| `meaning_language` | `both` | Onboarding, Settings |
+| `meaning_primary` / `meaning_secondary` | — / — (English then Bangla until the primary is written) | Onboarding, Settings — #1081's meaning languages by code (`course_languages`); an empty secondary is none. They replaced `meaning_language` (en, bn, both), retired by #1096: an install from before #1081 has it read into them once when the settings load, unless they are written already, and deleted; a backup's is read into them on import, before the merge rules, and a file with both keeps its new ones |
 | `ui_language` | `en` (a first run: the phone's language when Sogda speaks it, en or bn or pl or ru, #1078) | Onboarding page 1, Settings |
 | `theme_mode` | `system` (light / dark / glass) | Settings |
 | `pron_key_seen` | 0 | W1, T2's back — #1122: the pronunciation key has been opened once, so its line is a small ⓘ |

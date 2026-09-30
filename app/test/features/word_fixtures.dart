@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/features/words/word_detail_screen.dart';
@@ -14,14 +13,14 @@ WordDetail artboardWordDetail({
   String? article = 'die',
   String german = 'Straße',
   WordStatus status = WordStatus.done,
-  MeaningLanguage meaning = MeaningLanguage.both,
+  MeaningChoice meaning = const MeaningChoice('en', 'bn'),
   Meanings? meanings,
   PronGuide? pron = (lang: 'bn', text: 'স্ট্রাসে'),
   List<({String german, String? translation})>? examples,
   bool translate = false,
   String kind = 'vocab',
 }) => WordDetail(
-  meanings: meanings ?? Meanings(MeaningChoice.of(meaning)),
+  meanings: meanings ?? Meanings(meaning),
   pron: pron,
   translate: translate,
   word: WordWithState(

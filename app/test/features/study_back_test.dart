@@ -161,7 +161,7 @@ void main() {
       WidgetTester tester, {
       Word? word,
       bool revealed = true,
-      MeaningLanguage meaning = MeaningLanguage.both,
+      MeaningChoice meaning = const MeaningChoice('en', 'bn'),
       MeaningChoice? choice,
       CourseMeanings course = CourseMeanings.none,
       bool autoplayExample = false,
@@ -177,7 +177,7 @@ void main() {
         await settings.load();
         await settings.write(SettingKeys.autoplayHeadword, false);
         await settings.write(SettingKeys.autoplayExample, autoplayExample);
-        await settings.write(SettingKeys.meaningLanguage, meaning);
+        await writeMeaningChoice(settings, meaning);
         if (choice != null) await writeMeaningChoice(settings, choice);
       });
       addTearDown(
@@ -238,7 +238,7 @@ void main() {
       expect(turned, 1);
     });
 
-    testWidgets('meaning_language both: English, then Bangla', (tester) async {
+    testWidgets('English, then Bangla', (tester) async {
       await pump(tester);
       // #1122: the guide is Bangla's, which has no key.
       expect(find.text(l10n.pronKeyLine), findsNothing);
@@ -251,13 +251,13 @@ void main() {
     });
 
     testWidgets('EN: English alone', (tester) async {
-      await pump(tester, meaning: MeaningLanguage.english);
+      await pump(tester, meaning: const MeaningChoice('en'));
       expect(find.text('bill, invoice'), findsOneWidget);
       expect(find.text('বিল, চালান'), findsNothing);
     });
 
     testWidgets('বাংলা: Bangla alone, in ink', (tester) async {
-      await pump(tester, meaning: MeaningLanguage.bangla);
+      await pump(tester, meaning: const MeaningChoice('bn'));
       expect(find.text('bill, invoice'), findsNothing);
       expect(find.text('বিল, চালান'), findsOneWidget);
     });
@@ -268,7 +268,7 @@ void main() {
       await pump(
         tester,
         word: rechnung.copyWith(bangla: const Value<String?>(null)),
-        meaning: MeaningLanguage.bangla,
+        meaning: const MeaningChoice('bn'),
       );
       expect(find.text('bill, invoice'), findsOneWidget);
     });
@@ -315,7 +315,7 @@ void main() {
     testWidgets('the interference tip is a Tangerine callout under them', (
       tester,
     ) async {
-      await pump(tester, meaning: MeaningLanguage.english);
+      await pump(tester, meaning: const MeaningChoice('en'));
       final callout = find.byType(SgCallout);
       expect(callout, findsOneWidget);
       expect(

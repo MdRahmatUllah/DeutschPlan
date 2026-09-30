@@ -8,6 +8,7 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/learn/step_detail_screen.dart';
 import 'package:sogda/features/learn/step_quiz.dart';
@@ -117,7 +118,7 @@ void main() {
     (ProviderScope.containerOf(tester.element(find.byType(StepDetailScreen)))
                 .read(settingsSourceProvider)
             as StubSettings)
-        .put(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+        .putMeaning(const MeaningChoice('bn'));
     await tester.tap(find.text(l10n.quizQuick));
     await tester.pumpAndSettle();
     expect(started!.direction, 'de>bn');

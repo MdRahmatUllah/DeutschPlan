@@ -27,7 +27,7 @@ void main() {
     builder: (context) => ProviderScope(
       overrides: <Override>[
         languagesProvider.overrideWith(
-          () => _FixedLanguages(MeaningLanguage.english),
+          () => _FixedLanguages(const MeaningChoice('en')),
         ),
         contentDaoProvider.overrideWithValue(_A1Dao(db)),
         courseStepsProvider.overrideWith(
@@ -48,7 +48,7 @@ void main() {
     builder: (context) => ProviderScope(
       overrides: <Override>[
         languagesProvider.overrideWith(
-          () => _FixedLanguages(MeaningLanguage.english),
+          () => _FixedLanguages(const MeaningChoice('en')),
         ),
         contentDaoProvider.overrideWithValue(_A1Dao(db, _A1Dao.long)),
         courseStepsProvider.overrideWith(
@@ -102,9 +102,9 @@ class _A1Dao extends ContentDao {
 class _FixedLanguages extends Languages {
   _FixedLanguages(this.meaning);
 
-  final MeaningLanguage meaning;
+  final MeaningChoice meaning;
 
   @override
   ({MeaningChoice meaning, UiLanguage ui}) build() =>
-      (meaning: MeaningChoice.of(meaning), ui: UiLanguage.english);
+      (meaning: meaning, ui: UiLanguage.english);
 }

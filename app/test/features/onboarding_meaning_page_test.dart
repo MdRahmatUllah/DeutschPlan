@@ -60,7 +60,7 @@ void main() {
     Word? sample,
     bool noSample = false,
     bool sampleThrows = false,
-    MeaningLanguage? stored,
+    MeaningChoice? stored,
     List<CourseLanguageName>? languages,
     CourseMeanings course = CourseMeanings.none,
     SgMode mode = SgMode.light,
@@ -73,7 +73,7 @@ void main() {
     await settings.load();
     addTearDown(settings.dispose);
     if (stored != null) {
-      await settings.write(SettingKeys.meaningLanguage, stored);
+      await writeMeaningChoice(settings, stored);
     }
 
     final word = noSample ? null : sample ?? wohnung();
@@ -137,7 +137,7 @@ void main() {
   group('the choice', () {
     testWidgets('#1081 starts on English, Bangla also shown: the documented '
         'default', (tester) async {
-      // `meaning_language` defaults to `both`: English first, then Bangla.
+      // Before a choice: English first, then Bangla.
       await pump(tester);
 
       expect(selectedTitles(tester), <String>[en]);
@@ -147,7 +147,7 @@ void main() {
     testWidgets('FR-S2-02 shows what was picked when the page is revisited', (
       tester,
     ) async {
-      await pump(tester, stored: MeaningLanguage.bangla);
+      await pump(tester, stored: const MeaningChoice('bn'));
 
       expect(selectedTitles(tester), <String>[bn]);
       expect(alsoShown(tester), l10n.onboardingMeaningNone);
@@ -230,7 +230,7 @@ void main() {
     });
 
     testWidgets('and the tick sits on the picked card', (tester) async {
-      await pump(tester, stored: MeaningLanguage.english);
+      await pump(tester, stored: const MeaningChoice('en'));
 
       expect(
         find.descendant(
@@ -409,7 +409,7 @@ void main() {
       tester,
     ) async {
       final handle = tester.ensureSemantics();
-      await pump(tester, stored: MeaningLanguage.bangla);
+      await pump(tester, stored: const MeaningChoice('bn'));
 
       expect(
         tester.getSemantics(find.text(bn)),

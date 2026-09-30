@@ -174,9 +174,12 @@ void main() {
 
       await writeElsewhere((other) async {
         await other.write(SettingKeys.uiLanguage, UiLanguage.bangla);
-        await other.write(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+        // An older build's backup: the retired key alone, read into the
+        // settings that replaced it on the reload (#1096).
+        await db.customStatement(
+          "INSERT INTO settings (key, value) VALUES ('meaning_language', 'bn')",
+        );
       });
-      // An older build's backup: the old key alone (#1081).
       expect(ref.read(languagesProvider), (
         meaning: const MeaningChoice('bn'),
         ui: UiLanguage.bangla,
@@ -328,9 +331,9 @@ void main() {
       c.listen(quizBuilderProvider, (_, _) {}); // kept, as a screen would
       for (final write in <Future<void> Function()>[
         () => settings.write(SettingKeys.desiredRetention, 0.85),
-        () => settings.write(SettingKeys.meaningLanguage, MeaningLanguage.both),
+        () => settings.write(SettingKeys.meaningPrimary, 'bn'),
         // #1120: the languages chosen since #1081.
-        () => settings.write(SettingKeys.meaningSecondary, 'bn'),
+        () => settings.write(SettingKeys.meaningSecondary, 'en'),
       ]) {
         final before = c.read(quizBuilderProvider);
         await write();
@@ -344,12 +347,12 @@ void main() {
     test(
       'asks in the meaning languages the learner chose, and no other',
       () async {
-        for (final (meaning, languages) in <(MeaningLanguage, List<String>)>[
-          (MeaningLanguage.english, <String>['en']),
-          (MeaningLanguage.bangla, <String>['bn']),
-          (MeaningLanguage.both, <String>['en', 'bn']),
+        for (final (meaning, languages) in <(MeaningChoice, List<String>)>[
+          (const MeaningChoice('en'), <String>['en']),
+          (const MeaningChoice('bn'), <String>['bn']),
+          (const MeaningChoice('en', 'bn'), <String>['en', 'bn']),
         ]) {
-          await settings.write(SettingKeys.meaningLanguage, meaning);
+          await writeMeaningChoice(settings, meaning);
           final c = container();
           expect(
             c.read(quizBuilderProvider).languages,
