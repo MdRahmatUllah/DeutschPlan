@@ -307,6 +307,24 @@ Future<List<CourseLanguageName>> courseLanguages(Ref ref) async =>
         (code: l.code, ownName: l.ownName),
     ];
 
+/// #1128: the category names in the primary meaning language. English's
+/// are the course's own and need no read; a course that can't be read shows
+/// English, as one without the language does.
+@riverpod
+Future<CategoryNames> categoryNames(Ref ref) async {
+  final primary = ref.watch(languagesProvider).meaning.primary;
+  if (primary == 'en') return CategoryNames.none;
+  final dao = ref.watch(contentDaoProvider);
+  try {
+    return CategoryNames(<String, String>{
+      for (final row in await dao.categoryNamesIn(primary).get())
+        row.english: row.name,
+    });
+  } on Object {
+    return CategoryNames.none;
+  }
+}
+
 /// #1081: every meaning the course ships, read once per database.
 @Riverpod(retry: _readOnce)
 Future<CourseMeanings> courseMeanings(Ref ref) =>

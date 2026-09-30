@@ -18,8 +18,25 @@ part 'categories_screen.g.dart';
 
 /// L5's cards, from one grouped query (FR-L5-01).
 @riverpod
-Stream<List<CategoryProgress>> categories(Ref ref) =>
-    ref.watch(wordRepositoryProvider).watchCategoryProgress();
+Stream<List<CategoryProgress>> categories(Ref ref) async* {
+  // #1128: each in the primary meaning language; L6's title reads it too.
+  final names = ref.watch(categoryNamesProvider.future);
+  final progress = ref.watch(wordRepositoryProvider).watchCategoryProgress();
+  final translated = await names;
+  yield* progress.map(
+    (list) => <CategoryProgress>[
+      for (final c in list)
+        CategoryProgress(
+          id: c.id,
+          name: translated.of(c.name),
+          words: c.words,
+          todo: c.todo,
+          learning: c.learning,
+          done: c.done,
+        ),
+    ],
+  );
+}
 
 /// A card's tile colour and the ink on it, cycling through the palette in
 /// the grid's order: the same list always colours the same way.

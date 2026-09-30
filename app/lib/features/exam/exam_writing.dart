@@ -1,8 +1,11 @@
 import 'package:flutter/services.dart'
     show LengthLimitingTextInputFormatter, TextInputFormatter;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart'
     show connectorsUsed, targetsUsed, textWords;
@@ -15,7 +18,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 /// minimum (FR-L12W-02) and the connectors in it. The text is the runner's
 /// typed answer, so it is kept in `exam_answers.given` and never leaves the
 /// phone (FR-L12W-04).
-class ExamWriting extends StatelessWidget {
+class ExamWriting extends ConsumerWidget {
   const ExamWriting({
     required this.task,
     required this.field,
@@ -41,14 +44,20 @@ class ExamWriting extends StatelessWidget {
   final bool typingLarge;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
     final edge = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: tokens.color.ink, width: 2),
     );
-    final topic = task.category ?? l10n.examWritingTopicFallback;
+    // #1128: the task keeps the English name; it shows in the primary
+    // meaning language.
+    final names = ref.watch(categoryNamesProvider).value ?? CategoryNames.none;
+    final topic = switch (task.category) {
+      final String english => names.of(english),
+      null => l10n.examWritingTopicFallback,
+    };
 
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: field,

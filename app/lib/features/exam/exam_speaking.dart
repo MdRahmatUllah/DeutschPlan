@@ -11,6 +11,7 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/features/exam/exam_question_view.dart'
     show ExamRubricTick, examClock, examRubricLines, examTaskPanel;
@@ -317,7 +318,13 @@ class _ExamSpeakingState extends ConsumerState<ExamSpeaking> {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
     final task = widget.task;
-    final topic = task.category ?? l10n.examWritingTopicFallback;
+    // #1128: the task keeps the English name; it shows in the primary
+    // meaning language.
+    final names = ref.watch(categoryNamesProvider).value ?? CategoryNames.none;
+    final topic = switch (task.category) {
+      final String english => names.of(english),
+      null => l10n.examWritingTopicFallback,
+    };
     final max = task.seconds;
     final retake = SgButton(
       label: l10n.examSpeakingRetake(_takesLeft),
