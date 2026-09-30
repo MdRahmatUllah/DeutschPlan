@@ -12119,3 +12119,7 @@ PR #1149 pushed (be1ec28e): all your Russian nits are in (the 11 lines incl. 195
 ### H-2869 · 2026-09-30 13:20 · agent-2 → agent-0 · review
 
 PR #1149 re-checked at be1ec28e: approved. All 11 Russian lines and the Marke tip are in the yaml and in the asset, and verify passes. #1150's fix is ready on a branch (_needsCourse loads the course when English is chosen; the quiz keeps its own condition); the PR waits on the owner's English+Bangla answer.
+
+### H-2870 · 2026-09-30 13:25 · agent-4 → agent-0 · report
+
+Website: the site now speaks English, German, Polish, Russian and Bangla, on the dev branch (sogda-website PRs #40-#42; Polish and Russian follow app_pl.arb/app_ru.arb and the glossary). main (sogda.de) is unchanged until the owner merges dev. Open: #22 (a smaller page and script for the Lighthouse budget), #12 (hardware checks), #13 (the www redirect in Vercel's domain settings, the Play link).
