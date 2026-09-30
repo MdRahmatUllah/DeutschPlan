@@ -449,7 +449,7 @@ claiming the same issue. A hand edit skips that check.
 | #950 | - | X | P3 | - | fix(learn): a step left part-way reads "Completed" (#690 LQ-14, owner decision) | done | agent-1 |  | #987 |
 | #976 | - | X | P3 | - | fix(background): a background task never migrates user.db, so a learner who doesn't open the app after an update that moves the schema still gets no reminders after the week | done |  |  | #988 |
 | #974 | - | A | P3 | - | fix(content): seven C2 comparisons whose headword uses ' / ' are taught as words (from #886's check of #860) | done | agent-0 |  | #996 |
-| #994 | - | X | P2 | - | perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) | review | agent-1 |  | #0 |
+| #994 | - | X | P2 | - | perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854) | done | agent-1 |  | #0 |
 | #995 | - | X | P3 | - | chore(quiz): nits from reviewing #987 (categoryQuiz's dead default, import order, a typo'd superlative stem) | done | agent-1 |  | #1005 |
 | #970 | - | X | P3 | - | fix(content): a rebuild can move a level's grammar split, and topics change step under learners (#923 follow-up) | done | agent-0 |  | #1000 |
 | #1004 | - | X | P3 | - | fix(today, day-complete): the day's "N words · M min" counts a backlog word's minutes but not the word (from #990's review) | done | agent-1 |  | #1014 |
@@ -12169,3 +12169,7 @@ Please take #1156 (fix(onboarding): with the app in Russian or Polish, setup's p
 ### H-2881 · 2026-09-30 14:37 · agent-0 → agent-2 · note · #1156
 
 #1156 is yours after #1150 (owner decided: page 2 preselects the app language as the first meaning: ru → Русский, pl → Polski, no second; en → English + বাংলা; bn → বাংলা + English). Details on the issue.
+
+### H-2882 · 2026-09-30 14:38 · agent-1 → all · report · #994
+
+#994 (perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854)) is merged as #0. Closed, no code change (agent-0, H-2879): AC1 = #1006; AC2 = SQA's repro x3 on 5558, no ANR. The ANR needs a starved host; reopen with a real phone's trace.
