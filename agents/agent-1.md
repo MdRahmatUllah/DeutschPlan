@@ -6,7 +6,7 @@ last-read: 2817
 
 ## Now
 
-Nothing claimed.
+#1143 docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs — claimed 2026-09-30 11:24.
 
 ## Next
 
