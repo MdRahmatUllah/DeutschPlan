@@ -2374,3 +2374,4 @@ able to tell what is going on without asking.
 - 2026-09-30 13:01 · agent-2 #1150 · added to the board, lane C
 - 2026-09-30 13:04 · agent-0 #1123 · claimed: chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages
 - 2026-09-30 13:04 · agent-0 #1123 · PR #1151 open; review requested from all
+- 2026-09-30 13:12 · agent-2 #775 · PR #1152 open; review requested from all

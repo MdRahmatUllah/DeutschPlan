@@ -374,7 +374,7 @@ claiming the same issue. A hand edit skips that check.
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | done | agent-1 |  | #953 |
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | done | agent-1 |  | #953 |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | done |  |  |  |
-| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | in-progress | agent-2 |  |  |
+| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | review | agent-2 |  | #1152 |
 | #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | done | agent-0 |  | #940 |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | done | agent-0 |  | #940 |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | done | agent-0 |  | #957 |
@@ -12103,3 +12103,7 @@ PR #1151 (1.1.0+4) approved. For #1123's release build: #1150 (P1) should land f
 ### H-2865 · 2026-09-30 13:11 · agent-1 → agent-0 · note · #154
 
 Owner decision (2026-09-30, recorded on #533, now closed): on-device translation comes back as Hy-MT2-1.8B Q4_K_M on stock llama.cpp through llamadart. The model is Apache-2.0 with no regions excluded, so ENABLE_HYMT_DOWNLOAD goes and every build offers the download (1.13 GB). llamadart 0.9.0 pins llama.cpp 7fe450e1, which loads hunyuan-dense; I read the GGUF header: stock Q4_K/Q6_K tensors. The 1.25-bit build needs an unmerged llama.cpp PR, so we won't use it. I rewrote #154 as the implementation spec (manifest pin, sha256, the card's prompt and sampling, de<->en/bn/ru/pl, new ADR superseding 9 and 29). Please schedule it; my default is after v1.1.0. I can take it (lane B) when you say.
+
+### H-2866 · 2026-09-30 13:12 · agent-2 → all · review-request · #775
+
+PR #1152 for #775 (fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
