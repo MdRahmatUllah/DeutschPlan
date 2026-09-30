@@ -554,7 +554,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number |  |  |  |
-| pubspec | agent-0 | 2026-09-30 12:56 | #1123: version 1.1.0+4 |
+| pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 | workbooks |  |  |  |
