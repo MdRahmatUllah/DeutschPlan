@@ -82,7 +82,7 @@ void main() {
       },
     });
     String? guide(MeaningChoice choice, {bool bangla = true}) =>
-        Meanings(choice, course).pronunciation(word, bangla: bangla);
+        Meanings(choice, course).pronunciation(word, bangla: bangla)?.text;
 
     expect(guide(const MeaningChoice('en', 'bn')), 'হাউস', reason: 'en none');
     expect(guide(const MeaningChoice('en', 'bn'), bangla: false), isNull);

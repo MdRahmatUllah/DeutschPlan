@@ -71,7 +71,7 @@ void main() {
                 },
               }),
             ),
-            pron: 'штрАсэ',
+            pron: (lang: 'ru', text: 'штрАсэ'),
             examples: const <({String german, String? translation})>[
               (
                 german: 'Die Straße ist wegen Bauarbeiten gesperrt.',

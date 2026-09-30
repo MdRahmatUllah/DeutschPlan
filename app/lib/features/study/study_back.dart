@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,6 +13,7 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart' show customId;
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -68,12 +71,17 @@ class StudyBack extends StatelessWidget {
     required this.meanings,
     required this.onPlay,
     super.key,
+    this.guide,
     this.extras,
     this.updated = false,
   });
 
   final Word word;
   final Meanings meanings;
+
+  /// The language of the pronunciation guide on the front, whose key the
+  /// back opens with (#1122); null with no guide.
+  final String? guide;
 
   /// Null until the examples and tip have loaded.
   final StudyBackExtras? extras;
@@ -110,6 +118,10 @@ class StudyBack extends StatelessWidget {
             child: UpdatedChip(),
           ),
           const SizedBox(height: 8),
+        ],
+        if (guide case final lang? when PronKey.has(lang)) ...<Widget>[
+          PronKey(lang),
+          const SizedBox(height: 6),
         ],
         MeaningLines(meanings.lines(word)),
         if (tip != null) ...<Widget>[
@@ -171,6 +183,109 @@ class MeaningLines extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// #1122: the key to a pronunciation guide in [lang], how its letters and
+/// capitals read. A line under the guide opens it in a sheet; once the
+/// learner has opened one, a small ⓘ in its place (`pron_key_seen`). W1 and
+/// T2's back.
+class PronKey extends ConsumerStatefulWidget {
+  const PronKey(this.lang, {super.key});
+
+  final String lang;
+
+  /// Whether [lang]'s guide has a key: English, Russian and Polish do.
+  static bool has(String lang) =>
+      const <String>{'en', 'ru', 'pl'}.contains(lang);
+
+  /// [lang]'s key, written in [lang] whatever the app's language.
+  static String _text(AppLocalizations l10n, String lang) => switch (lang) {
+    'ru' => l10n.pronKeyRu,
+    'pl' => l10n.pronKeyPl,
+    _ => l10n.pronKeyEn,
+  };
+
+  @override
+  ConsumerState<PronKey> createState() => _PronKeyState();
+}
+
+class _PronKeyState extends ConsumerState<PronKey> {
+  late bool _seen = ref.read(settingsProvider).read(SettingKeys.pronKeySeen);
+
+  Future<void> _open() async {
+    final l10n = AppLocalizations.of(context);
+    final text = PronKey._text(l10n, widget.lang);
+    if (!_seen) {
+      setState(() => _seen = true);
+      unawaited(
+        ref.read(settingsProvider).write(SettingKeys.pronKeySeen, true),
+      );
+    }
+    await Adaptive.showSheet<void>(
+      context: context,
+      builder: (sheet) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Semantics(
+              header: true,
+              child: SgText(l10n.pronKeyLine, role: SgTextRole.title),
+            ),
+            const SizedBox(height: 8),
+            Flexible(
+              child: SingleChildScrollView(
+                child: SgText(text, role: SgTextRole.body),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Semantics(
+        container: true,
+        button: true,
+        label: l10n.pronKeyLine,
+        onTap: _open,
+        excludeSemantics: true,
+        child: SgTappable(
+          onTap: _open,
+          child: ConstrainedBox(
+            // accessibility-performance.md: 48 dp on Android, 44 pt on iOS.
+            constraints: BoxConstraints(
+              minHeight: context.isCupertino ? 44 : 48,
+              minWidth: context.isCupertino ? 44 : 48,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(Icons.info_outline, size: 18, color: tokens.color.link),
+                if (!_seen) ...<Widget>[
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: SgText(
+                      l10n.pronKeyLine,
+                      role: SgTextRole.caption,
+                      color: tokens.color.link,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

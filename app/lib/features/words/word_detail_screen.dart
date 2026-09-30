@@ -62,7 +62,7 @@ class WordDetail {
   /// (`show_pron_bn` too), read here like L2's rows read theirs, so the view
   /// itself reads no settings.
   final Meanings meanings;
-  final String? pron;
+  final PronGuide? pron;
 
   /// `mt_enabled`: whether *Translate* is offered (FR-W1-05).
   final bool translate;
@@ -615,13 +615,17 @@ class _Body extends ConsumerWidget {
           SgText(
             // A long compound's forms break at a syllable, not at any
             // letter; a shorter word wraps whole (#419).
-            SgScript.allowBreaks(frontCaption(word, l10n, pron: detail.pron)),
+            SgScript.allowBreaks(
+              frontCaption(word, l10n, pron: detail.pron?.text),
+            ),
             role: SgTextRole.caption,
             color: tokens.color.textSecondary,
             // Its Bangla pronunciation too, though no German in it is long
             // (#504).
             breakTooWide: true,
           ),
+          if (detail.pron case (:final lang, text: _) when PronKey.has(lang))
+            PronKey(lang),
           gap(12),
           MeaningLines(meanings.lines(word)),
           if (detail.examples.isNotEmpty) ...<Widget>[

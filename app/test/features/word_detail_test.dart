@@ -1101,7 +1101,7 @@ void main() {
     Future<WordDetail?> read() =>
         container.read(wordDetailProvider(ContentFixture.haus).future);
 
-    expect((await read())!.pron, 'হাউস', reason: 'both, the default');
+    expect((await read())!.pron?.text, 'হাউস', reason: 'both, the default');
     await container
         .read(languagesProvider.notifier)
         .setMeaning(MeaningChoice.of(MeaningLanguage.english));
@@ -1110,7 +1110,7 @@ void main() {
     await container
         .read(languagesProvider.notifier)
         .setMeaning(MeaningChoice.of(MeaningLanguage.both));
-    expect((await read())!.pron, 'হাউস');
+    expect((await read())!.pron?.text, 'হাউস');
   });
 
   test('#854 PIPE-09 an old uid, from a link written before an update '
