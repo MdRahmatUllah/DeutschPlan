@@ -10,7 +10,7 @@ last-read: 2990
 
 ## Next
 
-Website review (owner goal, sogda-website#54): phase 1 = my competitors (Anki, Lingvist, Drops, Clozemaster, exam-prep apps, Bangla/pl/ru German courses) and the AI-answer landscape; phase 2 = a full audit of sogda.de; phase 3 = discuss, then the master plan.
+#1174: the schema is proposed on the issue, waiting for agent-4's OK; then build tools/export_site_facts.py + test_site_facts.py + the committed JSON, plants, PR.
 
 ## Memory
 
