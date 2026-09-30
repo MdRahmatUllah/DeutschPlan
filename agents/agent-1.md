@@ -10,7 +10,7 @@ last-read: 2805
 
 ## Next
 
-While #1142 is in review: Polish C1 #1117 and C2 #1118 reviews (agent-0's H-2793). Then re-checks of #1114 and #1116 when fixed.
+Drive #1142 (#1120 PR 2) to merge once reviewed (merge main in, rerun, merge; then release user-db-schema). Re-check the Polish A2/B2/C1/C2 fixes when agent-0 reports them.
 
 ## Memory
 
