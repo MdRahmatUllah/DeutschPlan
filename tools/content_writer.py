@@ -85,15 +85,14 @@ def create_fts(connection: sqlite3.Connection) -> None:
 
 
 def fill_fts(connection: sqlite3.Connection) -> None:
-    """Indexes `words`, `word_examples` and `word_meanings` into the search
-    tables.
+    """Indexes `words` and `word_examples` into the search tables.
 
     FTS5's `rebuild`: the tables are external content (#712), an index of the
     rows as they are now. Last, after every row is written, so nothing is
     left out of it; content.db is read-only on the device, so it cannot drift
     afterwards, and PIPE-08's integrity check says if anything moved it.
     """
-    for table in ("words_fts", "words_trigram", "examples_fts", "meanings_fts"):
+    for table in ("words_fts", "words_trigram", "examples_fts"):
         connection.execute(f"INSERT INTO {table} ({table}) VALUES ('rebuild')")
 
     # No `optimize` here. It merges the index's b-tree segments, and there is
@@ -283,8 +282,8 @@ def _write_grammar(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
 
 
 def _write_tips(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
-    # ponytail: the old table, English-keyed, until the app reads word_tips
-    # (#1081); OR IGNORE keeps the first of two tips with one English text.
+    # English's and Bangla's tips (#1096: not in word_tips); OR IGNORE keeps
+    # the first of two tips with one English text.
     connection.executemany(
         "INSERT OR IGNORE INTO interference_tips (word_uid, tip_en, tip_bn) "
         "VALUES (?, ?, ?)",
@@ -311,12 +310,17 @@ def _write_languages(connection: sqlite3.Connection, inputs: BuildInputs) -> Non
     """#1080: each meaning language that ships, and its texts.
 
     A part a language has no text for (Bangla's examples, its grammar) has
-    no rows: the app falls back to English's. English's and Bangla's are the
-    same texts as the old columns (`words.english`, `bangla`, `pron_bn`,
-    `word_examples.english`, `grammar_topics`, `interference_tips`), which
-    stay until the app reads these (#1081).
+    no rows: the app falls back to English's. A text the course's own
+    columns hold is written there alone (#1096): English's meaning,
+    examples, grammar and tips (`words.english`, `word_examples.english`,
+    `grammar_topics`, `interference_tips.tip_en`), and Bangla's meaning,
+    guide and tips (`words.bangla`, `pron_bn`, `interference_tips.tip_bn`).
+    English's only rows here are `word_meanings`' for a word with its
+    pronunciation guide (#1082), which no column holds.
     """
     codes = [language.code for language in inputs.languages]
+    others = [code for code in codes if code != "en"]
+    beyond = [code for code in codes if code not in ("en", "bn")]
     connection.executemany(
         "INSERT INTO course_languages (code, name, own_name, script, ord) "
         "VALUES (?, ?, ?, ?, ?)",
@@ -329,10 +333,12 @@ def _write_languages(connection: sqlite3.Connection, inputs: BuildInputs) -> Non
         "INSERT INTO word_meanings (word_uid, lang, meaning, pronunciation) "
         "VALUES (?, ?, ?, ?)",
         [
-            (word.uid, code, meaning, text_of(word, "pronunciation", code))
+            (word.uid, code, meaning, guide)
             for word in inputs.words
             for code in codes
-            if (meaning := text_of(word, "meaning", code))
+            if code != "bn"
+            and (meaning := text_of(word, "meaning", code))
+            and ((guide := text_of(word, "pronunciation", code)) or code != "en")
         ],
     )
     connection.executemany(
@@ -341,7 +347,7 @@ def _write_languages(connection: sqlite3.Connection, inputs: BuildInputs) -> Non
         [
             (word.uid, ord, code, line)
             for word in inputs.words
-            for code in codes
+            for code in others
             for ord, line in enumerate(translation_lines(word, code), start=1)
         ],
     )
@@ -353,7 +359,7 @@ def _write_languages(connection: sqlite3.Connection, inputs: BuildInputs) -> Non
             (row.uid, code, topic)
             + tuple(text_of(row, part, code) for part in ("rule", "example", "watch_out"))
             for row in inputs.grammar
-            for code in codes
+            for code in others
             if (topic := text_of(row, "topic", code))
         ],
     )
@@ -363,7 +369,7 @@ def _write_languages(connection: sqlite3.Connection, inputs: BuildInputs) -> Non
         dict.fromkeys(
             (tip.word_uid, code, tip.texts[code])
             for tip in inputs.tips
-            for code in codes
+            for code in beyond
             if code in tip.texts
         ),
     )

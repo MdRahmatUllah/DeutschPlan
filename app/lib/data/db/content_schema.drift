@@ -126,7 +126,7 @@ CREATE TABLE word_meanings (
   meaning       TEXT NOT NULL,
   pronunciation TEXT,
   PRIMARY KEY (word_uid, lang)
-);
+) WITHOUT ROWID;
 
 CREATE TABLE word_example_translations (
   word_uid    TEXT NOT NULL REFERENCES words (uid) ON DELETE CASCADE,
@@ -170,14 +170,6 @@ CREATE VIRTUAL TABLE words_trigram USING fts5(
   search_key,
   content = 'words',
   tokenize = 'trigram'
-);
-
-CREATE VIRTUAL TABLE meanings_fts USING fts5(
-  word_uid UNINDEXED,
-  lang UNINDEXED,
-  meaning,
-  content = 'word_meanings',
-  tokenize = 'unicode61 remove_diacritics 2 categories ''L* N* Co Mn Mc'''
 );
 
 CREATE VIRTUAL TABLE examples_fts USING fts5(

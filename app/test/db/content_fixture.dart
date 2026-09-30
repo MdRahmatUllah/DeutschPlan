@@ -6,7 +6,7 @@ import 'package:sqlite3/sqlite3.dart';
 /// The bundled course, copied once per test process, for a test that
 /// ATTACHes it (#331). `flutter test` runs files in parallel processes, and
 /// two of them committing with the same file attached fail now and then
-/// with "database is locked". The copy is 8 MB, in a [tempDir].
+/// with "database is locked". The copy is 6 MB, in a [tempDir].
 File realContent() =>
     _realContent ??= File('assets/db/content.db')
         .copySync('${tempDir('sogda_course').path}/content.db');
@@ -78,7 +78,6 @@ class ContentFixture {
         INSERT INTO words_fts (words_fts) VALUES ('rebuild');
         INSERT INTO words_trigram (words_trigram) VALUES ('rebuild');
         INSERT INTO examples_fts (examples_fts) VALUES ('rebuild');
-        INSERT INTO meanings_fts (meanings_fts) VALUES ('rebuild');
       ''');
     } finally {
       db.close();
@@ -152,27 +151,12 @@ class ContentFixture {
         ('word_count', '3'),
         ('sublevel_week_boundaries', '{"A1.2": 4}');
 
-      -- #1080's meaning languages, English and Bangla, the same texts as the
-      -- columns above, as the pipeline writes them.
+      -- #1080's meaning languages, as the pipeline writes them: English's
+      -- and Bangla's texts are the columns above, with no rows of their own
+      -- (#1096; English has no pronunciation guide here).
       INSERT INTO course_languages (code, name, own_name, script, ord) VALUES
         ('en', 'English', 'English', 'Latn', 1),
         ('bn', 'Bangla', 'বাংলা', 'Beng', 2);
-      INSERT INTO word_meanings (word_uid, lang, meaning, pronunciation)
-        SELECT uid, 'en', english, NULL FROM words;
-      INSERT INTO word_meanings (word_uid, lang, meaning, pronunciation)
-        SELECT uid, 'bn', bangla, pron_bn FROM words WHERE bangla IS NOT NULL;
-      INSERT INTO word_example_translations (word_uid, ord, lang, translation)
-        SELECT word_uid, ord, 'en', english FROM word_examples
-        WHERE english IS NOT NULL;
-      INSERT INTO grammar_translations
-        (grammar_uid, lang, topic, rule, example, watch_out)
-        SELECT uid, 'en', topic, rule, example_en, watch_out
-        FROM grammar_topics;
-      INSERT INTO word_tips (word_uid, lang, tip)
-        SELECT word_uid, 'en', tip_en FROM interference_tips;
-      INSERT INTO word_tips (word_uid, lang, tip)
-        SELECT word_uid, 'bn', tip_bn FROM interference_tips
-        WHERE tip_bn IS NOT NULL;
     ''');
   }
 

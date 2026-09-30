@@ -78,7 +78,7 @@ class CourseMeanings {
 
   /// #1121: the words whose meaning in [lang] is [key] (a [meaningKey]), or
   /// one of its alternatives is, and those where a word of it starts with
-  /// [key]. In memory rather than through `meanings_fts`: FTS5 folds neither
+  /// [key]. In memory rather than through an FTS5 index: FTS5 folds neither
   /// Polish ł nor Russian ё, and a learner types them as l and е.
   Future<({List<String> exact, List<String> startsWith})> find(
     String lang,
@@ -144,9 +144,8 @@ class Meanings {
   final CourseMeanings course;
 
   /// [word]'s meaning in [lang], or null where the course has none.
-  // ponytail: English and Bangla from the word's own row, which the pipeline
-  // fills from the same columns and a learner's own word has alone. #1096
-  // reads them from `word_meanings` when it drops the columns.
+  // English and Bangla from the word's own row, which a learner's own word
+  // has too: the course's tables don't repeat them (#1096).
   String? of(Word word, String lang) => switch (lang) {
     'en' => word.english,
     'bn' => word.bangla,

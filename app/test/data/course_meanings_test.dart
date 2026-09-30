@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +17,7 @@ import 'package:sogda/features/learn/categories_screen.dart';
 import 'package:sogda/features/learn/step_words.dart';
 import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sqlite3/sqlite3.dart';
 
 import '../db/content_fixture.dart';
 import '../timing.dart';
@@ -46,12 +49,13 @@ void main() {
     );
   });
 
-  test('#1081 CourseMeanings reads every word in every shipped language, '
-      'once', () async {
+  test('#1081 CourseMeanings reads every word in every shipped language '
+      'beyond English and Bangla, once', () async {
     final dao = await open(russian: true);
     final meanings = await loadCourseMeanings(dao);
-    expect(meanings.meaning(ContentFixture.haus, 'en'), 'house');
-    expect(meanings.meaning(ContentFixture.haus, 'bn'), 'বাড়ি');
+    // #1096: English's and Bangla's are the word's own columns.
+    expect(meanings.meaning(ContentFixture.haus, 'en'), isNull);
+    expect(meanings.meaning(ContentFixture.haus, 'bn'), isNull);
     expect(meanings.meaning(ContentFixture.haus, 'ru'), 'дом');
     expect(meanings.pronunciation(ContentFixture.strasse, 'ru'), 'штрАсэ');
     expect(meanings.pronunciation(ContentFixture.haus, 'en'), isNull);
@@ -115,9 +119,25 @@ void main() {
     expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хАус');
   });
 
-  test('#1119 the whole shipped course loads its meanings once, quickly: '
-      'about 10,500 rows today, twice that with two more languages', () async {
-    final course = realContent();
+  test('#1119 the whole course loads its meanings once, quickly, with two '
+      'languages beyond English and Bangla: about 10,500 rows', () async {
+    // The shipped course with Russian and Polish for every word, as #1100
+    // will ship them: English's and Bangla's have no rows (#1096).
+    final course = File('assets/db/content.db')
+        .copySync('${tempDir('sogda_course_ru_pl').path}/content.db');
+    final raw = sqlite3.open(course.path);
+    try {
+      raw.execute('''
+        INSERT INTO course_languages (code, name, own_name, script, ord) VALUES
+          ('ru', 'Russian', 'Русский', 'Cyrl', 3),
+          ('pl', 'Polish', 'Polski', 'Latn', 4);
+        INSERT INTO word_meanings (word_uid, lang, meaning, pronunciation)
+          SELECT uid, code, english || ' ' || code, german
+          FROM words, (SELECT 'ru' AS code UNION ALL SELECT 'pl');
+      ''');
+    } finally {
+      raw.close();
+    }
     var rows = 0;
     final best = await fastestOf(3, () async {
       // A database of its own each time: the load is kept per database.
@@ -227,7 +247,11 @@ void main() {
     final dao = await open();
     final meanings = await loadCourseMeanings(dao);
     expect(meanings.meaning(ContentFixture.haus, 'ru'), isNull);
-    expect(meanings.meaning(ContentFixture.haus, 'en'), 'house');
+    expect(
+      meanings.meaning(ContentFixture.haus, 'en'),
+      isNull,
+      reason: "#1096: English is the word's own row, not the course's table",
+    );
   });
 
   test("#1081 a word's examples in a language, English where it has none "
@@ -293,9 +317,11 @@ void main() {
         r.grammarUid: r.topic,
     };
     expect(await topics('ru'), <String, String>{'g1': 'Порядок слов'});
-    expect(await topics('en'), <String, String>{
-      'g1': 'Wortstellung im Hauptsatz',
-    });
+    expect(
+      await topics('en'),
+      isEmpty,
+      reason: "#1096: English's are grammar_topics' own",
+    );
     expect(await topics('bn'), isEmpty);
   });
 }
