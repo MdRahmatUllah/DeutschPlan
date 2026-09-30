@@ -3,7 +3,7 @@
 `domain/exam_generator.dart` — one algorithm, seeded (BR-EXAM-02).
 
 ```
-buildExam(ExamPool pool, seed:, listening:, bangla:, sat:) → Exam(items, reused)
+buildExam(ExamPool pool, seed:, listening:, lang:, sat:) → Exam(items, reused)
 ```
 
 1. Pool = all words of the step (any status, suspended excluded) and all grammar topics of the step.
@@ -19,7 +19,7 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
 
 ## Details the generator settles (#83)
 
-`buildExam(ExamPool pool, seed:, listening:, bangla:, sat:)` in `domain/exam_generator.dart`. `ExamRepository.pool(step)` reads the pool, `satRefs(step)` the papers already sat, and `storedPaper(step, seed)` a seed's stored paper.
+`buildExam(ExamPool pool, seed:, listening:, lang:, sat:)` in `domain/exam_generator.dart`. `ExamRepository.pool(step, lang:)` reads the pool (a word's meaning in `lang` when it is one of the course's languages beyond English and Bangla, and the examples' translations in it, English where it has none), `satRefs(step)` the papers already sat, and `storedPaper(step, seed)` a seed's stored paper.
 
 - **Items and what never repeats.** An item's ref is:
   - a word's uid, in every word section: a word is asked once in a paper, and in one paper of the three;
@@ -33,9 +33,9 @@ Grading on submit: `answer_check` per item; Listening compares the typed text wi
 - **Reuse.** When a section runs out of fresh items, a paper takes the one another paper drew longest ago, never one it already has, and `Exam.reused` tells the hub. Words and tasks never run out on the real course. Grammar needs twelve topics for three papers: A1.1 to B1.2 have 10 or 11, so their third paper reuses one or two topics and says so (a test over the real content.db pins both). A step with fewer than three categories reuses a task the same way.
 - **Sittings days apart.** A paper is stored when it is begun (FR-L10-03), and the course can change before the next: a word suspended, listening turned off, a content update. So:
   - L11 passes the refs of every paper already sat as `sat` (`satRefs`). Those seeds are not drawn again, and their refs count as drawn before anything else, so a new paper shares nothing with them.
-  - A retake sits the stored paper (`storedPaper`), not a newly drawn one.
+  - A retake sits the stored paper (`storedPaper`), not a newly drawn one, unless it was built in another meaning language than the learner's first now (`exam_attempts.meaning_lang`, #1120): then a new paper is drawn in that one, as for a listening change. A paper sat before v5 records no language, and its retake stays the same mock.
 - **Without listening** (FR-L10-04), Vocabulary gets 11 items and Reverse 9: still 40 questions and 48 points.
-- **Meanings.** With the meaning language set to Bangla, Vocabulary expects the Bangla meaning and Reverse shows it, where the course has one; otherwise English, as the word lists do.
+- **Meanings.** In the learner's first meaning language (`lang`, #1120): Vocabulary expects the meaning in it and Reverse shows it, where the word has one; otherwise English, as the word lists do. Bangla's are the word's own column, Russian's and Polish's the course's `word_meanings`. The paper stores what it asked, so a review later shows what the learner saw, whatever the language is by then. A Russian or Polish meaning is typed, its marks optional (`answer-checking.md`).
 - **Tiles for a Bangla meaning** (#798, the owner's call). A Vocabulary item that expects a Bangla meaning is asked with four tiles, as the quiz's DE → বাংলা (`quiz-engine.md`, Multiple choice): a learner of German can't be assumed a Bangla keyboard. The tiles are the answer and three distractors from the step's words, picked by the quiz's `distractors` (never a meaning, English sense or Bangla alternative the answer shares, never a word its synonyms cell names), in an order seeded by the word and the mock, `Random(hash(uid, mock seed))`, apart from the paper's own draws. They are stored with the paper (`options_json`), so a retake has the same. A tile is right only when it is the answer: 1 point or 0, no *almost*. A step with fewer than three distractors types the meaning, as the quiz does. An English meaning is typed.
 - **What each item asks:**
 
