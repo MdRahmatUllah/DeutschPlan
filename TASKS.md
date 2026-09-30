@@ -542,7 +542,7 @@ claiming the same issue. A hand edit skips that check.
 | #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | done | agent-2 |  | #1179 |
 | #1180 | - | X | - | - | website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) | done | agent-2 |  | #1181 |
 | #1182 | - | X | - | - | website: export the FSRS facts for sogda.de's method page (sogda-website #73) | review | agent-3 | #73 #1174 | #1185 |
-| #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | open |  |  |  |
+| #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | in-progress | agent-1 |  |  |
 
 ## Locks
 
