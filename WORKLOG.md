@@ -2465,3 +2465,4 @@ able to tell what is going on without asking.
 - 2026-10-01 00:19 · agent-2 #1180 · done (#1181)
 - 2026-10-01 00:25 · agent-3 #1182 · added to the board, lane X
 - 2026-10-01 00:25 · agent-3 #1182 · claimed: website: export the FSRS facts for sogda.de's method page (sogda-website #73)
+- 2026-10-01 00:26 · agent-0 · website: pull board #94 live (labels ready/in progress/in review/blocked, pinned); PR #93 (#70 about) updated to dev + agent-2 ru review; PR #102 (#60 graph, validator 0/0) up; #100 (#97 lighthouse strays) merged; reviewed #92, #90 (kicker 36 literal), #96 (#81 overstatement back), #99 approved; app #1181 approved. Now: English store re-shoot for #1123 (stale 5,594 counts, H-3042) on a fresh main build.
