@@ -404,7 +404,7 @@ void main() {
     expect(quiz, isNotNull);
     expect(quiz!.source, 'category');
     expect(quiz!.sourceRef, '1');
-    expect(quiz!.direction, 'deEn');
+    expect(quiz!.direction, 'de>en');
   });
 
   testWidgets("#667 FR-L6-02 a Bangla learner's Quiz asks DE → বাংলা, as L7 "
@@ -416,7 +416,7 @@ void main() {
         .put(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
     await tester.tap(find.text(l10n.stepTabQuiz));
     await tester.pumpAndSettle();
-    expect(quiz!.direction, 'deBn');
+    expect(quiz!.direction, 'de>bn');
   });
 
   testWidgets(

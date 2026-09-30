@@ -232,10 +232,7 @@ class _CategoryWordsScreenState extends ConsumerState<CategoryWordsScreen> {
               ? null
               : () => QuizRoute.open(
                   context,
-                  categoryQuiz(
-                    widget.id,
-                    direction: meaningDirection(ref).name,
-                  ),
+                  categoryQuiz(widget.id, direction: meaningDirection(ref)),
                 ),
         ),
         // The artboard's 8 dp bar inset and the link's own 10.

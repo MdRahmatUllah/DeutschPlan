@@ -58,22 +58,28 @@ void main() {
 
   Future<Quiz> build(
     List<QuizWord> learned, {
-    QuizDirection direction = QuizDirection.deEn,
+    QuizDirection direction = QuizDirection.toMeaning,
+    String? lang,
     int length = 10,
     int seed = 7,
     List<QuizWord>? pool,
-    Set<QuizDirection> meanings = const <QuizDirection>{
-      QuizDirection.deEn,
-      QuizDirection.deBn,
-    },
-  }) => QuizBuilder(_Store(learned, pool ?? learned), meanings: meanings).build(
-    direction: direction,
-    source: QuizSource.stepLearned,
-    sourceRef: 'A1.1',
-    length: length,
-    seed: seed,
-    today: today,
-  );
+    List<String> languages = const <String>['en', 'bn'],
+  }) =>
+      QuizBuilder(_Store(learned, pool ?? learned), languages: languages).build(
+        direction: direction,
+        // A meaning direction in the learner's first language unless told.
+        lang:
+            lang ??
+            (direction == QuizDirection.toMeaning ||
+                    direction == QuizDirection.fromMeaning
+                ? languages.first
+                : null),
+        source: QuizSource.stepLearned,
+        sourceRef: 'A1.1',
+        length: length,
+        seed: seed,
+        today: today,
+      );
 
   final twelve = <QuizWord>[
     for (var i = 0; i < 12; i++)
@@ -87,7 +93,7 @@ void main() {
         final quiz = await build(twelve, length: 1);
         final item = quiz.items.single;
         final word = twelve.firstWhere((w) => w.uid == item.wordUid);
-        expect(item.direction, QuizDirection.deEn);
+        expect((item.direction, item.lang), (QuizDirection.toMeaning, 'en'));
         expect(item.prompt, 'die ${word.german}');
         expect(item.expected, word.english);
         expect(item.options, hasLength(4));
@@ -101,7 +107,7 @@ void main() {
         ...twelve.take(3),
         noun('x', 'Ohne', 'without', bangla: null),
       ];
-      final quiz = await build(words, direction: QuizDirection.deBn);
+      final quiz = await build(words, lang: 'bn');
       expect(quiz.items.map((i) => i.wordUid), isNot(contains('x')));
       final item = quiz.items.first;
       expect(
@@ -115,7 +121,7 @@ void main() {
       () async {
         final item = (await build(
           twelve,
-          direction: QuizDirection.enDe,
+          direction: QuizDirection.fromMeaning,
           length: 1,
         )).items.single;
         final word = twelve.firstWhere((w) => w.uid == item.wordUid);
@@ -132,15 +138,15 @@ void main() {
     test('#387 EN → DE asks in the learner\'s meaning language', () async {
       final word = noun('n', 'Tür', 'door', bangla: 'দরজা');
       final bare = noun('x', 'Ohne', 'without', bangla: null);
-      Future<QuizItem> ask(QuizWord w, Set<QuizDirection> meanings) async =>
+      Future<QuizItem> ask(QuizWord w, List<String> languages) async =>
           (await build(
             <QuizWord>[w],
-            direction: QuizDirection.enDe,
+            direction: QuizDirection.fromMeaning,
             length: 1,
-            meanings: meanings,
+            languages: languages,
           )).items.single;
-      const english = <QuizDirection>{QuizDirection.deEn};
-      const bangla = <QuizDirection>{QuizDirection.deBn};
+      const english = <String>['en'];
+      const bangla = <String>['bn'];
 
       final en = await ask(word, english);
       expect((en.prompt, en.hint), ('door', null), reason: 'no Bangla hint');
@@ -156,15 +162,28 @@ void main() {
     });
 
     test('only DE → বাংলা and compare ask with tiles', () async {
-      for (final direction in QuizDirection.values) {
-        if (direction == QuizDirection.mixed) continue;
-        final quiz = await build(twelve, direction: direction, length: 3);
+      for (final (direction, lang) in <(QuizDirection, String?)>[
+        (QuizDirection.toMeaning, 'en'),
+        (QuizDirection.toMeaning, 'bn'),
+        (QuizDirection.fromMeaning, 'en'),
+        (QuizDirection.fromMeaning, 'bn'),
+        (QuizDirection.articles, null),
+        (QuizDirection.listening, null),
+        (QuizDirection.forms, null),
+        (QuizDirection.compare, null),
+      ]) {
+        final quiz = await build(
+          twelve,
+          direction: direction,
+          lang: lang,
+          length: 3,
+        );
         for (final item in quiz.items) {
           expect(
             item.tiles,
-            direction == QuizDirection.deBn ||
+            direction == QuizDirection.toMeaning && lang == 'bn' ||
                 direction == QuizDirection.compare,
-            reason: direction.name,
+            reason: askWire(direction, lang),
           );
         }
       }
@@ -238,15 +257,23 @@ void main() {
             noun('n$i', 'Wort$i', 'word $i', forms: 'Wörter$i'),
         ];
         final quiz = await build(words, direction: QuizDirection.mixed);
-        expect(quiz.items.map((i) => i.direction), rotation);
+        final rotation = QuizBuilder(_Store(words, words)).rotation;
+        expect(
+          quiz.items.map((i) => (i.direction, i.lang)),
+          <(QuizDirection, String?)>[
+            for (final ask in rotation) (ask.direction, ask.lang),
+          ],
+        );
         final plainVerb = verb('v', 'gehen', 'to go');
         // No article, no forms: item 3 (articles) falls through to listening.
-        expect(mixedDirection(3, plainVerb), QuizDirection.listening);
         expect(
-          mixedDirection(5, plainVerb),
-          QuizDirection.deEn,
-          reason: 'forms wraps to the start',
+          mixedDirection(3, plainVerb, rotation).direction,
+          QuizDirection.listening,
         );
+        expect(mixedDirection(5, plainVerb, rotation), (
+          direction: QuizDirection.toMeaning,
+          lang: 'en',
+        ), reason: 'forms wraps to the start');
       },
     );
   });
@@ -262,7 +289,7 @@ void main() {
         final quiz =
             await QuizBuilder(
               _Store(words, words),
-              meanings: const <QuizDirection>{QuizDirection.deEn},
+              languages: const <String>['en'],
             ).build(
               direction: QuizDirection.mixed,
               source: QuizSource.stepLearned,
@@ -271,26 +298,165 @@ void main() {
               seed: 7,
               today: today,
             );
-        expect(
-          quiz.items.map((i) => i.direction),
-          isNot(contains(QuizDirection.deBn)),
-        );
+        expect(quiz.items.map((i) => i.lang), isNot(contains('bn')));
         expect(quiz.items, hasLength(6));
       },
     );
 
     test('a Bangla-only one never DE → EN', () {
       final word = noun('n', 'Tür', 'door');
+      final rotation = QuizBuilder(
+        _Store(<QuizWord>[word], <QuizWord>[word]),
+        languages: const <String>['bn'],
+      ).rotation;
       for (var i = 0; i < rotation.length; i++) {
-        expect(
-          mixedDirection(
-            i,
-            word,
-            skip: const <QuizDirection>{QuizDirection.deEn},
-          ),
-          isNot(QuizDirection.deEn),
-        );
+        expect(mixedDirection(i, word, rotation).lang, isNot('en'));
       }
+    });
+  });
+
+  group('#1120 the chosen meaning languages', () {
+    QuizWord ru(
+      String uid,
+      String german,
+      String english,
+      String? russian, {
+      String pos = 'noun',
+    }) => QuizWord(
+      uid: uid,
+      german: german,
+      english: english,
+      step: 'A1.1',
+      article: pos == 'noun' ? 'das' : null,
+      pos: pos,
+      bangla: 'বাংলা $uid',
+      stability: 5,
+      lastReview: '2026-09-10',
+      meanings: <String, String>{'ru': ?russian},
+    );
+    final words = <QuizWord>[
+      ru('haus', 'Haus', 'house', 'дом'),
+      ru('buch', 'Buch', 'book', 'книга'),
+      ru('auto', 'Auto', 'car', 'машина'),
+      ru('bett', 'Bett', 'bed', 'кровать'),
+      ru('ohne', 'Ohne', 'without', null),
+    ];
+    const russian = <String>['ru', 'en'];
+
+    test('the wire: de>xx and xx>de, and the old deEn, deBn, enDe read as '
+        'they asked', () {
+      expect(askWire(QuizDirection.toMeaning, 'ru'), 'de>ru');
+      expect(askWire(QuizDirection.fromMeaning, 'pl'), 'pl>de');
+      expect(askWire(QuizDirection.articles), 'articles');
+      for (final (wire, primary, direction, lang)
+          in <(String, String, QuizDirection, String?)>[
+            ('deEn', 'ru', QuizDirection.toMeaning, 'en'),
+            ('deBn', 'en', QuizDirection.toMeaning, 'bn'),
+            ('enDe', 'bn', QuizDirection.fromMeaning, 'bn'),
+            ('enDe', 'en', QuizDirection.fromMeaning, 'en'),
+            ('de>ru', 'en', QuizDirection.toMeaning, 'ru'),
+            ('pl>de', 'en', QuizDirection.fromMeaning, 'pl'),
+            ('mixed', 'ru', QuizDirection.mixed, null),
+            ('forms', 'ru', QuizDirection.forms, null),
+          ]) {
+        expect(parseAsk(wire, primary: () => primary), (
+          direction: direction,
+          lang: lang,
+        ), reason: wire);
+      }
+      expect(() => parseAsk('de>', primary: () => 'en'), throwsArgumentError);
+    });
+
+    test('German → Russian expects the Russian, typed, and skips a word '
+        'without it', () async {
+      final quiz = await build(words, lang: 'ru', languages: russian);
+      expect(quiz.items.map((i) => i.wordUid), isNot(contains('ohne')));
+      for (final item in quiz.items) {
+        final word = words.firstWhere((w) => w.uid == item.wordUid);
+        expect((item.lang, item.expected), ('ru', word.meanings['ru']));
+        expect(item.tiles, isFalse, reason: 'a Russian keyboard: typed');
+      }
+      final haus = quiz.items.firstWhere((i) => i.wordUid == 'haus');
+      expect(grade(haus, 'Дом'), Verdict.correct);
+    });
+
+    test('Russian → German asks the Russian with the English under it, and '
+        'English where the word has no Russian', () async {
+      final quiz = await build(
+        words,
+        direction: QuizDirection.fromMeaning,
+        languages: russian,
+      );
+      final haus = quiz.items.firstWhere((i) => i.wordUid == 'haus');
+      expect((haus.lang, haus.prompt, haus.hint), ('ru', 'дом', 'house'));
+      expect(grade(haus, 'das Haus'), Verdict.correct);
+      final ohne = quiz.items.firstWhere((i) => i.wordUid == 'ohne');
+      expect(ohne.prompt, 'without');
+    });
+
+    test("a mixed quiz turns through the learner's two languages", () {
+      final rotation = QuizBuilder(
+        _Store(words, words),
+        languages: russian,
+      ).rotation;
+      expect(
+        <QuizAsk>[
+          for (var i = 0; i < 3; i++) mixedDirection(i, words.first, rotation),
+        ],
+        <QuizAsk>[
+          (direction: QuizDirection.toMeaning, lang: 'ru'),
+          (direction: QuizDirection.toMeaning, lang: 'en'),
+          (direction: QuizDirection.fromMeaning, lang: 'ru'),
+        ],
+      );
+      expect(mixedDirection(0, words.last, rotation), (
+        direction: QuizDirection.toMeaning,
+        lang: 'en',
+      ), reason: 'no Russian: the next turn that applies');
+    });
+
+    test('no Russian tile reads as the answer', () {
+      final answer = ru('rat', 'Rat', 'advice', 'совет / рекомендация');
+      final pool = <QuizWord>[
+        answer,
+        ru('tipp', 'Tipp', 'tip', 'рекомендация'),
+        ...words.take(4),
+      ];
+      final tiles = distractors(
+        answer,
+        pool,
+        (w) => w.meaningIn('ru') ?? '',
+        Random(1),
+      );
+      expect(tiles, isNot(contains('рекомендация')));
+      expect(tiles, hasLength(3));
+    });
+
+    test("a hint in the second language keeps only the words it means", () {
+      final you = <QuizWord>[
+        for (final (uid, russian) in <(String, String)>[
+          ('du', 'ты'),
+          ('sie', 'вы'),
+          ('dich', 'ты'),
+        ])
+          QuizWord(
+            uid: uid,
+            german: uid,
+            english: 'you',
+            step: 'A1.1',
+            pos: 'pron',
+            meanings: <String, String>{'ru': russian},
+          ),
+      ];
+      expect(
+        otherAnswers(
+          you.first,
+          'you',
+          <String, List<QuizWord>>{'you': you},
+          hint: (lang: 'ru', text: 'ты'),
+        ).map((a) => a.german),
+        <String>['dich'],
+      );
     });
   });
 
@@ -707,7 +873,8 @@ void main() {
     late Quiz quiz;
     final fastest = await fastestOf(3, () async {
       quiz = await builder.build(
-        direction: QuizDirection.deEn,
+        direction: QuizDirection.toMeaning,
+        lang: 'en',
         source: QuizSource.allLearned,
         length: 30,
         seed: 11,
@@ -745,10 +912,10 @@ void main() {
 
     test('a meaning, any of its synonyms', () {
       expect(
-        grade(item(QuizDirection.deEn, 'house, home'), 'home'),
+        grade(item(QuizDirection.toMeaning, 'house, home'), 'home'),
         Verdict.correct,
       );
-      expect(grade(item(QuizDirection.deBn, 'ঘর'), 'ঘর'), Verdict.correct);
+      expect(grade(item(QuizDirection.toMeaning, 'ঘর'), 'ঘর'), Verdict.correct);
     });
 
     test('a tile is exactly the answer, commas and brackets and all', () {
@@ -756,7 +923,8 @@ void main() {
       const tile = QuizItem(
         ord: 1,
         wordUid: 'doch',
-        direction: QuizDirection.deBn,
+        direction: QuizDirection.toMeaning,
+        lang: 'bn',
         prompt: 'doch',
         expected: meaning,
         options: <String>['ধন্যবাদ', meaning, 'কেন', 'দয়া করে / স্বাগতম'],
@@ -767,7 +935,7 @@ void main() {
     });
 
     test('BR-ANS-02 the German names the article it wanted', () {
-      final vertrag = item(QuizDirection.enDe, 'der Mietvertrag');
+      final vertrag = item(QuizDirection.fromMeaning, 'der Mietvertrag');
       expect(grade(vertrag, 'der Mietvertrag'), Verdict.correct);
       expect(grade(vertrag, 'Mietvertrag'), Verdict.correct);
       expect(grade(vertrag, 'die Mietvertrag'), Verdict.wrongArticle);
@@ -802,7 +970,7 @@ void main() {
         reason: 'its article is an article',
       );
       for (final direction in <QuizDirection>[
-        QuizDirection.enDe,
+        QuizDirection.fromMeaning,
         QuizDirection.listening,
       ]) {
         final asked = (await build(
@@ -831,9 +999,9 @@ void main() {
       final asked = (await build(
         <QuizWord>[du],
         pool: <QuizWord>[du, you('dich', 'dich'), you('sie', 'Sie'), ...twelve],
-        direction: QuizDirection.enDe,
+        direction: QuizDirection.fromMeaning,
         length: 1,
-        meanings: const <QuizDirection>{QuizDirection.deEn},
+        languages: const <String>['en'],
       )).items.single;
       expect(asked.also.map((a) => a.german), <String>['dich', 'Sie']);
       expect(grade(asked, 'du'), Verdict.correct);
@@ -844,9 +1012,9 @@ void main() {
       final inBangla = (await build(
         <QuizWord>[du],
         pool: <QuizWord>[du, you('dich', 'dich'), ...twelve],
-        direction: QuizDirection.enDe,
+        direction: QuizDirection.fromMeaning,
         length: 1,
-        meanings: const <QuizDirection>{QuizDirection.deBn},
+        languages: const <String>['bn'],
       )).items.single;
       expect(
         inBangla.also,
@@ -869,9 +1037,8 @@ void main() {
           ),
           ...twelve,
         ],
-        direction: QuizDirection.enDe,
+        direction: QuizDirection.fromMeaning,
         length: 1,
-        meanings: const <QuizDirection>{QuizDirection.deEn, QuizDirection.deBn},
       )).items.single;
       expect((both.prompt, both.hint), ('you', 'তুমি du'));
       expect(both.also.map((a) => a.german), <String>[

@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 
 // A quiz's names and colours, for L2's last quiz card, L7, L8 and L9: the
@@ -26,15 +27,28 @@ String quizKindName(AppLocalizations l10n, int length) => switch (length) {
   _ => l10n.quizCustom,
 };
 
-/// A quiz direction as the app names it: "DE → EN", "Articles".
-String quizDirectionName(AppLocalizations l10n, String direction) =>
-    switch (direction) {
-      'deEn' => 'DE → EN',
-      'deBn' => 'DE → বাংলা',
-      'enDe' => 'EN → DE',
-      'articles' => l10n.quizDirectionArticles,
-      'listening' => l10n.quizDirectionListening,
-      'forms' => l10n.quizForms,
-      'compare' => l10n.quizDirectionCompare,
-      _ => l10n.quizDirectionMixed,
-    };
+/// A quiz direction as the app names it: "DE → EN", "DE → বাংলা",
+/// "Русский → DE", "Articles". A meaning language is named in itself, from
+/// [languages] (#1120); English is "EN", as it always has been. The wires
+/// from before #1120 (`deEn`, `deBn`, `enDe`) keep their names.
+String quizDirectionName(
+  AppLocalizations l10n,
+  String direction, [
+  List<CourseLanguageName> languages = baseLanguages,
+]) {
+  String side(String lang) => lang == 'en' ? 'EN' : ownNameOf(lang, languages);
+  return switch (direction) {
+    'deEn' => 'DE → EN',
+    'deBn' => 'DE → বাংলা',
+    'enDe' => 'EN → DE',
+    _ when direction.startsWith('de>') =>
+      'DE → ${side(direction.substring(3))}',
+    _ when direction.endsWith('>de') =>
+      '${side(direction.substring(0, direction.length - 3))} → DE',
+    'articles' => l10n.quizDirectionArticles,
+    'listening' => l10n.quizDirectionListening,
+    'forms' => l10n.quizForms,
+    'compare' => l10n.quizDirectionCompare,
+    _ => l10n.quizDirectionMixed,
+  };
+}

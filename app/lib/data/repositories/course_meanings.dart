@@ -45,6 +45,15 @@ class CourseMeanings {
   /// the learner's own, or a language that didn't ship.
   String? meaning(String uid, String lang) => _byWord[uid]?[lang]?.meaning;
 
+  /// [uid]'s meanings in the languages beyond English and Bangla, whose
+  /// source is still the word's own row ([Meanings.of]): what a quiz in them
+  /// asks (#1120).
+  Map<String, String> meaningsOf(String uid) => <String, String>{
+    for (final MapEntry(key: lang, value: text)
+        in (_byWord[uid] ?? const <String, WordMeaningText>{}).entries)
+      if (lang != 'en' && lang != 'bn') lang: text.meaning,
+  };
+
   /// [uid]'s pronunciation guide in [lang]'s script, or null where there is
   /// none (English's, until #1082).
   String? pronunciation(String uid, String lang) =>

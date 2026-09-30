@@ -91,7 +91,8 @@ void main() {
           const QuizItem(
             ord: 1,
             wordUid: 'kaution',
-            direction: QuizDirection.deEn,
+            direction: QuizDirection.toMeaning,
+            lang: 'en',
             prompt: 'die Kaution',
             expected: 'deposit',
           ),
@@ -102,7 +103,8 @@ void main() {
           const QuizItem(
             ord: 1,
             wordUid: 'kaution',
-            direction: QuizDirection.deBn,
+            direction: QuizDirection.toMeaning,
+            lang: 'bn',
             prompt: 'die Kaution',
             expected: 'জামানত',
             options: <String>['ভাড়া', 'জামানত', 'চুক্তি', 'বাড়িওয়ালা'],
@@ -128,7 +130,8 @@ void main() {
           const QuizItem(
             ord: 1,
             wordUid: 'vermieter',
-            direction: QuizDirection.enDe,
+            direction: QuizDirection.fromMeaning,
+            lang: 'en',
             prompt: 'landlord',
             expected: 'der Vermieter',
             hint: 'বাড়িওয়ালা',
@@ -168,6 +171,39 @@ void main() {
     );
   }
 
+  // #1120: in a language beyond English and Bangla, in every theme and on
+  // both devices. Russian → German, the English under it, answered right;
+  // German → Polish typed without its marks, right as well.
+  goldenTest(
+    'quiz_runner_ru_meanings',
+    builder: (context) => only(
+      const QuizItem(
+        ord: 1,
+        wordUid: 'vermieter',
+        direction: QuizDirection.fromMeaning,
+        lang: 'ru',
+        prompt: 'арендодатель',
+        expected: 'der Vermieter',
+        hint: 'landlord',
+      ),
+    ),
+    act: (tester) => type(tester, 'der Vermieter'),
+  );
+  goldenTest(
+    'quiz_runner_pl_meanings',
+    builder: (context) => only(
+      const QuizItem(
+        ord: 1,
+        wordUid: 'gelb',
+        direction: QuizDirection.toMeaning,
+        lang: 'pl',
+        prompt: 'gelb',
+        expected: 'żółty',
+      ),
+    ),
+    act: (tester) => type(tester, 'zolty'),
+  );
+
   // #125: a mistake, asked once more at the end.
   goldenTest(
     'quiz_runner_reask',
@@ -177,7 +213,8 @@ void main() {
       const QuizItem(
         ord: 1,
         wordUid: 'kaution',
-        direction: QuizDirection.deEn,
+        direction: QuizDirection.toMeaning,
+        lang: 'en',
         prompt: 'die Kaution',
         expected: 'deposit',
       ),
@@ -185,7 +222,8 @@ void main() {
         QuizItem(
           ord: 2,
           wordUid: 'miete',
-          direction: QuizDirection.deEn,
+          direction: QuizDirection.toMeaning,
+          lang: 'en',
           prompt: 'die Miete',
           expected: 'rent',
         ),

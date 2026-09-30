@@ -16,8 +16,8 @@ String askName(AppLocalizations l10n, QuizItem item) =>
     switch (item.direction) {
       QuizDirection.compare => l10n.quizAskCompare,
       _ when item.tiles => l10n.quizAskPick,
-      QuizDirection.deEn || QuizDirection.deBn => l10n.quizAskMeaning,
-      QuizDirection.enDe => l10n.quizAskGerman,
+      QuizDirection.toMeaning => l10n.quizAskMeaning,
+      QuizDirection.fromMeaning => l10n.quizAskGerman,
       QuizDirection.articles => l10n.quizAskArticle,
       QuizDirection.listening => l10n.quizAskListening,
       QuizDirection.forms || QuizDirection.mixed => l10n.quizAskForm,
@@ -28,7 +28,9 @@ const List<String> articles = <String>['der', 'die', 'das'];
 
 /// Whether the answer is typed German, which gets the umlaut row.
 bool typesGerman(QuizItem item) => switch (item.direction) {
-  QuizDirection.enDe || QuizDirection.listening || QuizDirection.forms => true,
+  QuizDirection.fromMeaning ||
+  QuizDirection.listening ||
+  QuizDirection.forms => true,
   _ => false,
 };
 
@@ -84,7 +86,7 @@ class QuizItemView extends ConsumerWidget {
         ),
       ),
       // A compare item's sentence, with the gap, over its English (FR-W2-03).
-      QuizDirection.enDe || QuizDirection.compare => Column(
+      QuizDirection.fromMeaning || QuizDirection.compare => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SgText(item.prompt, role: asked(SgTextRole.headline), weight: 600),

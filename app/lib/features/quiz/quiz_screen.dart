@@ -14,6 +14,8 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/quiz_run_service.dart';
 import 'package:sogda/domain/answer_check.dart';
 import 'package:sogda/domain/quiz_builder.dart';
@@ -28,13 +30,18 @@ import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
 
-/// L8's title: "Standard · DE → EN", or "Forms", or W2's "Compare".
-String quizTitle(AppLocalizations l10n, QuizArgs args) =>
+/// L8's title: "Standard · DE → EN", or "Forms", or W2's "Compare". A
+/// meaning language is named from [languages] (#1120).
+String quizTitle(
+  AppLocalizations l10n,
+  QuizArgs args, [
+  List<CourseLanguageName> languages = baseLanguages,
+]) =>
     args.direction == QuizDirection.forms.name ||
         args.direction == QuizDirection.compare.name
-    ? quizDirectionName(l10n, args.direction)
+    ? quizDirectionName(l10n, args.direction, languages)
     : '${quizKindName(l10n, args.length)} · '
-          '${quizDirectionName(l10n, args.direction)}';
+          '${quizDirectionName(l10n, args.direction, languages)}';
 
 /// L8 · Quiz runner (`quiz.md`, `QuizRunner-android.html`, #123): a
 /// full-screen modal with close, the title and "7 / 20" on Sun, the progress
@@ -123,8 +130,15 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   Future<void> _start() async {
     final args = widget.args;
     try {
+      // #1120: a stored quiz's `deEn`, `deBn` and `enDe` ask as they did.
+      final ask = parseAsk(
+        args.direction,
+        primary: () =>
+            meaningChoiceOf(ref.read(settingsSourceProvider)).primary,
+      );
       final run = await _service.start(
-        direction: QuizDirection.parse(args.direction),
+        direction: ask.direction,
+        lang: ask.lang,
         source: QuizSource.parse(args.source),
         sourceRef: args.sourceRef,
         length: args.length,
@@ -316,12 +330,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             // Forms, Articles, listening and compare ask only the words that
             // fit them: learned words may be there, none of them fitting
             // (#690 LQ-10).
-            const <String>{
-                  'deEn',
-                  'deBn',
-                  'enDe',
-                  'mixed',
-                }.contains(widget.args.direction)
+            const <QuizDirection>{
+                  QuizDirection.toMeaning,
+                  QuizDirection.fromMeaning,
+                  QuizDirection.mixed,
+                }.contains(
+                  parseAsk(
+                    widget.args.direction,
+                    primary: () => 'en',
+                  ).direction,
+                )
                 ? l10n.quizEmpty
                 : l10n.quizEmptyKind,
             role: SgTextRole.body,
@@ -471,7 +489,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           PracticeHeader(
-            title: quizTitle(l10n, widget.args),
+            title: quizTitle(
+              l10n,
+              widget.args,
+              ref.watch(courseLanguagesProvider).value ?? baseLanguages,
+            ),
             // A re-ask counts among the re-asks: "Once more · 2 / 4".
             place: items.isEmpty
                 ? null

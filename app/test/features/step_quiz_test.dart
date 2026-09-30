@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/learn/step_detail_screen.dart';
@@ -34,7 +35,7 @@ void main() {
       final args = stepQuiz('A2.1', length: 20);
       expect(args.source, 'stepLearned');
       expect(args.sourceRef, 'A2.1');
-      expect(args.direction, 'deEn');
+      expect(args.direction, 'de>en');
       expect(args.length, 20);
     });
 
@@ -106,7 +107,7 @@ void main() {
       expect(started!.length, length);
       expect(started!.source, 'stepLearned');
       expect(started!.sourceRef, 'A2.1');
-      expect(started!.direction, 'deEn');
+      expect(started!.direction, 'de>en');
     });
   }
 
@@ -119,7 +120,20 @@ void main() {
         .put(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
     await tester.tap(find.text(l10n.quizQuick));
     await tester.pumpAndSettle();
-    expect(started!.direction, 'deBn');
+    expect(started!.direction, 'de>bn');
+  });
+
+  testWidgets("#1120 FR-L2-04 a Russian learner's tiles ask German → "
+      'Russian', (tester) async {
+    await pump(tester);
+    (ProviderScope.containerOf(tester.element(find.byType(StepDetailScreen)))
+              .read(settingsSourceProvider)
+          as StubSettings)
+      ..put(SettingKeys.meaningPrimary, 'ru')
+      ..put(SettingKeys.meaningSecondary, 'en');
+    await tester.tap(find.text(l10n.quizQuick));
+    await tester.pumpAndSettle();
+    expect(started!.direction, 'de>ru');
   });
 
   testWidgets('FR-L2-04 Forms', (tester) async {
@@ -168,25 +182,30 @@ void main() {
   });
 
   group('the last quiz names what it was', () {
-    Future<void> card(WidgetTester tester, int length, String direction) =>
-        tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.light(),
-            localizationsDelegates: appLocalizationsDelegates,
-            supportedLocales: supportedLocales,
-            home: Scaffold(
-              body: LastQuizCard(
-                quiz: (
-                  score: 8,
-                  outOf: length.toDouble(),
-                  length: length,
-                  direction: direction,
-                  finishedAt: '2026-09-20T19:05:00',
-                ),
-              ),
+    Future<void> card(
+      WidgetTester tester,
+      int length,
+      String direction, {
+      List<CourseLanguageName> languages = baseLanguages,
+    }) => tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: supportedLocales,
+        home: Scaffold(
+          body: LastQuizCard(
+            languages: languages,
+            quiz: (
+              score: 8,
+              outOf: length.toDouble(),
+              length: length,
+              direction: direction,
+              finishedAt: '2026-09-20T19:05:00',
             ),
           ),
-        );
+        ),
+      ),
+    );
 
     testWidgets('a Forms quiz by its direction alone', (tester) async {
       await card(tester, 20, 'forms');
@@ -227,6 +246,21 @@ void main() {
       await card(tester, 10, 'enDe');
       expect(find.text('Quick · EN → DE · Sun 20 Sep'), findsOneWidget);
       await card(tester, 30, 'deBn');
+      expect(find.text('Long · DE → বাংলা · Sun 20 Sep'), findsOneWidget);
+    });
+
+    testWidgets('#1120 a language by its own name, English as EN', (
+      tester,
+    ) async {
+      const languages = <CourseLanguageName>[
+        ...baseLanguages,
+        (code: 'ru', ownName: 'Русский'),
+      ];
+      await card(tester, 10, 'ru>de', languages: languages);
+      expect(find.text('Quick · Русский → DE · Sun 20 Sep'), findsOneWidget);
+      await card(tester, 20, 'de>en', languages: languages);
+      expect(find.text('Standard · DE → EN · Sun 20 Sep'), findsOneWidget);
+      await card(tester, 30, 'de>bn', languages: languages);
       expect(find.text('Long · DE → বাংলা · Sun 20 Sep'), findsOneWidget);
     });
   });

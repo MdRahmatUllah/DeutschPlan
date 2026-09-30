@@ -46,7 +46,8 @@ void main() {
   );
 
   Quiz quizOf(List<QuizItem> items) => Quiz(
-    direction: QuizDirection.deEn,
+    direction: QuizDirection.toMeaning,
+    lang: 'en',
     source: QuizSource.allLearned,
     seed: 1,
     items: items,
@@ -55,14 +56,16 @@ void main() {
   const haus = QuizItem(
     ord: 1,
     wordUid: 'haus',
-    direction: QuizDirection.deEn,
+    direction: QuizDirection.toMeaning,
+    lang: 'en',
     prompt: 'das Haus',
     expected: 'house',
   );
   const vertrag = QuizItem(
     ord: 2,
     wordUid: 'vertrag',
-    direction: QuizDirection.enDe,
+    direction: QuizDirection.fromMeaning,
+    lang: 'en',
     prompt: 'rental contract, lease',
     expected: 'der Mietvertrag',
   );
@@ -136,9 +139,7 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    expect(run.started, [
-      (QuizDirection.deEn, QuizSource.stepLearned, 'A2.1', 20, 7),
-    ]);
+    expect(run.started, [('de>en', QuizSource.stepLearned, 'A2.1', 20, 7)]);
   });
 
   testWidgets('the top bar: the title, the counter; the item and its ask', (
@@ -577,7 +578,8 @@ void main() {
         const QuizItem(
           ord: 1,
           wordUid: 'haus',
-          direction: QuizDirection.deBn,
+          direction: QuizDirection.toMeaning,
+          lang: 'bn',
           prompt: 'das Haus',
           expected: 'বাড়ি',
           options: <String>['গাড়ি', 'বাড়ি', 'দরজা', 'রাস্তা'],
@@ -664,7 +666,8 @@ void main() {
         const QuizItem(
           ord: 1,
           wordUid: 'vertrag',
-          direction: QuizDirection.enDe,
+          direction: QuizDirection.fromMeaning,
+          lang: 'en',
           prompt: 'rental contract, lease',
           expected: 'der Mietvertrag',
           hint: 'ভাড়ার চুক্তি',
@@ -683,7 +686,8 @@ void main() {
         const QuizItem(
           ord: 1,
           wordUid: 'tuer',
-          direction: QuizDirection.enDe,
+          direction: QuizDirection.fromMeaning,
+          lang: 'en',
           prompt: 'door',
           expected: 'die Tür',
           hint: 'দরজা',
@@ -713,7 +717,8 @@ void main() {
         const QuizItem(
           ord: 1,
           wordUid: 'vertrag',
-          direction: QuizDirection.enDe,
+          direction: QuizDirection.fromMeaning,
+          lang: 'en',
           prompt: 'rental contract, lease',
           expected: 'der Mietvertrag',
         ),
@@ -742,14 +747,16 @@ void main() {
     const wraps = QuizItem(
       ord: 1,
       wordUid: 'bitte',
-      direction: QuizDirection.enDe,
+      direction: QuizDirection.fromMeaning,
+      lang: 'en',
       prompt: "here you are / you're welcome",
       expected: 'bitte',
     );
     const withHint = QuizItem(
       ord: 1,
       wordUid: 'wiedersehen',
-      direction: QuizDirection.enDe,
+      direction: QuizDirection.fromMeaning,
+      lang: 'en',
       prompt: 'goodbye',
       expected: 'Auf Wiedersehen',
       hint: 'বিদায় (আনুষ্ঠানিক)',
@@ -758,7 +765,8 @@ void main() {
     const threeLines = QuizItem(
       ord: 1,
       wordUid: 'zustaendig',
-      direction: QuizDirection.enDe,
+      direction: QuizDirection.fromMeaning,
+      lang: 'en',
       prompt: 'responsible for, in charge of',
       expected: 'zuständig',
       hint: 'দায়িত্বপ্রাপ্ত (কোনো কিছুর জন্য)',
@@ -928,7 +936,8 @@ void main() {
       const QuizItem(
         ord: 1,
         wordUid: 'sorry',
-        direction: QuizDirection.enDe,
+        direction: QuizDirection.fromMeaning,
+        lang: 'en',
         prompt: "I'm sorry",
         expected: 'Es tut mir leid',
         hint: 'আমি দুঃখিত',
@@ -1022,7 +1031,8 @@ void main() {
         const QuizItem(
           ord: 1,
           wordUid: 'sorry',
-          direction: QuizDirection.enDe,
+          direction: QuizDirection.fromMeaning,
+          lang: 'en',
           prompt: "I'm sorry",
           expected: 'Es tut mir leid',
         ),
