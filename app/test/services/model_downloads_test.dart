@@ -853,6 +853,58 @@ void main() {
     });
   });
 
+  group('#1166 every file paused', () {
+    const grace = Duration(milliseconds: 20);
+    late BackgroundModelDownloads paused;
+
+    setUp(() async {
+      paused = BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+        null,
+        const Duration(seconds: 2),
+        notice,
+        (_) => true,
+        grace,
+      );
+      await paused.attach();
+      await paused.start('hymt');
+    });
+
+    /// [name] paused, or running again, and the grace over.
+    Future<void> say(TaskStatus status, String name) async {
+      await report((t) => TaskStatusUpdate(t, status), name);
+      await Future<void>.delayed(grace * 3);
+      await pumpEventQueue();
+    }
+
+    test('says paused over the platform\'s "finished", on its own '
+        'notification', () async {
+      await say(TaskStatus.paused, 'one.gguf');
+      expect(notice.said, isEmpty, reason: 'two.gguf still downloads');
+      await say(TaskStatus.paused, 'two.gguf');
+      expect(notice.said, <(String, String)>[
+        ('Model download paused', 'Resumes on Wi-Fi, or from Voice'),
+      ]);
+      expect(notice.groups, <String>[downloader.notification!]);
+    });
+
+    test('a file already in counts as paused with the rest', () async {
+      await land('one.gguf', one);
+      await say(TaskStatus.complete, 'one.gguf');
+      await say(TaskStatus.paused, 'two.gguf');
+      expect(notice.said.single.$1, 'Model download paused');
+    });
+
+    test('resumed within the grace: nothing said', () async {
+      await report((t) => TaskStatusUpdate(t, TaskStatus.paused), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.paused), 'two.gguf');
+      await say(TaskStatus.running, 'two.gguf');
+      expect(notice.said, isEmpty);
+    });
+  });
+
   group('FR-M4-01 nothing activates until it verifies', () {
     setUp(() async {
       await downloads.attach();
@@ -961,7 +1013,7 @@ void main() {
       });
       addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
 
-      await const PlatformDownloadNotice().ended('models-2', ('done', 'note'));
+      await const PlatformDownloadNotice().say('models-2', ('done', 'note'));
 
       expect(calls.map((c) => c.method), <String>[
         'getActiveNotifications',
@@ -1167,7 +1219,7 @@ class _Notice implements DownloadNotice {
   int clears = 0;
 
   @override
-  Future<void> ended(String group, (String, String) text) async {
+  Future<void> say(String group, (String, String) text) async {
     groups.add(group);
     said.add(text);
   }

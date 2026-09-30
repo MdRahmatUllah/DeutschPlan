@@ -104,6 +104,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     this._wifiGrace = const Duration(seconds: 2),
     DownloadNotice? notice,
     bool Function(String modelId)? isOffered,
+    this._pauseGrace = const Duration(seconds: 1),
   ]) : _downloader = downloader ?? FileDownloader(),
        _storage = storage ?? const PlatformDeviceStorage(),
        _notice = notice ?? const PlatformDownloadNotice(),
@@ -170,6 +171,18 @@ class BackgroundModelDownloads implements ModelDownloads {
   // the downloader's reading; a stop still read on Wi-Fi after this is taken
   // for the learner's *Cancel*, and fails.
   final Duration _wifiGrace;
+
+  /// How long a download whose every file is paused waits for the platform
+  /// to say *finished* before the app says *paused* over it (#1166).
+  // ponytail: 1 s. The platform posts its group notification right after
+  // it tells the app a file paused, queued at most 300 ms
+  // (`MIN_NOTIFICATION_INTERVAL_MS`); a post later still would say
+  // *finished* again, until *Resume*.
+  final Duration _pauseGrace;
+
+  /// Bumped by every word on a file: a pause said later is said only if
+  /// nothing has changed since (#1166).
+  int _pauseTicket = 0;
 
   /// Per model, per file: the current attempt's task, and the platform's last
   /// word on it. Forgotten once the model is verified, which is how *Retry*
@@ -529,6 +542,7 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// Verifies [modelId] once every file is in; until then, says how far it
   /// has come.
   Future<void> _settle(String modelId) async {
+    final ticket = ++_pauseTicket;
     final model = (await _models.manifest()).model(modelId);
     final files = _files[modelId];
     if (model == null || model.variants.isEmpty || files == null) return;
@@ -564,7 +578,7 @@ class BackgroundModelDownloads implements ModelDownloads {
         final l10n = lookupAppLocalizations(
           _settings.read(SettingKeys.uiLanguage).locale,
         );
-        await _notice.ended(
+        await _notice.say(
           _group,
           status == ModelStatus.ready
               ? (
@@ -590,14 +604,28 @@ class BackgroundModelDownloads implements ModelDownloads {
       arrived += file.bytes * (files[file.name]?.done ?? 0);
     }
     final wasFailed = _last[modelId]?.phase == DownloadPhase.failed;
-    final phase = _phaseOf(<TaskStatus>[
+    final statuses = <TaskStatus>[
       for (final file in variant.files)
         files[file.name]?.status ?? TaskStatus.enqueued,
-    ]);
+    ];
+    final phase = _phaseOf(statuses);
     _emit(modelId, (
       phase: phase,
       progress: variant.bytes == 0 ? 0 : arrived / variant.bytes,
     ));
+    // #1166: the platform's group notification counts a paused file as
+    // finished (background_downloader 9.6.x, `Notifications.kt`), so once
+    // every file is paused it says "Model download finished". The app says
+    // *paused* over it, once the platform has had its word; *Resume* brings
+    // the platform's own back.
+    if (statuses.contains(TaskStatus.paused) &&
+        statuses.every(
+          (s) => s == TaskStatus.paused || s == TaskStatus.complete,
+        )) {
+      Timer(_pauseGrace, () {
+        if (ticket == _pauseTicket) unawaited(_sayPaused());
+      });
+    }
     // One file failed (a full disk, a host gone): the attempt stops. The
     // rest let go of what they held, and the platform's one notification,
     // which says *failed* only once no file is left running, says so (#428).
@@ -624,6 +652,16 @@ class BackgroundModelDownloads implements ModelDownloads {
     return _offWifi ? DownloadPhase.waitingForWifi : DownloadPhase.running;
   }
 
+  Future<void> _sayPaused() {
+    final l10n = lookupAppLocalizations(
+      _settings.read(SettingKeys.uiLanguage).locale,
+    );
+    return _notice.say(_group, (
+      l10n.modelNotifyPaused,
+      l10n.modelNotifyPausedNote(_screen(l10n)),
+    ));
+  }
+
   void _emit(String modelId, DownloadProgress progress) {
     _last[modelId] = progress;
     _watchers[modelId]?.add(progress);
@@ -631,11 +669,11 @@ class BackgroundModelDownloads implements ModelDownloads {
 }
 
 /// #506: says how the model downloads ended, over the platform's own
-/// notification for them.
+/// notification for them, and that they are paused (#1166).
 abstract interface class DownloadNotice {
-  /// [group]'s notification says how it ended, the only one left; [text] is
-  /// the title and the line under it.
-  Future<void> ended(String group, (String, String) text);
+  /// [group]'s notification says [text], the only one left: how it ended, or
+  /// that every file is paused. [text] is the title and the line under it.
+  Future<void> say(String group, (String, String) text);
 
   /// Every model download notification taken down: an attempt that another
   /// replaces, or one a relaunch left under a group this process can't name
@@ -672,7 +710,7 @@ class PlatformDownloadNotice implements DownloadNotice {
   static const String _channel = 'background_downloader';
 
   @override
-  Future<void> ended(String group, (String, String) text) async {
+  Future<void> say(String group, (String, String) text) async {
     // iOS keeps its own count, which the emulator showed no fault in.
     if (defaultTargetPlatform != TargetPlatform.android) return;
     final (title, body) = text;
