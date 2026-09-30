@@ -4,7 +4,7 @@
 
 Offline-first German vocabulary and grammar trainer for Android and iOS, built with Flutter. v1.0 ships on Android; iOS follows once a Mac is available to build it (#171).
 
-One clear day at a time: a daily plan of new words and spaced-repetition reviews, structured as an exam course of 12 steps from A1.1 to C2.2. Meanings in English, Bengali (বাংলা) or both. No account, no server, no analytics. Everything, including the optional voice model, runs on the phone.
+One clear day at a time: a daily plan of new words and spaced-repetition reviews, structured as an exam course of 12 steps from A1.1 to C2.2. Meanings in English, Bangla (বাংলা), Russian or Polish: one language, or two shown together, and the app itself in English, Bangla, Polish or Russian. No account, no server, no analytics. Everything, including the optional voice model, runs on the phone.
 
 The app is designed as four canvases: **iOS** and **Android**, each in **light** (Paper & Ink) and **dark** (Night ink). Every screenshot below is rendered from the clickable HTML prototype in [`deutsch-plan-design-html/`](deutsch-plan-design-html/index.html).
 
@@ -21,7 +21,7 @@ Click any screenshot to open that screen as HTML. Inside the prototype, buttons 
 
 - **Course map.** 12 steps (A1.1 … C2.2), 5,069 words, 182 grammar topics, 10,545 example sentences. Each step has Words, Grammar, Quiz and Exams tabs. A 3-minute adaptive placement check picks the starting step.
 - **Today.** One daily plan: words to revise, new words from the current topic, a backlog of missed days, practice sentences built from known words, and the grammar topic of the week. Rest days and an "all done" state are first-class.
-- **Study session.** Flashcards with article colour (der / die / das), audio, Bengali transliteration, cloze cards, undo. A four-button rating bar (Again / Hard / Good / Easy) shows the next FSRS interval under each label. Target retention is a setting.
+- **Study session.** Flashcards with article colour (der / die / das), audio, a pronunciation guide in the meaning language's letters (Bangla, Russian or Polish) or an English respelling, cloze cards, undo. A four-button rating bar (Again / Hard / Good / Easy) shows the next FSRS interval under each label. Target retention is a setting.
 - **Grammar.** Library of topics with explanations and practice drills, tied to the step where they are introduced.
 - **Quiz and mock exams.** Custom quizzes, plus three seeded mock exams per step: 40 questions, about 20 minutes, pass mark 60 %. Sections cover vocabulary, reverse translation, articles, word forms, gap fill, grammar, listening, writing and speaking.
 - **Search and my words.** Full-text search across all steps, word detail with forms and sentences, side-by-side compare, and add / edit your own words.
