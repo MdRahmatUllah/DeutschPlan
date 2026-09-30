@@ -6,18 +6,20 @@ v1.1.0's languages: **the app** in English, Bangla, Polish and Russian; **meanin
 
 Translation (Hy-MT) is off in every v1.0 build (ADR 9), so the listing doesn't mention it.
 
+**Search (#1176, sogda.de's master plan W4-b):** each title is "Sogda: " plus the phrase people search in that language, within Play's 30 characters. Neither a title nor a short description names "Goethe" or "telc" (their trademarks); `test_store_listing.py` checks both. The short description and the full description's second paragraph are the positioning sentence, the same one sogda.de, its FAQ and `llms.txt` use. The owner approves the wording before the listing changes.
+
 ## English (en-US)
 
 ### Title
-Sogda: German A1–C2
+Sogda: Learn German A1–C2
 
 ### Short description
-Learn German offline, A1 to C2, meanings in English, Bangla, Russian or Polish
+Offline German course app: A1 to C2 in 12 steps, 36 mock exams, no account
 
 ### Full description
 Learn German, one clear day at a time.
 
-Sogda is a complete German course that works fully offline: no account, no signal needed, and your progress stays on this phone.
+Sogda is an offline German course app: A1 to C2 in 12 steps, with 5,069 words, 182 grammar topics and 36 mock exams, and meanings and a pronunciation guide in English, Bangla, Russian or Polish. No account and no signal needed, and your progress stays on this phone.
 
 WHAT YOU LEARN
 • 12 steps from A1.1 to C2.2, built around the exams
@@ -52,15 +54,15 @@ New: the app in Polish and Russian, and meanings in English, Bangla, Russian or 
 ## Bangla (bn-BD)
 
 ### Title
-Sogda: জার্মান A1–C2
+Sogda: জার্মান ভাষা A1–C2
 
 ### Short description
-অফলাইনে জার্মান শিখুন, A1 থেকে C2, ইংরেজি বা বাংলা অর্থসহ
+অফলাইন জার্মান কোর্স অ্যাপ: A1 থেকে C2, ১২টি ধাপ, ৩৬টি মক পরীক্ষা, বাংলা অর্থসহ
 
 ### Full description
 প্রতিদিন একটু একটু করে জার্মান শিখুন।
 
-Sogda একটি পূর্ণাঙ্গ জার্মান কোর্স, যা পুরোপুরি অফলাইনে চলে: অ্যাকাউন্ট বা ইন্টারনেট লাগে না, আর আপনার অগ্রগতি এই ফোনেই থাকে।
+Sogda একটি অফলাইন জার্মান কোর্স অ্যাপ: A1 থেকে C2 পর্যন্ত ১২টি ধাপে ৫,০৬৯টি শব্দ, ১৮২টি ব্যাকরণ বিষয় আর ৩৬টি মক পরীক্ষা, সঙ্গে ইংরেজি, বাংলা, রুশ বা পোলিশে অর্থ আর উচ্চারণ নির্দেশিকা। অ্যাকাউন্ট বা ইন্টারনেট লাগে না, আর আপনার অগ্রগতি এই ফোনেই থাকে।
 
 যা শিখবেন
 • A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ, পরীক্ষার কাঠামো মেনে সাজানো
@@ -94,15 +96,15 @@ Sogda একটি পূর্ণাঙ্গ জার্মান কোর�
 ## Polish (pl-PL)
 
 ### Title
-Sogda: niemiecki A1–C2
+Sogda: niemiecki od zera do C2
 
 ### Short description
-Ucz się niemieckiego offline, od A1 do C2, ze znaczeniami po polsku
+Kurs niemieckiego offline, A1–C2: 12 etapów, 36 egzaminów próbnych, po polsku
 
 ### Full description
 Ucz się niemieckiego dzień po dniu, z jasnym planem.
 
-Sogda to pełny kurs niemieckiego, który działa w pełni offline: bez konta, bez zasięgu, a Twoje postępy zostają na tym telefonie.
+Sogda to aplikacja z kursem niemieckiego offline: od A1 do C2 w 12 etapach, z 5069 słowami, 182 tematami gramatycznymi i 36 egzaminami próbnymi, ze znaczeniami i wskazówkami wymowy po angielsku, bengalsku, rosyjsku lub polsku. Bez konta i bez zasięgu, a Twoje postępy zostają na tym telefonie.
 
 CZEGO SIĘ NAUCZYSZ
 • 12 etapów od A1.1 do C2.2, ułożonych pod kątem egzaminów
@@ -136,15 +138,15 @@ Nowość: aplikacja po polsku i po rosyjsku, a znaczenia po angielsku, bengalsku
 ## Russian (ru-RU)
 
 ### Title
-Sogda: немецкий A1–C2
+Sogda: немецкий с нуля до C2
 
 ### Short description
-Учи немецкий офлайн, от A1 до C2, со значениями на русском
+Курс немецкого офлайн, A1–C2: 12 этапов, 36 пробных экзаменов, на русском
 
 ### Full description
 Учи немецкий день за днём, с ясным планом.
 
-Sogda — полный курс немецкого, который работает полностью офлайн: без аккаунта и без сети, а твой прогресс остаётся на этом телефоне.
+Sogda — приложение с курсом немецкого офлайн: от A1 до C2 за 12 этапов, 5069 слов, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети, а твой прогресс остаётся на этом телефоне.
 
 ЧТО ТЫ ВЫУЧИШЬ
 • 12 этапов от A1.1 до C2.2, по структуре экзаменов

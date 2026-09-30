@@ -99,12 +99,18 @@ def test_every_screenshot_is_one_play_takes_175(folder):
         assert max(width, height) <= 2 * min(width, height), f"{folder}/{name}: over 2:1"
 
 
-def test_the_title_the_website_and_the_icon_are_the_brand_kits_602():
+def test_the_title_the_website_and_the_icon_are_the_brand_kits_602_1176():
     listing = texts()
-    assert listing[("English (en-US)", "Title")] == "Sogda: German A1–C2"
-    assert listing[("Bangla (bn-BD)", "Title")] == "Sogda: জার্মান A1–C2"
-    assert listing[("Polish (pl-PL)", "Title")] == "Sogda: niemiecki A1–C2"
-    assert listing[("Russian (ru-RU)", "Title")] == "Sogda: немецкий A1–C2"
+    # "Sogda: " and the phrase people search in each language (#1176).
+    assert listing[("English (en-US)", "Title")] == "Sogda: Learn German A1–C2"
+    assert listing[("Bangla (bn-BD)", "Title")] == "Sogda: জার্মান ভাষা A1–C2"
+    assert listing[("Polish (pl-PL)", "Title")] == "Sogda: niemiecki od zera do C2"
+    assert listing[("Russian (ru-RU)", "Title")] == "Sogda: немецкий с нуля до C2"
+    for language in LANGUAGES:
+        # Their trademarks, and Play's policy on third-party marks: never in a
+        # title or a short description, the texts Play searches first.
+        for field in ("Title", "Short description"):
+            assert not re.search(r"goethe|telc", listing[(language, field)], re.I), (language, field)
     text = LISTING.read_text(encoding="utf-8")
     assert "**Website:** https://sogda.de" in text
     icon = re.search(r"\*\*App icon:\*\* \[`([^`]+)`\]", text)[1]
