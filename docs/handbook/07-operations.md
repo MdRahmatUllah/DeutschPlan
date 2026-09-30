@@ -215,7 +215,9 @@ anyway. The owner provides the upload key; the agents' worktrees have no
   `tablet-light` and `tablet-dark`, six each (Today, a card's front and back,
   the course, a step, word detail), from the release x86_64 APK on
   `emulator-5558`: phone 1080 × 2160, tablet 1600 × 2560, Android's demo-mode
-  status bar, RGB PNGs without alpha.
+  status bar, RGB PNGs without alpha. Bangla, Polish and Russian each have a
+  phone set in their own app language (`bn-`, `pl-` and `ru-phone-light`), and
+  every release re-shoots them all.
 - **Data safety:** no data collected or shared; no account, analytics or ads.
   Model downloads fetch files and send nothing; *Report a problem* opens a
   pre-filled GitHub issue in the browser, which the learner sends or doesn't.
