@@ -4155,6 +4155,22 @@
   "@settingsShowPronBn": {
     "description": "M3 switch: show_pron_bn."
   },
+  "pronKeyLine": "How to read the pronunciation",
+  "@pronKeyLine": {
+    "description": "#1122: the line under a pronunciation guide (W1, T2's back) that opens its key, and the key sheet's title; a screen reader's name for the ⓘ it becomes once opened."
+  },
+  "pronKeyEn": "Capitals mark the stressed syllable: VEE-der. ai is as in aisle, ow as in how, oy as in boy. ew: say ee with your lips rounded for oo (CHEWSS); ur: British fur with rounded lips (SHURN). hy is the h of huge, hissed (IHY); kh is Scottish loch (BOOKH). An r ending a syllable is silent, as in British beer (BEER); starting one, it is a light gargle in the throat.",
+  "@pronKeyEn": {
+    "description": "#1122: the English pronunciation guide's key, in English in every app language: the reader reads the guide in English. From pronunciation-schemes.md."
+  },
+  "pronKeyRu": "Заглавная буква — ударный гласный: штрАсэ. э читается твёрдо, согласный перед ним не смягчается: гэт. хь — мягкое «х», как в слове «хитрый»: ихь; х — как в «ах»: бух. ю и ё — это «и» и «э», сказанные губами, округлёнными для «у» и «о»: чюс, шён; в начале слова — без «й». р — лёгкий звук в горле, не раскатистый; «а» на конце заменяет -er и r: бИа.",
+  "@pronKeyRu": {
+    "description": "#1122: the Russian pronunciation guide's key, in Russian in every app language: the reader reads the guide in Russian. From pronunciation-schemes.md."
+  },
+  "pronKeyPl": "Wielkie litery oznaczają sylabę akcentowaną: auf WI-da-ze-en. ś to niemiecki dźwięk z „ich”: IŚ; ch jest twarde jak w polskim: BUCH. ü: powiedz i, zaokrąglając usta jak do u (CZÜS); ö: powiedz e z ustami jak do o (SZÖN). zi, si, ci, ni czytaj twardo, jak w „taxi”, a ij przed samogłoską to zwykłe i: BIJA. r jest lekkie, gardłowe, nie drżące; a na końcu słowa zastępuje -er i r: JE-da.",
+  "@pronKeyPl": {
+    "description": "#1122: the Polish pronunciation guide's key, in Polish in every app language: the reader reads the guide in Polish. From pronunciation-schemes.md."
+  },
   "settingsVoiceEngine": "Voice engine",
   "@settingsVoiceEngine": {
     "description": "M3 row: tts_engine and tts_voice; opens M4."

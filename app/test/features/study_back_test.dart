@@ -240,6 +240,8 @@ void main() {
 
     testWidgets('meaning_language both: English, then Bangla', (tester) async {
       await pump(tester);
+      // #1122: the guide is Bangla's, which has no key.
+      expect(find.text(l10n.pronKeyLine), findsNothing);
       expect(find.text('bill, invoice'), findsOneWidget);
       expect(find.text('বিল, চালান'), findsOneWidget);
       expect(
@@ -293,6 +295,8 @@ void main() {
       expect(find.text('বিল, চালান'), findsNothing);
       expect(find.textContaining('/рэхнунг/'), findsOneWidget);
       expect(find.textContaining('রেশনুং'), findsNothing);
+      // #1122: the back opens with the Russian guide's key.
+      expect(find.text(l10n.pronKeyLine), findsOneWidget);
       expect(
         find.text(l10n.studyTip('Rechnung is a bill, not a calculation.')),
         findsOneWidget,

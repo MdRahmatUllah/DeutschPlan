@@ -298,6 +298,10 @@ abstract final class SettingKeys {
   );
   static const showPronBn = BoolSetting('show_pron_bn', true);
 
+  /// #1122: the learner has opened a pronunciation key once, so the line
+  /// under the guide is a small ⓘ from then on.
+  static const pronKeySeen = BoolSetting('pron_key_seen', false);
+
   // Audio.
   static const ttsEngine = EnumSetting<TtsEngineSetting>(
     'tts_engine',
@@ -385,6 +389,7 @@ abstract final class SettingKeys {
     uiLanguage,
     themeMode,
     showPronBn,
+    pronKeySeen,
     ttsEngine,
     ttsVoice,
     ttsSpeed,

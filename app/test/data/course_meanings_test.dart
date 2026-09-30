@@ -82,12 +82,28 @@ void main() {
       },
     });
     String? guide(MeaningChoice choice, {bool bangla = true}) =>
-        Meanings(choice, course).pronunciation(word, bangla: bangla);
+        Meanings(choice, course).pronunciation(word, bangla: bangla)?.text;
 
     expect(guide(const MeaningChoice('en', 'bn')), 'হাউস', reason: 'en none');
     expect(guide(const MeaningChoice('en', 'bn'), bangla: false), isNull);
     expect(guide(const MeaningChoice('en')), isNull, reason: 'no Bangla');
     expect(guide(const MeaningChoice('ru', 'bn')), 'хАус');
+    // #1122: the guide says whose it is, so its key is that language's.
+    expect(
+      Meanings(
+        const MeaningChoice('en', 'bn'),
+        course,
+      ).pronunciation(word, bangla: true)?.lang,
+      'bn',
+      reason: "the second's guide, where the first has none",
+    );
+    expect(
+      Meanings(
+        const MeaningChoice('ru', 'bn'),
+        course,
+      ).pronunciation(word, bangla: true)?.lang,
+      'ru',
+    );
     expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хАус');
   });
 
