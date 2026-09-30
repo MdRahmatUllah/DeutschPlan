@@ -12,6 +12,7 @@
 
 **Functional requirements**
 - FR-L5-01 Counts and status bars per category from a single grouped query.
+- A category's name is in the learner's primary meaning language, English where the course has none in it (`category_translations`, #1128), on L5's cards and L6's title alike; a change in M3 reaches them at once.
 - FR-L6-01 Order: `sublevel ord`, then `freq DESC`, then `seq`.
 - FR-L6-02 *Quiz* starts a 20-question quiz of the category's learned words at once (L8, source `category(id)`), one tap like L2's *Quick* tiles; L7 stays one tap away through L2's *Custom* for the step (the owner, 2026-09-27, #963). It starts in the learner's meaning direction, as L7 does (#667).
 

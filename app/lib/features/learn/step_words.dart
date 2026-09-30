@@ -47,8 +47,18 @@ List<StepWord> withMeanings(Meanings meanings, List<WordWithState> words) =>
 /// The categories [code]'s words fall in, the biggest first: the chips
 /// after the status ones.
 @riverpod
-Future<List<({int id, String name})>> stepCategories(Ref ref, String code) =>
-    ref.watch(contentDaoProvider).stepCategories(code);
+Future<List<({int id, String name})>> stepCategories(
+  Ref ref,
+  String code,
+) async {
+  // #1128: each in the primary meaning language.
+  final names = ref.watch(categoryNamesProvider.future);
+  final categories = await ref.watch(contentDaoProvider).stepCategories(code);
+  final translated = await names;
+  return <({int id, String name})>[
+    for (final c in categories) (id: c.id, name: translated.of(c.name)),
+  ];
+}
 
 /// The Words tab's status chips.
 enum WordFilter { all, todo, learning, done }
