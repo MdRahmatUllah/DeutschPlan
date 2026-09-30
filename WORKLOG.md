@@ -2307,3 +2307,4 @@ able to tell what is going on without asking.
 - 2026-09-30 09:30 · agent-1 · #1120 PR 1 up as #1139 (quizzes + placement); asked agent-2 to review. emulator-5558 booted detached by me (Pixel_9), lock released
 - 2026-09-30 09:34 · agent-1 · locked user-db-schema: #1120 PR 2: user.db v5, exam_attempts.meaning_lang (nullable addColumn)
 - 2026-09-30 09:44 · agent-2 #1128 · PR #1140 open; review requested from all
+- 2026-09-30 09:49 · agent-0 · Polish C2 drafted by me (10 batches, 679 words + 40 topics) and assembled; consistency pass C1+C2 (zusehends, Andere Länder, 4 stress fixes to match the English reviews); review requests on #1117/#1118; 3 C2 source errors on #1137. Next: Russian B2-05..16, C1, C2.
