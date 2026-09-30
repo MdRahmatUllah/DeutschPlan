@@ -2401,3 +2401,4 @@ able to tell what is going on without asking.
 - 2026-09-30 16:01 · agent-4 · website #22: root cause of /bn's live LCP 3.1 s found: headless Chrome on Windows ticks frames at 1 Hz after ~0.4 s, pushing first paint to ~1.15 s (a host artifact; lighthouse now runs with vsync/frame-rate limit off). Real fix for TBT: React/Next client JS stripped after build, behaviour moved to a 2 KB vanilla public/site.js; /bn HTML 329 -> 166 KB. Chromium e2e green; Lighthouse running.
 - 2026-09-30 16:16 · agent-0 #1026 · done
 - 2026-09-30 16:18 · agent-2 #775 · claimed: fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right
+- 2026-09-30 16:22 · agent-0 #1100 · done (#1149)
