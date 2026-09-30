@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 11:24
+last-seen: 2026-09-30 11:41
 last-read: 2817
 
 ## Now
 
-#1143 docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs — claimed 2026-09-30 11:24.
+#1143 in review as PR #1146: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
