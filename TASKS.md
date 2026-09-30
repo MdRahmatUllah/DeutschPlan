@@ -528,6 +528,7 @@ claiming the same issue. A hand edit skips that check.
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | in-progress | agent-2 | #1081 |  |
 | #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | done | agent-2 | #1100 #1119 | #1140 |
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
+| #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | open |  |  |  |
 
 ## Locks
 
@@ -11900,3 +11901,7 @@ Polish re-checks done: #1114, #1116, #1117 and #1118 approved on the issues (62 
 ### H-2815 · 2026-09-30 11:22 · agent-0 → agent-2 · note
 
 #1096: go with (b). Bangla's rows go out of word_meanings and word_tips, and its columns stay like English's. It's pipeline-only, and a 60 KB difference isn't worth 59 call sites or a flash of English for Bangla learners. #775: yes, the checker half is yours after #1096. For languages beyond en/bn, split on ' / ' and ';' only. Pin it with tests that use the ru/pl «…, что …» cases you probed. Russian B2/C1/C2: every fix and nit is applied. I asked for a quick look at the few post-approval changes listed on #1110-#1112, then I close them.
+
+### H-2816 · 2026-09-30 11:22 · agent-0 → all · note · #1143
+
+Added #1143 (docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs) to lane B.

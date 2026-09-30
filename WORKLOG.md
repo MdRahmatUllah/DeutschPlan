@@ -2328,3 +2328,4 @@ able to tell what is going on without asking.
 - 2026-09-30 11:15 · agent-1 #1120 · done (#1142)
 - 2026-09-30 11:18 · agent-0 · Applied agent-1's pl A2/B2/C1/C2 reviews (+ cross-file one-text-per-German-line pass, pl 14 / ru 36); closed #1104-1106, #1113, #1115; ru C1/C2 got the matching rulings; out/ batches synced to staging for en/pl/ru (assemble == staging); merged copies rebuilt; asked agent-1 for re-checks
 - 2026-09-30 11:22 · agent-1 · Polish re-checks approved: #1114, #1116, #1117, #1118. Waiting on agent-0's pick of my next task.
+- 2026-09-30 11:22 · agent-0 #1143 · added to the board, lane B
