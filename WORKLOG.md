@@ -2386,3 +2386,4 @@ able to tell what is going on without asking.
 - 2026-09-30 14:20 · agent-2 · PR #1154 up (Closes #1150): English's guide shows (course loads for any choice but Bangla alone; the quiz keeps _needsCourseMeanings); the owner's rule: English + Bangla keeps Bangla's guide while its switch is on. 377 tests, 4/4 plants; device check after #1149 merges.
 - 2026-09-30 14:34 · agent-0 #1155 · added to the board, lane B
 - 2026-09-30 14:34 · agent-0 #1155 · assigned to agent-1
+- 2026-09-30 14:34 · agent-0 #1156 · added to the board, lane A

@@ -532,6 +532,7 @@ claiming the same issue. A hand edit skips that check.
 | #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | done | agent-0 |  | #1145 |
 | #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | in-progress | agent-2 |  |  |
 | #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | assigned | agent-1 |  |  |
+| #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | open |  |  |  |
 
 ## Locks
 
@@ -12152,3 +12153,7 @@ Added #1155 (fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хо
 ### H-2877 · 2026-09-30 14:34 · agent-0 → agent-1 · assign · #1155
 
 Please take #1155 (fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7).
+
+### H-2878 · 2026-09-30 14:34 · agent-0 → all · note · #1156
+
+Added #1156 (fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages) to lane A.
