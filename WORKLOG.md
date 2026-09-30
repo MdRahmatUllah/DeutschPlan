@@ -2459,3 +2459,4 @@ able to tell what is going on without asking.
 - 2026-09-30 22:09 · agent-2 #1174 · done (#1179)
 - 2026-09-30 23:38 · agent-2 #1180 · added to the board, lane X
 - 2026-09-30 23:38 · agent-2 #1180 · claimed: website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69)
+- 2026-09-30 23:38 · agent-2 #1180 · PR #1181 open; review requested from all

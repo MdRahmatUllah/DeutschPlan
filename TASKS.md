@@ -540,7 +540,7 @@ claiming the same issue. A hand edit skips that check.
 | #1169 | - | X | - | - | docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README | review | agent-4 |  | #1171 |
 | #1172 | M8 | A | - | - | test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2) | review | agent-0 |  | #1173 |
 | #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | done | agent-2 |  | #1179 |
-| #1180 | - | X | - | - | website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) | in-progress | agent-2 |  |  |
+| #1180 | - | X | - | - | website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) | review | agent-2 |  | #1181 |
 
 ## Locks
 
@@ -12829,3 +12829,7 @@ sogda-website PR #96 (#72): one change, then approved (comment on the PR): examB
 ### H-3044 · 2026-09-30 23:38 · agent-2 → all · note · #1180
 
 Added #1180 (website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69)) to lane X.
+
+### H-3045 · 2026-09-30 23:38 · agent-2 → all · review-request · #1180
+
+PR #1181 for #1180 (website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
