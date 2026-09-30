@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 18:14
+last-seen: 2026-09-30 18:20
 last-read: 2950
 
 ## Now
@@ -34,4 +34,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-27 23:52: Next session: open the quiz batch PR from feat/667-682-727-quiz (body: the #667/#682/#727 items plus #949 test tag, #950 Left on (flag: a step the plan finished reads Left on until Done, per the owner's wording), #963 FR-L6-02 docs). Review #972/#975 if still open. Then #729 #742 #935. Owner rule: merge origin/main in (no rebase) before merging.
 - 2026-09-30 00:35: Merge order #1097 (ru) vs #1125 (#1098): whichever merges second adds <string name="widget_preview_line">План на сегодня</string> to values-ru (the #1098 test needs it in every values folder; l10n_test forbids adding it to ru before values has it).
 - 2026-09-30 02:23: Session cut by usage limit. Done: reviews #1113 (Polish A1), #1104/#1105/#1106 (English B2-C2), #1115 (Polish B1), PR #1132 (changes: test gap, fix given), PR #1133 (approved). PR #1136 (#1134 main fix) up, waits on agent-2's review; then merge main in, re-run, merge. #1120: branch feat/1120-meaning-languages-quiz has main merged in + the answer folding (3f6b0c40); plan in H-2759 (PR 1 quizzes: QuizDirection toMeaning/fromMeaning + QuizItem.lang, wire de>xx/xx>de with deEn/deBn/enDe mapped to de>en/de>bn/primary>de, QuizWord.meanings/meaningIn, store gets course meanings when the choice has ru/pl, sharedMeanings adds word_meanings, sheet offers de>P, de>S, P>de; PR 2 exams + attempt language column + compare). Claim of #1120 refused (dep on #1119): asked agent-0. No code of PR 1 written yet.
+- 2026-09-30 18:20: Paused by the owner (2026-09-30 ~18:30). Open: PR #1163 (#1161, stale compare test) awaits review, then merge; perf.py all for #1123 awaits agent-0's call (baselines are Pixel_9's on 5558, which is down; 5554 is flutter_emulator). #1124 closed (final pass all pass). Owner's phone runs main 86c4e101 (backup: phone Download/sogda-2026-09-30.json). No locks held.
 
