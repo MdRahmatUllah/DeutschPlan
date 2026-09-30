@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import zipfile
 from copy import copy
@@ -53,7 +54,6 @@ SHEETS = {
               {"Topic": ("Topic", 32), "Rule": ("Rule", 64), "Example": ("Example (EN)", 40),
                "Watch out": ("Watch out", 42)}),
 }
-CHART_PARTS = ("xl/charts/", "xl/drawings/")
 
 
 class MergeError(Exception):
@@ -144,19 +144,46 @@ def merge_sheet(ws, language: str, entries: list[dict], key: tuple[str, ...],
     return written, len(by_row)
 
 
+def _chart_roles(z: zipfile.ZipFile) -> dict[str, str]:
+    """The parts that carry a chart, by role: each chart by its name, and each
+    drawing that holds one (and its rels) by the charts it points to.
+
+    Google Sheets exports an empty drawing for every sheet, and openpyxl
+    drops those and renumbers the rest (B2's chart drawing is drawing2.xml in
+    the export and drawing1.xml once saved), so a drawing is matched by what
+    it shows, not by its file name.
+    """
+    names = z.namelist()
+    roles = {n: n for n in names if n.startswith("xl/charts/") and n.endswith(".xml")}
+    for n in names:
+        if not (n.startswith("xl/drawings/drawing") and n.endswith(".xml")):
+            continue
+        rels = f"xl/drawings/_rels/{n.rsplit('/', 1)[1]}.rels"
+        # an export points ../charts/, openpyxl /xl/charts/
+        targets = sorted(re.findall(rb'Target="(?:\.\./|/xl/)charts/([^"]+)"', z.read(rels))) if rels in names else []
+        if targets:  # an empty drawing points at nothing: not a chart's
+            role = "drawing of " + ", ".join(t.decode() for t in targets)
+            roles[role] = n
+            roles[role + " rels"] = rels
+    return roles
+
+
 def chart_parts(path: Path) -> dict[str, bytes]:
+    """The chart parts of the xlsx at [path], by role (see [_chart_roles])."""
     with zipfile.ZipFile(path) as z:
-        return {n: z.read(n) for n in z.namelist() if n.startswith(CHART_PARTS)}
+        return {role: z.read(name) for role, name in _chart_roles(z).items()}
 
 
 def put_parts(path: Path, parts: dict[str, bytes]) -> None:
-    """Replaces these parts of the xlsx at [path] (as build_trackers.py's swap_chart)."""
+    """Puts these chart parts, by role, back into the xlsx at [path] (as
+    build_trackers.py's swap_chart), each over the part that has its role."""
     with zipfile.ZipFile(path) as z:
         allparts = {i.filename: z.read(i.filename) for i in z.infolist()}
-    if {n for n in allparts if n.startswith(CHART_PARTS)} != set(parts):
-        raise MergeError(f"chart parts: the output has {sorted(n for n in allparts if n.startswith(CHART_PARTS))}, "
-                         f"the input {sorted(parts)}")
-    allparts.update(parts)
+        roles = _chart_roles(z)
+    if set(roles) != set(parts):
+        raise MergeError(f"chart parts: the output has {sorted(roles)}, the input {sorted(parts)}")
+    for role, data in parts.items():
+        allparts[roles[role]] = data
     tmp = path.with_suffix(".tmp")
     with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in allparts.items():
