@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 11:09
+last-seen: 2026-09-30 11:10
 last-read: 2809
 
 ## Now
 
-Nothing claimed.
+#1096 chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) — claimed 2026-09-30 11:10.
 
 ## Next
 
