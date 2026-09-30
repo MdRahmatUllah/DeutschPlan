@@ -210,7 +210,7 @@ words:
     why: "#628: personal details replaced with generic ones"
     example_de_1: "Unsere Wohnung liegt in Zone 1."
     example_ru_1: "Наша квартира находится в зоне 1."
-    example_pl_1: "Nasze mieszkanie leży w strefie 1."
+    example_pl_1: "Nasze mieszkanie znajduje się w strefie 1."
     example_en_1: "Our flat is in zone 1."
   "ca5f0bdcfa56014c":
     why: "#628: personal details replaced with generic ones"
@@ -765,7 +765,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Tickets gibt es am Fahrkartenautomaten."
     example_ru_2: "Билеты можно купить в билетном автомате."
-    example_pl_2: "Bilety można kupić w automacie biletowym."
+    example_pl_2: "Bilety można kupić w biletomacie."
     example_en_2: "Tickets are available at the ticket machine."
   "2a10f67fc7774dd7":
     why: "#631: no example the cloze can gap; one that names the word"
@@ -777,7 +777,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_1: "Die S-Bahn S8 fährt zum Flughafen."
     example_ru_1: "Электричка S8 идёт в аэропорт."
-    example_pl_1: "Kolejka S8 jedzie na lotnisko."
+    example_pl_1: "S-Bahn S8 jedzie na lotnisko."
     example_en_1: "The S8 suburban train goes to the airport."
   "2839c21baa769c58":
     why: "#631: the example did not name its word"
@@ -855,7 +855,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Ich mache einen Kurs an der Volkshochschule."
     example_ru_2: "Я хожу на курс в народном университете."
-    example_pl_2: "Chodzę na kurs na uniwersytecie ludowym (VHS)."
+    example_pl_2: "Chodzę na kurs w centrum kształcenia dorosłych (VHS)."
     example_en_2: "I'm doing a course at the adult education centre."
   "3cc18c84edfd4f05":
     why: "#631: no example the cloze can gap; one that names the word"
@@ -929,7 +929,7 @@ words:
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Die neuen Regeln werden vor allem Familien betreffen."
     example_ru_3: "Новые правила коснутся прежде всего семей."
-    example_pl_3: "Nowe przepisy dotkną przede wszystkim rodzin."
+    example_pl_3: "Nowe przepisy będą dotyczyć przede wszystkim rodzin."
     example_en_3: "The new rules will mainly affect families."
   "93c115292e662b12":
     why: "#631: no example the cloze can gap; one that names the word"
@@ -941,7 +941,7 @@ words:
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Das Projekt kann nur gemeinsam gelingen."
     example_ru_3: "Проект может удаться только сообща."
-    example_pl_3: "Projekt może się udać tylko wspólnie."
+    example_pl_3: "Projekt może się udać tylko wspólnymi siłami."
     example_en_3: "The project can only succeed if we work together."
   "21cfdce3ef9d5881":
     why: "#631: no example the cloze can gap; one that names the word"
@@ -1213,14 +1213,14 @@ words:
   "68c92202afa0c592":
     why: "#631: the example did not name its word"
     example_de_2: "Der Begriff Vergangenheitsbewältigung ist selbst umstritten."
-    example_ru_2: "Само понятие «преодоление прошлого» спорно."
-    example_pl_2: "Samo pojęcie „rozliczenia z przeszłością” jest sporne."
+    example_ru_2: "Само понятие Vergangenheitsbewältigung («преодоление прошлого») спорно."
+    example_pl_2: "Samo pojęcie Vergangenheitsbewältigung („rozliczenie z przeszłością”) jest sporne."
     example_en_2: "The term 'Vergangenheitsbewältigung' is itself contested."
   "bd4b70ffc170cbfb":
     why: "#631: the example did not name its word"
     example_de_2: "Die Versiegelung rückgängig zu machen ist teuer."
     example_ru_2: "Вернуть почве проницаемость стоит дорого."
-    example_pl_2: "Usunięcie uszczelnienia gleby jest drogie."
+    example_pl_2: "Odwrócenie zasklepienia gleby jest kosztowne."
     example_en_2: "Reversing soil sealing is expensive."
   "6391e2d4e5b11fcb":
     why: "#631: the example did not name its word"
@@ -1238,7 +1238,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Um die Aufgabenstellung zu erfüllen, müssen alle vier Leitpunkte bearbeitet werden."
     example_ru_2: "Чтобы выполнить задание, нужно раскрыть все четыре пункта."
-    example_pl_2: "Aby spełnić wymogi zadania, trzeba omówić wszystkie cztery punkty."
+    example_pl_2: "Aby spełnić wymogi zadania, trzeba omówić wszystkie cztery punkty wiodące."
     example_en_2: "To meet the task requirements, all four guiding points have to be addressed."
   "fee939556b9d7262":
     why: "#631: no example the cloze can gap; one that names the word"
@@ -1322,7 +1322,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "So mit Kunden zu sprechen – das geht gar nicht."
     example_ru_2: "Так говорить с клиентами — это никуда не годится."
-    example_pl_2: "Tak rozmawiać z klientami – to w ogóle nie wchodzi w grę."
+    example_pl_2: "Tak rozmawiać z klientami – tak nie można."
     example_en_2: "Talking to customers like that – that's simply not on."
   "4848aa0a2e5dfa1d":
     why: "#631: the example did not name its word"
@@ -1346,7 +1346,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Hochmut kommt vor dem Fall, heißt es schon in der Bibel."
     example_ru_2: "Гордыня предшествует падению, — сказано ещё в Библии."
-    example_pl_2: "Pycha poprzedza upadek – mówi już Biblia."
+    example_pl_2: "Pycha kroczy przed upadkiem – mówi już Biblia."
     example_en_2: "Pride comes before a fall, as the Bible says."
   "bd6bdf20e4f799b0":
     why: "#631: the example did not name its word"
@@ -1509,7 +1509,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Die Benrather Linie markiert die Grenze zum Niederdeutschen."
     example_ru_2: "Бенратская линия обозначает границу с нижненемецким."
-    example_pl_2: "Linia Benrath wyznacza granicę z dolnoniemieckim."
+    example_pl_2: "Linia benrathska wyznacza granicę z dolnoniemieckim."
     example_en_2: "The Benrath line marks the boundary with Low German."
   "ed4f44b2582be654":
     why: "#631: the example did not name its word"
@@ -1519,7 +1519,7 @@ words:
     example_en_2: "The assessment criteria include coherence, vocabulary and pronunciation."
     example_de_1: "Wer die Bewertungskriterien kennt, schreibt gezielter."
     example_ru_1: "Кто знает критерии оценки, пишет целенаправленнее."
-    example_pl_1: "Kto zna kryteria oceny, pisze bardziej celowo."
+    example_pl_1: "Kto zna kryteria oceny, pisze celniej."
     example_en_1: "Anyone who knows the assessment criteria writes more purposefully."
   "55ea79f8f0df5478":
     why: "#631: the example did not name its word"
@@ -1543,7 +1543,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Beim Dienst nach Vorschrift wird alles korrekt erledigt, aber nichts darüber hinaus."
     example_ru_2: "При работе строго по инструкции всё делается правильно, но ничего сверх."
-    example_pl_2: "Przy pracy ściśle według przepisów wszystko jest zrobione poprawnie, ale nic ponad to."
+    example_pl_2: "Przy strajku włoskim wszystko jest robione poprawnie, ale nic ponad to."
     example_en_2: "When working to rule, everything is done correctly, but nothing more."
   "05a12e3ebce0c154":
     why: "#631: the example did not name its word"
@@ -1585,7 +1585,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Im Fehlerprotokoll stehen Kategorien wie Register, Kollokation und Kongruenz."
     example_ru_2: "В журнале ошибок есть категории: регистр, коллокация, согласование."
-    example_pl_2: "W rejestrze błędów są kategorie takie jak rejestr, kolokacja i zgodność."
+    example_pl_2: "W rejestrze błędów są kategorie takie jak rejestr językowy, kolokacja i zgodność."
     example_en_2: "The error log has categories such as register, collocation and agreement."
   "5945c82e065930a0":
     why: "#631: the example did not name its word"
@@ -1632,14 +1632,14 @@ words:
   "62bae5e6b1c18fc9":
     why: "#631: the example did not name its word"
     example_de_2: "Neutraler als „Klimakleber“ ist die Bezeichnung „Klimaaktivisten“."
-    example_ru_2: "Нейтральнее, чем «Klimakleber», — «климатические активисты»."
-    example_pl_2: "Bardziej neutralne niż „Klimakleber” jest określenie „aktywiści klimatyczni”."
+    example_ru_2: "Нейтральнее, чем «Klimakleber», — «Klimaaktivisten» (климатические активисты)."
+    example_pl_2: "Bardziej neutralne niż „Klimakleber” jest określenie „Klimaaktivisten” (aktywiści klimatyczni)."
     example_en_2: "'Klimaaktivisten' (climate activists) is a more neutral term than 'Klimakleber'."
   "03006936991022d7":
     why: "#631: the example did not name its word"
     example_de_2: "Wer Komplexität reduziert, zahlt dafür einen Preis."
     example_ru_2: "Кто упрощает сложное, платит за это свою цену."
-    example_pl_2: "Kto redukuje złożoność, płaci za to swoją cenę."
+    example_pl_2: "Kto redukuje złożoność, płaci za to pewną cenę."
     example_en_2: "Anyone who reduces complexity pays a price for it."
   "0cf46f07c8bfb1d9":
     why: "#631: the example did not name its word"
@@ -1907,7 +1907,7 @@ words:
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Kann einer Regel Willkür innewohnen?"
     example_ru_3: "Может ли правилу быть присущ произвол?"
-    example_pl_3: "Czy regule może być właściwa dowolność?"
+    example_pl_3: "Czy w regule może tkwić arbitralność?"
     example_en_3: "Can arbitrariness be inherent in a rule?"
   "92b7acaa86a1b1ce":
     why: "#631: the example did not name its word"
@@ -1959,7 +1959,7 @@ words:
     why: "#631: the example did not name its word"
     example_de_2: "Unter Prüfungsbedingungen heißt: gleiche Uhrzeit, kein Wörterbuch, keine Pause."
     example_ru_2: "В экзаменационных условиях — значит: то же время суток, без словаря, без перерыва."
-    example_pl_2: "W warunkach egzaminacyjnych znaczy: ta sama pora dnia, bez słownika, bez przerwy."
+    example_pl_2: "„W warunkach egzaminacyjnych” oznacza: ta sama pora dnia, bez słownika, bez przerwy."
     example_en_2: "Under exam conditions means: same time of day, no dictionary, no break."
   "a081c266739ed1c7":
     why: "#631: the example did not name its word"
