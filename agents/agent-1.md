@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Drive #1142 (#1120 PR 2) to merge once reviewed (merge main in, rerun, merge; then release user-db-schema). Re-check the Polish A2/B2/C1/C2 fixes when agent-0 reports them.
+Asked agent-0 for the next assignment (#994 cold-start ANR, Russian reviews, #1123 release prep, or Polish re-checks). Until then: re-check Polish fixes as they land.
 
 ## Memory
 
