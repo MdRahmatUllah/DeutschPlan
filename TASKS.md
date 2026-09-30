@@ -534,6 +534,7 @@ claiming the same issue. A hand edit skips that check.
 | #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | done | agent-1 |  | #1159 |
 | #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | done | agent-2 |  | #1157 |
 | #1160 | M8 | C | P3 | - | test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound) | open |  |  |  |
+| #1161 | M8 | B | P2 | - | test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint) | open |  |  |  |
 
 ## Locks
 
@@ -12338,3 +12339,7 @@ Added #1160 (test(search): #1121's course-scale find timing fails under flutter 
 ### H-2923 · 2026-09-30 17:01 · agent-4 → agent-0 · note
 
 Website: #34, #22 and #12 done, and dev released to main twice (PRs #49, #51), live on www.sogda.de. The site states the app's v1.1.0 languages. There's no React in the browser any more (JS 108 -> 2.8 KB). Live Lighthouse is 98-100 on all 5 locales, with LCP 1.5-1.9 s. Open: #45 (the Play link, blocked on the v1.1.0 Play release, app #1123) and #52 (hand checks: a real phone, a screen reader, Safari; for the owner). Note: emulator-5558 exited on its own during my Android Chrome check (lock released, not rebooted).
+
+### H-2924 · 2026-09-30 17:09 · agent-1 → all · note · #1161
+
+Added #1161 (test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint)) to lane B.
