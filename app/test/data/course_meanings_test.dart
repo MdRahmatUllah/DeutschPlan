@@ -117,6 +117,34 @@ void main() {
       'ru',
     );
     expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хАус');
+
+    // #1150, the owner: with English's guide in the course, an English +
+    // Bangla learner keeps Bangla's while its switch is on and reads
+    // English's with it off; English alone reads English's.
+    const withEnglish = CourseMeanings(<String, Map<String, WordMeaningText>>{
+      'haus': <String, WordMeaningText>{
+        'en': (meaning: 'house', pronunciation: 'HOWSS'),
+      },
+    });
+    PronGuide? inEnglish(MeaningChoice choice, {bool bangla = true}) =>
+        Meanings(choice, withEnglish).pronunciation(word, bangla: bangla);
+    expect(inEnglish(const MeaningChoice('en', 'bn')), (
+      lang: 'bn',
+      text: 'হাউস',
+    ));
+    expect(inEnglish(const MeaningChoice('en', 'bn'), bangla: false), (
+      lang: 'en',
+      text: 'HOWSS',
+    ));
+    expect(inEnglish(const MeaningChoice('en')), (lang: 'en', text: 'HOWSS'));
+    expect(inEnglish(const MeaningChoice('bn', 'en')), (
+      lang: 'bn',
+      text: 'হাউস',
+    ));
+    expect(inEnglish(const MeaningChoice('bn', 'en'), bangla: false), (
+      lang: 'en',
+      text: 'HOWSS',
+    ), reason: "the second's, where the first shows none");
   });
 
   test('#1119 the whole course loads its meanings once, quickly, with two '
@@ -187,6 +215,10 @@ void main() {
       'INSERT INTO c.word_meanings (word_uid, lang, meaning, pronunciation) '
       "VALUES ('${ContentFixture.haus}', 'en', 'house', 'HOWSS')",
     );
+    await dao.attachedDatabase.customStatement(
+      "UPDATE c.words SET pron_bn = 'হাউস' "
+      "WHERE uid = '${ContentFixture.haus}'",
+    );
     final settings = SettingsRepository(dao.attachedDatabase);
     await settings.load();
     addTearDown(settings.dispose);
@@ -209,12 +241,13 @@ void main() {
           .pronunciation(haus, bangla: true),
       (lang: 'en', text: 'HOWSS'),
     );
-    expect(
-      (await meanings(const MeaningChoice('en', 'bn')))
-          .pronunciation(haus, bangla: true),
-      (lang: 'en', text: 'HOWSS'),
-      reason: "the first language's guide (settings.md)",
-    );
+    // The owner (#1150): Bangla's while its switch is on, English's off.
+    final both = await meanings(const MeaningChoice('en', 'bn'));
+    expect(both.pronunciation(haus, bangla: true), (lang: 'bn', text: 'হাউস'));
+    expect(both.pronunciation(haus, bangla: false), (
+      lang: 'en',
+      text: 'HOWSS',
+    ));
     expect(
       (await meanings(const MeaningChoice('bn'))).course,
       same(CourseMeanings.none),
