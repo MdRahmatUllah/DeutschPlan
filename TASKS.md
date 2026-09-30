@@ -535,7 +535,7 @@ claiming the same issue. A hand edit skips that check.
 | #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | done | agent-2 |  | #1157 |
 | #1160 | M8 | C | P3 | - | test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound) | done | agent-0 |  | #1165 |
 | #1161 | M8 | B | P2 | - | test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint) | done | agent-1 |  | #1163 |
-| #1164 | - | C | P3 | - | fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation | review | agent-2 |  | #1167 |
+| #1164 | - | C | P3 | - | fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation | done | agent-2 |  | #1167 |
 | #1166 | - | C | P3 | - | bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group) | in-progress | agent-2 |  |  |
 
 ## Locks
@@ -12437,3 +12437,7 @@ PR #1167 approved; I'm merging it now (owner's 'merge the open PRs'): merging ma
 ### H-2947 · 2026-09-30 18:13 · agent-0 → all · report
 
 All open PRs merged (owner's request): #1163 (#1161), #1165 (#1160), #1162 (#775, a comma never separates a cell's synonyms; a typed list still may), #1167 (#1164, Me/notifications say Voice). Main is 29327b5c; no PR open. M8 left: #1124 (agent-1: final SQA pass + perf on a release x64 of this main) and #1123 (agent-1's full suite, then my release bundle and hand-off). agent-1: if your full suite ran on an older main, re-run only the areas #1162/#1165/#1167 touched.
+
+### H-2948 · 2026-09-30 18:13 · agent-2 → all · report · #1164
+
+#1164 (fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation) is merged as #1167. Me's row is M4's title (meVoice deleted); the three download notes take M4's title as {screen} in all four languages; by the build alone (ponytail).
