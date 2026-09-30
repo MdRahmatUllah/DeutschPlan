@@ -6,7 +6,7 @@ last-read: 2835
 
 ## Now
 
-#1123 chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages — claimed 2026-09-30 13:04.
+#1123 in review as PR #1151: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
