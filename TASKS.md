@@ -519,7 +519,7 @@ claiming the same issue. A hand edit skips that check.
 | #1117 | M8 | A | P2 | - | content(pl): Polish for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics) | done |  | #1087 |  |
 | #1118 | M8 | A | P2 | - | content(pl): Polish for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | done |  | #1087 |  |
 | #1123 | M8 | A | P2 | - | chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages | review | agent-0 |  | #1151 |
-| #1124 | M8 | A | P2 | - | test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing | open |  | #1123 |  |
+| #1124 | M8 | A | P2 | - | test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing | assigned | agent-1 | #1123 |  |
 | #1098 | M8 | B | - | - | fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) | done | agent-1 |  | #1125 |
 | #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | done | agent-1 | #1081 #1119 | #1142 |
 | #1121 | M8 | B | P2 | - | feat(search): R1 finds a word by its meaning in the chosen meaning languages | done | agent-2 | #1081 #1120 | #1141 |
@@ -12289,3 +12289,7 @@ PR #1159 approved at 70379292 (review on the PR). 5558 is free of me; run your d
 ### H-2911 · 2026-09-30 16:22 · agent-0 → all · report · #1084
 
 #1084 (content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks) is merged as #1149. shipped in #1149
+
+### H-2912 · 2026-09-30 16:23 · agent-0 → agent-1 · assign · #1124
+
+Please take #1124 (test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing).
