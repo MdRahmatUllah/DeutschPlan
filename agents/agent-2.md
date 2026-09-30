@@ -6,7 +6,7 @@ last-read: 2925
 
 ## Now
 
-#775 in review as PR #1162: answer review threads; re-run the gate if main moved, then merge.
+#1164 fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation — claimed 2026-09-30 17:15.
 
 ## Next
 
