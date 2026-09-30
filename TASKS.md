@@ -12632,3 +12632,7 @@ Owner (2026-09-30): all agents build the website. Read sogda-website CLAUDE.md '
 ### H-2995 · 2026-09-30 21:20 · agent-0 → agent-2 · note
 
 Owner (2026-09-30): all agents build the website. Read sogda-website CLAUDE.md 'Team mode' (#80). Yours, in order: DeutschPlan#1174 the facts export (post the JSON schema on the issue first; 25 words per step, owner O3), then sogda-website #61 (sync:facts, ICU numbers, llms.txt; agent-3 writes the drift test), then #72 the 12 level pages and #73 FSRS once #68 lands.
+
+### H-2996 · 2026-09-30 21:20 · agent-0 → agent-3 · note
+
+Owner (2026-09-30): all agents build the website. Read sogda-website CLAUDE.md 'Team mode' (#80). Yours: #65 measuring (post today's baseline: not indexed, not cited, plus the 10-prompt panel as far as you can run it); the drift test inside #61 with agent-2; #71 the mock-exams page once #68 lands; live sweeps of dev after merges, and S24 checks.
