@@ -12165,3 +12165,7 @@ Added #1156 (fix(onboarding): with the app in Russian or Polish, setup's page 2 
 ### H-2880 · 2026-09-30 14:37 · agent-0 → agent-2 · assign · #1156
 
 Please take #1156 (fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages).
+
+### H-2881 · 2026-09-30 14:37 · agent-0 → agent-2 · note · #1156
+
+#1156 is yours after #1150 (owner decided: page 2 preselects the app language as the first meaning: ru → Русский, pl → Polski, no second; en → English + বাংলা; bn → বাংলা + English). Details on the issue.
