@@ -15,6 +15,7 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_engine.dart';
@@ -226,7 +227,18 @@ class _Me extends ConsumerWidget {
                     l10n.meSettings,
                     const SettingsRoute(),
                   ),
-                  (Icons.mic_none, l10n.meVoice, const ModelsRoute()),
+                  (
+                    Icons.mic_none,
+                    // #1164: M4's title, Voice in a build without Hy-MT.
+                    // ponytail: by the build alone. M4 also counts a Hy-MT
+                    // model an older build left on the phone (#513), which
+                    // no public build offered; watch translationModelProvider
+                    // here if one ever does.
+                    enableHymtDownload
+                        ? l10n.modelsTitle
+                        : l10n.modelsTitleVoice,
+                    const ModelsRoute(),
+                  ),
                   (Icons.shield_outlined, l10n.meAbout, const AboutRoute()),
                 ],
               ),
@@ -860,7 +872,7 @@ class _Badge extends StatelessWidget {
   }
 }
 
-/// Settings, Voice & translation, About & privacy: one card, a row each.
+/// Settings, Voice (M4), About & privacy: one card, a row each.
 class _Links extends StatelessWidget {
   const _Links({required this.links});
 

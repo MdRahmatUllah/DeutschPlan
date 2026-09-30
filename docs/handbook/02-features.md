@@ -411,7 +411,7 @@ The learner's overview: their name (tap to edit; the greeting on Today
 follows), the streak, "Learning since …" and days studied, words Done,
 Learning and To do, a 12-week activity heat map, whether the course is on
 schedule (with a tap to the backlog when behind), and the 12 steps' mock exam
-badges. Below: Settings, Voice & translation, About & privacy. Spec:
+badges. Below: Settings, Voice (Voice & translation in a build with Hy-MT), About & privacy. Spec:
 [`me.md`](../04-screens/me.md).
 
 ### Progress · M2

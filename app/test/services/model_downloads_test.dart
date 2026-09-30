@@ -134,12 +134,13 @@ void main() {
       expect(downloader.running!.title, isNot(contains('{num')));
       expect(
         (downloader.complete!.title, downloader.complete!.body),
-        (
-          'Model download finished',
-          'Voice & translation says when it is ready',
-        ),
+        ('Model download finished', 'Voice says when it is ready'),
         reason: 'the checksums come after',
       );
+      // #1164: M4 is *Voice* in a build without translation, and the notes
+      // that send the learner there say so.
+      expect(downloader.paused!.body, 'Resumes on Wi-Fi, or from Voice');
+      expect(downloader.error!.body, 'Retry it from Voice');
     });
 
     test('the downloader picks up what was in flight: killed tasks are '
@@ -906,10 +907,7 @@ void main() {
       expect(File('${active.path}/one.gguf').readAsStringSync(), one);
       // #506: the platform's notification can stick short of its end.
       expect(notice.said, <(String, String)>[
-        (
-          'Model download finished',
-          'Voice & translation says when it is ready',
-        ),
+        ('Model download finished', 'Voice says when it is ready'),
       ]);
       // #756: said on this attempt's own notification.
       expect(notice.groups, <String>[downloader.notification!]);
@@ -928,7 +926,7 @@ void main() {
       expect(seen.last, DownloadPhase.failed);
       expect((await models.directoryFor('hymt')).existsSync(), isFalse);
       expect(notice.said, <(String, String)>[
-        ('A model download failed', 'Retry it from Voice & translation'),
+        ('A model download failed', 'Retry it from Voice'),
       ], reason: '#506: not "finished" when a checksum failed');
     });
 
@@ -1197,6 +1195,8 @@ class _Downloader implements FileDownloader {
   bool? rescheduled;
   TaskNotification? running;
   TaskNotification? complete;
+  TaskNotification? paused;
+  TaskNotification? error;
   String? notification;
   bool? progressBar;
 
@@ -1251,6 +1251,8 @@ class _Downloader implements FileDownloader {
   }) {
     this.running = running;
     this.complete = complete;
+    this.paused = paused;
+    this.error = error;
     this.progressBar = progressBar;
     notification = groupNotificationId;
     return this;

@@ -464,20 +464,21 @@ void main() {
             reason: '$language: the legend explains ${arb[status]}',
           );
         }
-        // Me's row, the screen it opens, and the download notifications
-        // that send the learner there.
+        // #1164: the download notifications that send the learner to M4
+        // name it by its title, whichever the build gives it; Me's row is
+        // that title.
         for (final key in <String>[
-          'meVoice',
           'modelNotifyPausedNote',
           'modelNotifyCompleteNote',
           'modelNotifyFailedNote',
         ]) {
           expect(
             arb[key]! as String,
-            contains(arb['modelsTitle']! as String),
+            contains('{screen}'),
             reason: '$language: $key names the screen as its title does',
           );
         }
+        expect(arb.containsKey('meVoice'), isFalse, reason: language);
       }
       // Bangla has no capitals to mark a name: a note that sends the learner
       // to a screen quotes it, as modelNotifyRunningNote quotes its setting.
@@ -488,7 +489,7 @@ void main() {
       ]) {
         expect(
           bn[key]! as String,
-          contains('“${bn['modelsTitle']}”'),
+          contains('“{screen}”'),
           reason: 'bn: $key quotes the screen it names',
         );
       }
