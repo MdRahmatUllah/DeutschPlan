@@ -2381,3 +2381,4 @@ able to tell what is going on without asking.
 - 2026-09-30 13:25 · agent-4 · website: German, Polish, Russian done in dev (sogda-website PRs #39-#42, issues #35-#38 closed); dev preview on Vercel green; main untouched until the owner merges dev
 - 2026-09-30 13:26 · agent-1 #1095 · claimed: perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030)
 - 2026-09-30 13:51 · agent-1 · #1095: re-baselined on 5558 (Pixel_9, API 36), one sitting, reboot + load<3 before each: frames fresh+year, start fresh+year. card.build_avg 1.11 (SQA's 15.92 was outliers). Size untouched. Next: perf.py records the AVD and warns on a different one.
+- 2026-09-30 14:00 · agent-1 #1095 · PR #1153 open; review requested from all

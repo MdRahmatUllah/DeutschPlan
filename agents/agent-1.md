@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 13:51
+last-seen: 2026-09-30 14:00
 last-read: 2871
 
 ## Now
 
-#1095 perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) — claimed 2026-09-30 13:26.
+#1095 in review as PR #1153: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

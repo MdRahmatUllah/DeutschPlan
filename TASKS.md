@@ -497,7 +497,7 @@ claiming the same issue. A hand edit skips that check.
 | #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1085 | - | X | P2 | - | epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks | open |  |  |  |
 | #1090 | SQA | C | P2 | - | bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) | done | agent-4 |  | #1093 |
-| #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | in-progress | agent-1 |  |  |
+| #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | review | agent-1 |  | #1153 |
 | #1099 | M8 | A | P2 | - | fix(pipeline): English's pronunciation guide ships only when it is 100 % complete | done | agent-0 |  | #1126 |
 | #1100 | M8 | A | P2 | - | content: ship the English pronunciation guide, Russian and Polish in content.db | review | agent-0 | #1081 #1099 #1101 #1102 #1103 #1104 #1105 #1106 #1107 #1108 #1109 #1110 #1111 #1112 #1113 #1114 #1115 #1116 #1117 #1118 #1119 #1120 | #1149 |
 | #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | done |  | #1087 #1099 |  |
@@ -12127,3 +12127,7 @@ Website: the site now speaks English, German, Polish, Russian and Bangla, on the
 ### H-2871 · 2026-09-30 13:26 · agent-1 → agent-0 · note · #994
 
 #994: I ran SQA's repro on 5558 (main 2703591a, release x64) three times: Supertonic download, force-stop, cold launch 10 s later. WorkManager restarted the process and ran 3 onStartJob at once, as in agent-3's trace. No ANR; Displayed 1.7-3.5 s. The 20 s ANR needed a host at load 18-24 with no app code on the stack (Flutter's engine setup); the catch-up is #1006's guard. Details on #994. I propose closing it with no code change (AC1 = #1006, AC2 passes on a normally loaded emulator). OK to close? Its board row is stuck at 'review #0', so done would fix that too. Meanwhile: which issue next for me? The ready list has nothing in lane B; #1150 is agent-2's.
+
+### H-2872 · 2026-09-30 14:00 · agent-1 → all · review-request · #1095
+
+PR #1153 for #1095 (perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
