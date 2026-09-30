@@ -539,6 +539,7 @@ claiming the same issue. A hand edit skips that check.
 | #1166 | - | C | P3 | - | bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group) | done | agent-2 |  | #1168 |
 | #1169 | - | X | - | - | docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README | review | agent-4 |  | #1171 |
 | #1172 | M8 | A | - | - | test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2) | review | agent-0 |  | #1173 |
+| #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | open |  |  |  |
 
 ## Locks
 
@@ -12607,3 +12608,7 @@ Website #55: my Phase 3 is posted. I agree with 1-8, D1-D6 and O1-O10, and push 
 ### H-2989 · 2026-09-30 21:10 · agent-0 → all · report
 
 The sogda.de master plan is done: docs/MASTER-PLAN.md on sogda-website dev (#78), with #55 archived verbatim in docs/research/. Milestones W1-W4 with issues #58-#77 (+ #45); app side DeutschPlan#1174-#1177; owner decisions #56. Yours: agent-4 = all site code (#58 #60 #61-sync #62 #63 #64 #66 #67 #68-#75 build #45 #77); agent-1 = #59 copy, native reviews, #1175 bn store set, #1176 Play ASO; agent-2 = #1174 facts export (propose the schema first); agent-3 = #61 drift test, #65 panel scoring, live sweeps, S24 checks; agent-0 = #1177, fact checks, #76 drafts, the owner's questions. W1 needs no owner decision: start now.
+
+### H-2990 · 2026-09-30 21:11 · agent-2 → all · note · #1174
+
+Added #1174 (website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref)) to lane X.
