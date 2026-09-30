@@ -1,6 +1,9 @@
 @TestOn('vm')
 library;
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/domain/fsrs.dart';
 
@@ -97,6 +100,35 @@ void main() {
       for (var i = 1; i < ratios.length; i++) {
         expect(ratios[i], lessThan(ratios[i - 1]), reason: '$ratios');
       }
+    });
+
+    test('#1182 sogda.de states what this engine does (site-facts.json)', () {
+      // The export reads the numbers from the docs; this ties them to the
+      // code, so the website can't state a schedule the app doesn't keep.
+      final facts =
+          (jsonDecode(
+                File('../docs/05-dev-guide/site-facts.json').readAsStringSync(),
+              ) as Map<String, dynamic>)['fsrs']
+              as Map<String, dynamic>;
+      final retention = facts['retention'] as Map<String, dynamic>;
+      final first = facts['first_days'] as Map<String, dynamic>;
+
+      expect(
+        <num>[
+          retention['default'] as num,
+          retention['min'] as num,
+          retention['max'] as num,
+        ],
+        <double>[Fsrs.defaultRetention, Fsrs.minRetention, Fsrs.maxRetention],
+      );
+      expect(
+        <int>[
+          for (final rating in Rating.values)
+            fsrs.review(const CardState(), rating, start).scheduledDays,
+        ],
+        <Object?>[for (final r in Rating.values) first[r.name]],
+      );
+      expect(chain(), facts['good_days']);
     });
   });
 

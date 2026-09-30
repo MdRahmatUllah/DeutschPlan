@@ -3,6 +3,9 @@
 Every number the site states has one source here:
 - the counts come from content.db;
 - the mock paper's shape comes from the app's exam code and BR-EXAM-02/03;
+- the scheduler's numbers come from BR-FSRS-01, BR-PLAN-02 and
+  fsrs-scheduler.md's reference values, which fsrs_test.dart checks against
+  this file;
 - the version and the Android floor come from the app's build files;
 - the store texts come from store-listing.md.
 
@@ -29,6 +32,7 @@ LISTING = ROOT / "docs" / "05-dev-guide" / "store-listing.md"
 OUT = ROOT / "docs" / "05-dev-guide" / "site-facts.json"
 EXAM = ROOT / "app" / "lib" / "domain" / "exam_generator.dart"
 RULES = ROOT / "docs" / "00-product" / "business-rules.md"
+FSRS_DOC = ROOT / "docs" / "03-domain" / "fsrs-scheduler.md"
 PUBSPEC = ROOT / "app" / "pubspec.yaml"
 GRADLE = ROOT / "app" / "android" / "app" / "build.gradle.kts"
 
@@ -121,6 +125,39 @@ def mock_exam() -> tuple[int, dict]:
         "sections": sections,
         "writing_min_words": _by_level(dart, "writingMinWords"),
         "speaking_seconds": _by_level(dart, "speakingSeconds"),
+    }
+
+
+def fsrs() -> dict:
+    """The scheduler as sogda.de's method page states it (#1182)."""
+    rules = RULES.read_text(encoding="utf-8")
+    version, default, low, high = _one(
+        r"\*\*BR-FSRS-01\*\* Scheduler is (FSRS-\d+\.\d+)[^\n]*?"
+        r"`desired_retention` default ([\d.]+) \(settable ([\d.]+)–([\d.]+)\)",
+        rules,
+        "BR-FSRS-01",
+    ).groups()
+    revise, new = _one(
+        r"\*\*BR-PLAN-02\*\*[^\n]*?`revise_count`, default (\d+)[^\n]*?`daily_new`, default (\d+)",
+        rules,
+        "BR-PLAN-02",
+    ).groups()
+    spec = FSRS_DOC.read_text(encoding="utf-8")
+    at, *first = _one(
+        r"first review intervals at (\d+) % retention = (\d+) / (\d+) / (\d+) / (\d+) days",
+        spec,
+        "the first intervals",
+    ).groups()
+    if int(at) != round(float(default) * 100):
+        sys.exit(f"export_site_facts: the first intervals are at {at} %, BR-FSRS-01's default {default}")
+    chain = _one(r"a chain of Good reviews taken on their due day grows ((?:\d+ → )+\d+)", spec, "the Good chain")[1]
+    return {
+        "version": version,
+        "retention": {"default": float(default), "min": float(low), "max": float(high)},
+        # A new word's first rating, then Good after Good on each due day.
+        "first_days": dict(zip(("again", "hard", "good", "easy"), map(int, first))),
+        "good_days": [int(d) for d in chain.split(" → ")],
+        "plan": {"revise": int(revise), "new": int(new)},
     }
 
 
@@ -248,6 +285,7 @@ def facts(db_path: Path = DB, sample: int = SAMPLE) -> dict:
             "grammar_in": grammar_in,
         },
         "mock_exam": paper,
+        "fsrs": fsrs(),
         "levels": levels,
         "steps": out_steps,
         "featured": featured,

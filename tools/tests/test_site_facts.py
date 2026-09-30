@@ -7,6 +7,8 @@ import sqlite3
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import export_site_facts as export  # noqa: E402
@@ -113,3 +115,21 @@ def test_1174_the_listing_is_store_listing_md_verbatim():
     assert listing["en"]["title"] == texts[("English (en-US)", "Title")]
     assert listing["bn"]["full"] == texts[("Bangla (bn-BD)", "Full description")]
     assert set(listing) == {"en", "bn", "pl", "ru"}
+
+
+def test_1182_the_scheduler_is_br_fsrs_01s_and_br_plan_02s():
+    fsrs = committed()["fsrs"]
+    assert fsrs["version"] == "FSRS-4.5"
+    assert fsrs["retention"] == {"default": 0.9, "min": 0.8, "max": 0.97}
+    assert fsrs["plan"] == {"revise": 10, "new": 7}
+    # The chain starts with a new word's first Good, and only grows.
+    assert fsrs["good_days"][0] == fsrs["first_days"]["good"]
+    assert fsrs["good_days"] == sorted(set(fsrs["good_days"]))
+
+
+def test_1182_reference_values_at_another_retention_fail_the_export(tmp_path, monkeypatch):
+    doc = tmp_path / "fsrs-scheduler.md"
+    doc.write_text(export.FSRS_DOC.read_text(encoding="utf-8").replace("at 90 % retention =", "at 80 % retention ="), encoding="utf-8")
+    monkeypatch.setattr(export, "FSRS_DOC", doc)
+    with pytest.raises(SystemExit, match="80 %"):
+        export.fsrs()
