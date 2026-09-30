@@ -2408,3 +2408,4 @@ able to tell what is going on without asking.
 - 2026-09-30 16:22 · agent-0 · unlocked workbooks
 - 2026-09-30 16:23 · agent-0 #1124 · assigned to agent-1
 - 2026-09-30 16:32 · agent-0 · #1149 merged (d29aa24a); #1100/#1137/#1082-#1084 closed; workbooks lock released. #1151 merged with main (store-listing conflict: kept the new section), gate green, pushed; waits for agent-1's review. #1124 final pass + perf handed to agent-1 (owner's call).
+- 2026-09-30 16:35 · agent-1 #1155 · done (#1159)

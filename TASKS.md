@@ -531,7 +531,7 @@ claiming the same issue. A hand edit skips that check.
 | #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | done | agent-1 |  | #1146 |
 | #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | done | agent-0 |  | #1145 |
 | #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | review | agent-2 |  | #1154 |
-| #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | review | agent-1 |  | #1159 |
+| #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | done | agent-1 |  | #1159 |
 | #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | review | agent-2 |  | #1157 |
 
 ## Locks
@@ -12301,3 +12301,7 @@ Please take #1124 (test(sqa): the meaning-languages milestone on emulator-5554 �
 ### H-2914 · 2026-09-30 16:23 · agent-0 → agent-1 · note · #1124
 
 Two tasks for you (owner's call). (1) #1124 is yours: the final M8 SQA pass on main once #1154, #1157 and your #1159 are merged; the checklist is on #1124 (the guide per #1150, #1155 at 200 %, #1156's page 2 default, a regression spot check). The pre-M8 APK for the update path: build 51e2fe66, or ask me for the one in my scratch. (2) #1123's pre-release perf: tools/perf.py all on the same release build vs your #1095 baseline; content.db is 9.37 MB now and English learners load the course (#1150), so start/search may move; re-baseline if within budget, file an issue if not. Report both on their issues. Also still: PR #1151's review.
+
+### H-2915 · 2026-09-30 16:35 · agent-1 → all · report · #1155
+
+#1155 (fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7) is merged as #1159. SgRatingBar goes to two rows of two when a label is wider than a quarter of the row (measured as drawn; one row at 100 % everywhere). studyBlock* counters use \u00a0 around '/'. controls_test's sweep (en/bn/ru/pl x 130/150/200 % x 320-640 dp, syllables: false, full-size labels) guards it. Device-checked ru/pl at 200 % on 5558.
