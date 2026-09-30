@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/components/sg_button.dart';
@@ -8,6 +9,7 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/components/sg_rating_bar.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -395,9 +397,9 @@ void main() {
       );
     });
 
-    testWidgets('#580 in Bangla at 200 % the labels and intervals show whole: '
-        'a word too wide shrinks rather than break, an interval of 1,234 days '
-        'wraps, and the four buttons grow to one height', (tester) async {
+    testWidgets('#580 in Bangla at 200 % the labels and intervals show whole '
+        '(since #1155 in two rows of two: আবার is wider than a quarter), and '
+        'the buttons grow to one height', (tester) async {
       final bn = lookupAppLocalizations(const Locale('bn'));
       tester.view
         ..physicalSize = const Size(390, 844) * 3
@@ -443,9 +445,155 @@ void main() {
       expect(heights.single, greaterThan(SgRatingBar.height));
       expect(
         tester.getSize(find.byType(SgRatingBar)).height,
-        lessThan(SgRatingBar.height * 3),
-        reason: "the tallest button's height, not the screen's",
+        lessThan(heights.single * 3),
+        reason: "two rows of the tallest button's height, not the screen's",
       );
+    });
+
+    // #1155: at 200 % "Хорошо" and "Trudne" are wider than a quarter of the
+    // row, and broke at a syllable ("Хоро-шо"), which the audit's own check
+    // lets pass. Here not even a syllable break is allowed, at every phone
+    // width from 320 to 640 dp: a label measured narrower than it's drawn
+    // stays in one row at some width, and breaks there.
+    for (final lang in const <String>['en', 'bn', 'ru', 'pl']) {
+      for (final scale in const <double>[1.3, 1.5, 2]) {
+        testWidgets('#1155 in $lang at ${(scale * 100).round()} %, on phones '
+            '320 to 640 dp wide, no rating label breaks, not even at a '
+            'syllable', (tester) async {
+          final l10n = lookupAppLocalizations(Locale(lang));
+          addTearDown(tester.view.reset);
+          for (var width = 320.0; width <= 640; width += 8) {
+            tester.view
+              ..physicalSize = Size(width, 800) * 3
+              ..devicePixelRatio = 3;
+            await pump(
+              tester,
+              Builder(
+                builder: (context) => MediaQuery(
+                  data: MediaQuery.of(context)
+                      .copyWith(textScaler: AndroidTextScaler(scale)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SgRatingBar(
+                      onRated: (_) {},
+                      intervals: <SgRating, String>{
+                        for (final (rating, days) in const <(SgRating, int)>[
+                          (SgRating.again, 1),
+                          (SgRating.hard, 3),
+                          (SgRating.good, 8),
+                          (SgRating.easy, 21),
+                        ])
+                          rating: l10n.studyIntervalDays(days),
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              locale: Locale(lang),
+            );
+            expect(
+              tester.takeException(),
+              isNull,
+              reason: 'no overflow at $width dp',
+            );
+            expectNothingClipped(tester, within: find.byType(SgRatingBar));
+            expectAllLinesShown(tester, within: find.byType(SgRatingBar));
+            expectNoWordBroken(
+              tester,
+              within: find.byType(SgRatingBar),
+              syllables: false,
+            );
+            // Nor shrunk to fit, as a Bangla word too wide for its line is
+            // (#522): two rows come first.
+            final tokens = tester.element(find.byType(SgRatingBar)).tokens;
+            for (final label in <String>[
+              l10n.ratingAgain,
+              l10n.ratingHard,
+              l10n.ratingGood,
+              l10n.ratingEasy,
+            ]) {
+              final full = SgScript.hasBengali(label)
+                  ? SgText.banglaStyleFor(tokens, SgTextRole.label).fontSize
+                  : SgText.styleFor(tokens, SgTextRole.label).fontSize;
+              expect(
+                _fontSizes(
+                  tester
+                      .renderObject<RenderParagraph>(
+                        find.descendant(
+                          of: find.byType(SgRatingBar),
+                          matching: find.byWidgetPredicate(
+                            (w) =>
+                                w is RichText &&
+                                w.text
+                                        .toPlainText(
+                                          includeSemanticsLabels: false,
+                                        )
+                                        .replaceAll(SgScript.softHyphen, '') ==
+                                    label,
+                          ),
+                        ),
+                      )
+                      .text,
+                ),
+                everyElement(full),
+                reason: '"$label" at $width dp',
+              );
+            }
+          }
+        });
+      }
+    }
+
+    testWidgets('#1155 at 100 % the four sit in one row in every language; '
+        'at 200 % in Russian, in two rows of two in BR-FSRS-02 order', (
+      tester,
+    ) async {
+      tester.view
+        ..physicalSize = const Size(412, 800) * 3
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      Future<List<Offset>> centres(String lang, double scale) async {
+        final l10n = lookupAppLocalizations(Locale(lang));
+        await pump(
+          tester,
+          Builder(
+            builder: (context) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: AndroidTextScaler(scale)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SgRatingBar(onRated: (_) {}, intervals: previews()),
+              ),
+            ),
+          ),
+          locale: Locale(lang),
+        );
+        return <Offset>[
+          for (final label in <String>[
+            l10n.ratingAgain,
+            l10n.ratingHard,
+            l10n.ratingGood,
+            l10n.ratingEasy,
+          ])
+            tester.getCenter(find.text(label)),
+        ];
+      }
+
+      for (final lang in const <String>['en', 'bn', 'ru', 'pl']) {
+        final at100 = await centres(lang, 1);
+        expect(
+          at100.map((c) => c.dy).toSet(),
+          hasLength(1),
+          reason: '$lang: one row at 100 %',
+        );
+      }
+      final [again, hard, good, easy] = await centres('ru', 2);
+      expect(hard.dy, again.dy);
+      expect(hard.dx, greaterThan(again.dx));
+      expect(easy.dy, good.dy);
+      expect(easy.dx, greaterThan(good.dx));
+      expect(good.dy, greaterThan(again.dy), reason: 'Good and Easy below');
+      expect(good.dx, again.dx, reason: 'in two columns');
     });
 
     testWidgets('the interval preview shows under each label', (tester) async {
@@ -839,6 +987,19 @@ void main() {
       semantics.dispose();
     });
   });
+}
+
+/// The font size of every run of text in [span], each inherited from
+/// the span above it where it sets none.
+List<double?> _fontSizes(InlineSpan span, [double? inherited]) {
+  final size = span.style?.fontSize ?? inherited;
+  return <double?>[
+    if (span is TextSpan) ...<double?>[
+      if ((span.text ?? '').trim().isNotEmpty) size,
+      for (final child in span.children ?? const <InlineSpan>[])
+        ..._fontSizes(child, size),
+    ],
+  ];
 }
 
 String _name(SgRating rating) => switch (rating) {

@@ -70,6 +70,32 @@ void main() {
     );
   });
 
+  test('#1156 the owner: setup opens on the app language\'s meanings, where '
+      'the course ships them', () {
+    const shipped = <String>{'en', 'bn', 'ru', 'pl'};
+    expect(
+      meaningDefaultFor(UiLanguage.russian, shipped),
+      const MeaningChoice('ru'),
+    );
+    expect(
+      meaningDefaultFor(UiLanguage.polish, shipped),
+      const MeaningChoice('pl'),
+    );
+    expect(
+      meaningDefaultFor(UiLanguage.english, shipped),
+      const MeaningChoice('en', 'bn'),
+    );
+    expect(
+      meaningDefaultFor(UiLanguage.bangla, shipped),
+      const MeaningChoice('bn', 'en'),
+    );
+    expect(
+      meaningDefaultFor(UiLanguage.russian, const <String>{'en', 'bn'}),
+      MeaningChoice.fallback,
+      reason: 'a course without Russian: English then Bangla',
+    );
+  });
+
   test('#1081 a written choice reads back, a database later too', () async {
     for (final choice in const <MeaningChoice>[
       MeaningChoice('ru', 'en'),

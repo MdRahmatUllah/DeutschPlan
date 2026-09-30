@@ -174,10 +174,17 @@ class Meanings {
       <String>[for (final l in lines(word)) l.text].join(' · ');
 
   /// The pronunciation guide: the primary's, or the secondary's where the
-  /// primary has none (English's, until #1082). Bangla's only while [bangla]
-  /// (`show_pron_bn`, the learner's choice within Bangla, #1077).
+  /// primary has none. Bangla's only while [bangla] (`show_pron_bn`, the
+  /// learner's choice within Bangla, #1077).
+  ///
+  /// The one exception, the owner's (#1150): an English + Bangla learner
+  /// keeps Bangla's guide while its switch is on, as before English's
+  /// shipped (#1082), and reads the English respelling with it off.
   PronGuide? pronunciation(Word word, {required bool bangla}) {
-    for (final lang in choice.languages) {
+    final order = choice.primary == 'en' && choice.secondary == 'bn'
+        ? const <String>['bn', 'en']
+        : choice.languages;
+    for (final lang in order) {
       final guide = lang == 'bn'
           ? (bangla ? word.pronBn : null)
           : course.pronunciation(word.uid, lang);

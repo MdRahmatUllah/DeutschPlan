@@ -664,4 +664,24 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
       expect(inside(ClipRRect), findsNothing);
     });
   });
+
+  // #1155: at 200 % in Russian the header wrapped between "1 /" and "7".
+  test('#1155 the block counter is joined by no-break spaces in every '
+      'language, so "1 / 7" never splits', () {
+    for (final locale in supportedLocales) {
+      final l10n = lookupAppLocalizations(locale);
+      for (final label in <String>[
+        l10n.studyBlockRevise(1, 7),
+        l10n.studyBlockNew(1, 7),
+        l10n.studyBlockGrammar(1, 7),
+        l10n.studyBlockBacklog(1, 7),
+      ]) {
+        expect(
+          label,
+          matches(RegExp(r'\S / \S$')),
+          reason: '${locale.languageCode}: "$label"',
+        );
+      }
+    }
+  });
 }

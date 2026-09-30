@@ -303,6 +303,21 @@ void main() {
       );
     });
 
+    testWidgets("#1150 #1082 English: the course's English guide, with its "
+        'key', (tester) async {
+      await pump(
+        tester,
+        meaning: const MeaningChoice('en'),
+        course: const CourseMeanings(<String, Map<String, WordMeaningText>>{
+          'rechnung': <String, WordMeaningText>{
+            'en': (meaning: 'bill, invoice', pronunciation: 'RESH-noong'),
+          },
+        }),
+      );
+      expect(find.textContaining('/RESH-noong/'), findsOneWidget);
+      expect(find.text(l10n.pronKeyLine), findsOneWidget);
+    });
+
     testWidgets('#1081 Russian where the course has none: English', (
       tester,
     ) async {

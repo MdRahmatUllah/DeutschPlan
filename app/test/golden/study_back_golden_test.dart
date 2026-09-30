@@ -155,6 +155,21 @@ void main() {
     builder: (_) => screen(),
   );
 
+  // #1155: at 200 %, "Хорошо" and "Trudne" are wider than a quarter of the
+  // row: the rating bar is two rows of two, no label broken, and the
+  // header's "4 / 10" stays together.
+  for (final lang in const <String>['ru', 'pl']) {
+    goldenTest(
+      'study_back_${lang}_200',
+      modes: const <GoldenMode>[GoldenMode.light],
+      devices: const <GoldenDevice>[GoldenDevice.phone],
+      textScale: 2,
+      textAudit: false,
+      locale: Locale(lang),
+      builder: (_) => screen(),
+    );
+  }
+
   // BR-CONTENT-02: a meaning a course update changed this week.
   goldenTest(
     'study_back_updated',
