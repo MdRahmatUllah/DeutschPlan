@@ -47,6 +47,32 @@ void main() {
       expect(verdictFor(item, 'house'), Verdict.wrong);
     });
 
+    test("#775 Vocabulary in Russian: a comma is the language's own", () {
+      final item = word(
+        ExamSection.vocabulary,
+        'тем, что / благодаря тому, что',
+      );
+      expect(verdictFor(item, 'что', lang: 'ru'), Verdict.wrong);
+      expect(verdictFor(item, 'тем, что', lang: 'ru'), Verdict.correct);
+      expect(itemPoints(item, given: 'что', lang: 'ru'), 0);
+      expect(
+        scorePaper(
+          <({ExamItem item, String? given, String? rubric})>[
+            (item: item, given: 'что', rubric: null),
+          ],
+          passPercent: 60,
+          lang: 'ru',
+        ).total,
+        0,
+      );
+      expect(
+        verdictFor(item, 'что'),
+        Verdict.correct,
+        reason:
+            'a paper from before v5 was English or Bangla: the comma splits',
+      );
+    });
+
     test('#798 a Bangla Vocabulary tile: the answer or not, never almost', () {
       const item = WordQuestion(
         ExamSection.vocabulary,

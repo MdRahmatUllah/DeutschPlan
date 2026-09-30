@@ -472,7 +472,11 @@ Verdict grade(QuizItem item, String given) => switch (item.direction) {
   // A tile is the answer or it isn't. Its text is the whole meaning cell,
   // which `checkMeaning` would split into synonyms and match none of.
   _ when item.tiles => given == item.expected ? Verdict.correct : Verdict.wrong,
-  QuizDirection.toMeaning => checkMeaning(given, item.expected),
+  QuizDirection.toMeaning => checkMeaning(
+    given,
+    item.expected,
+    lang: item.lang,
+  ),
   QuizDirection.fromMeaning || QuizDirection.listening => checkGerman(
     given,
     item.expected,
