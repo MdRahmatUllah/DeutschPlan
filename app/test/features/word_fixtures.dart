@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
@@ -13,11 +15,14 @@ WordDetail artboardWordDetail({
   String german = 'Straße',
   WordStatus status = WordStatus.done,
   MeaningLanguage meaning = MeaningLanguage.both,
+  Meanings? meanings,
+  String? pron = 'স্ট্রাসে',
+  List<({String german, String? translation})>? examples,
   bool translate = false,
   String kind = 'vocab',
 }) => WordDetail(
-  meaning: meaning,
-  pron: true,
+  meanings: meanings ?? Meanings(MeaningChoice.of(meaning)),
+  pron: pron,
   translate: translate,
   word: WordWithState(
     word: Word(
@@ -56,16 +61,18 @@ WordDetail artboardWordDetail({
     ),
     status: status,
   ),
-  examples: const <({String german, String? english})>[
-    (
-      german: 'Die Straße ist wegen Bauarbeiten gesperrt.',
-      english: 'The street is closed because of roadworks.',
-    ),
-    (
-      german: 'Wir wohnen in einer ruhigen Straße.',
-      english: 'We live on a quiet street.',
-    ),
-  ],
+  examples:
+      examples ??
+      const <({String german, String? translation})>[
+        (
+          german: 'Die Straße ist wegen Bauarbeiten gesperrt.',
+          translation: 'The street is closed because of roadworks.',
+        ),
+        (
+          german: 'Wir wohnen in einer ruhigen Straße.',
+          translation: 'We live on a quiet street.',
+        ),
+      ],
 );
 
 /// "reviewed 5 times · last: Good".

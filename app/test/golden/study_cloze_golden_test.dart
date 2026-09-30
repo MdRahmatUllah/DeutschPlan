@@ -78,11 +78,11 @@ void main() {
     List<StudyExample> examples = const <StudyExample>[
       (
         german: 'Ich habe die Rechnung noch nicht bezahlt.',
-        english: "I haven't paid the bill yet.",
+        translation: "I haven't paid the bill yet.",
       ),
       (
         german: 'Können wir bitte die Rechnung haben?',
-        english: 'Could we have the bill, please?',
+        translation: 'Could we have the bill, please?',
       ),
     ],
   }) => ProviderScope(
@@ -146,7 +146,7 @@ void main() {
       examples: const <StudyExample>[
         (
           german: 'Die Rechnung für die Haftpflichtversicherung ist da.',
-          english: 'The bill for the liability insurance has come.',
+          translation: 'The bill for the liability insurance has come.',
         ),
       ],
     ),
@@ -177,7 +177,7 @@ void main() {
       examples: const <StudyExample>[
         (
           german: 'Die Haftpflichtversicherung zahlt den Schaden.',
-          english: 'The liability insurance pays for the damage.',
+          translation: 'The liability insurance pays for the damage.',
         ),
       ],
     ),

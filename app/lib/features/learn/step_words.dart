@@ -12,9 +12,9 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
-import 'package:sogda/features/study/study_back.dart' show meaningLine;
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -31,22 +31,18 @@ typedef StepWord = ({WordWithState word, String meaning});
 Stream<List<StepWord>> stepWords(Ref ref, String code) {
   // Watched (#694 CC-4): a change in Settings re-emits the list at once,
   // not at the next write to its words.
-  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+  final meanings = ref.watch(meaningsProvider);
   return ref
       .watch(wordRepositoryProvider)
       .watchStep(code)
-      .map((words) => withMeanings(meaning, words));
+      .map((words) => withMeanings(meanings, words));
 }
 
-/// [words] with their meanings in [meaning]: English where the course has
-/// no Bangla, and both for both (#689 TD-15).
-List<StepWord> withMeanings(
-  MeaningLanguage meaning,
-  List<WordWithState> words,
-) => <StepWord>[
-  for (final word in words)
-    (word: word, meaning: meaningLine(word.word, meaning)),
-];
+/// [words] with their meanings on one line ([Meanings.line], #689 TD-15).
+List<StepWord> withMeanings(Meanings meanings, List<WordWithState> words) =>
+    <StepWord>[
+      for (final word in words) (word: word, meaning: meanings.line(word.word)),
+    ];
 
 /// The categories [code]'s words fall in, the biggest first: the chips
 /// after the status ones.

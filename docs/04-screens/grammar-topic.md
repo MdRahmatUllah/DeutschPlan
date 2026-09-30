@@ -6,7 +6,7 @@
 
 **Reached from.** L2 Grammar tab, L3, T1 grammar card, L14 *See rule*. **Leads to.** L15 (*Practise this rule · 5 items*), previous/next topic.
 
-**Layout.** Header: step chip, "Topic 4 of 10", title. **Rule** (bodyLarge, inline code for forms). **Examples**: each German example with play + translation. **Watch out** callout (Tangerine bar). Buttons *Practise this rule · 5 items* (primary) and *Mark as learned*. Footer: previous/next topic titles as arrows.
+**Layout.** Header: step chip, "Topic 4 of 10", title. **Rule** (bodyLarge, inline code for forms). **Examples**: each German example with play + translation. **Watch out** callout (Tangerine bar). The title, rule, translation and Watch out are in the first meaning language, English where the course has none (`grammar_translations`, #1119); a change in M3 reaches an open topic at once. Buttons *Practise this rule · 5 items* (primary) and *Mark as learned*. Footer: previous/next topic titles as arrows.
 
 **Functional requirements**
 - FR-L4-01 *Mark as learned* sets `grammar_state.status = learning` with an initial FSRS review rated Good (so it enters the schedule).

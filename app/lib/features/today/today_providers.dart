@@ -54,12 +54,14 @@ Stream<int> todaySentencesRated(Ref ref) =>
 
 /// The grammar topics due today, as they change: a topic practised in L15
 /// moves its `due` on and leaves Today's grammar block without Today having
-/// to ask.
+/// to ask. A read again that finds the same topics, as a new meaning
+/// language's (#1081), leaves Today as it is.
 @riverpod
 Stream<Set<String>> todayGrammarDue(Ref ref) => ref
     .watch(grammarRepositoryProvider)
     .watchDue(ref.watch(todayProvider))
-    .map((topics) => <String>{for (final topic in topics) topic.uid});
+    .map((topics) => <String>{for (final topic in topics) topic.uid})
+    .distinct((a, b) => a.length == b.length && a.containsAll(b));
 
 /// #1045: the topics practised today, as they change: one practised from
 /// L2 or L4 though not due joins the day's topics at once, where the plan

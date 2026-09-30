@@ -55,7 +55,7 @@ Stream<SearchView> searchResults(Ref ref, String query, {String? step}) async* {
   final words = ref.watch(wordRepositoryProvider);
   // Watched (#694 CC-4): a change in Settings re-emits the list at once,
   // not at the next write to its words.
-  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+  final meanings = ref.watch(meaningsProvider);
   final results = await ref
       .watch(searchRepositoryProvider)
       .search(query, step: step);
@@ -71,7 +71,7 @@ Stream<SearchView> searchResults(Ref ref, String query, {String? step}) async* {
       .map(
         (words) => SearchView(
           words: <SearchRow>[
-            for (final word in withMeanings(meaning, words))
+            for (final word in withMeanings(meanings, words))
               (word: word, tier: tiers[word.word.uid]!),
           ],
           sentences: results.sentences,

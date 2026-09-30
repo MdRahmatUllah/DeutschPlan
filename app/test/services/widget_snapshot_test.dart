@@ -10,6 +10,7 @@ import 'package:material_ui/material_ui.dart' show Locale;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/word_of_day.dart';
@@ -190,7 +191,10 @@ void main() {
 
     setUp(() async {
       directory = tempDir('sogda_widget');
-      final content = ContentFixture.write('${directory.path}/content.db').file;
+      final content = ContentFixture.write(
+        '${directory.path}/content.db',
+        russian: true,
+      ).file;
       db = AppDatabase.memory();
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
@@ -246,16 +250,25 @@ void main() {
       await state(ContentFixture.haus, '2026-09-21');
       // As M3 changes it.
       final languages = container.read(languagesProvider.notifier);
-      await languages.setMeaning(MeaningLanguage.english);
+      await languages.setMeaning(MeaningChoice.of(MeaningLanguage.english));
       expect((await word())?.meaning, 'house');
       expect((await word())?.german, 'Haus');
       expect((await word())?.article, 'das');
 
-      await languages.setMeaning(MeaningLanguage.bangla);
+      await languages.setMeaning(MeaningChoice.of(MeaningLanguage.bangla));
       expect((await word())?.meaning, 'বাড়ি');
 
-      await languages.setMeaning(MeaningLanguage.both);
+      await languages.setMeaning(MeaningChoice.of(MeaningLanguage.both));
       expect((await word())?.meaning, 'house · বাড়ি');
+    });
+
+    test("#1119 a Russian learner's first word is in Russian already: a "
+        'background refresh writes the first one and goes', () async {
+      await state(ContentFixture.haus, '2026-09-21');
+      await container
+          .read(languagesProvider.notifier)
+          .setMeaning(const MeaningChoice('ru', 'en'));
+      expect((await word())?.meaning, 'дом · house');
     });
 
     test('a background refresh saves it', () async {
@@ -306,7 +319,7 @@ void main() {
 
         await container
             .read(languagesProvider.notifier)
-            .setMeaning(MeaningLanguage.english);
+            .setMeaning(MeaningChoice.of(MeaningLanguage.english));
         await pumpEventQueue();
         expect(meaning(), 'house');
       },

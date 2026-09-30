@@ -140,8 +140,6 @@ void main() {
     // (accessibility-performance.md). Names and units stay as they are.
     const onPurpose = <String>{
       'appTitle',
-      'onboardingMeaningEnglish',
-      'settingsEnglish',
       'settingsVoiceSupertonic',
       'exportImportSizeKb',
       'exportImportSizeMb',

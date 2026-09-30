@@ -19,7 +19,6 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_engine.dart'
     show PlanDate, daysBetween, parsePlanDate;
-import 'package:sogda/features/study/study_back.dart' show meaningLine;
 import 'package:sogda/features/study/study_card.dart';
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/word_row.dart';
@@ -30,7 +29,7 @@ import 'package:sogda/router/routes.dart';
 part 'backlog_screen.g.dart';
 
 /// A backlog word, the day it was planned for, and its meaning in the
-/// learner's meaning language.
+/// learner's meaning languages.
 typedef BacklogWord = ({String planDate, WordWithState word, String meaning});
 
 /// What a row action did, so its *Undo* can take it back.
@@ -56,7 +55,7 @@ class Backlog extends _$Backlog {
   Stream<List<BacklogWord>> build() {
     final words = ref.watch(wordRepositoryProvider);
     // Watched (#694 CC-4): T4 stays alive under the Today tab.
-    final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+    final meanings = ref.watch(meaningsProvider);
     return ref
         .watch(planRepositoryProvider)
         .watchBacklogWithStates(ref.watch(todayProvider))
@@ -72,7 +71,7 @@ class Backlog extends _$Backlog {
                 (
                   planDate: row.planDate,
                   word: word,
-                  meaning: meaningLine(word.word, meaning),
+                  meaning: meanings.line(word.word),
                 ),
           ];
         });
