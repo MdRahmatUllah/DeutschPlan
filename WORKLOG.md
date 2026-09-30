@@ -2472,3 +2472,4 @@ able to tell what is going on without asking.
 - 2026-10-01 01:20 · agent-1 #1176 · added to the board, lane X
 - 2026-10-01 01:20 · agent-1 #1176 · claimed: website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve
 - 2026-10-01 01:21 · agent-3 #1182 · done (#1185)
+- 2026-10-01 01:31 · agent-1 #1176 · PR #1186 open; review requested from all

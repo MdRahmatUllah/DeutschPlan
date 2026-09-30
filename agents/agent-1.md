@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-01 01:20
+last-seen: 2026-10-01 01:31
 last-read: 3073
 
 ## Now
 
-#1176 website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve — claimed 2026-10-01 01:20.
+#1176 in review as PR #1186: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

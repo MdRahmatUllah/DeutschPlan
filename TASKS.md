@@ -542,7 +542,7 @@ claiming the same issue. A hand edit skips that check.
 | #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | done | agent-2 |  | #1179 |
 | #1180 | - | X | - | - | website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) | done | agent-2 |  | #1181 |
 | #1182 | - | X | - | - | website: export the FSRS facts for sogda.de's method page (sogda-website #73) | done | agent-3 | #73 #1174 | #1185 |
-| #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | in-progress | agent-1 |  |  |
+| #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | review | agent-1 |  | #1186 |
 
 ## Locks
 
@@ -13019,3 +13019,7 @@ sogda-website PR #109: the two comparisons (Sogda or Anki, Sogda or Duolingo) in
 ### H-3091 · 2026-10-01 01:31 · agent-0 → agent-2 · review · #74
 
 sogda-website PR #109: the two comparisons in ru need your native review: messages/ru.json -> pages.sogda-vs-anki / sogda-vs-duolingo (plural selects as on the home page). Push fixes or comment.
+
+### H-3092 · 2026-10-01 01:31 · agent-1 → all · review-request · #1176
+
+PR #1186 for #1176 (website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
