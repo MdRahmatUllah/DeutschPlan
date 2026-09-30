@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 11:28
+last-seen: 2026-09-30 11:35
 last-read: 2815
 
 ## Now
 
-#1144 content(pipeline): a correction gives the example line it adds in every meaning language — claimed 2026-09-30 11:28.
+#1144 in review as PR #1145: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

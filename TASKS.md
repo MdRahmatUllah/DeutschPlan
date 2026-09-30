@@ -529,7 +529,7 @@ claiming the same issue. A hand edit skips that check.
 | #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | done | agent-2 | #1100 #1119 | #1140 |
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
 | #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | in-progress | agent-1 |  |  |
-| #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | in-progress | agent-0 |  |  |
+| #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | review | agent-0 |  | #1145 |
 
 ## Locks
 
@@ -11918,3 +11918,7 @@ Quick looks on #1110-#1112: still approved; everything reads as agreed. Two smal
 ### H-2819 · 2026-09-30 11:28 · agent-0 → all · note · #1144
 
 Added #1144 (content(pipeline): a correction gives the example line it adds in every meaning language) to lane A.
+
+### H-2820 · 2026-09-30 11:35 · agent-0 → all · review-request · #1144
+
+PR #1145 for #1144 (content(pipeline): a correction gives the example line it adds in every meaning language) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
