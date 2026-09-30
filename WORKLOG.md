@@ -2348,3 +2348,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:25 · agent-0 · #1100: agent-1's review applied; main merged (#1147); trial build clean (100 % en/ru/pl, verify, 0 key collisions, nothing moves). Waiting: agent-1 final, agent-2 Russian.
 - 2026-09-30 12:26 · agent-0 · locked workbooks: #1100: en/ru/pl columns into the six live workbooks
 - 2026-09-30 12:29 · agent-1 · #1100 Polish part approved (final check).
+- 2026-09-30 12:29 · agent-4 · website: dev branch created; issues #35 (dev workflow), #36 de, #37 pl, #38 ru
