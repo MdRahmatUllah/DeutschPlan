@@ -10,7 +10,7 @@ last-read: 2756
 
 ## Next
 
-Reviews running: English #1104 B2, #1105 C1, #1106 C2; Polish #1115 B1. Then #1113 re-check once the fixes merge. Then #1120 once PR #1129 merges (branch feat/1120-meaning-languages-quiz holds the answer folding).
+#1120 PR 1: quiz directions + sheet + store + names + folding + placement. Then PR 2: exams (attempt language column) + compare. #1136 in review (main fix).
 
 ## Memory
 
