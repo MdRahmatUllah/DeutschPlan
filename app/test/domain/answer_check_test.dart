@@ -27,6 +27,64 @@ void main() {
       expect(checkMeaning('кот', 'дом'), Verdict.wrong);
     });
 
+    test("#775 a comma is Russian's or Polish's own, not a separator: "
+        'a lone «что» or «że» is wrong', () {
+      for (final (given, cell, lang) in <(String, String, String)>[
+        ('что', 'тем, что / благодаря тому, что', 'ru'),
+        ('что', 'исходить из того, что / полагать', 'ru'),
+        ('что', 'из этого следует, что …', 'ru'),
+        ('но', 'я с тобой согласен, но …', 'ru'),
+        ('ли', 'в зависимости от того, … ли', 'ru'),
+        ('że', 'uważam, że …', 'pl'),
+      ]) {
+        expect(
+          checkMeaning(given, cell, lang: lang),
+          Verdict.wrong,
+          reason: cell,
+        );
+      }
+      expect(
+        checkMeaning('тем, что', 'тем, что / благодаря тому, что', lang: 'ru'),
+        Verdict.correct,
+      );
+      expect(
+        checkMeaning(
+          'полагать',
+          'исходить из того, что / полагать',
+          lang: 'ru',
+        ),
+        Verdict.correct,
+      );
+      expect(
+        checkMeaning('uważam, że …', 'uważam, że …', lang: 'pl'),
+        Verdict.correct,
+      );
+      expect(
+        checkMeaning(
+          'благодаря тому, что / тем, что',
+          'тем, что / благодаря тому, что',
+          lang: 'ru',
+        ),
+        Verdict.correct,
+        reason: 'both typed as a list, in another order (#678)',
+      );
+      expect(
+        splitMeanings('явный / прямо; категорически', lang: 'ru'),
+        <String>['явный', 'прямо', 'категорически'],
+        reason: '/ and ; still separate',
+      );
+    });
+
+    test('#775 English and Bangla keep the comma as a separator', () {
+      for (final lang in <String?>[null, 'en']) {
+        expect(
+          checkMeaning('home', 'house, home', lang: lang),
+          Verdict.correct,
+        );
+      }
+      expect(splitMeanings('বাড়ি, ঘর', lang: 'bn'), <String>['বাড়ি', 'ঘর']);
+    });
+
     test('Bangla and German answers are untouched', () {
       expect(checkMeaning('বাড়ি', 'বাড়ি'), Verdict.correct);
       expect(checkMeaning('বারি', 'বাড়ি'), isNot(Verdict.correct));
