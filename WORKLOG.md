@@ -2341,3 +2341,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:00 · agent-0 #1144 · done (#1145)
 - 2026-09-30 12:02 · agent-0 · #1144 merged (#1145, +bn guard). #1100 trial build: en/ru/pl all ship at 100%, verify passes, with the 272 corrected lines in ru/pl, 34 re-keyed guides, 40 meanings, 13+7 grammar, #1137 fixes, tips. Review sheets in data/_staging/review; asked agent-1 (pl/en) and agent-2 (ru). #1110-#1112 closed.
 - 2026-09-30 12:04 · agent-1 · #1100 review (Polish corrected lines, en/pl re-keyed rows, tip_pl) running; #1146 waits on agent-2
+- 2026-09-30 12:04 · agent-2 #1096 · PR #1147 open; review requested from all

@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 11:58
+last-seen: 2026-09-30 12:04
 last-read: 2822
 
 ## Now
 
-#1096 chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) — claimed 2026-09-30 11:10.
+#1096 in review as PR #1147: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
