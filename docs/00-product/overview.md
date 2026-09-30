@@ -2,11 +2,11 @@
 
 ## One sentence
 
-An exam-structured, fully offline German study plan from A1.1 to C2.2 that tells the learner exactly what to do today, revises what they have learned with spaced repetition, and lets them verify each step with generated mock exams — with meanings in English and Bangla.
+An exam-structured, fully offline German study plan from A1.1 to C2.2 that tells the learner exactly what to do today, revises what they have learned with spaced repetition, and lets them verify each step with generated mock exams — with meanings in English and Bangla, and since v1.1.0 in Russian and Polish too.
 
 ## Who it is for
 
-Adults learning German for work, study or residence. First audience: Bangla speakers (the Bangla pronunciation and meaning columns are the differentiator), then English speakers. Typical session is 10–20 minutes on a phone, often without signal.
+Adults learning German for work, study or residence. First audience: Bangla speakers (the Bangla pronunciation and meaning columns are the differentiator), then English speakers, and since v1.1.0 Russian and Polish speakers, with the app, the meanings, the pronunciation, the examples and the grammar in their language. Typical session is 10–20 minutes on a phone, often without signal.
 
 ## What it is not
 

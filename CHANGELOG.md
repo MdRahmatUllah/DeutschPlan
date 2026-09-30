@@ -4,7 +4,14 @@ Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pu
 
 ## [1.1.0] — not yet tagged
 
-The first build as Sogda (`de.sogda.app`), and the production review's fixes.
+Polish and Russian, the first build as Sogda (`de.sogda.app`), and the production review's fixes.
+
+### Added
+- The app in Polish and Russian: every screen, notification and the home-screen widget (#1078, #1079).
+- Meanings in English, Bangla, Russian or Polish: a first language, and an optional second shown under it, chosen in setup and in Settings (#1081).
+- In Russian and Polish, each word's meaning and pronunciation, its example sentences, the grammar topics, interference tips for their speakers and the category names (#1083, #1084, #1119, #1128).
+- The pronunciation guide follows the first meaning language: Bangla letters, Russian or Polish spelling, or an English respelling (#1082), with a one-line key to read it (#1122).
+- Search finds a word by its meaning in the chosen languages (#1121). Quizzes, mock exams, the placement check and the compare quiz ask in them, and a typed Polish or Russian answer may leave out its marks: `zolty` for *żółty*, `елка` for *ёлка* (#1120).
 
 ### Changed
 - The app is Sogda: a new name, application id, icon, themed and notification icons, and splash (ADR 28).

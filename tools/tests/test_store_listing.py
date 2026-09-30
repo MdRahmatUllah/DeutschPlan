@@ -37,7 +37,10 @@ def texts() -> dict[tuple[str, str], str]:
     return {key: "\n".join(lines).strip() for key, lines in found.items()}
 
 
-@pytest.mark.parametrize("language", ["English (en-US)", "Bangla (bn-BD)"])
+LANGUAGES = ["English (en-US)", "Bangla (bn-BD)", "Polish (pl-PL)", "Russian (ru-RU)"]
+
+
+@pytest.mark.parametrize("language", LANGUAGES)
 def test_every_field_is_there_and_fits_plays_limit_175(language):
     listing = texts()
     for field, limit in LIMITS.items():
@@ -51,6 +54,8 @@ def test_the_listing_offers_no_translation_which_v1_leaves_out_175():
     for (language, field), text in texts().items():
         assert "translat" not in text.lower(), f"{language} {field}"
         assert "অনুবাদ" not in text, f"{language} {field}"
+        assert "tłumacz" not in text.lower(), f"{language} {field}"
+        assert "перевод" not in text.lower(), f"{language} {field}"
 
 
 def test_the_counts_are_abouts_175_631():
@@ -69,6 +74,12 @@ def test_the_counts_are_abouts_175_631():
     assert f"{words} words" in en and f"{topics} grammar topics" in en
     bn = listing[("Bangla (bn-BD)", "Full description")]
     assert f"{words.translate(bangla)}টি শব্দ" in bn and f"{topics.translate(bangla)}টি ব্যাকরণ" in bn
+    # Polish and Russian write four digits without a separator (#1143).
+    plain = words.replace(",", "")
+    pl = listing[("Polish (pl-PL)", "Full description")]
+    assert f"{plain} słów" in pl and f"{topics} tematy gramatyczne" in pl
+    ru = listing[("Russian (ru-RU)", "Full description")]
+    assert f"{plain} слов" in ru and f"{topics} грамматические темы" in ru
 
 
 STORE = LISTING.parent / "store"
@@ -95,6 +106,8 @@ def test_the_title_the_website_and_the_icon_are_the_brand_kits_602():
     listing = texts()
     assert listing[("English (en-US)", "Title")] == "Sogda: German A1–C2"
     assert listing[("Bangla (bn-BD)", "Title")] == "Sogda: জার্মান A1–C2"
+    assert listing[("Polish (pl-PL)", "Title")] == "Sogda: niemiecki A1–C2"
+    assert listing[("Russian (ru-RU)", "Title")] == "Sogda: немецкий A1–C2"
     text = LISTING.read_text(encoding="utf-8")
     assert "**Website:** https://sogda.de" in text
     icon = re.search(r"\*\*App icon:\*\* \[`([^`]+)`\]", text)[1]

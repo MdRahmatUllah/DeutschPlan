@@ -110,6 +110,7 @@ The SQA milestone holds 52 issues, all closed.
 | **M5 · Search, words, Me** | 19 | 24–25 Sep | 25 Sep | R1, R2, W1 and its actions, W2; M1, M2, M3, M5, M6, M7, M8/M9 |
 | **M6 · Voice, translation, widget** | 13 | 24–26 Sep | 26 Sep | The TTS seam, Supertonic 3, engine selection and fallback, the download manager and M4; notifications, background tasks, the widget snapshot and the Android widget. The Hy-MT translator (#154) was deferred |
 | **M7 · Polish & release** | 25 | 24–26 Sep | 26 Sep | The screen-reader pass, contrast, reduce motion and transparency, 200 % text, localisation, performance budgets, the full golden matrix, the integration smoke test, the Android release pipeline, licences, the Hy-MT region decision, the error matrix, the store listing and the tag |
+| **M8 · Meaning languages** | 42 | 29–30 Sep | open | Russian and Polish as meaning languages (meanings, pronunciation, examples, grammar, tips, category names) and as app languages; a first and an optional second meaning language; quizzes, exams, placement, compare and search in them; the English pronunciation guide; release prep for v1.1.0 (#1085) |
 
 ### v1.0.0 (2026-09-26, `2b424e33`)
 
@@ -221,9 +222,11 @@ The milestone's open issues, each blocked on the owner or on a Mac:
 The owner's stated direction (2026-09-26, in the request that produced this
 handbook):
 
-- **More meaning languages.** Learners who think in other languages, with the
-  same course. This is mostly data: translations through the workbooks, a
-  schema that holds meanings by language, and wider language settings.
+- **More meaning languages: shipped in v1.1.0** (M8, #1085). Russian and
+  Polish, as meaning languages and as app languages, with a first and an
+  optional second meaning language. As foreseen, it was mostly data: the
+  workbooks' columns, tables that hold the texts by language, and wider
+  language settings. A next one is a workbook column, a review and a build.
 - **More languages to learn.** Courses beyond German on the same engines.
   The plan, FSRS, quizzes, exams, export, reminders and the widget carry
   over; the German-specific learning logic (articles and gender, umlauts, the
