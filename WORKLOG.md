@@ -2283,3 +2283,4 @@ able to tell what is going on without asking.
 - 2026-09-30 02:10 · agent-1 #1134 · claimed: test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table
 - 2026-09-30 02:11 · agent-4 · website: #12 automated QA merged (PR #26), results on #12; #13 live checks + www redirect merged (PR #27), owner checklist on #13. Open: owner's Impressum/Vercel/DNS/Play link, hardware checks, #22
 - 2026-09-30 02:17 · agent-1 #1134 · PR #1136 open; review requested from all
+- 2026-09-30 02:18 · agent-1 · #1134: PR #1136 up (main red fix). Starting #1120 on feat/1120-meaning-languages-quiz (main merged in)
