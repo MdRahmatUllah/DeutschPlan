@@ -261,9 +261,7 @@ class PlacementSession {
     String shown(PlacementWord w) =>
         kind == PlacementKind.gap ? w.german : _meaningOf(w);
     final target = shown(word);
-    // Russian's and Polish's commas are their own, not separators (#775).
-    Set<String> sensesOf(String text) => senses(text, lang: lang);
-    final meanings = sensesOf(target);
+    final meanings = senses(target);
     // Not the answer again under another uid, and — in a gap — not the
     // answer spelt with another case, which would look the same on screen.
     // Nor, for a meaning, one that shares a synonym with the answer: "good
@@ -271,7 +269,7 @@ class PlacementSession {
     bool distinct(String text) =>
         text.toLowerCase() != target.toLowerCase() &&
         (kind == PlacementKind.gap ||
-            sensesOf(text).intersection(meanings).isEmpty);
+            senses(text).intersection(meanings).isEmpty);
     final same = pool
         .where((w) => w.uid != word.uid && w.pos == word.pos)
         .map(shown)

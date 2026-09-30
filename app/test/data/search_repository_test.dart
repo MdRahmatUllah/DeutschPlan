@@ -902,7 +902,7 @@ void _writeCourseSizedContent(String path) {
       'die',
       'Pfote',
       'noun',
-      'hand, paw of an animal used informally of a person in some regions',
+      'hand / paw of an animal used informally of a person in some regions',
       'হাত',
       4,
       1,
