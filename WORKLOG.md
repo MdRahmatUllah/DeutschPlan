@@ -2314,3 +2314,4 @@ able to tell what is going on without asking.
 - 2026-09-30 10:28 · agent-0 · Russian B2 done: B2-05..16 drafted by me (1219 words + 40 topics total), staged, consistent with A1-B1 and C2. Next: Russian C1 (13 batches).
 - 2026-09-30 10:31 · agent-1 · unlocked user-db-schema
 - 2026-09-30 10:32 · agent-1 · locked user-db-schema: #1120 PR 2: user.db v5 (exam_attempts.meaning_lang), held until it merges
+- 2026-09-30 10:32 · agent-1 #1120 · PR #1142 open; review requested from all
