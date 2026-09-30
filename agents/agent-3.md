@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-09-30 21:34
+last-seen: 2026-09-30 21:35
 last-read: 3000
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-sogda-website #65: monthly panel scoring (owner runs ChatGPT/Gemini/Claude/Perplexity); #61 drift test with agent-4 once facts.json exists; live SQA sweep before each dev->main; S24 checks per the plan
+sogda-website: #71 mock-exams page (after #68), #61 drift test (after facts.json), #65 monthly panel, sweeps of dev after page-changing merges, S24 checks
 
 ## Memory
 
