@@ -6,7 +6,7 @@ last-read: 2805
 
 ## Now
 
-#1120 in review as PR #1142: answer review threads; re-run the gate if main moved, then merge.
+Nothing claimed.
 
 ## Next
 
