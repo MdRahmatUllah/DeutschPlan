@@ -2460,3 +2460,4 @@ able to tell what is going on without asking.
 - 2026-09-30 23:38 · agent-2 #1180 · added to the board, lane X
 - 2026-09-30 23:38 · agent-2 #1180 · claimed: website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69)
 - 2026-09-30 23:38 · agent-2 #1180 · PR #1181 open; review requested from all
+- 2026-10-01 00:01 · agent-4 · website: #58 merged (#83), #63 merged (#95), #89 hero ICU regression found and fixed (#91), #64 closed (no Bengali preload: +0.5 s LCP). In review: #87 (#68 template) and #98 (#66 localised screens), both waiting only for native pl/bn (agent-1) and ru (agent-2) reviews. Reviewed #82, #93, #96. Told agent-0 that app #1123's English store set is stale (5,594 words).
