@@ -75,58 +75,58 @@ Ten worked examples:
 
 ## Russian (#1083)
 
-Cyrillic, as a Russian reader says it. **Stress:** an acute accent (U+0301, combining) on the stressed vowel of every word with more than one vowel letter: `би́тэ`, `а́уф ви́дазээн`. A one-vowel word carries none (`ихь`, `шён`), nor does a word whose stressed vowel is ё.
+Cyrillic, as a Russian reader says it. **Stress:** the stressed vowel is a capital letter in every word with more than one vowel letter: `бИтэ`, `Ауф вИдазээн`. A one-vowel word has none (`ихь`, `шён`), nor does a word whose stressed vowel is ё; a hyphenated compound has one. The scheme first used an acute accent (U+0301), as Russian dictionaries do, but the app's font (Inter) positions combining marks for Latin only, so the accent landed over the next letter (#1131); capitals render in any font and match the English and Polish guides.
 
-German e is written **э**, never е, so the consonant before it stays hard (`гэт`, not `гет`): softening consonants before e and i is the typical Russian accent in German. е, я, ё, ю appear only for German j + vowel (`е́да` = *jeder*) and after the soft хь.
+German e is written **э**, never е, so the consonant before it stays hard (`гэт`, not `гет`): softening consonants before e and i is the typical Russian accent in German. е, я, ё, ю appear only for German j + vowel (`Еда` = *jeder*) and after the soft хь.
 
 | German | Russian | Note | Example |
 | --- | --- | --- | --- |
-| a | а | | Abend → `а́бэнт` |
-| e, ee, eh, ä, äh | э | also in -en, -el, be-, ge- and final -e | geht → `гэт`, bitte → `би́тэ` |
+| a | а | | Abend → `Абэнт` |
+| e, ee, eh, ä, äh | э | also in -en, -el, be-, ge- and final -e | geht → `гэт`, bitte → `бИтэ` |
 | i, ie, ih | и | | wie → `ви` |
 | o, oo, oh | о | a clear о, also unstressed (never а) | wo → `во` |
 | u, uh | у | | Buch → `бух` |
 | ü, üh, y | ю | say и with lips rounded for у | Tschüss → `чюс` |
 | ö, öh | ё | say э with lips rounded for о | schön → `шён` |
 | ei, ai, ey | ай | | Zeit → `цайт` |
-| au | ау | one syllable: а glides into у | auf → `а́уф` |
-| eu, äu | ой | | heute → `хо́йтэ` |
-| j + vowel | е, я, ё, ю; й elsewhere | | ja → `я`, jeder → `е́да` |
-| -er ending a word or word part | а | | jeder → `е́да`, wieder- → `ви́да-` |
-| r after a vowel, ending a word or word part | а | | Bier → `би́а`, mir → `ми́а` |
-| r elsewhere | р | a light throat sound, like a soft French r: not rolled | Straße → `штра́сэ` |
+| au | ау | one syllable: а glides into у | auf → `Ауф` |
+| eu, äu | ой | | heute → `хОйтэ` |
+| j + vowel | е, я, ё, ю; й elsewhere | | ja → `я`, jeder → `Еда` |
+| -er ending a word or word part | а | | jeder → `Еда`, wieder- → `вИда-` |
+| r after a vowel, ending a word or word part | а | | Bier → `бИа`, mir → `мИа` |
+| r elsewhere | р | a light throat sound, like a soft French r: not rolled | Straße → `штрАсэ` |
 | ch after a, o, u, au | х | | Buch → `бух` |
-| ch after i, e, ä, ö, ü, ei, eu, l, n, r; -chen; -ig at the end | хь; before a vowel хе, хи, хю, хя | like хи in «хитрый» | ich → `ихь`, Mädchen → `мэ́тхен` |
+| ch after i, e, ä, ö, ü, ei, eu, l, n, r; -chen; -ig at the end | хь; before a vowel хе, хи, хю, хя | like хи in «хитрый» | ich → `ихь`, Mädchen → `мЭтхен` |
 | chs | кс | | sechs → `зэкс` |
 | sch | ш | | schön → `шён` |
 | tsch | ч | | Tschüss → `чюс` |
-| sp, st starting a word or word part | шп, шт | | Straße → `штра́сэ` |
-| s before a vowel | з | | sehen → `зэ́эн` |
-| s, ss, ß elsewhere | с | | Straße → `штра́сэ` |
+| sp, st starting a word or word part | шп, шт | | Straße → `штрАсэ` |
+| s before a vowel | з | | sehen → `зЭэн` |
+| s, ss, ß elsewhere | с | | Straße → `штрАсэ` |
 | z, tz | ц | | Zeit → `цайт` |
 | w | в | | wie → `ви` |
 | v | ф (в in some loanwords) | | viel → `филь` |
-| h starting a syllable | х | a light breath, softer than Russian х | Hallo → `ха́ло` |
+| h starting a syllable | х | a light breath, softer than Russian х | Hallo → `хАло` |
 | h after a vowel | — | silent: the vowel is long | geht → `гэт` |
-| b, d, g ending a word or word part | п, т, к | | Abend → `а́бэнт` |
+| b, d, g ending a word or word part | п, т, к | | Abend → `Абэнт` |
 | l | л; ль before a consonant and at the end | a light l | bald → `бальт`, viel → `филь` |
-| ng | нг | one sound: н at the back of the mouth, no separate г | lange → `ла́нгэ` |
+| ng | нг | one sound: н at the back of the mouth, no separate г | lange → `лАнгэ` |
 | qu | кв | | Quark → `кварк` |
 
 Ten worked examples:
 
 | German | Russian guide | How |
 | --- | --- | --- |
-| Auf Wiedersehen | `а́уф ви́дазээн` | au → ау; w → в; -er of *wieder* → а; s + vowel → з; e → э (long e + -en: ээн) |
+| Auf Wiedersehen | `Ауф вИдазээн` | au → ау; w → в; -er of *wieder* → а; s + vowel → з; e → э (long e + -en: ээн) |
 | ich | `ихь` | ch after i → хь |
 | Buch | `бух` | ch after u → х |
 | Tschüss | `чюс` | tsch → ч; ü → ю |
 | schön | `шён` | sch → ш; ö → ё (stressed, no mark) |
 | Zeit | `цайт` | z → ц; ei → ай |
-| Straße | `штра́сэ` | st at the start → шт; ß → с; final e → э |
-| Bier | `би́а` | ie → и; final r → а |
-| Abend | `а́бэнт` | e → э; final d → т |
-| Mädchen | `мэ́тхен` | ä → э; d before ch → т; -chen → хен (soft х before a vowel) |
+| Straße | `штрАсэ` | st at the start → шт; ß → с; final e → э |
+| Bier | `бИа` | ie → и; final r → а |
+| Abend | `Абэнт` | e → э; final d → т |
+| Mädchen | `мЭтхен` | ä → э; d before ch → т; -chen → хен (soft х before a vowel) |
 
 ## Polish (#1084)
 
@@ -188,6 +188,7 @@ Ten worked examples:
 - **Polish ich sound: `ś`** (agent-1, #1084). The learner sees only the cell, so a note can't carry it, and a Polish reader says `ICH` with the hard ach sound. `ś` is close to [ç], as Polish German teaching describes it.
 - **Polish stress: capitals** instead of underlining (agent-1, #1084).
 - **Russian e: `э` everywhere**, which keeps consonants hard, rather than the more familiar `е` (for agent-2's review, #1083).
+- **Russian stress: a capital vowel** (`штрАсэ`), not an acute accent: the app's font can't place the accent over a Cyrillic letter (#1131).
 - **Known limit, Polish `ci`:** `ci` for [tsi] (`AN-ci-en`) will be read as ć by most Poles. `cy` would get the vowel wrong instead. Every word has its German audio beside the guide, so the guide supports the audio and doesn't replace it.
 
 ## Conventions for the other columns
