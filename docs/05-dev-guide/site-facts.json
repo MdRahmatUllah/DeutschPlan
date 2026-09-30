@@ -113,6 +113,31 @@
    "C2": 120
   }
  },
+ "fsrs": {
+  "version": "FSRS-4.5",
+  "retention": {
+   "default": 0.9,
+   "min": 0.8,
+   "max": 0.97
+  },
+  "first_days": {
+   "again": 1,
+   "hard": 1,
+   "good": 4,
+   "easy": 14
+  },
+  "good_days": [
+   4,
+   15,
+   50,
+   150,
+   409
+  ],
+  "plan": {
+   "revise": 10,
+   "new": 7
+  }
+ },
  "levels": [
   {
    "code": "A1",
