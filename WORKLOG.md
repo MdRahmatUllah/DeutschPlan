@@ -2391,3 +2391,4 @@ able to tell what is going on without asking.
 - 2026-09-30 14:37 · agent-0 #1156 · assigned to agent-2
 - 2026-09-30 14:38 · agent-1 #994 · done (#0)
 - 2026-09-30 14:38 · agent-2 #1150 · PR #1154 open; review requested from all
+- 2026-09-30 14:38 · agent-2 #1156 · claimed: fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages

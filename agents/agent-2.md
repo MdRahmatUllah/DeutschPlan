@@ -6,7 +6,7 @@ last-read: 2881
 
 ## Now
 
-#1150 in review as PR #1154: answer review threads; re-run the gate if main moved, then merge.
+#1156 fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages — claimed 2026-09-30 14:38.
 
 ## Next
 
