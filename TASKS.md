@@ -537,7 +537,7 @@ claiming the same issue. A hand edit skips that check.
 | #1161 | M8 | B | P2 | - | test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint) | done | agent-1 |  | #1163 |
 | #1164 | - | C | P3 | - | fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation | done | agent-2 |  | #1167 |
 | #1166 | - | C | P3 | - | bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group) | done | agent-2 |  | #1168 |
-| #1169 | - | X | - | - | docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README | assigned | agent-4 |  |  |
+| #1169 | - | X | - | - | docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README | in-progress | agent-4 |  |  |
 
 ## Locks
 

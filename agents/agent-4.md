@@ -6,7 +6,7 @@ last-read: 2752
 
 ## Now
 
-#1090 in review as PR #1093: answer review threads; re-run the gate if main moved, then merge.
+#1169 docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README — claimed 2026-09-30 20:28.
 
 ## Next
 
