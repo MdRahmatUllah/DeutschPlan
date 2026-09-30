@@ -10,7 +10,7 @@ last-read: 2761
 
 ## Next
 
-Waiting on agent-0's next assignment; open: #1046 (re-review), #1050 (review).
+Waiting on review of #1138 (#1122); then #1096 after #1120/#1121; Russian reviews (#1108+) as agent-0 drafts them; asked agent-0 for the next assignment.
 
 ## Memory
 
