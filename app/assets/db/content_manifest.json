@@ -447,12 +447,12 @@
     "C1.2": 21,
     "C2.2": 21
   },
-  "built_at": "2026-09-30T09:33:36+00:00",
-  "content_version": "20260930093336",
+  "built_at": "2026-09-30T13:56:30+00:00",
+  "content_version": "20260930135630",
   "counts": {
     "examples": 10545,
     "grammar": 182,
-    "tips": 494,
+    "tips": 513,
     "words": 5069
   },
   "format": 1,
@@ -507,19 +507,19 @@
     "447229ad1829d4d4": "011f48426f873d62",
     "47de7fd9afafc243": "987a11ea360971f3",
     "47fe7077a02392fc": "cb3376acfc2d310c",
-    "49509e11f09a615d": "a755875bbbe690c2",
+    "49509e11f09a615d": "b4b89342657641be",
     "4ac62f2a3906d171": "1a7e2d6940058b9b",
     "4b3417bba8b9e610": "e4b3cd76e45f087f",
     "4b85c70fa865687b": "320f507a14a772d4",
     "4d99f0ed96b8097e": "12719cb92891ce6a",
-    "4e03ce67e311e280": "fc441ec6155e493d",
+    "4e03ce67e311e280": "1112ca32a99f6112",
     "50adee1336c85d03": "56c16e7faec900d1",
     "54291bb5a725dc01": "0bfabc537c5cdfa5",
     "5529b68b16ca6e56": "49bb2ea7204edee7",
     "5558fa43a7cf8c15": "e1afe4794ac9d22d",
     "56296c8d35dc202d": "d46a3c886ce2e713",
     "579f5bd59ff87c4d": "7b785f97063f7729",
-    "57a3983414ab2c6f": "830ff5a06ea317a5",
+    "57a3983414ab2c6f": "82d136dcdd7fd7dc",
     "5c3a12e5ac039804": "88504db653eef13f",
     "5c9be79181e59369": "f43a8f66586bdbcb",
     "5ca879096d9239cc": "0c0bed2fce12c387",
@@ -541,16 +541,16 @@
     "7b560a1294c77df2": "38ae1ef2c89223a2",
     "7e4bfa55d298edb8": "91401c26a5bab78c",
     "7fc3c51b43cb30d1": "ba793af69f41509e",
-    "8001e28c085bafd2": "3c32dc09678acc91",
+    "8001e28c085bafd2": "06d76348a395b5ff",
     "81b22a185c6f613b": "4748e5d5e1f8287d",
     "831f3bb2263031ec": "498b539e61426967",
     "835014707955b450": "da33e944603d1436",
-    "86530b65c341e05d": "5e07d388303a54e7",
+    "86530b65c341e05d": "dbb1d7c37d9262ee",
     "89634e53c6eb5ea9": "3f4a958bb676737f",
     "8b02de770d94318a": "189df9163e2cfb1b",
     "8b93ebe000229cad": "89db26d94aaa0e0d",
     "8cc0a24a3ccdae30": "1b153221e9e007a7",
-    "8d3035e4ad730fd3": "4f62413016db293a",
+    "8d3035e4ad730fd3": "464b6ff97269bb94",
     "8e775672f6d238f8": "107b291f037d882d",
     "8f1dddcb67931cb1": "e2ba67df80f25d8e",
     "8fa9a1fcc61340d5": "83e64e074783018d",
@@ -624,7 +624,7 @@
     "ea1ab568d1e51342": "5e908027d7269199",
     "ed194d47e92fc71b": "6f6b2d3015121b23",
     "edeec4d9b2617a02": "aef0ca3c725f3300",
-    "ee702da8fbd7c4e6": "105f57759b3ee672",
+    "ee702da8fbd7c4e6": "399cfc5c5143ba2b",
     "f1287da8b7ffab14": "6ad43faad54c8b86",
     "f31c75c5befbc211": "5322cf9a868ac754",
     "f3f83a0b26299b69": "a84681386639797b",
@@ -5881,27 +5881,27 @@
   "sources": [
     {
       "file": "German_A1_Tracker.xlsx",
-      "sha256": "00f32332877442156f45d61ee9d702908bbaa7b4a2c80ad22d6e349f2b4fc04b"
+      "sha256": "9f271c81e320e5dfb33f55af2be85ce827b105ca39948eaf1ada504677534077"
     },
     {
       "file": "German_A2_Tracker.xlsx",
-      "sha256": "0cf6414a8cbb52d1aa8d06f9039ee0cf5fd6f6b94392f9b6b6b2dcfe689b66a3"
+      "sha256": "49b895b0a2e7d9d11c31bbd32ff6ec4a6fd308a2c743f6afea75d5bb00595373"
     },
     {
       "file": "German_B1_Tracker.xlsx",
-      "sha256": "530889049b9a5f3e71d3c8412811a4ba3dc4e11a3ecb1329d3c14969fca407f5"
+      "sha256": "8d155b8bb72529f73041ba376a011d872e7a6dcf70387c25439401489e2e8953"
     },
     {
       "file": "German_B2_Tracker.xlsx",
-      "sha256": "ff79311d77146a6740f8e0887fca42caf0bebdc8887b9e9b29f8da58f5b3943a"
+      "sha256": "4d88efd66fd84a61d9e16bb036032853af437715b8780de575266e36aed053cb"
     },
     {
       "file": "German_C1_Tracker.xlsx",
-      "sha256": "519287a17935d7df889f70ab12b408de11a7f17b51d92b8059abd8a930318ef4"
+      "sha256": "29493662d37586f596d70ca4852e02c388d40ad5d32cdec5730b69277bae655a"
     },
     {
       "file": "German_C2_Tracker.xlsx",
-      "sha256": "050be435943e5d7a54915c9442ea0eb0d6bb67ac610f0bd78d7a6f863aac8c43"
+      "sha256": "c18bacbc8706d4af13ede8bbcdebee6cd997eb149bcd090b50f2ecefdbaff2eb"
     }
   ],
   "steps": {
@@ -6036,7 +6036,7 @@
     "0290ac716821c88e": "72ba74bd6f126eed",
     "0299aa2608945790": "d9d6fcc4bc626488",
     "029d2d45e419937b": "bd121acdee0eafff",
-    "02a2e02ed05f987a": "ccea63793e7aa8ce",
+    "02a2e02ed05f987a": "a9082fdfd705a089",
     "02b592c136744fd9": "bc6853315cca87c2",
     "02bca766a601bc99": "939894ff134bd569",
     "02d5229452d8dce4": "06538391aa2a7ba6",
@@ -8122,7 +8122,7 @@
     "6879766f3537447a": "d95bdfcd7dacc37c",
     "6879a9c3d9dcb641": "4be5e6154c847a4f",
     "688916f92d2b5ef9": "9347113283dd803b",
-    "688e86fe5bfaa98d": "11b7e9686e09d4b7",
+    "688e86fe5bfaa98d": "c9bdb0df01a63f79",
     "6891af8c4e91e34d": "798a36d44ebb50cf",
     "68c92202afa0c592": "88e3c3506717cfe7",
     "68ca21330833445b": "f6779bdb7ab4d9c4",
@@ -9044,7 +9044,7 @@
     "93de8f4a3a1a68f8": "0e7adbf34e6c667e",
     "93e73c923deb217d": "159f4779351d76f2",
     "93f86f9cea571158": "244ecc942987a099",
-    "941216cf143e3779": "cad49a2da7dce0f5",
+    "941216cf143e3779": "b0bba0d6abc32d37",
     "94151a4a6686be6a": "31cfcb39cfce4a41",
     "94306de70c8dc52f": "c912d99c86122a99",
     "943f9ffeef6063bb": "84aa7bc35820c9d8",
@@ -9355,7 +9355,7 @@
     "a3f229ac54e51d57": "091506ca2fef8fdb",
     "a3f778e8b93e888b": "cbcadbf24312dedd",
     "a3f8b4577a55dd7c": "4758542513be1a70",
-    "a3feca11cbfcd802": "59c2c3fcb40a2d25",
+    "a3feca11cbfcd802": "cf83fc556a2e7ebb",
     "a42609213b9f28e9": "b69c35d37fa20669",
     "a4318ead66f84892": "49d2bbd8623826aa",
     "a433a4cc5577bcef": "4dac96a0a0942d2b",
@@ -10038,7 +10038,7 @@
     "c522bc50ca788dad": "f232cbc43557e06c",
     "c529fc2d0733a446": "5271965d0a065d3b",
     "c52fcf402dcaff53": "d3e0ca8c3869db9e",
-    "c536d5081c67c461": "6a1ace5cba6abc7b",
+    "c536d5081c67c461": "3af27f74777d09af",
     "c536e44316c6ee69": "37b0251081de3bf0",
     "c53942a261cb05ac": "ffc0a5cc970cab7c",
     "c53bf6f7a3dedfd6": "925d5e578527bfef",
@@ -10268,7 +10268,7 @@
     "d0cf6209adbdb401": "78a6d78ba60b35b3",
     "d0ed6cc77d3c336c": "422d6f9cc3cae15b",
     "d0fa0c1a280ca18e": "ee1496446fba1c6a",
-    "d11f0f195b3fb87e": "53e8297216f62bb9",
+    "d11f0f195b3fb87e": "619aafb7092bd0c0",
     "d140840007e13d55": "736cf7b54c0a75b4",
     "d144ae6685dc818f": "04615e75ac895ad0",
     "d1489bbcbea320ce": "c569b975d4eb74fa",
@@ -10424,7 +10424,7 @@
     "d8ef62c754e4fe95": "10fb84671758393a",
     "d8f037309cbab048": "0ac3f3930e241284",
     "d8f1362dffce4917": "aefb49937e734948",
-    "d8f59f5a88e6ff69": "7456a1c334305f8c",
+    "d8f59f5a88e6ff69": "54fdfa17881b8ad8",
     "d8fb7b27e8346e10": "c0f7dc35fff20c73",
     "d91161abcc532a3a": "e07962f5af29239b",
     "d91d8305af4ad1e7": "f2389b18cb10a1fb",

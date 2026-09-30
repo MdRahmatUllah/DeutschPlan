@@ -1437,7 +1437,7 @@
   "@todayCardDismiss": {
     "description": "T1 contextual card close button, for screen readers."
   },
-  "studyBlockRevise": "Revise · {index} / {total}",
+  "studyBlockRevise": "Revise · {index}\u00a0/\u00a0{total}",
   "@studyBlockRevise": {
     "description": "T2 top bar: the card's place in the Revise block.",
     "placeholders": {
@@ -1451,7 +1451,7 @@
       }
     }
   },
-  "studyBlockNew": "New today · {index} / {total}",
+  "studyBlockNew": "New today · {index}\u00a0/\u00a0{total}",
   "@studyBlockNew": {
     "description": "T2 top bar: the card's place in the New block.",
     "placeholders": {
@@ -1465,7 +1465,7 @@
       }
     }
   },
-  "studyBlockGrammar": "Grammar · {index} / {total}",
+  "studyBlockGrammar": "Grammar · {index}\u00a0/\u00a0{total}",
   "@studyBlockGrammar": {
     "description": "T2 top bar: the card's place in the Grammar block.",
     "placeholders": {
@@ -1840,7 +1840,7 @@
       }
     }
   },
-  "studyBlockBacklog": "Backlog · {index} / {total}",
+  "studyBlockBacklog": "Backlog · {index}\u00a0/\u00a0{total}",
   "@studyBlockBacklog": {
     "description": "T2 top bar in a backlog session (FR-T4-02).",
     "placeholders": {

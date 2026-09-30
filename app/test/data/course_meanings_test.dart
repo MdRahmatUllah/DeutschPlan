@@ -117,42 +117,86 @@ void main() {
       'ru',
     );
     expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хАус');
+
+    // #1150, the owner: with English's guide in the course, an English +
+    // Bangla learner keeps Bangla's while its switch is on and reads
+    // English's with it off; English alone reads English's.
+    const withEnglish = CourseMeanings(<String, Map<String, WordMeaningText>>{
+      'haus': <String, WordMeaningText>{
+        'en': (meaning: 'house', pronunciation: 'HOWSS'),
+      },
+    });
+    PronGuide? inEnglish(MeaningChoice choice, {bool bangla = true}) =>
+        Meanings(choice, withEnglish).pronunciation(word, bangla: bangla);
+    expect(inEnglish(const MeaningChoice('en', 'bn')), (
+      lang: 'bn',
+      text: 'হাউস',
+    ));
+    expect(inEnglish(const MeaningChoice('en', 'bn'), bangla: false), (
+      lang: 'en',
+      text: 'HOWSS',
+    ));
+    expect(inEnglish(const MeaningChoice('en')), (lang: 'en', text: 'HOWSS'));
+    expect(inEnglish(const MeaningChoice('bn', 'en')), (
+      lang: 'bn',
+      text: 'হাউস',
+    ));
+    expect(inEnglish(const MeaningChoice('bn', 'en'), bangla: false), (
+      lang: 'en',
+      text: 'HOWSS',
+    ), reason: "the second's, where the first shows none");
   });
 
   test('#1119 the whole course loads its meanings once, quickly, with two '
       'languages beyond English and Bangla: about 10,500 rows', () async {
-    // The shipped course with Russian and Polish for every word, as #1100
-    // will ship them: English's and Bangla's have no rows (#1096).
+    // The shipped course, Russian and Polish for every word (#1100); English's
+    // rows are its guides, Bangla's none (#1096).
     final course = File('assets/db/content.db')
         .copySync('${tempDir('sogda_course_ru_pl').path}/content.db');
     final raw = sqlite3.open(course.path);
-    try {
-      raw.execute('''
-        INSERT INTO course_languages (code, name, own_name, script, ord) VALUES
-          ('ru', 'Russian', 'Русский', 'Cyrl', 3),
-          ('pl', 'Polish', 'Polski', 'Latn', 4);
-        INSERT INTO word_meanings (word_uid, lang, meaning, pronunciation)
-          SELECT uid, code, english || ' ' || code, german
-          FROM words, (SELECT 'ru' AS code UNION ALL SELECT 'pl');
-      ''');
-    } finally {
-      raw.close();
-    }
-    var rows = 0;
+    final uids = [
+      for (final row in raw.select('SELECT uid FROM words'))
+        row['uid'] as String,
+    ];
+    raw.close();
+    var meanings = CourseMeanings.none;
     final best = await fastestOf(3, () async {
       // A database of its own each time: the load is kept per database.
       final db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(course)}' AS c",
       );
-      final meanings = await loadCourseMeanings(ContentDao(db));
-      rows = meanings.length;
+      meanings = await loadCourseMeanings(ContentDao(db));
       await db.close();
     });
     // ignore: avoid_print
-    print('#1119 CourseMeanings: $rows words in ${best.inMilliseconds} ms');
-    expect(rows, greaterThan(5000));
+    print(
+      '#1119 CourseMeanings: ${meanings.length} words in '
+      '${best.inMilliseconds} ms',
+    );
+    expect(uids.length, greaterThan(5000));
+    expect(
+      uids.where((uid) => meanings.meaningsOf(uid).keys.toSet().length != 2),
+      isEmpty,
+      reason: 'every word in Russian and Polish',
+    );
     expect(best, lessThan(const Duration(milliseconds: 500)));
+  });
+
+  test("#775 a meaning's comma is Russian's own: «что» finds «что», not "
+      'every «…, что»', () async {
+    const course = CourseMeanings(<String, Map<String, WordMeaningText>>{
+      'indem': <String, WordMeaningText>{
+        'ru': (meaning: 'тем, что / благодаря тому, что', pronunciation: null),
+      },
+      'was': <String, WordMeaningText>{
+        'ru': (meaning: 'что', pronunciation: null),
+      },
+    });
+    expect((await course.find('ru', meaningKey('что'))).exact, <String>['was']);
+    expect((await course.find('ru', meaningKey('тем, что'))).exact, <String>[
+      'indem',
+    ]);
   });
 
   test('#1121 finding a word by its meaning in a language stays fast at '
@@ -178,6 +222,53 @@ void main() {
     expect((await course.find('ru', 'значение')).startsWith, hasLength(5600));
     expect(first, lessThan(const Duration(milliseconds: 500)), reason: 'keyed');
     expect(again, lessThan(const Duration(milliseconds: 50)));
+  });
+
+  test("#1150 #1082 an English learner's guide is the course's English one; "
+      "a Bangla learner's is the word's own, the course unread", () async {
+    final dao = await open();
+    await dao.attachedDatabase.customStatement(
+      'INSERT INTO c.word_meanings (word_uid, lang, meaning, pronunciation) '
+      "VALUES ('${ContentFixture.haus}', 'en', 'house', 'HOWSS')",
+    );
+    await dao.attachedDatabase.customStatement(
+      "UPDATE c.words SET pron_bn = 'হাউস' "
+      "WHERE uid = '${ContentFixture.haus}'",
+    );
+    final settings = SettingsRepository(dao.attachedDatabase);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(dao.attachedDatabase),
+        settingsProvider.overrideWithValue(settings),
+      ],
+    );
+    addTearDown(container.dispose);
+    final haus = await dao.wordByUid(ContentFixture.haus).getSingle();
+    Future<Meanings> meanings(MeaningChoice choice) async {
+      await writeMeaningChoice(settings, choice);
+      await pumpEventQueue();
+      return container.read(meaningsLoadedProvider.future);
+    }
+
+    expect(
+      (await meanings(const MeaningChoice('en')))
+          .pronunciation(haus, bangla: true),
+      (lang: 'en', text: 'HOWSS'),
+    );
+    // The owner (#1150): Bangla's while its switch is on, English's off.
+    final both = await meanings(const MeaningChoice('en', 'bn'));
+    expect(both.pronunciation(haus, bangla: true), (lang: 'bn', text: 'হাউস'));
+    expect(both.pronunciation(haus, bangla: false), (
+      lang: 'en',
+      text: 'HOWSS',
+    ));
+    expect(
+      (await meanings(const MeaningChoice('bn'))).course,
+      same(CourseMeanings.none),
+      reason: "Bangla's meaning and guide are the word's own row",
+    );
   });
 
   test('#1128 the category names follow the primary meaning language: '
