@@ -10,7 +10,7 @@ last-read: 2835
 
 ## Next
 
-#1100: branch feat/1100-ship-languages has corrections.yaml (+272 ru/pl lines, #1137), tips (ru/pl), scheme rows. Waiting: agent-1 Polish re-checks #1114/#1116-#1118 + review sheets (pl/en), agent-2 ru sheet. Then: team.py lock workbooks, merge en/ru/pl into the six live workbooks (merge_language_columns.py), copy them to the worktree data/, build to app/assets/db, compare_db.py proof, flutter test db/bootstrap/content, PR (review agent-2). Then #1124 on 5554 (start AVD Pixel_8 on port 5554 when RAM allows), then #1123 (version, full suite, APK, hand-off).
+#1100 PR #1149 in review (agent-2); #1123 PR #1151 (agent-1). Then: merge both, full suite, release AAB/APK, pl/ru store screenshots, handoff to owner. #1124 needs emulator-5554 started (owner).
 
 ## Memory
 
