@@ -321,10 +321,6 @@
   "@meSettings": {
     "description": "M1 list: opens M3."
   },
-  "meVoice": "Voice & translation",
-  "@meVoice": {
-    "description": "M1 list: opens M4, the model manager."
-  },
   "meAbout": "About & privacy",
   "@meAbout": {
     "description": "M1 list: opens M9."
@@ -5857,25 +5853,40 @@
   "@modelNotifyPaused": {
     "description": "The notification when a model download pauses (FR-M4-01)."
   },
-  "modelNotifyPausedNote": "Resumes on Wi-Fi, or from Voice & translation",
+  "modelNotifyPausedNote": "Resumes on Wi-Fi, or from {screen}",
   "@modelNotifyPausedNote": {
-    "description": "Under the paused notification."
+    "description": "Under the paused notification. screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "placeholders": {
+      "screen": {
+        "type": "String"
+      }
+    }
   },
   "modelNotifyComplete": "Model download finished",
   "@modelNotifyComplete": {
     "description": "The notification when every model file is in (FR-M4-01). Not yet ready: the checksums come next, in the app (#438)."
   },
-  "modelNotifyCompleteNote": "Voice & translation says when it is ready",
+  "modelNotifyCompleteNote": "{screen} says when it is ready",
   "@modelNotifyCompleteNote": {
-    "description": "Under the finished notification: M4 shows Ready, or Failed if a checksum fails (#438)."
+    "description": "Under the finished notification: M4 shows Ready, or Failed if a checksum fails (#438). screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "placeholders": {
+      "screen": {
+        "type": "String"
+      }
+    }
   },
   "modelNotifyFailed": "A model download failed",
   "@modelNotifyFailed": {
     "description": "The notification when a model file fails (FR-M4-01)."
   },
-  "modelNotifyFailedNote": "Retry it from Voice & translation",
+  "modelNotifyFailedNote": "Retry it from {screen}",
   "@modelNotifyFailedNote": {
-    "description": "Under the failed notification."
+    "description": "Under the failed notification. screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "placeholders": {
+      "screen": {
+        "type": "String"
+      }
+    }
   },
   "progressRingLabel": "{completed} of {total}",
   "@progressRingLabel": {
@@ -5911,7 +5922,7 @@
   },
   "modelsTitleVoice": "Voice",
   "@modelsTitleVoice": {
-    "description": "M4's title in a build without translation (#1070, ADR 9)."
+    "description": "M4's title in a build without translation (#1070, ADR 9), and Me's row that opens it (#1164)."
   },
   "modelsFooterVoice": "The voice runs entirely on the phone. Deleting it falls back to the phone's German voice.",
   "@modelsFooterVoice": {
@@ -5919,7 +5930,7 @@
   },
   "modelsTitle": "Voice & translation",
   "@modelsTitle": {
-    "description": "M4's title (FR-M4, #155)."
+    "description": "M4's title (FR-M4, #155), and Me's row that opens it (#1164)."
   },
   "modelsStorage": "Phone storage",
   "@modelsStorage": {

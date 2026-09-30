@@ -288,6 +288,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     final l10n = lookupAppLocalizations(
       _settings.read(SettingKeys.uiLanguage).locale,
     );
+    final screen = _screen(l10n);
     _downloader.configureNotification(
       running: TaskNotification(
         l10n.modelNotifyRunning,
@@ -295,20 +296,25 @@ class BackgroundModelDownloads implements ModelDownloads {
       ),
       paused: TaskNotification(
         l10n.modelNotifyPaused,
-        l10n.modelNotifyPausedNote,
+        l10n.modelNotifyPausedNote(screen),
       ),
       complete: TaskNotification(
         l10n.modelNotifyComplete,
-        l10n.modelNotifyCompleteNote,
+        l10n.modelNotifyCompleteNote(screen),
       ),
       error: TaskNotification(
         l10n.modelNotifyFailed,
-        l10n.modelNotifyFailedNote,
+        l10n.modelNotifyFailedNote(screen),
       ),
       progressBar: true,
       groupNotificationId: _group,
     );
   }
+
+  /// M4's title, which the notes name: *Voice* in a build without Hy-MT
+  /// (#1164), as Me's row.
+  static String _screen(AppLocalizations l10n) =>
+      enableHymtDownload ? l10n.modelsTitle : l10n.modelsTitleVoice;
 
   /// *Wi-Fi only* is on and the phone is off Wi-Fi: a queued file waits,
   /// by the downloader's own reading of the network.
@@ -561,8 +567,14 @@ class BackgroundModelDownloads implements ModelDownloads {
         await _notice.ended(
           _group,
           status == ModelStatus.ready
-              ? (l10n.modelNotifyComplete, l10n.modelNotifyCompleteNote)
-              : (l10n.modelNotifyFailed, l10n.modelNotifyFailedNote),
+              ? (
+                  l10n.modelNotifyComplete,
+                  l10n.modelNotifyCompleteNote(_screen(l10n)),
+                )
+              : (
+                  l10n.modelNotifyFailed,
+                  l10n.modelNotifyFailedNote(_screen(l10n)),
+                ),
         );
         // Nothing downloading any more: what a force-stopped task left can
         // go (#868).
