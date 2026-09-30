@@ -22,6 +22,20 @@ String ownNameOf(String code, List<CourseLanguageName> languages) {
   return code;
 }
 
+/// #1128: the course's category names in the primary meaning language, by
+/// their English name. A category the language has none for stays English.
+class CategoryNames {
+  const CategoryNames(this._byEnglish);
+
+  /// English's, the course's own: nothing to change.
+  static const CategoryNames none = CategoryNames(<String, String>{});
+
+  final Map<String, String> _byEnglish;
+
+  /// [english]'s name in the language, or [english] itself.
+  String of(String english) => _byEnglish[english] ?? english;
+}
+
 /// A pronunciation guide and the language it is written for: the key under
 /// it is that language's (#1122).
 typedef PronGuide = ({String lang, String text});

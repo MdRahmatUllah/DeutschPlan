@@ -134,6 +134,8 @@ Future<TodayView> todayView(Ref ref) async {
   final voiceReady = ref.watch(voiceInstalledProvider).value ?? true;
   final planning = ref.watch(todayPlanProvider.future);
   final changes = ref.watch(todayOpenProvider.future);
+  // #1128: the category in the primary meaning language.
+  final categoryNames = ref.watch(categoryNamesProvider.future);
   final picker = ref.watch(sentencePickerProvider);
   final rating = ref.watch(todaySentencesRatedProvider.future);
   final waiting = ref.watch(todayBacklogProvider.future);
@@ -191,7 +193,11 @@ Future<TodayView> todayView(Ref ref) async {
     ),
     sentences: openSentences,
   );
-  final category = await content.mainCategory(plan.newToday);
+  final names = await categoryNames;
+  final category = switch (await content.mainCategory(plan.newToday)) {
+    final String english => names.of(english),
+    null => null,
+  };
   // TodayRest's note: what revising anyway would take off the next study
   // day: tomorrow, or the first day after that isn't off too (#345).
   String? nextStudyDay;
@@ -289,7 +295,10 @@ Future<TodayView> todayView(Ref ref) async {
       newWords: ahead.newToday.length,
       grammar: ahead.grammarDue.length,
       estimate: await engine.estimate(ahead, remember: false),
-      category: await content.mainCategory(ahead.newToday),
+      category: switch (await content.mainCategory(ahead.newToday)) {
+        final String english => names.of(english),
+        null => null,
+      },
       restDay: !ahead.isStudyDay,
     ),
   );

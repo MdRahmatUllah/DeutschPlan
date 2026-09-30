@@ -86,11 +86,15 @@ Future<List<String>> studySayings(Ref ref, SessionArgs args) async {
 /// The category most of the session's new words share, for the New block's
 /// banner: "Neue Wörter · Wohnen & Haushalt".
 @riverpod
-Future<String?> studyCategory(Ref ref, SessionArgs args) =>
-    ref.watch(contentDaoProvider).mainCategory(<String>[
-      for (final block in args.blocks)
-        if (block.kind == SessionBlockKind.newWords) ...block.uids,
-    ]);
+Future<String?> studyCategory(Ref ref, SessionArgs args) async {
+  // #1128: in the primary meaning language.
+  final names = ref.watch(categoryNamesProvider.future);
+  final english = await ref.watch(contentDaoProvider).mainCategory(<String>[
+    for (final block in args.blocks)
+      if (block.kind == SessionBlockKind.newWords) ...block.uids,
+  ]);
+  return english == null ? null : (await names).of(english);
+}
 
 /// T2 · Study session, the shell (`docs/04-screens/study-session.md`).
 ///
