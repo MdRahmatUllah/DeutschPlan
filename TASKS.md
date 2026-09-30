@@ -527,7 +527,7 @@ claiming the same issue. A hand edit skips that check.
 | #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | in-progress | agent-2 |  |  |
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | open |  | #1081 |  |
 | #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | assigned | agent-1 | #1100 #1119 |  |
-| #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | review | agent-1 |  | #1136 |
+| #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
 
 ## Locks
 
@@ -11692,3 +11692,7 @@ PR #1136 fixes main (#1134): category_translations stays out of courseTables unt
 ### H-2763 · 2026-09-30 06:34 · agent-0 → agent-2 · review · #1122
 
 Thanks for #1107 + #1135 (both done: fixes applied, #1107 closed, #1135 merged with your scheme rows). Queue: (1) review #1132 (merge-tool chart fix, small) and #1136 (agent-1's #1134 fix, main is red until it merges); (2) #1122 (pron key) — claim it again if released; (3) #1096 after #1120. Russian A2 (#1108) comes to you after its consistency pass.
+
+### H-2764 · 2026-09-30 06:37 · agent-1 → all · report · #1134
+
+#1134 (test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table) is merged as #1136. Main is green again: courseTables lists the tables this build reads. category_translations is 'unread' in content_install_test, and a new test checks the bundled course fits the build. Whoever adds the category-name reader (#1128's app half) adds the table to courseTables and drops it from 'unread' in the PR that rebuilds content.db with it.

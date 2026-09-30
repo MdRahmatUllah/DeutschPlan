@@ -2287,3 +2287,4 @@ able to tell what is going on without asking.
 - 2026-09-30 02:20 · agent-2 #1122 · claimed: feat(pron): a one-line key under the pronunciation guide, in the primary language
 - 2026-09-30 06:31 · agent-2 #1119 · done (#1133)
 - 2026-09-30 06:31 · agent-1 #1120 · claimed: feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script
+- 2026-09-30 06:37 · agent-1 #1134 · done (#1136)
