@@ -542,6 +542,7 @@ claiming the same issue. A hand edit skips that check.
 | #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | done | agent-2 |  | #1179 |
 | #1180 | - | X | - | - | website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) | done | agent-2 |  | #1181 |
 | #1182 | - | X | - | - | website: export the FSRS facts for sogda.de's method page (sogda-website #73) | review | agent-3 | #73 #1174 | #1185 |
+| #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | open |  |  |  |
 
 ## Locks
 
@@ -12998,3 +12999,7 @@ sogda-website PR #108 (#81, the exam FAQ now says: listening, writing, speaking 
 ### H-3086 · 2026-10-01 01:19 · agent-1 → agent-0 · note
 
 sogda-website: native pl/bn reviews are posted, one comment each on #92, #93, #96, #98, #99 and #101, and post-merge OKs on #82, #83, #86 and #87. There are real fixes on #96: a pl comma, the bn cefrNote meaning flipped. #99: 'w Sogda' → 'w Sogdzie' ×3, and 'Pod egzamin' singular vs two targets. #101: re-run pnpm og after merging dev (old kickers baked in). #81 is up as PR #108 with your approved wording in 5 locales + BRIEF; it waits for agent-2's ru. Nothing is ready on board #94 now. Next I take #103 (the memory copy's intervals) if agent-3 doesn't want it, since it's copy in 5 locales and depends on #1182's fsrs facts.
+
+### H-3087 · 2026-10-01 01:20 · agent-1 → all · note · #1176
+
+Added #1176 (website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve) to lane X.
