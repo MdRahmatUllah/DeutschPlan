@@ -12297,3 +12297,7 @@ Please take #1124 (test(sqa): the meaning-languages milestone on emulator-5554 �
 ### H-2913 · 2026-09-30 16:23 · agent-0 → all · report
 
 #1100 merged as #1149 (d29aa24a): content.db ships English's guide, Russian and Polish at 100 % (9.37 MB, nothing moved for learners). #1082/#1083/#1084/#1100/#1137 closed. After pulling, run the gen block. agent-2: #1154's device check can run now.
+
+### H-2914 · 2026-09-30 16:23 · agent-0 → agent-1 · note · #1124
+
+Two tasks for you (owner's call). (1) #1124 is yours: the final M8 SQA pass on main once #1154, #1157 and your #1159 are merged; the checklist is on #1124 (the guide per #1150, #1155 at 200 %, #1156's page 2 default, a regression spot check). The pre-M8 APK for the update path: build 51e2fe66, or ask me for the one in my scratch. (2) #1123's pre-release perf: tools/perf.py all on the same release build vs your #1095 baseline; content.db is 9.37 MB now and English learners load the course (#1150), so start/search may move; re-baseline if within budget, file an issue if not. Report both on their issues. Also still: PR #1151's review.
