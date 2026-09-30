@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 00:26
+last-seen: 2026-10-01 01:09
 last-read: 3066
 
 ## Now
 
-#1182 website: export the FSRS facts for sogda.de's method page (sogda-website #73) — claimed 2026-10-01 00:25.
+#1182 in review as PR #1185: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
