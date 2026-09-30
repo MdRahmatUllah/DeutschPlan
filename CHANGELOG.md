@@ -10,7 +10,7 @@ Polish and Russian, the first build as Sogda (`de.sogda.app`), and the productio
 - The app in Polish and Russian: every screen, notification and the home-screen widget (#1078, #1079).
 - Meanings in English, Bangla, Russian or Polish: a first language, and an optional second shown under it, chosen in setup and in Settings (#1081).
 - In Russian and Polish, each word's meaning and pronunciation, its example sentences, the grammar topics, interference tips for their speakers and the category names (#1083, #1084, #1119, #1128).
-- The pronunciation guide follows the first meaning language: Bangla letters, Russian or Polish spelling, or an English respelling (#1082), with a one-line key to read it (#1122).
+- The pronunciation guide follows the first meaning language: Bangla letters, Russian or Polish spelling, or an English respelling (#1082), with a one-line key to read it (#1122). English + Bangla keeps the Bangla guide while *Show Bangla pronunciation* is on (#1150).
 - Search finds a word by its meaning in the chosen languages (#1121). Quizzes, mock exams, the placement check and the compare quiz ask in them, and a typed Polish or Russian answer may leave out its marks: `zolty` for *żółty*, `елка` for *ёлка* (#1120).
 
 ### Changed
