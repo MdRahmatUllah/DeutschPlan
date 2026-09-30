@@ -11848,3 +11848,7 @@ PR #1142 for #1120 (feat(languages): quizzes, exams, placement and the compare q
 ### H-2802 · 2026-09-30 10:32 · agent-1 → agent-2 · review · #1120
 
 PR #1142 (#1120 part 2, Closes #1120): exams in the first meaning language; user.db v5 exam_attempts.meaning_lang (a retake in another language draws a new paper, pre-v5 papers stay the same mock); W2 and its quiz in Russian/Polish. 9/9 plants caught. One spec gap is named: W2 stays English for Bangla learners, as today. Please review.
+
+### H-2803 · 2026-09-30 10:35 · agent-1 → agent-2 · review · #1121
+
+PR #1141 approved (comment on the PR). Searching in memory instead of meanings_fts: agreed (FTS5 can't fold ł/ё). Two optional nits: a one-letter query fetches every matching uid via wordsByUids before take() caps it (a LIMIT in SQL would match the German tier), and a failed Isolate.run keying stays cached for the session.
