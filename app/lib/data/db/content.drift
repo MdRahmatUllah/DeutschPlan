@@ -75,6 +75,11 @@ sentenceMatches(:step AS TEXT OR NULL):
 wordByUid:
   SELECT * FROM words WHERE uid = :uid;
 
+-- #1121: the words a search found by their meaning, within L2's :step.
+wordsByUids(:step AS TEXT OR NULL):
+  SELECT * FROM words
+  WHERE uid IN :uids AND (:step IS NULL OR sublevel_code = :step);
+
 examplesForWord:
   SELECT * FROM word_examples WHERE word_uid = :uid ORDER BY ord;
 

@@ -56,9 +56,15 @@ Stream<SearchView> searchResults(Ref ref, String query, {String? step}) async* {
   // Watched (#694 CC-4): a change in Settings re-emits the list at once,
   // not at the next write to its words.
   final meanings = ref.watch(meaningsProvider);
-  final results = await ref
-      .watch(searchRepositoryProvider)
-      .search(query, step: step);
+  // #1121: the course's meanings read, for a language beyond English and
+  // Bangla the query is also searched in.
+  final loaded = ref.watch(meaningsLoadedProvider.future);
+  final search = ref.watch(searchRepositoryProvider);
+  final results = await search.search(
+    query,
+    step: step,
+    meanings: await loaded,
+  );
   final tiers = <String, SearchTier>{
     for (final hit in results.words) hit.uid: hit.tier,
   };

@@ -1,7 +1,11 @@
+import 'dart:isolate';
+
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
+import 'package:sogda/domain/answer_check.dart' show meaningAnswers;
+import 'package:sogda/domain/text_norm.dart' show meaningKey;
 
 /// A meaning language the course ships (`course_languages`), named in
 /// itself as a learner looks for it: English, বাংলা, Русский.
@@ -57,6 +61,43 @@ class CourseMeanings {
         in (_byWord[uid] ?? const <String, WordMeaningText>{}).entries)
       if (lang != 'en' && lang != 'bn') lang: text.meaning,
   };
+
+  /// #1121: the words whose meaning in [lang] is [key] (a [meaningKey]), or
+  /// one of its alternatives is, and those where a word of it starts with
+  /// [key]. In memory rather than through `meanings_fts`: FTS5 folds neither
+  /// Polish ł nor Russian ё, and a learner types them as l and е.
+  Future<({List<String> exact, List<String> startsWith})> find(
+    String lang,
+    String key,
+  ) async {
+    final exact = <String>[];
+    final startsWith = <String>[];
+    if (key.isEmpty) return (exact: exact, startsWith: startsWith);
+    for (final entry in await _keyed(lang)) {
+      if (entry.cells.contains(key)) {
+        exact.add(entry.uid);
+      } else if (entry.whole.startsWith(key) || entry.whole.contains(' $key')) {
+        startsWith.add(entry.uid);
+      }
+    }
+    return (exact: exact, startsWith: startsWith);
+  }
+
+  /// [lang]'s meanings keyed once, on the first search in it, off the UI
+  /// isolate: some 5,600 meanings take a few hundred milliseconds to key.
+  Future<List<_Keyed>> _keyed(String lang) {
+    final byLang = _keys[this] ??= <String, Future<List<_Keyed>>>{};
+    return byLang[lang] ??= () {
+      final meanings = <(String, String)>[
+        for (final MapEntry(key: uid, value: texts) in _byWord.entries)
+          if (texts[lang]?.meaning case final meaning?) (uid, meaning),
+      ];
+      return Isolate.run(() => _keyAll(meanings));
+    }();
+  }
+
+  static final Expando<Map<String, Future<List<_Keyed>>>> _keys =
+      Expando<Map<String, Future<List<_Keyed>>>>();
 
   /// [uid]'s pronunciation guide in [lang]'s script, or null where there is
   /// none (English's, until #1082).
@@ -129,6 +170,21 @@ class Meanings {
   @override
   int get hashCode => Object.hash(choice, identityHashCode(course));
 }
+
+/// A meaning keyed for [CourseMeanings.find]: the whole cell, and each of
+/// its alternatives as [meaningAnswers] splits it.
+typedef _Keyed = ({String uid, String whole, Set<String> cells});
+
+List<_Keyed> _keyAll(List<(String, String)> meanings) => <_Keyed>[
+  for (final (uid, meaning) in meanings)
+    (
+      uid: uid,
+      whole: meaningKey(meaning),
+      cells: <String>{
+        for (final form in meaningAnswers(meaning)) meaningKey(form),
+      }..remove(''),
+    ),
+];
 
 /// The course's meanings, read once per content database.
 // ponytail: kept while the database is open, as `course_text.dart` does, so a
