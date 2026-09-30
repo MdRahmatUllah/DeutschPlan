@@ -130,6 +130,22 @@ void main() {
     expect(rows.map((row) => row.leftPartWay), <int?>[null, null]);
   });
 
+  test('v4 -> v5: an exam sat before keeps its attempt, with no language '
+      'recorded, so its retake stays the same mock (#1120)', () async {
+    final schema = await verifier.schemaAt(4);
+    schema.rawDatabase.execute(
+      'INSERT INTO exam_attempts (sublevel_code, seed, started_at, status) '
+      "VALUES ('A1.1', 1, '2026-09-01T10:00:00Z', 'finished')",
+    );
+    final db = AppDatabase(schema.newConnection());
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 5, options: _strict);
+
+    final row = await db.select(db.examAttempts).getSingle();
+    expect((row.sublevelCode, row.status), ('A1.1', 'finished'));
+    expect(row.meaningLang, null);
+  });
+
   test('the live DDL still matches the fixture for its own version', () async {
     // The one that bites day to day: editing user_schema.drift without
     // bumping the version and re-dumping leaves the fixture describing a

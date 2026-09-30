@@ -235,27 +235,51 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
   /// not the adjective *rund*, "round", nor "klasse" in *prima / super /
   /// klasse* the noun *die Klasse*. Null for no such word, or a word that is
   /// no set to compare (`comparesSet`).
+  ///
+  /// In [lang] (#1120) when it is one of the course's languages beyond
+  /// English and Bangla: each word's meaning and its examples' translations,
+  /// English where the course has none in it. English and Bangla read the
+  /// cells as they always have.
   // ponytail: a homograph of the same part of speech still resolves — *das
   // Alter* ("age") for "Alter" (dude) in *Digga / Alter*, *die Liebe* for
   // "Liebe" in the phrase set *Liebe / Lieber …*. A sense column in
   // content.db, or a curated member list, would tell them apart.
-  Future<CompareSet?> compareSet(String uid) async {
+  Future<CompareSet?> compareSet(String uid, {String lang = 'en'}) async {
     final set = await wordByUid(uid).getSingleOrNull();
     if (set == null || !comparesSet(set.german)) return null;
+    final other = lang != 'en' && lang != 'bn';
+    Future<String> meaning(Word word) async {
+      if (!other) return word.english;
+      final row = await customSelect(
+        'SELECT meaning FROM word_meanings WHERE word_uid = ?1 AND lang = ?2',
+        variables: <Variable<Object>>[
+          Variable<String>(word.uid),
+          Variable<String>(lang),
+        ],
+        readsFrom: <ResultSetImplementation<Object, Object>>{wordMeanings},
+      ).getSingleOrNull();
+      return row?.read<String>('meaning') ?? word.english;
+    }
+
     Future<CompareWord> read(Word word) async => CompareWord(
       uid: word.uid,
       german: word.german,
-      english: word.english,
+      english: await meaning(word),
       step: word.sublevelCode,
       article: word.article,
       pos: word.pos,
       forms: word.forms,
       register: word.synonymsRegister,
       collocations: word.collocations,
-      examples: <CompareExample>[
-        for (final e in await examplesForWord(word.uid).get())
-          (german: e.german, english: e.english),
-      ],
+      examples: other
+          ? <CompareExample>[
+              for (final e in await examplesForWordIn(word.uid, lang).get())
+                (german: e.german, english: e.translation),
+            ]
+          : <CompareExample>[
+              for (final e in await examplesForWord(word.uid).get())
+                (german: e.german, english: e.english),
+            ],
     );
     final resolved = <String, CompareWord>{};
     for (final name in compareMemberNames(set.german)) {

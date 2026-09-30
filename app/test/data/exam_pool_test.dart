@@ -65,6 +65,23 @@ void main() {
       },
     );
 
+    test('#1120 in Russian: the words carry their Russian, and the examples '
+        'their Russian translation, English where there is none', () async {
+      await db.close();
+      await open(
+        ContentFixture.write('${directory.path}/ru.db', russian: true).file,
+      );
+      final pool = await exams.pool('A1.1', lang: 'ru');
+      final haus = pool.words.first;
+      expect(haus.word.meaningIn('ru'), 'дом');
+      expect(haus.examples.map((e) => e.english), <String>['Дом большой.', '']);
+      expect(
+        (await exams.pool('A1.1')).words.first.word.meanings,
+        isEmpty,
+        reason: 'English: the word row alone',
+      );
+    });
+
     test('a suspended word is left out, any other status kept', () async {
       await db
           .into(db.wordState)

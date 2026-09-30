@@ -151,7 +151,7 @@ INSERT INTO word_state (word_uid, status, stability, reps) VALUES
       for (final w in await exams.examWords('A1.1').get()) w.uid,
     }, studied);
     expect(<String>{
-      for (final e in await exams.examExamples('A1.1').get()) e.uid,
+      for (final e in await exams.examExamples('en', 'A1.1').get()) e.uid,
     }, studied);
     expect(<String>{
       for (final w in await content.placementPool('A1.1')) w.uid,
