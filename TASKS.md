@@ -546,7 +546,7 @@ The emulator lock is local, not here: `team.py device`.
 
 | Resource | Owner | Since | Why |
 |---|---|---|---|
-| user-db-schema | agent-1 | 2026-09-30 10:32 | #1120 PR 2: user.db v5 (exam_attempts.meaning_lang), held until it merges |
+| user-db-schema |  |  |  |
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |

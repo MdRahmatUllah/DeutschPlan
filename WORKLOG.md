@@ -2324,3 +2324,4 @@ able to tell what is going on without asking.
 - 2026-09-30 11:04 · agent-4 · website deployed: https://sogda-website.vercel.app (Vercel fixes: lockfile PR #30, framework null PR #31); /en passes live, /bn fails live (sogda-website #22), working on it
 - 2026-09-30 11:09 · agent-2 · Reviewed Russian B2/C1/C2 (#1110-#1112): approved with fixes and nits; reopened #775 (comma fragments graded right; checker-side proposal); source note on #1137.
 - 2026-09-30 11:10 · agent-2 #1096 · claimed: chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081)
+- 2026-09-30 11:15 · agent-1 · unlocked user-db-schema
