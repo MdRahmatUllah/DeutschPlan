@@ -1,0 +1,7460 @@
+{
+ "schema": 1,
+ "content_version": "20260930135630",
+ "app": {
+  "version": "1.1.0",
+  "package": "de.sogda.app",
+  "min_sdk": 26,
+  "min_android": "8.0"
+ },
+ "totals": {
+  "words": 5069,
+  "grammar_topics": 182,
+  "steps": 12,
+  "mock_exams_per_step": 3,
+  "mock_exams": 36
+ },
+ "languages": {
+  "meaning": [
+   {
+    "code": "en",
+    "own_name": "English"
+   },
+   {
+    "code": "bn",
+    "own_name": "বাংলা"
+   },
+   {
+    "code": "ru",
+    "own_name": "Русский"
+   },
+   {
+    "code": "pl",
+    "own_name": "Polski"
+   }
+  ],
+  "app_ui": [
+   "en",
+   "bn",
+   "pl",
+   "ru"
+  ],
+  "grammar_in": [
+   "en",
+   "ru",
+   "pl"
+  ]
+ },
+ "mock_exam": {
+  "questions": 40,
+  "tasks": 2,
+  "points": 48,
+  "sections": [
+   {
+    "id": "vocabulary",
+    "items": 10,
+    "points": 1
+   },
+   {
+    "id": "reverse",
+    "items": 8,
+    "points": 1
+   },
+   {
+    "id": "articles",
+    "items": 6,
+    "points": 1
+   },
+   {
+    "id": "wordForms",
+    "items": 4,
+    "points": 1
+   },
+   {
+    "id": "gapFill",
+    "items": 6,
+    "points": 1
+   },
+   {
+    "id": "grammar",
+    "items": 4,
+    "points": 1
+   },
+   {
+    "id": "listening",
+    "items": 2,
+    "points": 1
+   },
+   {
+    "id": "writing",
+    "items": 1,
+    "points": 4
+   },
+   {
+    "id": "speaking",
+    "items": 1,
+    "points": 4
+   }
+  ],
+  "writing_min_words": {
+   "A1": 30,
+   "A2": 60,
+   "B1": 100,
+   "B2": 150,
+   "C1": 200,
+   "C2": 250
+  },
+  "speaking_seconds": {
+   "A1": 60,
+   "A2": 60,
+   "B1": 90,
+   "B2": 90,
+   "C1": 120,
+   "C2": 120
+  }
+ },
+ "levels": [
+  {
+   "code": "A1",
+   "name": "Beginner",
+   "exam_target": "Goethe-Zertifikat A1 · Start Deutsch 1"
+  },
+  {
+   "code": "A2",
+   "name": "Elementary",
+   "exam_target": "Goethe-Zertifikat A2"
+  },
+  {
+   "code": "B1",
+   "name": "Intermediate",
+   "exam_target": "Goethe-Zertifikat B1 · telc Deutsch B1"
+  },
+  {
+   "code": "B2",
+   "name": "Upper intermediate",
+   "exam_target": "Goethe-Zertifikat B2 · telc Deutsch B2"
+  },
+  {
+   "code": "C1",
+   "name": "Advanced",
+   "exam_target": "Goethe-Zertifikat C1 · telc Deutsch C1"
+  },
+  {
+   "code": "C2",
+   "name": "Proficient",
+   "exam_target": "Goethe-Zertifikat C2 · Großes Deutsches Sprachdiplom"
+  }
+ ],
+ "steps": [
+  {
+   "code": "A1.1",
+   "level": "A1",
+   "ord": 1,
+   "words": 637,
+   "grammar_topics": 11,
+   "grammar": [
+    {
+     "uid": "8fa9a1fcc61340d5",
+     "topic": {
+      "en": "Pronunciation & Sie vs du",
+      "pl": "Wymowa; Sie i du",
+      "ru": "Произношение; Sie и du"
+     }
+    },
+    {
+     "uid": "3a28d924c8b52e20",
+     "topic": {
+      "en": "Personal pronouns + sein",
+      "pl": "Zaimki osobowe + sein",
+      "ru": "Личные местоимения + sein"
+     }
+    },
+    {
+     "uid": "aadbdf99db9671c4",
+     "topic": {
+      "en": "haben & regular present tense",
+      "pl": "haben i czas teraźniejszy czasowników regularnych",
+      "ru": "haben и настоящее время правильных глаголов"
+     }
+    },
+    {
+     "uid": "e128589449c03c31",
+     "topic": {
+      "en": "Vowel-change verbs",
+      "pl": "Czasowniki ze zmianą samogłoski",
+      "ru": "Глаголы с чередованием гласной"
+     }
+    },
+    {
+     "uid": "2052f0ee00750759",
+     "topic": {
+      "en": "W-questions & yes/no questions",
+      "pl": "Pytania szczegółowe (W-Fragen) i pytania tak/nie",
+      "ru": "Вопросы с вопросительным словом и вопросы «да/нет»"
+     }
+    },
+    {
+     "uid": "d42bc08b8eeed4c8",
+     "topic": {
+      "en": "Word order: verb second (V2)",
+      "pl": "Szyk zdania: czasownik na drugim miejscu (V2)",
+      "ru": "Порядок слов: глагол на втором месте (V2)"
+     }
+    },
+    {
+     "uid": "f52d9384945e2894",
+     "topic": {
+      "en": "Clock time & dates",
+      "pl": "Godziny i daty",
+      "ru": "Время по часам и даты"
+     }
+    },
+    {
+     "uid": "feeed4df0b42c8ee",
+     "topic": {
+      "en": "Nouns, gender & articles",
+      "pl": "Rzeczowniki, rodzaj i rodzajniki",
+      "ru": "Существительные, род и артикли"
+     }
+    },
+    {
+     "uid": "6737b99fa0b0d961",
+     "topic": {
+      "en": "Plural forms",
+      "pl": "Liczba mnoga",
+      "ru": "Множественное число"
+     }
+    },
+    {
+     "uid": "5ca879096d9239cc",
+     "topic": {
+      "en": "Accusative (direct object)",
+      "pl": "Biernik (dopełnienie bliższe)",
+      "ru": "Винительный падеж (прямое дополнение)"
+     }
+    },
+    {
+     "uid": "6cd99d2240382cfa",
+     "topic": {
+      "en": "Negation: nicht vs kein",
+      "pl": "Przeczenie: nicht czy kein",
+      "ru": "Отрицание: nicht и kein"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "5f610c66c634c561",
+     "german": "teuer",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "expensive",
+      "bn": "দামি",
+      "pl": "drogi",
+      "ru": "дорогой"
+     },
+     "guide": {
+      "en": "TOY-er",
+      "bn": "টয়ার",
+      "pl": "TOJ-a",
+      "ru": "тОйа"
+     }
+    },
+    {
+     "uid": "a4b9d024b346e988",
+     "german": "Regenschirm",
+     "article": "der",
+     "forms": "Regenschirme",
+     "pos": "noun",
+     "meaning": {
+      "en": "umbrella",
+      "bn": "ছাতা",
+      "pl": "parasol",
+      "ru": "зонт"
+     },
+     "guide": {
+      "en": "RAY-gen-sheerm",
+      "bn": "রেগেনশির্ম",
+      "pl": "RE-gen-szirm",
+      "ru": "рЭгэнширм"
+     }
+    },
+    {
+     "uid": "237e32e5ff848e72",
+     "german": "fünf",
+     "article": null,
+     "forms": null,
+     "pos": "num",
+     "meaning": {
+      "en": "five",
+      "bn": "পাঁচ",
+      "pl": "pięć",
+      "ru": "пять"
+     },
+     "guide": {
+      "en": "FEWNF",
+      "bn": "ফ্যুন্ফ",
+      "pl": "FÜNF",
+      "ru": "фюнф"
+     }
+    },
+    {
+     "uid": "bbd5ac7e2986a50d",
+     "german": "langsam",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "slow / slowly",
+      "bn": "ধীর / ধীরে",
+      "pl": "powolny / powoli",
+      "ru": "медленный / медленно"
+     },
+     "guide": {
+      "en": "LANG-zahm",
+      "bn": "লাংজাম",
+      "pl": "LANG-zam",
+      "ru": "лАнгзам"
+     }
+    },
+    {
+     "uid": "86d81b49f105cb45",
+     "german": "drei",
+     "article": null,
+     "forms": null,
+     "pos": "num",
+     "meaning": {
+      "en": "three",
+      "bn": "তিন",
+      "pl": "trzy",
+      "ru": "три"
+     },
+     "guide": {
+      "en": "DRAI",
+      "bn": "ড্রাই",
+      "pl": "DRAJ",
+      "ru": "драй"
+     }
+    },
+    {
+     "uid": "e693187a1c3b2e94",
+     "german": "null",
+     "article": null,
+     "forms": null,
+     "pos": "num",
+     "meaning": {
+      "en": "zero",
+      "bn": "শূন্য",
+      "pl": "zero",
+      "ru": "ноль"
+     },
+     "guide": {
+      "en": "NOOL",
+      "bn": "নুল",
+      "pl": "NUL",
+      "ru": "нуль"
+     }
+    },
+    {
+     "uid": "6fd8c60db5020995",
+     "german": "Finger",
+     "article": "der",
+     "forms": "Finger",
+     "pos": "noun",
+     "meaning": {
+      "en": "finger",
+      "bn": "আঙুল",
+      "pl": "palec",
+      "ru": "палец"
+     },
+     "guide": {
+      "en": "FING-er",
+      "bn": "ফিঙার",
+      "pl": "FING-a",
+      "ru": "фИнга"
+     }
+    },
+    {
+     "uid": "264a800c73044f0d",
+     "german": "die",
+     "article": null,
+     "forms": null,
+     "pos": "art",
+     "meaning": {
+      "en": "the",
+      "bn": "(স্ত্রীলিঙ্গ / বহুবচন নির্দিষ্ট আর্টিকেল)",
+      "pl": "(rodzajnik określony, r. żeński / l.mn.)",
+      "ru": "(опред. артикль жен. рода / мн. ч.)"
+     },
+     "guide": {
+      "en": "DEE",
+      "bn": "ডি",
+      "pl": "DI",
+      "ru": "ди"
+     }
+    },
+    {
+     "uid": "dc5e67ebbbc3cec1",
+     "german": "normalerweise",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "normally / usually",
+      "bn": "সাধারণত",
+      "pl": "zwykle / normalnie",
+      "ru": "обычно"
+     },
+     "guide": {
+      "en": "nor-MAH-ler-vai-zuh",
+      "bn": "নর্মালারভাইজে",
+      "pl": "nor-MA-la-waj-ze",
+      "ru": "нормАлавайзэ"
+     }
+    },
+    {
+     "uid": "a5a73c316afa7ce0",
+     "german": "kurz",
+     "article": null,
+     "forms": "kürzer · am kürzesten",
+     "pos": "adj",
+     "meaning": {
+      "en": "short / brief",
+      "bn": "ছোট / সংক্ষিপ্ত",
+      "pl": "krótki",
+      "ru": "короткий / краткий"
+     },
+     "guide": {
+      "en": "KOORTS",
+      "bn": "কুর্ৎস",
+      "pl": "KURC",
+      "ru": "курц"
+     }
+    },
+    {
+     "uid": "06e9574fa3ee0c76",
+     "german": "Tüte",
+     "article": "die",
+     "forms": "Tüten",
+     "pos": "noun",
+     "meaning": {
+      "en": "bag",
+      "bn": "ব্যাগ (কাগজ/প্লাস্টিক)",
+      "pl": "torba / reklamówka",
+      "ru": "пакет"
+     },
+     "guide": {
+      "en": "TEW-tuh",
+      "bn": "ট্যুটে",
+      "pl": "TÜ-te",
+      "ru": "тЮтэ"
+     }
+    },
+    {
+     "uid": "98fb27807c8b3275",
+     "german": "Bauchschmerzen",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "stomach ache",
+      "bn": "পেটব্যথা",
+      "pl": "ból brzucha",
+      "ru": "боль в животе"
+     },
+     "guide": {
+      "en": "BOWKH-shmair-tsen",
+      "bn": "বাউখশ্মের্ৎসেন",
+      "pl": "BAUCH-szmer-cen",
+      "ru": "бАухшмэрцэн"
+     }
+    },
+    {
+     "uid": "ba88d599d4c23d89",
+     "german": "ausschalten",
+     "article": null,
+     "forms": "schaltet aus · hat ausgeschaltet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to switch off",
+      "bn": "বন্ধ করা",
+      "pl": "wyłączać / wyłączyć",
+      "ru": "выключать / выключить"
+     },
+     "guide": {
+      "en": "OWSS-shal-ten",
+      "bn": "আউসশাল্টেন",
+      "pl": "AUS-szal-ten",
+      "ru": "Аусшальтэн"
+     }
+    },
+    {
+     "uid": "4a4c3528e7112f98",
+     "german": "Ihnen",
+     "article": null,
+     "forms": null,
+     "pos": "pron",
+     "meaning": {
+      "en": "you / to you",
+      "bn": "আপনাকে (আনুষ্ঠানিক, dative)",
+      "pl": "panu / pani / państwu",
+      "ru": "вам (вежливо)"
+     },
+     "guide": {
+      "en": "EE-nen",
+      "bn": "ইনেন",
+      "pl": "I-nen",
+      "ru": "Инэн"
+     }
+    },
+    {
+     "uid": "4dc64799f4b72f71",
+     "german": "sehr",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "very",
+      "bn": "খুব",
+      "pl": "bardzo",
+      "ru": "очень"
+     },
+     "guide": {
+      "en": "ZAIR",
+      "bn": "জেয়া",
+      "pl": "ZEA",
+      "ru": "зЭа"
+     }
+    },
+    {
+     "uid": "4bc082218dc9e851",
+     "german": "Liebe",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "love",
+      "bn": "ভালোবাসা",
+      "pl": "miłość",
+      "ru": "любовь"
+     },
+     "guide": {
+      "en": "LEE-buh",
+      "bn": "লিবে",
+      "pl": "LI-be",
+      "ru": "лИбэ"
+     }
+    },
+    {
+     "uid": "5a3d6845e9a05096",
+     "german": "Gleis",
+     "article": "das",
+     "forms": "Gleise",
+     "pos": "noun",
+     "meaning": {
+      "en": "platform / track",
+      "bn": "প্ল্যাটফর্ম / রেললাইন",
+      "pl": "peron / tor",
+      "ru": "платформа / путь"
+     },
+     "guide": {
+      "en": "GLAISS",
+      "bn": "গ্লাইস",
+      "pl": "GLAJS",
+      "ru": "глайс"
+     }
+    },
+    {
+     "uid": "b72b44ae9c0e4b5d",
+     "german": "woher",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "from where",
+      "bn": "কোথা থেকে",
+      "pl": "skąd",
+      "ru": "откуда"
+     },
+     "guide": {
+      "en": "voh-HAIR",
+      "bn": "ভোহেয়া",
+      "pl": "wo-HEA",
+      "ru": "вохЭа"
+     }
+    },
+    {
+     "uid": "efb7b214f95549c0",
+     "german": "möchten",
+     "article": null,
+     "forms": "möchte",
+     "pos": "verb",
+     "meaning": {
+      "en": "would like",
+      "bn": "চাওয়া (ভদ্রভাবে)",
+      "pl": "chciałbym / chciałabym",
+      "ru": "хотел бы / хотелось бы"
+     },
+     "guide": {
+      "en": "MURHY-ten",
+      "bn": "ম্যোশ্টেন",
+      "pl": "MÖŚ-ten",
+      "ru": "мёхьтэн"
+     }
+    },
+    {
+     "uid": "e61b0c83abbb58ff",
+     "german": "Wohnzimmer",
+     "article": "das",
+     "forms": "Wohnzimmer",
+     "pos": "noun",
+     "meaning": {
+      "en": "living room",
+      "bn": "বসার ঘর",
+      "pl": "salon / pokój dzienny",
+      "ru": "гостиная"
+     },
+     "guide": {
+      "en": "VOHN-tsim-mer",
+      "bn": "ভোনৎসিমার",
+      "pl": "WON-ci-ma",
+      "ru": "вОнцима"
+     }
+    },
+    {
+     "uid": "00f57bbbd8313110",
+     "german": "Kind",
+     "article": "das",
+     "forms": "Kinder",
+     "pos": "noun",
+     "meaning": {
+      "en": "child",
+      "bn": "শিশু / সন্তান",
+      "pl": "dziecko",
+      "ru": "ребёнок"
+     },
+     "guide": {
+      "en": "KINT",
+      "bn": "কিন্ট",
+      "pl": "KINT",
+      "ru": "кинт"
+     }
+    },
+    {
+     "uid": "eae1950dee411367",
+     "german": "vielleicht",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "maybe / perhaps",
+      "bn": "হয়তো / সম্ভবত",
+      "pl": "może / być może",
+      "ru": "может быть / возможно"
+     },
+     "guide": {
+      "en": "fil-LAIHYT",
+      "bn": "ফিলাইশ্ট",
+      "pl": "fi-LAJŚT",
+      "ru": "филАйхьт"
+     }
+    },
+    {
+     "uid": "5dc8a7b9c33db1d3",
+     "german": "dritte",
+     "article": null,
+     "forms": null,
+     "pos": "num",
+     "meaning": {
+      "en": "third",
+      "bn": "তৃতীয়",
+      "pl": "trzeci",
+      "ru": "третий"
+     },
+     "guide": {
+      "en": "DRIT-tuh",
+      "bn": "ড্রিটে",
+      "pl": "DRI-te",
+      "ru": "дрИтэ"
+     }
+    },
+    {
+     "uid": "6879766f3537447a",
+     "german": "Wetter",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "weather",
+      "bn": "আবহাওয়া",
+      "pl": "pogoda",
+      "ru": "погода"
+     },
+     "guide": {
+      "en": "VET-ter",
+      "bn": "ভেটার",
+      "pl": "WE-ta",
+      "ru": "вЭта"
+     }
+    },
+    {
+     "uid": "6c2ad685d3ce6750",
+     "german": "Moment",
+     "article": "der",
+     "forms": "Momente",
+     "pos": "noun",
+     "meaning": {
+      "en": "moment",
+      "bn": "মুহূর্ত",
+      "pl": "chwila / moment",
+      "ru": "момент"
+     },
+     "guide": {
+      "en": "mo-MENT",
+      "bn": "মোমেন্ট",
+      "pl": "mo-MENT",
+      "ru": "момЭнт"
+     }
+    }
+   ]
+  },
+  {
+   "code": "A1.2",
+   "level": "A1",
+   "ord": 2,
+   "words": 678,
+   "grammar_topics": 11,
+   "grammar": [
+    {
+     "uid": "a00b280d375c4e61",
+     "topic": {
+      "en": "Possessive articles",
+      "pl": "Zaimki dzierżawcze",
+      "ru": "Притяжательные местоимения"
+     }
+    },
+    {
+     "uid": "81b22a185c6f613b",
+     "topic": {
+      "en": "Separable verbs",
+      "pl": "Czasowniki rozdzielnie złożone",
+      "ru": "Глаголы с отделяемой приставкой"
+     }
+    },
+    {
+     "uid": "024c4b770eaf47d5",
+     "topic": {
+      "en": "Modal verbs",
+      "pl": "Czasowniki modalne",
+      "ru": "Модальные глаголы"
+     }
+    },
+    {
+     "uid": "9a9cf2aa97ab982f",
+     "topic": {
+      "en": "Local prepositions",
+      "pl": "Przyimki miejsca",
+      "ru": "Предлоги места"
+     }
+    },
+    {
+     "uid": "7e4bfa55d298edb8",
+     "topic": {
+      "en": "Dative case",
+      "pl": "Celownik (Dativ)",
+      "ru": "Дательный падеж"
+     }
+    },
+    {
+     "uid": "fe3edb62be10b7ee",
+     "topic": {
+      "en": "Imperative",
+      "pl": "Tryb rozkazujący",
+      "ru": "Повелительное наклонение"
+     }
+    },
+    {
+     "uid": "f3f83a0b26299b69",
+     "topic": {
+      "en": "Perfekt with haben",
+      "pl": "Perfekt z haben",
+      "ru": "Перфект (Perfekt) с haben"
+     }
+    },
+    {
+     "uid": "97ae2951ee9b24bc",
+     "topic": {
+      "en": "Perfekt with sein",
+      "pl": "Perfekt z sein",
+      "ru": "Перфект (Perfekt) с sein"
+     }
+    },
+    {
+     "uid": "fd30dee61c40d99a",
+     "topic": {
+      "en": "Präteritum of sein, haben & modals",
+      "pl": "Präteritum czasowników sein, haben i modalnych",
+      "ru": "Претерит (Präteritum) sein, haben и модальных глаголов"
+     }
+    },
+    {
+     "uid": "5cd214cabdf94ac7",
+     "topic": {
+      "en": "Pronouns in Akk & Dat, dative verbs",
+      "pl": "Zaimki w bierniku i celowniku, czasowniki z celownikiem",
+      "ru": "Местоимения в винительном и дательном падеже, глаголы с дательным падежом"
+     }
+    },
+    {
+     "uid": "e2573d1c2268733d",
+     "topic": {
+      "en": "Time prepositions & expressions",
+      "pl": "Przyimki i określenia czasu",
+      "ru": "Предлоги и выражения времени"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "576de088b115a188",
+     "german": "aufladen",
+     "article": null,
+     "forms": "lädt auf · hat aufgeladen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to charge",
+      "bn": "চার্জ দেওয়া",
+      "pl": "ładować / naładować",
+      "ru": "заряжать / зарядить"
+     },
+     "guide": {
+      "en": "OWF-lah-den",
+      "bn": "আউফলাডেন",
+      "pl": "AUF-la-den",
+      "ru": "Ауфладэн"
+     }
+    },
+    {
+     "uid": "939b1be42d052967",
+     "german": "Zähne putzen",
+     "article": null,
+     "forms": "putzt · hat geputzt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to brush teeth",
+      "bn": "দাঁত মাজা",
+      "pl": "myć zęby",
+      "ru": "чистить / почистить зубы"
+     },
+     "guide": {
+      "en": "TSEH-nuh poot-sen",
+      "bn": "ৎসেনে পুৎসেন",
+      "pl": "CE-ne pu-cen",
+      "ru": "цЭнэ пУцэн"
+     }
+    },
+    {
+     "uid": "c37ad055f03eb8cc",
+     "german": "Verkehr",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "traffic",
+      "bn": "যানবাহন চলাচল / ট্রাফিক",
+      "pl": "ruch (uliczny)",
+      "ru": "движение (на дорогах)"
+     },
+     "guide": {
+      "en": "fair-KAIR",
+      "bn": "ফেয়াকেয়া",
+      "pl": "fea-KEA",
+      "ru": "факЭа"
+     }
+    },
+    {
+     "uid": "160b84dadfdf854d",
+     "german": "ausziehen",
+     "article": null,
+     "forms": "zieht aus · ist ausgezogen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to move out",
+      "bn": "বাসা ছাড়া",
+      "pl": "wyprowadzać się / wyprowadzić się",
+      "ru": "съезжать / съехать (с квартиры)"
+     },
+     "guide": {
+      "en": "OWSS-tsee-en",
+      "bn": "আউসৎসিয়েন",
+      "pl": "AUS-ci-en",
+      "ru": "Аусциэн"
+     }
+    },
+    {
+     "uid": "cce7be7236b304b5",
+     "german": "Passwort",
+     "article": "das",
+     "forms": "Passwörter",
+     "pos": "noun",
+     "meaning": {
+      "en": "password",
+      "bn": "পাসওয়ার্ড",
+      "pl": "hasło",
+      "ru": "пароль"
+     },
+     "guide": {
+      "en": "PASS-vort",
+      "bn": "পাসভর্ট",
+      "pl": "PAS-wort",
+      "ru": "пАсворт"
+     }
+    },
+    {
+     "uid": "ad0cfbece5520a7e",
+     "german": "Bank",
+     "article": "die",
+     "forms": "Banken",
+     "pos": "noun",
+     "meaning": {
+      "en": "bank",
+      "bn": "ব্যাংক",
+      "pl": "bank",
+      "ru": "банк"
+     },
+     "guide": {
+      "en": "BANK",
+      "bn": "বাংক",
+      "pl": "BANK",
+      "ru": "банк"
+     }
+    },
+    {
+     "uid": "cfe8242fe7110e21",
+     "german": "Virus",
+     "article": "der",
+     "forms": "Viren",
+     "pos": "noun",
+     "meaning": {
+      "en": "virus",
+      "bn": "ভাইরাস",
+      "pl": "wirus",
+      "ru": "вирус"
+     },
+     "guide": {
+      "en": "VEE-rooss",
+      "bn": "ভিরুস",
+      "pl": "WI-rus",
+      "ru": "вИрус"
+     }
+    },
+    {
+     "uid": "014253380379490f",
+     "german": "Autobahn",
+     "article": "die",
+     "forms": "Autobahnen",
+     "pos": "noun",
+     "meaning": {
+      "en": "motorway",
+      "bn": "মহাসড়ক (অটোবান)",
+      "pl": "autostrada",
+      "ru": "автобан / автомагистраль"
+     },
+     "guide": {
+      "en": "OW-toh-bahn",
+      "bn": "আউটোবান",
+      "pl": "AU-to-ban",
+      "ru": "Аутобан"
+     }
+    },
+    {
+     "uid": "550274a64531ed27",
+     "german": "Torte",
+     "article": "die",
+     "forms": "Torten",
+     "pos": "noun",
+     "meaning": {
+      "en": "cake (layered)",
+      "bn": "কেক (স্তরযুক্ত)",
+      "pl": "tort",
+      "ru": "торт"
+     },
+     "guide": {
+      "en": "TOR-tuh",
+      "bn": "টর্টে",
+      "pl": "TOR-te",
+      "ru": "тОртэ"
+     }
+    },
+    {
+     "uid": "91e4604b69479525",
+     "german": "Wassermelone",
+     "article": "die",
+     "forms": "Wassermelonen",
+     "pos": "noun",
+     "meaning": {
+      "en": "watermelon",
+      "bn": "তরমুজ",
+      "pl": "arbuz",
+      "ru": "арбуз"
+     },
+     "guide": {
+      "en": "VAS-ser-may-loh-nuh",
+      "bn": "ভাসারমেলোনে",
+      "pl": "WA-sa-me-lo-ne",
+      "ru": "вАсамэлонэ"
+     }
+    },
+    {
+     "uid": "34fdc428afa7066c",
+     "german": "windig",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "windy",
+      "bn": "বাতাসময়",
+      "pl": "wietrzny",
+      "ru": "ветреный"
+     },
+     "guide": {
+      "en": "VIN-dihy",
+      "bn": "ভিন্ডিশ",
+      "pl": "WIN-diś",
+      "ru": "вИндихь"
+     }
+    },
+    {
+     "uid": "83fc3d870a0ab936",
+     "german": "Fest",
+     "article": "das",
+     "forms": "Feste",
+     "pos": "noun",
+     "meaning": {
+      "en": "festival / celebration",
+      "bn": "উৎসব",
+      "pl": "święto / festyn / uroczystość",
+      "ru": "праздник / фестиваль"
+     },
+     "guide": {
+      "en": "FEST",
+      "bn": "ফেস্ট",
+      "pl": "FEST",
+      "ru": "фэст"
+     }
+    },
+    {
+     "uid": "9b905694d5fd2aec",
+     "german": "teilen",
+     "article": null,
+     "forms": "teilt · hat geteilt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to share / to divide",
+      "bn": "শেয়ার করা / ভাগ করা",
+      "pl": "dzielić (się) / udostępniać",
+      "ru": "делиться / поделиться / делить"
+     },
+     "guide": {
+      "en": "TAI-len",
+      "bn": "টাইলেন",
+      "pl": "TAJ-len",
+      "ru": "тАйлэн"
+     }
+    },
+    {
+     "uid": "4a238e24dccec852",
+     "german": "grau",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "grey",
+      "bn": "ধূসর",
+      "pl": "szary / siwy",
+      "ru": "серый / седой"
+     },
+     "guide": {
+      "en": "GROW",
+      "bn": "গ্রাউ",
+      "pl": "GRAU",
+      "ru": "грАу"
+     }
+    },
+    {
+     "uid": "b98e669aa08fd163",
+     "german": "Kamera",
+     "article": "die",
+     "forms": "Kameras",
+     "pos": "noun",
+     "meaning": {
+      "en": "camera",
+      "bn": "ক্যামেরা",
+      "pl": "aparat / kamera",
+      "ru": "камера / фотоаппарат"
+     },
+     "guide": {
+      "en": "KA-muh-rah",
+      "bn": "কামেরা",
+      "pl": "KA-me-ra",
+      "ru": "кАмэра"
+     }
+    },
+    {
+     "uid": "b80974cec31816e0",
+     "german": "Miete",
+     "article": "die",
+     "forms": "Mieten",
+     "pos": "noun",
+     "meaning": {
+      "en": "rent",
+      "bn": "ভাড়া",
+      "pl": "czynsz",
+      "ru": "арендная плата / аренда"
+     },
+     "guide": {
+      "en": "MEE-tuh",
+      "bn": "মিটে",
+      "pl": "MI-te",
+      "ru": "мИтэ"
+     }
+    },
+    {
+     "uid": "8e50f1f5aafdc0a6",
+     "german": "Wörterbuch",
+     "article": "das",
+     "forms": "Wörterbücher",
+     "pos": "noun",
+     "meaning": {
+      "en": "dictionary",
+      "bn": "অভিধান",
+      "pl": "słownik",
+      "ru": "словарь"
+     },
+     "guide": {
+      "en": "VUR-ter-bookh",
+      "bn": "ভ্যোর্টারবুখ",
+      "pl": "WÖR-ta-buch",
+      "ru": "вёртабух"
+     }
+    },
+    {
+     "uid": "ed5f3e9da3e87557",
+     "german": "überweisen",
+     "article": null,
+     "forms": "überweist · hat überwiesen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to transfer (money)",
+      "bn": "টাকা পাঠানো (ব্যাংক)",
+      "pl": "przelewać / przelać (pieniądze)",
+      "ru": "переводить / перевести (деньги)"
+     },
+     "guide": {
+      "en": "ew-ber-VAI-zen",
+      "bn": "য়্যুবারভাইজেন",
+      "pl": "ü-ba-WAJ-zen",
+      "ru": "юбавАйзэн"
+     }
+    },
+    {
+     "uid": "8c51556d3f1ac93a",
+     "german": "Bleistift",
+     "article": "der",
+     "forms": "Bleistifte",
+     "pos": "noun",
+     "meaning": {
+      "en": "pencil",
+      "bn": "পেন্সিল",
+      "pl": "ołówek",
+      "ru": "карандаш"
+     },
+     "guide": {
+      "en": "BLAI-shtift",
+      "bn": "ব্লাইশ্টিফ্ট",
+      "pl": "BLAJ-sztift",
+      "ru": "блАйштифт"
+     }
+    },
+    {
+     "uid": "6212ac1440228278",
+     "german": "Pflaster",
+     "article": "das",
+     "forms": "Pflaster",
+     "pos": "noun",
+     "meaning": {
+      "en": "plaster / band-aid",
+      "bn": "ব্যান্ডেজ (ছোট)",
+      "pl": "plaster",
+      "ru": "пластырь"
+     },
+     "guide": {
+      "en": "PFLAS-ter",
+      "bn": "প্ফ্লাস্টার",
+      "pl": "PFLAS-ta",
+      "ru": "пфлАста"
+     }
+    },
+    {
+     "uid": "0c23bdbb94859026",
+     "german": "Helm",
+     "article": "der",
+     "forms": "Helme",
+     "pos": "noun",
+     "meaning": {
+      "en": "helmet",
+      "bn": "হেলমেট",
+      "pl": "kask",
+      "ru": "шлем"
+     },
+     "guide": {
+      "en": "HELM",
+      "bn": "হেল্ম",
+      "pl": "HELM",
+      "ru": "хэльм"
+     }
+    },
+    {
+     "uid": "922613896051e4aa",
+     "german": "Plastik",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "plastic",
+      "bn": "প্লাস্টিক",
+      "pl": "plastik",
+      "ru": "пластик / пластмасса"
+     },
+     "guide": {
+      "en": "PLAS-tik",
+      "bn": "প্লাস্টিক",
+      "pl": "PLAS-tik",
+      "ru": "плАстик"
+     }
+    },
+    {
+     "uid": "24fbd34759afcfd5",
+     "german": "Spielplatz",
+     "article": "der",
+     "forms": "Spielplätze",
+     "pos": "noun",
+     "meaning": {
+      "en": "playground",
+      "bn": "খেলার মাঠ (শিশুদের)",
+      "pl": "plac zabaw",
+      "ru": "детская площадка"
+     },
+     "guide": {
+      "en": "SHPEEL-plats",
+      "bn": "শ্পিলপ্লাৎস",
+      "pl": "SZPIL-plac",
+      "ru": "шпИльплац"
+     }
+    },
+    {
+     "uid": "fe282500b02312f1",
+     "german": "Aussprache",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "pronunciation",
+      "bn": "উচ্চারণ",
+      "pl": "wymowa",
+      "ru": "произношение"
+     },
+     "guide": {
+      "en": "OWSS-shprah-khuh",
+      "bn": "আউসশ্প্রাখে",
+      "pl": "AUS-szpra-che",
+      "ru": "Аусшпрахэ"
+     }
+    },
+    {
+     "uid": "db53ec350c51d8b8",
+     "german": "Thema",
+     "article": "das",
+     "forms": "Themen",
+     "pos": "noun",
+     "meaning": {
+      "en": "topic / subject",
+      "bn": "বিষয়",
+      "pl": "temat",
+      "ru": "тема"
+     },
+     "guide": {
+      "en": "TAY-mah",
+      "bn": "টেমা",
+      "pl": "TE-ma",
+      "ru": "тЭма"
+     }
+    }
+   ]
+  },
+  {
+   "code": "A2.1",
+   "level": "A2",
+   "ord": 3,
+   "words": 538,
+   "grammar_topics": 10,
+   "grammar": [
+    {
+     "uid": "b654b55956b118f3",
+     "topic": {
+      "en": "Adjective endings (nominative)",
+      "pl": "Końcówki przymiotnika w mianowniku",
+      "ru": "Окончания прилагательных (именительный падеж)"
+     }
+    },
+    {
+     "uid": "09a5abbd2c8199bb",
+     "topic": {
+      "en": "Subordinate clauses: weil, dass, wenn",
+      "pl": "Zdania podrzędne: weil, dass, wenn",
+      "ru": "Придаточные предложения: weil, dass, wenn"
+     }
+    },
+    {
+     "uid": "d94b9d0ff248d6c9",
+     "topic": {
+      "en": "Reflexive verbs",
+      "pl": "Czasowniki zwrotne",
+      "ru": "Возвратные глаголы"
+     }
+    },
+    {
+     "uid": "9967522f0531832d",
+     "topic": {
+      "en": "Comparative & superlative",
+      "pl": "Stopień wyższy i najwyższy",
+      "ru": "Сравнительная и превосходная степень"
+     }
+    },
+    {
+     "uid": "fe6a6cd5c705f0e6",
+     "topic": {
+      "en": "sollen, advice & modals in Präteritum",
+      "pl": "sollen, rady i czasowniki modalne w Präteritum",
+      "ru": "sollen, советы и модальные глаголы в претерите (Präteritum)"
+     }
+    },
+    {
+     "uid": "3fb7be2c488064d1",
+     "topic": {
+      "en": "Adjective endings (accusative & dative)",
+      "pl": "Końcówki przymiotnika w bierniku i celowniku",
+      "ru": "Окончания прилагательных (винительный и дательный падеж)"
+     }
+    },
+    {
+     "uid": "1c9f02a0204dbfbf",
+     "topic": {
+      "en": "Konjunktiv II: polite requests & wishes",
+      "pl": "Konjunktiv II: uprzejme prośby i życzenia",
+      "ru": "Сослагательное наклонение (Konjunktiv II): вежливые просьбы и желания"
+     }
+    },
+    {
+     "uid": "74b0590bc4eb3110",
+     "topic": {
+      "en": "Two-way prepositions (Wechselpräpositionen)",
+      "pl": "Przyimki dwuprzypadkowe (Wechselpräpositionen)",
+      "ru": "Предлоги двойного управления (Wechselpräpositionen)"
+     }
+    },
+    {
+     "uid": "b646c097bb98d405",
+     "topic": {
+      "en": "Genitive",
+      "pl": "Dopełniacz (Genitiv)",
+      "ru": "Родительный падеж (Genitiv)"
+     }
+    },
+    {
+     "uid": "d6226bff7f6cf9ff",
+     "topic": {
+      "en": "Infinitive with zu",
+      "pl": "Bezokolicznik z zu",
+      "ru": "Инфинитив с zu"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "bd9e3f9baf678b1c",
+     "german": "Anfang",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "beginning / start",
+      "bn": "শুরু",
+      "pl": "początek",
+      "ru": "начало"
+     },
+     "guide": {
+      "en": "AN-fang",
+      "bn": "আনফাং",
+      "pl": "AN-fang",
+      "ru": "Анфанг"
+     }
+    },
+    {
+     "uid": "50a83f7aa055fd83",
+     "german": "Bürgermeister",
+     "article": "der",
+     "forms": "Bürgermeister",
+     "pos": "noun",
+     "meaning": {
+      "en": "mayor",
+      "bn": "মেয়র",
+      "pl": "burmistrz",
+      "ru": "мэр / бургомистр"
+     },
+     "guide": {
+      "en": "BEWR-ger-mais-ter",
+      "bn": "ব্যুর্গারমাইস্টার",
+      "pl": "BÜR-ga-maj-sta",
+      "ru": "бЮргамайста"
+     }
+    },
+    {
+     "uid": "bda77a18e224352d",
+     "german": "Kindersitz",
+     "article": "der",
+     "forms": "Kindersitze",
+     "pos": "noun",
+     "meaning": {
+      "en": "child seat",
+      "bn": "শিশু আসন (গাড়ি)",
+      "pl": "fotelik dziecięcy",
+      "ru": "детское кресло / детское сиденье"
+     },
+     "guide": {
+      "en": "KIN-der-zits",
+      "bn": "কিন্ডারজিৎস",
+      "pl": "KIN-da-zic",
+      "ru": "кИндазиц"
+     }
+    },
+    {
+     "uid": "15da4fc92b828c67",
+     "german": "Arbeitgeber",
+     "article": "der",
+     "forms": "Arbeitgeber",
+     "pos": "noun",
+     "meaning": {
+      "en": "employer",
+      "bn": "নিয়োগকর্তা",
+      "pl": "pracodawca",
+      "ru": "работодатель"
+     },
+     "guide": {
+      "en": "AR-bait-gay-ber",
+      "bn": "আরবাইট্‌সগেবার",
+      "pl": "AR-bajt-ge-ba",
+      "ru": "Арбайтгэба"
+     }
+    },
+    {
+     "uid": "e28fe6144e7c4d9e",
+     "german": "wechseln",
+     "article": null,
+     "forms": "wechselt · hat gewechselt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to change / to switch",
+      "bn": "বদলানো / পরিবর্তন করা",
+      "pl": "zmieniać / zmienić / wymienić",
+      "ru": "менять / поменять / разменивать"
+     },
+     "guide": {
+      "en": "VEK-seln",
+      "bn": "ভেক্সেল্ন",
+      "pl": "WEK-seln",
+      "ru": "вЭксэльн"
+     }
+    },
+    {
+     "uid": "034339c304209d42",
+     "german": "sich melden",
+     "article": null,
+     "forms": "meldet sich · hat sich gemeldet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to get in touch / to report",
+      "bn": "যোগাযোগ করা / জানানো",
+      "pl": "odzywać się / odezwać się / zgłaszać się",
+      "ru": "связываться / связаться / сообщать"
+     },
+     "guide": {
+      "en": "zihy MEL-den",
+      "bn": "জিশ মেল্ডেন",
+      "pl": "ziś MEL-den",
+      "ru": "зихь мЭльдэн"
+     }
+    },
+    {
+     "uid": "e6e31ea48111bd09",
+     "german": "Kündigung",
+     "article": "die",
+     "forms": "Kündigungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "termination / notice / resignation",
+      "bn": "চাকরি ছাড়ার নোটিশ / বরখাস্ত",
+      "pl": "wypowiedzenie (umowy / z pracy)",
+      "ru": "увольнение / расторжение (договора)"
+     },
+     "guide": {
+      "en": "KEWN-di-goong",
+      "bn": "ক্যুন্ডিগুং",
+      "pl": "KÜN-di-gung",
+      "ru": "кЮндигунг"
+     }
+    },
+    {
+     "uid": "7228a3fd8327bd24",
+     "german": "denn",
+     "article": null,
+     "forms": null,
+     "pos": "conj",
+     "meaning": {
+      "en": "because / for",
+      "bn": "কারণ (মূল বাক্যের ক্রম)",
+      "pl": "bo / gdyż",
+      "ru": "так как / потому что / ведь"
+     },
+     "guide": {
+      "en": "DEN",
+      "bn": "ডেন",
+      "pl": "DEN",
+      "ru": "дэн"
+     }
+    },
+    {
+     "uid": "eda746b8cbc73791",
+     "german": "heiraten",
+     "article": null,
+     "forms": "heiratet · hat geheiratet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to marry",
+      "bn": "বিয়ে করা",
+      "pl": "brać ślub / wziąć ślub",
+      "ru": "жениться / выйти замуж / пожениться"
+     },
+     "guide": {
+      "en": "HAI-rah-ten",
+      "bn": "হাইরাটেন",
+      "pl": "HAJ-ra-ten",
+      "ru": "хАйратэн"
+     }
+    },
+    {
+     "uid": "d56a39fb7ccc8a7f",
+     "german": "enden",
+     "article": null,
+     "forms": "endet · hat geendet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to end",
+      "bn": "শেষ হওয়া",
+      "pl": "kończyć się / skończyć się",
+      "ru": "заканчиваться / закончиться"
+     },
+     "guide": {
+      "en": "EN-den",
+      "bn": "এন্ডেন",
+      "pl": "EN-den",
+      "ru": "Эндэн"
+     }
+    },
+    {
+     "uid": "0f89847396b6c275",
+     "german": "danken",
+     "article": null,
+     "forms": "dankt · hat gedankt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to thank",
+      "bn": "ধন্যবাদ জানানো",
+      "pl": "dziękować / podziękować",
+      "ru": "благодарить / поблагодарить"
+     },
+     "guide": {
+      "en": "DANK-en",
+      "bn": "ডাংকেন",
+      "pl": "DAN-ken",
+      "ru": "дАнкэн"
+     }
+    },
+    {
+     "uid": "c49082c572162428",
+     "german": "Mittagsschlaf",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "afternoon nap",
+      "bn": "দুপুরের ঘুম",
+      "pl": "drzemka po obiedzie",
+      "ru": "дневной сон"
+     },
+     "guide": {
+      "en": "MIT-tahks-shlahf",
+      "bn": "মিটাক্সশ্লাফ",
+      "pl": "MI-taks-szlaf",
+      "ru": "мИтаксшлаф"
+     }
+    },
+    {
+     "uid": "d7ed644ef6fbdc77",
+     "german": "Vorteil",
+     "article": "der",
+     "forms": "Vorteile",
+     "pos": "noun",
+     "meaning": {
+      "en": "advantage",
+      "bn": "সুবিধা",
+      "pl": "zaleta / plus",
+      "ru": "преимущество / плюс"
+     },
+     "guide": {
+      "en": "FOHR-tail",
+      "bn": "ফোয়াটাইল",
+      "pl": "FOA-tajl",
+      "ru": "фОатайль"
+     }
+    },
+    {
+     "uid": "f48f1fa44d435266",
+     "german": "intelligent",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "intelligent",
+      "bn": "বুদ্ধিমান",
+      "pl": "inteligentny",
+      "ru": "умный"
+     },
+     "guide": {
+      "en": "in-tel-li-GENT",
+      "bn": "ইন্টেলিগেন্ট",
+      "pl": "in-te-li-GENT",
+      "ru": "интэлигЭнт"
+     }
+    },
+    {
+     "uid": "659ff388dedaca2b",
+     "german": "Alltag",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "everyday life / daily routine",
+      "bn": "দৈনন্দিন জীবন",
+      "pl": "codzienność / życie codzienne",
+      "ru": "повседневная жизнь / будни"
+     },
+     "guide": {
+      "en": "AL-tahk",
+      "bn": "আলটাক",
+      "pl": "AL-tak",
+      "ru": "Альтак"
+     }
+    },
+    {
+     "uid": "e3708afc6318dac4",
+     "german": "Unternehmen",
+     "article": "das",
+     "forms": "Unternehmen",
+     "pos": "noun",
+     "meaning": {
+      "en": "company / enterprise",
+      "bn": "প্রতিষ্ঠান",
+      "pl": "przedsiębiorstwo / firma",
+      "ru": "предприятие / компания"
+     },
+     "guide": {
+      "en": "oon-ter-NAY-men",
+      "bn": "উন্টারনেমেন",
+      "pl": "un-ta-NE-men",
+      "ru": "унтанЭмэн"
+     }
+    },
+    {
+     "uid": "6596dac448da9fb8",
+     "german": "besichtigen",
+     "article": null,
+     "forms": "besichtigt · hat besichtigt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to visit / to view (a place)",
+      "bn": "দেখতে যাওয়া (স্থান)",
+      "pl": "zwiedzać / zwiedzić / oglądać",
+      "ru": "осматривать / осмотреть"
+     },
+     "guide": {
+      "en": "buh-ZIHY-ti-gen",
+      "bn": "বেজিশটিগেন",
+      "pl": "be-ZIŚ-ti-gen",
+      "ru": "бэзИхьтигэн"
+     }
+    },
+    {
+     "uid": "e09304d23c1d155a",
+     "german": "Funktion",
+     "article": "die",
+     "forms": "Funktionen",
+     "pos": "noun",
+     "meaning": {
+      "en": "function / feature",
+      "bn": "ফাংশন / ফিচার",
+      "pl": "funkcja",
+      "ru": "функция"
+     },
+     "guide": {
+      "en": "foonk-TSYOHN",
+      "bn": "ফুংক্‌ৎসিওন",
+      "pl": "funk-ci-JON",
+      "ru": "функциОн"
+     }
+    },
+    {
+     "uid": "7a570c75b3527e29",
+     "german": "verantwortlich",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "responsible",
+      "bn": "দায়িত্বপ্রাপ্ত",
+      "pl": "odpowiedzialny",
+      "ru": "ответственный"
+     },
+     "guide": {
+      "en": "fair-ANT-vort-lihy",
+      "bn": "ফেয়াআন্টভর্টলিশ",
+      "pl": "fea-ANT-wort-liś",
+      "ru": "фаАнтвортлихь"
+     }
+    },
+    {
+     "uid": "8aaed614efdbbec1",
+     "german": "erreichbar",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "reachable / available",
+      "bn": "যোগাযোগযোগ্য",
+      "pl": "osiągalny / dostępny",
+      "ru": "доступный (для связи) / на связи"
+     },
+     "guide": {
+      "en": "air-RAIHY-bahr",
+      "bn": "এয়ারাইশবার",
+      "pl": "ea-RAJŚ-baa",
+      "ru": "эарАйхьбаа"
+     }
+    },
+    {
+     "uid": "61c7c0811e82ce4a",
+     "german": "streamen",
+     "article": null,
+     "forms": "streamt · hat gestreamt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to stream",
+      "bn": "স্ট্রিম করা",
+      "pl": "streamować / oglądać w streamingu",
+      "ru": "стримить / смотреть онлайн"
+     },
+     "guide": {
+      "en": "STREE-men",
+      "bn": "স্ট্রিমেন",
+      "pl": "STRI-men",
+      "ru": "стрИмэн"
+     }
+    },
+    {
+     "uid": "452097381466b650",
+     "german": "gewinnen",
+     "article": null,
+     "forms": "gewinnt · hat gewonnen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to win",
+      "bn": "জেতা",
+      "pl": "wygrywać / wygrać",
+      "ru": "выигрывать / выиграть / побеждать"
+     },
+     "guide": {
+      "en": "guh-VIN-nen",
+      "bn": "গেভিনেন",
+      "pl": "ge-WI-nen",
+      "ru": "гэвИнэн"
+     }
+    },
+    {
+     "uid": "a83fc6b9b3b37bab",
+     "german": "bearbeiten",
+     "article": null,
+     "forms": "bearbeitet · hat bearbeitet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to process / to edit",
+      "bn": "প্রক্রিয়া করা / সম্পাদনা করা",
+      "pl": "rozpatrywać (wniosek) / edytować",
+      "ru": "обрабатывать / обработать / редактировать"
+     },
+     "guide": {
+      "en": "buh-AR-bai-ten",
+      "bn": "বেআরবাইটেন",
+      "pl": "be-AR-baj-ten",
+      "ru": "бэАрбайтэн"
+     }
+    },
+    {
+     "uid": "4471f37feccd4f86",
+     "german": "bestätigen",
+     "article": null,
+     "forms": "bestätigt · hat bestätigt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to confirm",
+      "bn": "নিশ্চিত করা",
+      "pl": "potwierdzać / potwierdzić",
+      "ru": "подтверждать / подтвердить"
+     },
+     "guide": {
+      "en": "buh-SHTEH-ti-gen",
+      "bn": "বেশ্টেটিগেন",
+      "pl": "be-SZTE-ti-gen",
+      "ru": "бэштЭтигэн"
+     }
+    },
+    {
+     "uid": "b46568c018ca015c",
+     "german": "Unterlagen",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "documents / paperwork",
+      "bn": "কাগজপত্র",
+      "pl": "dokumenty / papiery",
+      "ru": "документы / бумаги"
+     },
+     "guide": {
+      "en": "OON-ter-lah-gen",
+      "bn": "উন্টারলাগেন",
+      "pl": "UN-ta-la-gen",
+      "ru": "Унталагэн"
+     }
+    }
+   ]
+  },
+  {
+   "code": "A2.2",
+   "level": "A2",
+   "ord": 4,
+   "words": 497,
+   "grammar_topics": 10,
+   "grammar": [
+    {
+     "uid": "431ab41f86ccb6ef",
+     "topic": {
+      "en": "Verbs with prepositions & da-/wo-compounds",
+      "pl": "Czasowniki z przyimkami, zaimki przysłowne da-/wo-",
+      "ru": "Глаголы с предлогами и местоименные наречия da-/wo-"
+     }
+    },
+    {
+     "uid": "7b560a1294c77df2",
+     "topic": {
+      "en": "Indirect questions",
+      "pl": "Pytania zależne",
+      "ru": "Косвенные вопросы"
+     }
+    },
+    {
+     "uid": "e21f09b05dda1ec3",
+     "topic": {
+      "en": "Futur I & plans",
+      "pl": "Futur I i plany",
+      "ru": "Будущее время (Futur I) и планы"
+     }
+    },
+    {
+     "uid": "c78b96d37f578e82",
+     "topic": {
+      "en": "Ordinal numbers & dates",
+      "pl": "Liczebniki porządkowe i daty",
+      "ru": "Порядковые числительные и даты"
+     }
+    },
+    {
+     "uid": "973ed862788b8a28",
+     "topic": {
+      "en": "Relative clauses",
+      "pl": "Zdania względne",
+      "ru": "Определительные придаточные предложения"
+     }
+    },
+    {
+     "uid": "96b67d518a98824b",
+     "topic": {
+      "en": "Connectors: 3 word-order groups",
+      "pl": "Spójniki: trzy grupy szyku zdania",
+      "ru": "Союзы и связующие слова: 3 группы по порядку слов"
+     }
+    },
+    {
+     "uid": "9cf11ac2dd84ef26",
+     "topic": {
+      "en": "als / wenn / nachdem / bevor / während",
+      "pl": "als / wenn / nachdem / bevor / während",
+      "ru": "Союзы времени: als / wenn / nachdem / bevor / während"
+     }
+    },
+    {
+     "uid": "89634e53c6eb5ea9",
+     "topic": {
+      "en": "Passive (Präsens)",
+      "pl": "Strona bierna (Präsens)",
+      "ru": "Пассив (страдательный залог) в настоящем времени (Präsens)"
+     }
+    },
+    {
+     "uid": "963b65d56e8fa5b5",
+     "topic": {
+      "en": "Plusquamperfekt",
+      "pl": "Plusquamperfekt (czas zaprzeszły)",
+      "ru": "Плюсквамперфект (Plusquamperfekt)"
+     }
+    },
+    {
+     "uid": "7fc3c51b43cb30d1",
+     "topic": {
+      "en": "A2 review",
+      "pl": "Powtórka A2",
+      "ru": "Повторение A2"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "4837b8a4364cea77",
+     "german": "Fußgänger",
+     "article": "der",
+     "forms": "Fußgänger",
+     "pos": "noun",
+     "meaning": {
+      "en": "pedestrian",
+      "bn": "পথচারী",
+      "pl": "pieszy / przechodzień",
+      "ru": "пешеход"
+     },
+     "guide": {
+      "en": "FOOSS-geng-er",
+      "bn": "ফুসগেঙার",
+      "pl": "FUS-geng-a",
+      "ru": "фУсгэнга"
+     }
+    },
+    {
+     "uid": "18cdf0411036aac8",
+     "german": "Überstunden",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "overtime",
+      "bn": "অতিরিক্ত কাজের সময়",
+      "pl": "nadgodziny",
+      "ru": "сверхурочные / переработки"
+     },
+     "guide": {
+      "en": "EW-ber-shtoon-den",
+      "bn": "য়্যুবারশ্টুন্ডেন",
+      "pl": "Ü-ba-sztun-den",
+      "ru": "Юбаштундэн"
+     }
+    },
+    {
+     "uid": "117988daae586dc3",
+     "german": "Schwager",
+     "article": "der",
+     "forms": "Schwäger",
+     "pos": "noun",
+     "meaning": {
+      "en": "brother-in-law",
+      "bn": "দুলাভাই / শ্যালক",
+      "pl": "szwagier",
+      "ru": "шурин / деверь / зять (муж сестры)"
+     },
+     "guide": {
+      "en": "SHVAH-ger",
+      "bn": "শ্ভাগার",
+      "pl": "SZWA-ga",
+      "ru": "швАга"
+     }
+    },
+    {
+     "uid": "e950e16332caef59",
+     "german": "Staatsangehörigkeit",
+     "article": "die",
+     "forms": "Staatsangehörigkeiten",
+     "pos": "noun",
+     "meaning": {
+      "en": "nationality / citizenship",
+      "bn": "নাগরিকত্ব",
+      "pl": "obywatelstwo",
+      "ru": "гражданство"
+     },
+     "guide": {
+      "en": "SHTAHTS-an-guh-hur-rihy-kait",
+      "bn": "শ্টাট্‌সআনগেহ্যোরিশকাইট",
+      "pl": "SZTAC-an-ge-hö-riś-kajt",
+      "ru": "штАтсангэхёрихькайт"
+     }
+    },
+    {
+     "uid": "83aabbe6195bcfe9",
+     "german": "wiegen",
+     "article": null,
+     "forms": "wiegt · hat gewogen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to weigh",
+      "bn": "ওজন করা",
+      "pl": "ważyć / zważyć",
+      "ru": "взвешивать / взвесить / весить"
+     },
+     "guide": {
+      "en": "VEE-gen",
+      "bn": "ভিগেন",
+      "pl": "WI-gen",
+      "ru": "вИгэн"
+     }
+    },
+    {
+     "uid": "07bb6ce3cd18a894",
+     "german": "Pflicht",
+     "article": "die",
+     "forms": "Pflichten",
+     "pos": "noun",
+     "meaning": {
+      "en": "duty / obligation",
+      "bn": "কর্তব্য / বাধ্যবাধকতা",
+      "pl": "obowiązek",
+      "ru": "обязанность / долг"
+     },
+     "guide": {
+      "en": "PFLIHYT",
+      "bn": "প্ফ্লিশ্ট",
+      "pl": "PFLIŚT",
+      "ru": "пфлихьт"
+     }
+    },
+    {
+     "uid": "5b7b05a51610f369",
+     "german": "Server",
+     "article": "der",
+     "forms": "Server",
+     "pos": "noun",
+     "meaning": {
+      "en": "server",
+      "bn": "সার্ভার",
+      "pl": "serwer",
+      "ru": "сервер"
+     },
+     "guide": {
+      "en": "ZUR-ver",
+      "bn": "জার্ভার",
+      "pl": "ZÖR-wa",
+      "ru": "зёрва"
+     }
+    },
+    {
+     "uid": "50dba9ab5a4f3712",
+     "german": "Wartenummer",
+     "article": "die",
+     "forms": "Wartenummern",
+     "pos": "noun",
+     "meaning": {
+      "en": "queue number",
+      "bn": "অপেক্ষার নম্বর",
+      "pl": "numerek (w kolejce)",
+      "ru": "номер в очереди / талон"
+     },
+     "guide": {
+      "en": "VAR-tuh-noom-mer",
+      "bn": "ভার্টেনুমার",
+      "pl": "WAR-te-nu-ma",
+      "ru": "вАртэнума"
+     }
+    },
+    {
+     "uid": "212fa041aa4a6f90",
+     "german": "Roller",
+     "article": "der",
+     "forms": "Roller",
+     "pos": "noun",
+     "meaning": {
+      "en": "scooter",
+      "bn": "স্কুটার",
+      "pl": "hulajnoga / skuter",
+      "ru": "самокат / скутер"
+     },
+     "guide": {
+      "en": "ROL-ler",
+      "bn": "রলার",
+      "pl": "RO-la",
+      "ru": "рОла"
+     }
+    },
+    {
+     "uid": "32d146e3af131a5a",
+     "german": "Gebäude",
+     "article": "das",
+     "forms": "Gebäude",
+     "pos": "noun",
+     "meaning": {
+      "en": "building",
+      "bn": "ভবন",
+      "pl": "budynek",
+      "ru": "здание"
+     },
+     "guide": {
+      "en": "guh-BOY-duh",
+      "bn": "গেবয়ডে",
+      "pl": "ge-BOJ-de",
+      "ru": "гэбОйдэ"
+     }
+    },
+    {
+     "uid": "e5728f7ec1bf3e7c",
+     "german": "Strafzettel",
+     "article": "der",
+     "forms": "Strafzettel",
+     "pos": "noun",
+     "meaning": {
+      "en": "parking ticket / fine",
+      "bn": "জরিমানার টিকিট",
+      "pl": "mandat",
+      "ru": "штраф / квитанция о штрафе"
+     },
+     "guide": {
+      "en": "SHTRAHF-tset-tel",
+      "bn": "শ্ট্রাফৎসেটেল",
+      "pl": "SZTRAF-ce-tel",
+      "ru": "штрАфцэтэль"
+     }
+    },
+    {
+     "uid": "e4ae2fee738ac826",
+     "german": "breit",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "wide / broad",
+      "bn": "চওড়া",
+      "pl": "szeroki",
+      "ru": "широкий"
+     },
+     "guide": {
+      "en": "BRAIT",
+      "bn": "ব্রাইট",
+      "pl": "BRAJT",
+      "ru": "брайт"
+     }
+    },
+    {
+     "uid": "af9993870642311d",
+     "german": "Dreieck",
+     "article": "das",
+     "forms": "Dreiecke",
+     "pos": "noun",
+     "meaning": {
+      "en": "triangle",
+      "bn": "ত্রিভুজ",
+      "pl": "trójkąt",
+      "ru": "треугольник"
+     },
+     "guide": {
+      "en": "DRAI-ek",
+      "bn": "ড্রাইএক",
+      "pl": "DRAJ-ek",
+      "ru": "дрАйэк"
+     }
+    },
+    {
+     "uid": "fc751d72bdc6033d",
+     "german": "Berater",
+     "article": "der",
+     "forms": "Berater",
+     "pos": "noun",
+     "meaning": {
+      "en": "consultant / advisor",
+      "bn": "পরামর্শদাতা",
+      "pl": "doradca / konsultant",
+      "ru": "консультант / советник"
+     },
+     "guide": {
+      "en": "buh-RAH-ter",
+      "bn": "বেরাটার",
+      "pl": "be-RA-ta",
+      "ru": "бэрАта"
+     }
+    },
+    {
+     "uid": "d2d9536b98395f28",
+     "german": "Handgepäck",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "hand luggage",
+      "bn": "হ্যান্ড লাগেজ",
+      "pl": "bagaż podręczny",
+      "ru": "ручная кладь"
+     },
+     "guide": {
+      "en": "HANT-guh-pek",
+      "bn": "হান্টগেপেক",
+      "pl": "HANT-ge-pek",
+      "ru": "хАнтгэпэк"
+     }
+    },
+    {
+     "uid": "23611c56857e5053",
+     "german": "weiterleiten",
+     "article": null,
+     "forms": "leitet weiter · hat weitergeleitet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to forward",
+      "bn": "ফরওয়ার্ড করা",
+      "pl": "przekazywać / przekazać (dalej)",
+      "ru": "пересылать / переслать"
+     },
+     "guide": {
+      "en": "VAI-ter-lai-ten",
+      "bn": "ভাইটারলাইটেন",
+      "pl": "WAJ-ta-laj-ten",
+      "ru": "вАйталайтэн"
+     }
+    },
+    {
+     "uid": "f26e7ff92b8a08dd",
+     "german": "Kommode",
+     "article": "die",
+     "forms": "Kommoden",
+     "pos": "noun",
+     "meaning": {
+      "en": "chest of drawers",
+      "bn": "ড্রয়ারওয়ালা আলমারি",
+      "pl": "komoda",
+      "ru": "комод"
+     },
+     "guide": {
+      "en": "kom-MOH-duh",
+      "bn": "কমোডে",
+      "pl": "ko-MO-de",
+      "ru": "комОдэ"
+     }
+    },
+    {
+     "uid": "861b6760b7ab15c2",
+     "german": "Gymnasium",
+     "article": "das",
+     "forms": "Gymnasien",
+     "pos": "noun",
+     "meaning": {
+      "en": "grammar school (academic secondary)",
+      "bn": "উচ্চ মাধ্যমিক বিদ্যালয় (Gymnasium)",
+      "pl": "liceum ogólnokształcące (Gymnasium)",
+      "ru": "гимназия"
+     },
+     "guide": {
+      "en": "gewm-NAH-zyoom",
+      "bn": "গ্যুম্নাজিউম",
+      "pl": "güm-NA-zi-jum",
+      "ru": "гюмнАзиум"
+     }
+    },
+    {
+     "uid": "6d754fe359539bee",
+     "german": "Mietauto",
+     "article": "das",
+     "forms": "Mietautos",
+     "pos": "noun",
+     "meaning": {
+      "en": "rental car",
+      "bn": "ভাড়ার গাড়ি",
+      "pl": "wynajęty samochód",
+      "ru": "машина напрокат / арендованная машина"
+     },
+     "guide": {
+      "en": "MEET-ow-toh",
+      "bn": "মিটআউটো",
+      "pl": "MIT-au-to",
+      "ru": "мИтауто"
+     }
+    },
+    {
+     "uid": "db928fba93acf975",
+     "german": "faul",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "lazy",
+      "bn": "অলস",
+      "pl": "leniwy",
+      "ru": "ленивый"
+     },
+     "guide": {
+      "en": "FOWL",
+      "bn": "ফাউল",
+      "pl": "FAUL",
+      "ru": "фАуль"
+     }
+    },
+    {
+     "uid": "493526c858c31dc0",
+     "german": "Dokumentation",
+     "article": "die",
+     "forms": "Dokumentationen",
+     "pos": "noun",
+     "meaning": {
+      "en": "documentary",
+      "bn": "ডকুমেন্টারি",
+      "pl": "film dokumentalny",
+      "ru": "документальный фильм"
+     },
+     "guide": {
+      "en": "do-koo-men-ta-TSYOHN",
+      "bn": "ডোকুমেন্টাৎসিওন",
+      "pl": "do-ku-men-ta-ci-JON",
+      "ru": "докумэнтациОн"
+     }
+    },
+    {
+     "uid": "614070fa6ae0458a",
+     "german": "Parkhaus",
+     "article": "das",
+     "forms": "Parkhäuser",
+     "pos": "noun",
+     "meaning": {
+      "en": "multi-storey car park",
+      "bn": "বহুতল পার্কিং",
+      "pl": "parking wielopoziomowy",
+      "ru": "многоуровневая парковка / паркинг"
+     },
+     "guide": {
+      "en": "PARK-howss",
+      "bn": "পার্কহাউস",
+      "pl": "PARK-haus",
+      "ru": "пАркхаус"
+     }
+    },
+    {
+     "uid": "d7593226f6f2b2c2",
+     "german": "Semester",
+     "article": "das",
+     "forms": "Semester",
+     "pos": "noun",
+     "meaning": {
+      "en": "semester",
+      "bn": "সেমিস্টার",
+      "pl": "semestr",
+      "ru": "семестр"
+     },
+     "guide": {
+      "en": "zay-MES-ter",
+      "bn": "জেমেস্টার",
+      "pl": "ze-MES-ta",
+      "ru": "зэмЭста"
+     }
+    },
+    {
+     "uid": "b280e36dae5cbda2",
+     "german": "Umkleidekabine",
+     "article": "die",
+     "forms": "Umkleidekabinen",
+     "pos": "noun",
+     "meaning": {
+      "en": "fitting room",
+      "bn": "পোশাক বদলানোর কক্ষ",
+      "pl": "przymierzalnia",
+      "ru": "примерочная"
+     },
+     "guide": {
+      "en": "OOM-klai-duh-ka-bee-nuh",
+      "bn": "উমক্লাইডেকাবিনে",
+      "pl": "UM-klaj-de-ka-bi-ne",
+      "ru": "Умклайдэкабинэ"
+     }
+    },
+    {
+     "uid": "cb7ad8aaac55e620",
+     "german": "platt",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "flat (tyre)",
+      "bn": "চুপসে যাওয়া (টায়ার)",
+      "pl": "przebity / bez powietrza (o oponie)",
+      "ru": "спущенный (о шине)"
+     },
+     "guide": {
+      "en": "PLAT",
+      "bn": "প্লাট",
+      "pl": "PLAT",
+      "ru": "плат"
+     }
+    }
+   ]
+  },
+  {
+   "code": "B1.1",
+   "level": "B1",
+   "ord": 5,
+   "words": 194,
+   "grammar_topics": 10,
+   "grammar": [
+    {
+     "uid": "08c04e0371e276aa",
+     "topic": {
+      "en": "Konjunktiv II past & irreal conditions",
+      "pl": "Konjunktiv II czasu przeszłego i zdania warunkowe nierzeczywiste",
+      "ru": "Сослагательное наклонение (Konjunktiv II) в прошедшем времени и нереальные условия"
+     }
+    },
+    {
+     "uid": "2998513b58c872a1",
+     "topic": {
+      "en": "Passive (past) & Zustandspassiv",
+      "pl": "Strona bierna w czasie przeszłym i strona bierna stanu (Zustandspassiv)",
+      "ru": "Пассив в прошедшем времени и пассив состояния (Zustandspassiv)"
+     }
+    },
+    {
+     "uid": "c6511ff9da960f88",
+     "topic": {
+      "en": "n-Deklination",
+      "pl": "Odmiana słaba rzeczowników (n-Deklination)",
+      "ru": "Слабое склонение существительных (n-Deklination)"
+     }
+    },
+    {
+     "uid": "9afa2a872fc0af6b",
+     "topic": {
+      "en": "Relative clauses with prepositions & wo",
+      "pl": "Zdania względne z przyimkami i z wo",
+      "ru": "Определительные придаточные предложения с предлогами и wo"
+     }
+    },
+    {
+     "uid": "9a5bc6f190609f52",
+     "topic": {
+      "en": "Adjective declension (full) & participles as adjectives",
+      "pl": "Odmiana przymiotnika (pełna) i imiesłowy jako przymiotniki",
+      "ru": "Склонение прилагательных (полностью) и причастия в роли прилагательных"
+     }
+    },
+    {
+     "uid": "e73306c4d3871d0d",
+     "topic": {
+      "en": "um…zu, ohne…zu, (an)statt…zu, damit",
+      "pl": "um…zu, ohne…zu, (an)statt…zu, damit",
+      "ru": "Конструкции um…zu, ohne…zu, (an)statt…zu и союз damit"
+     }
+    },
+    {
+     "uid": "2872f17d240d7f59",
+     "topic": {
+      "en": "Indirect speech (recognition)",
+      "pl": "Mowa zależna (rozpoznawanie)",
+      "ru": "Косвенная речь (распознавание)"
+     }
+    },
+    {
+     "uid": "0a61b3574c649412",
+     "topic": {
+      "en": "Genitive prepositions",
+      "pl": "Przyimki z dopełniaczem",
+      "ru": "Предлоги с родительным падежом"
+     }
+    },
+    {
+     "uid": "14b3115c79e441b5",
+     "topic": {
+      "en": "Word formation & nominalisation",
+      "pl": "Słowotwórstwo i nominalizacja",
+      "ru": "Словообразование и субстантивация"
+     }
+    },
+    {
+     "uid": "35140c34a3e8ddf1",
+     "topic": {
+      "en": "Formal letters & emails",
+      "pl": "Listy i e-maile formalne",
+      "ru": "Официальные письма (бумажные и электронные)"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "acf396465be97a69",
+     "german": "Eigentümer",
+     "article": "der",
+     "forms": "Eigentümer",
+     "pos": "noun",
+     "meaning": {
+      "en": "owner",
+      "bn": "মালিক",
+      "pl": "właściciel",
+      "ru": "владелец / собственник"
+     },
+     "guide": {
+      "en": "AI-gen-tew-mer",
+      "bn": "আইগেনট্যুমার",
+      "pl": "AJ-gen-tü-ma",
+      "ru": "Айгэнтюма"
+     }
+    },
+    {
+     "uid": "2fb6fe0af0f4a8c6",
+     "german": "Toleranz",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "tolerance",
+      "bn": "সহনশীলতা",
+      "pl": "tolerancja",
+      "ru": "терпимость / толерантность"
+     },
+     "guide": {
+      "en": "to-luh-RANTS",
+      "bn": "টোলেরান্‌ৎস",
+      "pl": "to-le-RANC",
+      "ru": "толэрАнц"
+     }
+    },
+    {
+     "uid": "0fbadbf7c008d0cf",
+     "german": "Nachzahlung",
+     "article": "die",
+     "forms": "Nachzahlungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "additional payment / back payment",
+      "bn": "অতিরিক্ত পরিশোধ",
+      "pl": "dopłata / zaległa płatność",
+      "ru": "доплата"
+     },
+     "guide": {
+      "en": "NAHKH-tsah-loong",
+      "bn": "নাখৎসালুং",
+      "pl": "NACH-ca-lung",
+      "ru": "нАхцалунг"
+     }
+    },
+    {
+     "uid": "9d0a5330fc8e1fdf",
+     "german": "Blutdruck",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "blood pressure",
+      "bn": "রক্তচাপ",
+      "pl": "ciśnienie krwi",
+      "ru": "кровяное давление"
+     },
+     "guide": {
+      "en": "BLOOT-drook",
+      "bn": "ব্লুটড্রুক",
+      "pl": "BLUT-druk",
+      "ru": "блУтдрук"
+     }
+    },
+    {
+     "uid": "6131e151518fcdd6",
+     "german": "Ummeldung",
+     "article": "die",
+     "forms": "Ummeldungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "re-registration (change of address)",
+      "bn": "ঠিকানা পরিবর্তনের নিবন্ধন",
+      "pl": "przemeldowanie (zmiana adresu)",
+      "ru": "перерегистрация (при смене адреса)"
+     },
+     "guide": {
+      "en": "OOM-mel-doong",
+      "bn": "উমমেল্ডুং",
+      "pl": "UM-mel-dung",
+      "ru": "Уммэльдунг"
+     }
+    },
+    {
+     "uid": "f0cc637d3cc3fa1d",
+     "german": "entlassen",
+     "article": null,
+     "forms": "entlässt · hat entlassen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to dismiss / to lay off",
+      "bn": "বরখাস্ত করা",
+      "pl": "zwalniać / zwolnić (z pracy)",
+      "ru": "увольнять / уволить"
+     },
+     "guide": {
+      "en": "ent-LAS-sen",
+      "bn": "এন্টলাসেন",
+      "pl": "ent-LA-sen",
+      "ru": "энтлАсэн"
+     }
+    },
+    {
+     "uid": "f544aa0524311529",
+     "german": "Bußgeld",
+     "article": "das",
+     "forms": "Bußgelder",
+     "pos": "noun",
+     "meaning": {
+      "en": "fine",
+      "bn": "জরিমানা",
+      "pl": "mandat / grzywna",
+      "ru": "штраф"
+     },
+     "guide": {
+      "en": "BOOSS-gelt",
+      "bn": "বুসগেল্ট",
+      "pl": "BUS-gelt",
+      "ru": "бУсгэльт"
+     }
+    },
+    {
+     "uid": "725338602009b364",
+     "german": "Zwischenmiete",
+     "article": "die",
+     "forms": "Zwischenmieten",
+     "pos": "noun",
+     "meaning": {
+      "en": "sublet / interim rental",
+      "bn": "সাবলেট",
+      "pl": "podnajem (czasowy)",
+      "ru": "субаренда / временная аренда"
+     },
+     "guide": {
+      "en": "TSVISH-en-mee-tuh",
+      "bn": "ৎসভিশেনমিটে",
+      "pl": "CWI-szen-mi-te",
+      "ru": "цвИшэнмитэ"
+     }
+    },
+    {
+     "uid": "0613c880fadb8fca",
+     "german": "Einweihungsparty",
+     "article": "die",
+     "forms": "Einweihungspartys",
+     "pos": "noun",
+     "meaning": {
+      "en": "housewarming party",
+      "bn": "গৃহপ্রবেশ পার্টি",
+      "pl": "parapetówka",
+      "ru": "новоселье"
+     },
+     "guide": {
+      "en": "AIN-vai-oongss-par-tee",
+      "bn": "আইনভাইয়ুংসপার্টি",
+      "pl": "AJN-waj-ungs-par-ti",
+      "ru": "Айнвайунгспарти"
+     }
+    },
+    {
+     "uid": "bc74a6fb59b4590b",
+     "german": "Sachbearbeiter",
+     "article": "der",
+     "forms": "Sachbearbeiter",
+     "pos": "noun",
+     "meaning": {
+      "en": "case worker / clerk",
+      "bn": "কেসওয়ার্কার / কর্মকর্তা",
+      "pl": "urzędnik prowadzący sprawę",
+      "ru": "сотрудник ведомства / делопроизводитель"
+     },
+     "guide": {
+      "en": "ZAKH-buh-ar-bai-ter",
+      "bn": "জাখবেআরবাইটার",
+      "pl": "ZACH-be-ar-baj-ta",
+      "ru": "зАхбэарбайта"
+     }
+    },
+    {
+     "uid": "7d995f504a74d529",
+     "german": "Police",
+     "article": "die",
+     "forms": "Policen",
+     "pos": "noun",
+     "meaning": {
+      "en": "insurance policy",
+      "bn": "বিমা পলিসি",
+      "pl": "polisa (ubezpieczeniowa)",
+      "ru": "страховой полис"
+     },
+     "guide": {
+      "en": "po-LEE-suh",
+      "bn": "পোলিসে",
+      "pl": "po-LI-se",
+      "ru": "полИсэ"
+     }
+    },
+    {
+     "uid": "89d9c2aa9e39a516",
+     "german": "Krise",
+     "article": "die",
+     "forms": "Krisen",
+     "pos": "noun",
+     "meaning": {
+      "en": "crisis",
+      "bn": "সংকট",
+      "pl": "kryzys",
+      "ru": "кризис"
+     },
+     "guide": {
+      "en": "KREE-zuh",
+      "bn": "ক্রিজে",
+      "pl": "KRI-ze",
+      "ru": "крИзэ"
+     }
+    },
+    {
+     "uid": "e95082365de74ca0",
+     "german": "Demonstration",
+     "article": "die",
+     "forms": "Demonstrationen",
+     "pos": "noun",
+     "meaning": {
+      "en": "demonstration",
+      "bn": "বিক্ষোভ",
+      "pl": "demonstracja",
+      "ru": "демонстрация / митинг"
+     },
+     "guide": {
+      "en": "day-mon-stra-TSYOHN",
+      "bn": "ডেমন্স্ট্রাৎসিওন",
+      "pl": "de-mon-stra-ci-JON",
+      "ru": "дэмонстрациОн"
+     }
+    },
+    {
+     "uid": "ac9905ceb23289bb",
+     "german": "Übergabe",
+     "article": "die",
+     "forms": "Übergaben",
+     "pos": "noun",
+     "meaning": {
+      "en": "handover",
+      "bn": "হস্তান্তর",
+      "pl": "przekazanie",
+      "ru": "передача (квартиры, ключей)"
+     },
+     "guide": {
+      "en": "EW-ber-gah-buh",
+      "bn": "য়্যুবারগাবে",
+      "pl": "Ü-ba-ga-be",
+      "ru": "Юбагабэ"
+     }
+    },
+    {
+     "uid": "6a4891d120a5e7a7",
+     "german": "Verwaltung",
+     "article": "die",
+     "forms": "Verwaltungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "administration",
+      "bn": "প্রশাসন",
+      "pl": "administracja / zarząd",
+      "ru": "администрация / управление"
+     },
+     "guide": {
+      "en": "fair-VAL-toong",
+      "bn": "ফেয়াভাল্টুং",
+      "pl": "fea-WAL-tung",
+      "ru": "фавАльтунг"
+     }
+    },
+    {
+     "uid": "3dcd84c0368ac5b1",
+     "german": "Gehaltsabrechnung",
+     "article": "die",
+     "forms": "Gehaltsabrechnungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "payslip",
+      "bn": "বেতনের বিবরণী",
+      "pl": "pasek wypłaty / odcinek płacowy",
+      "ru": "расчётный лист (по зарплате)"
+     },
+     "guide": {
+      "en": "guh-HALTS-ap-rehy-noong",
+      "bn": "গেহাল্ট্‌সআপরেশনুং",
+      "pl": "ge-HALC-ap-reś-nung",
+      "ru": "гэхАльтсапрэхьнунг"
+     }
+    },
+    {
+     "uid": "04be607a95c19dd4",
+     "german": "sich übergeben",
+     "article": null,
+     "forms": "übergibt sich · hat sich übergeben",
+     "pos": "verb",
+     "meaning": {
+      "en": "to vomit",
+      "bn": "বমি করা",
+      "pl": "wymiotować / zwymiotować",
+      "ru": "рвать / вырвать (меня вырвало)"
+     },
+     "guide": {
+      "en": "zihy ew-ber-GAY-ben",
+      "bn": "জিশ য়্যুবারগেবেন",
+      "pl": "ziś ü-ba-GE-ben",
+      "ru": "зихь юбагЭбэн"
+     }
+    },
+    {
+     "uid": "380c7639d3038fe9",
+     "german": "Bearbeitung",
+     "article": "die",
+     "forms": "Bearbeitungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "processing",
+      "bn": "প্রক্রিয়াকরণ",
+      "pl": "rozpatrywanie (wniosku)",
+      "ru": "обработка / рассмотрение"
+     },
+     "guide": {
+      "en": "buh-AR-bai-toong",
+      "bn": "বেআরবাইটুং",
+      "pl": "be-AR-baj-tung",
+      "ru": "бэАрбайтунг"
+     }
+    },
+    {
+     "uid": "9577f3f99c14cb03",
+     "german": "Lernziel",
+     "article": "das",
+     "forms": "Lernziele",
+     "pos": "noun",
+     "meaning": {
+      "en": "learning goal",
+      "bn": "শেখার লক্ষ্য",
+      "pl": "cel nauki",
+      "ru": "учебная цель"
+     },
+     "guide": {
+      "en": "LAIRN-tseel",
+      "bn": "লের্নৎসিল",
+      "pl": "LERN-cil",
+      "ru": "лЭрнциль"
+     }
+    },
+    {
+     "uid": "fe2af7bf8046effc",
+     "german": "Steuererklärung",
+     "article": "die",
+     "forms": "Steuererklärungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "tax return",
+      "bn": "কর বিবরণী",
+      "pl": "zeznanie podatkowe",
+      "ru": "налоговая декларация"
+     },
+     "guide": {
+      "en": "SHTOY-er-air-kleh-roong",
+      "bn": "শ্টয়ারএয়াক্লেরুং",
+      "pl": "SZTOJ-a-ea-kle-rung",
+      "ru": "штОйаэаклэрунг"
+     }
+    },
+    {
+     "uid": "1b59db6b1af02316",
+     "german": "Haftpflichtversicherung",
+     "article": "die",
+     "forms": "Haftpflichtversicherungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "liability insurance",
+      "bn": "দায়বদ্ধতা বিমা",
+      "pl": "ubezpieczenie OC",
+      "ru": "страхование ответственности"
+     },
+     "guide": {
+      "en": "HAFT-pflihyt-fair-zihy-uh-roong",
+      "bn": "হাফ্টপ্ফ্লিশ্টফেয়াজিশারুং",
+      "pl": "HAFT-pfliśt-fea-zi-śe-rung",
+      "ru": "хАфтпфлихьтфазихерунг"
+     }
+    },
+    {
+     "uid": "2bbacd7572bbdeff",
+     "german": "Stipendium",
+     "article": "das",
+     "forms": "Stipendien",
+     "pos": "noun",
+     "meaning": {
+      "en": "scholarship",
+      "bn": "বৃত্তি",
+      "pl": "stypendium",
+      "ru": "стипендия"
+     },
+     "guide": {
+      "en": "shti-PEN-dyoom",
+      "bn": "শ্টিপেন্ডিউম",
+      "pl": "szti-PEN-di-jum",
+      "ru": "штипЭндиум"
+     }
+    },
+    {
+     "uid": "421b3d72f668cce2",
+     "german": "Angabe",
+     "article": "die",
+     "forms": "Angaben",
+     "pos": "noun",
+     "meaning": {
+      "en": "information / detail (given)",
+      "bn": "প্রদত্ত তথ্য",
+      "pl": "dane / podana informacja",
+      "ru": "данные / сведения"
+     },
+     "guide": {
+      "en": "AN-gah-buh",
+      "bn": "আনগাবে",
+      "pl": "AN-ga-be",
+      "ru": "Ангабэ"
+     }
+    },
+    {
+     "uid": "9e3781e37fa34e0e",
+     "german": "fällig",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "due",
+      "bn": "পরিশোধযোগ্য (তারিখ)",
+      "pl": "płatny (w terminie) / do zapłaty",
+      "ru": "подлежащий оплате / к оплате"
+     },
+     "guide": {
+      "en": "FEL-lihy",
+      "bn": "ফেলিশ",
+      "pl": "FE-liś",
+      "ru": "фЭлихь"
+     }
+    },
+    {
+     "uid": "806204a85383d73c",
+     "german": "Globalisierung",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "globalisation",
+      "bn": "বিশ্বায়ন",
+      "pl": "globalizacja",
+      "ru": "глобализация"
+     },
+     "guide": {
+      "en": "glo-ba-li-ZEE-roong",
+      "bn": "গ্লোবালিজিরুং",
+      "pl": "glo-ba-li-ZI-rung",
+      "ru": "глобализИрунг"
+     }
+    }
+   ]
+  },
+  {
+   "code": "B1.2",
+   "level": "B1",
+   "ord": 6,
+   "words": 185,
+   "grammar_topics": 10,
+   "grammar": [
+    {
+     "uid": "65520765470452ea",
+     "topic": {
+      "en": "Two-part connectors",
+      "pl": "Spójniki dwuczęściowe",
+      "ru": "Двойные союзы"
+     }
+    },
+    {
+     "uid": "3a694c62c296a79b",
+     "topic": {
+      "en": "lassen, brauchen…zu & modal alternatives",
+      "pl": "lassen, brauchen…zu i zamienniki czasowników modalnych",
+      "ru": "lassen, brauchen…zu и замена модальных глаголов"
+     }
+    },
+    {
+     "uid": "17e9d8346bc64dd3",
+     "topic": {
+      "en": "Vermutung & modal particles",
+      "pl": "Przypuszczenie (Vermutung) i partykuły modalne",
+      "ru": "Предположение (Vermutung) и модальные частицы"
+     }
+    },
+    {
+     "uid": "cbcada1e32a79873",
+     "topic": {
+      "en": "Reflexive with dative & reciprocal",
+      "pl": "Zaimek zwrotny w celowniku i znaczenie wzajemne",
+      "ru": "Возвратные глаголы с дательным падежом и взаимное действие"
+     }
+    },
+    {
+     "uid": "d79441ab077a770d",
+     "topic": {
+      "en": "Verbs with fixed prepositions (B1 list)",
+      "pl": "Czasowniki ze stałymi przyimkami (lista B1)",
+      "ru": "Глаголы с устойчивыми предлогами (список B1)"
+     }
+    },
+    {
+     "uid": "831f3bb2263031ec",
+     "topic": {
+      "en": "Text connectors for writing",
+      "pl": "Wyrażenia łączące w wypowiedzi pisemnej",
+      "ru": "Связующие слова для письменной речи"
+     }
+    },
+    {
+     "uid": "e9abc995f2d1da95",
+     "topic": {
+      "en": "Speaking Redemittel",
+      "pl": "Zwroty przydatne w mówieniu (Redemittel)",
+      "ru": "Речевые обороты для устной речи (Redemittel)"
+     }
+    },
+    {
+     "uid": "8e775672f6d238f8",
+     "topic": {
+      "en": "Exam strategy: Lesen",
+      "pl": "Strategia egzaminacyjna: Lesen (czytanie)",
+      "ru": "Стратегия на экзамене: чтение (Lesen)"
+     }
+    },
+    {
+     "uid": "4d99f0ed96b8097e",
+     "topic": {
+      "en": "Exam strategy: Hören",
+      "pl": "Strategia egzaminacyjna: Hören (słuchanie)",
+      "ru": "Стратегия на экзамене: аудирование (Hören)"
+     }
+    },
+    {
+     "uid": "14590c8291f7d0f3",
+     "topic": {
+      "en": "Exam strategy: Schreiben & Sprechen",
+      "pl": "Strategia egzaminacyjna: Schreiben i Sprechen (pisanie i mówienie)",
+      "ru": "Стратегия на экзамене: письмо (Schreiben) и говорение (Sprechen)"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "679273661ac1efa4",
+     "german": "Umweltzone",
+     "article": "die",
+     "forms": "Umweltzonen",
+     "pos": "noun",
+     "meaning": {
+      "en": "low-emission zone",
+      "bn": "নিম্ন-নির্গমন এলাকা",
+      "pl": "strefa niskiej emisji",
+      "ru": "экологическая зона / зона низких выбросов"
+     },
+     "guide": {
+      "en": "OOM-velt-tsoh-nuh",
+      "bn": "উমভেল্টৎসোনে",
+      "pl": "UM-welt-co-ne",
+      "ru": "Умвэльтцонэ"
+     }
+    },
+    {
+     "uid": "7097d76256ecbb51",
+     "german": "Missverständnis",
+     "article": "das",
+     "forms": "Missverständnisse",
+     "pos": "noun",
+     "meaning": {
+      "en": "misunderstanding",
+      "bn": "ভুল বোঝাবুঝি",
+      "pl": "nieporozumienie",
+      "ru": "недоразумение"
+     },
+     "guide": {
+      "en": "MISS-fair-shtent-niss",
+      "bn": "মিসফেয়াশ্টেন্টনিস",
+      "pl": "MIS-fea-sztent-nis",
+      "ru": "мИсфаштэнтнис"
+     }
+    },
+    {
+     "uid": "032827471f47c657",
+     "german": "Freizeitaktivität",
+     "article": "die",
+     "forms": "Freizeitaktivitäten",
+     "pos": "noun",
+     "meaning": {
+      "en": "leisure activity",
+      "bn": "অবসর কার্যক্রম",
+      "pl": "zajęcie w wolnym czasie",
+      "ru": "занятие в свободное время"
+     },
+     "guide": {
+      "en": "FRAI-tsait-ak-ti-vi-teht",
+      "bn": "ফ্রাইৎসাইটআক্টিভিটেট",
+      "pl": "FRAJ-cajt-ak-ti-wi-tet",
+      "ru": "фрАйцайтактивитэт"
+     }
+    },
+    {
+     "uid": "30f3213f5512c749",
+     "german": "geizig",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "stingy / mean",
+      "bn": "কৃপণ",
+      "pl": "skąpy",
+      "ru": "скупой / жадный"
+     },
+     "guide": {
+      "en": "GAI-tsihy",
+      "bn": "গাইৎসিশ",
+      "pl": "GAJ-ciś",
+      "ru": "гАйцихь"
+     }
+    },
+    {
+     "uid": "05d93ce62ded0390",
+     "german": "anzeigen",
+     "article": null,
+     "forms": "zeigt an · hat angezeigt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to report (to the police) / to display",
+      "bn": "পুলিশে অভিযোগ করা / প্রদর্শন করা",
+      "pl": "zgłaszać (na policję) / wyświetlać",
+      "ru": "заявлять / заявить (в полицию) / показывать"
+     },
+     "guide": {
+      "en": "AN-tsai-gen",
+      "bn": "আন্‌ৎসাইগেন",
+      "pl": "AN-caj-gen",
+      "ru": "Анцайгэн"
+     }
+    },
+    {
+     "uid": "19913b4e78e1c141",
+     "german": "Freiberufler",
+     "article": "der",
+     "forms": "Freiberufler",
+     "pos": "noun",
+     "meaning": {
+      "en": "freelancer",
+      "bn": "ফ্রিল্যান্সার",
+      "pl": "freelancer / wolny strzelec",
+      "ru": "фрилансер / человек свободной профессии"
+     },
+     "guide": {
+      "en": "FRAI-buh-roof-ler",
+      "bn": "ফ্রাইবেরুফ্লার",
+      "pl": "FRAJ-be-ruf-la",
+      "ru": "фрАйбэруфла"
+     }
+    },
+    {
+     "uid": "0d409777c425c01d",
+     "german": "Gemeinde",
+     "article": "die",
+     "forms": "Gemeinden",
+     "pos": "noun",
+     "meaning": {
+      "en": "municipality / community",
+      "bn": "পৌরসভা / সম্প্রদায়",
+      "pl": "gmina / społeczność",
+      "ru": "муниципалитет / община"
+     },
+     "guide": {
+      "en": "guh-MAIN-duh",
+      "bn": "গেমাইন্ডে",
+      "pl": "ge-MAJN-de",
+      "ru": "гэмАйндэ"
+     }
+    },
+    {
+     "uid": "c7a4d0d4bd51a993",
+     "german": "Widerrufsrecht",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "right of withdrawal",
+      "bn": "প্রত্যাহারের অধিকার",
+      "pl": "prawo odstąpienia od umowy",
+      "ru": "право на отказ (от договора)"
+     },
+     "guide": {
+      "en": "VEE-der-roofs-rehyt",
+      "bn": "ভিডাররুফ্সরেশ্ট",
+      "pl": "WI-da-rufs-reśt",
+      "ru": "вИдаруфсрэхьт"
+     }
+    },
+    {
+     "uid": "a3853981e87abfae",
+     "german": "egoistisch",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "selfish",
+      "bn": "স্বার্থপর",
+      "pl": "egoistyczny / samolubny",
+      "ru": "эгоистичный"
+     },
+     "guide": {
+      "en": "ay-go-IS-tish",
+      "bn": "এগোইস্টিশ",
+      "pl": "e-go-IS-tisz",
+      "ru": "эгоИстиш"
+     }
+    },
+    {
+     "uid": "da38fb3dc7ff6505",
+     "german": "Muster",
+     "article": "das",
+     "forms": "Muster",
+     "pos": "noun",
+     "meaning": {
+      "en": "pattern / sample",
+      "bn": "নকশা / নমুনা",
+      "pl": "wzór / próbka",
+      "ru": "узор / образец"
+     },
+     "guide": {
+      "en": "MOOS-ter",
+      "bn": "মুস্টার",
+      "pl": "MUS-ta",
+      "ru": "мУста"
+     }
+    },
+    {
+     "uid": "8817c2a3ab632e5d",
+     "german": "wessen",
+     "article": null,
+     "forms": null,
+     "pos": "pron",
+     "meaning": {
+      "en": "whose",
+      "bn": "কার",
+      "pl": "czyj / czyja / czyje",
+      "ru": "чей / чья / чьё / чьи"
+     },
+     "guide": {
+      "en": "VES-sen",
+      "bn": "ভেসেন",
+      "pl": "WE-sen",
+      "ru": "вЭсэн"
+     }
+    },
+    {
+     "uid": "8c42a90ecaf8735d",
+     "german": "Alufolie",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "aluminium foil",
+      "bn": "অ্যালুমিনিয়াম ফয়েল",
+      "pl": "folia aluminiowa",
+      "ru": "алюминиевая фольга"
+     },
+     "guide": {
+      "en": "AH-loo-foh-lyuh",
+      "bn": "আলুফোলিয়ে",
+      "pl": "A-lu-fo-li-je",
+      "ru": "Алуфолиэ"
+     }
+    },
+    {
+     "uid": "7ed0f17d9b1a1d3c",
+     "german": "Stellenbeschreibung",
+     "article": "die",
+     "forms": "Stellenbeschreibungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "job description",
+      "bn": "চাকরির বিবরণ",
+      "pl": "opis stanowiska",
+      "ru": "описание вакансии"
+     },
+     "guide": {
+      "en": "SHTEL-len-buh-shrai-boong",
+      "bn": "শ্টেলেনবেশ্রাইবুং",
+      "pl": "SZTE-len-be-szraj-bung",
+      "ru": "штЭлэнбэшрайбунг"
+     }
+    },
+    {
+     "uid": "23d81dfc40049723",
+     "german": "Prise",
+     "article": "die",
+     "forms": "Prisen",
+     "pos": "noun",
+     "meaning": {
+      "en": "pinch",
+      "bn": "এক চিমটি",
+      "pl": "szczypta",
+      "ru": "щепотка"
+     },
+     "guide": {
+      "en": "PREE-zuh",
+      "bn": "প্রিজে",
+      "pl": "PRI-ze",
+      "ru": "прИзэ"
+     }
+    },
+    {
+     "uid": "a818dea7b4e71951",
+     "german": "zweifeln",
+     "article": null,
+     "forms": "zweifelt · hat gezweifelt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to doubt",
+      "bn": "সন্দেহ করা",
+      "pl": "wątpić",
+      "ru": "сомневаться / усомниться"
+     },
+     "guide": {
+      "en": "TSVAI-feln",
+      "bn": "ৎসভাইফেল্ন",
+      "pl": "CWAJ-feln",
+      "ru": "цвАйфэльн"
+     }
+    },
+    {
+     "uid": "78fa6242bde719c4",
+     "german": "Sitzung",
+     "article": "die",
+     "forms": "Sitzungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "session / meeting",
+      "bn": "সভা / সেশন",
+      "pl": "posiedzenie / zebranie / sesja",
+      "ru": "заседание / совещание / сеанс"
+     },
+     "guide": {
+      "en": "ZIT-soong",
+      "bn": "জিৎসুং",
+      "pl": "ZI-cung",
+      "ru": "зИцунг"
+     }
+    },
+    {
+     "uid": "b1cc579a34c8c1a6",
+     "german": "sich schämen",
+     "article": null,
+     "forms": "schämt sich · hat sich geschämt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to be ashamed",
+      "bn": "লজ্জা পাওয়া",
+      "pl": "wstydzić się",
+      "ru": "стыдиться"
+     },
+     "guide": {
+      "en": "zihy SHEH-men",
+      "bn": "জিশ শেমেন",
+      "pl": "ziś SZE-men",
+      "ru": "зихь шЭмэн"
+     }
+    },
+    {
+     "uid": "6626a9e3fd485a57",
+     "german": "Standpunkt",
+     "article": "der",
+     "forms": "Standpunkte",
+     "pos": "noun",
+     "meaning": {
+      "en": "point of view",
+      "bn": "দৃষ্টিভঙ্গি",
+      "pl": "punkt widzenia / stanowisko",
+      "ru": "точка зрения"
+     },
+     "guide": {
+      "en": "SHTANT-poonkt",
+      "bn": "শ্টান্টপুংক্ট",
+      "pl": "SZTANT-punkt",
+      "ru": "штАнтпункт"
+     }
+    },
+    {
+     "uid": "80bcfc530a5a518b",
+     "german": "erziehen",
+     "article": null,
+     "forms": "erzieht · hat erzogen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to raise / to bring up",
+      "bn": "লালনপালন করা",
+      "pl": "wychowywać / wychować",
+      "ru": "воспитывать / воспитать"
+     },
+     "guide": {
+      "en": "air-TSEE-en",
+      "bn": "এয়াৎসিয়েন",
+      "pl": "ea-CI-en",
+      "ru": "эацИэн"
+     }
+    },
+    {
+     "uid": "96e1d81b7b929204",
+     "german": "rechtlich",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "legal / legally",
+      "bn": "আইনগত",
+      "pl": "prawny / prawnie",
+      "ru": "правовой / юридически"
+     },
+     "guide": {
+      "en": "REHYT-lihy",
+      "bn": "রেশ্টলিশ",
+      "pl": "REŚT-liś",
+      "ru": "рЭхьтлихь"
+     }
+    },
+    {
+     "uid": "33d785697fff66d4",
+     "german": "Hilfsbereitschaft",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "helpfulness",
+      "bn": "সাহায্যের মনোভাব",
+      "pl": "uczynność / gotowość do pomocy",
+      "ru": "готовность помочь / отзывчивость"
+     },
+     "guide": {
+      "en": "HILFS-buh-rait-shaft",
+      "bn": "হিল্ফ্সবেরাইটশাফ্ট",
+      "pl": "HILFS-be-rajt-szaft",
+      "ru": "хИльфсбэрайтшафт"
+     }
+    },
+    {
+     "uid": "b040258fdfd1a94a",
+     "german": "lebhaft",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "lively",
+      "bn": "প্রাণবন্ত",
+      "pl": "żywy / ożywiony",
+      "ru": "живой / оживлённый"
+     },
+     "guide": {
+      "en": "LAYP-haft",
+      "bn": "লেপহাফ্ট",
+      "pl": "LEP-haft",
+      "ru": "лЭпхафт"
+     }
+    },
+    {
+     "uid": "0945d14b0d45953e",
+     "german": "zusagen",
+     "article": null,
+     "forms": "sagt zu · hat zugesagt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to accept / to confirm attendance",
+      "bn": "রাজি হওয়া / নিশ্চিত করা",
+      "pl": "przyjąć (zaproszenie) / potwierdzić udział",
+      "ru": "соглашаться / согласиться / подтверждать"
+     },
+     "guide": {
+      "en": "TSOO-zah-gen",
+      "bn": "ৎসুজাগেন",
+      "pl": "CU-za-gen",
+      "ru": "цУзагэн"
+     }
+    },
+    {
+     "uid": "1f6152a9087e886a",
+     "german": "leiden",
+     "article": null,
+     "forms": "leidet · hat gelitten",
+     "pos": "verb",
+     "meaning": {
+      "en": "to suffer",
+      "bn": "ভোগা / কষ্ট পাওয়া",
+      "pl": "cierpieć",
+      "ru": "страдать"
+     },
+     "guide": {
+      "en": "LAI-den",
+      "bn": "লাইডেন",
+      "pl": "LAJ-den",
+      "ru": "лАйдэн"
+     }
+    },
+    {
+     "uid": "3226cf6cbcbc763d",
+     "german": "Ware",
+     "article": "die",
+     "forms": "Waren",
+     "pos": "noun",
+     "meaning": {
+      "en": "goods / merchandise",
+      "bn": "পণ্য",
+      "pl": "towar / towary",
+      "ru": "товар"
+     },
+     "guide": {
+      "en": "VAH-ruh",
+      "bn": "ভারে",
+      "pl": "WA-re",
+      "ru": "вАрэ"
+     }
+    }
+   ]
+  },
+  {
+   "code": "B2.1",
+   "level": "B2",
+   "ord": 7,
+   "words": 513,
+   "grammar_topics": 20,
+   "grammar": [
+    {
+     "uid": "f44e3d94848d054a",
+     "topic": {
+      "en": "Satzklammer & Nebensatz (review)",
+      "pl": "Ramka zdaniowa (Satzklammer) i zdanie podrzędne (powtórka)",
+      "ru": "Рамочная конструкция и придаточное предложение (Satzklammer, повторение)"
+     }
+    },
+    {
+     "uid": "00eb8ef9e7b7bcbe",
+     "topic": {
+      "en": "Konjunktiv II (deepening)",
+      "pl": "Konjunktiv II (pogłębienie)",
+      "ru": "Konjunktiv II (углублённо)"
+     }
+    },
+    {
+     "uid": "6754bc2602e1149e",
+     "topic": {
+      "en": "Konjunktiv I – indirekte Rede",
+      "pl": "Konjunktiv I – mowa zależna",
+      "ru": "Konjunktiv I — косвенная речь"
+     }
+    },
+    {
+     "uid": "6f83db2705192f70",
+     "topic": {
+      "en": "Passiv in allen Zeiten",
+      "pl": "Strona bierna we wszystkich czasach",
+      "ru": "Пассив во всех временах (Passiv)"
+     }
+    },
+    {
+     "uid": "49509e11f09a615d",
+     "topic": {
+      "en": "Passiv mit Modalverben & Passiversatz",
+      "pl": "Strona bierna z czasownikami modalnymi i konstrukcje zastępcze (Passiversatz)",
+      "ru": "Пассив с модальными глаголами и заменители пассива"
+     }
+    },
+    {
+     "uid": "b4724c839d56d564",
+     "topic": {
+      "en": "Vorgangspassiv vs. Zustandspassiv",
+      "pl": "Strona bierna czynności (Vorgangspassiv) a strona bierna stanu (Zustandspassiv)",
+      "ru": "Пассив действия и пассив состояния (Vorgangspassiv / Zustandspassiv)"
+     }
+    },
+    {
+     "uid": "447229ad1829d4d4",
+     "topic": {
+      "en": "Subjektive Modalverben",
+      "pl": "Subiektywne użycie czasowników modalnych",
+      "ru": "Субъективные модальные глаголы"
+     }
+    },
+    {
+     "uid": "bdcb0fa8f831b374",
+     "topic": {
+      "en": "Partizipialattribute",
+      "pl": "Przydawki imiesłowowe (Partizipialattribute)",
+      "ru": "Причастные определения (Partizipialattribute)"
+     }
+    },
+    {
+     "uid": "fa7ec9b8b0f44b81",
+     "topic": {
+      "en": "Relativsätze (deepening)",
+      "pl": "Zdania względne (pogłębienie)",
+      "ru": "Относительные предложения (углублённо)"
+     }
+    },
+    {
+     "uid": "287915aece50b54b",
+     "topic": {
+      "en": "Nominalstil ↔ Verbalstil",
+      "pl": "Styl nominalny ↔ styl werbalny",
+      "ru": "Именной и глагольный стиль (Nominalstil ↔ Verbalstil)"
+     }
+    },
+    {
+     "uid": "ea1ab568d1e51342",
+     "topic": {
+      "en": "Genitivpräpositionen",
+      "pl": "Przyimki z dopełniaczem (Genitivpräpositionen)",
+      "ru": "Предлоги с родительным падежом (Genitivpräpositionen)"
+     }
+    },
+    {
+     "uid": "9d72d670e7050316",
+     "topic": {
+      "en": "Kausal & konsekutiv",
+      "pl": "Zdania przyczynowe i skutkowe",
+      "ru": "Причина и следствие (kausal & konsekutiv)"
+     }
+    },
+    {
+     "uid": "1afcf59828207d01",
+     "topic": {
+      "en": "Konzessiv & adversativ",
+      "pl": "Zdania przyzwalające i przeciwstawne",
+      "ru": "Уступка и противопоставление (konzessiv & adversativ)"
+     }
+    },
+    {
+     "uid": "20d08bc0d0ca17e3",
+     "topic": {
+      "en": "Final & modal",
+      "pl": "Zdania celowe i zdania sposobu",
+      "ru": "Цель и образ действия (final & modal)"
+     }
+    },
+    {
+     "uid": "9fa1edf9be200c97",
+     "topic": {
+      "en": "Temporal & Tempusfolge",
+      "pl": "Zdania czasowe i następstwo czasów",
+      "ru": "Временные предложения и последовательность времён (Tempusfolge)"
+     }
+    },
+    {
+     "uid": "56296c8d35dc202d",
+     "topic": {
+      "en": "Konditional ohne wenn; sofern; je…desto",
+      "pl": "Zdania warunkowe bez wenn; sofern; je…desto",
+      "ru": "Условие без wenn; sofern; je … desto"
+     }
+    },
+    {
+     "uid": "fbf35161040f66e8",
+     "topic": {
+      "en": "Nomen-Verb-Verbindungen",
+      "pl": "Połączenia rzeczownikowo-czasownikowe (Nomen-Verb-Verbindungen)",
+      "ru": "Именно-глагольные сочетания (Nomen-Verb-Verbindungen)"
+     }
+    },
+    {
+     "uid": "4232c1ea32367643",
+     "topic": {
+      "en": "Präpositionalobjekt & Pronominaladverbien",
+      "pl": "Dopełnienie przyimkowe i zaimki przysłowne (Pronominaladverbien)",
+      "ru": "Предложное дополнение и местоименные наречия (Pronominaladverbien)"
+     }
+    },
+    {
+     "uid": "8d3035e4ad730fd3",
+     "topic": {
+      "en": "Infinitivsätze; lassen; doppelter Infinitiv",
+      "pl": "Konstrukcje bezokolicznikowe; lassen; podwójny bezokolicznik",
+      "ru": "Инфинитивные обороты; lassen; двойной инфинитив"
+     }
+    },
+    {
+     "uid": "3925154239e578c6",
+     "topic": {
+      "en": "Adjektivdeklination komplett",
+      "pl": "Odmiana przymiotnika – wszystkie typy",
+      "ru": "Склонение прилагательных полностью (Adjektivdeklination)"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "635111cf0d2ca28e",
+     "german": "selbstverständlich",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "self-evident / of course",
+      "bn": "স্বাভাবিক / অবশ্যই",
+      "pl": "oczywisty / oczywiście",
+      "ru": "само собой разумеющийся / конечно"
+     },
+     "guide": {
+      "en": "ZELPST-fair-shtent-lihy",
+      "bn": "জেল্প্স্টফেয়াশ্টেন্টলিশ",
+      "pl": "ZELPST-fea-sztent-liś",
+      "ru": "зЭльпстфаштэнтлихь"
+     }
+    },
+    {
+     "uid": "db65a259adbdd4a8",
+     "german": "sich erkundigen",
+     "article": null,
+     "forms": "erkundigt sich · hat sich erkundigt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to enquire / to ask about",
+      "bn": "খোঁজখবর নেওয়া",
+      "pl": "dowiadywać się / dowiedzieć się / pytać",
+      "ru": "наводить справки / узнавать"
+     },
+     "guide": {
+      "en": "zihy air-KOON-di-gen",
+      "bn": "জিশ এয়াকুন্ডিগেন",
+      "pl": "ziś ea-KUN-di-gen",
+      "ru": "зихь эакУндигэн"
+     }
+    },
+    {
+     "uid": "976d283ce7a7cc03",
+     "german": "infolgedessen",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "consequently / as a result",
+      "bn": "ফলস্বরূপ",
+      "pl": "w rezultacie / wskutek tego",
+      "ru": "вследствие этого"
+     },
+     "guide": {
+      "en": "in-fol-guh-DES-sen",
+      "bn": "ইনফলগেডেসেন",
+      "pl": "in-fol-ge-DE-sen",
+      "ru": "инфольгэдЭсэн"
+     }
+    },
+    {
+     "uid": "80c0a1dae4bf167c",
+     "german": "Erwartung",
+     "article": "die",
+     "forms": "Erwartungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "expectation",
+      "bn": "প্রত্যাশা",
+      "pl": "oczekiwanie",
+      "ru": "ожидание"
+     },
+     "guide": {
+      "en": "air-VAR-toong",
+      "bn": "এয়াভার্টুং",
+      "pl": "ea-WAR-tung",
+      "ru": "эавАртунг"
+     }
+    },
+    {
+     "uid": "7c38cf2880d4b451",
+     "german": "einschätzen",
+     "article": null,
+     "forms": "schätzt ein · hat eingeschätzt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to assess / to judge",
+      "bn": "মূল্যায়ন করা",
+      "pl": "oceniać / ocenić / szacować",
+      "ru": "оценивать / оценить"
+     },
+     "guide": {
+      "en": "AIN-shet-sen",
+      "bn": "আইনশেৎসেন",
+      "pl": "AJN-sze-cen",
+      "ru": "Айншэцэн"
+     }
+    },
+    {
+     "uid": "2ebcaae535ab3c39",
+     "german": "Ablauf",
+     "article": "der",
+     "forms": "Abläufe",
+     "pos": "noun",
+     "meaning": {
+      "en": "process / sequence / expiry",
+      "bn": "প্রক্রিয়া / মেয়াদ শেষ",
+      "pl": "przebieg / upływ (terminu)",
+      "ru": "ход / порядок / истечение (срока)"
+     },
+     "guide": {
+      "en": "AP-lowf",
+      "bn": "আপলাউফ",
+      "pl": "AP-lauf",
+      "ru": "Аплауф"
+     }
+    },
+    {
+     "uid": "d5bef19edd59841e",
+     "german": "sich erkundigen nach",
+     "article": null,
+     "forms": "erkundigt sich · hat sich erkundigt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to enquire about",
+      "bn": "খোঁজ নেওয়া",
+      "pl": "dowiadywać się / pytać (o)",
+      "ru": "справляться / справиться о"
+     },
+     "guide": {
+      "en": "zihy air-KOON-di-gen nahkh",
+      "bn": "জিশ এয়াকুন্ডিগেন নাখ",
+      "pl": "ziś ea-KUN-di-gen nach",
+      "ru": "зихь эакУндигэн нах"
+     }
+    },
+    {
+     "uid": "ce264b06a97c2366",
+     "german": "letztendlich",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "ultimately / in the end",
+      "bn": "শেষ পর্যন্ত",
+      "pl": "ostatecznie / w końcu",
+      "ru": "в конечном счёте / в итоге"
+     },
+     "guide": {
+      "en": "letst-ENT-lihy",
+      "bn": "লেৎসএন্টলিশ",
+      "pl": "lect-ENT-liś",
+      "ru": "лэцтЭнтлихь"
+     }
+    },
+    {
+     "uid": "83a38cf391ca8cbf",
+     "german": "zusammenfassend",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "in summary / to sum up",
+      "bn": "সারসংক্ষেপে",
+      "pl": "podsumowując / reasumując",
+      "ru": "подводя итог / в заключение"
+     },
+     "guide": {
+      "en": "tsoo-ZAM-men-fas-sent",
+      "bn": "ৎসুজামেনফাসেন্ট",
+      "pl": "cu-ZA-men-fa-sent",
+      "ru": "цузАмэнфасэнт"
+     }
+    },
+    {
+     "uid": "8fccae6afa3dcbd6",
+     "german": "Absicht",
+     "article": "die",
+     "forms": "Absichten",
+     "pos": "noun",
+     "meaning": {
+      "en": "intention",
+      "bn": "উদ্দেশ্য",
+      "pl": "zamiar / intencja",
+      "ru": "намерение"
+     },
+     "guide": {
+      "en": "AP-zihyt",
+      "bn": "আপজিশ্ট",
+      "pl": "AP-ziśt",
+      "ru": "Апзихьт"
+     }
+    },
+    {
+     "uid": "77c5826dc53012d3",
+     "german": "aufgrund",
+     "article": null,
+     "forms": null,
+     "pos": "prep",
+     "meaning": {
+      "en": "due to / because of",
+      "bn": "কারণে",
+      "pl": "z powodu / ze względu na",
+      "ru": "из-за / вследствие"
+     },
+     "guide": {
+      "en": "owf-GROONT",
+      "bn": "আউফগ্রুন্ট",
+      "pl": "auf-GRUNT",
+      "ru": "ауфгрУнт"
+     }
+    },
+    {
+     "uid": "6daf55df3db54c92",
+     "german": "sich anpassen",
+     "article": null,
+     "forms": "passt sich an · hat sich angepasst",
+     "pos": "verb",
+     "meaning": {
+      "en": "to adapt / to adjust",
+      "bn": "মানিয়ে নেওয়া",
+      "pl": "dostosowywać się / dostosować się",
+      "ru": "приспосабливаться / приспособиться"
+     },
+     "guide": {
+      "en": "zihy AN-pas-sen",
+      "bn": "জিশ আনপাসেন",
+      "pl": "ziś AN-pa-sen",
+      "ru": "зихь Анпасэн"
+     }
+    },
+    {
+     "uid": "8b4f377be68bc423",
+     "german": "Modell",
+     "article": "das",
+     "forms": "Modelle",
+     "pos": "noun",
+     "meaning": {
+      "en": "model",
+      "bn": "মডেল",
+      "pl": "model",
+      "ru": "модель"
+     },
+     "guide": {
+      "en": "mo-DEL",
+      "bn": "মোডেল",
+      "pl": "mo-DEL",
+      "ru": "модЭль"
+     }
+    },
+    {
+     "uid": "b844cda054fcd401",
+     "german": "Klinik",
+     "article": "die",
+     "forms": "Kliniken",
+     "pos": "noun",
+     "meaning": {
+      "en": "hospital / clinic",
+      "bn": "ক্লিনিক / হাসপাতাল",
+      "pl": "szpital / klinika",
+      "ru": "больница / клиника"
+     },
+     "guide": {
+      "en": "KLEE-nik",
+      "bn": "ক্লিনিক",
+      "pl": "KLI-nik",
+      "ru": "клИник"
+     }
+    },
+    {
+     "uid": "c52fcf402dcaff53",
+     "german": "teilnehmen an",
+     "article": null,
+     "forms": "nimmt teil · hat teilgenommen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to take part in",
+      "bn": "অংশগ্রহণ করা",
+      "pl": "brać / wziąć udział w / uczestniczyć w",
+      "ru": "участвовать / принимать участие (в)"
+     },
+     "guide": {
+      "en": "TAIL-nay-men an",
+      "bn": "টাইলনেমেন আন",
+      "pl": "TAJL-ne-men an",
+      "ru": "тАйльнэмэн ан"
+     }
+    },
+    {
+     "uid": "e74f65fac8c8c2ba",
+     "german": "Markt",
+     "article": "der",
+     "forms": "Märkte",
+     "pos": "noun",
+     "meaning": {
+      "en": "market",
+      "bn": "বাজার",
+      "pl": "rynek",
+      "ru": "рынок"
+     },
+     "guide": {
+      "en": "MARKT",
+      "bn": "মার্ক্ট",
+      "pl": "MARKT",
+      "ru": "маркт"
+     }
+    },
+    {
+     "uid": "56a8d3c2cd917464",
+     "german": "Methode",
+     "article": "die",
+     "forms": "Methoden",
+     "pos": "noun",
+     "meaning": {
+      "en": "method",
+      "bn": "পদ্ধতি",
+      "pl": "metoda",
+      "ru": "метод"
+     },
+     "guide": {
+      "en": "may-TOH-duh",
+      "bn": "মেটোডে",
+      "pl": "me-TO-de",
+      "ru": "мэтОдэ"
+     }
+    },
+    {
+     "uid": "2222853d611becde",
+     "german": "sich vorbereiten auf",
+     "article": null,
+     "forms": "bereitet sich vor · hat sich vorbereitet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to prepare for",
+      "bn": "প্রস্তুতি নেওয়া",
+      "pl": "przygotowywać się / przygotować się (do)",
+      "ru": "готовиться / подготовиться (к)"
+     },
+     "guide": {
+      "en": "zihy FOHR-buh-rai-ten owf",
+      "bn": "জিশ ফোয়াবেরাইটেন আউফ",
+      "pl": "ziś FOA-be-raj-ten auf",
+      "ru": "зихь фОабэрайтэн Ауф"
+     }
+    },
+    {
+     "uid": "03ca05e54e882a04",
+     "german": "feststellen",
+     "article": null,
+     "forms": "stellt fest · hat festgestellt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to find out / to establish / to state",
+      "bn": "নির্ধারণ করা / লক্ষ্য করা",
+      "pl": "stwierdzać / stwierdzić / ustalać",
+      "ru": "обнаруживать / устанавливать"
+     },
+     "guide": {
+      "en": "FEST-shtel-len",
+      "bn": "ফেস্টশ্টেলেন",
+      "pl": "FEST-szte-len",
+      "ru": "фЭстштэлэн"
+     }
+    },
+    {
+     "uid": "9096c7307f966351",
+     "german": "sich freuen über",
+     "article": null,
+     "forms": "freut sich · hat sich gefreut",
+     "pos": "verb",
+     "meaning": {
+      "en": "to be glad about (present/past)",
+      "bn": "খুশি হওয়া",
+      "pl": "cieszyć się z (czegoś)",
+      "ru": "радоваться / обрадоваться (чему-то)"
+     },
+     "guide": {
+      "en": "zihy FROY-en ew-ber",
+      "bn": "জিশ ফ্রয়েন য়্যুবার",
+      "pl": "ziś FROJ-en ü-ba",
+      "ru": "зихь фрОйэн Юба"
+     }
+    },
+    {
+     "uid": "05a16889b06db125",
+     "german": "Folge",
+     "article": "die",
+     "forms": "Folgen",
+     "pos": "noun",
+     "meaning": {
+      "en": "consequence / episode",
+      "bn": "পরিণতি / পর্ব",
+      "pl": "skutek / konsekwencja / odcinek",
+      "ru": "последствие / серия"
+     },
+     "guide": {
+      "en": "FOL-guh",
+      "bn": "ফলগে",
+      "pl": "FOL-ge",
+      "ru": "фОльгэ"
+     }
+    },
+    {
+     "uid": "254dcbb9a7962663",
+     "german": "Ausbau",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "expansion / development",
+      "bn": "সম্প্রসারণ",
+      "pl": "rozbudowa / rozwój",
+      "ru": "расширение / развитие"
+     },
+     "guide": {
+      "en": "OWSS-bow",
+      "bn": "আউসবাউ",
+      "pl": "AUS-bau",
+      "ru": "Аусбау"
+     }
+    },
+    {
+     "uid": "ddb11366c310911e",
+     "german": "ohnehin",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "anyway / in any case",
+      "bn": "এমনিতেই",
+      "pl": "i tak / tak czy owak",
+      "ru": "всё равно / и так / в любом случае"
+     },
+     "guide": {
+      "en": "oh-nuh-HIN",
+      "bn": "ওনেহিন",
+      "pl": "o-ne-HIN",
+      "ru": "Онэхин"
+     }
+    },
+    {
+     "uid": "776d9c6c7c9ff3f4",
+     "german": "sich beschäftigen mit",
+     "article": null,
+     "forms": "beschäftigt sich · hat sich beschäftigt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to occupy oneself with / to work on",
+      "bn": "নিয়ে ব্যস্ত থাকা",
+      "pl": "zajmować się / zająć się (czymś)",
+      "ru": "заниматься (чем-либо) / работать над"
+     },
+     "guide": {
+      "en": "zihy buh-SHEF-ti-gen mit",
+      "bn": "জিশ বেশেফটিগেন মিট",
+      "pl": "ziś be-SZEF-ti-gen mit",
+      "ru": "зихь бэшЭфтигэн мит"
+     }
+    },
+    {
+     "uid": "14bc19c82345e71c",
+     "german": "entstehen",
+     "article": null,
+     "forms": "entsteht · ist entstanden",
+     "pos": "verb",
+     "meaning": {
+      "en": "to arise / to be created",
+      "bn": "সৃষ্টি হওয়া",
+      "pl": "powstawać / powstać",
+      "ru": "возникать / возникнуть / появляться"
+     },
+     "guide": {
+      "en": "ent-SHTAY-en",
+      "bn": "এন্টশ্টেয়েন",
+      "pl": "ent-SZTE-en",
+      "ru": "энтштЭэн"
+     }
+    }
+   ]
+  },
+  {
+   "code": "B2.2",
+   "level": "B2",
+   "ord": 8,
+   "words": 510,
+   "grammar_topics": 20,
+   "grammar": [
+    {
+     "uid": "ee702da8fbd7c4e6",
+     "topic": {
+      "en": "n-Deklination & Genitiv in Texten",
+      "pl": "Odmiana słaba rzeczowników (n-Deklination) i dopełniacz w tekstach",
+      "ru": "Слабое склонение (n-Deklination) и родительный падеж в текстах"
+     }
+    },
+    {
+     "uid": "9d62cd59801e5240",
+     "topic": {
+      "en": "Wortbildung: Präfixe",
+      "pl": "Słowotwórstwo: przedrostki",
+      "ru": "Словообразование: приставки"
+     }
+    },
+    {
+     "uid": "6baa66add4be8f67",
+     "topic": {
+      "en": "Wortbildung: Suffixe & Komposita",
+      "pl": "Słowotwórstwo: przyrostki i złożenia",
+      "ru": "Словообразование: суффиксы и сложные слова"
+     }
+    },
+    {
+     "uid": "cb2b3f55c5b53405",
+     "topic": {
+      "en": "Futur I/II, Vermutung, Modalpartikeln",
+      "pl": "Futur I i II, przypuszczenie, partykuły modalne",
+      "ru": "Futur I/II, предположение, модальные частицы"
+     }
+    },
+    {
+     "uid": "aa0bc7aee268f263",
+     "topic": {
+      "en": "Temporale Präpositionen schriftlich",
+      "pl": "Przyimki czasowe w języku pisanym",
+      "ru": "Временные предлоги в письменной речи"
+     }
+    },
+    {
+     "uid": "de6a65037751a221",
+     "topic": {
+      "en": "Vergleichssätze",
+      "pl": "Zdania porównawcze",
+      "ru": "Сравнительные предложения (Vergleichssätze)"
+     }
+    },
+    {
+     "uid": "5fd3dddde1a040f9",
+     "topic": {
+      "en": "Verben mit festen Präpositionen – Bedeutung",
+      "pl": "Czasowniki ze stałymi przyimkami – znaczenie",
+      "ru": "Глаголы с устойчивыми предлогами — значение"
+     }
+    },
+    {
+     "uid": "4b3417bba8b9e610",
+     "topic": {
+      "en": "Textgrammatik: Verweise & Kohärenz",
+      "pl": "Gramatyka tekstu: odesłania i spójność",
+      "ru": "Грамматика текста: отсылки и связность"
+     }
+    },
+    {
+     "uid": "c42b09c11d009c33",
+     "topic": {
+      "en": "Stil: unpersönliche Ausdrücke",
+      "pl": "Styl: wyrażenia bezosobowe",
+      "ru": "Стиль: безличные выражения"
+     }
+    },
+    {
+     "uid": "0c8a527a526712b2",
+     "topic": {
+      "en": "Formelle Briefe",
+      "pl": "Listy formalne",
+      "ru": "Официальные письма (Formelle Briefe)"
+     }
+    },
+    {
+     "uid": "949944ce3d4eb122",
+     "topic": {
+      "en": "Argumentation",
+      "pl": "Argumentacja",
+      "ru": "Аргументация"
+     }
+    },
+    {
+     "uid": "9f9e008c20b6cb27",
+     "topic": {
+      "en": "Stellungnahme & Diskussion",
+      "pl": "Zajęcie stanowiska i dyskusja",
+      "ru": "Высказывание мнения и дискуссия (Stellungnahme & Diskussion)"
+     }
+    },
+    {
+     "uid": "5e2bf0a7abfe6e45",
+     "topic": {
+      "en": "Präsentation & Grafiken",
+      "pl": "Prezentacja i wykresy",
+      "ru": "Презентация и графики"
+     }
+    },
+    {
+     "uid": "1670aadc5b60e64f",
+     "topic": {
+      "en": "Indirekte Rede: Fragen & Aufforderungen",
+      "pl": "Mowa zależna: pytania i polecenia",
+      "ru": "Косвенная речь: вопросы и побуждения"
+     }
+    },
+    {
+     "uid": "5558fa43a7cf8c15",
+     "topic": {
+      "en": "Redewendungen & Sprichwörter",
+      "pl": "Zwroty idiomatyczne i przysłowia",
+      "ru": "Идиомы и пословицы (Redewendungen & Sprichwörter)"
+     }
+    },
+    {
+     "uid": "db4c2cffb3ab0d78",
+     "topic": {
+      "en": "Wortstellung: Ausklammerung & Betonung",
+      "pl": "Szyk zdania: wyłączenie poza ramę (Ausklammerung) i akcent",
+      "ru": "Порядок слов: вынос за рамку и выделение"
+     }
+    },
+    {
+     "uid": "8b93ebe000229cad",
+     "topic": {
+      "en": "Prüfungstraining Lesen",
+      "pl": "Trening egzaminacyjny: Lesen (czytanie)",
+      "ru": "Подготовка к экзамену: Lesen (чтение)"
+     }
+    },
+    {
+     "uid": "dabe417ef08ac443",
+     "topic": {
+      "en": "Prüfungstraining Hören & Schreiben",
+      "pl": "Trening egzaminacyjny: Hören i Schreiben (słuchanie i pisanie)",
+      "ru": "Подготовка к экзамену: Hören и Schreiben (аудирование и письмо)"
+     }
+    },
+    {
+     "uid": "f972560631df2cef",
+     "topic": {
+      "en": "Prüfungstraining Sprechen; Modelltest 1",
+      "pl": "Trening egzaminacyjny: Sprechen (mówienie); Modelltest 1",
+      "ru": "Подготовка к экзамену: Sprechen (говорение); Modelltest 1"
+     }
+    },
+    {
+     "uid": "2ba3857698862c48",
+     "topic": {
+      "en": "Modelltest 2 & Lückenanalyse",
+      "pl": "Modelltest 2 i analiza luk",
+      "ru": "Modelltest 2 и анализ пробелов"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "715fcaa78b63fb37",
+     "german": "vorwerfen",
+     "article": null,
+     "forms": "wirft vor · hat vorgeworfen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to accuse / to reproach",
+      "bn": "অভিযোগ করা",
+      "pl": "zarzucać / zarzucić",
+      "ru": "упрекать / обвинять"
+     },
+     "guide": {
+      "en": "FOHR-vair-fen",
+      "bn": "ফোয়াভের্ফেন",
+      "pl": "FOA-wer-fen",
+      "ru": "фОавэрфэн"
+     }
+    },
+    {
+     "uid": "5392baa2dfe6ffd1",
+     "german": "Verständigung",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "communication / understanding",
+      "bn": "বোঝাপড়া",
+      "pl": "porozumiewanie się / porozumienie",
+      "ru": "взаимопонимание / общение"
+     },
+     "guide": {
+      "en": "fair-SHTEN-di-goong",
+      "bn": "ফেয়াশ্টেন্ডিগুং",
+      "pl": "fea-SZTEN-di-gung",
+      "ru": "фаштЭндигунг"
+     }
+    },
+    {
+     "uid": "cded76da91a9958b",
+     "german": "leiden unter",
+     "article": null,
+     "forms": "leidet · hat gelitten",
+     "pos": "verb",
+     "meaning": {
+      "en": "to suffer from (a situation)",
+      "bn": "ভোগা (পরিস্থিতিতে)",
+      "pl": "cierpieć z powodu",
+      "ru": "страдать от"
+     },
+     "guide": {
+      "en": "LAI-den oon-ter",
+      "bn": "লাইডেন উন্টার",
+      "pl": "LAJ-den un-ta",
+      "ru": "лАйдэн Унта"
+     }
+    },
+    {
+     "uid": "065c04a8373fdee3",
+     "german": "Wahrzeichen",
+     "article": "das",
+     "forms": "Wahrzeichen",
+     "pos": "noun",
+     "meaning": {
+      "en": "landmark / emblem",
+      "bn": "প্রতীকী স্থাপনা",
+      "pl": "symbol / wizytówka (miasta)",
+      "ru": "символ (города) / достопримечательность"
+     },
+     "guide": {
+      "en": "VAHR-tsai-hyen",
+      "bn": "ভারৎসাইশেন",
+      "pl": "WAA-caj-śen",
+      "ru": "вАацайхен"
+     }
+    },
+    {
+     "uid": "1348495609d614ac",
+     "german": "Maßstab",
+     "article": "der",
+     "forms": "Maßstäbe",
+     "pos": "noun",
+     "meaning": {
+      "en": "standard / scale",
+      "bn": "মাপকাঠি / স্কেল",
+      "pl": "standard / miara / skala",
+      "ru": "мерило / масштаб"
+     },
+     "guide": {
+      "en": "MAHSS-shtahp",
+      "bn": "মাসশ্টাপ",
+      "pl": "MAS-sztap",
+      "ru": "мАсштап"
+     }
+    },
+    {
+     "uid": "ca8276542d0e2e9d",
+     "german": "ausgezeichnet",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "excellent",
+      "bn": "উৎকৃষ্ট",
+      "pl": "znakomity / doskonały / wyśmienity",
+      "ru": "отличный / превосходный"
+     },
+     "guide": {
+      "en": "OWSS-guh-tsaihy-net",
+      "bn": "আউসগেৎসাইশনেট",
+      "pl": "AUS-ge-cajś-net",
+      "ru": "Аусгэцайхьнэт"
+     }
+    },
+    {
+     "uid": "6a1039c50f33d167",
+     "german": "Abbuchung",
+     "article": "die",
+     "forms": "Abbuchungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "direct debit / debit entry",
+      "bn": "অ্যাকাউন্ট থেকে কাটা",
+      "pl": "obciążenie rachunku / pobranie z konta",
+      "ru": "списание (со счёта)"
+     },
+     "guide": {
+      "en": "AP-boo-khoong",
+      "bn": "আপবুখুং",
+      "pl": "AP-bu-chung",
+      "ru": "Апбухунг"
+     }
+    },
+    {
+     "uid": "480893ecc2ee25a8",
+     "german": "überwiegend",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "predominantly / mostly",
+      "bn": "প্রধানত",
+      "pl": "przeważnie / w przeważającej mierze",
+      "ru": "преимущественно"
+     },
+     "guide": {
+      "en": "ew-ber-VEE-gent",
+      "bn": "য়্যুবারভিগেন্ট",
+      "pl": "ü-ba-WI-gent",
+      "ru": "юбавИгэнт"
+     }
+    },
+    {
+     "uid": "01555fb1bac9214f",
+     "german": "Umgang",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "way of dealing / contact",
+      "bn": "আচরণ / মেলামেশা",
+      "pl": "obchodzenie się (z) / kontakt (z)",
+      "ru": "обращение (с чем-то) / общение"
+     },
+     "guide": {
+      "en": "OOM-gang",
+      "bn": "উমগাং",
+      "pl": "UM-gang",
+      "ru": "Умганг"
+     }
+    },
+    {
+     "uid": "c12cbb28c95e8371",
+     "german": "Belegschaft",
+     "article": "die",
+     "forms": "Belegschaften",
+     "pos": "noun",
+     "meaning": {
+      "en": "workforce / staff",
+      "bn": "কর্মীবাহিনী",
+      "pl": "załoga / personel",
+      "ru": "коллектив / персонал"
+     },
+     "guide": {
+      "en": "buh-LAYK-shaft",
+      "bn": "বেলেকশাফ্ট",
+      "pl": "be-LEK-szaft",
+      "ru": "бэлЭкшафт"
+     }
+    },
+    {
+     "uid": "c8455fbc07f0f271",
+     "german": "Blickkontakt",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "eye contact",
+      "bn": "চোখের যোগাযোগ",
+      "pl": "kontakt wzrokowy",
+      "ru": "зрительный контакт"
+     },
+     "guide": {
+      "en": "BLIK-kon-takt",
+      "bn": "ব্লিককনটাক্ট",
+      "pl": "BLIK-kon-takt",
+      "ru": "блИкконтакт"
+     }
+    },
+    {
+     "uid": "20dc32d65ce11fcb",
+     "german": "sich bewähren",
+     "article": null,
+     "forms": "bewährt sich · hat sich bewährt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to prove its worth / to prove oneself",
+      "bn": "কার্যকর প্রমাণিত হওয়া / নিজেকে প্রমাণ করা",
+      "pl": "sprawdzać się / sprawdzić się",
+      "ru": "оправдать себя / зарекомендовать"
+     },
+     "guide": {
+      "en": "zihy buh-VEH-ren",
+      "bn": "জিশ বেভেরেন",
+      "pl": "ziś be-WE-ren",
+      "ru": "зихь бэвЭрэн"
+     }
+    },
+    {
+     "uid": "6be83dd9bfdbce79",
+     "german": "Landflucht",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "rural exodus",
+      "bn": "গ্রাম ছেড়ে শহরে যাওয়া",
+      "pl": "ucieczka ze wsi do miast",
+      "ru": "отток из сёл в города"
+     },
+     "guide": {
+      "en": "LANT-flookht",
+      "bn": "লান্টফ্লুখ্ট",
+      "pl": "LANT-flucht",
+      "ru": "лАнтфлухт"
+     }
+    },
+    {
+     "uid": "587ef32c9c281128",
+     "german": "überschuldet",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "over-indebted",
+      "bn": "অতিরিক্ত ঋণগ্রস্ত",
+      "pl": "nadmiernie zadłużony",
+      "ru": "с непосильными долгами"
+     },
+     "guide": {
+      "en": "ew-ber-SHOOL-det",
+      "bn": "য়্যুবারশুল্ডেট",
+      "pl": "ü-ba-SZUL-det",
+      "ru": "юбашУльдэт"
+     }
+    },
+    {
+     "uid": "7b6e2eb731a5a8c4",
+     "german": "Selbstvertrauen",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "self-confidence / self-belief",
+      "bn": "আত্মবিশ্বাস",
+      "pl": "wiara w siebie / pewność siebie",
+      "ru": "уверенность в себе"
+     },
+     "guide": {
+      "en": "ZELPST-fair-trow-en",
+      "bn": "জেল্প্স্টফেয়াট্রাউয়েন",
+      "pl": "ZELPST-fea-trau-en",
+      "ru": "зЭльпстфатрауэн"
+     }
+    },
+    {
+     "uid": "01cbefe65acd16bb",
+     "german": "insofern",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "in that respect / to that extent",
+      "bn": "সেই অর্থে",
+      "pl": "pod tym względem / o tyle",
+      "ru": "в этом отношении / постольку"
+     },
+     "guide": {
+      "en": "in-ZOH-fairn",
+      "bn": "ইন্‌জোফের্ন",
+      "pl": "in-zo-FERN",
+      "ru": "инзОфэрн"
+     }
+    },
+    {
+     "uid": "2f2b3c4d4c942dcc",
+     "german": "Teilhabe",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "participation / inclusion",
+      "bn": "অংশগ্রহণ / অন্তর্ভুক্তি",
+      "pl": "uczestnictwo / udział (w życiu społecznym)",
+      "ru": "участие / вовлечённость"
+     },
+     "guide": {
+      "en": "TAIL-hah-buh",
+      "bn": "টাইলহাবে",
+      "pl": "TAJL-ha-be",
+      "ru": "тАйльхабэ"
+     }
+    },
+    {
+     "uid": "5cc145b40d8b1eed",
+     "german": "Lebenserwartung",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "life expectancy",
+      "bn": "গড় আয়ু",
+      "pl": "średnia długość życia",
+      "ru": "продолжительность жизни"
+     },
+     "guide": {
+      "en": "LAY-benss-air-var-toong",
+      "bn": "লেবেন্সএয়াভার্টুং",
+      "pl": "LE-bens-ea-war-tung",
+      "ru": "лЭбэнсэавартунг"
+     }
+    },
+    {
+     "uid": "85aae08797678376",
+     "german": "sich richten nach",
+     "article": null,
+     "forms": "richtet sich · hat sich gerichtet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to be based on / to go by",
+      "bn": "অনুসারে হওয়া",
+      "pl": "zależeć od / dostosowywać się do",
+      "ru": "зависеть от / ориентироваться на"
+     },
+     "guide": {
+      "en": "zihy RIHY-ten nahkh",
+      "bn": "জিশ রিশটেন নাখ",
+      "pl": "ziś RIŚ-ten nach",
+      "ru": "зихь рИхьтэн нах"
+     }
+    },
+    {
+     "uid": "2bd0386f4f96123b",
+     "german": "einerlei",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "all the same / immaterial",
+      "bn": "একই / কিছু যায় আসে না",
+      "pl": "wszystko jedno / obojętny",
+      "ru": "всё равно / безразлично"
+     },
+     "guide": {
+      "en": "ai-ner-LAI",
+      "bn": "আইনারলাই",
+      "pl": "aj-na-LAJ",
+      "ru": "айналАй"
+     }
+    },
+    {
+     "uid": "b721f69e1327df65",
+     "german": "Verstoß",
+     "article": "der",
+     "forms": "Verstöße",
+     "pos": "noun",
+     "meaning": {
+      "en": "violation / breach",
+      "bn": "লঙ্ঘন",
+      "pl": "naruszenie / wykroczenie",
+      "ru": "нарушение"
+     },
+     "guide": {
+      "en": "fair-SHTOHSS",
+      "bn": "ফেয়াশ্টোস",
+      "pl": "fea-SZTOS",
+      "ru": "фаштОс"
+     }
+    },
+    {
+     "uid": "5b3f97b1b70274b4",
+     "german": "Marktanteil",
+     "article": "der",
+     "forms": "Marktanteile",
+     "pos": "noun",
+     "meaning": {
+      "en": "market share",
+      "bn": "বাজার অংশীদারিত্ব",
+      "pl": "udział w rynku",
+      "ru": "доля рынка"
+     },
+     "guide": {
+      "en": "MARKT-an-tail",
+      "bn": "মার্ক্টআনটাইল",
+      "pl": "MARKT-an-tajl",
+      "ru": "мАрктантайль"
+     }
+    },
+    {
+     "uid": "3a6e3671e9498bd4",
+     "german": "Erbe",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "heritage / inheritance",
+      "bn": "ঐতিহ্য / উত্তরাধিকার",
+      "pl": "dziedzictwo / spadek",
+      "ru": "наследие / наследство"
+     },
+     "guide": {
+      "en": "AIR-buh",
+      "bn": "এয়ার্বে",
+      "pl": "ER-be",
+      "ru": "Эрбэ"
+     }
+    },
+    {
+     "uid": "eb94512065722238",
+     "german": "Treibhauseffekt",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "greenhouse effect",
+      "bn": "গ্রিনহাউস প্রভাব",
+      "pl": "efekt cieplarniany",
+      "ru": "парниковый эффект"
+     },
+     "guide": {
+      "en": "TRAIP-howss-ef-fekt",
+      "bn": "ট্রাইপহাউসএফেক্ট",
+      "pl": "TRAJP-haus-e-fekt",
+      "ru": "трАйпхаусэфэкт"
+     }
+    },
+    {
+     "uid": "c12333d6a675e85a",
+     "german": "verstoßen gegen",
+     "article": null,
+     "forms": "verstößt · hat verstoßen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to violate / to breach",
+      "bn": "লঙ্ঘন করা",
+      "pl": "naruszać / naruszyć / łamać",
+      "ru": "нарушать"
+     },
+     "guide": {
+      "en": "fair-SHTOH-sen gay-gen",
+      "bn": "ফেয়াশ্টোসেন গেগেন",
+      "pl": "fea-SZTO-sen ge-gen",
+      "ru": "фаштОсэн гЭгэн"
+     }
+    }
+   ]
+  },
+  {
+   "code": "C1.1",
+   "level": "C1",
+   "ord": 9,
+   "words": 403,
+   "grammar_topics": 20,
+   "grammar": [
+    {
+     "uid": "b8fabd9927f9c2dd",
+     "topic": {
+      "en": "Textgrammatik: Kohäsion und Thema-Rhema",
+      "pl": "Gramatyka tekstu: spójność i układ temat–remat (Thema-Rhema)",
+      "ru": "Грамматика текста: связность и тема–рема (Thema-Rhema)"
+     }
+    },
+    {
+     "uid": "26662caae4b15981",
+     "topic": {
+      "en": "Nominalstil ↔ Verbalstil bewusst steuern",
+      "pl": "Świadomy wybór: styl nominalny ↔ styl werbalny",
+      "ru": "Осознанный выбор: именной ↔ глагольный стиль"
+     }
+    },
+    {
+     "uid": "57a3983414ab2c6f",
+     "topic": {
+      "en": "Erweiterte Partizipialattribute aktiv bilden",
+      "pl": "Rozbudowane przydawki imiesłowowe – samodzielne tworzenie",
+      "ru": "Распространённые причастные определения — активное использование"
+     }
+    },
+    {
+     "uid": "8001e28c085bafd2",
+     "topic": {
+      "en": "Partizipialkonstruktionen und verkürzte Nebensätze",
+      "pl": "Konstrukcje imiesłowowe i skrócone zdania podrzędne",
+      "ru": "Причастные обороты и сокращённые придаточные"
+     }
+    },
+    {
+     "uid": "90d45b3d2c9e2787",
+     "topic": {
+      "en": "Funktionsverbgefüge im Schriftdeutsch",
+      "pl": "Konstrukcje z czasownikiem funkcyjnym (Funktionsverbgefüge) w języku pisanym",
+      "ru": "Именно-глагольные сочетания (Funktionsverbgefüge) в письменной речи"
+     }
+    },
+    {
+     "uid": "edeec4d9b2617a02",
+     "topic": {
+      "en": "Passiversatzformen",
+      "pl": "Konstrukcje zastępcze strony biernej (Passiversatz)",
+      "ru": "Заменители пассива (Passiversatz)"
+     }
+    },
+    {
+     "uid": "5c3a12e5ac039804",
+     "topic": {
+      "en": "Konjunktiv I in längerer indirekter Rede",
+      "pl": "Konjunktiv I w dłuższej mowie zależnej",
+      "ru": "Konjunktiv I в развёрнутой косвенной речи"
+     }
+    },
+    {
+     "uid": "bcff3f0afa3ecd83",
+     "topic": {
+      "en": "Konjunktiv II: Distanz, Höflichkeit, irreale Vergleiche",
+      "pl": "Konjunktiv II: dystans, uprzejmość, porównania nierzeczywiste",
+      "ru": "Konjunktiv II: дистанция, вежливость, нереальные сравнения"
+     }
+    },
+    {
+     "uid": "4e03ce67e311e280",
+     "topic": {
+      "en": "Modalpartikeln präzise",
+      "pl": "Partykuły modalne – precyzyjnie",
+      "ru": "Модальные частицы — точно"
+     }
+    },
+    {
+     "uid": "8b02de770d94318a",
+     "topic": {
+      "en": "Subjektive Modalität",
+      "pl": "Modalność subiektywna",
+      "ru": "Субъективная модальность"
+     }
+    },
+    {
+     "uid": "50adee1336c85d03",
+     "topic": {
+      "en": "Genitiv im gehobenen Stil",
+      "pl": "Dopełniacz w stylu wysokim",
+      "ru": "Родительный падеж в книжном стиле"
+     }
+    },
+    {
+     "uid": "8cc0a24a3ccdae30",
+     "topic": {
+      "en": "Präfixverben mit Bedeutungsnuancen",
+      "pl": "Czasowniki z przedrostkami – odcienie znaczeniowe",
+      "ru": "Приставочные глаголы и оттенки значения"
+     }
+    },
+    {
+     "uid": "1415afbe5b55e7b3",
+     "topic": {
+      "en": "Mehrfachunterordnung steuern",
+      "pl": "Kontrola wielostopniowej podrzędności",
+      "ru": "Управление многоступенчатым подчинением"
+     }
+    },
+    {
+     "uid": "cdc63ee2c1c18485",
+     "topic": {
+      "en": "Konnektoren der Schriftsprache",
+      "pl": "Wyrazy łączące (Konnektoren) języka pisanego",
+      "ru": "Связки письменной речи (Konnektoren)"
+     }
+    },
+    {
+     "uid": "f31c75c5befbc211",
+     "topic": {
+      "en": "Satzstellung zur Fokussierung",
+      "pl": "Szyk zdania a wyeksponowanie informacji",
+      "ru": "Порядок слов для выделения"
+     }
+    },
+    {
+     "uid": "9b033723c13f3940",
+     "topic": {
+      "en": "Negation: Skopus und Teilnegation",
+      "pl": "Przeczenie: zasięg negacji i przeczenie częściowe",
+      "ru": "Отрицание: сфера действия и частичное отрицание"
+     }
+    },
+    {
+     "uid": "8f1dddcb67931cb1",
+     "topic": {
+      "en": "Vergleichs- und Proportionalsätze",
+      "pl": "Zdania porównawcze i proporcjonalne",
+      "ru": "Сравнительные и пропорциональные предложения"
+     }
+    },
+    {
+     "uid": "1c19f707e53cae4c",
+     "topic": {
+      "en": "Konzessive und restriktive Konstruktionen",
+      "pl": "Konstrukcje przyzwalające i ograniczające",
+      "ru": "Уступительные и ограничительные конструкции"
+     }
+    },
+    {
+     "uid": "6a790bc64df89eb1",
+     "topic": {
+      "en": "Nominalisierung und Informationsverdichtung",
+      "pl": "Nominalizacja i kondensacja informacji",
+      "ru": "Номинализация и сжатие информации"
+     }
+    },
+    {
+     "uid": "db78c7fc46980444",
+     "topic": {
+      "en": "Verweisstrukturen",
+      "pl": "Struktury odsyłające",
+      "ru": "Структуры отсылки"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "3b35f6d679fa4856",
+     "german": "Handlungsbedarf",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "need for action",
+      "bn": "পদক্ষেপের প্রয়োজন",
+      "pl": "potrzeba działania",
+      "ru": "необходимость действовать"
+     },
+     "guide": {
+      "en": "HANT-loongss-buh-darf",
+      "bn": "হান্ডলুংসবেডার্ফ",
+      "pl": "HANT-lungs-be-darf",
+      "ru": "хАнтлунгсбэдарф"
+     }
+    },
+    {
+     "uid": "149703a4e6bc0bb7",
+     "german": "rhetorisch",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "rhetorical",
+      "bn": "অলঙ্কারমূলক",
+      "pl": "retoryczny",
+      "ru": "риторический"
+     },
+     "guide": {
+      "en": "ray-TOH-rish",
+      "bn": "রেটোরিশ",
+      "pl": "re-TO-risz",
+      "ru": "рэтОриш"
+     }
+    },
+    {
+     "uid": "158a9f64580b0d67",
+     "german": "geradezu",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "downright / virtually",
+      "bn": "প্রায় / রীতিমতো",
+      "pl": "wręcz / wprost",
+      "ru": "прямо-таки / просто"
+     },
+     "guide": {
+      "en": "guh-RAH-duh-tsoo",
+      "bn": "গেরাডেৎসু",
+      "pl": "ge-RA-de-cu",
+      "ru": "гэрАдэцу"
+     }
+    },
+    {
+     "uid": "69a593ce41a0f357",
+     "german": "seitens",
+     "article": null,
+     "forms": null,
+     "pos": "prep",
+     "meaning": {
+      "en": "on the part of",
+      "bn": "পক্ষ থেকে",
+      "pl": "ze strony",
+      "ru": "со стороны"
+     },
+     "guide": {
+      "en": "ZAI-tenss",
+      "bn": "জাইটেন্স",
+      "pl": "ZAJ-tens",
+      "ru": "зАйтэнс"
+     }
+    },
+    {
+     "uid": "fe919d4c9b1a685c",
+     "german": "tiefgreifend",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "profound / fundamental",
+      "bn": "গভীর / মৌলিক",
+      "pl": "głęboki / gruntowny / zasadniczy",
+      "ru": "глубокий / коренной"
+     },
+     "guide": {
+      "en": "TEEF-grai-fent",
+      "bn": "টিফগ্রাইফেন্ট",
+      "pl": "TIF-graj-fent",
+      "ru": "тИфграйфэнт"
+     }
+    },
+    {
+     "uid": "175be1c6909df8d1",
+     "german": "empirisch",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "empirical",
+      "bn": "অভিজ্ঞতালব্ধ",
+      "pl": "empiryczny",
+      "ru": "эмпирический"
+     },
+     "guide": {
+      "en": "em-PEE-rish",
+      "bn": "এম্পিরিশ",
+      "pl": "em-PI-risz",
+      "ru": "эмпИриш"
+     }
+    },
+    {
+     "uid": "a339d1c3d27fc8bc",
+     "german": "rechtsverbindlich",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "legally binding",
+      "bn": "আইনত বাধ্যতামূলক",
+      "pl": "prawnie wiążący",
+      "ru": "юридически обязывающий"
+     },
+     "guide": {
+      "en": "REHYTS-fair-bint-lihy",
+      "bn": "রেশ্ট্‌সফেয়াবিন্টলিশ",
+      "pl": "REŚC-fea-bint-liś",
+      "ru": "рЭхьтсфабинтлихь"
+     }
+    },
+    {
+     "uid": "59d725f1c708ebfc",
+     "german": "förmlich",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "formal",
+      "bn": "আনুষ্ঠানিক",
+      "pl": "formalny / oficjalny",
+      "ru": "официальный / формальный"
+     },
+     "guide": {
+      "en": "FURM-lihy",
+      "bn": "ফ্যোয়ামলিশ",
+      "pl": "FÖRM-liś",
+      "ru": "фёрмлихь"
+     }
+    },
+    {
+     "uid": "6f8a13e044ebe7b4",
+     "german": "offenlegen",
+     "article": null,
+     "forms": "legt offen · hat offengelegt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to disclose",
+      "bn": "প্রকাশ করা",
+      "pl": "ujawniać / ujawnić",
+      "ru": "раскрывать / раскрыть"
+     },
+     "guide": {
+      "en": "OF-fen-lay-gen",
+      "bn": "অফেনলেগেন",
+      "pl": "O-fen-le-gen",
+      "ru": "Офэнлэгэн"
+     }
+    },
+    {
+     "uid": "a0be304500653ed1",
+     "german": "gehoben",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "elevated (register)",
+      "bn": "উন্নত ভাষাশৈলী",
+      "pl": "podniosły / wyszukany (styl)",
+      "ru": "возвышенный (стиль)"
+     },
+     "guide": {
+      "en": "guh-HOH-ben",
+      "bn": "গেহোবেন",
+      "pl": "ge-HO-ben",
+      "ru": "гэхОбэн"
+     }
+    },
+    {
+     "uid": "6d8555fe31a07eb2",
+     "german": "überproportional",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "disproportionately",
+      "bn": "অসামঞ্জস্যপূর্ণভাবে বেশি",
+      "pl": "ponadproporcjonalnie / nieproporcjonalnie",
+      "ru": "непропорционально (сильно)"
+     },
+     "guide": {
+      "en": "EW-ber-pro-por-tsyo-nahl",
+      "bn": "য়্যুবারপ্রোপর্ৎসিওনাল",
+      "pl": "Ü-ba-pro-por-ci-jo-nal",
+      "ru": "Юбапропорциональ"
+     }
+    },
+    {
+     "uid": "20412459f21e24b7",
+     "german": "Grundsatz",
+     "article": "der",
+     "forms": "Grundsätze",
+     "pos": "noun",
+     "meaning": {
+      "en": "principle",
+      "bn": "মূলনীতি",
+      "pl": "zasada",
+      "ru": "принцип"
+     },
+     "guide": {
+      "en": "GROONT-zats",
+      "bn": "গ্রুন্টজাৎস",
+      "pl": "GRUNT-zac",
+      "ru": "грУнтзац"
+     }
+    },
+    {
+     "uid": "e7a6687bd484486d",
+     "german": "Framing",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "framing",
+      "bn": "উপস্থাপনার কাঠামো",
+      "pl": "framing / ramowanie (przekazu)",
+      "ru": "фрейминг / подача (информации)"
+     },
+     "guide": {
+      "en": "FRAY-ming",
+      "bn": "ফ্রেমিং",
+      "pl": "FREJ-ming",
+      "ru": "фрЭйминг"
+     }
+    },
+    {
+     "uid": "1343b2743f1b5bc5",
+     "german": "ringen um",
+     "article": null,
+     "forms": "ringt · hat gerungen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to struggle for / to wrestle with",
+      "bn": "সংগ্রাম করা",
+      "pl": "walczyć o / zmagać się (z)",
+      "ru": "бороться (за) / биться (над)"
+     },
+     "guide": {
+      "en": "RING-en oom",
+      "bn": "রিঙেন উম",
+      "pl": "RING-en um",
+      "ru": "рИнгэн ум"
+     }
+    },
+    {
+     "uid": "7295d206435f10cb",
+     "german": "Gewichtung",
+     "article": "die",
+     "forms": "Gewichtungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "weighting",
+      "bn": "গুরুত্ব বণ্টন",
+      "pl": "ważenie / przypisanie wag",
+      "ru": "взвешивание / вес (критериев)"
+     },
+     "guide": {
+      "en": "guh-VIHY-toong",
+      "bn": "গেভিশটুং",
+      "pl": "ge-WIŚ-tung",
+      "ru": "гэвИхьтунг"
+     }
+    },
+    {
+     "uid": "fcdebb47b89928c8",
+     "german": "dürfte",
+     "article": null,
+     "forms": null,
+     "pos": "verb",
+     "meaning": {
+      "en": "is likely to (assumption)",
+      "bn": "সম্ভবত (অনুমান)",
+      "pl": "zapewne / najpewniej (przypuszczenie)",
+      "ru": "вероятно (предположение)"
+     },
+     "guide": {
+      "en": "DEWRF-tuh",
+      "bn": "ড্যুর্ফটে",
+      "pl": "DÜRF-te",
+      "ru": "дЮрфтэ"
+     }
+    },
+    {
+     "uid": "4bd0f6e50f698ab7",
+     "german": "herleiten",
+     "article": null,
+     "forms": "leitet her · hat hergeleitet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to derive",
+      "bn": "উদ্ভূত করা",
+      "pl": "wyprowadzać / wyprowadzić / wywodzić",
+      "ru": "выводить (из)"
+     },
+     "guide": {
+      "en": "HAIR-lai-ten",
+      "bn": "হেয়ালাইটেন",
+      "pl": "HEA-laj-ten",
+      "ru": "хЭалайтэн"
+     }
+    },
+    {
+     "uid": "ed8b8ac75cde5afb",
+     "german": "gravierend",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "serious / grave",
+      "bn": "গুরুতর",
+      "pl": "poważny / istotny",
+      "ru": "серьёзный / тяжёлый"
+     },
+     "guide": {
+      "en": "gra-VEE-rent",
+      "bn": "গ্রাভিরেন্ট",
+      "pl": "gra-WI-rent",
+      "ru": "гравИрэнт"
+     }
+    },
+    {
+     "uid": "f86934169843f199",
+     "german": "Erkenntnisinteresse",
+     "article": "das",
+     "forms": "Erkenntnisinteressen",
+     "pos": "noun",
+     "meaning": {
+      "en": "research interest / epistemic aim",
+      "bn": "গবেষণার উদ্দেশ্য",
+      "pl": "cel poznawczy / zainteresowanie badawcze",
+      "ru": "исследовательский интерес"
+     },
+     "guide": {
+      "en": "air-KENT-niss-in-tuh-res-suh",
+      "bn": "এয়াকেন্টনিসইন্টারেসে",
+      "pl": "ea-KENT-nis-in-te-re-se",
+      "ru": "эакЭнтнисинтэрэсэ"
+     }
+    },
+    {
+     "uid": "18162892f685ef21",
+     "german": "Vorgabe",
+     "article": "die",
+     "forms": "Vorgaben",
+     "pos": "noun",
+     "meaning": {
+      "en": "requirement / specification",
+      "bn": "নির্দেশনা",
+      "pl": "wymóg / wytyczna",
+      "ru": "требование / предписание"
+     },
+     "guide": {
+      "en": "FOHR-gah-buh",
+      "bn": "ফোয়াগাবে",
+      "pl": "FOA-ga-be",
+      "ru": "фОагабэ"
+     }
+    },
+    {
+     "uid": "cd364e62d1d017ea",
+     "german": "Rechtsgrundlage",
+     "article": "die",
+     "forms": "Rechtsgrundlagen",
+     "pos": "noun",
+     "meaning": {
+      "en": "legal basis",
+      "bn": "আইনি ভিত্তি",
+      "pl": "podstawa prawna",
+      "ru": "правовое основание"
+     },
+     "guide": {
+      "en": "REHYTS-groont-lah-guh",
+      "bn": "রেশ্ট্‌সগ্রুন্টলাগে",
+      "pl": "REŚC-grunt-la-ge",
+      "ru": "рЭхьтсгрунтлагэ"
+     }
+    },
+    {
+     "uid": "c6ae48d6581f419d",
+     "german": "vorrangig",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "primary / with priority",
+      "bn": "প্রধান / অগ্রাধিকারপ্রাপ্ত",
+      "pl": "priorytetowy / przede wszystkim",
+      "ru": "первоочередной / в первую очередь"
+     },
+     "guide": {
+      "en": "FOHR-rang-ihy",
+      "bn": "ফোয়ারাঙিশ",
+      "pl": "FOA-rang-iś",
+      "ru": "фОарангихь"
+     }
+    },
+    {
+     "uid": "48a7cc9c1f931474",
+     "german": "differenzieren",
+     "article": null,
+     "forms": "differenziert · hat differenziert",
+     "pos": "verb",
+     "meaning": {
+      "en": "to differentiate",
+      "bn": "পার্থক্য করা",
+      "pl": "rozróżniać / różnicować",
+      "ru": "различать / дифференцировать"
+     },
+     "guide": {
+      "en": "dif-fuh-ren-TSEE-ren",
+      "bn": "ডিফেরেন্‌ৎসিরেন",
+      "pl": "di-fe-ren-CI-ren",
+      "ru": "дифэрэнцИрэн"
+     }
+    },
+    {
+     "uid": "bdd0651c0c2d7969",
+     "german": "entgegen",
+     "article": null,
+     "forms": null,
+     "pos": "prep",
+     "meaning": {
+      "en": "contrary to",
+      "bn": "বিপরীতে",
+      "pl": "wbrew",
+      "ru": "вопреки"
+     },
+     "guide": {
+      "en": "ent-GAY-gen",
+      "bn": "এন্টগেগেন",
+      "pl": "ent-GE-gen",
+      "ru": "энтгЭгэн"
+     }
+    },
+    {
+     "uid": "443dc20b97d479a2",
+     "german": "erwirtschaften",
+     "article": null,
+     "forms": "erwirtschaftet · hat erwirtschaftet",
+     "pos": "verb",
+     "meaning": {
+      "en": "to generate (economically)",
+      "bn": "উপার্জন করা",
+      "pl": "wypracowywać / wypracować (zysk)",
+      "ru": "зарабатывать / приносить (доход)"
+     },
+     "guide": {
+      "en": "air-VEERT-shaf-ten",
+      "bn": "এয়াভির্টশাফটেন",
+      "pl": "ea-WIRT-szaf-ten",
+      "ru": "эавИртшафтэн"
+     }
+    }
+   ]
+  },
+  {
+   "code": "C1.2",
+   "level": "C1",
+   "ord": 10,
+   "words": 416,
+   "grammar_topics": 20,
+   "grammar": [
+    {
+     "uid": "835014707955b450",
+     "topic": {
+      "en": "Fachsprachliche Syntax",
+      "pl": "Składnia języka specjalistycznego",
+      "ru": "Синтаксис научной и профессиональной речи"
+     }
+    },
+    {
+     "uid": "e24ebcfe65ccb307",
+     "topic": {
+      "en": "Zitieren, Paraphrasieren, Referieren",
+      "pl": "Cytowanie, parafrazowanie, referowanie",
+      "ru": "Цитирование, пересказ, реферирование"
+     }
+    },
+    {
+     "uid": "0cf9beba9e5a44c8",
+     "topic": {
+      "en": "Idiomatik kontrolliert einsetzen",
+      "pl": "Idiomy – świadomie i z umiarem",
+      "ru": "Идиомы — осознанно и в меру"
+     }
+    },
+    {
+     "uid": "42cad9bcc2d15829",
+     "topic": {
+      "en": "Stilebenen unterscheiden",
+      "pl": "Rozróżnianie rejestrów stylistycznych",
+      "ru": "Различение стилистических регистров"
+     }
+    },
+    {
+     "uid": "3deb0e40fd9579ca",
+     "topic": {
+      "en": "Textsorten: Erörterung und Zusammenfassung",
+      "pl": "Rodzaje tekstów: rozprawka (Erörterung) i streszczenie (Zusammenfassung)",
+      "ru": "Типы текстов: рассуждение (Erörterung) и резюме (Zusammenfassung)"
+     }
+    },
+    {
+     "uid": "da8f29899ebe6503",
+     "topic": {
+      "en": "Argumentationsaufbau",
+      "pl": "Budowa argumentacji",
+      "ru": "Построение аргументации"
+     }
+    },
+    {
+     "uid": "86530b65c341e05d",
+     "topic": {
+      "en": "Präsentation C1",
+      "pl": "Prezentacja C1",
+      "ru": "Презентация C1"
+     }
+    },
+    {
+     "uid": "ae3e80ad2b6b30c0",
+     "topic": {
+      "en": "Diskussion C1",
+      "pl": "Dyskusja C1",
+      "ru": "Дискуссия C1"
+     }
+    },
+    {
+     "uid": "aba4aaef9c26160f",
+     "topic": {
+      "en": "Hedging: absichern und abschwächen",
+      "pl": "Hedging: asekuracja i łagodzenie sądów",
+      "ru": "Хеджирование: оговорки и смягчение"
+     }
+    },
+    {
+     "uid": "320a6a48dda61181",
+     "topic": {
+      "en": "Präzision: Synonyme differenzieren",
+      "pl": "Precyzja: rozróżnianie synonimów",
+      "ru": "Точность: различение синонимов"
+     }
+    },
+    {
+     "uid": "f1287da8b7ffab14",
+     "topic": {
+      "en": "Typische Interferenzfehler",
+      "pl": "Typowe błędy interferencyjne",
+      "ru": "Типичные ошибки интерференции"
+     }
+    },
+    {
+     "uid": "67919948e94f0a46",
+     "topic": {
+      "en": "Komplexe Fachtexte erschließen",
+      "pl": "Rozumienie złożonych tekstów specjalistycznych",
+      "ru": "Понимание сложных специальных текстов"
+     }
+    },
+    {
+     "uid": "a2f95c2a87028f28",
+     "topic": {
+      "en": "Hörverstehen C1",
+      "pl": "Rozumienie ze słuchu C1",
+      "ru": "Аудирование C1"
+     }
+    },
+    {
+     "uid": "47fe7077a02392fc",
+     "topic": {
+      "en": "Schreiben C1",
+      "pl": "Pisanie C1",
+      "ru": "Письмо C1"
+     }
+    },
+    {
+     "uid": "13f757c8843bf794",
+     "topic": {
+      "en": "Sprechen C1",
+      "pl": "Mówienie C1",
+      "ru": "Говорение C1"
+     }
+    },
+    {
+     "uid": "0c0593a8d26c45c5",
+     "topic": {
+      "en": "Eigene Texte überarbeiten",
+      "pl": "Poprawianie własnych tekstów",
+      "ru": "Редактирование собственных текстов"
+     }
+    },
+    {
+     "uid": "b49bbdd3c7e07cb4",
+     "topic": {
+      "en": "Prüfungstraining Lesen",
+      "pl": "Trening egzaminacyjny: Lesen (czytanie)",
+      "ru": "Подготовка к экзамену: Lesen (чтение)"
+     }
+    },
+    {
+     "uid": "3d5f18ff955bd8a5",
+     "topic": {
+      "en": "Prüfungstraining Hören und Schreiben",
+      "pl": "Trening egzaminacyjny: Hören i Schreiben (słuchanie i pisanie)",
+      "ru": "Подготовка к экзамену: Hören и Schreiben (аудирование и письмо)"
+     }
+    },
+    {
+     "uid": "b753a7ad02a9d4cc",
+     "topic": {
+      "en": "Prüfungstraining Sprechen; Modelltest 1",
+      "pl": "Trening egzaminacyjny: Sprechen (mówienie); Modelltest 1",
+      "ru": "Подготовка к экзамену: Sprechen (говорение); Modelltest 1"
+     }
+    },
+    {
+     "uid": "579f5bd59ff87c4d",
+     "topic": {
+      "en": "Modelltest 2 und Lückenanalyse",
+      "pl": "Modelltest 2 i analiza luk",
+      "ru": "Modelltest 2 и анализ пробелов"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "2d119c8d9c62a529",
+     "german": "Eilverfahren",
+     "article": "das",
+     "forms": "Eilverfahren",
+     "pos": "noun",
+     "meaning": {
+      "en": "fast-track / expedited procedure",
+      "bn": "দ্রুত প্রক্রিয়া",
+      "pl": "tryb pilny / postępowanie przyspieszone",
+      "ru": "ускоренная процедура"
+     },
+     "guide": {
+      "en": "AIL-fair-fah-ren",
+      "bn": "আইলফেয়াফারেন",
+      "pl": "AJL-fea-fa-ren",
+      "ru": "Айльфафарэн"
+     }
+    },
+    {
+     "uid": "85fe323b734f1135",
+     "german": "Amtsdeutsch",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "officialese / bureaucratic German",
+      "bn": "সরকারি জটিল ভাষা",
+      "pl": "żargon urzędniczy",
+      "ru": "канцелярский немецкий"
+     },
+     "guide": {
+      "en": "AMTS-doych",
+      "bn": "আম্ট্‌সডয়চ",
+      "pl": "AMC-dojcz",
+      "ru": "Амтсдойч"
+     }
+    },
+    {
+     "uid": "3157b25aa84a882c",
+     "german": "Validität",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "validity",
+      "bn": "বৈধতা (গবেষণা)",
+      "pl": "trafność (pomiaru)",
+      "ru": "валидность"
+     },
+     "guide": {
+      "en": "va-li-di-TEHT",
+      "bn": "ভালিডিটেট",
+      "pl": "wa-li-di-TET",
+      "ru": "валидитЭт"
+     }
+    },
+    {
+     "uid": "1bfe9dab13601712",
+     "german": "Verzahnung",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "dovetailing / close integration",
+      "bn": "সমন্বয়",
+      "pl": "ścisłe powiązanie / zazębienie",
+      "ru": "тесная увязка / интеграция"
+     },
+     "guide": {
+      "en": "fair-TSAH-noong",
+      "bn": "ফেয়াৎসানুং",
+      "pl": "fea-CA-nung",
+      "ru": "фацАнунг"
+     }
+    },
+    {
+     "uid": "974ca9f97deaf8f6",
+     "german": "lückenlos",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "complete / seamless",
+      "bn": "ত্রুটিহীন / নিরবচ্ছিন্ন",
+      "pl": "kompletny / bez luk",
+      "ru": "полный / без пробелов"
+     },
+     "guide": {
+      "en": "LEWK-ken-lohss",
+      "bn": "ল্যুকেনলোস",
+      "pl": "LÜ-ken-los",
+      "ru": "лЮкэнлос"
+     }
+    },
+    {
+     "uid": "30c509127ac953e5",
+     "german": "schmelzen",
+     "article": null,
+     "forms": "schmilzt · ist geschmolzen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to melt / to shrink (advantage)",
+      "bn": "গলে যাওয়া / কমে যাওয়া",
+      "pl": "topnieć / stopnieć / kurczyć się",
+      "ru": "таять / сокращаться"
+     },
+     "guide": {
+      "en": "SHMEL-tsen",
+      "bn": "শ্মেল্‌ৎসেন",
+      "pl": "SZMEL-cen",
+      "ru": "шмЭльцэн"
+     }
+    },
+    {
+     "uid": "daa11e5635a71a89",
+     "german": "aufkommen für",
+     "article": null,
+     "forms": "kommt auf · ist aufgekommen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to cover (costs) / to arise",
+      "bn": "খরচ বহন করা / উদ্ভূত হওয়া",
+      "pl": "pokrywać (koszty) / pojawiać się",
+      "ru": "покрывать (расходы) / возникать"
+     },
+     "guide": {
+      "en": "OWF-kom-men fewr",
+      "bn": "আউফকমেন ফ্যুয়া",
+      "pl": "AUF-ko-men füa",
+      "ru": "Ауфкомэн фЮа"
+     }
+    },
+    {
+     "uid": "0271ded9056cca04",
+     "german": "Datensparsamkeit",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "data minimisation",
+      "bn": "ন্যূনতম তথ্য সংগ্রহ",
+      "pl": "minimalizacja danych",
+      "ru": "минимизация данных"
+     },
+     "guide": {
+      "en": "DAH-ten-shpahr-zahm-kait",
+      "bn": "ডাটেনশ্পারজামকাইট",
+      "pl": "DA-ten-szpaa-zam-kajt",
+      "ru": "дАтэншпаазамкайт"
+     }
+    },
+    {
+     "uid": "671c7cc0a2f5bc6e",
+     "german": "zeitgenössisch",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "contemporary",
+      "bn": "সমকালীন",
+      "pl": "współczesny / ówczesny",
+      "ru": "современный"
+     },
+     "guide": {
+      "en": "TSAIT-guh-nurs-sish",
+      "bn": "ৎসাইটগেন্যোসিশ",
+      "pl": "CAJT-ge-nö-sisz",
+      "ru": "цАйтгэнёсиш"
+     }
+    },
+    {
+     "uid": "d94ea55b5c81aa2b",
+     "german": "Verdrängung",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "repression / crowding out",
+      "bn": "দমন / স্থানচ্যুতি",
+      "pl": "wyparcie / wypieranie",
+      "ru": "вытеснение"
+     },
+     "guide": {
+      "en": "fair-DRENG-oong",
+      "bn": "ফেয়াড্রেঙুং",
+      "pl": "fea-DRENG-ung",
+      "ru": "фадрЭнгунг"
+     }
+    },
+    {
+     "uid": "4f546ff2fc9c7ef4",
+     "german": "haken",
+     "article": null,
+     "forms": "hakt · hat gehakt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to be stuck / to go wrong",
+      "bn": "আটকে যাওয়া",
+      "pl": "zacinać się / szwankować",
+      "ru": "застревать / не ладиться"
+     },
+     "guide": {
+      "en": "HAH-ken",
+      "bn": "হাকেন",
+      "pl": "HA-ken",
+      "ru": "хАкэн"
+     }
+    },
+    {
+     "uid": "0f7c06e4c00305dd",
+     "german": "Augenmaß",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "sense of proportion",
+      "bn": "পরিমিতি বোধ",
+      "pl": "wyczucie proporcji / umiar",
+      "ru": "чувство меры"
+     },
+     "guide": {
+      "en": "OW-gen-mahss",
+      "bn": "আউগেনমাস",
+      "pl": "AU-gen-mas",
+      "ru": "Аугэнмас"
+     }
+    },
+    {
+     "uid": "6f0dd594c47cd173",
+     "german": "Zuspitzung",
+     "article": "die",
+     "forms": "Zuspitzungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "escalation / pointed formulation",
+      "bn": "তীব্রতা বৃদ্ধি",
+      "pl": "zaostrzenie / wyostrzenie (tezy)",
+      "ru": "обострение / заострение"
+     },
+     "guide": {
+      "en": "TSOO-shpit-soong",
+      "bn": "ৎসুশ্পিৎসুং",
+      "pl": "CU-szpi-cung",
+      "ru": "цУшпицунг"
+     }
+    },
+    {
+     "uid": "4668aba538079fd3",
+     "german": "Deutungshoheit",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "interpretive authority / control of the narrative",
+      "bn": "ব্যাখ্যার কর্তৃত্ব",
+      "pl": "władza interpretacyjna / kontrola narracji",
+      "ru": "монополия на интерпретацию"
+     },
+     "guide": {
+      "en": "DOY-toongss-hoh-hait",
+      "bn": "ডয়টুংশোহাইট",
+      "pl": "DOJ-tungs-ho-hajt",
+      "ru": "дОйтунгсхохайт"
+     }
+    },
+    {
+     "uid": "d02247b7c2a982c2",
+     "german": "Querschnittsaufgabe",
+     "article": "die",
+     "forms": "Querschnittsaufgaben",
+     "pos": "noun",
+     "meaning": {
+      "en": "cross-cutting task",
+      "bn": "আন্তঃবিভাগীয় দায়িত্ব",
+      "pl": "zadanie przekrojowe",
+      "ru": "сквозная (межведомственная) задача"
+     },
+     "guide": {
+      "en": "KVAIR-shnits-owf-gah-buh",
+      "bn": "ক্ভেয়াশ্নিট্‌সআউফগাবে",
+      "pl": "KWEA-sznic-auf-ga-be",
+      "ru": "квЭашнитсауфгабэ"
+     }
+    },
+    {
+     "uid": "b0dfe231a212dd2f",
+     "german": "Forschungsstand",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "state of research",
+      "bn": "গবেষণার বর্তমান অবস্থা",
+      "pl": "stan badań",
+      "ru": "состояние исследований"
+     },
+     "guide": {
+      "en": "FOR-shoongss-shtant",
+      "bn": "ফর্শুংসশ্টান্ট",
+      "pl": "FOR-szungs-sztant",
+      "ru": "фОршунгсштант"
+     }
+    },
+    {
+     "uid": "58e625602f9f082c",
+     "german": "Fiskalpolitik",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "fiscal policy",
+      "bn": "রাজস্বনীতি",
+      "pl": "polityka fiskalna",
+      "ru": "фискальная политика"
+     },
+     "guide": {
+      "en": "fis-KAHL-po-li-teek",
+      "bn": "ফিস্কালপোলিটিক",
+      "pl": "fis-KAL-po-li-tik",
+      "ru": "фискАльполитик"
+     }
+    },
+    {
+     "uid": "d520b5f91bb1e026",
+     "german": "verharmlosen",
+     "article": null,
+     "forms": "verharmlost · hat verharmlost",
+     "pos": "verb",
+     "meaning": {
+      "en": "to play down / to trivialise",
+      "bn": "লঘু করে দেখানো",
+      "pl": "bagatelizować / zbagatelizować",
+      "ru": "преуменьшать (опасность)"
+     },
+     "guide": {
+      "en": "fair-HARM-loh-zen",
+      "bn": "ফেয়াহার্মলোজেন",
+      "pl": "fea-HARM-lo-zen",
+      "ru": "фахАрмлозэн"
+     }
+    },
+    {
+     "uid": "108503f879b5c77b",
+     "german": "Zumutbarkeit",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "reasonableness (what can be expected of someone)",
+      "bn": "গ্রহণযোগ্যতা / সহনীয়তা",
+      "pl": "granica tego, czego można wymagać",
+      "ru": "приемлемость (того, что можно требовать)"
+     },
+     "guide": {
+      "en": "TSOO-moot-bahr-kait",
+      "bn": "ৎসুমুটবারকাইট",
+      "pl": "CU-mut-baa-kajt",
+      "ru": "цУмутбаакайт"
+     }
+    },
+    {
+     "uid": "eeef7afb68158ac5",
+     "german": "Querschnittstudie",
+     "article": "die",
+     "forms": "Querschnittstudien",
+     "pos": "noun",
+     "meaning": {
+      "en": "cross-sectional study",
+      "bn": "একসময়ের গবেষণা",
+      "pl": "badanie przekrojowe",
+      "ru": "поперечное исследование"
+     },
+     "guide": {
+      "en": "KVAIR-shnit-shtoo-dyuh",
+      "bn": "ক্ভেয়াশ্নিটশ্টুডিয়ে",
+      "pl": "KWEA-sznit-sztu-di-je",
+      "ru": "квЭашнитштудиэ"
+     }
+    },
+    {
+     "uid": "5406ca17f8e8cc81",
+     "german": "Zäsur",
+     "article": "die",
+     "forms": "Zäsuren",
+     "pos": "noun",
+     "meaning": {
+      "en": "caesura / watershed",
+      "bn": "মোড় ঘোরানো ঘটনা",
+      "pl": "cezura / punkt przełomowy",
+      "ru": "перелом / водораздел"
+     },
+     "guide": {
+      "en": "tse-ZOOR",
+      "bn": "ৎসেজুয়া",
+      "pl": "ce-ZUA",
+      "ru": "цэзУа"
+     }
+    },
+    {
+     "uid": "c179b018b54b7d57",
+     "german": "Fehlerquote",
+     "article": "die",
+     "forms": "Fehlerquoten",
+     "pos": "noun",
+     "meaning": {
+      "en": "error rate",
+      "bn": "ভুলের হার",
+      "pl": "odsetek błędów / wskaźnik błędów",
+      "ru": "доля ошибок"
+     },
+     "guide": {
+      "en": "FAY-ler-kvoh-tuh",
+      "bn": "ফেলারক্ভোটে",
+      "pl": "FE-la-kwo-te",
+      "ru": "фЭлаквотэ"
+     }
+    },
+    {
+     "uid": "b21157b5f1f564de",
+     "german": "sich hinziehen",
+     "article": null,
+     "forms": "zieht sich hin · hat sich hingezogen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to drag on",
+      "bn": "দীর্ঘায়িত হওয়া",
+      "pl": "przeciągać się / ciągnąć się",
+      "ru": "затягиваться"
+     },
+     "guide": {
+      "en": "zihy HIN-tsee-en",
+      "bn": "জিশ হিনৎসিয়েন",
+      "pl": "ziś HIN-ci-en",
+      "ru": "зихь хИнциэн"
+     }
+    },
+    {
+     "uid": "4ee2b3e01f9a47f2",
+     "german": "Quellenlage",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "state of the sources",
+      "bn": "উৎস পরিস্থিতি",
+      "pl": "stan źródeł / baza źródłowa",
+      "ru": "состояние источников"
+     },
+     "guide": {
+      "en": "KVEL-len-lah-guh",
+      "bn": "ক্ভেলেনলাগে",
+      "pl": "KWE-len-la-ge",
+      "ru": "квЭлэнлагэ"
+     }
+    },
+    {
+     "uid": "ce2dc4c6c3613543",
+     "german": "Silodenken",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "silo mentality",
+      "bn": "বিচ্ছিন্ন চিন্তাধারা",
+      "pl": "myślenie silosowe",
+      "ru": "разобщённость / «мышление в своём колодце»"
+     },
+     "guide": {
+      "en": "ZEE-loh-denk-en",
+      "bn": "জিলোডেংকেন",
+      "pl": "ZI-lo-den-ken",
+      "ru": "зИлодэнкэн"
+     }
+    }
+   ]
+  },
+  {
+   "code": "C2.1",
+   "level": "C2",
+   "ord": 11,
+   "words": 222,
+   "grammar_topics": 20,
+   "grammar": [
+    {
+     "uid": "4ac62f2a3906d171",
+     "topic": {
+      "en": "Denotation und Konnotation",
+      "pl": "Denotacja i konotacja",
+      "ru": "Денотация и коннотация (Denotation und Konnotation)"
+     }
+    },
+    {
+     "uid": "69a3be09be521347",
+     "topic": {
+      "en": "Synonymdifferenzierung",
+      "pl": "Rozróżnianie synonimów",
+      "ru": "Различение синонимов (Synonymdifferenzierung)"
+     }
+    },
+    {
+     "uid": "40638f3eec5f5201",
+     "topic": {
+      "en": "Modalpartikeln: Kombination und Stellung",
+      "pl": "Partykuły modalne: łączenie i miejsce w zdaniu",
+      "ru": "Модальные частицы: сочетание и позиция"
+     }
+    },
+    {
+     "uid": "3bc79bfa24d465e8",
+     "topic": {
+      "en": "Verbvalenz und seltene Rektionen",
+      "pl": "Walencja czasowników i rzadka rekcja",
+      "ru": "Валентность глаголов и редкое управление"
+     }
+    },
+    {
+     "uid": "fd611b712dc40dae",
+     "topic": {
+      "en": "Präpositionen im gehobenen Stil",
+      "pl": "Przyimki w stylu wysokim",
+      "ru": "Предлоги высокого стиля"
+     }
+    },
+    {
+     "uid": "232b3cf16c1dac4b",
+     "topic": {
+      "en": "Vorfeld, Ausklammerung, Nachfeld",
+      "pl": "Pole początkowe, wyniesienie poza ramkę, pole końcowe",
+      "ru": "Первое поле, вынос за рамку, конечное поле (Vorfeld, Ausklammerung, Nachfeld)"
+     }
+    },
+    {
+     "uid": "c89d119ad3901274",
+     "topic": {
+      "en": "Stilebenen und Stilbruch",
+      "pl": "Poziomy stylu i zgrzyt stylistyczny",
+      "ru": "Стилистические уровни и стилистический сбой (Stilebenen und Stilbruch)"
+     }
+    },
+    {
+     "uid": "dc447e0b249d602a",
+     "topic": {
+      "en": "Kollokationen erweitern",
+      "pl": "Poszerzanie kolokacji",
+      "ru": "Расширение сочетаемости (Kollokationen erweitern)"
+     }
+    },
+    {
+     "uid": "5c9be79181e59369",
+     "topic": {
+      "en": "Idiomatik: Bild und Gebrauchsgrenze",
+      "pl": "Idiomatyka: obraz i granice użycia",
+      "ru": "Идиоматика: образ и границы употребления"
+     }
+    },
+    {
+     "uid": "30c00ccbf970bb51",
+     "topic": {
+      "en": "Sprichwörter und ihre Brechung",
+      "pl": "Przysłowia i ich przekształcanie",
+      "ru": "Пословицы и их обыгрывание (Sprichwörter und ihre Brechung)"
+     }
+    },
+    {
+     "uid": "a627a4252d103da6",
+     "topic": {
+      "en": "Litotes und Understatement",
+      "pl": "Litota i niedopowiedzenie",
+      "ru": "Литота и преуменьшение (Litotes und Understatement)"
+     }
+    },
+    {
+     "uid": "ed194d47e92fc71b",
+     "topic": {
+      "en": "Rhetorische Figuren",
+      "pl": "Figury retoryczne",
+      "ru": "Риторические фигуры"
+     }
+    },
+    {
+     "uid": "1d7c55f181efca3c",
+     "topic": {
+      "en": "Textsorten der Presse",
+      "pl": "Gatunki prasowe",
+      "ru": "Жанры прессы (Textsorten der Presse)"
+     }
+    },
+    {
+     "uid": "a17cf962f9717747",
+     "topic": {
+      "en": "Erzähltextanalyse",
+      "pl": "Analiza tekstu narracyjnego",
+      "ru": "Анализ повествовательного текста (Erzähltextanalyse)"
+     }
+    },
+    {
+     "uid": "c491bc1b5673d841",
+     "topic": {
+      "en": "Wissenschaftssprache: Präzision und Hecken",
+      "pl": "Język naukowy: precyzja i asekuracja",
+      "ru": "Научный язык: точность и оговорки (Präzision und Hecken)"
+     }
+    },
+    {
+     "uid": "cf8884625d75ff1b",
+     "topic": {
+      "en": "Rechtssprache entschlüsseln",
+      "pl": "Rozszyfrowywanie języka prawniczego",
+      "ru": "Расшифровка юридического языка (Rechtssprache entschlüsseln)"
+     }
+    },
+    {
+     "uid": "432d952cfbfdc6f4",
+     "topic": {
+      "en": "Archaismen und poetische Formen",
+      "pl": "Archaizmy i formy poetyckie",
+      "ru": "Архаизмы и поэтические формы"
+     }
+    },
+    {
+     "uid": "12ef0a5c4f4c8b12",
+     "topic": {
+      "en": "Anglizismen im Deutschen",
+      "pl": "Anglicyzmy w niemieckim",
+      "ru": "Англицизмы в немецком (Anglizismen im Deutschen)"
+     }
+    },
+    {
+     "uid": "1199b4b2b93d16c3",
+     "topic": {
+      "en": "Interferenzfehler abbauen",
+      "pl": "Eliminowanie błędów interferencji",
+      "ru": "Устранение ошибок интерференции (Interferenzfehler abbauen)"
+     }
+    },
+    {
+     "uid": "0306dbad023fa131",
+     "topic": {
+      "en": "Umgangssprache: Struktur",
+      "pl": "Język potoczny: struktura",
+      "ru": "Разговорный язык: структура (Umgangssprache: Struktur)"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "e042dfa330b8cc6e",
+     "german": "Vorschrift / Regelung / Bestimmung / Richtlinie",
+     "article": null,
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "regulation / arrangement / provision / directive",
+      "bn": "বিধি (চার ধরন)",
+      "pl": "przepis / regulacja / postanowienie / wytyczna",
+      "ru": "предписание / регулирование / положение / директива"
+     },
+     "guide": {
+      "en": "FOHR-shrift / RAY-guh-loong / buh-SHTIM-moong / RIHYT-lee-nyuh",
+      "bn": "ফোয়াশ্রিফ্ট / রেগেলুং / বেশ্টিমুং",
+      "pl": "FOA-szrift / RE-ge-lung / be-SZTI-mung / RIŚT-li-ni-je",
+      "ru": "фОашрифт / рЭгэлунг / бэштИмунг / рИхьтлиниэ"
+     }
+    },
+    {
+     "uid": "f45e7acf6424f893",
+     "german": "scheinbar / anscheinend",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "seemingly (but not) / apparently (probably true)",
+      "bn": "আপাতদৃষ্টিতে / সম্ভবত",
+      "pl": "pozornie / najwyraźniej",
+      "ru": "мнимо / по-видимому"
+     },
+     "guide": {
+      "en": "SHAIN-bahr / AN-shai-nent",
+      "bn": "শাইনবার / আনশাইনেন্ট",
+      "pl": "SZAJN-baa / AN-szaj-nent",
+      "ru": "шАйнбаа / Аншайнэнт"
+     }
+    },
+    {
+     "uid": "15dfe9f48969744c",
+     "german": "immerhin (Partikel)",
+     "article": null,
+     "forms": null,
+     "pos": "particle",
+     "meaning": {
+      "en": "at least / after all (concessive)",
+      "bn": "অন্তত",
+      "pl": "przynajmniej / bądź co bądź",
+      "ru": "по крайней мере / всё-таки"
+     },
+     "guide": {
+      "en": "im-mer-HIN",
+      "bn": "ইমারহিন",
+      "pl": "i-ma-HIN",
+      "ru": "имахИн"
+     }
+    },
+    {
+     "uid": "366626c68f7e5d9e",
+     "german": "denn (Partikel)",
+     "article": null,
+     "forms": null,
+     "pos": "particle",
+     "meaning": {
+      "en": "then (softens a question)",
+      "bn": "তাহলে (প্রশ্ন নরম করতে)",
+      "pl": "to / właściwie (łagodzi pytanie)",
+      "ru": "же / вообще-то (смягчает вопрос)"
+     },
+     "guide": {
+      "en": "DEN",
+      "bn": "ডেন",
+      "pl": "DEN",
+      "ru": "дэн"
+     }
+    },
+    {
+     "uid": "c0190de54d671e24",
+     "german": "Fachjargon",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "jargon (pejorative)",
+      "bn": "পেশাগত দুর্বোধ্য ভাষা",
+      "pl": "żargon fachowy",
+      "ru": "профессиональный жаргон"
+     },
+     "guide": {
+      "en": "FAKH-zhar-gong",
+      "bn": "ফাখইয়ারগন",
+      "pl": "FACH-żar-gong",
+      "ru": "фАхжаргонг"
+     }
+    },
+    {
+     "uid": "292b3d2b6fe87529",
+     "german": "Reportage",
+     "article": "die",
+     "forms": "Reportagen",
+     "pos": "noun",
+     "meaning": {
+      "en": "reportage (scenic, eyewitness)",
+      "bn": "সরেজমিন প্রতিবেদন",
+      "pl": "reportaż",
+      "ru": "репортаж"
+     },
+     "guide": {
+      "en": "ray-por-TAH-zhuh",
+      "bn": "রেপর্টাজে",
+      "pl": "re-por-TA-że",
+      "ru": "рэпортАжэ"
+     }
+    },
+    {
+     "uid": "239498b82c63aaf8",
+     "german": "Nachfeld",
+     "article": "das",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "the field after the final verb",
+      "bn": "শেষ ক্রিয়ার পরের অংশ",
+      "pl": "pole końcowe (po czasowniku)",
+      "ru": "конечное поле (после глагола)"
+     },
+     "guide": {
+      "en": "NAHKH-felt",
+      "bn": "নাখফেল্ট",
+      "pl": "NACH-felt",
+      "ru": "нАхфэльт"
+     }
+    },
+    {
+     "uid": "abc6b588d6091b4a",
+     "german": "erschüttern",
+     "article": null,
+     "forms": "erschüttert · hat erschüttert",
+     "pos": "verb",
+     "meaning": {
+      "en": "to shake / to undermine (confidence)",
+      "bn": "নাড়িয়ে দেওয়া",
+      "pl": "wstrząsać / podważać",
+      "ru": "потрясать / подрывать"
+     },
+     "guide": {
+      "en": "air-SHEWT-tern",
+      "bn": "এয়াশ্যুটার্ন",
+      "pl": "ea-SZÜ-tan",
+      "ru": "эашЮтан"
+     }
+    },
+    {
+     "uid": "4ee5eb233bb17a82",
+     "german": "Einordnung",
+     "article": "die",
+     "forms": "Einordnungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "contextualisation",
+      "bn": "প্রেক্ষাপটে স্থাপন",
+      "pl": "osadzenie w kontekście",
+      "ru": "вписывание в контекст"
+     },
+     "guide": {
+      "en": "AIN-ort-noong",
+      "bn": "আইনঅর্ডনুং",
+      "pl": "AJN-ort-nung",
+      "ru": "Айнортнунг"
+     }
+    },
+    {
+     "uid": "84b3f75ad7728af5",
+     "german": "aber (Partikel)",
+     "article": null,
+     "forms": null,
+     "pos": "particle",
+     "meaning": {
+      "en": "really (surprise, in exclamations)",
+      "bn": "সত্যি (বিস্ময়ে)",
+      "pl": "ale / ależ (zdziwienie)",
+      "ru": "ну и / же (удивление)"
+     },
+     "guide": {
+      "en": "AH-ber",
+      "bn": "আবার",
+      "pl": "A-ba",
+      "ru": "Аба"
+     }
+    },
+    {
+     "uid": "503a23a91b2b69ae",
+     "german": "streichen",
+     "article": null,
+     "forms": "streicht · hat gestrichen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to cut / to delete",
+      "bn": "কেটে দেওয়া",
+      "pl": "skreślać / skreślić",
+      "ru": "вычёркивать / вычеркнуть"
+     },
+     "guide": {
+      "en": "SHTRAI-hyen",
+      "bn": "শ্ট্রাইশেন",
+      "pl": "SZTRAJ-śen",
+      "ru": "штрАйхен"
+     }
+    },
+    {
+     "uid": "65006934a163a2fd",
+     "german": "Plagiat",
+     "article": "das",
+     "forms": "Plagiate",
+     "pos": "noun",
+     "meaning": {
+      "en": "plagiarism",
+      "bn": "চৌর্যবৃত্তি",
+      "pl": "plagiat",
+      "ru": "плагиат"
+     },
+     "guide": {
+      "en": "pla-ghi-AHT",
+      "bn": "প্লাগিয়াট",
+      "pl": "pla-gi-JAT",
+      "ru": "плагиАт"
+     }
+    },
+    {
+     "uid": "9c0f0bc27748ad0b",
+     "german": "beantragen",
+     "article": null,
+     "forms": "beantragt · hat beantragt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to move (a motion, in a meeting)",
+      "bn": "প্রস্তাব করা",
+      "pl": "zgłaszać / zgłosić wniosek (na zebraniu)",
+      "ru": "ходатайствовать / вносить предложение (на заседании)"
+     },
+     "guide": {
+      "en": "buh-AN-trah-gen",
+      "bn": "বেআনট্রাগেন",
+      "pl": "be-AN-tra-gen",
+      "ru": "бэАнтрагэн"
+     }
+    },
+    {
+     "uid": "82caa8a8116bfc84",
+     "german": "Überschrift",
+     "article": "die",
+     "forms": "Überschriften",
+     "pos": "noun",
+     "meaning": {
+      "en": "headline / heading",
+      "bn": "শিরোনাম",
+      "pl": "tytuł / nagłówek",
+      "ru": "заголовок"
+     },
+     "guide": {
+      "en": "EW-ber-shrift",
+      "bn": "য়্যুবারশ্রিফ্ট",
+      "pl": "Ü-ba-szrift",
+      "ru": "Юбашрифт"
+     }
+    },
+    {
+     "uid": "4848aa0a2e5dfa1d",
+     "german": "Ellipse",
+     "article": "die",
+     "forms": "Ellipsen",
+     "pos": "noun",
+     "meaning": {
+      "en": "ellipsis (omission)",
+      "bn": "শব্দ বাদ দেওয়া",
+      "pl": "elipsa (opuszczenie)",
+      "ru": "эллипсис (пропуск)"
+     },
+     "guide": {
+      "en": "el-LIP-suh",
+      "bn": "এলিপ্‌জে",
+      "pl": "e-LIP-se",
+      "ru": "элИпсэ"
+     }
+    },
+    {
+     "uid": "f45e7062dde1d712",
+     "german": "Gesinnung",
+     "article": "die",
+     "forms": "Gesinnungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "mindset / ideological conviction (often pejorative)",
+      "bn": "মানসিকতা / আদর্শিক বিশ্বাস",
+      "pl": "przekonania / mentalność (ideowa)",
+      "ru": "образ мыслей / убеждения"
+     },
+     "guide": {
+      "en": "guh-ZIN-noong",
+      "bn": "গেজিনুং",
+      "pl": "ge-ZI-nung",
+      "ru": "гэзИнунг"
+     }
+    },
+    {
+     "uid": "0a174f8748b21d6e",
+     "german": "posten / liken / teilen",
+     "article": null,
+     "forms": null,
+     "pos": "verb",
+     "meaning": {
+      "en": "to post / to like / to share",
+      "bn": "পোস্ট / লাইক / শেয়ার করা",
+      "pl": "postować / lajkować / udostępniać",
+      "ru": "постить / лайкать / делиться"
+     },
+     "guide": {
+      "en": "POHS-ten / LAI-ken / TAI-len",
+      "bn": "পোস্টেন / লাইকেন / টাইলেন",
+      "pl": "POS-ten / LAJ-ken / TAJ-len",
+      "ru": "пОстэн / лАйкэн / тАйлэн"
+     }
+    },
+    {
+     "uid": "8d0db329478cb10b",
+     "german": "Ausblick",
+     "article": "der",
+     "forms": "Ausblicke",
+     "pos": "noun",
+     "meaning": {
+      "en": "outlook (final section)",
+      "bn": "ভবিষ্যৎ দৃষ্টিভঙ্গি",
+      "pl": "perspektywy (część końcowa)",
+      "ru": "перспективы (заключительный раздел)"
+     },
+     "guide": {
+      "en": "OWSS-blik",
+      "bn": "আউসব্লিক",
+      "pl": "AUS-blik",
+      "ru": "Аусблик"
+     }
+    },
+    {
+     "uid": "96dac0338d7030e3",
+     "german": "Zynismus",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "cynicism",
+      "bn": "নিন্দাবাদ",
+      "pl": "cynizm",
+      "ru": "цинизм"
+     },
+     "guide": {
+      "en": "tsew-NIS-mooss",
+      "bn": "ৎসুনিসমুস",
+      "pl": "cü-NIS-mus",
+      "ru": "цюнИсмус"
+     }
+    },
+    {
+     "uid": "8468cb9ebaa3cb8b",
+     "german": "lernen / erlernen / studieren",
+     "article": null,
+     "forms": "lernt · erlernt · studiert",
+     "pos": "verb",
+     "meaning": {
+      "en": "to learn / to acquire (a skill) / to study (at university, or examine)",
+      "bn": "শেখা / আয়ত্ত করা / অধ্যয়ন করা",
+      "pl": "uczyć się / wyuczyć się / studiować",
+      "ru": "учить / овладевать / изучать / учиться в вузе"
+     },
+     "guide": {
+      "en": "LAIR-nen / air-LAIR-nen / shtoo-DEE-ren",
+      "bn": "লের্নেন / এয়ালের্নেন / শ্টুডিরেন",
+      "pl": "LER-nen / ea-LER-nen / sztu-DI-ren",
+      "ru": "лЭрнэн / эалЭрнэн / штудИрэн"
+     }
+    },
+    {
+     "uid": "09c6fbfa4012a7ff",
+     "german": "ambitioniert",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "ambitious (positive of plans, ambivalent of people)",
+      "bn": "উচ্চাভিলাষী",
+      "pl": "ambitny",
+      "ru": "амбициозный"
+     },
+     "guide": {
+      "en": "am-bi-tsyo-NEERT",
+      "bn": "আম্বিৎসিওনির্ট",
+      "pl": "am-bi-ci-jo-NIRT",
+      "ru": "амбиционИрт"
+     }
+    },
+    {
+     "uid": "7bd9ae36a24591c9",
+     "german": "in etwas verfallen",
+     "article": null,
+     "forms": "verfällt · ist verfallen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to lapse into",
+      "bn": "পড়ে যাওয়া (অভ্যাসে)",
+      "pl": "popadać / popaść w coś",
+      "ru": "впадать / впасть во что-то"
+     },
+     "guide": {
+      "en": "in et-vass fair-FAL-len",
+      "bn": "ইন এটভাস ফেয়াফালেন",
+      "pl": "in et-was fea-FA-len",
+      "ru": "ин Этвас фафАлэн"
+     }
+    },
+    {
+     "uid": "e6b5ff42459229b6",
+     "german": "Motiv",
+     "article": "das",
+     "forms": "Motive",
+     "pos": "noun",
+     "meaning": {
+      "en": "motif (literary) / motive",
+      "bn": "রূপকল্প / উদ্দেশ্য",
+      "pl": "motyw",
+      "ru": "мотив"
+     },
+     "guide": {
+      "en": "mo-TEEF",
+      "bn": "মোটিফ",
+      "pl": "mo-TIF",
+      "ru": "мотИф"
+     }
+    },
+    {
+     "uid": "9db77933922852ec",
+     "german": "anzeigen (Behörde)",
+     "article": null,
+     "forms": "zeigt an · hat angezeigt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to notify (an authority)",
+      "bn": "কর্তৃপক্ষকে জানানো",
+      "pl": "zgłaszać / zgłosić (urzędowi)",
+      "ru": "уведомлять (ведомство)"
+     },
+     "guide": {
+      "en": "AN-tsai-gen buh-HUR-duh",
+      "bn": "আন্‌ৎসাইগেন",
+      "pl": "AN-caj-gen",
+      "ru": "Анцайгэн"
+     }
+    },
+    {
+     "uid": "616940c09b9e7263",
+     "german": "ehrgeizig",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "ambitious (of a person, can be edged)",
+      "bn": "উচ্চাকাঙ্ক্ষী",
+      "pl": "ambitny / żądny sukcesu",
+      "ru": "честолюбивый"
+     },
+     "guide": {
+      "en": "AIR-gai-tsihy",
+      "bn": "এয়াগাইৎসিশ",
+      "pl": "EA-gaj-ciś",
+      "ru": "Эагайцихь"
+     }
+    }
+   ]
+  },
+  {
+   "code": "C2.2",
+   "level": "C2",
+   "ord": 12,
+   "words": 276,
+   "grammar_topics": 20,
+   "grammar": [
+    {
+     "uid": "37b6619d94a2d283",
+     "topic": {
+      "en": "Österreichisches und Schweizer Hochdeutsch",
+      "pl": "Austriacki i szwajcarski niemiecki standardowy",
+      "ru": "Австрийский и швейцарский литературный немецкий"
+     }
+    },
+    {
+     "uid": "e60083494c1dcf75",
+     "topic": {
+      "en": "Dialekt verstehen",
+      "pl": "Rozumienie dialektów",
+      "ru": "Понимание диалектов (Dialekt verstehen)"
+     }
+    },
+    {
+     "uid": "9fd5bd206f3a3011",
+     "topic": {
+      "en": "Jugendsprache: Mechanismen",
+      "pl": "Język młodzieżowy: mechanizmy",
+      "ru": "Молодёжный язык: механизмы (Jugendsprache: Mechanismen)"
+     }
+    },
+    {
+     "uid": "47de7fd9afafc243",
+     "topic": {
+      "en": "Neologismen und Zeitgeist",
+      "pl": "Neologizmy i duch czasu",
+      "ru": "Неологизмы и дух времени (Neologismen und Zeitgeist)"
+     }
+    },
+    {
+     "uid": "afac657cf0db5f63",
+     "topic": {
+      "en": "Aussprache auf C2-Niveau",
+      "pl": "Wymowa na poziomie C2",
+      "ru": "Произношение на уровне C2"
+     }
+    },
+    {
+     "uid": "cbb42e73d7108546",
+     "topic": {
+      "en": "Begriffsgeschichte",
+      "pl": "Historia pojęć",
+      "ru": "История понятий (Begriffsgeschichte)"
+     }
+    },
+    {
+     "uid": "7578db24ae886828",
+     "topic": {
+      "en": "Wirtschaftsdiskurs kritisch lesen",
+      "pl": "Krytyczna lektura dyskursu gospodarczego",
+      "ru": "Критическое чтение экономического дискурса"
+     }
+    },
+    {
+     "uid": "196971aa45e16b21",
+     "topic": {
+      "en": "Wissenschaftskommunikation",
+      "pl": "Komunikacja naukowa",
+      "ru": "Научная коммуникация (Wissenschaftskommunikation)"
+     }
+    },
+    {
+     "uid": "c0803e0143605236",
+     "topic": {
+      "en": "Essayistik",
+      "pl": "Eseistyka",
+      "ru": "Эссеистика (Essayistik)"
+     }
+    },
+    {
+     "uid": "5529b68b16ca6e56",
+     "topic": {
+      "en": "Zeichensetzung als Stilmittel",
+      "pl": "Interpunkcja jako środek stylistyczny",
+      "ru": "Пунктуация как стилистическое средство"
+     }
+    },
+    {
+     "uid": "b97d71c8e551df37",
+     "topic": {
+      "en": "Zweifelsfälle der Kongruenz",
+      "pl": "Wątpliwe przypadki zgody",
+      "ru": "Спорные случаи согласования (Zweifelsfälle der Kongruenz)"
+     }
+    },
+    {
+     "uid": "a355465d95b0c3eb",
+     "topic": {
+      "en": "Genus- und Pluralschwankungen",
+      "pl": "Wahania rodzaju i liczby mnogiej",
+      "ru": "Колебания рода и множественного числа"
+     }
+    },
+    {
+     "uid": "b9ad5ef67300606f",
+     "topic": {
+      "en": "Nominalkomposita",
+      "pl": "Złożenia rzeczownikowe",
+      "ru": "Именные сложные слова (Nominalkomposita)"
+     }
+    },
+    {
+     "uid": "fca0919080cf8914",
+     "topic": {
+      "en": "Kohäsion auf Textsortenebene",
+      "pl": "Spójność na poziomie gatunku",
+      "ru": "Связность на уровне жанра (Kohäsion auf Textsortenebene)"
+     }
+    },
+    {
+     "uid": "54291bb5a725dc01",
+     "topic": {
+      "en": "Redigieren",
+      "pl": "Redagowanie",
+      "ru": "Редактирование (Redigieren)"
+     }
+    },
+    {
+     "uid": "bf445c748d83507d",
+     "topic": {
+      "en": "Sprechen auf C2-Niveau",
+      "pl": "Mówienie na poziomie C2",
+      "ru": "Говорение на уровне C2"
+     }
+    },
+    {
+     "uid": "4b85c70fa865687b",
+     "topic": {
+      "en": "Prüfungstraining Lesen (GDS)",
+      "pl": "Trening egzaminacyjny: Lesen (czytanie, GDS)",
+      "ru": "Подготовка к экзамену: Lesen (чтение, GDS)"
+     }
+    },
+    {
+     "uid": "917f6c2142854ad8",
+     "topic": {
+      "en": "Prüfungstraining Hören und Schreiben (GDS)",
+      "pl": "Trening egzaminacyjny: Hören i Schreiben (słuchanie i pisanie, GDS)",
+      "ru": "Подготовка к экзамену: Hören и Schreiben (аудирование и письмо, GDS)"
+     }
+    },
+    {
+     "uid": "5e271cb24b1d9fc0",
+     "topic": {
+      "en": "Prüfungstraining Sprechen; Modellsatz 1",
+      "pl": "Trening egzaminacyjny: Sprechen (mówienie); Modellsatz 1",
+      "ru": "Подготовка к экзамену: Sprechen (говорение); Modellsatz 1"
+     }
+    },
+    {
+     "uid": "19bcb9602469f242",
+     "topic": {
+      "en": "Modellsatz 2 und Lückenanalyse",
+      "pl": "Modellsatz 2 i analiza luk",
+      "ru": "Modellsatz 2 и анализ пробелов"
+     }
+    }
+   ],
+   "sample": [
+    {
+     "uid": "67665b43bc2a4a94",
+     "german": "eigenwillig",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "idiosyncratic (ambivalent)",
+      "bn": "স্বকীয় / একগুঁয়ে",
+      "pl": "osobliwy / oryginalny",
+      "ru": "своеобразный / своевольный"
+     },
+     "guide": {
+      "en": "AI-gen-vil-lihy",
+      "bn": "আইগেনভিলিশ",
+      "pl": "AJ-gen-wi-liś",
+      "ru": "Айгэнвилихь"
+     }
+    },
+    {
+     "uid": "8bb13ea41078e28d",
+     "german": "ward",
+     "article": null,
+     "forms": null,
+     "pos": "verb",
+     "meaning": {
+      "en": "became (archaic past of werden)",
+      "bn": "হলো (প্রাচীন রূপ)",
+      "pl": "stał się / stało się (archaicznie)",
+      "ru": "стал / стало (устар.)"
+     },
+     "guide": {
+      "en": "VART",
+      "bn": "ভার্ট",
+      "pl": "WART",
+      "ru": "варт"
+     }
+    },
+    {
+     "uid": "582905e399041603",
+     "german": "Fehlerprotokoll",
+     "article": "das",
+     "forms": "Fehlerprotokolle",
+     "pos": "noun",
+     "meaning": {
+      "en": "error log",
+      "bn": "ভুলের তালিকা",
+      "pl": "rejestr błędów",
+      "ru": "журнал ошибок"
+     },
+     "guide": {
+      "en": "FAY-ler-pro-to-kol",
+      "bn": "ফেলারপ্রোটোকল",
+      "pl": "FE-la-pro-to-kol",
+      "ru": "фЭлапротоколь"
+     }
+    },
+    {
+     "uid": "57bc59d1f914fd4c",
+     "german": "Gütekriterien",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "quality criteria (validity, reliability, objectivity)",
+      "bn": "মানদণ্ড",
+      "pl": "kryteria jakości (rzetelność, trafność)",
+      "ru": "критерии качества (надёжность, валидность)"
+     },
+     "guide": {
+      "en": "GEW-tuh-kri-tay-ryen",
+      "bn": "গ্যুটেক্রিটেরিয়েন",
+      "pl": "GÜ-te-kri-te-ri-jen",
+      "ru": "гЮтэкритэриэн"
+     }
+    },
+    {
+     "uid": "ba1480dd3b65debc",
+     "german": "Selbstironie",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "self-irony",
+      "bn": "আত্মবিদ্রূপ",
+      "pl": "autoironia",
+      "ru": "самоирония"
+     },
+     "guide": {
+      "en": "ZELPST-i-ro-nee",
+      "bn": "জেল্প্স্টইরোনি",
+      "pl": "ZELPST-i-ro-ni",
+      "ru": "зЭльпстирони"
+     }
+    },
+    {
+     "uid": "bcab98ac133f3e51",
+     "german": "abgegriffen",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "worn-out (of expressions)",
+      "bn": "পুরনো / ক্লান্ত (শব্দ)",
+      "pl": "wytarty / oklepany",
+      "ru": "затёртый / избитый"
+     },
+     "guide": {
+      "en": "AP-guh-grif-fen",
+      "bn": "আপগেগ্রিফেন",
+      "pl": "AP-ge-gri-fen",
+      "ru": "Апгэгрифэн"
+     }
+    },
+    {
+     "uid": "2a13e90e3c27d9ce",
+     "german": "heuer",
+     "article": null,
+     "forms": null,
+     "pos": "adv",
+     "meaning": {
+      "en": "this year (Austrian & southern German)",
+      "bn": "এই বছর",
+      "pl": "w tym roku (Austria, płd. Niemcy)",
+      "ru": "в этом году (Австрия, юг Германии)"
+     },
+     "guide": {
+      "en": "HOY-er",
+      "bn": "হয়ার",
+      "pl": "HOJ-a",
+      "ru": "хОйа"
+     }
+    },
+    {
+     "uid": "dc7010f47b42451c",
+     "german": "Rüge",
+     "article": "die",
+     "forms": "Rügen",
+     "pos": "noun",
+     "meaning": {
+      "en": "reprimand",
+      "bn": "ভর্ৎসনা",
+      "pl": "nagana",
+      "ru": "порицание / выговор"
+     },
+     "guide": {
+      "en": "REW-guh",
+      "bn": "র‍্যুগে",
+      "pl": "RÜ-ge",
+      "ru": "рЮгэ"
+     }
+    },
+    {
+     "uid": "683cd83bb3a43f74",
+     "german": "Erfüllungsaufwand",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "compliance cost",
+      "bn": "সম্মতি ব্যয়",
+      "pl": "koszty stosowania przepisów",
+      "ru": "издержки исполнения (норм)"
+     },
+     "guide": {
+      "en": "air-FEWL-loongss-owf-vant",
+      "bn": "এয়াফ্যুলুংসআউফভান্ট",
+      "pl": "ea-FÜ-lungs-auf-want",
+      "ru": "эафЮлунгсауфвант"
+     }
+    },
+    {
+     "uid": "43a2836c2170f93b",
+     "german": "schnacken",
+     "article": null,
+     "forms": "schnackt · hat geschnackt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to chat (northern)",
+      "bn": "গল্প করা (উত্তর)",
+      "pl": "gawędzić (północ)",
+      "ru": "болтать / беседовать (север)"
+     },
+     "guide": {
+      "en": "SHNAK-ken",
+      "bn": "শ্নাকেন",
+      "pl": "SZNA-ken",
+      "ru": "шнАкэн"
+     }
+    },
+    {
+     "uid": "96f36d9750aa54ce",
+     "german": "Zwei-Quellen-Regel",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "two-source rule",
+      "bn": "দুই উৎস নিয়ম",
+      "pl": "zasada dwóch źródeł",
+      "ru": "правило двух источников"
+     },
+     "guide": {
+      "en": "tsvai-KVEL-len-ray-gel",
+      "bn": "ৎসভাই-ক্ভেলেন-রেগেল",
+      "pl": "cwaj-KWE-len-re-gel",
+      "ru": "цвай-квЭлэн-рэгэль"
+     }
+    },
+    {
+     "uid": "594b71f6c0c40be6",
+     "german": "Textumformung",
+     "article": "die",
+     "forms": "Textumformungen",
+     "pos": "noun",
+     "meaning": {
+      "en": "text transformation task",
+      "bn": "পাঠ রূপান্তর",
+      "pl": "przekształcenie tekstu",
+      "ru": "трансформация текста"
+     },
+     "guide": {
+      "en": "TEKST-oom-for-moong",
+      "bn": "টেক্স্টউমফর্মুং",
+      "pl": "TEKST-um-for-mung",
+      "ru": "тЭкстумформунг"
+     }
+    },
+    {
+     "uid": "b2bf208544acb767",
+     "german": "Novelle",
+     "article": "die",
+     "forms": "Novellen",
+     "pos": "noun",
+     "meaning": {
+      "en": "novella (with an 'unheard-of event')",
+      "bn": "নভেলা",
+      "pl": "nowela",
+      "ru": "новелла"
+     },
+     "guide": {
+      "en": "no-VEL-luh",
+      "bn": "নোভেলে",
+      "pl": "no-WE-le",
+      "ru": "новЭлэ"
+     }
+    },
+    {
+     "uid": "e5502b2a923c57ba",
+     "german": "Klammerspannung",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "distance between the verb parts",
+      "bn": "ক্রিয়ার দুই অংশের দূরত্ব",
+      "pl": "rozpiętość ramki czasownikowej",
+      "ru": "протяжённость глагольной рамки"
+     },
+     "guide": {
+      "en": "KLAM-mer-shpan-noong",
+      "bn": "ক্লামারশ্পানুং",
+      "pl": "KLA-ma-szpa-nung",
+      "ru": "клАмашпанунг"
+     }
+    },
+    {
+     "uid": "34fd1ae42203732f",
+     "german": "Gedankenführung",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "the development of an argument",
+      "bn": "চিন্তার প্রবাহ",
+      "pl": "tok rozumowania",
+      "ru": "ход мысли"
+     },
+     "guide": {
+      "en": "guh-DANK-en-few-roong",
+      "bn": "গেডাংকেনফ্যুরুং",
+      "pl": "ge-DAN-ken-fü-rung",
+      "ru": "гэдАнкэнфюрунг"
+     }
+    },
+    {
+     "uid": "d0a67002faddf582",
+     "german": "unbeschadet",
+     "article": null,
+     "forms": null,
+     "pos": "prep",
+     "meaning": {
+      "en": "without prejudice to / notwithstanding (+ genitive)",
+      "bn": "ক্ষতি না করে / সত্ত্বেও",
+      "pl": "bez uszczerbku dla / niezależnie od",
+      "ru": "без ущерба для / несмотря на"
+     },
+     "guide": {
+      "en": "OON-buh-shah-det",
+      "bn": "উনবেশাডেট",
+      "pl": "UN-be-sza-det",
+      "ru": "Унбэшадэт"
+     }
+    },
+    {
+     "uid": "25e546b1ad09fc2f",
+     "german": "Falschbalance",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "false balance",
+      "bn": "ভুল ভারসাম্য",
+      "pl": "fałszywa równowaga",
+      "ru": "ложный баланс"
+     },
+     "guide": {
+      "en": "FALSH-ba-long-suh",
+      "bn": "ফাল্শবালান্‌ৎসে",
+      "pl": "FALSZ-ba-lang-se",
+      "ru": "фАльшбалансэ"
+     }
+    },
+    {
+     "uid": "7ae41488fdfafae6",
+     "german": "Verteilungsfrage",
+     "article": "die",
+     "forms": "Verteilungsfragen",
+     "pos": "noun",
+     "meaning": {
+      "en": "distributional question",
+      "bn": "বণ্টনের প্রশ্ন",
+      "pl": "kwestia podziału (dóbr)",
+      "ru": "вопрос распределения"
+     },
+     "guide": {
+      "en": "fair-TAI-loongss-frah-guh",
+      "bn": "ফেয়াটাইলুংসফ্রাগে",
+      "pl": "fea-TAJ-lungs-fra-ge",
+      "ru": "фатАйлунгсфрагэ"
+     }
+    },
+    {
+     "uid": "420906ca40493d1f",
+     "german": "hineinlesen in",
+     "article": null,
+     "forms": "liest hinein · hat hineingelesen",
+     "pos": "verb",
+     "meaning": {
+      "en": "to read into",
+      "bn": "অর্থ আরোপ করা",
+      "pl": "doszukiwać się (w czymś)",
+      "ru": "вычитывать (лишнее в тексте)"
+     },
+     "guide": {
+      "en": "hi-NAIN-lay-zen in",
+      "bn": "হিনাইনলেজেন ইন",
+      "pl": "hi-NAJN-le-zen in",
+      "ru": "хинАйнлэзэн ин"
+     }
+    },
+    {
+     "uid": "96016e5b57cf010f",
+     "german": "Bevormundung",
+     "article": "die",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "paternalism / patronising",
+      "bn": "অভিভাবকত্ব চাপানো",
+      "pl": "paternalizm / protekcjonalne traktowanie",
+      "ru": "опека / патернализм"
+     },
+     "guide": {
+      "en": "buh-FOHR-moon-doong",
+      "bn": "বেফোয়ামুন্ডুং",
+      "pl": "be-FOA-mun-dung",
+      "ru": "бэфОамундунг"
+     }
+    },
+    {
+     "uid": "bc3a70382a95593c",
+     "german": "dünken",
+     "article": null,
+     "forms": "dünkt · hat gedünkt",
+     "pos": "verb",
+     "meaning": {
+      "en": "to seem (archaic/literary)",
+      "bn": "মনে হওয়া (প্রাচীন)",
+      "pl": "zdawać się (archaicznie)",
+      "ru": "казаться (устар.)"
+     },
+     "guide": {
+      "en": "DEWNK-en",
+      "bn": "ড্যুংকেন",
+      "pl": "DÜN-ken",
+      "ru": "дЮнкэн"
+     }
+    },
+    {
+     "uid": "295e2f0547c6fd72",
+     "german": "augenzwinkernd",
+     "article": null,
+     "forms": null,
+     "pos": "adj",
+     "meaning": {
+      "en": "tongue-in-cheek",
+      "bn": "চোখ টিপে / রসিকতার সুরে",
+      "pl": "z przymrużeniem oka",
+      "ru": "шутливо / с лукавой усмешкой"
+     },
+     "guide": {
+      "en": "OW-gen-tsvink-ernt",
+      "bn": "আউগেন্‌ৎসভিংকার্ন্ট",
+      "pl": "AU-gen-cwin-kant",
+      "ru": "Аугэнцвинкант"
+     }
+    },
+    {
+     "uid": "962f182aa56d3464",
+     "german": "Leitpunkt",
+     "article": "der",
+     "forms": "Leitpunkte",
+     "pos": "noun",
+     "meaning": {
+      "en": "guiding point (in the task)",
+      "bn": "নির্দেশক বিন্দু",
+      "pl": "punkt wiodący (w zadaniu)",
+      "ru": "ключевой пункт (задания)"
+     },
+     "guide": {
+      "en": "LAIT-poonkt",
+      "bn": "লাইটপুংক্ট",
+      "pl": "LAJT-punkt",
+      "ru": "лАйтпункт"
+     }
+    },
+    {
+     "uid": "4aea5bad4588994c",
+     "german": "revidieren",
+     "article": null,
+     "forms": "revidiert · hat revidiert",
+     "pos": "verb",
+     "meaning": {
+      "en": "to revise (a view, a figure)",
+      "bn": "সংশোধন করা",
+      "pl": "rewidować / zrewidować",
+      "ru": "пересматривать / пересмотреть"
+     },
+     "guide": {
+      "en": "ray-vi-DEE-ren",
+      "bn": "রেভিডিরেন",
+      "pl": "re-wi-DI-ren",
+      "ru": "рэвидИрэн"
+     }
+    },
+    {
+     "uid": "5007407163b064d3",
+     "german": "Geist",
+     "article": "der",
+     "forms": null,
+     "pos": "noun",
+     "meaning": {
+      "en": "mind / spirit (philosophical)",
+      "bn": "চেতনা / আত্মা",
+      "pl": "duch / umysł",
+      "ru": "дух / разум"
+     },
+     "guide": {
+      "en": "GAIST",
+      "bn": "গাইস্ট",
+      "pl": "GAJST",
+      "ru": "гайст"
+     }
+    }
+   ]
+  }
+ ],
+ "listing": {
+  "en": {
+   "title": "Sogda: German A1–C2",
+   "short": "Learn German offline, A1 to C2, meanings in English, Bangla, Russian or Polish",
+   "full": "Learn German, one clear day at a time.\n\nSogda is a complete German course that works fully offline: no account, no signal needed, and your progress stays on this phone.\n\nWHAT YOU LEARN\n• 12 steps from A1.1 to C2.2, built around the exams\n• 5,069 words, each with examples, its article and forms where it has them, and a pronunciation guide in your meaning language: Bangla, Russian or Polish letters, or an English respelling\n• 182 grammar topics, each with its rule and a short practice\n• Meanings in English, Bangla, Russian or Polish: one language, or two shown together\n• In Russian and Polish, the example sentences and grammar rules too\n\nEVERY DAY\n• A plan for today: revise what is due, learn a few new words, practise a grammar topic and some sentences\n• Spaced revision (FSRS) brings each word back just before you would forget it\n• Rest days you choose, and a daily reminder only when something is due\n• A home-screen widget with a word to hear and learn\n\nPRACTISE AND TEST YOURSELF\n• Quizzes in every direction: German to your languages and back, articles, listening and word forms\n• Three mock exams for every step: vocabulary, grammar, listening, writing and speaking, with a result by section\n• Compare near-synonyms side by side, and add the words you meet in daily life\n\nHEAR IT\n• Every word and example is spoken with your phone's German voice\n• Optional: Supertonic speaks German more naturally and works offline. About 400 MB, over Wi-Fi, downloaded once\n\nMADE FOR YOU\n• Start at your level with a short placement check\n• Light, dark and glass themes, text up to 200 %, and screen-reader support\n• The app in English, Bangla, Polish or Russian"
+  },
+  "bn": {
+   "title": "Sogda: জার্মান A1–C2",
+   "short": "অফলাইনে জার্মান শিখুন, A1 থেকে C2, ইংরেজি বা বাংলা অর্থসহ",
+   "full": "প্রতিদিন একটু একটু করে জার্মান শিখুন।\n\nSogda একটি পূর্ণাঙ্গ জার্মান কোর্স, যা পুরোপুরি অফলাইনে চলে: অ্যাকাউন্ট বা ইন্টারনেট লাগে না, আর আপনার অগ্রগতি এই ফোনেই থাকে।\n\nযা শিখবেন\n• A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ, পরীক্ষার কাঠামো মেনে সাজানো\n• ৫,০৬৯টি শব্দ, প্রতিটির উদাহরণ আর বাংলা হরফে লেখা উচ্চারণসহ, আর যেখানে আছে সেখানে আর্টিকেল ও রূপ\n• ১৮২টি ব্যাকরণ বিষয়, প্রতিটির নিয়ম আর ছোট অনুশীলনসহ\n• অর্থ ইংরেজি, বাংলা, রুশ বা পোলিশে: একটি ভাষায়, বা দুটি একসঙ্গে\n\nপ্রতিদিন\n• আজকের পরিকল্পনা: যা রিভিশনের সময় হয়েছে, কয়েকটি নতুন শব্দ, একটি ব্যাকরণ বিষয় আর কিছু বাক্যের অনুশীলন\n• স্পেসড রিভিশন (FSRS) প্রতিটি শব্দ ভুলে যাওয়ার ঠিক আগে ফিরিয়ে আনে\n• বিশ্রামের দিন আপনি বেছে নেন, আর দৈনিক রিমাইন্ডার আসে শুধু কিছু বাকি থাকলে\n• হোম-স্ক্রিন উইজেটে শোনার ও শেখার জন্য একটি শব্দ\n\nঅনুশীলন ও নিজেকে যাচাই\n• সব দিকে কুইজ: জার্মান থেকে ইংরেজি, জার্মান থেকে বাংলা, ইংরেজি থেকে জার্মান, আর্টিকেল, শোনা আর শব্দের রূপ\n• প্রতিটি ধাপের জন্য তিনটি মক পরীক্ষা: শব্দভান্ডার, ব্যাকরণ, শোনা, লেখা আর বলা, প্রতিটি অংশের ফলসহ\n• কাছাকাছি অর্থের শব্দ পাশাপাশি তুলনা করুন, আর দৈনন্দিন জীবনে পাওয়া শব্দ নিজে যোগ করুন\n\nশুনুন\n• প্রতিটি শব্দ আর উদাহরণ আপনার ফোনের জার্মান কণ্ঠে শোনা যায়\n• ঐচ্ছিক: Supertonic আরও স্বাভাবিকভাবে জার্মান বলে এবং অফলাইনে চলে। প্রায় ৪০০ MB, ওয়াই-ফাইতে, একবারই ডাউনলোড।\n\nআপনার জন্য তৈরি\n• ছোট একটি লেভেল যাচাই দিয়ে নিজের স্তর থেকে শুরু করুন\n• লাইট, ডার্ক আর গ্লাস থিম, ২০০ % পর্যন্ত বড় লেখা, আর স্ক্রিন রিডার সাপোর্ট\n• অ্যাপ ইংরেজি, বাংলা, পোলিশ বা রুশ ভাষায়"
+  },
+  "pl": {
+   "title": "Sogda: niemiecki A1–C2",
+   "short": "Ucz się niemieckiego offline, od A1 do C2, ze znaczeniami po polsku",
+   "full": "Ucz się niemieckiego dzień po dniu, z jasnym planem.\n\nSogda to pełny kurs niemieckiego, który działa w pełni offline: bez konta, bez zasięgu, a Twoje postępy zostają na tym telefonie.\n\nCZEGO SIĘ NAUCZYSZ\n• 12 etapów od A1.1 do C2.2, ułożonych pod kątem egzaminów\n• 5069 słów, każde z przykładami, z rodzajnikiem i formami tam, gdzie je ma, oraz z wymową zapisaną polskimi literami\n• 182 tematy gramatyczne, każdy z regułą i krótkim ćwiczeniem; reguły i przykłady są po polsku\n• Znaczenia po polsku, a pod nimi, jeśli chcesz, drugi język: angielski, bengalski lub rosyjski\n\nCODZIENNIE\n• Plan na dziś: powtórz to, co trzeba, poznaj kilka nowych słów, przećwicz temat gramatyczny i kilka zdań\n• Powtórki w odstępach (FSRS) przywołują każde słowo tuż przed tym, zanim je zapomnisz\n• Dni wolne wybierasz sam, a codzienne przypomnienie przychodzi tylko wtedy, gdy coś czeka\n• Widżet na ekranie głównym ze słowem do posłuchania i nauki\n\nĆWICZ I SPRAWDZAJ SIĘ\n• Quizy w każdą stronę: z niemieckiego na polski, z polskiego na niemiecki, rodzajniki, słuchanie i formy słów\n• Trzy egzaminy próbne dla każdego etapu: słownictwo, gramatyka, słuchanie, pisanie i mówienie, z wynikiem dla każdej części\n• Porównuj bliskie synonimy obok siebie i dodawaj słowa, które spotykasz na co dzień\n\nPOSŁUCHAJ\n• Każde słowo i każdy przykład czyta niemiecki głos Twojego telefonu\n• Opcjonalnie: Supertonic mówi po niemiecku naturalniej i działa offline. Około 400 MB, przez Wi-Fi, pobierane raz\n\nDLA CIEBIE\n• Zacznij od swojego poziomu dzięki krótkiemu testowi poziomującemu\n• Motyw jasny, ciemny i szklany, tekst do 200 % i obsługa czytników ekranu\n• Aplikacja po polsku, angielsku, bengalsku lub rosyjsku"
+  },
+  "ru": {
+   "title": "Sogda: немецкий A1–C2",
+   "short": "Учи немецкий офлайн, от A1 до C2, со значениями на русском",
+   "full": "Учи немецкий день за днём, с ясным планом.\n\nSogda — полный курс немецкого, который работает полностью офлайн: без аккаунта и без сети, а твой прогресс остаётся на этом телефоне.\n\nЧТО ТЫ ВЫУЧИШЬ\n• 12 этапов от A1.1 до C2.2, по структуре экзаменов\n• 5069 слов, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами\n• 182 грамматические темы, у каждой — правило и короткая практика; правила и примеры на русском\n• Значения на русском, а под ними, если хочешь, второй язык: английский, бенгальский или польский\n\nКАЖДЫЙ ДЕНЬ\n• План на сегодня: повтори то, что пора, выучи несколько новых слов, потренируй грамматическую тему и несколько предложений\n• Интервальные повторения (FSRS) возвращают каждое слово прямо перед тем, как ты его забудешь\n• Выходные ты выбираешь сам, а ежедневное напоминание приходит, только когда что-то ждёт\n• Виджет на главном экране со словом, которое можно послушать и выучить\n\nТРЕНИРУЙСЯ И ПРОВЕРЯЙ СЕБЯ\n• Тесты в любом направлении: с немецкого на русский, с русского на немецкий, артикли, аудирование и формы слов\n• Три пробных экзамена на каждый этап: лексика, грамматика, аудирование, письмо и говорение, с результатом по каждой части\n• Сравнивай близкие синонимы рядом и добавляй слова, которые встречаешь в жизни\n\nСЛУШАЙ\n• Каждое слово и каждый пример звучат немецким голосом твоего телефона\n• По желанию: Supertonic говорит по-немецки естественнее и работает офлайн. Около 400 МБ, по Wi-Fi, скачивается один раз\n\nДЛЯ ТЕБЯ\n• Начни со своего уровня после короткого теста\n• Светлая, тёмная и стеклянная тема, текст до 200 % и поддержка программ экранного доступа\n• Приложение на русском, английском, бенгальском или польском"
+  }
+ }
+}

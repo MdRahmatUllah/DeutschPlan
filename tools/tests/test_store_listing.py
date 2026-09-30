@@ -4,9 +4,14 @@ from __future__ import annotations
 
 import re
 import sqlite3
+import sys
 from pathlib import Path
 
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from export_site_facts import listing_texts  # noqa: E402
 
 LISTING = Path(__file__).resolve().parents[2] / "docs" / "05-dev-guide" / "store-listing.md"
 PUBSPEC = LISTING.parents[2] / "app" / "pubspec.yaml"
@@ -23,18 +28,8 @@ LIMITS = {
 
 
 def texts() -> dict[tuple[str, str], str]:
-    """(language, field) -> the text under its heading."""
-    found: dict[tuple[str, str], list[str]] = {}
-    language, field = "", ""
-    for line in LISTING.read_text(encoding="utf-8").splitlines():
-        if line.startswith("## "):
-            language, field = line[3:].strip(), ""
-        elif line.startswith("### "):
-            field = line[4:].strip()
-            found[(language, field)] = []
-        elif field:
-            found[(language, field)].append(line)
-    return {key: "\n".join(lines).strip() for key, lines in found.items()}
+    """(language, field) -> the text under its heading (the site's facts read it too, #1174)."""
+    return listing_texts(LISTING)
 
 
 LANGUAGES = ["English (en-US)", "Bangla (bn-BD)", "Polish (pl-PL)", "Russian (ru-RU)"]
