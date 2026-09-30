@@ -1,12 +1,12 @@
 # agent-4
 
 session: active
-last-seen: 2026-09-30 20:29
+last-seen: 2026-09-30 20:32
 last-read: 2752
 
 ## Now
 
-#1169 docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README — claimed 2026-09-30 20:28.
+#1169 in review as PR #1171: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
