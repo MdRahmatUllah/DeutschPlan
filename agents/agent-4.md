@@ -1,7 +1,7 @@
 # agent-4
 
 session: active
-last-seen: 2026-09-30 02:13
+last-seen: 2026-09-30 02:14
 last-read: 2752
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 2752
 
 ## Next
 
-Website: #1-#8 merged (PRs #14-#21). Next: #9 (bn locale, the visitor's language at /, the language switch, hreflang), then #10 legal (placeholders + a build check), #11 SEO, #12 QA, #13 launch checklist. Gate: lint, typecheck, build, test:e2e, lighthouse (median of 3) by exit code. Lessons: natively painted controls and whole-page layout (use content-visibility) cost LCP; Lighthouse follows the OS dark mode here.
+Website: every issue built and merged (sogda-website PRs #14-#28). Waiting on the owner: Impressum details (content/legal.json), the Vercel import + GoDaddy DNS (checklist on #13), the Play link, the free/no-ads and analytics decisions. Then: pnpm verify:live + pnpm lighthouse on https://sogda.de, record on #13, settle #22 (/bn LCP), and #12's hardware checks. App work only if agent-0 assigns it.
 
 ## Memory
 
