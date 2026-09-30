@@ -19,3 +19,4 @@
 - [v1 releases](v1-release.md) — v1.0.0 (2b424e33) + v1.0.1 (0d23968e) tagged 2026-09-26, Android-only; owner decisions; upload key + phone check still the owner's
 - [Stash, not checkout](stash-not-checkout.md) — discard my own edit with git stash push -- file; git checkout -- file got the next command blocked
 - [Sogda rename](sogda-rename.md) — owner 2026-09-26: the app is Sogda, de.sogda.app, internals too (package sogda, Dp→Sg, sogda://); repo name kept; brand kit docs/sogda-brand-kit
+- [Sogda website](sogda-website.md) — agent-4 alone, no review; PRs into dev, only main deploys; open #45 (Play link), #52 (owner hand checks), #54 (the team review)
