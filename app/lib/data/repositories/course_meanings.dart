@@ -101,14 +101,26 @@ class CourseMeanings {
   /// isolate: some 5,600 meanings take a few hundred milliseconds to key.
   Future<List<_Keyed>> _keyed(String lang) {
     final byLang = _keys[this] ??= <String, Future<List<_Keyed>>>{};
-    return byLang[lang] ??= () {
+    return byLang[lang] ??= () async {
       final meanings = <(String, String)>[
         for (final MapEntry(key: uid, value: texts) in _byWord.entries)
           if (texts[lang]?.meaning case final meaning?) (uid, meaning),
       ];
-      return Isolate.run(() => _keyAll(meanings));
+      try {
+        return await _keyOff(meanings);
+      } on Object {
+        // Not kept: the next search tries again.
+        byLang.removeWhere((key, _) => key == lang);
+        rethrow;
+      }
     }();
   }
+
+  /// [meanings] keyed on an isolate of its own. Its closure holds
+  /// [meanings] alone: one that shared [_keyed]'s would carry the cache's
+  /// futures, which can't be sent.
+  static Future<List<_Keyed>> _keyOff(List<(String, String)> meanings) =>
+      Isolate.run(() => _keyAll(meanings));
 
   static final Expando<Map<String, Future<List<_Keyed>>>> _keys =
       Expando<Map<String, Future<List<_Keyed>>>>();

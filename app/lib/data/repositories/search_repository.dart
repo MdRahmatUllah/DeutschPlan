@@ -306,12 +306,18 @@ class SearchRepository {
     }
     startsWith.removeAll(exact);
     if (exact.isEmpty && startsWith.isEmpty) return none;
+    // Each tier's rows apart, each capped as the German prefix tier is.
+    Future<Map<String, Word>> read(Set<String> uids) async => <String, Word>{
+      if (uids.isNotEmpty)
+        for (final row
+            in await _content
+                .wordsByUids(uids.toList(), step, _prefixLimit)
+                .get())
+          row.uid: row,
+    };
     final rows = <String, Word>{
-      for (final row in await _content.wordsByUids(<String>[
-        ...exact,
-        ...startsWith,
-      ], step).get())
-        row.uid: row,
+      ...await read(exact),
+      ...await read(startsWith),
     };
     List<WordHit> hits(Set<String> uids, SearchTier tier) => <WordHit>[
       for (final uid in uids)
