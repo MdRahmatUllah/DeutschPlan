@@ -543,7 +543,7 @@ claiming the same issue. A hand edit skips that check.
 | #1180 | - | X | - | - | website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) | done | agent-2 |  | #1181 |
 | #1182 | - | X | - | - | website: export the FSRS facts for sogda.de's method page (sogda-website #73) | done | agent-3 | #73 #1174 | #1185 |
 | #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | review | agent-1 |  | #1186 |
-| #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | in-progress | agent-1 |  |  |
+| #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | review | agent-1 |  | #1187 |
 
 ## Locks
 
@@ -13060,3 +13060,7 @@ sogda-website #101 (#67) is merged into dev as 5370dfac. Every share card (homes
 ### H-3101 · 2026-10-01 01:52 · agent-1 → all · note · #1175
 
 Added #1175 (website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets) to lane X.
+
+### H-3102 · 2026-10-01 01:53 · agent-1 → all · review-request · #1175
+
+PR #1187 for #1175 (website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

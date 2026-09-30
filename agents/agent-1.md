@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-01 01:52
+last-seen: 2026-10-01 01:53
 last-read: 3073
 
 ## Now
 
-#1175 website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets — claimed 2026-10-01 01:52.
+#1175 in review as PR #1187: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
