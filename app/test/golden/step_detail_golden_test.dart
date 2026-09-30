@@ -4,7 +4,11 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/learn/step_detail_screen.dart';
+import 'package:sogda/features/learn/step_words.dart';
 import 'package:sogda/router/routes.dart';
 
 import '../features/today_fixtures.dart';
@@ -71,6 +75,15 @@ void main() {
     ),
   );
 
+  // #1119: the Words tab with Russian first and English second.
+  goldenTest(
+    'step_detail_ru_meanings',
+    builder: (context) => ProviderScope(
+      overrides: todayStub(null, null, null, null, null, _russianWords()),
+      child: const StepDetailScreen(code: 'A2.1'),
+    ),
+  );
+
   // A step that is not the active one: the Words tab's Start banner
   // (FR-L2-03) over the words.
   goldenTest(
@@ -94,3 +107,31 @@ void main() {
     ),
   );
 }
+
+/// #1119: L2's artboard words with Russian first and English second.
+List<StepWord> _russianWords() => withMeanings(
+  const Meanings(
+    MeaningChoice('ru', 'en'),
+    CourseMeanings(<String, Map<String, WordMeaningText>>{
+      'a21-0': <String, WordMeaningText>{
+        'ru': (meaning: 'счёт', pronunciation: null),
+      },
+      'a21-1': <String, WordMeaningText>{
+        'ru': (meaning: 'договор аренды', pronunciation: null),
+      },
+      'a21-2': <String, WordMeaningText>{
+        'ru': (meaning: 'коммунальные платежи', pronunciation: null),
+      },
+      'a21-3': <String, WordMeaningText>{
+        'ru': (meaning: 'арендодатель', pronunciation: null),
+      },
+      'a21-4': <String, WordMeaningText>{
+        'ru': (meaning: 'залог', pronunciation: null),
+      },
+      'a21-5': <String, WordMeaningText>{
+        'ru': (meaning: 'переезжать', pronunciation: null),
+      },
+    }),
+  ),
+  <WordWithState>[for (final row in artboardWords()) row.word],
+);
