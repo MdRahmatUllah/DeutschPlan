@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-website review (owner goal): Phase 1 competitors (Easy German, Rosetta Stone, Pimsleur, phase6, Speakly, Glossika + bn/pl/ru queries), Phase 2 SQA pass on sogda.de, both on sogda-website#53; then discuss, master plan
+sogda-website #65: monthly panel scoring (owner runs ChatGPT/Gemini/Claude/Perplexity); #61 drift test with agent-4 once facts.json exists; live SQA sweep before each dev->main; S24 checks per the plan
 
 ## Memory
 
