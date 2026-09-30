@@ -203,13 +203,20 @@ void main() {
       'course scale', () async {
     // 5,600 words, as the course has, each with a Russian meaning of two
     // alternatives.
-    final course = CourseMeanings(<String, Map<String, WordMeaningText>>{
+    final texts = <String, Map<String, WordMeaningText>>{
       for (var i = 0; i < 5600; i++)
         'w$i': <String, WordMeaningText>{
           'ru': (meaning: 'слово$i / значение номер $i', pronunciation: null),
         },
-    });
-    final first = await fastestOf(1, () => course.find('ru', 'слово42'));
+    };
+    final course = CourseMeanings(texts);
+    // #1160: the first search keys on an isolate, and one spawn under
+    // `flutter test -j 2` load took over 500 ms. A course of its own each
+    // run keys afresh, and the fastest of three is the keying's own time.
+    final first = await fastestOf(
+      3,
+      () => CourseMeanings(texts).find('ru', 'слово42'),
+    );
     final again = await fastestOf(5, () => course.find('ru', 'значение'));
     // ignore: avoid_print
     print(
