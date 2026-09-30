@@ -6,7 +6,7 @@ last-read: 2886
 
 ## Now
 
-Nothing claimed.
+#1155 fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 — claimed 2026-09-30 14:46.
 
 ## Next
 
