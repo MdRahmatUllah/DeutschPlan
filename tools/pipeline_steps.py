@@ -771,8 +771,9 @@ def check_formula_prefixes(
 # looks at the words.
 
 #: One line of a multi-line example cell: `example_de_2` is the second German
-#: sentence, as PIPE-06 pairs them.
-EXAMPLE_FIELD = r"example_(de|en)_([1-9][0-9]*)"
+#: sentence, as PIPE-06 pairs them; `example_ru_2` its Russian, in any
+#: meaning language (#1144).
+EXAMPLE_FIELD = r"example_([a-z]{2,3})_([1-9][0-9]*)"
 
 
 def read_corrections(path, section: str = "words") -> dict[str, dict]:
@@ -898,9 +899,13 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
                 dropped.add(id(word))
                 merges.append((uid, word, str(value)))
             elif example:
-                _set_example(
-                    word, example.group(1), int(example.group(2)), _checked(uid, field, value), uid
-                )
+                code = example.group(1)
+                if code != "de" and code not in {lang.code for lang in LANGUAGES.values()}:
+                    raise PipelineError(
+                        f"corrections: {uid} sets {field}, and {code} is no "
+                        f"language the pipeline knows."
+                    )
+                _set_example(word, code, int(example.group(2)), _checked(uid, field, value), uid)
             elif field in fields:
                 setattr(word, field, _checked(uid, field, value))
             else:
@@ -931,15 +936,21 @@ MERGE_FILLS = ("article", "forms", "pron_bn", "bangla", "collocations", "synonym
 
 
 def _set_example(word, language: str, number: int, value: str, uid: str) -> None:
+    # German and English are the row's own fields; another language's lines
+    # are its `Examples (<Language>)` cell, in `texts` (#1144).
     name = f"examples_{language}"
-    lines = _lines(getattr(word, name))
+    legacy = language in ("de", "en")
+    lines = _lines(getattr(word, name) if legacy else word.texts.get(("examples", language)))
     if number > len(lines) + 1:
         raise PipelineError(
             f"corrections: {uid} sets example {number} ({language}), but the "
             f"cell has {len(lines)} lines."
         )
     lines[number - 1 : number] = [value]
-    setattr(word, name, "\n".join(lines))
+    if legacy:
+        setattr(word, name, "\n".join(lines))
+    else:
+        word.texts[("examples", language)] = "\n".join(lines)
 
 
 #: PIPE-10 (#630): what a row of All Words is. Only `vocab` is studied
