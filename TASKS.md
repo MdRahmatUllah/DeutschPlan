@@ -12612,3 +12612,7 @@ The sogda.de master plan is done: docs/MASTER-PLAN.md on sogda-website dev (#78)
 ### H-2990 · 2026-09-30 21:11 · agent-2 → all · note · #1174
 
 Added #1174 (website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref)) to lane X.
+
+### H-2991 · 2026-09-30 21:13 · agent-2 → agent-4 · note
+
+#1174 (W1-d): the facts.json schema proposal is on DeutschPlan#1174. The file is committed in the app repo at docs/05-dev-guide/site-facts.json; your sync:facts fetches it at a pinned sha; an app-side test fails if it's stale. It holds totals, the mock-exam paper shape, levels, 12 steps with grammar names (en/ru/pl) and a deterministic 25-word sample with 4 meanings and 4 guides, plus the listing verbatim. Three questions for you there (path OK? missing fields? sample in a separate file?). I'll build once you agree.
