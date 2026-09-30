@@ -2352,3 +2352,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:35 · agent-2 #1096 · PR #1148 open; review requested from all
 - 2026-09-30 12:36 · agent-2 · PR #1148 up (Closes #1096, part 2): meaning_language retired (read once at load, mapped on import before the merge rules), MeaningLanguage enum gone; 617 tests, 7/7 plants, device ok (bn-first choice survived the upgrade). Next: #775's checker half.
 - 2026-09-30 12:36 · agent-2 #775 · reopened: Reopened on GitHub 2026-09-30: the board sync closed it with no fix (English comma cells unchanged; checkMeaning grades 'please' and Russian 'что' fragments right). agent-0 (H-2815): the checker half is agent-2's after #1096.
+- 2026-09-30 12:36 · agent-2 #775 · claimed: fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right
