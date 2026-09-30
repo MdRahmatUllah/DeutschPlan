@@ -44,20 +44,23 @@ const int typoMinLength = 6;
 
 /// DE→EN and DE→BN (BR-ANS-01).
 ///
-/// [expected] is the `words.english` or `words.bangla` column as authored: one
-/// string holding synonyms separated by `/` or `,`. Any one of them counts,
-/// or the whole cell as shown, with or without a bracketed note
-/// ([meaningAnswers], #645).
+/// [expected] is a meaning cell as authored: one string holding synonyms
+/// separated by `/` (and in English's and Bangla's, `,`: [splitMeanings] in
+/// [lang]). Any one of them counts, or the whole cell as shown, with or
+/// without a bracketed note ([meaningAnswers], #645).
 ///
 /// Several meanings typed, as a list or a card shows them, in any order ("hi /
 /// hello"), are right when each is one of the cell's, and *almost* when each
 /// is at least almost. One that is not makes the whole answer wrong (#678).
-Verdict checkMeaning(String given, String expected) {
-  final candidates = meaningAnswers(expected).map(_stripInfinitiveTo).toList();
+Verdict checkMeaning(String given, String expected, {String? lang}) {
+  final candidates = meaningAnswers(
+    expected,
+    lang: lang,
+  ).map(_stripInfinitiveTo).toList();
   if (candidates.isEmpty) return Verdict.wrong;
 
   final whole = _best(_stripInfinitiveTo(given), candidates, german: false);
-  final parts = splitMeanings(given);
+  final parts = splitMeanings(given, lang: lang);
   if (whole == Verdict.correct || parts.length < 2) return whole;
 
   var listed = Verdict.correct;
@@ -192,16 +195,28 @@ Verdict checkForm(String given, String expectedForm) {
 /// the note: "stop (bus/tram)" is one meaning, not "stop (bus" and "tram)"
 /// (#645).
 ///
+/// A comma separates synonyms in English's and Bangla's cells only ([lang]
+/// null, `en` or `bn`), which were written with it ("house, home"). The
+/// course's other languages separate theirs with ` / ` alone, as their
+/// workbooks are written (#1107), so a comma in them is the language's own:
+/// Russian's «тем, что», Polish's «…, że …». Split there, a lone «что» would
+/// be graded right (#775).
+///
 /// Exposed because the review screen lists them under a wrong answer, and a
 /// second splitter there would drift from this one.
-List<String> splitMeanings(String expected) =>
-    _splitOutsideBrackets(expected, const <String>{'/', ',', ';'});
+List<String> splitMeanings(String expected, {String? lang}) =>
+    _splitOutsideBrackets(
+      expected,
+      lang == null || lang == 'en' || lang == 'bn'
+          ? const <String>{'/', ',', ';'}
+          : const <String>{'/', ';'},
+    );
 
 /// A meaning cell's synonyms as two words' meanings are compared: lower
 /// case, without "to ". Two words that share one would both be right, so
 /// neither is the other's distractor (quizzes, placement #680).
-Set<String> senses(String cell) => <String>{
-  for (final meaning in splitMeanings(cell))
+Set<String> senses(String cell, {String? lang}) => <String>{
+  for (final meaning in splitMeanings(cell, lang: lang))
     _stripInfinitiveTo(meaning).toLowerCase(),
 };
 
@@ -214,8 +229,8 @@ Set<String> senses(String cell) => <String>{
 ///
 /// A hyphen may be left out: "email" is "e-mail" (#699). Only in a meaning:
 /// German's "Email" is enamel, not "E-Mail".
-Set<String> meaningAnswers(String cell) => <String>{
-  for (final meaning in <String>[cell, ...splitMeanings(cell)])
+Set<String> meaningAnswers(String cell, {String? lang}) => <String>{
+  for (final meaning in <String>[cell, ...splitMeanings(cell, lang: lang)])
     for (final answer in _withoutAside(meaning)) ...<String>{
       answer,
       answer.replaceAll('-', ''),

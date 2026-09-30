@@ -379,6 +379,28 @@ void main() {
       }
     });
 
+    test("#775 a Russian meaning's comma is its own: meanings that share "
+        'only a «…, что» are still distractors', () {
+      final pool = <PlacementWord>[
+        for (var i = 0; i < 4; i++)
+          PlacementWord(
+            uid: 'n$i',
+            german: 'Nomen$i',
+            english: 'noun $i',
+            pos: 'noun',
+            meanings: <String, String>{'ru': 'слово $i, что'},
+          ),
+      ];
+      final item = PlacementSession(
+        steps: steps,
+        seed: 1,
+        lang: 'ru',
+      ).next(pool)!;
+      expect(item.kind, PlacementKind.meaning);
+      expect(item.options, hasLength(4));
+      expect(item.options.every((o) => o.startsWith('слово')), isTrue);
+    });
+
     test('no word is asked twice', () {
       final session = PlacementSession(steps: steps, seed: 9);
       final seen = <String>{};

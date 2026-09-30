@@ -73,6 +73,34 @@ void main() {
   Future<ExamAttempt> attempt(int id) =>
       (db.select(db.examAttempts)..where((t) => t.id.equals(id))).getSingle();
 
+  test("#775 a paper in Russian is graded in Russian: a comma is the "
+      "language's own", () async {
+    Future<double> graded(String? lang) async {
+      final id = await exams.begin(
+        sublevelCode: 'A1.1',
+        seed: lang == null ? 2 : 3,
+        startedAt: '2026-09-21T08:00:00Z',
+        meaningLang: lang,
+        questions: <ExamQuestion>[
+          ExamQuestion.of(
+            1,
+            const WordQuestion(
+              ExamSection.vocabulary,
+              'indem',
+              prompt: 'indem',
+              expected: 'тем, что / благодаря тому, что',
+            ),
+          ),
+        ],
+      );
+      await answer(id, 1, 'что');
+      return (await exams.grade(id, passPercent: 60)).scorePoints;
+    }
+
+    expect(await graded('ru'), 0);
+    expect(await graded(null), 1, reason: 'before v5: English or Bangla');
+  });
+
   test('each row gets its points, and the attempt its score', () async {
     final id = await sit();
     await answer(id, 1, 'das');
