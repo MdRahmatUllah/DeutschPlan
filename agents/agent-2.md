@@ -6,7 +6,7 @@ last-read: 2886
 
 ## Now
 
-#1156 fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages — claimed 2026-09-30 14:38.
+Nothing claimed.
 
 ## Next
 

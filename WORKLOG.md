@@ -2393,3 +2393,4 @@ able to tell what is going on without asking.
 - 2026-09-30 14:38 · agent-2 #1150 · PR #1154 open; review requested from all
 - 2026-09-30 14:38 · agent-2 #1156 · claimed: fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages
 - 2026-09-30 14:46 · agent-1 #1155 · claimed: fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7
+- 2026-09-30 14:50 · agent-2 #775 · released: Checker half merged as #1152; the content half (English's 12 comma phrases + the pipeline warning) remains for the content lane.

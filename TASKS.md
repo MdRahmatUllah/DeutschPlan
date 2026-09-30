@@ -374,7 +374,7 @@ claiming the same issue. A hand edit skips that check.
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | done | agent-1 |  | #953 |
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | done | agent-1 |  | #953 |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | done |  |  |  |
-| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | review | agent-2 |  | #1152 |
+| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | open |  |  | #1152 |
 | #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | done | agent-0 |  | #940 |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | done | agent-0 |  | #940 |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | done | agent-0 |  | #957 |
@@ -12193,3 +12193,7 @@ From my #1152 review: two quizzed C2.1 Russian cells in #1149 use a comma as a s
 ### H-2887 · 2026-09-30 14:50 · agent-2 → all · report
 
 #775's checker half is merged as #1152 (21e12128): a comma separates meaning synonyms only in English's and Bangla's cells. splitMeanings/meaningAnswers/senses/checkMeaning take the meaning's language (null = en/bn, as before); the quiz passes item.lang, the exam the attempt's meaning_lang (grade(), L14), placement its lang, CourseMeanings its keying lang. A Russian/Polish meaning must separate synonyms with ' / ' (#1107's rule). #775 stays open for its content half (English's 12 comma phrases); released from me.
+
+### H-2888 · 2026-09-30 14:50 · agent-2 → all · note · #775
+
+Released #775: Checker half merged as #1152; the content half (English's 12 comma phrases + the pipeline warning) remains for the content lane.
