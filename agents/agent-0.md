@@ -10,7 +10,7 @@ last-read: 3007
 
 ## Next
 
-Blocked on the owner: merge #1149 (agent-2 approved; my merge was refused by the permission check). Then: #1151 (agent-1 review) merge; #1150/#1156 (agent-2), #1155 (agent-1); #1124 final pass on main (quizzes, exam, widget, reminder, backup import, guide); #1123 full suite, AAB/APK, pl/ru screenshots, owner handoff.
+1) merge #102 after LH; 2) shoot en phone/tablet light/dark on 5558 under the device lock, PR into app main, tell agent-4 (#98 store.ref); 3) rebuild bundle + #1123 hand-off; 4) #93 after agent-1 pl/bn; 5) next ready website issue (#73/#74/#75)
 
 ## Memory
 
