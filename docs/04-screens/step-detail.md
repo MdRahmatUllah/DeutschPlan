@@ -9,7 +9,7 @@
 **Header.** "A2.1 · Grundstufe · 540 words · 10 grammar topics", segmented bar, "Started 19 Aug · about 51 days left at 7 words/day" (or "Completed 18 Aug · Mock 1 passed · revision continues"). Inner tab bar (Material `TabBar` / Cupertino segmented): Words · Grammar · Quiz · Exams. Top-right search icon → R1 with a removable step filter chip.
 
 ## Words tab
-Filter chips All · To do · Learning · Done · {category}, kept across a trip to another inner tab and back (#702); rows: article + headword, meaning, status chip. If the step is not active: banner "You're in A1.2 — start A2.1 now?" with *Start* (FR-L2-03).
+Filter chips All · To do · Learning · Done · {category}, kept across a trip to another inner tab and back (#702); rows: article + headword, meaning (the first meaning language's, then the second's, on one line: "table · টেবিল", #1081), status chip. If the step is not active: banner "You're in A1.2 — start A2.1 now?" with *Start* (FR-L2-03).
 
 ## Grammar tab
 Button *Practise all due · 2* (→ L15 with all due topics). Numbered list: title, one-line rule preview ("konnte, musste, wollte — no umlaut, no ge-"), and "next practice in 4 d" / "due today" once learned. Tap → L4.

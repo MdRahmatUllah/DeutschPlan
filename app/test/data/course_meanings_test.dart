@@ -9,6 +9,7 @@ import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 
 import '../db/content_fixture.dart';
+import '../timing.dart';
 
 /// #1081: the meaning languages #1080 ships, read from `content.db`.
 void main() {
@@ -44,7 +45,7 @@ void main() {
     expect(meanings.meaning(ContentFixture.haus, 'en'), 'house');
     expect(meanings.meaning(ContentFixture.haus, 'bn'), 'বাড়ি');
     expect(meanings.meaning(ContentFixture.haus, 'ru'), 'дом');
-    expect(meanings.pronunciation(ContentFixture.strasse, 'ru'), 'штра́сэ');
+    expect(meanings.pronunciation(ContentFixture.strasse, 'ru'), 'штрАсэ');
     expect(meanings.pronunciation(ContentFixture.haus, 'en'), isNull);
     expect(meanings.meaning(ContentFixture.haus, 'pl'), isNull);
     expect(
@@ -77,7 +78,7 @@ void main() {
     );
     const course = CourseMeanings(<String, Map<String, WordMeaningText>>{
       'haus': <String, WordMeaningText>{
-        'ru': (meaning: 'дом', pronunciation: 'хаус'),
+        'ru': (meaning: 'дом', pronunciation: 'хАус'),
       },
     });
     String? guide(MeaningChoice choice, {bool bangla = true}) =>
@@ -86,8 +87,28 @@ void main() {
     expect(guide(const MeaningChoice('en', 'bn')), 'হাউস', reason: 'en none');
     expect(guide(const MeaningChoice('en', 'bn'), bangla: false), isNull);
     expect(guide(const MeaningChoice('en')), isNull, reason: 'no Bangla');
-    expect(guide(const MeaningChoice('ru', 'bn')), 'хаус');
-    expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хаус');
+    expect(guide(const MeaningChoice('ru', 'bn')), 'хАус');
+    expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хАус');
+  });
+
+  test('#1119 the whole shipped course loads its meanings once, quickly: '
+      'about 10,500 rows today, twice that with two more languages', () async {
+    final course = realContent();
+    var rows = 0;
+    final best = await fastestOf(3, () async {
+      // A database of its own each time: the load is kept per database.
+      final db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(course)}' AS c",
+      );
+      final meanings = await loadCourseMeanings(ContentDao(db));
+      rows = meanings.length;
+      await db.close();
+    });
+    // ignore: avoid_print
+    print('#1119 CourseMeanings: $rows words in ${best.inMilliseconds} ms');
+    expect(rows, greaterThan(5000));
+    expect(best, lessThan(const Duration(milliseconds: 500)));
   });
 
   test('#1081 a course without Russian has none', () async {

@@ -320,16 +320,33 @@ Future<CourseMeanings> courseMeanings(Ref ref) =>
 @riverpod
 Meanings meanings(Ref ref) {
   final choice = ref.watch(languagesProvider).meaning;
-  // ponytail: English's pronunciation guide (#1082) is in the course only:
-  // when it ships, 'en' leaves this check.
-  if (choice.languages.every((lang) => lang == 'en' || lang == 'bn')) {
-    return Meanings(choice);
-  }
+  if (!_needsCourse(choice)) return Meanings(choice);
   return Meanings(
     choice,
     ref.watch(courseMeaningsProvider).value ?? CourseMeanings.none,
   );
 }
+
+/// [meanings] once the course's are read, for a reader that takes one value
+/// and goes: the home widget's background refresh (#1119). A course that
+/// can't be read shows English, as [meanings] does until it is.
+@riverpod
+Future<Meanings> meaningsLoaded(Ref ref) async {
+  final choice = ref.watch(languagesProvider).meaning;
+  if (!_needsCourse(choice)) return Meanings(choice);
+  final course = ref.watch(courseMeaningsProvider.future);
+  try {
+    return Meanings(choice, await course);
+  } on Object {
+    return Meanings(choice);
+  }
+}
+
+/// Whether [choice] has a language beyond the word's own English and Bangla.
+// ponytail: English's pronunciation guide (#1082) is in the course only:
+// when it ships, 'en' leaves this check.
+bool _needsCourse(MeaningChoice choice) =>
+    !choice.languages.every((lang) => lang == 'en' || lang == 'bn');
 
 @riverpod
 WordRepository wordRepository(Ref ref) =>
@@ -567,8 +584,11 @@ void _followSettings(
 /// The drift side of the sentence picker, shared by the picker and Today's
 /// count of rated sentences.
 @riverpod
-DriftSentenceStore sentenceStore(Ref ref) =>
-    DriftSentenceStore(ref.watch(appDatabaseProvider));
+DriftSentenceStore sentenceStore(Ref ref) => DriftSentenceStore(
+  ref.watch(appDatabaseProvider),
+  // #1119: the translations in the primary meaning language.
+  () => meaningChoiceOf(ref.read(settingsProvider)).primary,
+);
 
 /// `docs/03-domain/sentences.md`: the day's practice sentences.
 @riverpod

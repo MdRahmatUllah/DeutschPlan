@@ -4,6 +4,8 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
 
 import '../features/word_fixtures.dart';
@@ -44,6 +46,46 @@ void main() {
     textAudit: false,
     locale: const Locale('ru'),
     overrides: overrides(),
+    builder: (_) => const _Opener(),
+  );
+
+  // #1119: Russian first and English second, from a course that ships
+  // Russian: its meaning, its guide and its examples.
+  goldenTest(
+    'word_detail_ru_meanings',
+    overrides: <Override>[
+      wordHistoryProvider.overrideWith(
+        (ref, uid) => Stream.value(artboardHistory),
+      ),
+      fakeVoice(FakeTts()),
+      todayProvider.overrideWithValue('2026-09-21'),
+      wordDetailProvider.overrideWith(
+        (ref, uid) => Stream.value(
+          artboardWordDetail(
+            uid: uid,
+            meanings: const Meanings(
+              MeaningChoice('ru', 'en'),
+              CourseMeanings(<String, Map<String, WordMeaningText>>{
+                'uid-strasse': <String, WordMeaningText>{
+                  'ru': (meaning: 'улица', pronunciation: 'штрАсэ'),
+                },
+              }),
+            ),
+            pron: 'штрАсэ',
+            examples: const <({String german, String? translation})>[
+              (
+                german: 'Die Straße ist wegen Bauarbeiten gesperrt.',
+                translation: 'Улица перекрыта из-за ремонтных работ.',
+              ),
+              (
+                german: 'Wir wohnen in einer ruhigen Straße.',
+                translation: 'Мы живём на тихой улице.',
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
     builder: (_) => const _Opener(),
   );
 
