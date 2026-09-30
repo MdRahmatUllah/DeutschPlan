@@ -46,6 +46,16 @@ CREATE TABLE categories (
   description TEXT
 );
 
+-- content/category_names.csv (#1128): a category's name in a meaning
+-- language, for each shipped language whose names are all there (the gate).
+-- A language with no rows shows `categories.name`, the English.
+CREATE TABLE category_translations (
+  category_id INTEGER NOT NULL REFERENCES categories (id) ON DELETE CASCADE,
+  lang        TEXT NOT NULL,
+  name        TEXT NOT NULL,
+  PRIMARY KEY (category_id, lang)
+);
+
 -- One row per entry in All Words.
 --
 -- `seq` is reading order across every workbook; `seq_in_sublevel` is what the

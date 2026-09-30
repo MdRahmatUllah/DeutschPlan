@@ -694,10 +694,37 @@ def check_pronunciation_all_or_none(db: sqlite3.Connection) -> list[Failure]:
     ]
 
 
+def check_category_names_all_or_none(db: sqlite3.Connection) -> list[Failure]:
+    """#1128: a language's category names are on every category or on none.
+
+    A course built before #1128 has no `category_translations`, and nothing
+    to check.
+    """
+    if not db.execute(
+        "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'category_translations'"
+    ).fetchone():
+        return []
+    total = db.execute("SELECT count(*) FROM categories").fetchone()[0]
+    rows = db.execute(
+        "SELECT lang, count(*) FROM category_translations GROUP BY lang "
+        "HAVING count(*) != ? ORDER BY lang",
+        (total,),
+    ).fetchall()
+    return [
+        Failure(
+            "category names",
+            f"{lang} names {have:,} of the {total:,} categories. Give "
+            f"content/category_names.csv's {lang} column every name, or none.",
+        )
+        for lang, have in rows
+    ]
+
+
 GATES = (
     check_the_database_is_readable,
     check_every_step_has_words,
     check_pronunciation_all_or_none,
+    check_category_names_all_or_none,
     check_every_word_has_an_example,
     check_no_uid_collision,
     check_no_same_level_duplicates,
