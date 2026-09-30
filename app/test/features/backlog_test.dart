@@ -297,6 +297,9 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         await db.close();
       });
       container.listen(backlogProvider, (_, _) {});
+      // #1172: an English learner's course meanings load once (#1154, for
+      // English's guide), not per row: read before the count starts.
+      await container.read(courseMeaningsProvider.future);
       selects.count = 0;
 
       final rows = await container.read(backlogProvider.future);
