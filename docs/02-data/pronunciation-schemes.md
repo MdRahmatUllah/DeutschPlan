@@ -112,6 +112,16 @@ German e is written **э**, never е, so the consonant before it stays hard (`г
 | l | л; ль before a consonant and at the end | a light l | bald → `бальт`, viel → `филь` |
 | ng | нг | one sound: н at the back of the mouth, no separate г | lange → `лАнгэ` |
 | qu | кв | | Quark → `кварк` |
+| pf | пф | | Apfel → `Апфэль` |
+| x | кс | | Taxi → `тАкси` |
+| ck | к | | schicken → `шИкэн` |
+| ph | ф | | Smartphone → `смАртфон` |
+| th | т; a t and an h of two word parts stay тх | | Apotheke → `апотЭкэ`, Rathaus → `рАтхаус` |
+| -tion | цион | | Information → `информациОн` |
+| c in a loanword | к, or ц before e and i | | Computer → `компьЮта`, Celsius → `цЭльзиус` |
+| ü, ö starting a word | ю, ё | said without the й a Russian reader puts before them | über → `Юба`, öffnen → `ёфнэн` |
+
+Vowel length isn't shown: *Stadt* and *Staat* are both `штат`. The only exception is a doubled ээ where a long e meets -en (`вИдазээн`).
 
 Ten worked examples:
 
