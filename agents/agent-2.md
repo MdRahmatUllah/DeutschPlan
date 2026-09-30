@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 17:38
+last-seen: 2026-09-30 17:41
 last-read: 2929
 
 ## Now
 
-#1164 fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation — claimed 2026-09-30 17:15.
+#1164 in review as PR #1167: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
