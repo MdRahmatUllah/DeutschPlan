@@ -56,11 +56,14 @@ class TestTheSeedSet:
         used = {tip.match_type for tip in read_tips(SEED)}
         assert used == set(MATCH_TYPES) - {"uid"}, used
 
-    def test_every_tip_has_bangla(self):
-        # The audience is Bangla speakers. An English-only interference tip is
-        # the one kind of card that helps the wrong reader.
+    def test_every_english_tip_has_bangla(self):
+        # English's tips are for Bangla speakers too. An English-only
+        # interference tip is the one kind of card that helps the wrong reader.
+        # A Russian or Polish false friend is a row of its own, with no English
+        # (#1080, content-pipeline.md).
         for tip in read_tips(SEED):
-            assert tip.tip_bn, tip.match
+            if tip.tip_en:
+                assert tip.tip_bn, tip.match
 
     def test_the_false_friend_the_issue_names_is_there(self):
         tips = {tip.match: tip for tip in read_tips(SEED)}

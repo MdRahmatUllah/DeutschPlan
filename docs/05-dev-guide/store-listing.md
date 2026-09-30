@@ -209,7 +209,7 @@ No golden shows a Polish or Russian screen with Polish or Russian meanings. The 
 
 Also: setup's page 2 (`onboarding_meaning_pl_light_phone.png`, `onboarding_meaning_ru_light_phone.png`), a quiz in Russian and in Polish (`quiz_runner_ru_meanings_light_phone.png`, `quiz_runner_pl_meanings_light_phone.png`), L7 for a Russian learner (`quiz_custom_ru_meanings_light_phone.png`) and search in Russian (`search_ru_meanings_light_phone.png`).
 
-The upload's screenshots are taken as the English ones were (the release APK on emulator-5558, 1080 × 2160), once #1100's course ships Russian and Polish: the app language and the first meaning language set to Polish for `store-pl/`, and to Russian for `store-ru/`, the same six screens. That is #1123's release step.
+The upload's screenshots are taken as the English ones were (the release APK on emulator-5558, 1080 × 2160), from the course with Russian and Polish (#1100): the app language and the first meaning language set to Polish for `store-pl/`, and to Russian for `store-ru/`, the same six screens. That is #1123's release step.
 
 ## Website and icon
 
