@@ -392,6 +392,11 @@ void main() {
       expect(grade(haus, 'das Haus'), Verdict.correct);
       final ohne = quiz.items.firstWhere((i) => i.wordUid == 'ohne');
       expect(ohne.prompt, 'without');
+      expect(
+        ohne.hint,
+        isNull,
+        reason: 'the prompt fell back to English: not "without" over itself',
+      );
     });
 
     test("a mixed quiz turns through the learner's two languages", () {
