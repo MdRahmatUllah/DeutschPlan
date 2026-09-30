@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 12:54
+last-seen: 2026-09-30 12:55
 last-read: 2835
 
 ## Now
 
-Nothing claimed.
+#1100 content: ship the English pronunciation guide, Russian and Polish in content.db — claimed 2026-09-30 12:55.
 
 ## Next
 
