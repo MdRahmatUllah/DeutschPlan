@@ -6,7 +6,7 @@ last-read: 2815
 
 ## Now
 
-Nothing claimed.
+#1144 content(pipeline): a correction gives the example line it adds in every meaning language — claimed 2026-09-30 11:28.
 
 ## Next
 

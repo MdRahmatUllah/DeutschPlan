@@ -529,7 +529,7 @@ claiming the same issue. A hand edit skips that check.
 | #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | done | agent-2 | #1100 #1119 | #1140 |
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
 | #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | in-progress | agent-1 |  |  |
-| #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | open |  |  |  |
+| #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | in-progress | agent-0 |  |  |
 
 ## Locks
 
