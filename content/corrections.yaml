@@ -2015,8 +2015,7 @@ words:
   "688e86fe5bfaa98d":
     why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
     kind: note
-    german: "Große Deutsche Sprachdiplom"
-    pron_bn: "গ্রোসে ডয়চে শ্প্রাখডিপ্লোম"
+    article: null
   "1d3560d7674e42fc":
     why: "#631: a lesson whose examples show the concept, not the word: a note (PIPE-10)"
     kind: note
@@ -3260,9 +3259,6 @@ words:
   "941216cf143e3779":
     why: "#1137: entbehren takes the accusative; 'auf … entbehren' mixes it with verzichten auf"
     example_de_2: "Das Auto können wir nicht entbehren."
-  "3e1f931ae2bfc1dd":
-    why: "#1137: the same phrase as 'gang und gäbe sein' two weeks before, in the same sense (#635)"
-    merge_into: "bd15b2d91a6c34a8"
 grammar:
   "97ae2951ee9b24bc":
     why: "#637: the author's own city in an example, made a generic one (as #628)"
