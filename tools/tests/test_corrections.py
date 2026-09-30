@@ -36,8 +36,11 @@ from pipeline_steps import (  # noqa: E402
     PipelineError,
     apply_corrections,
     apply_grammar_corrections,
+    assign_examples,
+    coverage,
     cross_level_duplicates,
     read_corrections,
+    translation_lines,
     uid_for,
 )
 from verify_content import (  # noqa: E402
@@ -84,6 +87,38 @@ class TestCorrections:
         haus = word()
         corrected([haus], {uid_for(haus): {"why": "t", "example_de_3": "Ein Haus."}})
         assert haus.examples_de.splitlines()[-1] == "Ein Haus."
+
+    def test_pipe_08_1144_a_line_a_correction_adds_is_given_in_a_meaning_language_too(self):
+        # The workbook's Russian cell pairs the German it has; a line the
+        # correction adds needs its Russian from the correction, or Russian
+        # is held back at 2/3.
+        haus = word(texts={("examples", "ru"): "Дом старый.\nДом большой."})
+        corrected(
+            [haus],
+            {uid_for(haus): {"why": "t", "example_de_3": "Ein Haus.",
+                             "example_en_3": "A house.", "example_ru_3": "Дом."}},
+        )
+        assign_examples([haus])
+        assert translation_lines(haus, "ru") == ["Дом старый.", "Дом большой.", "Дом."]
+        assert coverage([haus], [], "ru", {"examples"}) == {"t.xlsx": {"examples": [3, 3]}}
+
+    def test_pipe_08_1144_a_meaning_languages_line_is_replaced_and_the_rest_kept(self):
+        haus = word(texts={("examples", "pl"): "Dom jest stary.\nDom jest duży."})
+        corrected([haus], {uid_for(haus): {"why": "t", "example_pl_2": "Dom jest nowy."}})
+        assert haus.texts[("examples", "pl")] == "Dom jest stary.\nDom jest nowy."
+
+    @pytest.mark.parametrize(
+        ("entry", "message"),
+        [
+            ({"why": "t", "example_xx_1": "?"}, "no language the pipeline knows"),
+            ({"why": "t", "example_bn_1": "?"}, "Bangla has no example lines"),
+            ({"why": "t", "example_ru_4": "too far"}, "the cell has 2 lines"),
+        ],
+    )
+    def test_pipe_08_1144_an_unknown_code_or_a_line_too_far_fails_the_build(self, entry, message):
+        haus = word(texts={("examples", "ru"): "Дом старый.\nДом большой."})
+        with pytest.raises(PipelineError, match=message):
+            corrected([haus], {uid_for(haus): entry})
 
     def test_628_a_column_is_set_and_a_row_deleted(self):
         haus, maus = word(), word(german="Maus", english="mouse")
