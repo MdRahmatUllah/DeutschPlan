@@ -12,7 +12,7 @@ triggers. Every value is settled here, where the build can fail.
 from __future__ import annotations
 
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from pipeline_steps import (
@@ -59,6 +59,9 @@ class BuildInputs:
     built_at: str
     #: The meaning languages that ship (#1080): PIPE-08's gate passed them.
     languages: list
+    #: #1128: category name (lower case) -> {code: name}, for the shipped
+    #: languages whose names are all there (`gate_category_names`).
+    category_names: dict = field(default_factory=dict)
 
 
 def create_schema(connection: sqlite3.Connection) -> None:
@@ -112,6 +115,7 @@ def write(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
         _write_grammar(connection, inputs)
         _write_tips(connection, inputs)
         _write_languages(connection, inputs)
+        _write_category_names(connection, inputs, category_ids)
         _write_meta(connection, inputs)
         fill_fts(connection)
 
@@ -285,6 +289,21 @@ def _write_tips(connection: sqlite3.Connection, inputs: BuildInputs) -> None:
         "INSERT OR IGNORE INTO interference_tips (word_uid, tip_en, tip_bn) "
         "VALUES (?, ?, ?)",
         [(tip.word_uid, tip.tip_en, tip.tip_bn) for tip in inputs.tips if tip.tip_en],
+    )
+
+
+def _write_category_names(
+    connection: sqlite3.Connection, inputs: BuildInputs, category_ids: dict[str, int]
+) -> None:
+    """#1128: each category's name in the shipped languages the gate passed."""
+    connection.executemany(
+        "INSERT INTO category_translations (category_id, lang, name) VALUES (?, ?, ?)",
+        [
+            (category_ids[key], code, name)
+            for key, texts in inputs.category_names.items()
+            if key in category_ids
+            for code, name in texts.items()
+        ],
     )
 
 

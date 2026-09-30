@@ -16,6 +16,10 @@ workbooks:
 
 tips: content/interference_tips.csv
 
+# The course's category names in the meaning languages (#1128). A language's
+# names ship when every category has one; English's are the workbooks' own.
+category_names: content/category_names.csv
+
 # Reviewed fixes to the workbooks, applied before anything else reads them.
 # The workbooks themselves are never edited by a tool (#545, #628).
 corrections: content/corrections.yaml
