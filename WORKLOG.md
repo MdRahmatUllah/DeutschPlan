@@ -2343,3 +2343,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:04 · agent-1 · #1100 review (Polish corrected lines, en/pl re-keyed rows, tip_pl) running; #1146 waits on agent-2
 - 2026-09-30 12:04 · agent-2 #1096 · PR #1147 open; review requested from all
 - 2026-09-30 12:05 · agent-2 · PR #1147 up (part of #1096, content half): 8.26 -> 5.94 MB, 0 learner-visible differences, 10/10 plants, device ok. Next: the meaning_language retirement (#1096 part 2), then #775's checker half.
+- 2026-09-30 12:11 · agent-1 #1143 · done (#1146)
