@@ -166,7 +166,8 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    lock, and perf.py refuses while an agent holds the emulator (#845). Then the
    owner times cold and warm start by hand on a real mid-range phone.
 7. **Tag and notes.** The release commit bumps `pubspec.yaml`, adds the
-   `CHANGELOG.md` entry, and updates *What's new* in English and Bangla in
+   `CHANGELOG.md` entry, and updates *What's new* in English, Bangla, Polish
+   and Russian in
    `store-listing.md` (`tools/tests/test_store_listing.py` reads the version
    from `pubspec.yaml` and holds every text to Play's limits). It is merged as
    `chore(release): vX.Y.Z, <summary> (#N)`, and that commit gets an annotated
