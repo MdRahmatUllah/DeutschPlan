@@ -362,7 +362,7 @@ From [`user-database.md`](../02-data/user-database.md), whose table
 | Key | Default | Key | Default |
 |---|---|---|---|
 | `daily_new` | 7 | `ui_language` | `en` |
-| `revise_count` | 10 | `meaning_language` | `both` |
+| `revise_count` | 10 | `meaning_primary` / `meaning_secondary` | — / — (English, then Bangla) |
 | `sentence_count` | 3 | `theme_mode` | `system` (light / dark / glass) |
 | `sentence_repeat_gap_days` | 14 | `show_pron_bn` | 1 |
 | `study_days_mask` | 127 (Mon–Sun) | `tts_engine` / `tts_voice` / `tts_speed` | supertonic / Anna / 1.0 |

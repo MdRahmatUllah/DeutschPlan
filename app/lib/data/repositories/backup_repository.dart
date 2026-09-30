@@ -5,6 +5,8 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_update.dart' show ContentUpdater;
+import 'package:sogda/data/repositories/meaning_choice.dart'
+    show retiredMeaningKeys, retiredMeaningLanguage;
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart'
     show customId, customUid;
@@ -316,7 +318,7 @@ class BackupRepository {
       for (final table in tables) {
         await _importTable(
           table,
-          _rowsIn(data, table),
+          _importRows(data, table),
           mode,
           remap,
           aliases,
@@ -676,6 +678,37 @@ WHERE kind = 'new' AND completed_at IS NULL
     for (final row in (data[table] ?? <Object?>[]) as List<Object?>)
       row! as Map<String, Object?>,
   ];
+
+  /// The rows [table] imports: the file's, but a `meaning_language` from
+  /// before #1081 is read into the settings that replaced it (#1096), so
+  /// the usual rules apply to those (a merge keeps this phone's; #658's
+  /// file wins). A file that has them too keeps its own.
+  static List<Map<String, Object?>> _importRows(
+    Map<String, Object?> data,
+    String table,
+  ) {
+    final rows = _rowsIn(data, table);
+    if (table != 'settings') return rows;
+    final retired = <Map<String, Object?>>[
+      for (final row in rows)
+        if (row['key'] == retiredMeaningLanguage) row,
+    ];
+    if (retired.isEmpty) return rows;
+    final kept = <Map<String, Object?>>[
+      for (final row in rows)
+        if (row['key'] != retiredMeaningLanguage) row,
+    ];
+    if (kept.any((row) => row['key'] == SettingKeys.meaningPrimary.name)) {
+      return kept;
+    }
+    return <Map<String, Object?>>[
+      ...kept,
+      for (final MapEntry(:key, :value) in retiredMeaningKeys(
+        '${retired.first['value']}',
+      ).entries)
+        <String, Object?>{'key': key, 'value': value},
+    ];
+  }
 
   /// The numbers a file could set to what no screen can (#657): the ranges
   /// `settings.md`'s steppers and slider give them, and at least one study

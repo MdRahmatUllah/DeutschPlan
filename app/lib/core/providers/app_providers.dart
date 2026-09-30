@@ -214,7 +214,6 @@ class Languages extends _$Languages {
     // Followed, not read once (#672): a Replace import writes both, and
     // Reset everything the meaning language, not only this notifier.
     _followSettings(ref, settings, const <SettingKey<Object?>>{
-      SettingKeys.meaningLanguage,
       SettingKeys.meaningPrimary,
       SettingKeys.meaningSecondary,
       SettingKeys.uiLanguage,
@@ -662,7 +661,6 @@ DriftQuizStore quizStore(Ref ref) {
 
 /// The settings a [MeaningChoice] is read from.
 const Set<SettingKey<Object?>> _meaningKeys = <SettingKey<Object?>>{
-  SettingKeys.meaningLanguage,
   SettingKeys.meaningPrimary,
   SettingKeys.meaningSecondary,
 };

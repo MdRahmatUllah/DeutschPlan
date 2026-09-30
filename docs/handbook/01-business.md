@@ -302,9 +302,9 @@ The column for more languages to learn stands as written.
 - **Most engines are language-neutral.** FSRS, the daily plan, the backlog,
   the streak, quiz selection, the exam's sections and seeds, export and
   import, reminders and the widget know nothing about German.
-- **The meaning language is its own concept.** `meaning_language` is a
-  setting apart from `ui_language`, and every screen that shows a meaning
-  already asks which one.
+- **The meaning language is its own concept.** The meaning languages
+  (`meaning_primary`, `meaning_secondary`) are settings apart from
+  `ui_language`, and every screen that shows a meaning already asks which.
 - **All UI copy is in ARB files.** 972 strings in each of English and
   Bangla, and `test/l10n_test.dart` fails on a missing translation or a
   hard-coded string. A new UI language is a new ARB file.

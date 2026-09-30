@@ -11,6 +11,7 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -234,7 +235,7 @@ void main() {
     final settings = SettingsRepository(db);
     await settings.load();
     addTearDown(settings.dispose);
-    await settings.write(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+    await writeMeaningChoice(settings, const MeaningChoice('bn'));
     final container = ProviderContainer(
       overrides: <Override>[
         appDatabaseProvider.overrideWithValue(db),

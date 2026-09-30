@@ -145,9 +145,7 @@ void main() {
       'pl',
     );
 
-    unawaited(
-      languages.chooseMeaning(MeaningChoice.of(MeaningLanguage.bangla)),
-    );
+    unawaited(languages.chooseMeaning(const MeaningChoice('bn')));
     await tester.pump();
     expect(locale(), const Locale('pl'), reason: 'the meaning moved alone');
   });
@@ -165,10 +163,10 @@ void main() {
 
     // বাংলা copy with English meanings.
     await languages.setUi(UiLanguage.bangla);
-    await languages.setMeaning(MeaningChoice.of(MeaningLanguage.english));
+    await languages.setMeaning(const MeaningChoice('en'));
     await tester.pump();
     expect(locale(), const Locale('bn'));
-    expect(meaning(), MeaningChoice.of(MeaningLanguage.english));
+    expect(meaning(), const MeaningChoice('en'));
 
     // English copy with Bangla meanings: each moved alone.
     await languages.setUi(UiLanguage.english);
@@ -176,12 +174,12 @@ void main() {
     expect(locale(), const Locale('en'));
     expect(
       meaning(),
-      MeaningChoice.of(MeaningLanguage.english),
+      const MeaningChoice('en'),
       reason:
           'the app language '
           'left the meanings alone',
     );
-    await languages.setMeaning(MeaningChoice.of(MeaningLanguage.bangla));
+    await languages.setMeaning(const MeaningChoice('bn'));
     await tester.pump();
     expect(
       locale(),
@@ -190,7 +188,7 @@ void main() {
           'the meanings left the '
           'app language alone',
     );
-    expect(meaning(), MeaningChoice.of(MeaningLanguage.bangla));
+    expect(meaning(), const MeaningChoice('bn'));
   });
 
   testWidgets('following the system keeps following it', (tester) async {

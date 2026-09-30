@@ -13,13 +13,9 @@ class MeaningChoice {
   const MeaningChoice(this.primary, [this.secondary])
     : assert(secondary != primary, 'a secondary differs from the primary');
 
-  /// Today's three, as `meaning_language` stored them: *English* is English
-  /// alone, *Bangla* Bangla alone, and *Both* English then Bangla.
-  factory MeaningChoice.of(MeaningLanguage old) => switch (old) {
-    MeaningLanguage.english => const MeaningChoice('en'),
-    MeaningLanguage.bangla => const MeaningChoice('bn'),
-    MeaningLanguage.both => const MeaningChoice('en', 'bn'),
-  };
+  /// Before the learner chooses (a first run, Reset everything): English,
+  /// then Bangla.
+  static const MeaningChoice fallback = MeaningChoice('en', 'bn');
 
   final String primary;
   final String? secondary;
@@ -45,14 +41,11 @@ class MeaningChoice {
   String toString() => 'MeaningChoice(${languages.join(' + ')})';
 }
 
-/// The learner's [MeaningChoice]. `meaning_primary` and `meaning_secondary`
-/// once written; before, read from `meaning_language`, so an upgrade, a
-/// backup from an older build and a reset need no step of their own (#1081).
+/// The learner's [MeaningChoice]: `meaning_primary` and `meaning_secondary`,
+/// or [MeaningChoice.fallback] before either is written.
 MeaningChoice meaningChoiceOf(SettingsRepository settings) {
   final primary = settings.read(SettingKeys.meaningPrimary);
-  if (primary == null || primary.isEmpty) {
-    return MeaningChoice.of(settings.read(SettingKeys.meaningLanguage));
-  }
+  if (primary == null || primary.isEmpty) return MeaningChoice.fallback;
   final secondary = settings.read(SettingKeys.meaningSecondary);
   return MeaningChoice(
     primary,
@@ -62,21 +55,32 @@ MeaningChoice meaningChoiceOf(SettingsRepository settings) {
   );
 }
 
-/// Writes [choice]. `meaning_language` too, as near as its three come, for
-/// what still reads it: a backup opened by an older build.
+/// Writes [choice].
 Future<void> writeMeaningChoice(
   SettingsRepository settings,
   MeaningChoice choice,
 ) => Future.wait(<Future<void>>[
   settings.write(SettingKeys.meaningPrimary, choice.primary),
   settings.write(SettingKeys.meaningSecondary, choice.secondary),
-  settings.write(SettingKeys.meaningLanguage, choice.nearestOld),
 ]);
 
-extension on MeaningChoice {
-  MeaningLanguage get nearestOld => has('en') && hasBangla
-      ? MeaningLanguage.both
-      : hasBangla
-      ? MeaningLanguage.bangla
-      : MeaningLanguage.english;
+/// The setting `meaning_primary` and `meaning_secondary` replaced (#1081),
+/// retired by #1096. An install from before them still has it, and so does
+/// its backup: [SettingsRepository.load] and an import read it into them
+/// once ([retiredMeaningKeys]).
+const String retiredMeaningLanguage = 'meaning_language';
+
+/// What `meaning_language` stored as the settings that replaced it: `en` is
+/// English alone, `bn` Bangla alone, and `both`, its default (and so
+/// anything else), English then Bangla.
+Map<String, String> retiredMeaningKeys(String stored) {
+  final choice = switch (stored) {
+    'en' => const MeaningChoice('en'),
+    'bn' => const MeaningChoice('bn'),
+    _ => MeaningChoice.fallback,
+  };
+  return <String, String>{
+    SettingKeys.meaningPrimary.name: choice.primary,
+    SettingKeys.meaningSecondary.name: ?choice.secondary,
+  };
 }

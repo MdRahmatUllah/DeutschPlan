@@ -648,6 +648,80 @@ void main() {
       },
     );
 
+    group('#1096 a backup from before #1081 keeps its meaning languages as '
+        'meaning_language', () {
+      /// A file with [settings], and a step when [step] (#658's file wins).
+      String fileOf(Map<String, String> settings, {bool step = false}) =>
+          jsonEncode(<String, Object?>{
+            'schema_version': AppDatabase.latestSchemaVersion,
+            'content_version': null,
+            'exported_at': '2026-03-09T00:00:00Z',
+            'tables': <String, Object?>{
+              'settings': <Object?>[
+                for (final MapEntry(:key, :value) in settings.entries)
+                  <String, Object?>{'key': key, 'value': value},
+              ],
+              if (step)
+                'enrollments': <Object?>[
+                  <String, Object?>{
+                    'sublevel_code': 'A1.2',
+                    'started_on': '2026-01-01',
+                    'daily_new': 12,
+                    'study_days_mask': 127,
+                    'completed_on': null,
+                  },
+                ],
+            },
+          });
+
+      Future<Map<String, Object?>> settings() async => <String, Object?>{
+        for (final row in await rowsOf('settings'))
+          row['key']! as String: row['value'],
+      };
+
+      test('Replace: read into the settings that replaced it', () async {
+        await backup.import(
+          fileOf(<String, String>{'meaning_language': 'both'}),
+          mode: ImportMode.replace,
+        );
+        expect(await settings(), <String, Object?>{
+          'meaning_primary': 'en',
+          'meaning_secondary': 'bn',
+        });
+      });
+
+      test("onto a phone where nothing is studied yet, the file's wins over "
+          "setup's (#658)", () async {
+        await sql("INSERT INTO settings VALUES ('meaning_primary', 'en')");
+        await backup.import(
+          fileOf(<String, String>{'meaning_language': 'bn'}, step: true),
+          mode: ImportMode.merge,
+        );
+        expect(await settings(), <String, Object?>{'meaning_primary': 'bn'});
+      });
+
+      test('onto a phone in use, this phone keeps its own', () async {
+        await studiedHere();
+        await sql("INSERT INTO settings VALUES ('meaning_primary', 'ru')");
+        await backup.import(
+          fileOf(<String, String>{'meaning_language': 'bn'}, step: true),
+          mode: ImportMode.merge,
+        );
+        expect(await settings(), <String, Object?>{'meaning_primary': 'ru'});
+      });
+
+      test('a file with the new settings too keeps those', () async {
+        await backup.import(
+          fileOf(<String, String>{
+            'meaning_language': 'both',
+            'meaning_primary': 'ru',
+          }),
+          mode: ImportMode.replace,
+        );
+        expect(await settings(), <String, Object?>{'meaning_primary': 'ru'});
+      });
+    });
+
     test('a later row wins', () async {
       await fillEverything();
       await backup.import(
