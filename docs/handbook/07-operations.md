@@ -124,7 +124,7 @@ nullable columns or new tables; never drop a column with data.
 ### Versioning
 
 `app/pubspec.yaml` carries `version: MAJOR.MINOR.PATCH+BUILD` (v1.0.1 was
-`1.0.1+2`; the first Sogda build is `1.1.0+3`, #739); `versionCode` and `versionName` come from it. The course has its
+`1.0.1+2`; the first Sogda build was `1.1.0+3`, #739, and v1.1.0 ships as `1.1.0+4`, #1123); `versionCode` and `versionName` come from it. The course has its
 own `content_version` (the pipeline's build time), shown in About. A
 content-only release bumps PATCH.
 
