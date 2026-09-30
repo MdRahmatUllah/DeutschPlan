@@ -10,7 +10,7 @@ Polish and Russian, the first build as Sogda (`de.sogda.app`), and the productio
 - The app in Polish and Russian: every screen, notification and the home-screen widget (#1078, #1079).
 - Meanings in English, Bangla, Russian or Polish: a first language, and an optional second shown under it, chosen in setup and in Settings (#1081).
 - In Russian and Polish, each word's meaning and pronunciation, its example sentences, the grammar topics, interference tips for their speakers and the category names (#1083, #1084, #1119, #1128).
-- The pronunciation guide follows the first meaning language: Bangla letters, Russian or Polish spelling, or an English respelling (#1082), with a one-line key to read it (#1122).
+- The pronunciation guide follows the first meaning language: Bangla letters, Russian or Polish spelling, or an English respelling (#1082), with a one-line key to read it (#1122). English + Bangla keeps the Bangla guide while *Show Bangla pronunciation* is on (#1150).
 - Search finds a word by its meaning in the chosen languages (#1121). Quizzes, mock exams, the placement check and the compare quiz ask in them, and a typed Polish or Russian answer may leave out its marks: `zolty` for *żółty*, `елка` for *ёлка* (#1120).
 
 ### Changed
@@ -18,9 +18,12 @@ Polish and Russian, the first build as Sogda (`de.sogda.app`), and the productio
 - 5,069 words to learn: each word is taught once, and lesson notes and comparisons are listed, never studied.
 - A smaller download: the arm64 APK went from 72.3 to 51.2 MB (ADR 29).
 - Setup offers *Restore a backup* on its first page.
+- Setup's meaning page opens on the app language: Русский for a Russian app, Polski for a Polish one, বাংলা + English for a Bangla one (#1156).
 
 ### Fixed
 - About a hundred fixes from the production review: answers graded more fairly, a mock exam that keeps every answer through interruptions, backup and import checked and merged correctly, progress kept across content updates, deep links that never take over a running exam, screen-reader labels in Bangla, and no screen left hanging on a failed read.
+- At large text in Russian and Polish, the rating buttons go to two rows rather than break a word, and a card's counter keeps "1 / 7" together (#1155).
+- A comma inside a Russian or Polish meaning belongs to the phrase: "счёт, пожалуйста!" is one answer, not two (#775).
 
 ## [1.0.1] — 2026-09-26
 
