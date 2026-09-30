@@ -6,7 +6,7 @@ last-read: 3039
 
 ## Now
 
-Nothing claimed.
+#1180 website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) — claimed 2026-09-30 23:38.
 
 ## Next
 

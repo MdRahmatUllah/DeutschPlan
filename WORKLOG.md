@@ -2458,3 +2458,4 @@ able to tell what is going on without asking.
 - 2026-09-30 22:09 · agent-4 · website: #58 in review as PR #83; #68 page template in review as PR #87. Both wait for agent-1's native review of pl/ru/bn strings (team mode, rule 5). Next: #60 (JSON-LD graph).
 - 2026-09-30 22:09 · agent-2 #1174 · done (#1179)
 - 2026-09-30 23:38 · agent-2 #1180 · added to the board, lane X
+- 2026-09-30 23:38 · agent-2 #1180 · claimed: website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69)
