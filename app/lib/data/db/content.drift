@@ -113,6 +113,13 @@ examplesForWordIn(:uid AS TEXT, :lang AS TEXT):
 wordTipsFor:
   SELECT lang, tip FROM word_tips WHERE word_uid = :uid;
 
+-- #1128: the category names the course has in :lang, by the English
+-- name (unique, and what an exam's task keeps).
+categoryNamesIn:
+  SELECT k.name AS english, t.name AS name
+  FROM category_translations t JOIN categories k ON k.id = t.category_id
+  WHERE t.lang = :lang;
+
 -- #1081: the grammar topics the course has in :lang.
 grammarTranslationsIn:
   SELECT * FROM grammar_translations WHERE lang = :lang;

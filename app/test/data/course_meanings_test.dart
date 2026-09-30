@@ -1,6 +1,9 @@
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
@@ -8,6 +11,10 @@ import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/text_norm.dart' show meaningKey;
+import 'package:sogda/features/learn/categories_screen.dart';
+import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/study/study_screen.dart';
+import 'package:sogda/router/routes.dart';
 
 import '../db/content_fixture.dart';
 import '../timing.dart';
@@ -151,6 +158,69 @@ void main() {
     expect((await course.find('ru', 'значение')).startsWith, hasLength(5600));
     expect(first, lessThan(const Duration(milliseconds: 500)), reason: 'keyed');
     expect(again, lessThan(const Duration(milliseconds: 50)));
+  });
+
+  test('#1128 the category names follow the primary meaning language: '
+      "English's are the course's own, and a language without a name keeps "
+      'it', () async {
+    final dao = await open(russian: true);
+    final settings = SettingsRepository(dao.attachedDatabase);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(dao.attachedDatabase),
+        settingsProvider.overrideWithValue(settings),
+      ],
+    );
+    addTearDown(container.dispose);
+    Future<String> wohnen() async =>
+        (await container.read(categoryNamesProvider.future)).of('Wohnen');
+    Future<List<String>> chips() async => <String>[
+      for (final c in await container.read(
+        stepCategoriesProvider('A1.1').future,
+      ))
+        c.name,
+    ];
+
+    expect(await wohnen(), 'Wohnen', reason: 'English first: no read');
+    expect(await chips(), <String>['Wohnen']);
+    await writeMeaningChoice(settings, const MeaningChoice('ru', 'en'));
+    await pumpEventQueue();
+    expect(await wohnen(), 'Жильё');
+    expect(await chips(), <String>['Жильё'], reason: "L2's chips");
+    final cards = container.listen(categoriesProvider, (_, _) {});
+    addTearDown(cards.close);
+    expect(
+      <String>[
+        for (final c in await container.read(categoriesProvider.future)) c.name,
+      ],
+      <String>['Жильё'],
+      reason: "L5's cards and L6's title",
+    );
+    expect(
+      await container.read(
+        studyCategoryProvider(
+          const SessionArgs(
+            blocks: <SessionBlock>[
+              SessionBlock(SessionBlockKind.newWords, <String>[
+                ContentFixture.haus,
+              ]),
+            ],
+          ),
+        ).future,
+      ),
+      'Жильё',
+      reason: "T2's new-words banner",
+    );
+    expect(
+      (await container.read(categoryNamesProvider.future)).of('Reisen'),
+      'Reisen',
+      reason: 'a category the language has no name for',
+    );
+    await writeMeaningChoice(settings, const MeaningChoice('bn'));
+    await pumpEventQueue();
+    expect(await wohnen(), 'Wohnen', reason: 'no Bangla names');
   });
 
   test('#1081 a course without Russian has none', () async {

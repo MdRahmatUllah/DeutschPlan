@@ -124,13 +124,11 @@ void main() {
         match.group(1)!,
     };
     expect(declared, hasLength(greaterThan(10)));
-    // #1134: declared for the pipeline (#1128), read by no screen yet. The
-    // build that reads it lists it, with a bundled course that has it.
-    const unread = <String>{'category_translations'};
-    expect(declared, containsAll(unread));
+    // #1134: a table the schema declares and no screen reads yet would be
+    // listed here; #1128 reads category_translations, the last one.
     expect(<String>{
       for (final table in dao.courseTables) table.actualTableName,
-    }, declared.difference(unread));
+    }, declared);
   });
 
   test('#1134 the course this build bundles fits it', () async {

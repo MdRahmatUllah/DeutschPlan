@@ -176,7 +176,8 @@ class ContentFixture {
     ''');
   }
 
-  /// Russian, as a third meaning language would ship (#1081).
+  /// Russian, as a third meaning language would ship (#1081), with its
+  /// category name (#1128).
   static void _russian(Database db) {
     db.execute('''
       INSERT INTO course_languages (code, name, own_name, script, ord) VALUES
@@ -193,6 +194,8 @@ class ContentFixture {
         'Я иду сегодня.', 'Не «Heute ich gehe».');
       INSERT INTO word_tips (word_uid, lang, tip) VALUES
         ('$tuer', 'ru', 'die Tür — женский род, как «дверь».');
+      INSERT INTO category_translations (category_id, lang, name) VALUES
+        (1, 'ru', 'Жильё');
     ''');
   }
 
