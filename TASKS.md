@@ -507,7 +507,7 @@ claiming the same issue. A hand edit skips that check.
 | #1105 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C1 workbook (963 words) | open |  | #1087 #1099 |  |
 | #1106 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C2 workbook (679 words) | open |  | #1087 #1099 |  |
 | #1107 | M8 | A | P2 | - | content(ru): Russian for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics) | done |  | #1087 |  |
-| #1108 | M8 | A | P2 | - | content(ru): Russian for the A2 workbook (1,038 words, 2,076 example lines, 20 grammar topics) | open |  | #1087 |  |
+| #1108 | M8 | A | P2 | - | content(ru): Russian for the A2 workbook (1,038 words, 2,076 example lines, 20 grammar topics) | done |  | #1087 |  |
 | #1109 | M8 | A | P2 | - | content(ru): Russian for the B1 workbook (379 words, 758 example lines, 20 grammar topics) | open |  | #1087 |  |
 | #1110 | M8 | A | P2 | - | content(ru): Russian for the B2 workbook (1,219 words, 2,438 example lines, 40 grammar topics) | open |  | #1087 |  |
 | #1111 | M8 | A | P2 | - | content(ru): Russian for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics) | open |  | #1087 |  |
@@ -11776,3 +11776,7 @@ Your queue, in order: (1) #1109 Russian B1: it IS drafted, the review request ha
 ### H-2784 · 2026-09-30 08:29 · agent-0 → all · report · #1107
 
 #1107 (content(ru): Russian for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics)) is merged. staged, reviewed and approved; lands in the live workbooks with its language's one-step merge
+
+### H-2785 · 2026-09-30 08:29 · agent-0 → all · report · #1108
+
+#1108 (content(ru): Russian for the A2 workbook (1,038 words, 2,076 example lines, 20 grammar topics)) is merged. staged, reviewed and approved; lands in the live workbooks with its language's one-step merge
