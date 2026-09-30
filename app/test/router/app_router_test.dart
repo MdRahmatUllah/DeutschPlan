@@ -14,6 +14,7 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/placement.dart';
 import 'package:sogda/features/backlog/backlog_screen.dart';
@@ -585,6 +586,6 @@ class _FixedLanguages extends Languages {
   final MeaningLanguage meaning;
 
   @override
-  ({MeaningLanguage meaning, UiLanguage ui}) build() =>
-      (meaning: meaning, ui: UiLanguage.english);
+  ({MeaningChoice meaning, UiLanguage ui}) build() =>
+      (meaning: MeaningChoice.of(meaning), ui: UiLanguage.english);
 }

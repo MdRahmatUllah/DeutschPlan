@@ -29,10 +29,12 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/data/repositories/exam_run_service.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/plan_repository.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
@@ -207,16 +209,18 @@ class ThemeFollowsPlatform extends _$ThemeFollowsPlatform {
 @Riverpod(keepAlive: true)
 class Languages extends _$Languages {
   @override
-  ({MeaningLanguage meaning, UiLanguage ui}) build() {
+  ({MeaningChoice meaning, UiLanguage ui}) build() {
     final settings = ref.watch(settingsProvider);
     // Followed, not read once (#672): a Replace import writes both, and
     // Reset everything the meaning language, not only this notifier.
     _followSettings(ref, settings, const <SettingKey<Object?>>{
       SettingKeys.meaningLanguage,
+      SettingKeys.meaningPrimary,
+      SettingKeys.meaningSecondary,
       SettingKeys.uiLanguage,
     });
     return (
-      meaning: settings.read(SettingKeys.meaningLanguage),
+      meaning: meaningChoiceOf(settings),
       ui: settings.read(SettingKeys.uiLanguage),
     );
   }
@@ -232,28 +236,23 @@ class Languages extends _$Languages {
   /// value in memory first, so the tick and the new locale land on the next
   /// frame instead of waiting on SQLite.
   ///
-  /// The Bangla pronunciation follows too: off for a learner who chose only
-  /// English, who may not read Bangla, as #339 did for the quiz's direction
+  /// The Bangla pronunciation follows too: off for a learner who chose no
+  /// Bangla, who may not read it, as #339 did for the quiz's direction
   /// (#396, #527). M3's switch changes it after.
-  Future<void> chooseMeaning(MeaningLanguage meaning) {
+  Future<void> chooseMeaning(MeaningChoice meaning) {
     final settings = ref.read(settingsProvider);
     final written = Future.wait(<Future<void>>[
-      settings.write(SettingKeys.meaningLanguage, meaning),
-      settings.write(
-        SettingKeys.showPronBn,
-        meaning != MeaningLanguage.english,
-      ),
+      writeMeaningChoice(settings, meaning),
+      settings.write(SettingKeys.showPronBn, meaning.hasBangla),
     ]);
     ref.invalidateSelf();
     return written;
   }
 
-  /// Settings (M3) sets the two apart: Bangla meanings in an English app is
-  /// what its two rows are for.
-  Future<void> setMeaning(MeaningLanguage meaning) {
-    final written = ref
-        .read(settingsProvider)
-        .write(SettingKeys.meaningLanguage, meaning);
+  /// Settings (M3) sets the meaning apart from the app's language: Bangla
+  /// meanings in an English app is what its rows are for.
+  Future<void> setMeaning(MeaningChoice meaning) {
+    final written = writeMeaningChoice(ref.read(settingsProvider), meaning);
     ref.invalidateSelf();
     return written;
   }
@@ -293,6 +292,44 @@ ContentUpdater contentUpdater(Ref ref) => ContentUpdater(
 Future<Set<String>> recentlyUpdated(Ref ref) => ref
     .watch(contentUpdaterProvider)
     .recentlyUpdated(ref.watch(clockProvider)());
+
+/// Not retried: content.db is read-only and changes only at launch
+/// (BR-CONTENT-03), so a read of it that failed would fail again.
+Duration? _readOnce(int retryCount, Object error) => null;
+
+/// #1081: the meaning languages the course ships, in its order: what S2's
+/// page 2 and M3 offer. [baseLanguages] until it is read.
+@Riverpod(retry: _readOnce)
+Future<List<CourseLanguageName>> courseLanguages(Ref ref) async =>
+    <CourseLanguageName>[
+      for (final l
+          in await ref.watch(contentDaoProvider).courseLanguageList().get())
+        (code: l.code, ownName: l.ownName),
+    ];
+
+/// #1081: every meaning the course ships, read once per database.
+@Riverpod(retry: _readOnce)
+Future<CourseMeanings> courseMeanings(Ref ref) =>
+    loadCourseMeanings(ref.watch(contentDaoProvider));
+
+/// #1081: the learner's meaning languages ([Languages]) and the course's
+/// meanings in them, which every screen showing a meaning reads.
+///
+/// English and Bangla come from the word's own row, so the course's are read
+/// only for a language beyond them; until they are, a word shows English.
+@riverpod
+Meanings meanings(Ref ref) {
+  final choice = ref.watch(languagesProvider).meaning;
+  // ponytail: English's pronunciation guide (#1082) is in the course only:
+  // when it ships, 'en' leaves this check.
+  if (choice.languages.every((lang) => lang == 'en' || lang == 'bn')) {
+    return Meanings(choice);
+  }
+  return Meanings(
+    choice,
+    ref.watch(courseMeaningsProvider).value ?? CourseMeanings.none,
+  );
+}
 
 @riverpod
 WordRepository wordRepository(Ref ref) =>

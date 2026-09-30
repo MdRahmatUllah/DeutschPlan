@@ -11,6 +11,7 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/study/study_card.dart';
@@ -54,7 +55,7 @@ void main() {
   group('the caption', () {
     test('a noun: Nomen, its plural after it, the pronunciation', () {
       expect(
-        frontCaption(word(), l10n, pron: true),
+        frontCaption(word(), l10n, pron: 'রেশনুং'),
         'Nomen · die Rechnung, Rechnungen · /রেশনুং/',
       );
     });
@@ -70,17 +71,13 @@ void main() {
             pron: null,
           ),
           l10n,
-          pron: true,
         ),
         'Verb · arbeitet · hat gearbeitet',
       );
     });
 
-    test('show_pron_bn off leaves the pronunciation out', () {
-      expect(
-        frontCaption(word(), l10n, pron: false),
-        'Nomen · die Rechnung, Rechnungen',
-      );
+    test('no guide, no pronunciation', () {
+      expect(frontCaption(word(), l10n), 'Nomen · die Rechnung, Rechnungen');
     });
   });
 
@@ -153,7 +150,7 @@ void main() {
       await tester.runAsync(
         () => container
             .read(languagesProvider.notifier)
-            .setMeaning(MeaningLanguage.english),
+            .setMeaning(MeaningChoice.of(MeaningLanguage.english)),
       );
       await tester.pump();
       expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
@@ -162,7 +159,7 @@ void main() {
       await tester.runAsync(
         () => container
             .read(languagesProvider.notifier)
-            .setMeaning(MeaningLanguage.bangla),
+            .setMeaning(MeaningChoice.of(MeaningLanguage.bangla)),
       );
       await tester.pump();
       expect(pron, findsOneWidget);
@@ -176,13 +173,14 @@ void main() {
         tester.element(find.byType(StudyWordCard)),
       ).read(languagesProvider.notifier);
       await tester.runAsync(
-        () => languages.chooseMeaning(MeaningLanguage.english),
+        () =>
+            languages.chooseMeaning(MeaningChoice.of(MeaningLanguage.english)),
       );
       await tester.pump();
       expect(pron, findsNothing);
 
       await tester.runAsync(
-        () => languages.chooseMeaning(MeaningLanguage.both),
+        () => languages.chooseMeaning(MeaningChoice.of(MeaningLanguage.both)),
       );
       await tester.pump();
       expect(pron, findsOneWidget);

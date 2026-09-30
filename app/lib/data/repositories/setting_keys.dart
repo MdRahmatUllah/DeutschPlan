@@ -268,6 +268,12 @@ abstract final class SettingKeys {
       MeaningLanguage.both: 'both',
     },
   );
+
+  /// #1081: the meaning languages by code (`course_languages`), a primary and
+  /// an optional secondary (empty: none). Until the primary is written, both
+  /// are read from [meaningLanguage]: `meaningChoiceOf`.
+  static const meaningPrimary = StringSetting('meaning_primary');
+  static const meaningSecondary = StringSetting('meaning_secondary');
   static const uiLanguage = EnumSetting<UiLanguage>(
     'ui_language',
     UiLanguage.english,
@@ -374,6 +380,8 @@ abstract final class SettingKeys {
     swipeToRate,
     quizCustomWords,
     meaningLanguage,
+    meaningPrimary,
+    meaningSecondary,
     uiLanguage,
     themeMode,
     showPronBn,

@@ -7,11 +7,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_button.dart';
+import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -29,6 +32,9 @@ void main() {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
   });
 
+  // The cards and chips name each language in itself (#1081).
+  const en = 'English';
+  const bn = 'বাংলা';
   const english = 'flat / apartment';
   const bangla = 'ফ্ল্যাট / অ্যাপার্টমেন্ট';
 
@@ -55,6 +61,8 @@ void main() {
     bool noSample = false,
     bool sampleThrows = false,
     MeaningLanguage? stored,
+    List<CourseLanguageName>? languages,
+    CourseMeanings course = CourseMeanings.none,
     SgMode mode = SgMode.light,
     VoidCallback? onContinue,
     VoidCallback? onBack,
@@ -73,6 +81,9 @@ void main() {
       ProviderScope(
         overrides: <Override>[
           settingsProvider.overrideWithValue(settings),
+          if (languages != null)
+            courseLanguagesProvider.overrideWith((ref) async => languages),
+          courseMeaningsProvider.overrideWith((ref) async => course),
           meaningSampleProvider.overrideWith(
             (ref) async => sampleThrows
                 ? throw StateError('content.db is not attached')
@@ -102,28 +113,35 @@ void main() {
     await tester.pump();
   }
 
-  Finder card(String title) =>
-      find.ancestor(of: find.text(title), matching: find.byType(SgSurface));
+  /// A language's card: the chips name the languages too, after the cards.
+  Finder card(String title) => find
+      .ancestor(of: find.text(title), matching: find.byType(SgSurface))
+      .first;
 
   bool isSelected(WidgetTester tester, String title) =>
       tester.widget<SgSurface>(card(title)).selected;
 
   List<String> selectedTitles(WidgetTester tester) => <String>[
-    for (final title in <String>[
-      l10n.onboardingMeaningEnglish,
-      l10n.onboardingMeaningBangla,
-      l10n.onboardingMeaningBoth,
-    ])
+    for (final title in <String>[en, bn])
       if (isSelected(tester, title)) title,
   ];
 
+  /// The *Also show* chip that is on.
+  String alsoShown(WidgetTester tester) => tester
+      .widgetList<SgChip>(find.byType(SgChip))
+      .singleWhere((chip) => chip.selected)
+      .label;
+
+  MeaningChoice choice() => meaningChoiceOf(settings);
+
   group('the choice', () {
-    testWidgets('starts on Both, the documented default', (tester) async {
-      // `meaning_language` defaults to `both`, and the artboard draws Both
-      // picked.
+    testWidgets('#1081 starts on English, Bangla also shown: the documented '
+        'default', (tester) async {
+      // `meaning_language` defaults to `both`: English first, then Bangla.
       await pump(tester);
 
-      expect(selectedTitles(tester), <String>[l10n.onboardingMeaningBoth]);
+      expect(selectedTitles(tester), <String>[en]);
+      expect(alsoShown(tester), bn);
     });
 
     testWidgets('FR-S2-02 shows what was picked when the page is revisited', (
@@ -131,48 +149,84 @@ void main() {
     ) async {
       await pump(tester, stored: MeaningLanguage.bangla);
 
-      expect(selectedTitles(tester), <String>[l10n.onboardingMeaningBangla]);
+      expect(selectedTitles(tester), <String>[bn]);
+      expect(alsoShown(tester), l10n.onboardingMeaningNone);
     });
 
-    testWidgets('moves with the tap, and only one is ever picked', (
-      tester,
-    ) async {
+    testWidgets('#1081 a card picks the first language, and only one is ever '
+        'picked; the second chosen first, the two swap', (tester) async {
       await pump(tester);
 
-      for (final title in <String>[
-        l10n.onboardingMeaningEnglish,
-        l10n.onboardingMeaningBangla,
-        l10n.onboardingMeaningBoth,
-      ]) {
-        await tester.tap(find.text(title));
-        await tester.pump();
+      await tester.tap(card(bn));
+      await tester.pump();
+      expect(selectedTitles(tester), <String>[bn]);
+      expect(alsoShown(tester), en);
+      expect(choice(), const MeaningChoice('bn', 'en'));
 
-        expect(selectedTitles(tester), <String>[title]);
-      }
+      await tester.tap(card(en));
+      await tester.pump();
+      expect(selectedTitles(tester), <String>[en]);
+      expect(alsoShown(tester), bn);
     });
 
-    testWidgets('#1078 writes meaning_language and leaves the app language '
+    testWidgets('#1078 #1081 writes the choice and leaves the app language '
         'page 1 chose', (tester) async {
       // Polish screens with English meanings stay Polish: the meaning
       // language no longer sets the app's.
       await pump(tester);
       await settings.write(SettingKeys.uiLanguage, UiLanguage.polish);
 
-      for (final (title, meaning) in <(String, MeaningLanguage)>[
-        (l10n.onboardingMeaningBangla, MeaningLanguage.bangla),
-        (l10n.onboardingMeaningEnglish, MeaningLanguage.english),
-        (l10n.onboardingMeaningBoth, MeaningLanguage.both),
+      for (final (tap, want) in <(Finder Function(), MeaningChoice)>[
+        (() => card(bn), const MeaningChoice('bn', 'en')),
+        (
+          () => find.widgetWithText(SgChip, l10n.onboardingMeaningNone),
+          const MeaningChoice('bn'),
+        ),
+        (() => card(en), const MeaningChoice('en')),
+        (
+          () => find.widgetWithText(SgChip, bn),
+          const MeaningChoice('en', 'bn'),
+        ),
       ]) {
-        await tester.tap(find.text(title));
+        await tester.tap(tap());
         await tester.pump();
 
-        expect(settings.read(SettingKeys.meaningLanguage), meaning);
+        expect(choice(), want);
         expect(
           settings.read(SettingKeys.uiLanguage),
           UiLanguage.polish,
-          reason: title,
+          reason: '$want',
         );
       }
+    });
+
+    testWidgets('#1081 a language the course adds is a card of its own, named '
+        'in itself, with the sample in it', (tester) async {
+      await pump(
+        tester,
+        languages: const <CourseLanguageName>[
+          (code: 'en', ownName: en),
+          (code: 'bn', ownName: bn),
+          (code: 'ru', ownName: 'Русский'),
+        ],
+        course: const CourseMeanings(<String, Map<String, WordMeaningText>>{
+          meaningSampleUid: <String, WordMeaningText>{
+            'ru': (meaning: 'квартира', pronunciation: null),
+          },
+        }),
+      );
+      expect(find.text('die Wohnung → квартира'), findsOneWidget);
+
+      await tester.tap(card('Русский'));
+      await tester.pump();
+      expect(choice(), const MeaningChoice('ru', 'bn'));
+      // Under three cards, the chips sit under the action bar's edge.
+      await tester.ensureVisible(find.widgetWithText(SgChip, en));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(SgChip, en));
+      await tester.pump();
+      expect(choice(), const MeaningChoice('ru', 'en'));
+      expect(isSelected(tester, 'Русский'), isTrue);
     });
 
     testWidgets('and the tick sits on the picked card', (tester) async {
@@ -180,25 +234,27 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.ancestor(
-            of: card(l10n.onboardingMeaningEnglish),
-            matching: find.byType(Stack),
-          ),
+          of: find.ancestor(of: card(en), matching: find.byType(Stack)).first,
           matching: find.byIcon(Icons.check),
         ),
         findsOneWidget,
       );
-      expect(find.byIcon(Icons.check), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.ancestor(of: card(bn), matching: find.byType(Stack)).first,
+          matching: find.byIcon(Icons.check),
+        ),
+        findsNothing,
+      );
     });
   });
 
   group('the sample', () {
-    testWidgets('reads the word the way each option would', (tester) async {
+    testWidgets('reads the word in each language', (tester) async {
       await pump(tester);
 
       expect(find.text('die Wohnung → $english'), findsOneWidget);
       expect(find.text('die Wohnung → $bangla'), findsOneWidget);
-      expect(find.text('die Wohnung → $english · $bangla'), findsOneWidget);
     });
 
     testWidgets('sets its Bangla one type step larger than its Latin', (
@@ -234,12 +290,11 @@ void main() {
     testWidgets('a missing Bangla meaning drops that line only', (
       tester,
     ) async {
-      // `bangla` is nullable in the schema. No dangling "die Wohnung → ",
-      // and Both still has the English to show.
+      // `bangla` is nullable in the schema. No dangling "die Wohnung → ".
       await pump(tester, sample: wohnung(bn: null));
 
-      expect(find.textContaining('→'), findsNWidgets(2));
-      expect(find.text('die Wohnung → $english'), findsNWidgets(2));
+      expect(find.textContaining('→'), findsOneWidget);
+      expect(find.text('die Wohnung → $english'), findsOneWidget);
     });
 
     testWidgets('and with no sample at all the cards still choose', (
@@ -249,26 +304,29 @@ void main() {
 
       expect(find.textContaining('→'), findsNothing);
 
-      await tester.tap(find.text(l10n.onboardingMeaningBangla));
+      await tester.tap(card(bn));
       await tester.pump();
-      expect(
-        settings.read(SettingKeys.meaningLanguage),
-        MeaningLanguage.bangla,
-      );
+      expect(choice().primary, 'bn');
     });
 
-    testWidgets('#527 FR-S2-02 an English-only learner starts with the Bangla '
-        'pronunciation off; Bangla or both, on', (tester) async {
+    testWidgets('#527 #1081 FR-S2-02 a learner with no Bangla starts with the '
+        'Bangla pronunciation off; with Bangla first or second, on', (
+      tester,
+    ) async {
       await pump(tester);
-      for (final (option, pron) in <(String, bool)>[
-        (l10n.onboardingMeaningEnglish, false),
-        (l10n.onboardingMeaningBangla, true),
-        (l10n.onboardingMeaningEnglish, false),
-        (l10n.onboardingMeaningBoth, true),
+      for (final (tap, pron) in <(Finder Function(), bool)>[
+        (() => find.widgetWithText(SgChip, l10n.onboardingMeaningNone), false),
+        (() => card(bn), true),
+        (() => card(en), false),
+        (() => find.widgetWithText(SgChip, bn), true),
       ]) {
-        await tester.tap(find.text(option));
+        await tester.tap(tap());
         await tester.pump();
-        expect(settings.read(SettingKeys.showPronBn), pron, reason: option);
+        expect(
+          settings.read(SettingKeys.showPronBn),
+          pron,
+          reason: '${choice()}',
+        );
       }
     });
 
@@ -281,12 +339,9 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.textContaining('→'), findsNothing);
 
-      await tester.tap(find.text(l10n.onboardingMeaningEnglish));
+      await tester.tap(card(bn));
       await tester.pump();
-      expect(
-        settings.read(SettingKeys.meaningLanguage),
-        MeaningLanguage.english,
-      );
+      expect(choice().primary, 'bn');
     });
 
     test('the shipped content.db has the word, in both languages', () {
@@ -338,7 +393,7 @@ void main() {
 
       expect(find.byType(AdaptiveScaffold), findsOneWidget);
       expect(find.byType(Card), findsNothing);
-      expect(find.byType(RadioListTile<MeaningLanguage>), findsNothing);
+      expect(find.byType(RadioListTile<String>), findsNothing);
     });
 
     testWidgets('and glass and dark render it', (tester) async {
@@ -357,7 +412,7 @@ void main() {
       await pump(tester, stored: MeaningLanguage.bangla);
 
       expect(
-        tester.getSemantics(find.text(l10n.onboardingMeaningBangla)),
+        tester.getSemantics(find.text(bn)),
         matchesSemantics(
           isButton: true,
           isSelected: true,
@@ -365,17 +420,17 @@ void main() {
           isInMutuallyExclusiveGroup: true,
           hasTapAction: true,
           // The sample is read with the name — it is what the choice means.
-          label: '${l10n.onboardingMeaningBangla}\ndie Wohnung → $bangla',
+          label: '$bn\ndie Wohnung → $bangla',
         ),
       );
       expect(
-        tester.getSemantics(find.text(l10n.onboardingMeaningEnglish)),
+        tester.getSemantics(find.text(en).first),
         matchesSemantics(
           isButton: true,
           hasSelectedState: true,
           isInMutuallyExclusiveGroup: true,
           hasTapAction: true,
-          label: '${l10n.onboardingMeaningEnglish}\ndie Wohnung → $english',
+          label: '$en\ndie Wohnung → $english',
         ),
       );
 

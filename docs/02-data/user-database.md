@@ -47,6 +47,7 @@ A write is in memory before it is on disk. A write that fails, or a transaction 
 | `done_stability_days` | 7 | Settings |
 | `swipe_to_rate` | 0 | Settings |
 | `quiz_custom_words` | 0 | Settings — FR-R2-04's all-learned quizzes ask my words too |
+| `meaning_primary` / `meaning_secondary` | — / — (read from `meaning_language` until the primary is written: en, bn, en + bn) | Onboarding, Settings — #1081's meaning languages by code (`course_languages`); an empty secondary is none |
 | `meaning_language` | `both` | Onboarding, Settings |
 | `ui_language` | `en` (a first run: the phone's language when Sogda speaks it, en or bn or pl or ru, #1078) | Onboarding page 1, Settings |
 | `theme_mode` | `system` (light / dark / glass) | Settings |

@@ -1,7 +1,8 @@
 import 'content_schema.drift';
 import 'user_schema.drift';
 
--- Grammar topics joined to the learner's scheduling.
+-- Grammar topics joined to the learner's scheduling, and to their text in the
+-- primary meaning language (`tr_*`, #1081): null where the course has none.
 --
 -- Same shape as `word_queries.drift`: one query per screen, LEFT joined, and
 -- the status derived rather than read. A topic nobody has practised has no
@@ -12,9 +13,13 @@ topicsWithStateForStep:
     WHEN s.status = 'suspended' THEN 'suspended'
     WHEN s.last_review IS NULL THEN 'todo'
     WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
-    ELSE 'learning' END AS derived_status
+    ELSE 'learning' END AS derived_status,
+    t.topic AS tr_topic, t.rule AS tr_rule, t.example AS tr_example,
+    t.watch_out AS tr_watch_out
   FROM grammar_topics g
   LEFT JOIN grammar_state s ON s.grammar_uid = g.uid
+  LEFT JOIN grammar_translations t
+    ON t.grammar_uid = g.uid AND t.lang = :lang
   WHERE g.sublevel_code = :code
   ORDER BY g.seq;
 
@@ -25,10 +30,14 @@ allTopicsWithState:
     WHEN s.status = 'suspended' THEN 'suspended'
     WHEN s.last_review IS NULL THEN 'todo'
     WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
-    ELSE 'learning' END AS derived_status
+    ELSE 'learning' END AS derived_status,
+    t.topic AS tr_topic, t.rule AS tr_rule, t.example AS tr_example,
+    t.watch_out AS tr_watch_out
   FROM grammar_topics g
   JOIN levels l ON l.code = g.level_code
   LEFT JOIN grammar_state s ON s.grammar_uid = g.uid
+  LEFT JOIN grammar_translations t
+    ON t.grammar_uid = g.uid AND t.lang = :lang
   ORDER BY l.ord, g.seq;
 
 -- What the plan engine asks for: everything due on or before today,
@@ -37,9 +46,13 @@ dueTopics:
   SELECT g.**, s.**, CASE
     WHEN s.last_review IS NULL THEN 'todo'
     WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
-    ELSE 'learning' END AS derived_status
+    ELSE 'learning' END AS derived_status,
+    t.topic AS tr_topic, t.rule AS tr_rule, t.example AS tr_example,
+    t.watch_out AS tr_watch_out
   FROM grammar_state s
   JOIN grammar_topics g ON g.uid = s.grammar_uid
+  LEFT JOIN grammar_translations t
+    ON t.grammar_uid = g.uid AND t.lang = :lang
   WHERE s.due IS NOT NULL AND s.due <= :today
     AND s.status != 'suspended'
   ORDER BY s.due, g.seq;
@@ -49,9 +62,13 @@ topicWithState:
     WHEN s.status = 'suspended' THEN 'suspended'
     WHEN s.last_review IS NULL THEN 'todo'
     WHEN COALESCE(s.stability, 0) >= :doneAfter THEN 'done'
-    ELSE 'learning' END AS derived_status
+    ELSE 'learning' END AS derived_status,
+    t.topic AS tr_topic, t.rule AS tr_rule, t.example AS tr_example,
+    t.watch_out AS tr_watch_out
   FROM grammar_topics g
   LEFT JOIN grammar_state s ON s.grammar_uid = g.uid
+  LEFT JOIN grammar_translations t
+    ON t.grammar_uid = g.uid AND t.lang = :lang
   WHERE g.uid = :uid;
 
 -- The practice history one topic has, newest first. `grammar.md` shows the

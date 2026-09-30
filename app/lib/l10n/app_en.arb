@@ -413,21 +413,17 @@
   "@onboardingMeaningHeadline": {
     "description": "S2 page 2 headline."
   },
-  "onboardingMeaningEnglish": "English",
-  "@onboardingMeaningEnglish": {
-    "description": "S2 page 2 option. An endonym: the same in every locale, so a learner finds their own language by its own name."
-  },
-  "onboardingMeaningBangla": "বাংলা",
-  "@onboardingMeaningBangla": {
-    "description": "S2 page 2 option. An endonym: the same in every locale."
-  },
-  "onboardingMeaningBoth": "Both",
-  "@onboardingMeaningBoth": {
-    "description": "S2 page 2 option: English and Bangla meanings together."
-  },
   "onboardingMeaningNote": "You can change it later in Settings.",
   "@onboardingMeaningNote": {
     "description": "S2 page 2, under the options. The meaning language only: page 1 sets the app language (#1078)."
+  },
+  "onboardingMeaningAlso": "Also show",
+  "@onboardingMeaningAlso": {
+    "description": "S2 page 2: over the chips that choose a second meaning language, shown under the first (#1081)."
+  },
+  "onboardingMeaningNone": "None",
+  "@onboardingMeaningNone": {
+    "description": "S2 page 2 chip: no second meaning language."
   },
   "onboardingMeaningSample": "{german} → {meaning}",
   "@onboardingMeaningSample": {
@@ -437,18 +433,6 @@
         "type": "String"
       },
       "meaning": {
-        "type": "String"
-      }
-    }
-  },
-  "onboardingMeaningSampleBoth": "{english} · {bangla}",
-  "@onboardingMeaningSampleBoth": {
-    "description": "S2 page 2: the two meanings side by side, for Both.",
-    "placeholders": {
-      "english": {
-        "type": "String"
-      },
-      "bangla": {
         "type": "String"
       }
     }
@@ -4133,19 +4117,15 @@
   },
   "settingsMeaning": "Meaning language",
   "@settingsMeaning": {
-    "description": "M3 row: meaning_language; opens a choice."
+    "description": "M3 row: meaning_primary, the language meanings show in first; opens a choice (#1081)."
   },
-  "settingsEnglish": "EN",
-  "@settingsEnglish": {
-    "description": "M3: English, as the value of the meaning and app language rows."
+  "settingsMeaningSecond": "Second meaning language",
+  "@settingsMeaningSecond": {
+    "description": "M3 row: meaning_secondary, the meaning shown under the first; opens a choice (#1081)."
   },
-  "settingsBangla": "বাংলা",
-  "@settingsBangla": {
-    "description": "M3: Bangla, as the value of the meaning and app language rows. Written in Bangla in both languages."
-  },
-  "settingsBoth": "Both",
-  "@settingsBoth": {
-    "description": "M3: both meanings, English and Bangla."
+  "settingsMeaningNone": "None",
+  "@settingsMeaningNone": {
+    "description": "M3: no second meaning language, as the row's value and in its choice."
   },
   "settingsUiLanguage": "App language",
   "@settingsUiLanguage": {

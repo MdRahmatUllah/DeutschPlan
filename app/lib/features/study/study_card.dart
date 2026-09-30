@@ -24,8 +24,9 @@ String spokenForm(Word word) =>
     word.article == null ? word.german : '${word.article} ${word.german}';
 
 /// "Nomen · die Rechnung, Rechnungen · /রেশনুং/": the part of speech in
-/// German, the forms, and the Bangla pronunciation when it is switched on.
-String frontCaption(Word word, AppLocalizations l10n, {required bool pron}) {
+/// German, the forms, and [pron], the pronunciation guide
+/// ([Meanings.pronunciation]), when there is one.
+String frontCaption(Word word, AppLocalizations l10n, {String? pron}) {
   final pos = switch (word.pos) {
     'noun' => l10n.studyPosNoun,
     'verb' => l10n.studyPosVerb,
@@ -47,7 +48,7 @@ String frontCaption(Word word, AppLocalizations l10n, {required bool pron}) {
     // does; any other part of speech's forms stand on their own.
     if (forms != null && forms.isNotEmpty)
       word.pos == 'noun' ? '${spokenForm(word)}, $forms' : forms,
-    if (pron && (word.pronBn?.isNotEmpty ?? false)) '/${word.pronBn}/',
+    if (pron != null) '/$pron/',
   ].join(' · ');
 }
 
@@ -173,9 +174,12 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
     final word = widget.word;
     final settings = ref.watch(settingsProvider);
     // Watched: a meaning language changed in M3 reaches the card at once.
-    final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+    final meanings = ref.watch(meaningsProvider);
     // #1077: the Bangla pronunciation only while Bangla is a meaning language.
-    final pron = settings.read(SettingKeys.showPronBn) && meaning.hasBangla;
+    final pron = meanings.pronunciation(
+      word,
+      bangla: settings.read(SettingKeys.showPronBn),
+    );
     // Watched from the front, so the back has its examples when it opens.
     final extras = ref.watch(studyBackProvider(word.uid)).value;
     final updated =
@@ -285,7 +289,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                 padding: const EdgeInsets.only(top: 14),
                 child: StudyBack(
                   word: word,
-                  meaning: meaning,
+                  meanings: meanings,
                   extras: extras,
                   updated: updated,
                   onPlay: (sentence) => unawaited(_speak(text: sentence)),

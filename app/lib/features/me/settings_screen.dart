@@ -13,6 +13,8 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -141,18 +143,17 @@ class SettingsScreen extends ConsumerWidget {
     final translationShown =
         enableHymtDownload ||
         (model != null && model.status != ModelStatus.notDownloaded);
-    final meaning = settings.read(SettingKeys.meaningLanguage);
+    final meaning = meaningChoiceOf(settings);
+    // #1081: the course's languages, each named in itself.
+    final languages = ref.watch(courseLanguagesProvider).value ?? baseLanguages;
     final ui = settings.read(SettingKeys.uiLanguage);
     final theme = settings.read(SettingKeys.themeMode);
     final unlock = settings.read(SettingKeys.examUnlockPercent);
     final pass = settings.read(SettingKeys.examPassPercent);
     final speedQuarters = (settings.read(SettingKeys.ttsSpeed) * 4).round();
 
-    String meaningName(MeaningLanguage language) => switch (language) {
-      MeaningLanguage.english => l10n.settingsEnglish,
-      MeaningLanguage.bangla => l10n.settingsBangla,
-      MeaningLanguage.both => l10n.settingsBoth,
-    };
+    String? secondName(String? code) =>
+        code == null ? null : ownNameOf(code, languages);
     String themeName(ThemeModeSetting mode) => switch (mode) {
       ThemeModeSetting.system => l10n.settingsThemeSystem,
       ThemeModeSetting.light => l10n.settingsThemeLight,
@@ -310,21 +311,57 @@ class SettingsScreen extends ConsumerWidget {
             rows: <Widget>[
               _Row(
                 title: l10n.settingsMeaning,
-                value: meaningName(meaning),
+                value: ownNameOf(meaning.primary, languages),
                 onTap: () async {
                   final chosen = await _choose(
                     context,
                     l10n.settingsMeaning,
-                    <(MeaningLanguage, String)>[
-                      for (final language in MeaningLanguage.values)
-                        (language, meaningName(language)),
+                    <(String, String)>[
+                      for (final language in languages)
+                        (language.code, language.ownName),
                     ],
-                    meaning,
+                    meaning.primary,
+                  );
+                  if (chosen != null) {
+                    // The second becomes the first: the two swap places.
+                    await ref
+                        .read(languagesProvider.notifier)
+                        .setMeaning(
+                          MeaningChoice(
+                            chosen,
+                            meaning.secondary == chosen
+                                ? meaning.primary
+                                : meaning.secondary,
+                          ),
+                        );
+                  }
+                },
+              ),
+              _Row(
+                title: l10n.settingsMeaningSecond,
+                value:
+                    secondName(meaning.secondary) ?? l10n.settingsMeaningNone,
+                onTap: () async {
+                  final chosen = await _choose(
+                    context,
+                    l10n.settingsMeaningSecond,
+                    <(String, String)>[
+                      ('', l10n.settingsMeaningNone),
+                      for (final language in languages)
+                        if (language.code != meaning.primary)
+                          (language.code, language.ownName),
+                    ],
+                    meaning.secondary ?? '',
                   );
                   if (chosen != null) {
                     await ref
                         .read(languagesProvider.notifier)
-                        .setMeaning(chosen);
+                        .setMeaning(
+                          MeaningChoice(
+                            meaning.primary,
+                            chosen.isEmpty ? null : chosen,
+                          ),
+                        );
                   }
                 },
               ),

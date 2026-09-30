@@ -18,11 +18,9 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
 import 'package:sogda/data/repositories/search_repository.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/cloze.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/sentence_picker.dart';
-import 'package:sogda/features/study/study_back.dart' show meaningLine;
 import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/speak.dart';
@@ -631,9 +629,7 @@ class _TokenSheet extends ConsumerWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final word = this.word;
-    final meaning = ref
-        .watch(settingsProvider)
-        .read(SettingKeys.meaningLanguage);
+    final meanings = ref.watch(meaningsProvider);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
       child: Column(
@@ -649,7 +645,7 @@ class _TokenSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 6),
             SgText(
-              meaningLine(word, meaning),
+              meanings.line(word),
               role: SgTextRole.bodyLarge,
               color: tokens.color.textSecondary,
             ),

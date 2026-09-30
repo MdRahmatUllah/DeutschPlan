@@ -19,6 +19,7 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -47,7 +48,7 @@ class WordDetail {
   const WordDetail({
     required this.word,
     required this.examples,
-    required this.meaning,
+    required this.meanings,
     required this.pron,
     this.tip,
     this.translate = false,
@@ -57,10 +58,11 @@ class WordDetail {
   final List<StudyExample> examples;
   final StudyTip? tip;
 
-  /// The learner's `meaning_language` and `show_pron_bn`, read here like
-  /// L2's rows read theirs, so the view itself reads no settings.
-  final MeaningLanguage meaning;
-  final bool pron;
+  /// The learner's meaning languages and the pronunciation guide they give
+  /// (`show_pron_bn` too), read here like L2's rows read theirs, so the view
+  /// itself reads no settings.
+  final Meanings meanings;
+  final String? pron;
 
   /// `mt_enabled`: whether *Translate* is offered (FR-W1-05).
   final bool translate;
@@ -73,7 +75,7 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
   final dao = ref.watch(contentDaoProvider);
   final settings = ref.watch(settingsProvider);
   // Watched: a meaning language changed in M3 reaches an open W1 (#1077).
-  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+  final meanings = ref.watch(meaningsProvider);
   final words = ref.watch(wordRepositoryProvider);
   final updater = ref.watch(contentUpdaterProvider);
   // #854: an old uid, from a link written before an update re-keyed its
@@ -86,14 +88,16 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
     id = (await updater.aliases())[uid] ?? uid;
   }
   // The course is read-only, so its part is read once; the state is watched.
+  // #1081: the primary language's translations, English where it has none.
   final examples = <StudyExample>[
-    for (final e in await dao.examplesForWord(id).get())
-      (german: e.german, english: e.english),
+    for (final e
+        in await dao.examplesForWordIn(id, meanings.choice.primary).get())
+      (german: e.german, translation: e.translation),
   ];
-  final tips = await dao.tipsForWord(id).get();
+  final tips = await dao.wordTipsFor(id).get();
   final StudyTip? tip = tips.isEmpty
       ? null
-      : (en: tips.first.tipEn, bn: tips.first.tipBn);
+      : <String, String>{for (final t in tips) t.lang: t.tip};
   yield* words
       .watchWord(id)
       .map(
@@ -103,10 +107,12 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
                 word: word,
                 examples: examples,
                 tip: tip,
-                meaning: meaning,
-                // #1077: only while Bangla is a meaning language.
-                pron:
-                    settings.read(SettingKeys.showPronBn) && meaning.hasBangla,
+                meanings: meanings,
+                // #1077: Bangla's only while Bangla is a meaning language.
+                pron: meanings.pronunciation(
+                  word.word,
+                  bangla: settings.read(SettingKeys.showPronBn),
+                ),
                 translate: settings.read(SettingKeys.mtEnabled),
               ),
       );
@@ -582,8 +588,7 @@ class _Body extends ConsumerWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final word = detail.word.word;
-    final meaning = detail.meaning;
-    final (:english, :bangla) = meaningsFor(word, meaning);
+    final meanings = detail.meanings;
     final history = ref.watch(wordHistoryProvider(word.uid)).value;
     final caption = history == null
         ? null
@@ -598,7 +603,7 @@ class _Body extends ConsumerWidget {
     ];
     final compare = comparesSet(word.german);
     final translated = ref.watch(exampleTranslationsProvider(word.uid));
-    final tip = detail.tip;
+    final tip = tipText(detail.tip, meanings.choice);
 
     Widget gap(double height) => SizedBox(height: height);
 
@@ -618,15 +623,7 @@ class _Body extends ConsumerWidget {
             breakTooWide: true,
           ),
           gap(12),
-          if (english != null)
-            SgText(english, role: SgTextRole.bodyLarge, weight: 500),
-          if (english != null && bangla != null) gap(2),
-          if (bangla != null)
-            SgText(
-              bangla,
-              role: SgTextRole.bodyLarge,
-              color: english == null ? null : tokens.color.textSecondary,
-            ),
+          MeaningLines(meanings.lines(word)),
           if (detail.examples.isNotEmpty) ...<Widget>[
             gap(12),
             SgText(
@@ -655,7 +652,7 @@ class _Body extends ConsumerWidget {
           ],
           if (tip != null) ...<Widget>[
             gap(12),
-            SgCallout.text(l10n.studyTip(tipText(tip, meaning))),
+            SgCallout.text(l10n.studyTip(tip)),
           ],
           if (notes.isNotEmpty || compare) ...<Widget>[
             gap(12),
@@ -851,9 +848,9 @@ class _ActionsState extends ConsumerState<_Actions> {
               unawaited(Clipboard.setData(ClipboardData(text: name)));
               SgToast.show(context, l10n.wordCopied(name));
             }),
-            // An English learner's examples come translated already.
+            // An English-only learner's examples come translated already.
             if (detail.translate &&
-                detail.meaning != MeaningLanguage.english &&
+                detail.meanings.choice.languages.any((String l) => l != 'en') &&
                 detail.examples.isNotEmpty)
               button(Icons.translate, l10n.wordTranslate, _translate),
           ],

@@ -28,10 +28,10 @@ void main() {
   late int backs;
   late List<String> opened;
 
-  const gender = (
-    en: 'Every "-ung" noun is "die".',
-    bn: 'প্রতিটি -ung বিশেষ্য "die"।',
-  );
+  const gender = <String, String>{
+    'en': 'Every "-ung" noun is "die".',
+    'bn': 'প্রতিটি -ung বিশেষ্য "die"।',
+  };
 
   Future<void> pump(
     WidgetTester tester, {
@@ -57,7 +57,7 @@ void main() {
               examples: <StudyExample>[
                 (
                   german: 'Die Wohnung hat drei Zimmer.',
-                  english: 'The flat has three rooms.',
+                  translation: 'The flat has three rooms.',
                 ),
               ],
               tip: tip,
@@ -139,7 +139,7 @@ void main() {
     await tap(tester, l10n.examReviewWrong(13));
     await tester.scrollUntilVisible(find.text('___ Rechnung'), 300);
     await tester.pumpAndSettle(); // its gender topic
-    expect(find.text(gender.en), findsWidgets);
+    expect(find.text(gender['en']!), findsWidgets);
     await tester.tap(find.text(l10n.practiceSeeRule).first);
     await tester.pumpAndSettle();
     expect(find.text(artboardTopic().topic.topic), findsOneWidget);
@@ -147,7 +147,10 @@ void main() {
 
   testWidgets('an Articles question without a gender tip falls back to the '
       "word's example and Open word", (tester) async {
-    await pump(tester, tip: (en: '"Chef" is the boss, not a cook.', bn: null));
+    await pump(
+      tester,
+      tip: const <String, String>{'en': '"Chef" is the boss, not a cook.'},
+    );
     await tap(tester, l10n.examReviewWrong(13));
     await tester.scrollUntilVisible(find.text('___ Rechnung'), 300);
     await tester.pumpAndSettle(); // its gender topic
@@ -159,7 +162,7 @@ void main() {
     await tap(tester, l10n.examReviewWrong(13));
     await tester.scrollUntilVisible(find.text('___ Rechnung'), 300);
     await tester.pumpAndSettle(); // its gender topic
-    expect(find.text(gender.bn), findsWidgets);
+    expect(find.text(gender['bn']!), findsWidgets);
   });
 
   testWidgets('FR-L14-01 a grammar gap: its spaces and its rule', (

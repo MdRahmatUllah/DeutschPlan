@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart' show WordStatus;
 import 'package:sogda/domain/plan_engine.dart' show addDays, planDate;
 import 'package:sogda/domain/word_of_day.dart';
@@ -91,11 +90,11 @@ String? widgetTomorrow(AppLocalizations l10n, TomorrowPreview tomorrow) {
 
 /// FR-X1-03: a learned word due within three days, seeded by the date; never
 /// a To-do word, nor a suspended one. Follows the reviews: a word revised
-/// today leaves the candidates. And the meaning language: M3's change of it
-/// reaches the widget at once.
+/// today leaves the candidates. And the meaning languages: M3's change of
+/// them reaches the widget at once.
 @riverpod
 Stream<WidgetWord?> widgetWord(Ref ref) {
-  final language = ref.watch(languagesProvider.select((l) => l.meaning));
+  final meanings = ref.watch(meaningsProvider);
   final today = ref.watch(todayProvider);
   return ref.watch(wordRepositoryProvider).watchDue(addDays(today, 3)).map((
     due,
@@ -109,17 +108,11 @@ Stream<WidgetWord?> widgetWord(Ref ref) {
     final uid = wordOfDay(learned.keys.toList(), today);
     if (uid == null) return null;
     final word = learned[uid]!;
-    final bangla = word.bangla;
     return (
       uid: uid,
       article: word.article,
       german: word.german,
-      meaning: switch (language) {
-        MeaningLanguage.english => word.english,
-        MeaningLanguage.bangla => bangla ?? word.english,
-        MeaningLanguage.both =>
-          bangla == null ? word.english : '${word.english} · $bangla',
-      },
+      meaning: meanings.line(word),
     );
   });
 }

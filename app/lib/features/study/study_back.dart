@@ -9,18 +9,21 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/word_repository.dart' show customId;
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 
 part 'study_back.g.dart';
 
-/// An example sentence on the back: the German and its translation.
-typedef StudyExample = ({String german, String? english});
+/// An example sentence on the back: the German and its translation, in the
+/// primary meaning language or, where that has none, English (#1081).
+typedef StudyExample = ({String german, String? translation});
 
-/// An interference tip, in English and, when the course has it, Bangla.
-typedef StudyTip = ({String en, String? bn});
+/// A word's interference tips by language: one for each language whose
+/// speakers the course has one for (#1081).
+typedef StudyTip = Map<String, String>;
 
 /// What the back shows beyond the word's own row.
 typedef StudyBackExtras = ({List<StudyExample> examples, StudyTip? tip});
@@ -34,53 +37,35 @@ Future<StudyBackExtras> studyBack(Ref ref, String uid) async {
     final mine = await ref.watch(wordRepositoryProvider).myWord(id);
     return (
       examples: <StudyExample>[
-        if (mine?.example case final example?) (german: example, english: null),
+        if (mine?.example case final example?)
+          (german: example, translation: null),
       ],
       tip: null,
     );
   }
+  // Watched: a primary language changed in M3 reaches an open card.
+  final lang = ref.watch(meaningsProvider.select((m) => m.choice.primary));
   final dao = ref.watch(contentDaoProvider);
-  final examples = await dao.examplesForWord(uid).get();
-  final tips = await dao.tipsForWord(uid).get();
+  final examples = await dao.examplesForWordIn(uid, lang).get();
+  final tips = await dao.wordTipsFor(uid).get();
   return (
     examples: <StudyExample>[
-      for (final e in examples.take(2)) (german: e.german, english: e.english),
+      for (final e in examples.take(2))
+        (german: e.german, translation: e.translation),
     ],
-    tip: tips.isEmpty ? null : (en: tips.first.tipEn, bn: tips.first.tipBn),
-  );
-}
-
-/// The meanings to show in [meaning]: English, Bangla or both, null where
-/// the learner's language leaves one out. A Bangla-only learner still gets
-/// English where the course has no Bangla. T2's back and W1; a row's is
-/// [meaningLine].
-({String? english, String? bangla}) meaningsFor(
-  Word word,
-  MeaningLanguage meaning,
-) {
-  final bangla = meaning == MeaningLanguage.english ? null : word.bangla;
-  return (
-    english: meaning == MeaningLanguage.bangla && bangla != null
+    tip: tips.isEmpty
         ? null
-        : word.english,
-    bangla: bangla,
+        : <String, String>{for (final t in tips) t.lang: t.tip},
   );
 }
 
-/// [meaningsFor] on one line, for a list's row or a sheet: "table · টেবিল"
-/// for both (#689 TD-15), as the home-screen widget has it.
-String meaningLine(Word word, MeaningLanguage meaning) {
-  final (:english, :bangla) = meaningsFor(word, meaning);
-  return <String>[?english, ?bangla].join(' · ');
-}
-
-/// The card turned over (`StudyBack`): the meanings per `meaning_language`,
-/// the interference tip, two examples with play and translation, the
-/// collocations (⟶) and the register (≈).
+/// The card turned over (`StudyBack`): the meanings in the learner's
+/// languages, the interference tip, two examples with play and translation,
+/// the collocations (⟶) and the register (≈).
 class StudyBack extends StatelessWidget {
   const StudyBack({
     required this.word,
-    required this.meaning,
+    required this.meanings,
     required this.onPlay,
     super.key,
     this.extras,
@@ -88,7 +73,7 @@ class StudyBack extends StatelessWidget {
   });
 
   final Word word;
-  final MeaningLanguage meaning;
+  final Meanings meanings;
 
   /// Null until the examples and tip have loaded.
   final StudyBackExtras? extras;
@@ -104,8 +89,7 @@ class StudyBack extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final (:english, :bangla) = meaningsFor(word, meaning);
-    final tip = extras?.tip;
+    final tip = tipText(extras?.tip, meanings.choice);
     final collocations = word.collocations;
     final register = word.synonymsRegister;
 
@@ -127,18 +111,10 @@ class StudyBack extends StatelessWidget {
           ),
           const SizedBox(height: 8),
         ],
-        if (english != null)
-          SgText(english, role: SgTextRole.bodyLarge, weight: 500),
-        if (english != null && bangla != null) const SizedBox(height: 2),
-        if (bangla != null)
-          SgText(
-            bangla,
-            role: SgTextRole.bodyLarge,
-            color: english == null ? null : tokens.color.textSecondary,
-          ),
+        MeaningLines(meanings.lines(word)),
         if (tip != null) ...<Widget>[
           const SizedBox(height: 14),
-          SgCallout.text(l10n.studyTip(tipText(tip, meaning))),
+          SgCallout.text(l10n.studyTip(tip)),
         ],
         for (final example in extras?.examples ?? const <StudyExample>[])
           Padding(
@@ -170,6 +146,35 @@ class StudyBack extends StatelessWidget {
   }
 }
 
+/// A word's meanings ([Meanings.lines]): the primary in the body's weight, a
+/// secondary under it in the secondary colour. T2's back and W1.
+class MeaningLines extends StatelessWidget {
+  const MeaningLines(this.lines, {super.key});
+
+  final List<({String lang, String text})> lines;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        for (final (i, line) in lines.indexed) ...<Widget>[
+          if (i > 0) const SizedBox(height: 2),
+          SgText(
+            line.text,
+            role: SgTextRole.bodyLarge,
+            // Bangla keeps its role's own weight (#1063).
+            weight: i == 0 && line.lang != 'bn' ? 500 : null,
+            color: i == 0 ? null : tokens.color.textSecondary,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 /// BR-CONTENT-02's chip on a meaning a course update changed in the last
 /// 7 days: the status chip's look, without a dot. T2's back and W1's header.
 class UpdatedChip extends StatelessWidget {
@@ -187,14 +192,13 @@ class UpdatedChip extends StatelessWidget {
   }
 }
 
-/// An interference tip in [meaning], English where there is no Bangla. T2's
-/// back and W1.
-String tipText(StudyTip tip, MeaningLanguage meaning) =>
-    switch ((meaning, tip.bn)) {
-      (MeaningLanguage.bangla, final bn?) => bn,
-      (MeaningLanguage.both, final bn?) => '${tip.en}\n$bn',
-      _ => tip.en,
-    };
+/// A word's interference tip in the chosen languages, primary first, a line
+/// each; null where none of them has one: a tip is about its own language's
+/// speakers, so no other language's stands in (#1081). T2's back, W1, L13.
+String? tipText(StudyTip? tip, MeaningChoice choice) {
+  final lines = <String>[for (final lang in choice.languages) ?tip?[lang]];
+  return lines.isEmpty ? null : lines.join('\n');
+}
 
 /// The 32 dp mini play button: Oat with an ink edge on paper, frosted under
 /// glass. With [onPressed] it is its own button; without, it only draws, for
@@ -268,7 +272,7 @@ class StudyExampleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final english = example.english;
+    final translation = example.translation;
     return Semantics(
       container: true,
       button: true,
@@ -291,10 +295,10 @@ class StudyExampleRow extends StatelessWidget {
                     italic: true,
                     german: true,
                   ),
-                  if (english != null) ...<Widget>[
+                  if (translation != null) ...<Widget>[
                     const SizedBox(height: 2),
                     SgText(
-                      english,
+                      translation,
                       role: SgTextRole.body,
                       color: tokens.color.textSecondary,
                     ),

@@ -16,6 +16,7 @@ import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -600,7 +601,7 @@ void main() {
 
       await container
           .read(languagesProvider.notifier)
-          .setMeaning(MeaningLanguage.english);
+          .setMeaning(MeaningChoice.of(MeaningLanguage.english));
       expect(await haus(), List.filled(4, 'house'));
     });
 

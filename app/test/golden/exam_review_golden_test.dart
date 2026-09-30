@@ -27,10 +27,10 @@ void main() {
           examples: <StudyExample>[
             (
               german: 'Die Wohnung hat drei Zimmer.',
-              english: 'The flat has three rooms.',
+              translation: 'The flat has three rooms.',
             ),
           ],
-          tip: (en: 'Nouns ending in -ung are feminine.', bn: null),
+          tip: <String, String>{'en': 'Nouns ending in -ung are feminine.'},
         ),
       ),
       examReviewTopicProvider.overrideWith((ref, uid) async => artboardTopic()),
