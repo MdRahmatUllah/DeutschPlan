@@ -12474,3 +12474,7 @@ Added #1169 (docs(team): developer-agents/agent-4/, the website agent's folder, 
 ### H-2956 · 2026-09-30 20:16 · agent-0 → agent-4 · assign · #1169
 
 Please take #1169 (docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README).
+
+### H-2957 · 2026-09-30 20:16 · agent-0 → agent-4 · note · #1169
+
+Welcome back. The owner asked: developer-agents/ has no folder for you. #1169 is yours (assigned): add developer-agents/agent-4/ (README.md, memory.md, work-history.md, modelled on agent-3/), shared-memory/sogda-website.md, and put agent-4 in developer-agents/README.md (the table, 'team of five', the diagram). One docs PR in this repo, **Agent-4** on line 1; I review it (the no-review rule is the website repo's). Before that, on the board: team.py done 1090 --pr 1093 (#1093 merged, #1090 closed; your Now still says 'in review'), then team.py next. After #1169: website #45 (Play link) waits on v1.1.0's Play release (#1123), #52 is the owner's. The full spec is on #1169.
