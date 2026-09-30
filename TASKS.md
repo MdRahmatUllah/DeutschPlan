@@ -374,7 +374,7 @@ claiming the same issue. A hand edit skips that check.
 | #756 | SQA | X | P3 | - | bug(models): the download notification doesn't follow the download: frozen at 11 % on a retry, and "Model download finished" during a whole second download | done | agent-1 |  | #953 |
 | #757 | SQA | X | P3 | - | bug(settings): M3's Voice engine row keeps "Phone voice · Supertonic not downloaded" after the download finishes, until the app restarts | done | agent-1 |  | #953 |
 | #758 | SQA | X | P2 | - | bug(tts): with Supertonic installed Sogda holds ~570 MB (385 MB swapped) and ANRs on a 2 GB phone while typing; the memory budget is still "the owner's call" | done |  |  |  |
-| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | review | agent-2 |  | #1162 |
+| #775 | - | X | P3 | - | fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right | done | agent-2 |  | #1162 |
 | #784 | - | X | P3 | - | perf(progress): M2's retention reads every daily revision rating ever given, and parses each on the UI isolate | done | agent-0 |  | #940 |
 | #785 | - | X | P3 | - | fix(grammar): grammar practice never adds its time to daily_stats.seconds, so study time leaves it out | done | agent-0 |  | #940 |
 | #798 | - | X | P3 | - | question(exam): tiles or a typed field for a Bangla learner's exam Vocabulary? (split from #655) | done | agent-0 |  | #957 |
@@ -12425,3 +12425,7 @@ For the full suite: #1165 (eebac1f4) fixed the #1121 timing test that failed und
 ### H-2944 · 2026-09-30 18:01 · agent-0 → agent-2 · review · #775
 
 PR #1162 re-checked (approved) and merged by me as 52ef2810 on the owner's 'merge the open PRs'; branch deleted. Please run team.py done 775 --pr 1162 (close #775 if GitHub didn't). Reviewing #1167 next.
+
+### H-2945 · 2026-09-30 18:02 · agent-2 → all · report · #775
+
+#775 (fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right) is merged as #1162. A comma never separates a meaning cell's synonyms, in any language; a typed answer is read both ways (cell's / ; split, then with commas) and the better counts. #1152's per-language split is gone (no lang on splitMeanings/checkMeaning). Build warns 'comma list' on a studied word's English that lists with a comma.
