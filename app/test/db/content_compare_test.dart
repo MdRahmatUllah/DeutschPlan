@@ -216,15 +216,22 @@ void main() {
     );
     final member = set.resolved.values.first;
     final other = set.resolved.values.last;
-    // This test's own rows: the bundled course ships no Russian yet (#1100).
+    // This test's own rows, over whatever the course ships (#1149 ships
+    // Russian, #1161): the set and one member in Russian, and the other
+    // member without, so its English still stands in.
     await db.customStatement(
-      'INSERT INTO c.word_meanings (word_uid, lang, meaning) VALUES '
-      "('${set.word.uid}', 'ru', 'набор'), ('${member.uid}', 'ru', 'слово')",
+      'INSERT OR REPLACE INTO c.word_meanings (word_uid, lang, meaning) '
+      "VALUES ('${set.word.uid}', 'ru', 'набор'), "
+      "('${member.uid}', 'ru', 'слово')",
     );
     await db.customStatement(
-      'INSERT INTO c.word_example_translations '
+      'INSERT OR REPLACE INTO c.word_example_translations '
       "(word_uid, ord, lang, translation) VALUES ('${member.uid}', 1, 'ru', "
       "'Перевод.')",
+    );
+    await db.customStatement(
+      'DELETE FROM c.word_meanings '
+      "WHERE word_uid = '${other.uid}' AND lang = 'ru'",
     );
 
     final russian = (await dao.compareSet(set.word.uid, lang: 'ru'))!;

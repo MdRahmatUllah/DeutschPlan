@@ -194,22 +194,13 @@ Sogda — полный курс немецкого, который работа�
 - **Format:** RGB PNGs without alpha, as Play asks. `test_store_listing.py` checks the format, the sizes and the ratio.
 - **Not included:** a mock exam (L12), which unlocks only once 90 % of a step is introduced; day 1 can't reach it. Take one on a device with progress before the upload if the owner wants it.
 
-### Polish and Russian (#1143)
+### Polish and Russian (#1123)
 
-No golden shows a Polish or Russian screen with Polish or Russian meanings. The golden fixture's course has English and Bangla meanings (`_pl`, `_ru`), and the meaning-language goldens keep the English UI (`_ru_meanings`). So these phone goldens (`app/test/golden/goldens/`, 1170 × 2532, 1:2.16) stand for the listing's screens in review only:
+`store/pl-phone-light` and `store/ru-phone-light`, the same six screens, taken as the English ones were (the release x86_64 APK on emulator-5558, wiped, API 36, 1080 × 2160, the demo status bar), from the course with Russian and Polish (#1100):
 
-| Listing screen | Polish UI | Russian UI | Russian meanings |
-|---|---|---|---|
-| `01-today` | `today_pl_light_phone.png` | `today_ru_light_phone.png` | — |
-| `02-card-front` | `study_front_pl_light_phone.png` | `study_front_ru_light_phone.png` | — |
-| `03-card-back` | `study_back_pl_light_phone.png` | `study_back_ru_light_phone.png` | `study_back_ru_meanings_light_phone.png` |
-| `04-course` | — | — | — |
-| `05-step` | — | — | `step_detail_ru_meanings_light_phone.png` |
-| `06-word` | `word_detail_pl_light_phone.png` | `word_detail_ru_light_phone.png` | `word_detail_ru_meanings_light_phone.png` |
-
-Also: setup's page 2 (`onboarding_meaning_pl_light_phone.png`, `onboarding_meaning_ru_light_phone.png`), a quiz in Russian and in Polish (`quiz_runner_ru_meanings_light_phone.png`, `quiz_runner_pl_meanings_light_phone.png`), L7 for a Russian learner (`quiz_custom_ru_meanings_light_phone.png`) and search in Russian (`search_ru_meanings_light_phone.png`).
-
-The upload's screenshots are taken as the English ones were (the release APK on emulator-5558, 1080 × 2160), from the course with Russian and Polish (#1100): the app language and the first meaning language set to Polish for `store-pl/`, and to Russian for `store-ru/`, the same six screens. That is #1123's release step.
+- **The app language and the first meaning language** are Polish for `pl-phone-light` and Russian for `ru-phone-light`, with no second meaning. So each card shows that language's meaning, its pronunciation guide and its example lines: *danke* → *dziękuję / dzięki*, `/DAN-ke/`; → *спасибо*, `/дАнкэ/`.
+- **Upload them** under the Polish (pl-PL) and Russian (ru-RU) listings. The English phone and tablet sets serve the other languages.
+- **No dark or tablet sets** in Polish and Russian: Play shows a listing's own screenshots where it has them, and the phone set is what it requires.
 
 ## Website and icon
 

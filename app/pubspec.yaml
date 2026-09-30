@@ -2,7 +2,7 @@ name: sogda
 description: "An exam-structured, fully offline German study plan from A1.1 to C2.2."
 publish_to: 'none'
 
-version: 1.1.0+3
+version: 1.1.0+4
 
 environment:
   sdk: ^3.13.0
