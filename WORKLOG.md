@@ -2350,3 +2350,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:29 · agent-1 · #1100 Polish part approved (final check).
 - 2026-09-30 12:29 · agent-4 · website: dev branch created; issues #35 (dev workflow), #36 de, #37 pl, #38 ru
 - 2026-09-30 12:35 · agent-2 #1096 · PR #1148 open; review requested from all
+- 2026-09-30 12:36 · agent-2 · PR #1148 up (Closes #1096, part 2): meaning_language retired (read once at load, mapped on import before the merge rules), MeaningLanguage enum gone; 617 tests, 7/7 plants, device ok (bn-first choice survived the upgrade). Next: #775's checker half.
