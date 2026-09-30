@@ -1,5 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/course_meanings.dart'
+    show baseLanguages;
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/setup_repository.dart';
@@ -30,6 +34,7 @@ class OnboardingDraft {
     this.reminderBlocked = false,
     this.voice = VoiceOffer.offered,
     this.restart = false,
+    this.preselected,
   }) : dailyNew = dailyNew ?? SettingKeys.dailyNew.defaultValue,
        reviseCount = reviseCount ?? SettingKeys.reviseCount.defaultValue,
        studyDaysMask = studyDaysMask ?? SettingKeys.studyDaysMask.defaultValue,
@@ -78,6 +83,10 @@ class OnboardingDraft {
   /// the learner's own, and finishing changes the plan but not the history.
   final bool restart;
 
+  /// The meaning languages page 1 last preselected for page 2 (#1156), so a
+  /// later page 1 knows what is still its own to replace.
+  final MeaningChoice? preselected;
+
   OnboardingDraft copyWith({
     String? step,
     int? dailyNew,
@@ -88,6 +97,7 @@ class OnboardingDraft {
     bool? reminderBlocked,
     VoiceOffer? voice,
     bool? restart,
+    MeaningChoice? preselected,
   }) => OnboardingDraft(
     step: step ?? this.step,
     dailyNew: dailyNew ?? this.dailyNew,
@@ -98,6 +108,7 @@ class OnboardingDraft {
     reminderBlocked: reminderBlocked ?? this.reminderBlocked,
     voice: voice ?? this.voice,
     restart: restart ?? this.restart,
+    preselected: preselected ?? this.preselected,
   );
 
   /// The draft as the commit wants it.
@@ -120,6 +131,35 @@ class OnboardingNotifier extends _$OnboardingNotifier {
 
   /// Page 3, or S3's suggestion when the learner comes back from it.
   void chooseStep(String code) => state = state.copyWith(step: code);
+
+  /// #1156: page 1 hands over to page 2 opened on the app language's meaning
+  /// languages ([meaningDefaultFor]). Written only over none, or over the
+  /// last it wrote: never over a choice the learner made on page 2, nor one a
+  /// restored backup brought. Restart setup has no page 1.
+  Future<void> preselectMeaning() async {
+    final settings = ref.read(settingsProvider);
+    final primary = settings.read(SettingKeys.meaningPrimary);
+    if (primary != null &&
+        primary.isNotEmpty &&
+        meaningChoiceOf(settings) != state.preselected) {
+      return;
+    }
+    Set<String> shipped;
+    try {
+      shipped = <String>{
+        for (final l in await ContentDao(
+          ref.read(appDatabaseProvider),
+        ).courseLanguageList().get())
+          l.code,
+      };
+    } on Object {
+      // No course to read (content.db being replaced): its two own languages.
+      shipped = <String>{for (final l in baseLanguages) l.code};
+    }
+    final choice = meaningDefaultFor(ref.read(languagesProvider).ui, shipped);
+    state = state.copyWith(preselected: choice);
+    await ref.read(languagesProvider.notifier).chooseMeaning(choice);
+  }
 
   /// Page 4's slider and presets, held to its range.
   void setDailyNew(int count) => state = state.copyWith(

@@ -1,6 +1,8 @@
 @TestOn('vm')
 library;
 
+import 'package:drift/drift.dart' show DatabaseConnection;
+import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -13,6 +15,7 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -22,7 +25,10 @@ import 'package:sogda/features/onboarding/onboarding_meaning_page.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/router/app_router.dart';
 import 'package:sqlite3/sqlite3.dart';
+
+import '../db/content_fixture.dart';
 
 /// S2 page 2 · Meaning language — #88.
 void main() {
@@ -436,5 +442,61 @@ void main() {
 
       handle.dispose();
     });
+  });
+
+  testWidgets("#1156 page 1 in Russian, then its Start: page 2 opens on "
+      'Русский, with no second', (tester) async {
+    late AppDatabase db;
+    late SettingsRepository stored;
+    await tester.runAsync(() async {
+      db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+      final file = ContentFixture.write(
+        '${tempDir('sg_start').path}/content.db',
+        russian: true,
+      ).file;
+      await db.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(file)}' AS c",
+      );
+      stored = SettingsRepository(db);
+      await stored.load();
+      await stored.write(SettingKeys.uiLanguage, UiLanguage.russian);
+    });
+    addTearDown(
+      () => tester.runAsync(() async {
+        await stored.dispose();
+        await db.close();
+      }),
+    );
+    final router = buildRouter(initialLocation: '/onboarding/1');
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(stored),
+          meaningSampleProvider.overrideWith((ref) async => null),
+        ],
+        child: MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.runAsync(
+      () => tester.tap(find.text(l10n.onboardingWelcomeStart)),
+    );
+    for (var i = 0; i < 5; i++) {
+      await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+      await tester.pump();
+    }
+    await tester.pumpAndSettle();
+
+    expect(find.byType(OnboardingMeaningPage), findsOneWidget);
+    expect(isSelected(tester, 'Русский'), isTrue);
+    expect(meaningChoiceOf(stored), const MeaningChoice('ru'));
   });
 }

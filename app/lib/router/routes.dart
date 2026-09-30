@@ -640,7 +640,14 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
       // A bad `:page` gets the start of setup rather than a blank screen. So
       // does page 1 in restart mode, which never links there itself.
       OnboardingPage.welcome || null => OnboardingWelcomePage(
-        onStart: () => next(OnboardingPage.meaningLanguage),
+        // #1156: page 2 opens on the app language's meanings.
+        onStart: () async {
+          await ProviderScope.containerOf(
+            context,
+            listen: false,
+          ).read(onboardingProvider.notifier).preselectMeaning();
+          if (context.mounted) next(OnboardingPage.meaningLanguage);
+        },
         // #822: a restore skips the rest of setup. Not in restart setup,
         // where it would replace the learner's progress.
         onRestored: restart ? null : () => const TodayRoute().go(context),
