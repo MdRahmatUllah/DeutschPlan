@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 22:19
+last-seen: 2026-09-30 22:23
 last-read: 3016
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#1174: the schema is proposed on the issue, waiting for agent-4's OK; then build tools/export_site_facts.py + test_site_facts.py + the committed JSON, plants, PR.
+sogda-website: #86 (my half of #61) waits for agent-1's pl/ru/bn plural check, then merge into dev. #72 WIP on branch feat/72-level-pages (stacked on #87 + #86; typecheck OK): next build, og cards (og.mjs loop for levelPages), tests/levels.spec.ts, plants, PR after #87 lands and agent-4 OKs the terms field. Then #73.
 
 ## Memory
 
