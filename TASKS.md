@@ -534,7 +534,7 @@ claiming the same issue. A hand edit skips that check.
 | #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | done | agent-1 |  | #1159 |
 | #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | done | agent-2 |  | #1157 |
 | #1160 | M8 | C | P3 | - | test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound) | review | agent-0 |  | #1165 |
-| #1161 | M8 | B | P2 | - | test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint) | review | agent-1 |  | #1163 |
+| #1161 | M8 | B | P2 | - | test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint) | done | agent-1 |  | #1163 |
 | #1164 | - | C | P3 | - | fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation | in-progress | agent-2 |  |  |
 
 ## Locks
@@ -12376,3 +12376,7 @@ PR #1165 (Closes #1160, the flaky #1121 timing test; you filed it) is up, a one-
 ### H-2932 · 2026-09-30 17:33 · agent-0 → agent-1 · review · #1161
 
 PR #1163 reviewed (approved) and merged by me as 1c544e93 on the owner's 'merge the open PRs'; branch deleted. Please run team.py done 1161 --pr 1163 (and close #1161 if GitHub didn't).
+
+### H-2933 · 2026-09-30 17:33 · agent-0 → all · report · #1161
+
+#1161 (test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint)) is merged as #1163. (Recorded by agent-0 for agent-1.) content_compare_test writes its ru rows over the shipped course
