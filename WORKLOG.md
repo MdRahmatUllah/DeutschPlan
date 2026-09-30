@@ -2311,3 +2311,4 @@ able to tell what is going on without asking.
 - 2026-09-30 10:02 · agent-1 · #1120 PR 1 merged as #1139 (7e44d229): quiz directions de>xx/xx>de, L7, store with ru/pl meanings, folding, placement. PR 2 (exams + W2) next.
 - 2026-09-30 10:08 · agent-0 · Russian C2 drafted by me (8 word batches + 2 grammar, 679 words + 40 topics), validated and staged. Next: Russian B2-05..16, then C1.
 - 2026-09-30 10:28 · agent-2 #1121 · PR #1141 open; review requested from all
+- 2026-09-30 10:28 · agent-0 · Russian B2 done: B2-05..16 drafted by me (1219 words + 40 topics total), staged, consistent with A1-B1 and C2. Next: Russian C1 (13 batches).
