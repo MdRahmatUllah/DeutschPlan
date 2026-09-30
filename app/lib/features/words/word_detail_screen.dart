@@ -50,6 +50,7 @@ class WordDetail {
     required this.examples,
     required this.meanings,
     required this.pron,
+    this.pronKeySeen = false,
     this.tip,
     this.translate = false,
   });
@@ -63,6 +64,9 @@ class WordDetail {
   /// itself reads no settings.
   final Meanings meanings;
   final PronGuide? pron;
+
+  /// `pron_key_seen` (#1122): the guide's key is a small ⓘ.
+  final bool pronKeySeen;
 
   /// `mt_enabled`: whether *Translate* is offered (FR-W1-05).
   final bool translate;
@@ -113,6 +117,7 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
                   word.word,
                   bangla: settings.read(SettingKeys.showPronBn),
                 ),
+                pronKeySeen: settings.read(SettingKeys.pronKeySeen),
                 translate: settings.read(SettingKeys.mtEnabled),
               ),
       );
@@ -625,7 +630,7 @@ class _Body extends ConsumerWidget {
             breakTooWide: true,
           ),
           if (detail.pron case (:final lang, text: _) when PronKey.has(lang))
-            PronKey(lang),
+            PronKey(lang, seen: detail.pronKeySeen),
           gap(12),
           MeaningLines(meanings.lines(word)),
           if (detail.examples.isNotEmpty) ...<Widget>[

@@ -72,6 +72,7 @@ class StudyBack extends StatelessWidget {
     required this.onPlay,
     super.key,
     this.guide,
+    this.pronKeySeen = false,
     this.extras,
     this.updated = false,
   });
@@ -82,6 +83,9 @@ class StudyBack extends StatelessWidget {
   /// The language of the pronunciation guide on the front, whose key the
   /// back opens with (#1122); null with no guide.
   final String? guide;
+
+  /// `pron_key_seen`: the key is a small ⓘ.
+  final bool pronKeySeen;
 
   /// Null until the examples and tip have loaded.
   final StudyBackExtras? extras;
@@ -120,7 +124,7 @@ class StudyBack extends StatelessWidget {
           const SizedBox(height: 8),
         ],
         if (guide case final lang? when PronKey.has(lang)) ...<Widget>[
-          PronKey(lang),
+          PronKey(lang, seen: pronKeySeen),
           const SizedBox(height: 6),
         ],
         MeaningLines(meanings.lines(word)),
@@ -192,9 +196,13 @@ class MeaningLines extends StatelessWidget {
 /// learner has opened one, a small ⓘ in its place (`pron_key_seen`). W1 and
 /// T2's back.
 class PronKey extends ConsumerStatefulWidget {
-  const PronKey(this.lang, {super.key});
+  const PronKey(this.lang, {required this.seen, super.key});
 
   final String lang;
+
+  /// `pron_key_seen`, read by the screen with its other settings: the key
+  /// writes it, and reads nothing (W1's view reads no settings).
+  final bool seen;
 
   /// Whether [lang]'s guide has a key: English, Russian and Polish do.
   static bool has(String lang) =>
@@ -212,7 +220,7 @@ class PronKey extends ConsumerStatefulWidget {
 }
 
 class _PronKeyState extends ConsumerState<PronKey> {
-  late bool _seen = ref.read(settingsProvider).read(SettingKeys.pronKeySeen);
+  late bool _seen = widget.seen;
 
   Future<void> _open() async {
     final l10n = AppLocalizations.of(context);

@@ -291,6 +291,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                   word: word,
                   meanings: meanings,
                   guide: pron?.lang,
+                  pronKeySeen: settings.read(SettingKeys.pronKeySeen),
                   extras: extras,
                   updated: updated,
                   onPlay: (sentence) => unawaited(_speak(text: sentence)),
