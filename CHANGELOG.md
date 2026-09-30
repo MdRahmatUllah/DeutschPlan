@@ -18,9 +18,12 @@ Polish and Russian, the first build as Sogda (`de.sogda.app`), and the productio
 - 5,069 words to learn: each word is taught once, and lesson notes and comparisons are listed, never studied.
 - A smaller download: the arm64 APK went from 72.3 to 51.2 MB (ADR 29).
 - Setup offers *Restore a backup* on its first page.
+- Setup's meaning page opens on the app language: Русский for a Russian app, Polski for a Polish one, বাংলা + English for a Bangla one (#1156).
 
 ### Fixed
 - About a hundred fixes from the production review: answers graded more fairly, a mock exam that keeps every answer through interruptions, backup and import checked and merged correctly, progress kept across content updates, deep links that never take over a running exam, screen-reader labels in Bangla, and no screen left hanging on a failed read.
+- At large text in Russian and Polish, the rating buttons go to two rows rather than break a word, and a card's counter keeps "1 / 7" together (#1155).
+- A comma inside a Russian or Polish meaning belongs to the phrase: "счёт, пожалуйста!" is one answer, not two (#775).
 
 ## [1.0.1] — 2026-09-26
 
