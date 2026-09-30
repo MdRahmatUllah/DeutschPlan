@@ -6,7 +6,7 @@ last-read: 2907
 
 ## Now
 
-#1156 in review as PR #1157: answer review threads; re-run the gate if main moved, then merge.
+#775 fix(content): 17 phrase meanings hold a comma outside brackets, so a fragment ("please" for "the bill, please") is graded right — claimed 2026-09-30 16:18.
 
 ## Next
 
