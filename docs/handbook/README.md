@@ -14,9 +14,10 @@ State described: **v1.0.1**, tagged 2026-09-26 on main `0d23968e` (Android).
 ## The product in one page
 
 Sogda is a complete German course on the phone, from the first word
-(A1.1) to mastery (C2.2), for people who think in **Bangla** or **English**.
+(A1.1) to mastery (C2.2), for people who think in **Bangla** or **English**,
+and since v1.1.0 in **Russian** or **Polish**.
 
-- **The course.** 12 steps, 5,069 words and 182 grammar topics. Every meaning is in the learner's language, and so is the pronunciation, written in Bangla letters.
+- **The course.** 12 steps, 5,069 words and 182 grammar topics. Every meaning is in the learner's language (a first and an optional second), and so is the pronunciation guide: Bangla, Russian or Polish letters, or an English respelling.
 - **The daily plan.** It decides each day's revision (scheduled by FSRS), the new words, the week's grammar topic and practice sentences. It respects rest days and keeps a backlog when a day is missed.
 - **The practice.**
   - Word cards, and cloze cards once a word is known.
@@ -26,7 +27,7 @@ Sogda is a complete German course on the phone, from the first word
 - **The voice.** The phone's German voice, or Supertonic, an optional ~400 MB on-device voice.
 - **It works offline, with no account, no ads and no analytics.** Progress stays on the phone; export and import move it. The app itself sends nothing: it goes online only for a model download the learner starts, a web link the learner taps (Duden, DWDS and the others, FR-R1-06), and *Report a problem*, which opens a pre-filled GitHub issue in the browser.
 - **It is built to be used by everyone.**
-  - English or Bangla, light, dark and aurora-glass themes, and text up to 200 %, checked on every screen in both languages with the keyboard up.
+  - English, Bangla, Polish or Russian, light, dark and aurora-glass themes, and text up to 200 %, checked on every screen in every language with the keyboard up.
   - Screen readers, reduced motion and transparency.
   - A home-screen widget and daily reminders.
 

@@ -99,22 +99,29 @@ allWordMeanings:
   SELECT word_uid, lang, meaning, pronunciation FROM word_meanings;
 
 -- #1081: a word's example lines, each translated into :lang, or into
--- English where :lang has no examples of its own (Bangla, #598).
+-- English where :lang has no examples of its own (Bangla, #598). English's
+-- are the lines' own column (#1096).
 -- The word's lines first, so drift's parameters read (uid, lang).
 examplesForWordIn(:uid AS TEXT, :lang AS TEXT):
   SELECT l.ord AS ord, l.german AS german,
-         coalesce(t.translation, en.translation) AS translation
-  FROM (SELECT ord, german FROM word_examples WHERE word_uid = :uid) l
+         coalesce(t.translation, l.english) AS translation
+  FROM (SELECT ord, german, english FROM word_examples WHERE word_uid = :uid) l
   LEFT JOIN word_example_translations t
     ON t.word_uid = :uid AND t.ord = l.ord AND t.lang = :lang
-  LEFT JOIN word_example_translations en
-    ON en.word_uid = :uid AND en.ord = l.ord AND en.lang = 'en'
   ORDER BY l.ord;
 
 -- #1081: a word's interference tips, one per language whose speakers have
--- one (#1080's `tip_<code>`).
+-- one (#1080's `tip_<code>`). English's and Bangla's are
+-- `interference_tips`' columns (#1096).
 wordTipsFor:
-  SELECT lang, tip FROM word_tips WHERE word_uid = :uid;
+  SELECT lang, tip FROM word_tips WHERE word_uid = :uid
+  UNION ALL
+  SELECT 'en' AS lang, tip_en AS tip FROM interference_tips
+  WHERE word_uid = :uid
+  UNION ALL
+  -- coalesce for drift's type alone: the WHERE leaves no null.
+  SELECT 'bn' AS lang, coalesce(tip_bn, '') AS tip FROM interference_tips
+  WHERE word_uid = :uid AND tip_bn IS NOT NULL;
 
 -- #1128: the category names the course has in :lang, by the English
 -- name (unique, and what an exam's task keeps).

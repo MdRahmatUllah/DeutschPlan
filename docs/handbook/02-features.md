@@ -89,7 +89,7 @@ step. *Skip* (from page 3) finishes with what the learner has chosen, and the de
 | Page | The learner chooses |
 |---|---|
 | 1 Welcome | The app language (English, বাংলা, Polski, Русский; the phone's by default when Sogda speaks it), then three promises: offline, 12 exam-structured steps, progress stays on the phone |
-| 2 Meaning language | English, বাংলা or Both. It turns the Bangla pronunciation line on for বাংলা or Both; the app language stays as page 1 set it |
+| 2 Meaning language | A first language from the course's (English, বাংলা, Русский, Polski), and an optional second shown under it (*Also show*, v1.1.0). The Bangla pronunciation line is on while Bangla is chosen; the app language stays as page 1 set it |
 | 3 Starting point | One of the 12 steps (A1.1 pre-selected), or *Not sure? Take a 3-minute check* (S3) |
 | 4 Daily pace | New words a day (3–30; presets Relaxed 5, Steady 7, Intensive 15) with a live estimate ("A1.1 takes about 91 days at 7 words a day", from `courseDays`), revisions a day (10), and the study days |
 | 5 Reminder & voice | A daily reminder (off by default, 19:30) and the optional Supertonic voice: *Download now* or *Later*, with a "Guten Tag!" sample in the phone's voice |
@@ -185,10 +185,13 @@ What a card in T2 offers ([`study-session.md`](../04-screens/study-session.md),
 
 - **Front:** the article in its gender colour (der blue, die pink, das
   green, and always printed, so colour is never the only cue), the headword,
-  its part of speech and forms, the pronunciation in Bangla letters (a
-  setting), and a large speaker.
-- **Back:** the meanings in the learner's meaning language, examples with
-  play buttons and translations, collocations, register notes, and an
+  its part of speech and forms, the pronunciation in the first meaning
+  language's letters (Bangla, Russian or Polish, or an English respelling;
+  Bangla's a setting), with a one-line key to read it (v1.1.0), and a large
+  speaker.
+- **Back:** the meanings in the learner's languages, the first then the
+  second, examples with play buttons and translations (in Russian or Polish
+  for those learners, English otherwise), collocations, register notes, and an
   interference tip when the word has one ("bekommen = to get, not 'to
   become'"). A meaning a course update changed in the last 7 days wears an
   *Updated* chip.
@@ -370,7 +373,8 @@ Specs: [`exam-hub.md`](../04-screens/exam-hub.md),
 
 ### Search · R1
 
-Look up any word, in German, English or Bangla, across the whole course.
+Look up any word, in German, English or Bangla, or by its meaning in the
+learner's Russian or Polish (v1.1.0), across the whole course.
 Results come in four groups: **Exact match**, **Starts with**, **Similar
 words** (typos tolerated: "strase" finds Straße) and **In sentences**, with
 the match highlighted. Each row plays the word without opening it. Chips
@@ -426,7 +430,7 @@ Every change saves at once; the plan's own changes apply from tomorrow
 |---|---|
 | Daily plan | New words a day (1–50), revisions (0–100), practice sentences (0–20), study days and reminder (M5), move to the next step automatically, pause new words when the backlog is large |
 | Revision | Target retention (80–97 %, with an estimate of reviews a day), mark Done after N days remembered (3–60), swipe to rate, my words in quizzes |
-| Display | Meaning language (EN, বাংলা, Both), app language (English, বাংলা, Polski, Русский), theme (System, Light, Dark, Glass), show the Bangla pronunciation |
+| Display | Meaning languages (a first and an optional second, from the course's: English, বাংলা, Русский, Polski), app language (English, বাংলা, Polski, Русский), theme (System, Light, Dark, Glass), show the Bangla pronunciation |
 | Audio | Voice engine (M4), speech speed (0.5–1.5×), auto-play the headword and the first example, listening questions |
 | Exams | Unlock mock exams at (50–100 %), pass mark (50–90 %), timer on by default |
 | Data | Export / import (M6), Reset (M7), Restart setup (S2) |
@@ -542,8 +546,8 @@ The full table is in [`accessibility-performance.md`](../01-architecture/accessi
 |---|---|
 | **iOS** | Needs a Mac to build and sign. The iOS code paths exist and are tested on Windows; the release pipeline (#171), the WidgetKit widget (#161) and the simulator smoke test (#398) are in "Later · after v1.0" |
 | **On-device translation** | Hy-MT's licence excludes the EU, UK and South Korea, so it is off in every build (ADR 9, #173). W1's *Translate* and translation in T5 and search don't appear; T5 offers Duden instead. The translator (#154) is deferred; a licence-clean replacement is the owner's question (#533) |
-| **Bangla translations of example sentences and grammar rules** | The course has them in English only; example translations show in English in every meaning language |
-| **Category names in Bangla** | Course content, kept in English for now (#425) |
+| **Bangla translations of example sentences and grammar rules** | The course has none in Bangla: Bangla learners read examples and rules in English (#598). Russian and Polish have their own since v1.1.0 |
+| **Category names in Bangla** | Course content, kept in English for Bangla learners (#425). Russian and Polish have theirs since v1.1.0 (#1128) |
 | **Speech recognition or scoring of speaking** | Speaking and writing are self-assessed with app checks (BR-EXAM-06) |
 | **Sync between devices, accounts, cloud backup** | Not a goal: moving progress is an export file (ADR 13) |
 | **A German UI (immersion mode)** | "German UI is a possible later immersion mode" ([`accessibility-performance.md`](../01-architecture/accessibility-performance.md), *Localisation*) |

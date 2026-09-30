@@ -43,16 +43,24 @@ What does **not** need the network:
 
 ## Languages
 
-| | English | Bangla |
-|---|---|---|
-| **App language** (all UI copy) | Yes: 972 strings | Yes: 972 strings, every number in Bangla digits |
-| **Meaning language** | Yes | Yes, or both together |
-| **Word meanings** | All 5,069 | All 5,069 |
-| **Pronunciation of each word** | — | All 5,069, in Bangla letters (on by default for বাংলা and Both) |
-| **Interference tips** | All 622 | All 622 |
-| **Example translations** (10,545) | All | None: English shows in every meaning language |
-| **Grammar rules** (182 topics) | All | None |
-| **Category names** (159) | All | Shown in English in the Bangla UI (#425) |
+v1.1.0 adds Russian and Polish (M8, #1085): each ships only when complete
+(PIPE-08), and the learner reads any one or two of the four, a first and an
+optional second.
+
+| | English | Bangla | Russian (v1.1.0) | Polish (v1.1.0) |
+|---|---|---|---|---|
+| **App language** (all UI copy) | Yes: 992 strings | Yes: 992 strings, every number in Bangla digits | Yes: 992 strings | Yes: 992 strings |
+| **Meaning language** (first or second) | Yes | Yes | Yes | Yes |
+| **Word meanings** | All 5,069 | All 5,069 | All 5,069 | All 5,069 |
+| **Pronunciation of each word** | All, an English respelling (v1.1.0) | All 5,069, in Bangla letters (while Bangla is chosen) | All, in Russian letters | All, in Polish spelling |
+| **Interference tips** | All 622 | All 622 | Those written for Russian speakers | Those written for Polish speakers |
+| **Example translations** (10,545) | All | None: English shows (#598) | All | All |
+| **Grammar rules** (182 topics) | All | None | All | All |
+| **Category names** | All | Shown in English (#425) | All (#1128) | All (#1128) |
+
+Each guide comes with a one-line key to read it (#1122). Search finds a word
+by its meaning in the learner's Russian or Polish, and quizzes, mock exams,
+placement and the compare quiz ask in the learner's languages (#1120, #1121).
 
 - **The German stays German.** Headwords, examples and the date on Today
   ("Montag, 21. September") are German in either app language, and German
