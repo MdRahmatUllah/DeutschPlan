@@ -447,8 +447,8 @@
     "C1.2": 21,
     "C2.2": 21
   },
-  "built_at": "2026-09-30T11:05:54+00:00",
-  "content_version": "20260930110554",
+  "built_at": "2026-09-30T13:56:30+00:00",
+  "content_version": "20260930135630",
   "counts": {
     "examples": 10545,
     "grammar": 182,
@@ -5901,7 +5901,7 @@
     },
     {
       "file": "German_C2_Tracker.xlsx",
-      "sha256": "6147cb0d3939529f2e77ebb0682c6568619320a81f4f51c234b734cf1f5a0d1b"
+      "sha256": "c18bacbc8706d4af13ede8bbcdebee6cd997eb149bcd090b50f2ecefdbaff2eb"
     }
   ],
   "steps": {
