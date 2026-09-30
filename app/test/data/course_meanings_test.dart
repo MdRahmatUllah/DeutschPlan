@@ -10,6 +10,7 @@ import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/domain/text_norm.dart' show meaningKey;
 import 'package:sogda/features/learn/categories_screen.dart';
 import 'package:sogda/features/learn/step_words.dart';
 import 'package:sogda/features/study/study_screen.dart';
@@ -132,6 +133,31 @@ void main() {
     print('#1119 CourseMeanings: $rows words in ${best.inMilliseconds} ms');
     expect(rows, greaterThan(5000));
     expect(best, lessThan(const Duration(milliseconds: 500)));
+  });
+
+  test('#1121 finding a word by its meaning in a language stays fast at '
+      'course scale', () async {
+    // 5,600 words, as the course has, each with a Russian meaning of two
+    // alternatives.
+    final course = CourseMeanings(<String, Map<String, WordMeaningText>>{
+      for (var i = 0; i < 5600; i++)
+        'w$i': <String, WordMeaningText>{
+          'ru': (meaning: 'слово$i / значение номер $i', pronunciation: null),
+        },
+    });
+    final first = await fastestOf(1, () => course.find('ru', 'слово42'));
+    final again = await fastestOf(5, () => course.find('ru', 'значение'));
+    // ignore: avoid_print
+    print(
+      '#1121 find: first ${first.inMilliseconds} ms, then '
+      '${again.inMicroseconds} us',
+    );
+    expect((await course.find('ru', meaningKey('Слово42'))).exact, <String>[
+      'w42',
+    ]);
+    expect((await course.find('ru', 'значение')).startsWith, hasLength(5600));
+    expect(first, lessThan(const Duration(milliseconds: 500)), reason: 'keyed');
+    expect(again, lessThan(const Duration(milliseconds: 50)));
   });
 
   test('#1128 the category names follow the primary meaning language: '

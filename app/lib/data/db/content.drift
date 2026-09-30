@@ -75,6 +75,14 @@ sentenceMatches(:step AS TEXT OR NULL):
 wordByUid:
   SELECT * FROM words WHERE uid = :uid;
 
+-- #1121: the words a search found by their meaning, within L2's :step, the
+-- most frequent :limit of them: a one-letter query starts thousands.
+wordsByUids(:step AS TEXT OR NULL):
+  SELECT * FROM words
+  WHERE uid IN :uids AND (:step IS NULL OR sublevel_code = :step)
+  ORDER BY freq DESC, seq
+  LIMIT :limit;
+
 examplesForWord:
   SELECT * FROM word_examples WHERE word_uid = :uid ORDER BY ord;
 

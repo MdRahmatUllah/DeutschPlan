@@ -83,6 +83,24 @@ String _normalise(
   return stripArticle ? _stripArticle(collapsed.toList()) : collapsed.join(' ');
 }
 
+/// A meaning in the course's other languages as a learner may type it
+/// (#1120, #1121): Polish ł as l, which has no decomposition, so the Latin
+/// strip keeps it (ą ć ę ń ó ś ź ż it folds already); Russian ё as е, as
+/// Russians write it; and without the combining acute a stress guide puts on
+/// a vowel. Apart from [searchKey], whose keys match the pipeline's.
+String foldMeaning(String text) => text
+    .replaceAll('ł', 'l')
+    .replaceAll('Ł', 'L')
+    .replaceAll('ё', 'е')
+    .replaceAll('Ё', 'Е')
+    .replaceAll('\u0301', '');
+
+/// A meaning in the course's other languages keyed for search (#1121):
+/// [foldMeaning], then [searchKey] with no article strip, since `die` is no
+/// article in Russian or Polish.
+String meaningKey(String text) =>
+    searchKey(foldMeaning(text), stripArticle: false);
+
 /// The letters whose NFC form changes a key, spelled out: Dart has no
 /// `String.normalize`, and `tools/pipeline_steps.py` applies NFC.
 ///

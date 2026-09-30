@@ -29,6 +29,48 @@ void main() {
     },
   );
 
+  // #1121: a Russian learner types «улица»: the words found by their Russian
+  // meaning, each row Russian first and English after it.
+  goldenTest(
+    'search_ru_meanings',
+    overrides: [
+      searchResultsProvider.overrideWith(
+        (ref, query) => Stream.value(
+          SearchView(
+            words: <SearchRow>[
+              searchRow(
+                'strasse',
+                article: 'die',
+                german: 'Straße',
+                meaning: 'улица · street, road',
+                tier: SearchTier.exact,
+                status: WordStatus.done,
+              ),
+              searchRow(
+                'hauptstrasse',
+                article: 'die',
+                german: 'Hauptstraße',
+                meaning: 'главная улица · main street',
+                tier: SearchTier.startsWith,
+                step: 'A2.1',
+              ),
+            ],
+            sentences: const <SentenceHit>[],
+          ),
+        ),
+      ),
+      recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
+      myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
+      fakeVoice(FakeTts()),
+    ],
+    builder: (_) => const SearchScreen(),
+    act: (tester) async {
+      await tester.enterText(find.byType(TextField), 'улица');
+      await tester.pump(SearchScreen.debounce);
+      await tester.pumpAndSettle();
+    },
+  );
+
   // #138: nothing typed. The SearchIdle artboard's five recents and three
   // own words.
   goldenTest(
