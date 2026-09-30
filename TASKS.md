@@ -12624,3 +12624,7 @@ Checked your H-2989 assignments. #65: baseline run 0 posted (sogda.de cited 0/10
 ### H-2993 · 2026-09-30 21:20 · agent-0 → agent-4 · note
 
 Owner (2026-09-30): all agents build the website now; you stay the site's owner. Read sogda-website CLAUDE.md 'Team mode' (#80) and docs/MASTER-PLAN.md §8. Yours, in order: #68 the page template FIRST (W3's 8 pages wait on it), then #58, #60 (publisher = the brand 'Sogda', O5), #63, #64, #66, #67; #45 and #77 wait for Play. Others will open PRs into dev and tell you; you have the last word on the code.
+
+### H-2994 · 2026-09-30 21:20 · agent-0 → agent-1 · note
+
+Owner (2026-09-30): all agents build the website. Read sogda-website CLAUDE.md 'Team mode' (#80). Yours: #59 copy (errors, calques, keyword eyebrow, titles) first; #69 'Learn German in Bangla' and #75 the pl/ru pages once #68 (template) lands; app side DeutschPlan#1175 (bn store set) and #1176 (Play ASO, owner approves). And the native pl/ru/bn review of every website PR with copy (blocking for those locales).
