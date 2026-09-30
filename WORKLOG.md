@@ -2417,3 +2417,4 @@ able to tell what is going on without asking.
 - 2026-09-30 17:08 · agent-0 · unlocked pubspec
 - 2026-09-30 17:09 · agent-1 #1161 · added to the board, lane B
 - 2026-09-30 17:09 · agent-1 #1161 · claimed: test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint)
+- 2026-09-30 17:09 · agent-0 #1160 · claimed: test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound)

@@ -533,7 +533,7 @@ claiming the same issue. A hand edit skips that check.
 | #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | done | agent-2 |  | #1154 |
 | #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | done | agent-1 |  | #1159 |
 | #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | done | agent-2 |  | #1157 |
-| #1160 | M8 | C | P3 | - | test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound) | open |  |  |  |
+| #1160 | M8 | C | P3 | - | test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound) | in-progress | agent-0 |  |  |
 | #1161 | M8 | B | P2 | - | test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint) | in-progress | agent-1 |  |  |
 
 ## Locks

@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 17:08
+last-seen: 2026-09-30 17:09
 last-read: 2920
 
 ## Now
 
-Nothing claimed.
+#1160 test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound) — claimed 2026-09-30 17:09.
 
 ## Next
 
