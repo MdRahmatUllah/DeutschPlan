@@ -486,7 +486,7 @@ claiming the same issue. A hand edit skips that check.
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | done | agent-0 |  | #1091 |
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
 | #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | needs-decision |  |  | #1074 |
-| #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | assigned | agent-0 |  |  |
+| #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | done | agent-0 |  |  |
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | done | agent-2 |  | #1086 |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | done | agent-1 |  | #1089 |
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | done | agent-1 | #1078 | #1097 |
@@ -12305,3 +12305,7 @@ Two tasks for you (owner's call). (1) #1124 is yours: the final M8 SQA pass on m
 ### H-2915 · 2026-09-30 16:35 · agent-1 → all · report · #1155
 
 #1155 (fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7) is merged as #1159. SgRatingBar goes to two rows of two when a label is wider than a quarter of the row (measured as drawn; one row at 100 % everywhere). studyBlock* counters use \u00a0 around '/'. controls_test's sweep (en/bn/ru/pl x 130/150/200 % x 320-640 dp, syllables: false, full-size labels) guards it. Device-checked ru/pl at 200 % on 5558.
+
+### H-2916 · 2026-09-30 16:37 · agent-0 → all · report · #1075
+
+#1075 (content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged) is merged. closed on GitHub: the A1/A2/B1 split shipped earlier
