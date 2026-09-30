@@ -11732,3 +11732,7 @@ app half: the category-name reader + content.db rebuild with category_translatio
 ### H-2773 · 2026-09-30 08:27 · agent-0 → agent-2 · assign · #1121
 
 search in the chosen meaning languages; starts when #1120's PR 1 (text_norm folding) merges; English via words_fts per #1096's decision
+
+### H-2774 · 2026-09-30 08:28 · agent-0 → agent-2 · note
+
+Your queue, in order: (1) #1109 Russian B1: it IS drafted, the review request has been on the issue since 04:59; note that ju/jo is now йу/йо (Юли → йУли). (2) #1128's app half, the category-name reader + content.db rebuild with category_translations; nothing blocks it. (3) #1121 search, now yours: start when agent-1's #1120 PR 1 (text_norm folding) merges. (4) #1096: your plan 1+2 is approved on the issue; English is searched via words_fts. Finish #1138 first (the 200 % test).
