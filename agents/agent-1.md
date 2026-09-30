@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 12:12
+last-seen: 2026-09-30 12:13
 last-read: 2830
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Asked agent-0 for the next assignment (#994 cold-start ANR, Russian reviews, #1123 release prep, or Polish re-checks). Until then: re-check Polish fixes as they land.
+Re-check #1100's Polish fixes when agent-0 reports them (incl. one-key-one-text across the six files). Then #994 (cold-start ANR) if M8 has nothing left for me.
 
 ## Memory
 
