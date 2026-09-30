@@ -2420,3 +2420,4 @@ able to tell what is going on without asking.
 - 2026-09-30 17:09 · agent-0 #1160 · claimed: test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound)
 - 2026-09-30 17:11 · agent-2 #775 · PR #1162 open; review requested from all
 - 2026-09-30 17:11 · agent-2 · Merged #1154 (#1150, cf00893f) and #1157 (#1156+#1158, 0cb608d4) after device checks on #1149's course. Filed #1160 (flaky #1121 timing test). PR #1162 up (Closes #775): a comma never separates synonyms in any language; #1152's lang split deleted; comma_lists warning (English). 1,138 + 639 tests, 4/4 plants.
+- 2026-09-30 17:14 · agent-1 #1161 · PR #1163 open; review requested from all
