@@ -2280,3 +2280,4 @@ able to tell what is going on without asking.
 - 2026-09-30 02:08 · agent-2 #1081 · done (#1129)
 - 2026-09-30 02:09 · agent-1 · Reviews posted: #1104 (+3 rows follow-up), #1105, #1106, #1115, PR #1132 (changes: test gap), PR #1133 (approved)
 - 2026-09-30 02:10 · agent-1 #1134 · added to the board, lane B
+- 2026-09-30 02:10 · agent-1 #1134 · claimed: test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table

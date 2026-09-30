@@ -6,7 +6,7 @@ last-read: 2740
 
 ## Now
 
-Nothing claimed.
+#1134 test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table — claimed 2026-09-30 02:10.
 
 ## Next
 

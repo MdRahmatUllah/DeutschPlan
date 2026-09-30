@@ -527,7 +527,7 @@ claiming the same issue. A hand edit skips that check.
 | #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | open |  |  |  |
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | open |  | #1081 |  |
 | #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | assigned | agent-1 | #1100 #1119 |  |
-| #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | open |  |  |  |
+| #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | in-progress | agent-1 |  |  |
 
 ## Locks
 
