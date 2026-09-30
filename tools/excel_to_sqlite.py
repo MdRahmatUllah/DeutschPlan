@@ -45,6 +45,7 @@ from pipeline_steps import (
     assign_tags,
     LEVELS,
     check_formula_prefixes,
+    comma_lists,
     read_tips,
     resolve_tips,
     read_category_names,
@@ -776,6 +777,7 @@ def derive(
         + assign_uids(words)
         + grammar_uid_warnings
         + examples_without_their_word(words)
+        + comma_lists(words)
     )
     _report(warnings)
     # After the uids, which stay those of the German cell as authored (#287).

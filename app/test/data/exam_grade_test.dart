@@ -73,8 +73,8 @@ void main() {
   Future<ExamAttempt> attempt(int id) =>
       (db.select(db.examAttempts)..where((t) => t.id.equals(id))).getSingle();
 
-  test("#775 a paper in Russian is graded in Russian: a comma is the "
-      "language's own", () async {
+  test("#775 a comma is never a synonym separator, in a paper of any "
+      'language', () async {
     Future<double> graded(String? lang) async {
       final id = await exams.begin(
         sublevelCode: 'A1.1',
@@ -98,7 +98,11 @@ void main() {
     }
 
     expect(await graded('ru'), 0);
-    expect(await graded(null), 1, reason: 'before v5: English or Bangla');
+    expect(
+      await graded(null),
+      0,
+      reason: 'a comma never separates, whatever the paper',
+    );
   });
 
   test('each row gets its points, and the attempt its score', () async {

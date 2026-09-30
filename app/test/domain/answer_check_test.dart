@@ -38,51 +38,44 @@ void main() {
         ('że', 'uważam, że …', 'pl'),
       ]) {
         expect(
-          checkMeaning(given, cell, lang: lang),
+          checkMeaning(given, cell),
           Verdict.wrong,
-          reason: cell,
+          reason: '$cell ($lang)',
         );
       }
       expect(
-        checkMeaning('тем, что', 'тем, что / благодаря тому, что', lang: 'ru'),
+        checkMeaning('тем, что', 'тем, что / благодаря тому, что'),
         Verdict.correct,
       );
       expect(
-        checkMeaning(
-          'полагать',
-          'исходить из того, что / полагать',
-          lang: 'ru',
-        ),
+        checkMeaning('полагать', 'исходить из того, что / полагать'),
         Verdict.correct,
       );
-      expect(
-        checkMeaning('uważam, że …', 'uważam, że …', lang: 'pl'),
-        Verdict.correct,
-      );
+      expect(checkMeaning('uważam, że …', 'uważam, że …'), Verdict.correct);
       expect(
         checkMeaning(
           'благодаря тому, что / тем, что',
           'тем, что / благодаря тому, что',
-          lang: 'ru',
         ),
         Verdict.correct,
         reason: 'both typed as a list, in another order (#678)',
       );
-      expect(
-        splitMeanings('явный / прямо; категорически', lang: 'ru'),
-        <String>['явный', 'прямо', 'категорически'],
-        reason: '/ and ; still separate',
-      );
+      expect(splitMeanings('явный / прямо; категорически'), <String>[
+        'явный',
+        'прямо',
+        'категорически',
+      ], reason: '/ and ; still separate');
     });
 
-    test('#775 English and Bangla keep the comma as a separator', () {
-      for (final lang in <String?>[null, 'en']) {
-        expect(
-          checkMeaning('home', 'house, home', lang: lang),
-          Verdict.correct,
-        );
-      }
-      expect(splitMeanings('বাড়ি, ঘর', lang: 'bn'), <String>['বাড়ি', 'ঘর']);
+    test("#775 a comma never separates synonyms, English's and Bangla's "
+        'phrases included', () {
+      expect(checkMeaning('please', 'the bill, please'), Verdict.wrong);
+      expect(
+        checkMeaning('the bill, please', 'the bill, please'),
+        Verdict.correct,
+      );
+      expect(checkMeaning('home', 'house / home'), Verdict.correct);
+      expect(splitMeanings('বিল দিন, দয়া করে'), <String>['বিল দিন, দয়া করে']);
     });
 
     test('Bangla and German answers are untouched', () {
@@ -94,7 +87,7 @@ void main() {
 
   group('BR-ANS-01 — DE→EN meanings', () {
     test('any synonym in the list counts', () {
-      const expected = 'house / home, building';
+      const expected = 'house / home / building';
 
       for (final given in <String>['house', 'home', 'building']) {
         expect(checkMeaning(given, expected), Verdict.correct, reason: given);
@@ -606,22 +599,21 @@ void main() {
   });
 
   test('#680 senses: the synonyms of a cell, lower case, without "to "', () {
-    expect(senses('To go / walk, Hello'), <String>{'go', 'walk', 'hello'});
+    expect(senses('To go / walk / Hello'), <String>{'go', 'walk', 'hello'});
     expect(senses('stop (bus/tram)'), <String>{'stop (bus/tram)'});
   });
 
   group('splitMeanings', () {
-    test('splits on / , and ;', () {
-      expect(splitMeanings('house / home, building; flat'), <String>[
+    test('splits on / and ;, never at a comma (#775)', () {
+      expect(splitMeanings('house / home; flat, a building'), <String>[
         'house',
         'home',
-        'building',
-        'flat',
+        'flat, a building',
       ]);
     });
 
     test('trims and drops the empties', () {
-      expect(splitMeanings('  house /  , home  '), <String>['house', 'home']);
+      expect(splitMeanings('  house /  / home  '), <String>['house', 'home']);
       expect(splitMeanings(''), isEmpty);
       expect(splitMeanings('  '), isEmpty);
     });
@@ -631,7 +623,7 @@ void main() {
     });
 
     test('#645 never splits inside brackets: they hold one note', () {
-      expect(splitMeanings('stop (bus/tram), halt'), <String>[
+      expect(splitMeanings('stop (bus/tram) / halt'), <String>[
         'stop (bus/tram)',
         'halt',
       ]);

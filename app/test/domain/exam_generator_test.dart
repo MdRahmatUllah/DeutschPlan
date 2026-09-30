@@ -481,7 +481,7 @@ void main() {
               uid: 'w$i',
               german: 'Wort${tag(i)}',
               english: (i ~/ 2).isEven
-                  ? 'to word $i, to sense ${i ~/ 2}'
+                  ? 'to word $i / to sense ${i ~/ 2}'
                   : 'word $i',
               step: 'A1.1',
               pos: 'p${i ~/ 2}',

@@ -164,7 +164,6 @@ class _ExamReviewViewState extends ConsumerState<ExamReviewView> {
             _Card(
               card: card,
               step: result.attempt.sublevelCode,
-              lang: result.attempt.meaningLang,
               onOpenWord: _openWord,
               onSeeRule: (topic) => unawaited(_seeRule(topic)),
             ),
@@ -203,16 +202,12 @@ class _Card extends ConsumerWidget {
   const _Card({
     required this.card,
     required this.step,
-    required this.lang,
     required this.onOpenWord,
     required this.onSeeRule,
   });
 
   final ExamReviewCard card;
   final String step;
-
-  /// The paper's meaning language: its meaning cells split by it (#775).
-  final String? lang;
   final ValueChanged<String> onOpenWord;
   final ValueChanged<TopicWithState?> onSeeRule;
 
@@ -224,7 +219,7 @@ class _Card extends ConsumerWidget {
     final item = row.item;
     final given = row.given;
     final wrong = examReviewWrong(row);
-    final verdict = given == null ? null : verdictFor(item, given, lang: lang);
+    final verdict = given == null ? null : verdictFor(item, given);
     final almost = wrong && verdict == Verdict.almost;
 
     final (label, colour, icon) = given == null

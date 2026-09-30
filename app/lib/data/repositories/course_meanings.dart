@@ -107,7 +107,7 @@ class CourseMeanings {
           if (texts[lang]?.meaning case final meaning?) (uid, meaning),
       ];
       try {
-        return await _keyOff(meanings, lang);
+        return await _keyOff(meanings);
       } on Object {
         // Not kept: the next search tries again.
         byLang.removeWhere((key, _) => key == lang);
@@ -119,10 +119,8 @@ class CourseMeanings {
   /// [meanings] keyed on an isolate of its own. Its closure holds
   /// [meanings] alone: one that shared [_keyed]'s would carry the cache's
   /// futures, which can't be sent.
-  static Future<List<_Keyed>> _keyOff(
-    List<(String, String)> meanings,
-    String lang,
-  ) => Isolate.run(() => _keyAll(meanings, lang));
+  static Future<List<_Keyed>> _keyOff(List<(String, String)> meanings) =>
+      Isolate.run(() => _keyAll(meanings));
 
   static final Expando<Map<String, Future<List<_Keyed>>>> _keys =
       Expando<Map<String, Future<List<_Keyed>>>>();
@@ -202,14 +200,13 @@ class Meanings {
 /// its alternatives as [meaningAnswers] splits it.
 typedef _Keyed = ({String uid, String whole, Set<String> cells});
 
-List<_Keyed> _keyAll(List<(String, String)> meanings, String lang) => <_Keyed>[
+List<_Keyed> _keyAll(List<(String, String)> meanings) => <_Keyed>[
   for (final (uid, meaning) in meanings)
     (
       uid: uid,
       whole: meaningKey(meaning),
       cells: <String>{
-        for (final form in meaningAnswers(meaning, lang: lang))
-          meaningKey(form),
+        for (final form in meaningAnswers(meaning)) meaningKey(form),
       }..remove(''),
     ),
 ];
