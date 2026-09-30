@@ -366,6 +366,9 @@ def measured(baseline, monkeypatch):
         def run(self, *args):
             calls.append(("run", *args))
 
+        def sh(self, *args):
+            return {"ro.boot.qemu.avd_name": "Pixel_9\r\n", "ro.build.version.sdk": "36\r\n"}[args[-1]]
+
     monkeypatch.setattr(perf.device, "Device", Dev)
     monkeypatch.setattr(perf, "build_seed", lambda: calls.append("build_seed"))
     monkeypatch.setattr(perf, "measure_frames", lambda dev, year=False: calls.append(("frames", year)) or {"card.build_avg_ms": 4.0})
@@ -374,11 +377,12 @@ def measured(baseline, monkeypatch):
 
 
 def test_818_the_year_profile_seeds_first_and_reports_year_metrics(measured, baseline):
+    fresh_before = json.loads(baseline.read_text(encoding="utf-8"))["metrics"]["start.cold_ms"]
     assert perf.main(["start", "--profile", "year", "--update-baseline"]) == 0
     assert measured[:2] == ["build_seed", ("start", True)]
     metrics = json.loads(baseline.read_text(encoding="utf-8"))["metrics"]
     assert metrics["year.start.cold_ms"] == 900
-    assert metrics["start.cold_ms"] == 2799, "the fresh baseline is left alone"
+    assert metrics["start.cold_ms"] == fresh_before, "the fresh baseline is left alone"
 
 
 def test_818_a_fresh_run_neither_seeds_nor_prefixes(measured, baseline):
@@ -387,6 +391,25 @@ def test_818_a_fresh_run_neither_seeds_nor_prefixes(measured, baseline):
     assert "build_seed" not in measured and ("frames", False) in measured
     metrics = json.loads(baseline.read_text(encoding="utf-8"))["metrics"]
     assert metrics["card.build_avg_ms"] == 4.0 and metrics.get("year.card.build_avg_ms") == year_before
+
+
+def test_1095_the_baselines_name_their_avd_and_a_run_on_another_says_so(measured, baseline, capsys):
+    def avd():
+        return json.loads(baseline.read_text(encoding="utf-8"))["avd"]
+
+    doc = json.loads(baseline.read_text(encoding="utf-8"))
+    baseline.write_text(json.dumps({**doc, "avd": "Pixel_6 (API 34)"}), encoding="utf-8")
+    perf.main(["frames"])  # its verdict is the fake's 4 ms against the real baseline
+    assert "recorded on Pixel_6 (API 34), this run is on Pixel_9 (API 36)" in capsys.readouterr().out
+    assert avd() == "Pixel_6 (API 34)", "only --update-baseline writes it"
+
+    assert perf.main(["frames", "--update-baseline"]) == 0
+    assert avd() == "Pixel_9 (API 36)"
+    capsys.readouterr()
+    assert perf.main(["frames"]) == 0
+    assert "NOTE" not in capsys.readouterr().out, "the same AVD says nothing"
+    assert perf.main(["size", "--update-baseline"]) == 0
+    assert avd() == "Pixel_9 (API 36)", "a size run has no device and keeps it"
 
 
 def test_845_the_owners_checkout_refuses_the_emulator_an_agent_holds(measured, monkeypatch, tmp_path):
