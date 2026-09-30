@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -71,6 +73,7 @@ void main() {
   );
 
   ProviderScope screen({
+    bool russian = false,
     Set<String> updated = const <String>{},
     Map<Rating, int> intervals = const <Rating, int>{
       Rating.again: 1,
@@ -84,19 +87,40 @@ void main() {
       recentlyUpdatedProvider.overrideWith((ref) async => updated),
       studySessionProvider(args).overrideWith(_Fourth.new),
       studyIntervalsProvider('r3').overrideWith((ref) async => intervals),
+      // #1119: Russian first and English second, from a course that ships
+      // Russian.
+      if (russian)
+        meaningsProvider.overrideWithValue(
+          const Meanings(
+            MeaningChoice('ru', 'en'),
+            CourseMeanings(<String, Map<String, WordMeaningText>>{
+              'r3': <String, WordMeaningText>{
+                'ru': (meaning: 'счёт', pronunciation: 'рэ́хнунг'),
+              },
+            }),
+          ),
+        ),
       studyBackProvider('r3').overrideWith(
         (ref) async => (
           examples: <StudyExample>[
             (
               german: 'Ich habe die Rechnung noch nicht bezahlt.',
-              translation: "I haven't paid the bill yet.",
+              translation: russian
+                  ? 'Я ещё не оплатил счёт.'
+                  : "I haven't paid the bill yet.",
             ),
             (
               german: 'Können wir bitte die Rechnung haben?',
-              translation: 'Could we have the bill, please?',
+              translation: russian
+                  ? 'Можно нам счёт, пожалуйста?'
+                  : 'Could we have the bill, please?',
             ),
           ],
-          tip: null,
+          tip: russian
+              ? const <String, String>{
+                  'ru': 'die Rechnung — женский род, как «сумма», но не как «счёт».',
+                }
+              : null,
         ),
       ),
       studyWordProvider('r3').overrideWith(
@@ -111,6 +135,7 @@ void main() {
   );
 
   goldenTest('study_back', builder: (_) => screen());
+  goldenTest('study_back_ru_meanings', builder: (_) => screen(russian: true));
   // #1078: in Polish, as a Polish phone's first run shows it.
   goldenTest(
     'study_back_pl',

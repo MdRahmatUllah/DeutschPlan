@@ -11,7 +11,7 @@ class SentenceCandidate {
     required this.wordUid,
     required this.ord,
     required this.german,
-    this.english,
+    this.translation,
     this.headword,
     this.pos,
     this.forms,
@@ -20,7 +20,7 @@ class SentenceCandidate {
   final String wordUid;
   final int ord;
   final String german;
-  final String? english;
+  final String? translation;
 
   /// The word's German and part of speech, where the sentence's underline
   /// is looked for (#325); null when the caller didn't say.

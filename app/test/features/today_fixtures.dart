@@ -446,6 +446,7 @@ List<Override> todayStub([
   Duration? dayAfter,
   TopicWithState? topic,
   Future<CourseText>? grammarCourse,
+  List<StepWord>? stepWords,
 ]) => <Override>[
   // R1's idle view (#138): no recents, no words of one's own.
   recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
@@ -465,7 +466,9 @@ List<Override> todayStub([
   // T5 without a database: nothing to practise.
   practiceSentencesProvider.overrideWith(_StubSentences.new),
   // L2's Words tab without a database: the StepDetail artboard's six.
-  stepWordsProvider.overrideWith((ref, code) => Stream.value(artboardWords())),
+  stepWordsProvider.overrideWith(
+    (ref, code) => Stream.value(stepWords ?? artboardWords()),
+  ),
   stepCategoriesProvider.overrideWith(
     (ref, code) async => const <({int id, String name})>[
       (id: 1, name: 'Wohnen & Haushalt'),
