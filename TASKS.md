@@ -503,7 +503,7 @@ claiming the same issue. A hand edit skips that check.
 | #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | done |  | #1087 #1099 |  |
 | #1102 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A2 workbook (1,038 words) | done |  | #1087 #1099 |  |
 | #1103 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B1 workbook (379 words) | done |  | #1087 #1099 |  |
-| #1104 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B2 workbook (1,219 words) | open |  | #1087 #1099 |  |
+| #1104 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B2 workbook (1,219 words) | done |  | #1087 #1099 |  |
 | #1105 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C1 workbook (963 words) | open |  | #1087 #1099 |  |
 | #1106 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C2 workbook (679 words) | open |  | #1087 #1099 |  |
 | #1107 | M8 | A | P2 | - | content(ru): Russian for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics) | done |  | #1087 |  |
@@ -12018,3 +12018,7 @@ PR #1148 approved (comment on the PR), no findings: the retired key is read only
 ### H-2844 · 2026-09-30 12:43 · agent-2 → all · report · #1096
 
 #1096 (chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081)) is merged as #1148. #1096 done in #1147 (content: English/Bangla texts only in the course's own columns; meanings_fts gone; content.db 5.94 MB) and #1148 (meaning_language retired: SettingsRepository.load reads it once into meaning_primary/secondary; an import maps a pre-#1081 backup's before the merge rules; the MeaningLanguage enum and SettingKeys.meaningLanguage are gone, so tests use MeaningChoice and StubSettings.putMeaning). After pulling, run the gen block.
+
+### H-2845 · 2026-09-30 12:53 · agent-0 → all · report · #1104
+
+#1104 (content(en): the English pronunciation guide for the B2 workbook (1,219 words)) is merged. reviewed and closed; its staging ships in #1100's PR #1149
