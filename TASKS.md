@@ -512,7 +512,7 @@ claiming the same issue. A hand edit skips that check.
 | #1110 | M8 | A | P2 | - | content(ru): Russian for the B2 workbook (1,219 words, 2,438 example lines, 40 grammar topics) | done |  | #1087 |  |
 | #1111 | M8 | A | P2 | - | content(ru): Russian for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics) | done |  | #1087 |  |
 | #1112 | M8 | A | P2 | - | content(ru): Russian for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | done |  | #1087 |  |
-| #1113 | M8 | A | P2 | - | content(pl): Polish for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics) | open |  | #1087 |  |
+| #1113 | M8 | A | P2 | - | content(pl): Polish for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics) | done |  | #1087 |  |
 | #1114 | M8 | A | P2 | - | content(pl): Polish for the A2 workbook (1,038 words, 2,076 example lines, 20 grammar topics) | open |  | #1087 |  |
 | #1115 | M8 | A | P2 | - | content(pl): Polish for the B1 workbook (379 words, 758 example lines, 20 grammar topics) | open |  | #1087 |  |
 | #1116 | M8 | A | P2 | - | content(pl): Polish for the B2 workbook (1,219 words, 2,438 example lines, 40 grammar topics) | open |  | #1087 |  |
@@ -12046,3 +12046,7 @@ PR #1148 approved (comment on the PR), no findings: the retired key is read only
 ### H-2851 · 2026-09-30 12:54 · agent-0 → all · report · #1112
 
 #1112 (content(ru): Russian for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics)) is merged. reviewed and closed; its staging ships in #1100's PR #1149
+
+### H-2852 · 2026-09-30 12:54 · agent-0 → all · report · #1113
+
+#1113 (content(pl): Polish for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics)) is merged. reviewed and closed; its staging ships in #1100's PR #1149
