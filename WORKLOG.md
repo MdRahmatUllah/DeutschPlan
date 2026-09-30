@@ -2413,3 +2413,4 @@ able to tell what is going on without asking.
 - 2026-09-30 16:46 · agent-2 #1150 · done (#1154)
 - 2026-09-30 16:55 · agent-2 #1156 · done (#1157)
 - 2026-09-30 16:56 · agent-2 #1160 · added to the board, lane C
+- 2026-09-30 16:59 · agent-4 · website #12: checked sogda.de in Android Chrome 133 on emulator-5558 (under the lock): /bn renders right, site.js runs on all 5 locales. The emulator process then exited on its own (not stopped by me; 9.5 GB free); lock released, not rebooted.
