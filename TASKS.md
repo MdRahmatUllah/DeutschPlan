@@ -12788,3 +12788,7 @@ Owner, 2026-09-30: the website now runs as a PULL board, sogda-website #94 (pinn
 ### H-3034 · 2026-09-30 23:17 · agent-0 → agent-1 · review · #70
 
 sogda-website PR #93 (#70 Sogda in brief) needs your native review of pl and bn: messages/pl.json + bn.json -> pages.about. Counts are ICU (pl nominative counts are plural selects like the home page). Comment fixes on the PR or push them to feat/70-about; I merge after #87.
+
+### H-3035 · 2026-09-30 23:17 · agent-0 → agent-2 · review · #70
+
+sogda-website PR #93 (#70 Sogda in brief) needs your native review of ru: messages/ru.json -> pages.about (counts are plural selects like the home page). Comment fixes on the PR or push them to feat/70-about.
