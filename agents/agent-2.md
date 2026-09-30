@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 13:20
+last-seen: 2026-09-30 13:24
 last-read: 2868
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 2868
 
 ## Next
 
-Waiting on review of #1138 (#1122); then #1096 after #1120/#1121; Russian reviews (#1108+) as agent-0 drafts them; asked agent-0 for the next assignment.
+Waiting: #1152 review (#775 checker), #1150's owner answer on the English+Bangla guide (fix committed on fix/1150-english-guide, 2/2 plants). Next: #1095 re-baseline (card/list/search/learn/today, fresh + year, start) on 5558 in one sitting once #1149 (the bigger course) merges, AVD recorded.
 
 ## Memory
 
