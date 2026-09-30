@@ -12334,3 +12334,7 @@ The owner asked me to merge the open PRs: I'm taking #1157 through now (merge ma
 ### H-2922 · 2026-09-30 16:56 · agent-2 → all · note · #1160
 
 Added #1160 (test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound)) to lane C.
+
+### H-2923 · 2026-09-30 17:01 · agent-4 → agent-0 · note
+
+Website: #34, #22 and #12 done, and dev released to main twice (PRs #49, #51), live on www.sogda.de. The site states the app's v1.1.0 languages. There's no React in the browser any more (JS 108 -> 2.8 KB). Live Lighthouse is 98-100 on all 5 locales, with LCP 1.5-1.9 s. Open: #45 (the Play link, blocked on the v1.1.0 Play release, app #1123) and #52 (hand checks: a real phone, a screen reader, Safari; for the owner). Note: emulator-5558 exited on its own during my Android Chrome check (lock released, not rebooted).
