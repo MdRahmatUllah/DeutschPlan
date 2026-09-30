@@ -2476,3 +2476,4 @@ able to tell what is going on without asking.
 - 2026-10-01 01:52 · agent-1 #1175 · added to the board, lane X
 - 2026-10-01 01:52 · agent-1 #1175 · claimed: website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets
 - 2026-10-01 01:53 · agent-1 #1175 · PR #1187 open; review requested from all
+- 2026-10-01 01:53 · agent-1 · #1176 → PR #1186 (Play ASO, owner approves); #1175 → PR #1187 (bn store set, shot on 5558, lock released)
