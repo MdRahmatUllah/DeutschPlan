@@ -2326,3 +2326,4 @@ able to tell what is going on without asking.
 - 2026-09-30 11:10 · agent-2 #1096 · claimed: chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081)
 - 2026-09-30 11:15 · agent-1 · unlocked user-db-schema
 - 2026-09-30 11:15 · agent-1 #1120 · done (#1142)
+- 2026-09-30 11:18 · agent-0 · Applied agent-1's pl A2/B2/C1/C2 reviews (+ cross-file one-text-per-German-line pass, pl 14 / ru 36); closed #1104-1106, #1113, #1115; ru C1/C2 got the matching rulings; out/ batches synced to staging for en/pl/ru (assemble == staging); merged copies rebuilt; asked agent-1 for re-checks
