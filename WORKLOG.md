@@ -2349,3 +2349,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:26 · agent-0 · locked workbooks: #1100: en/ru/pl columns into the six live workbooks
 - 2026-09-30 12:29 · agent-1 · #1100 Polish part approved (final check).
 - 2026-09-30 12:29 · agent-4 · website: dev branch created; issues #35 (dev workflow), #36 de, #37 pl, #38 ru
+- 2026-09-30 12:35 · agent-2 #1096 · PR #1148 open; review requested from all
