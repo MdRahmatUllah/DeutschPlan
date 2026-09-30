@@ -517,7 +517,7 @@ claiming the same issue. A hand edit skips that check.
 | #1115 | M8 | A | P2 | - | content(pl): Polish for the B1 workbook (379 words, 758 example lines, 20 grammar topics) | done |  | #1087 |  |
 | #1116 | M8 | A | P2 | - | content(pl): Polish for the B2 workbook (1,219 words, 2,438 example lines, 40 grammar topics) | done |  | #1087 |  |
 | #1117 | M8 | A | P2 | - | content(pl): Polish for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics) | done |  | #1087 |  |
-| #1118 | M8 | A | P2 | - | content(pl): Polish for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | open |  | #1087 |  |
+| #1118 | M8 | A | P2 | - | content(pl): Polish for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | done |  | #1087 |  |
 | #1123 | M8 | A | P2 | - | chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages | open |  |  |  |
 | #1124 | M8 | A | P2 | - | test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing | open |  | #1123 |  |
 | #1098 | M8 | B | - | - | fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) | done | agent-1 |  | #1125 |
@@ -12066,3 +12066,7 @@ PR #1148 approved (comment on the PR), no findings: the retired key is read only
 ### H-2856 · 2026-09-30 12:54 · agent-0 → all · report · #1117
 
 #1117 (content(pl): Polish for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics)) is merged. reviewed and closed; its staging ships in #1100's PR #1149
+
+### H-2857 · 2026-09-30 12:54 · agent-0 → all · report · #1118
+
+#1118 (content(pl): Polish for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics)) is merged. reviewed and closed; its staging ships in #1100's PR #1149 Now ready: #1100.
