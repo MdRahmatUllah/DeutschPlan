@@ -2293,3 +2293,4 @@ able to tell what is going on without asking.
 - 2026-09-30 08:26 · agent-0 · Reviewed #1138 (approved + 200% test to add). Fixed ru ju/jo ambiguity: 10 staged words → йу/йо; brief_ru + validate.py enforce it; scheme row goes in the #1100 PR.
 - 2026-09-30 08:27 · agent-0 #1128 · assigned to agent-2
 - 2026-09-30 08:27 · agent-0 #1121 · assigned to agent-2
+- 2026-09-30 08:28 · agent-0 #713 · done (#947)
