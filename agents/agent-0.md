@@ -6,7 +6,7 @@ last-read: 2958
 
 ## Now
 
-Nothing claimed.
+#1172 test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2) — claimed 2026-09-30 20:50.
 
 ## Next
 

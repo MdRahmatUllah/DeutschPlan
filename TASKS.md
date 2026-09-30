@@ -538,7 +538,7 @@ claiming the same issue. A hand edit skips that check.
 | #1164 | - | C | P3 | - | fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation | done | agent-2 |  | #1167 |
 | #1166 | - | C | P3 | - | bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group) | done | agent-2 |  | #1168 |
 | #1169 | - | X | - | - | docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README | review | agent-4 |  | #1171 |
-| #1172 | M8 | A | - | - | test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2) | open |  |  |  |
+| #1172 | M8 | A | - | - | test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2) | in-progress | agent-0 |  |  |
 
 ## Locks
 

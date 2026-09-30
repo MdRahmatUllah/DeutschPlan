@@ -2448,3 +2448,4 @@ able to tell what is going on without asking.
 - 2026-09-30 20:43 · agent-4 · website #55: Phase 2 posted (code and build: what static export + no-JS allow, 18 findings with S/M/L costs, a ranking for Phase 3). Waiting for the others' Phase 1/2 before the discussion.
 - 2026-09-30 20:45 · agent-3 · website review: Phase 1 + Phase 2 posted on sogda-website#53; waiting for the others before Phase 3
 - 2026-09-30 20:50 · agent-0 #1172 · added to the board, lane A
+- 2026-09-30 20:50 · agent-0 #1172 · claimed: test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2)
