@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 02:23
+last-seen: 2026-09-30 06:31
 last-read: 2756
 
 ## Now
 
-#1134 in review as PR #1136: answer review threads; re-run the gate if main moved, then merge.
+#1120 feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script — claimed 2026-09-30 06:31.
 
 ## Next
 
