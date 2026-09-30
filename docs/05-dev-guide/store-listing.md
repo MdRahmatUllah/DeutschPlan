@@ -205,5 +205,13 @@ Sogda — полный курс немецкого, который работа�
 ## Website and icon
 
 - **Website:** https://sogda.de, the brand kit's domain (#602): the Play Console's *Website* under the store listing's contact details.
+- **The website's facts** (#1174): [`site-facts.json`](site-facts.json) is what sogda.de states. `tools/export_site_facts.py` writes it; the site's `pnpm sync:facts` fetches it at a pinned commit.
+  - **What it holds:**
+    - the course's counts from `content.db`;
+    - the mock paper's shape (BR-EXAM-02/03 and the app's `ExamSection`);
+    - the version and the Android floor from the build files;
+    - 25 sample words per step, chosen by a hash of their uid so they only change with the step;
+    - these listing texts, verbatim.
+  - **When to re-run it:** after a content build, a listing change or a release, run `python tools/export_site_facts.py`. `test_site_facts.py` fails while the file is stale.
 - **App icon:** [`docs/sogda-brand-kit/png/play-store-icon-512.png`](../sogda-brand-kit/png/play-store-icon-512.png), 512 × 512, the kit's tiles on full-bleed Lagoon. Play rounds the corners; add no shadow (the kit's rule). Play wants a 32-bit PNG with alpha, and the kit's file is RGB: upload an RGBA copy with an opaque alpha channel, and leave the kit's file as it is. `test_store_listing.py` checks the file and its size.
 - **Feature graphic** (1024 × 500, required before the first upload): not made yet. The kit names `svg/lockup-horizontal-tiles-light.svg` for it; variant B (the Silk Road dots) is allowed there too, never on the icon.
