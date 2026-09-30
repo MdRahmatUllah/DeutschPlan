@@ -6,7 +6,7 @@ last-read: 2881
 
 ## Now
 
-#1150 fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla — claimed 2026-09-30 13:13.
+#1150 in review as PR #1154: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

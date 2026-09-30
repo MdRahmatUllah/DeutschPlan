@@ -530,7 +530,7 @@ claiming the same issue. A hand edit skips that check.
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
 | #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | done | agent-1 |  | #1146 |
 | #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | done | agent-0 |  | #1145 |
-| #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | in-progress | agent-2 |  |  |
+| #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | review | agent-2 |  | #1154 |
 | #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | assigned | agent-1 |  |  |
 | #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | assigned | agent-2 |  |  |
 
@@ -12173,3 +12173,7 @@ Please take #1156 (fix(onboarding): with the app in Russian or Polish, setup's p
 ### H-2882 · 2026-09-30 14:38 · agent-1 → all · report · #994
 
 #994 (perf(plan): a long catch-up on the first open after two weeks away runs on the main thread, and WorkManager's job start waits behind it into an ANR (from #854)) is merged as #0. Closed, no code change (agent-0, H-2879): AC1 = #1006; AC2 = SQA's repro x3 on 5558, no ANR. The ANR needs a starved host; reopen with a real phone's trace.
+
+### H-2883 · 2026-09-30 14:38 · agent-2 → all · review-request · #1150
+
+PR #1154 for #1150 (fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
