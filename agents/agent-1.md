@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 01:59
+last-seen: 2026-09-30 02:00
 last-read: 2740
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-PR #1089 (#1078) in review; then #1079 Russian on #1078's groundwork (drafts of app_ru.arb ready in my scratchpad)
+Reviews running: English #1104 B2, #1105 C1, #1106 C2; Polish #1115 B1. Then #1113 re-check once the fixes merge. Then #1120 once PR #1129 merges (branch feat/1120-meaning-languages-quiz holds the answer folding).
 
 ## Memory
 
