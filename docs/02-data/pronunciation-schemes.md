@@ -91,7 +91,7 @@ German e is written **э**, never е, so the consonant before it stays hard (`г
 | ei, ai, ey | ай | | Zeit → `цайт` |
 | au | ау | one syllable: а glides into у | auf → `Ауф` |
 | eu, äu | ой | | heute → `хОйтэ` |
-| j + vowel | е, я, ё, ю; й elsewhere | | ja → `я`, jeder → `Еда` |
+| j + vowel | е, я for je, ja; йу, йо for ju, jo; й elsewhere | ю and ё stay ü and ö only; an English or French loan keeps its own sound | ja → `я`, jeder → `Еда`, Jugend → `йУгэнт`, Job → `джоп` |
 | -er ending a word or word part | а | | jeder → `Еда`, wieder- → `вИда-` |
 | r after a vowel, ending a word or word part | а | | Bier → `бИа`, mir → `мИа` |
 | r elsewhere | р | a light throat sound, like a soft French r: not rolled | Straße → `штрАсэ` |
@@ -108,8 +108,9 @@ German e is written **э**, never е, so the consonant before it stays hard (`г
 | v | ф (в in some loanwords) | | viel → `филь` |
 | h starting a syllable | х | a light breath, softer than Russian х | Hallo → `хАло` |
 | h after a vowel | — | silent: the vowel is long | geht → `гэт` |
-| b, d, g ending a word or word part | п, т, к | | Abend → `Абэнт` |
+| b, d, g ending a word or word part | п, т, к | also d before -lung, -nung, as in the English guide | Abend → `Абэнт`, Alles in Ordnung → `Алэс ин Ортнунг` |
 | l | л; ль before a consonant and at the end | a light l | bald → `бальт`, viel → `филь` |
+| a French nasal (an, en, on) | нг after the vowel | | Nebensaison → `нЭбэнзэзонг` |
 | ng | нг | one sound: н at the back of the mouth, no separate г | lange → `лАнгэ` |
 | qu | кв | | Quark → `кварк` |
 | pf | пф | | Apfel → `Апфэль` |
@@ -157,8 +158,8 @@ Polish reads *zi, si, ci, ni* as ź, ś, ć, ń, and *i* before a vowel as a sof
 | au | au | | auf → `AUF` |
 | eu, äu | oj | | heute → `HOJ-te` |
 | j | j | | ja → `JA` |
-| -er ending a word or word part | a | | jeder → `JE-da` |
-| r after a vowel, ending a word or word part | a (ija after i) | | er → `EA`, Bier → `BIJA` |
+| -er ending a word or word part | a | native words; a loanword's unstressed er, or keeps r | jeder → `JE-da`, Termin → `ter-MIN` |
+| r after a vowel, ending a word or word part | a (ija after i) | | er → `EA`, Bier → `BIJA`, Herr → `HEA` |
 | r elsewhere | r | a light throat r, not rolled | Straße → `SZTRA-se` |
 | ch after a, o, u, au | ch | as Polish ch | Buch → `BUCH` |
 | ch after i, e, ä, ö, ü, ei, eu, l, n, r; -chen; -ig at the end | ś | close to the German sound. A Polish ch here would be read hard, as the ach sound | ich → `IŚ`, Mädchen → `MET-śen`, nichts → `NIŚC`, König → `KÖ-niś` |
@@ -173,9 +174,13 @@ Polish reads *zi, si, ci, ni* as ź, ś, ć, ń, and *i* before a vowel as a sof
 | v | f (w in some loanwords) | | viel → `FIL` |
 | h starting a syllable | h | a light breath, softer than Polish h | Hallo → `HA-lo` |
 | h after a vowel | — | silent: the vowel is long | geht → `GET` |
-| b, d, g ending a word or word part | p, t, k | | Abend → `A-bent` |
-| ng | ng | one sound, no separate g | lange → `LANG-e` |
+| b, d, g ending a word or word part | p, t, k | also d before -lung, -nung | Abend → `A-bent`, Handlung → `HANT-lung` |
+| ng | ng | one sound, no separate g; stays together before a vowel | lange → `LANG-e` |
 | qu | kw | | Quark → `KWARK` |
+| a French nasal (an, en, on) | ng after the vowel | | Branche → `BRANG-sze` |
+| j, g in a French loan | ż | | Garage → `ga-RA-że` |
+| j in an English loan | dż | | Job → `DŻOP` |
+| an English "ay" (mail, update) | ej | | E-Mail → `I-mejl`, Update → `AP-dejt` |
 
 Ten worked examples:
 
