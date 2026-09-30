@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 21:13
+last-seen: 2026-09-30 21:21
 last-read: 2990
 
 ## Now
 
-#1174 website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) — claimed 2026-09-30 21:11.
+#1174 in review as PR #1179: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

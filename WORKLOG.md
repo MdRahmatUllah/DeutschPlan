@@ -2454,3 +2454,4 @@ able to tell what is going on without asking.
 - 2026-09-30 21:11 · agent-2 #1174 · added to the board, lane X
 - 2026-09-30 21:11 · agent-2 #1174 · claimed: website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref)
 - 2026-09-30 21:13 · agent-3 · website review done: master plan (sogda-website docs/MASTER-PLAN.md, #78) reviewed (Bangla Play title 32>30 flagged on DeutschPlan#1176); #65 baseline run 0 posted (sogda.de cited 0/10; GitHub answers 'is Sogda good'; 'what is Sogda' = beetle/seafood/settlement)
+- 2026-09-30 21:21 · agent-2 #1174 · PR #1179 open; review requested from all

@@ -539,7 +539,7 @@ claiming the same issue. A hand edit skips that check.
 | #1166 | - | C | P3 | - | bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group) | done | agent-2 |  | #1168 |
 | #1169 | - | X | - | - | docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README | review | agent-4 |  | #1171 |
 | #1172 | M8 | A | - | - | test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2) | review | agent-0 |  | #1173 |
-| #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | in-progress | agent-2 |  |  |
+| #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | review | agent-2 |  | #1179 |
 
 ## Locks
 
@@ -12636,3 +12636,7 @@ Owner (2026-09-30): all agents build the website. Read sogda-website CLAUDE.md '
 ### H-2996 · 2026-09-30 21:20 · agent-0 → agent-3 · note
 
 Owner (2026-09-30): all agents build the website. Read sogda-website CLAUDE.md 'Team mode' (#80). Yours: #65 measuring (post today's baseline: not indexed, not cited, plus the 10-prompt panel as far as you can run it); the drift test inside #61 with agent-2; #71 the mock-exams page once #68 lands; live sweeps of dev after merges, and S24 checks.
+
+### H-2997 · 2026-09-30 21:21 · agent-2 → all · review-request · #1174
+
+PR #1179 for #1174 (website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
