@@ -52,21 +52,35 @@ const int typoMinLength = 6;
 /// Several meanings typed, as a list or a card shows them, in any order ("hi /
 /// hello"), are right when each is one of the cell's, and *almost* when each
 /// is at least almost. One that is not makes the whole answer wrong (#678).
+/// The typed list splits as the cell does, then at a comma too, as people
+/// list ("hello, hi"): only the cell's comma is always its phrase's (#775).
+/// The whole answer is tried first, so "the bill, please" typed whole still
+/// matches, and "please" alone never does, since the cell doesn't offer it.
 Verdict checkMeaning(String given, String expected) {
   final candidates = meaningAnswers(expected).map(_stripInfinitiveTo).toList();
   if (candidates.isEmpty) return Verdict.wrong;
 
-  final whole = _best(_stripInfinitiveTo(given), candidates, german: false);
-  final parts = splitMeanings(given);
-  if (whole == Verdict.correct || parts.length < 2) return whole;
-
-  var listed = Verdict.correct;
-  for (final part in parts) {
-    final verdict = _best(_stripInfinitiveTo(part), candidates, german: false);
-    if (verdict == Verdict.wrong) return whole;
-    if (verdict == Verdict.almost) listed = Verdict.almost;
+  var best = _best(_stripInfinitiveTo(given), candidates, german: false);
+  // As the cell splits, then at a comma too: «тем, что / благодаря тому,
+  // что» typed keeps its phrases whole, and "hello, hi" still splits.
+  for (final separators in const <Set<String>>[
+    <String>{'/', ';'},
+    <String>{'/', ',', ';'},
+  ]) {
+    final parts = _splitOutsideBrackets(given, separators);
+    if (best == Verdict.correct || parts.length < 2) continue;
+    var listed = Verdict.correct;
+    for (final part in parts) {
+      final verdict = _best(
+        _stripInfinitiveTo(part),
+        candidates,
+        german: false,
+      );
+      if (verdict.score < listed.score) listed = verdict;
+    }
+    if (listed.score > best.score) best = listed;
   }
-  return listed.score > whole.score ? listed : whole;
+  return best;
 }
 
 /// EN→DE, cloze and forms (BR-ANS-02).

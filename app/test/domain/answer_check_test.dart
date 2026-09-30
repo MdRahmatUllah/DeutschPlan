@@ -75,6 +75,9 @@ void main() {
         Verdict.correct,
       );
       expect(checkMeaning('home', 'house / home'), Verdict.correct);
+      expect(checkMeaning('tip, please', 'the bill, please'), Verdict.wrong);
+      expect(checkMeaning('что', 'тем, что'), Verdict.wrong);
+      expect(checkMeaning('тем, что', 'тем, что'), Verdict.correct);
       expect(splitMeanings('বিল দিন, দয়া করে'), <String>['বিল দিন, দয়া করে']);
     });
 
@@ -642,6 +645,10 @@ void main() {
       );
       expect(checkMeaning('hi / hello', 'hello / hi'), Verdict.correct);
       expect(checkMeaning('walk; go', 'to go / to walk'), Verdict.correct);
+      // #775: the typed list splits at a comma, as people list; only the
+      // cell's comma is its phrase's.
+      expect(checkMeaning('hello, hi', 'hi / hello'), Verdict.correct);
+      expect(checkMeaning('walk, go', 'to go / to walk'), Verdict.correct);
     });
 
     test('with one of them misspelt, almost', () {
