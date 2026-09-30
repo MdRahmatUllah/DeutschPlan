@@ -126,6 +126,43 @@ def test_a_chart_openpyxl_drops_is_put_back(src, tmp_path, monkeypatch):
         assert z.read("xl/charts/chart1.xml").endswith(MARK)
 
 
+EMPTY_DRAWING = (b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                 b'<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"/>')
+
+
+def as_sheets_export(path: Path) -> Path:
+    """The fixture as Google Sheets exports it (B2-C2): an empty drawing per
+    sheet, so the chart's drawing is drawing2.xml, not drawing1.xml."""
+    with zipfile.ZipFile(path) as z:
+        parts = {n: z.read(n) for n in z.namelist()}
+    parts["xl/drawings/drawing2.xml"] = parts.pop("xl/drawings/drawing1.xml")
+    parts["xl/drawings/_rels/drawing2.xml.rels"] = parts.pop("xl/drawings/_rels/drawing1.xml.rels")
+    parts["xl/drawings/drawing1.xml"] = EMPTY_DRAWING
+    rels = next(n for n in parts if n.startswith("xl/worksheets/_rels/"))
+    parts[rels] = parts[rels].replace(b"drawing1.xml", b"drawing2.xml")
+    parts["[Content_Types].xml"] = parts["[Content_Types].xml"].replace(
+        b'<Override PartName="/xl/drawings/drawing1.xml"',
+        b'<Override PartName="/xl/drawings/drawing2.xml" ContentType="application/'
+        b'vnd.openxmlformats-officedocument.drawing+xml"/><Override PartName="/xl/drawings/drawing1.xml"')
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for name, data in parts.items():
+            z.writestr(name, data)
+    return path
+
+
+def test_a_sheets_export_keeps_its_chart_whatever_its_drawing_is_called(src, tmp_path):
+    # B2, C1 and C2 as exported: their chart drawing is drawing2.xml, and
+    # openpyxl saves it as drawing1.xml and drops the empty ones.
+    export = as_sheets_export(src)
+    out = tmp_path / "out.xlsx"
+    merge(export, out, [RU])
+    with zipfile.ZipFile(out) as z:
+        assert z.read("xl/charts/chart1.xml").endswith(MARK)
+    assert "drawing of chart1.xml" in chart_parts(export)
+    assert "drawing of chart1.xml" in chart_parts(src)  # openpyxl's absolute target
+    assert chart_parts(out) == chart_parts(export)
+
+
 def test_merging_again_rewrites_the_columns_in_place(src, tmp_path):
     first, second = tmp_path / "1.xlsx", tmp_path / "2.xlsx"
     merge(src, first, [RU])
