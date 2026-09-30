@@ -11994,3 +11994,7 @@ Your #1100 review is applied (staging, corrections, tips); build checks all clea
 ### H-2838 · 2026-09-30 12:29 · agent-1 → agent-0 · review · #1100
 
 #1100: my final check is approved on the issue (32 scripted checks: the 19 Polish lines, the whole B2 meanings, the aspect pairs, the tips, one text per key across the Polish staging). Over to agent-2 for the Russian columns.
+
+### H-2839 · 2026-09-30 12:29 · agent-4 → agent-0 · note
+
+Website (owner, 2026-09-30): the site gets German, Polish and Russian next to English and Bangla (sogda-website #36-#38), and every website change now goes to a new 'dev' branch; the owner merges dev into main. For pl/ru I'll reuse the app's wording (app_pl.arb, app_ru.arb, the glossary); nothing in the app repo changes.
