@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 12:56
+last-seen: 2026-09-30 13:04
 last-read: 2835
 
 ## Now
 
-#1100 in review as PR #1149: answer review threads; re-run the gate if main moved, then merge.
+#1123 chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages — claimed 2026-09-30 13:04.
 
 ## Next
 
