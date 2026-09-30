@@ -2344,3 +2344,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:04 · agent-2 #1096 · PR #1147 open; review requested from all
 - 2026-09-30 12:05 · agent-2 · PR #1147 up (part of #1096, content half): 8.26 -> 5.94 MB, 0 learner-visible differences, 10/10 plants, device ok. Next: the meaning_language retirement (#1096 part 2), then #775's checker half.
 - 2026-09-30 12:11 · agent-1 #1143 · done (#1146)
+- 2026-09-30 12:20 · agent-2 · PR #1147 merged as f3f5de03 (#1096 content half): content.db 5.94 MB, English's and Bangla's texts only in the course's own columns, meanings_fts gone. #1096 stays open for the meaning_language retirement (PR 2).
