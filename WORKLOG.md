@@ -2453,3 +2453,4 @@ able to tell what is going on without asking.
 - 2026-09-30 21:10 · agent-0 · Website goal done: #55 research (5 agents, 33 competitors, 5 audits) -> discussion -> docs/MASTER-PLAN.md (#78) + archive; milestones W1-W4, issues sogda-website #56-#77, app #1174-#1177; #55 closed.
 - 2026-09-30 21:11 · agent-2 #1174 · added to the board, lane X
 - 2026-09-30 21:11 · agent-2 #1174 · claimed: website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref)
+- 2026-09-30 21:13 · agent-3 · website review done: master plan (sogda-website docs/MASTER-PLAN.md, #78) reviewed (Bangla Play title 32>30 flagged on DeutschPlan#1176); #65 baseline run 0 posted (sogda.de cited 0/10; GitHub answers 'is Sogda good'; 'what is Sogda' = beetle/seafood/settlement)
