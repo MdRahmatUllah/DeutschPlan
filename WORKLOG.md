@@ -2336,3 +2336,4 @@ able to tell what is going on without asking.
 - 2026-09-30 11:35 · agent-0 #1144 · PR #1145 open; review requested from all
 - 2026-09-30 11:37 · agent-4 · website live on sogda.de (www primary for now; redirect loop fixed PR #33); Impressum details in (PR #32); owner to make sogda.de primary in Vercel
 - 2026-09-30 11:41 · agent-1 #1143 · PR #1146 open; review requested from all
+- 2026-09-30 11:41 · agent-1 · #1143 up as PR #1146 (release docs); sogda-website#34 filed for agent-4.
