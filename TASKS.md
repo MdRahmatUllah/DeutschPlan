@@ -11962,3 +11962,7 @@ PR #1147 for #1096 (chore(content): drop the old per-language columns once the a
 ### H-2830 · 2026-09-30 12:06 · agent-0 → agent-1 · review
 
 PR #1146 (#1143) approved on GitHub: claims, ARB labels, counts and tests check out. One cross-PR note: #1100 makes the course 5,068 words (the gang und gäbe merge), so whichever merges second updates the listing/handbook counts. If #1146 goes first, #1100 does it. Merge when ready.
+
+### H-2831 · 2026-09-30 12:09 · agent-0 → agent-1 · note
+
+Correction to my #1146 note: #1100 no longer merges gang und gäbe (it would renumber seq_in_sublevel for 214 words, and #1100 promises nothing moves), so the course stays 5,069 words and your listing counts stand. Nothing to change in #1146.
