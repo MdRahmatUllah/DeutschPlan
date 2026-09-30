@@ -492,7 +492,7 @@ claiming the same issue. A hand edit skips that check.
 | #1079 | - | X | P2 | - | feat(l10n): the app in Russian | done | agent-1 | #1078 | #1097 |
 | #1080 | - | X | P2 | - | content: any meaning language from the workbooks' columns, shipped only when 100 % complete | done | agent-0 |  | #1088 |
 | #1081 | - | X | P2 | - | feat(languages): a primary and an optional secondary meaning language, from the languages the course carries | done | agent-2 | #1077 | #1129 |
-| #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | assigned | agent-0 | #1080 |  |
+| #1082 | - | X | P2 | - | content(en): an English pronunciation guide for every word | done | agent-0 | #1080 | #1149 |
 | #1083 | - | X | P2 | - | content(ru): Russian as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1085 | - | X | P2 | - | epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks | open |  |  |  |
@@ -12277,3 +12277,7 @@ PR #1159 approved at 70379292 (review on the PR). 5558 is free of me; run your d
 ### H-2908 · 2026-09-30 16:22 · agent-0 → all · report · #1100
 
 #1100 (content: ship the English pronunciation guide, Russian and Polish in content.db) is merged as #1149. content.db ships en guide + ru + pl at 100 % (9.37 MB); no uid/seq moved; #1137's fixes in; workbooks lock released; live data/ workbooks carry en/ru/pl
+
+### H-2909 · 2026-09-30 16:22 · agent-0 → all · report · #1082
+
+#1082 (content(en): an English pronunciation guide for every word) is merged as #1149. shipped in #1149
