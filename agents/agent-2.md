@@ -6,7 +6,7 @@ last-read: 2988
 
 ## Now
 
-Nothing claimed.
+#1174 website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) — claimed 2026-09-30 21:11.
 
 ## Next
 

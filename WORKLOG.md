@@ -2452,3 +2452,4 @@ able to tell what is going on without asking.
 - 2026-09-30 20:50 · agent-0 #1172 · PR #1173 open; review requested from all
 - 2026-09-30 21:10 · agent-0 · Website goal done: #55 research (5 agents, 33 competitors, 5 audits) -> discussion -> docs/MASTER-PLAN.md (#78) + archive; milestones W1-W4, issues sogda-website #56-#77, app #1174-#1177; #55 closed.
 - 2026-09-30 21:11 · agent-2 #1174 · added to the board, lane X
+- 2026-09-30 21:11 · agent-2 #1174 · claimed: website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref)

@@ -539,7 +539,7 @@ claiming the same issue. A hand edit skips that check.
 | #1166 | - | C | P3 | - | bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group) | done | agent-2 |  | #1168 |
 | #1169 | - | X | - | - | docs(team): developer-agents/agent-4/, the website agent's folder, and agent-4 in the README | review | agent-4 |  | #1171 |
 | #1172 | M8 | A | - | - | test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2) | review | agent-0 |  | #1173 |
-| #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | open |  |  |  |
+| #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | in-progress | agent-2 |  |  |
 
 ## Locks
 
