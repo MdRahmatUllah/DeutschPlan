@@ -515,7 +515,7 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
       tokens,
       SgTextRole.title,
     ).copyWith(fontWeight: FontWeight.w500);
-    final english = widget.item.sentence.english;
+    final translation = widget.item.sentence.translation;
     final underline =
         tokens.color.forArticle(widget.item.word?.article) ??
         tokens.color.primary;
@@ -568,7 +568,7 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
                 color: tokens.color.textSecondary,
               ),
               const SizedBox(height: 16),
-              if (english != null)
+              if (translation != null)
                 AnimatedSize(
                   duration: MediaQuery.disableAnimationsOf(context)
                       ? const Duration(milliseconds: 1)
@@ -587,7 +587,7 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
                             ),
                           ),
                           child: SgText(
-                            english,
+                            translation,
                             role: SgTextRole.body,
                             textAlign: TextAlign.center,
                           ),

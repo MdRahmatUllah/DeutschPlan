@@ -6,15 +6,21 @@ import 'package:sogda/domain/sentence_picker.dart';
 /// [SentenceStore] over drift: `word_examples` from the attached course,
 /// `word_state` and `sentence_log` from the learner's database.
 class DriftSentenceStore implements SentenceStore {
-  DriftSentenceStore(this._db);
+  DriftSentenceStore(this._db, [this._lang = _english]);
 
   final AppDatabase _db;
+
+  /// #1119: the primary meaning language, read as each query runs: a
+  /// sentence's translation is in it, or in English where it has none.
+  final String Function() _lang;
+
+  static String _english() => 'en';
 
   static SentenceCandidate _candidate(QueryRow row) => SentenceCandidate(
     wordUid: row.read<String>('word_uid'),
     ord: row.read<int>('ord'),
     german: row.read<String>('german'),
-    english: row.readNullable<String>('english'),
+    translation: row.readNullable<String>('translation'),
     headword: row.data['headword'] as String?,
     pos: row.data['pos'] as String?,
     forms: row.data['forms'] as String?,
@@ -25,13 +31,19 @@ class DriftSentenceStore implements SentenceStore {
     final rows = await _db
         .customSelect(
           '''
-SELECT l.word_uid, l.ord, e.german, e.english
+SELECT l.word_uid, l.ord, e.german,
+  coalesce(t.translation, e.english) AS translation
 FROM sentence_log l
 JOIN word_examples e ON e.word_uid = l.word_uid AND e.ord = l.ord
+LEFT JOIN word_example_translations t
+  ON t.word_uid = e.word_uid AND t.ord = e.ord AND t.lang = ?2
 WHERE l.shown_on = ?1
 ORDER BY l.rowid
 ''',
-          variables: <Variable<Object>>[Variable<String>(date)],
+          variables: <Variable<Object>>[
+            Variable<String>(date),
+            Variable<String>(_lang()),
+          ],
           readsFrom: <ResultSetImplementation<Object, Object>>{_db.sentenceLog},
         )
         .get();
@@ -46,11 +58,14 @@ ORDER BY l.rowid
     final rows = await _db
         .customSelect(
           '''
-SELECT e.word_uid, e.ord, e.german, e.english, w.german AS headword, w.pos,
-  w.forms
+SELECT e.word_uid, e.ord, e.german,
+  coalesce(t.translation, e.english) AS translation, w.german AS headword,
+  w.pos, w.forms
 FROM word_examples e
 JOIN words w ON w.uid = e.word_uid
 JOIN word_state s ON s.word_uid = e.word_uid
+LEFT JOIN word_example_translations t
+  ON t.word_uid = e.word_uid AND t.ord = e.ord AND t.lang = ?2
 WHERE s.status IN ('learning', 'done') AND w.kind = 'vocab'
   AND NOT EXISTS (
     SELECT 1 FROM sentence_log l
@@ -60,6 +75,7 @@ ORDER BY e.word_uid, e.ord
 ''',
           variables: <Variable<Object>>[
             Variable<String>(addDays(today, -gapDays)),
+            Variable<String>(_lang()),
           ],
           readsFrom: <ResultSetImplementation<Object, Object>>{
             _db.wordState,

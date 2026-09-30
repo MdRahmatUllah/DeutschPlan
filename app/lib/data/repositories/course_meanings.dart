@@ -38,6 +38,9 @@ class CourseMeanings {
 
   final Map<String, Map<String, WordMeaningText>> _byWord;
 
+  /// How many words have a meaning.
+  int get length => _byWord.length;
+
   /// [uid]'s meaning in [lang], or null where the course has none: a word of
   /// the learner's own, or a language that didn't ship.
   String? meaning(String uid, String lang) => _byWord[uid]?[lang]?.meaning;

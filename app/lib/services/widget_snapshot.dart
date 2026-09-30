@@ -92,15 +92,19 @@ String? widgetTomorrow(AppLocalizations l10n, TomorrowPreview tomorrow) {
 /// a To-do word, nor a suspended one. Follows the reviews: a word revised
 /// today leaves the candidates. And the meaning languages: M3's change of
 /// them reaches the widget at once.
+///
+/// The course's meanings are read before the first word: a background
+/// refresh writes the first one and goes (#1119).
 @riverpod
-Stream<WidgetWord?> widgetWord(Ref ref) {
-  final meanings = ref.watch(meaningsProvider);
+Stream<WidgetWord?> widgetWord(Ref ref) async* {
+  // Watched before the await: a ref used after its provider went throws.
+  final loading = ref.watch(meaningsLoadedProvider.future);
   final today = ref.watch(todayProvider);
-  return ref.watch(wordRepositoryProvider).watchDue(addDays(today, 3)).map((
-    due,
-  ) {
+  final due = ref.watch(wordRepositoryProvider).watchDue(addDays(today, 3));
+  final meanings = await loading;
+  yield* due.map((rows) {
     final learned = {
-      for (final word in due)
+      for (final word in rows)
         if (word.status != WordStatus.todo &&
             word.status != WordStatus.suspended)
           word.word.uid: word.word,

@@ -191,7 +191,10 @@ void main() {
 
     setUp(() async {
       directory = tempDir('sogda_widget');
-      final content = ContentFixture.write('${directory.path}/content.db').file;
+      final content = ContentFixture.write(
+        '${directory.path}/content.db',
+        russian: true,
+      ).file;
       db = AppDatabase.memory();
       await db.customStatement(
         "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
@@ -257,6 +260,15 @@ void main() {
 
       await languages.setMeaning(MeaningChoice.of(MeaningLanguage.both));
       expect((await word())?.meaning, 'house · বাড়ি');
+    });
+
+    test("#1119 a Russian learner's first word is in Russian already: a "
+        'background refresh writes the first one and goes', () async {
+      await state(ContentFixture.haus, '2026-09-21');
+      await container
+          .read(languagesProvider.notifier)
+          .setMeaning(const MeaningChoice('ru', 'en'));
+      expect((await word())?.meaning, 'дом · house');
     });
 
     test('a background refresh saves it', () async {
