@@ -508,28 +508,20 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
     String? finishedAt,
   }) => db.transaction(() async {
     final rows = await answersFor(attemptId).get();
-    // The paper's meaning language decides how its cells split (#775).
-    final lang = (await (db.select(
-      db.examAttempts,
-    )..where((t) => t.id.equals(attemptId))).getSingleOrNull())?.meaningLang;
-    final paper = scorePaper(
-      <({ExamItem item, String? given, String? rubric})>[
-        for (final row in rows)
-          (
-            item: ExamItem.decode((
-              section: row.section,
-              ref: row.itemRef,
-              prompt: row.prompt,
-              options: row.optionsJson,
-              expected: row.expected,
-            )),
-            given: row.given,
-            rubric: row.selfRubricJson,
-          ),
-      ],
-      passPercent: passPercent,
-      lang: lang,
-    );
+    final paper = scorePaper(<({ExamItem item, String? given, String? rubric})>[
+      for (final row in rows)
+        (
+          item: ExamItem.decode((
+            section: row.section,
+            ref: row.itemRef,
+            prompt: row.prompt,
+            options: row.optionsJson,
+            expected: row.expected,
+          )),
+          given: row.given,
+          rubric: row.selfRubricJson,
+        ),
+    ], passPercent: passPercent);
     for (final (i, row) in rows.indexed) {
       await (update(db.examAnswers)..where(
             (t) => t.attemptId.equals(attemptId) & t.ord.equals(row.ord),

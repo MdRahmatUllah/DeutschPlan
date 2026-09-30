@@ -36,6 +36,7 @@ from pipeline_steps import (  # noqa: E402
     PipelineError,
     apply_corrections,
     apply_grammar_corrections,
+    comma_lists,
     assign_examples,
     coverage,
     cross_level_duplicates,
@@ -556,3 +557,22 @@ class TestDenylist:
     def test_628_the_shipped_course_has_no_denylisted_term(self):
         failures = verify(REPO / "app" / "assets" / "db" / "content.db")
         assert [f for f in failures if f.gate == "denylist"] == []
+
+
+class TestCommaLists:
+    """#775: a comma never separates synonyms; the build warns on a list."""
+
+    def test_775_a_words_english_listing_with_a_comma_is_warned(self):
+        listed = word(english="house, home", row=7)
+        listed.kind = "vocab"
+        (warning,) = comma_lists([listed])
+        assert warning.startswith("comma list: t.xlsx All Words row 7 ('Haus')")
+        assert "Use ' / '" in warning
+
+    def test_775_a_phrase_a_note_a_bracket_and_a_slash_are_not(self):
+        phrase = word(german="Zahlen, bitte!", english="the bill, please", pos="phrase")
+        note = word(german="Suffix -bar", english="suffixes -bar, -lich")
+        bracket = word(english="drugstore (dm, Rossmann)")
+        slash = word(english="house / home")
+        phrase.kind, note.kind, bracket.kind, slash.kind = "vocab", "note", "vocab", "vocab"
+        assert comma_lists([phrase, note, bracket, slash]) == []
