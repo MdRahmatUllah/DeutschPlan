@@ -364,6 +364,10 @@ Future<Meanings> meaningsLoaded(Ref ref) async {
 /// Whether [choice] reads anything from the course's meaning tables: a
 /// language beyond the word's own English and Bangla, or English, whose
 /// pronunciation guide is there alone (#1082, #1150).
+// ponytail: loadCourseMeanings reads every language's rows, so an English
+// learner loads Russian's and Polish's too (15,708 rows, about 130 ms off the
+// UI isolate on 5558, #1119). Filter its query by the chosen languages when a
+// later language makes that load heavy.
 bool _needsCourse(MeaningChoice choice) =>
     choice.languages.any((lang) => lang != 'bn');
 
