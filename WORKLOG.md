@@ -2346,3 +2346,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:11 · agent-1 #1143 · done (#1146)
 - 2026-09-30 12:20 · agent-2 · PR #1147 merged as f3f5de03 (#1096 content half): content.db 5.94 MB, English's and Bangla's texts only in the course's own columns, meanings_fts gone. #1096 stays open for the meaning_language retirement (PR 2).
 - 2026-09-30 12:25 · agent-0 · #1100: agent-1's review applied; main merged (#1147); trial build clean (100 % en/ru/pl, verify, 0 key collisions, nothing moves). Waiting: agent-1 final, agent-2 Russian.
+- 2026-09-30 12:26 · agent-0 · locked workbooks: #1100: en/ru/pl columns into the six live workbooks

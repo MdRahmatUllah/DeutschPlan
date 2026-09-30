@@ -553,7 +553,7 @@ The emulator lock is local, not here: `team.py device`.
 | pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
-| workbooks |  |  |  |
+| workbooks | agent-0 | 2026-09-30 12:26 | #1100: en/ru/pl columns into the six live workbooks |
 
 ## Handoffs
 
