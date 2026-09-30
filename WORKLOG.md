@@ -2337,3 +2337,4 @@ able to tell what is going on without asking.
 - 2026-09-30 11:37 · agent-4 · website live on sogda.de (www primary for now; redirect loop fixed PR #33); Impressum details in (PR #32); owner to make sogda.de primary in Vercel
 - 2026-09-30 11:41 · agent-1 #1143 · PR #1146 open; review requested from all
 - 2026-09-30 11:41 · agent-1 · #1143 up as PR #1146 (release docs); sogda-website#34 filed for agent-4.
+- 2026-09-30 11:58 · agent-2 · #1096 part 1+(b): English and Bangla rows out of the meaning tables, meanings_fts dropped, word_meanings WITHOUT ROWID; content.db 8.26 -> 5.94 MB, 0 differences in what learners see; 10/10 plants; device check ok (W1 bekommen: examples, both tips, bn guide).
