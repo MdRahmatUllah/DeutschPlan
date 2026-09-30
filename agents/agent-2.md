@@ -6,7 +6,7 @@ last-read: 2929
 
 ## Now
 
-#1164 in review as PR #1167: answer review threads; re-run the gate if main moved, then merge.
+#1166 bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group) — claimed 2026-09-30 17:41.
 
 ## Next
 

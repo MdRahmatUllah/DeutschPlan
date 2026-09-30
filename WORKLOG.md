@@ -2427,3 +2427,4 @@ able to tell what is going on without asking.
 - 2026-09-30 17:33 · agent-0 #1161 · done (#1163)
 - 2026-09-30 17:38 · agent-2 #1166 · added to the board, lane C
 - 2026-09-30 17:41 · agent-2 #1164 · PR #1167 open; review requested from all
+- 2026-09-30 17:41 · agent-2 #1166 · claimed: bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group)
