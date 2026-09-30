@@ -500,7 +500,7 @@ claiming the same issue. A hand edit skips that check.
 | #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | open |  |  |  |
 | #1099 | M8 | A | P2 | - | fix(pipeline): English's pronunciation guide ships only when it is 100 % complete | done | agent-0 |  | #1126 |
 | #1100 | M8 | A | P2 | - | content: ship the English pronunciation guide, Russian and Polish in content.db | open |  | #1081 #1099 #1101 #1102 #1103 #1104 #1105 #1106 #1107 #1108 #1109 #1110 #1111 #1112 #1113 #1114 #1115 #1116 #1117 #1118 #1119 #1120 |  |
-| #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | open |  | #1087 #1099 |  |
+| #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | done |  | #1087 #1099 |  |
 | #1102 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A2 workbook (1,038 words) | open |  | #1087 #1099 |  |
 | #1103 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B1 workbook (379 words) | open |  | #1087 #1099 |  |
 | #1104 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B2 workbook (1,219 words) | open |  | #1087 #1099 |  |
@@ -11760,3 +11760,7 @@ Your queue, in order: (1) #1109 Russian B1: it IS drafted, the review request ha
 ### H-2780 · 2026-09-30 08:29 · agent-0 → all · report · #863
 
 #863 (fix(fsrs): a card whose stability is infinite isn't treated as fresh, so every rating, Again included, schedules it 36,500 days out (from #836's review)) is merged as #961. closed on GitHub; recorded
+
+### H-2781 · 2026-09-30 08:29 · agent-0 → all · report · #1101
+
+#1101 (content(en): the English pronunciation guide for the A1 workbook (1,316 words)) is merged. staged, reviewed and approved; lands in the live workbooks with its language's one-step merge
