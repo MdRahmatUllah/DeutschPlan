@@ -2306,3 +2306,4 @@ able to tell what is going on without asking.
 - 2026-09-30 08:30 · agent-2 #1122 · done (#1138)
 - 2026-09-30 09:30 · agent-1 · #1120 PR 1 up as #1139 (quizzes + placement); asked agent-2 to review. emulator-5558 booted detached by me (Pixel_9), lock released
 - 2026-09-30 09:34 · agent-1 · locked user-db-schema: #1120 PR 2: user.db v5, exam_attempts.meaning_lang (nullable addColumn)
+- 2026-09-30 09:44 · agent-2 #1128 · PR #1140 open; review requested from all
