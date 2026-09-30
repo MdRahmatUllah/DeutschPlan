@@ -84,7 +84,7 @@ void main() {
         overrides: <Override>[
           ...todayStub(),
           languagesProvider.overrideWith(
-            () => _FixedLanguages(MeaningLanguage.english),
+            () => _FixedLanguages(const MeaningChoice('en')),
           ),
           contentDaoProvider.overrideWithValue(_OneStepDao(db)),
           courseStepsProvider.overrideWith(
@@ -585,9 +585,9 @@ class _OneStepDao extends ContentDao {
 class _FixedLanguages extends Languages {
   _FixedLanguages(this.meaning);
 
-  final MeaningLanguage meaning;
+  final MeaningChoice meaning;
 
   @override
   ({MeaningChoice meaning, UiLanguage ui}) build() =>
-      (meaning: MeaningChoice.of(meaning), ui: UiLanguage.english);
+      (meaning: meaning, ui: UiLanguage.english);
 }

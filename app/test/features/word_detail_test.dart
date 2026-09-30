@@ -263,7 +263,7 @@ void main() {
     testWidgets('an English learner reads the English only', (tester) async {
       await pump(
         tester,
-        detail: artboardWordDetail(meaning: MeaningLanguage.english),
+        detail: artboardWordDetail(meaning: const MeaningChoice('en')),
       );
       expect(find.text('street, road'), findsOneWidget);
       expect(find.text('রাস্তা'), findsNothing);
@@ -964,7 +964,7 @@ void main() {
         tester,
         detail: artboardWordDetail(
           translate: true,
-          meaning: MeaningLanguage.english,
+          meaning: const MeaningChoice('en'),
         ),
       );
       expect(action(l10n.wordTranslate), findsNothing);
@@ -1169,12 +1169,12 @@ void main() {
     expect((await read())!.pronKeySeen, isTrue);
     await container
         .read(languagesProvider.notifier)
-        .setMeaning(MeaningChoice.of(MeaningLanguage.english));
+        .setMeaning(const MeaningChoice('en'));
     expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
     expect((await read())!.pron, isNull);
     await container
         .read(languagesProvider.notifier)
-        .setMeaning(MeaningChoice.of(MeaningLanguage.both));
+        .setMeaning(const MeaningChoice('en', 'bn'));
     expect((await read())!.pron?.text, 'হাউস');
   });
 

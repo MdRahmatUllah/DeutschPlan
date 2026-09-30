@@ -161,26 +161,13 @@ class DateSetting extends SettingKey<DateTime?> {
   }
 }
 
-/// Which language a word's meaning is shown in.
-enum MeaningLanguage { english, bangla, both }
-
 /// The app's own language. German strings live in content, not in the ARBs.
 ///
-/// Its own setting, apart from [MeaningLanguage] (#1078): Polish screens with
-/// English meanings is what the two exist for. A new language is a value
+/// Its own setting, apart from the meaning languages (#1078): Polish screens
+/// with English meanings is what the two exist for. A new language is a value
 /// here, its code in [SettingKeys.uiLanguage], its locale and name in
 /// `ui_language_locale.dart`, and its ARB.
 enum UiLanguage { english, bangla, polish, russian }
-
-/// #1077: whether Bangla is one of the meaning languages. The Bangla
-/// pronunciation shows only then, whatever `show_pron_bn` says: the switch
-/// is the learner's choice within Bangla, and an English-only learner may
-/// read no Bangla at all, however the language was set (setup, M3, an
-/// import, a reset). Its own extension since #1078 took the meaning's
-/// hold on the app language away.
-extension MeaningLanguageBangla on MeaningLanguage {
-  bool get hasBangla => this != MeaningLanguage.english;
-}
 
 /// `system` follows the platform; the other three are the modes in
 /// `theming.md`.
@@ -258,20 +245,10 @@ abstract final class SettingKeys {
   static const quizCustomWords = BoolSetting('quiz_custom_words', false);
 
   // Display.
-  static const meaningLanguage = EnumSetting<MeaningLanguage>(
-    'meaning_language',
-    MeaningLanguage.both,
-    MeaningLanguage.values,
-    <MeaningLanguage, String>{
-      MeaningLanguage.english: 'en',
-      MeaningLanguage.bangla: 'bn',
-      MeaningLanguage.both: 'both',
-    },
-  );
-
   /// #1081: the meaning languages by code (`course_languages`), a primary and
-  /// an optional secondary (empty: none). Until the primary is written, both
-  /// are read from [meaningLanguage]: `meaningChoiceOf`.
+  /// an optional secondary (empty: none). Before the primary is written,
+  /// English then Bangla: `meaningChoiceOf`. They replaced
+  /// `meaning_language` (#1096: `retiredMeaningLanguage`).
   static const meaningPrimary = StringSetting('meaning_primary');
   static const meaningSecondary = StringSetting('meaning_secondary');
   static const uiLanguage = EnumSetting<UiLanguage>(
@@ -383,7 +360,6 @@ abstract final class SettingKeys {
     doneStabilityDays,
     swipeToRate,
     quizCustomWords,
-    meaningLanguage,
     meaningPrimary,
     meaningSecondary,
     uiLanguage,

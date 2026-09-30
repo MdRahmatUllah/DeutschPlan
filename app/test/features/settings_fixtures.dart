@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/core/providers/app_providers.dart'
     show settingsSourceProvider;
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -32,6 +33,11 @@ class StubSettings extends Fake implements SettingsRepository {
 
   /// A value from before the test, heard by nothing.
   void put<T>(SettingKey<T> key, T value) => _values[key.name] = value;
+
+  /// The meaning languages, as `writeMeaningChoice` stores them (#1096).
+  void putMeaning(MeaningChoice choice) => this
+    ..put(SettingKeys.meaningPrimary, choice.primary)
+    ..put(SettingKeys.meaningSecondary, choice.secondary);
 }
 
 /// M3 without a database: the documented defaults, no learned words, and no

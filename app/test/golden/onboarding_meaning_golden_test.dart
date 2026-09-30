@@ -69,5 +69,5 @@ void main() {
 class _BothPicked extends Languages {
   @override
   ({MeaningChoice meaning, UiLanguage ui}) build() =>
-      (meaning: MeaningChoice.of(MeaningLanguage.both), ui: UiLanguage.english);
+      (meaning: const MeaningChoice('en', 'bn'), ui: UiLanguage.english);
 }

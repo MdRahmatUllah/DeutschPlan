@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
@@ -20,17 +21,53 @@ void main() {
     await db.close();
   });
 
-  test('#1081 before either is written, the choice is meaning_language\'s: '
-      'en + bn by default', () async {
+  test('#1081 before either is written, English then Bangla', () {
     expect(meaningChoiceOf(settings), const MeaningChoice('en', 'bn'));
-    for (final (old, choice) in <(MeaningLanguage, MeaningChoice)>[
-      (MeaningLanguage.english, const MeaningChoice('en')),
-      (MeaningLanguage.bangla, const MeaningChoice('bn')),
-      (MeaningLanguage.both, const MeaningChoice('en', 'bn')),
+    expect(MeaningChoice.fallback, const MeaningChoice('en', 'bn'));
+  });
+
+  Future<List<Setting>> rows() => (db.select(
+    db.settings,
+  )..orderBy([(t) => OrderingTerm(expression: t.key)])).get();
+
+  test("#1096 an install from before #1081: meaning_language is read once "
+      'into the settings that replaced it, and deleted', () async {
+    for (final (stored, choice) in <(String, MeaningChoice)>[
+      ('en', const MeaningChoice('en')),
+      ('bn', const MeaningChoice('bn')),
+      ('both', const MeaningChoice('en', 'bn')),
+      ('nonsense', const MeaningChoice('en', 'bn')),
     ]) {
-      await settings.write(SettingKeys.meaningLanguage, old);
-      expect(meaningChoiceOf(settings), choice, reason: '$old');
+      await db.customStatement('DELETE FROM settings');
+      await db.customStatement(
+        "INSERT INTO settings (key, value) VALUES ('meaning_language', ?)",
+        <Object?>[stored],
+      );
+      await settings.load();
+      expect(meaningChoiceOf(settings), choice, reason: stored);
+      expect(
+        <String>[for (final row in await rows()) row.key],
+        <String>[
+          'meaning_primary',
+          if (choice.secondary != null) 'meaning_secondary',
+        ],
+        reason: '$stored: the old key is gone',
+      );
     }
+  });
+
+  test('#1096 a learner who chose since keeps their choice; the old key goes '
+      'all the same', () async {
+    await writeMeaningChoice(settings, const MeaningChoice('ru'));
+    await db.customStatement(
+      "INSERT INTO settings (key, value) VALUES ('meaning_language', 'both')",
+    );
+    await settings.load();
+    expect(meaningChoiceOf(settings), const MeaningChoice('ru'));
+    expect(
+      <String>[for (final row in await rows()) row.key],
+      <String>['meaning_primary'],
+    );
   });
 
   test('#1081 a written choice reads back, a database later too', () async {
@@ -47,22 +84,15 @@ void main() {
     }
   });
 
-  test('#1081 a choice keeps meaning_language as near as its three come, '
-      'for an older build', () async {
-    for (final (choice, old) in <(MeaningChoice, MeaningLanguage)>[
-      (const MeaningChoice('bn', 'en'), MeaningLanguage.both),
-      (const MeaningChoice('bn'), MeaningLanguage.bangla),
-      (const MeaningChoice('ru', 'bn'), MeaningLanguage.bangla),
-      (const MeaningChoice('ru'), MeaningLanguage.english),
-      (const MeaningChoice('en'), MeaningLanguage.english),
-    ]) {
-      await writeMeaningChoice(settings, choice);
-      expect(
-        settings.read(SettingKeys.meaningLanguage),
-        old,
-        reason: '$choice',
-      );
-    }
+  test('#1096 a choice writes the two settings and nothing else', () async {
+    await writeMeaningChoice(settings, const MeaningChoice('bn', 'en'));
+    expect(
+      <(String, String)>[for (final row in await rows()) (row.key, row.value)],
+      <(String, String)>[
+        ('meaning_primary', 'bn'),
+        ('meaning_secondary', 'en'),
+      ],
+    );
   });
 
   test('#1081 a secondary the same as the primary is none', () async {

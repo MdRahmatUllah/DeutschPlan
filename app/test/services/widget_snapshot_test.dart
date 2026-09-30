@@ -250,15 +250,15 @@ void main() {
       await state(ContentFixture.haus, '2026-09-21');
       // As M3 changes it.
       final languages = container.read(languagesProvider.notifier);
-      await languages.setMeaning(MeaningChoice.of(MeaningLanguage.english));
+      await languages.setMeaning(const MeaningChoice('en'));
       expect((await word())?.meaning, 'house');
       expect((await word())?.german, 'Haus');
       expect((await word())?.article, 'das');
 
-      await languages.setMeaning(MeaningChoice.of(MeaningLanguage.bangla));
+      await languages.setMeaning(const MeaningChoice('bn'));
       expect((await word())?.meaning, 'বাড়ি');
 
-      await languages.setMeaning(MeaningChoice.of(MeaningLanguage.both));
+      await languages.setMeaning(const MeaningChoice('en', 'bn'));
       expect((await word())?.meaning, 'house · বাড়ি');
     });
 
@@ -319,7 +319,7 @@ void main() {
 
         await container
             .read(languagesProvider.notifier)
-            .setMeaning(MeaningChoice.of(MeaningLanguage.english));
+            .setMeaning(const MeaningChoice('en'));
         await pumpEventQueue();
         expect(meaning(), 'house');
       },

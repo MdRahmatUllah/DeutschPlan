@@ -150,7 +150,7 @@ void main() {
       await tester.runAsync(
         () => container
             .read(languagesProvider.notifier)
-            .setMeaning(MeaningChoice.of(MeaningLanguage.english)),
+            .setMeaning(const MeaningChoice('en')),
       );
       await tester.pump();
       expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
@@ -159,7 +159,7 @@ void main() {
       await tester.runAsync(
         () => container
             .read(languagesProvider.notifier)
-            .setMeaning(MeaningChoice.of(MeaningLanguage.bangla)),
+            .setMeaning(const MeaningChoice('bn')),
       );
       await tester.pump();
       expect(pron, findsOneWidget);
@@ -173,14 +173,13 @@ void main() {
         tester.element(find.byType(StudyWordCard)),
       ).read(languagesProvider.notifier);
       await tester.runAsync(
-        () =>
-            languages.chooseMeaning(MeaningChoice.of(MeaningLanguage.english)),
+        () => languages.chooseMeaning(const MeaningChoice('en')),
       );
       await tester.pump();
       expect(pron, findsNothing);
 
       await tester.runAsync(
-        () => languages.chooseMeaning(MeaningChoice.of(MeaningLanguage.both)),
+        () => languages.chooseMeaning(const MeaningChoice('en', 'bn')),
       );
       await tester.pump();
       expect(pron, findsOneWidget);

@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/features/exam/exam_review_screen.dart';
 import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -37,7 +37,7 @@ void main() {
     WidgetTester tester, {
     ExamResult? result,
     StudyTip? tip = gender,
-    MeaningLanguage meaning = MeaningLanguage.english,
+    MeaningChoice meaning = const MeaningChoice('en'),
   }) async {
     backs = 0;
     opened = <String>[];
@@ -50,7 +50,7 @@ void main() {
         overrides: [
           ...examResultStub(StubExamResult(result: result ?? reviewResult())),
           settingsProvider.overrideWithValue(
-            StubSettings()..put(SettingKeys.meaningLanguage, meaning),
+            StubSettings()..putMeaning(meaning),
           ),
           studyBackProvider.overrideWith(
             (ref, uid) async => (
@@ -158,7 +158,7 @@ void main() {
   });
 
   testWidgets('a Bangla learner reads the tip in Bangla', (tester) async {
-    await pump(tester, meaning: MeaningLanguage.bangla);
+    await pump(tester, meaning: const MeaningChoice('bn'));
     await tap(tester, l10n.examReviewWrong(13));
     await tester.scrollUntilVisible(find.text('___ Rechnung'), 300);
     await tester.pumpAndSettle(); // its gender topic

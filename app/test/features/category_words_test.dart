@@ -17,7 +17,6 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/backlog/backlog_screen.dart';
@@ -413,7 +412,7 @@ void main() {
     (ProviderScope.containerOf(tester.element(find.byType(CategoryWordsScreen)))
                 .read(settingsSourceProvider)
             as StubSettings)
-        .put(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+        .putMeaning(const MeaningChoice('bn'));
     await tester.tap(find.text(l10n.stepTabQuiz));
     await tester.pumpAndSettle();
     expect(quiz!.direction, 'de>bn');
@@ -601,21 +600,18 @@ void main() {
 
       await container
           .read(languagesProvider.notifier)
-          .setMeaning(MeaningChoice.of(MeaningLanguage.english));
+          .setMeaning(const MeaningChoice('en'));
       expect(await haus(), List.filled(4, 'house'));
     });
 
     test('in English when the learner reads English', () async {
-      await settings.write(
-        SettingKeys.meaningLanguage,
-        MeaningLanguage.english,
-      );
+      await writeMeaningChoice(settings, const MeaningChoice('en'));
       expect(await meanings(), <String>['house', 'door', 'street']);
     });
 
     test('in Bangla when the learner reads Bangla, English where the course '
         'has none', () async {
-      await settings.write(SettingKeys.meaningLanguage, MeaningLanguage.bangla);
+      await writeMeaningChoice(settings, const MeaningChoice('bn'));
       await db.customStatement(
         "UPDATE c.words SET bangla = NULL WHERE uid = '${ContentFixture.strasse}'",
       );

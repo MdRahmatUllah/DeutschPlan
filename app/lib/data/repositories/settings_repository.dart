@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:drift/drift.dart' show InsertMode;
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart'
+    show retiredMeaningKeys, retiredMeaningLanguage;
 import 'package:sogda/data/repositories/setting_keys.dart';
 
 /// Every preference, read synchronously and written through to `settings`.
@@ -35,9 +37,35 @@ class SettingsRepository {
   /// Reads the table into memory: before the first [read], and again from
   /// [reload] after an import.
   Future<void> load() async {
+    await _retireMeaningLanguage();
     final rows = await _db.select(_db.settings).get();
     _values = <String, String>{for (final row in rows) row.key: row.value};
   }
+
+  /// #1096: an install from before #1081 keeps its meaning languages as
+  /// `meaning_language`. Read once into the settings that replaced it, unless
+  /// the learner has chosen with those since, and deleted.
+  Future<void> _retireMeaningLanguage() => _db.transaction(() async {
+    Future<Setting?> row(String key) => (_db.select(
+      _db.settings,
+    )..where((t) => t.key.equals(key))).getSingleOrNull();
+    final stored = await row(retiredMeaningLanguage);
+    if (stored == null) return;
+    if (await row(SettingKeys.meaningPrimary.name) == null) {
+      for (final MapEntry(:key, :value) in retiredMeaningKeys(
+        stored.value,
+      ).entries) {
+        await _db
+            .into(_db.settings)
+            .insertOnConflictUpdate(
+              SettingsCompanion.insert(key: key, value: value),
+            );
+      }
+    }
+    await (_db.delete(
+      _db.settings,
+    )..where((t) => t.key.equals(retiredMeaningLanguage))).go();
+  });
 
   /// One setting straight from the table, before [load] has run.
   ///

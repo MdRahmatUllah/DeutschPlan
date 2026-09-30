@@ -51,7 +51,7 @@ void main() {
     WidgetTester tester, {
     SgMode mode = SgMode.light,
     double textScale = 1,
-    MeaningLanguage meaning = MeaningLanguage.english,
+    MeaningChoice meaning = const MeaningChoice('en'),
     bool voice = true,
   }) async {
     tester.view
@@ -376,7 +376,7 @@ void main() {
     testWidgets('are in the language page 2 chose', (tester) async {
       // A learner who reads meanings in Bangla, tested on their English,
       // would place below their German.
-      await pump(tester, meaning: MeaningLanguage.bangla);
+      await pump(tester, meaning: const MeaningChoice('bn'));
 
       final item = tester
           .state<PlacementScreenState>(find.byType(PlacementScreen))
@@ -528,9 +528,9 @@ class _PoolDao extends ContentDao {
 class _FixedLanguages extends Languages {
   _FixedLanguages(this.meaning);
 
-  final MeaningLanguage meaning;
+  final MeaningChoice meaning;
 
   @override
   ({MeaningChoice meaning, UiLanguage ui}) build() =>
-      (meaning: MeaningChoice.of(meaning), ui: UiLanguage.english);
+      (meaning: meaning, ui: UiLanguage.english);
 }

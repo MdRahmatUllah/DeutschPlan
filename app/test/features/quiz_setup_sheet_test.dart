@@ -36,7 +36,7 @@ void main() {
 
   Future<void> pump(
     WidgetTester tester, {
-    MeaningLanguage meaning = MeaningLanguage.english,
+    MeaningChoice meaning = const MeaningChoice('en'),
     MeaningChoice? choice,
   }) async {
     started = null;
@@ -83,7 +83,7 @@ void main() {
     final settings = ProviderScope.containerOf(
       tester.element(find.byType(StepDetailScreen)),
     ).read(settingsSourceProvider) as StubSettings;
-    settings.put(SettingKeys.meaningLanguage, meaning);
+    settings.putMeaning(meaning);
     if (choice != null) {
       settings
         ..put(SettingKeys.meaningPrimary, choice.primary)
@@ -142,12 +142,12 @@ void main() {
   testWidgets("#387 the direction starts on the learner's meaning language", (
     tester,
   ) async {
-    await pump(tester, meaning: MeaningLanguage.bangla);
+    await pump(tester, meaning: const MeaningChoice('bn'));
     expect(selected(tester, 'DE → বাংলা'), isTrue);
     expect(chip('বাংলা → DE'), findsOneWidget);
     expect(chip('DE → EN'), findsNothing);
 
-    await pump(tester, meaning: MeaningLanguage.both);
+    await pump(tester, meaning: const MeaningChoice('en', 'bn'));
     expect(selected(tester, 'DE → EN'), isTrue);
     expect(chip('DE → বাংলা'), findsOneWidget, reason: 'the second language');
     expect(chip('EN → DE'), findsOneWidget);
