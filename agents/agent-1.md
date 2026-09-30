@@ -6,7 +6,7 @@ last-read: 2918
 
 ## Now
 
-Nothing claimed.
+#1161 test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint) — claimed 2026-09-30 17:09.
 
 ## Next
 
