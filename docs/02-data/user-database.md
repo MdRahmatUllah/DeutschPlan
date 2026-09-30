@@ -51,6 +51,7 @@ A write is in memory before it is on disk. A write that fails, or a transaction 
 | `meaning_language` | `both` | Onboarding, Settings |
 | `ui_language` | `en` (a first run: the phone's language when Sogda speaks it, en or bn or pl or ru, #1078) | Onboarding page 1, Settings |
 | `theme_mode` | `system` (light / dark / glass) | Settings |
+| `pron_key_seen` | 0 | W1, T2's back — #1122: the pronunciation key has been opened once, so its line is a small ⓘ |
 | `show_pron_bn` | 1 | Settings; S2's meaning language sets it (off for English only, #527) |
 | `tts_engine` / `tts_voice` / `tts_speed` | supertonic / Anna / 1.0 | Settings, Model manager |
 | `autoplay_headword` / `autoplay_example` | 1 / 0 | Settings |

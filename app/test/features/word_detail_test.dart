@@ -19,6 +19,7 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/content_update.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
 import 'package:sogda/data/repositories/search_repository.dart';
@@ -266,6 +267,65 @@ void main() {
       );
       expect(find.text('street, road'), findsOneWidget);
       expect(find.text('রাস্তা'), findsNothing);
+    });
+
+    testWidgets("#1122 a guide in a language with a key has the key under it: "
+        'a tap opens it, and from then on it is a small ⓘ', (tester) async {
+      await pump(
+        tester,
+        detail: artboardWordDetail(
+          meanings: const Meanings(MeaningChoice('ru', 'en')),
+          pron: (lang: 'ru', text: 'штрАсэ'),
+        ),
+      );
+      expect(find.text(l10n.pronKeyLine), findsOneWidget);
+
+      await tester.tap(find.text(l10n.pronKeyLine));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.pronKeyRu), findsOneWidget);
+      expect(settings.read(SettingKeys.pronKeySeen), isTrue);
+
+      Navigator.of(tester.element(find.text(l10n.pronKeyRu))).pop();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.pronKeyLine), findsNothing, reason: 'seen');
+      expect(find.byIcon(Icons.info_outline), findsOneWidget);
+    });
+
+    testWidgets('#1122 at 200 % text the key line and each key sheet are '
+        'whole', (tester) async {
+      textAt(tester, 2);
+      for (final lang in <String>['en', 'ru', 'pl']) {
+        await pump(
+          tester,
+          detail: artboardWordDetail(
+            meanings: Meanings(MeaningChoice(lang, 'bn')),
+            pron: (lang: lang, text: 'SHTRAH-suh'),
+          ),
+        );
+        expectNothingClipped(tester, within: find.byType(PronKey));
+        await tester.tap(find.byType(PronKey));
+        await tester.pumpAndSettle();
+        expectNothingClipped(tester);
+        Navigator.of(tester.element(find.text(l10n.pronKeyLine).last)).pop();
+        await tester.pumpAndSettle();
+      }
+    });
+
+    testWidgets("#1122 the key is the guide's language's: English opens the "
+        "English key; Bangla's guide has none", (tester) async {
+      await pump(
+        tester,
+        detail: artboardWordDetail(pron: (lang: 'en', text: 'SHTRAH-suh')),
+      );
+      await tester.tap(find.text(l10n.pronKeyLine));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.pronKeyEn), findsOneWidget);
+      expect(find.text(l10n.pronKeyRu), findsNothing);
+
+      await pump(tester);
+      expect(find.text('Nomen · die Straße, -n · /স্ট্রাসে/'), findsOneWidget);
+      expect(find.text(l10n.pronKeyLine), findsNothing);
+      expect(find.byIcon(Icons.info_outline), findsNothing);
     });
 
     testWidgets('every example with its translation', (tester) async {
@@ -1101,7 +1161,12 @@ void main() {
     Future<WordDetail?> read() =>
         container.read(wordDetailProvider(ContentFixture.haus).future);
 
-    expect((await read())!.pron, 'হাউস', reason: 'both, the default');
+    expect((await read())!.pron?.text, 'হাউস', reason: 'both, the default');
+    // #1122: the key's flag, read with the rest.
+    expect((await read())!.pronKeySeen, isFalse);
+    await settings.write(SettingKeys.pronKeySeen, true);
+    container.invalidate(wordDetailProvider(ContentFixture.haus));
+    expect((await read())!.pronKeySeen, isTrue);
     await container
         .read(languagesProvider.notifier)
         .setMeaning(MeaningChoice.of(MeaningLanguage.english));
@@ -1110,7 +1175,7 @@ void main() {
     await container
         .read(languagesProvider.notifier)
         .setMeaning(MeaningChoice.of(MeaningLanguage.both));
-    expect((await read())!.pron, 'হাউস');
+    expect((await read())!.pron?.text, 'হাউস');
   });
 
   test('#854 PIPE-09 an old uid, from a link written before an update '

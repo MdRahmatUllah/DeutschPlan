@@ -57,6 +57,7 @@ Details M3 settles (#146):
 - FR-M3-01 The retention subtitle estimates reviews/day = Σ over learned words of 1 ÷ intervalDays(stability) at the chosen retention (sampled, cached).
 - FR-M3-02 Theme changes apply immediately app-wide (`themeProvider`).
 - FR-M3-03 Turning translation on without a model opens M4 and leaves the switch off until the model is ready.
+- `pron_key_seen` (#1122) has no row: it records that the learner opened a pronunciation key once (W1, T2's back), after which the key's line is a small ⓘ.
 - FR-M3-04 *Show Bangla pronunciation* follows the meaning language in setup only (S2 page 2: off for English only). M3's *Meaning language* row leaves the switch as the learner set it (#537). The switch is offered only while Bangla is a meaning language, and the pronunciation shows only then, whatever the switch says: an English-only learner, however the language was set (setup, M3, an import, a reset), sees no Bangla script (#1077, `MeaningChoice.hasBangla`). An English-alphabet guide for them is content still to come (the multi-language design).
 
 **Tests.** each row writes its key; FR-M3-01 estimate; goldens top/bottom × 3 themes.

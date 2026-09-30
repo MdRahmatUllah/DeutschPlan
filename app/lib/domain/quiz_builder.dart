@@ -37,11 +37,19 @@ typedef QuizAsk = ({QuizDirection direction, String? lang});
 
 /// [direction] as `QuizArgs` and `quiz_attempts` carry it: `de>ru` is German
 /// → Russian, `ru>de` Russian → German, and the others are their names.
-String askWire(QuizDirection direction, [String? lang]) => switch (direction) {
-  QuizDirection.toMeaning => 'de>$lang',
-  QuizDirection.fromMeaning => '$lang>de',
-  _ => direction.name,
-};
+String askWire(QuizDirection direction, [String? lang]) {
+  assert(
+    lang != null ||
+        direction != QuizDirection.toMeaning &&
+            direction != QuizDirection.fromMeaning,
+    'a meaning direction has its language',
+  );
+  return switch (direction) {
+    QuizDirection.toMeaning => 'de>$lang',
+    QuizDirection.fromMeaning => '$lang>de',
+    _ => direction.name,
+  };
+}
 
 /// [wire] read back. Before #1120 the meaning directions were `deEn`,
 /// `deBn` and `enDe`, which asked German → English, German → Bangla and the
@@ -390,11 +398,14 @@ class QuizBuilder {
       case QuizDirection.fromMeaning:
         // #387: in the learner's meaning language, as the exam's Reverse,
         // English where the word has none in it; and, for a learner who
-        // reads two, the other one's meaning under it.
+        // reads two, the other one's meaning under it — but not under a
+        // prompt that fell back: "landlord" over "landlord" says nothing.
         final lang = ask.lang!;
         final asked = word.meaningIn(lang);
-        final prompt = (asked ?? '').trim().isNotEmpty ? asked! : word.english;
-        final other = languages.length == 2 && languages.contains(lang)
+        final inLang = (asked ?? '').trim().isNotEmpty;
+        final prompt = inLang ? asked! : word.english;
+        final other =
+            inLang && languages.length == 2 && languages.contains(lang)
             ? languages.firstWhere((l) => l != lang)
             : null;
         final hint = other == null ? null : word.meaningIn(other);
