@@ -191,7 +191,7 @@ words:
   "b37a137a0f2225e7":
     why: "#628: personal details replaced with generic ones"
     example_de_1: "Darf ich mich vorstellen? Ich bin Tom."
-    example_ru_1: "Разрешите представиться? Я Том."
+    example_ru_1: "Разрешите представиться: я Том."
     example_pl_1: "Czy mogę się przedstawić? Jestem Tom."
     example_en_1: "May I introduce myself? I'm Tom."
   "b99e111baae8da4b":
@@ -836,7 +836,7 @@ words:
   "d3e47e28c62ae9b3":
     why: "#631: the example did not name its word"
     example_de_2: "Das Altpapier kommt in die blaue Tonne."
-    example_ru_2: "Макулатура идёт в синий контейнер."
+    example_ru_2: "Макулатуру выбрасывают в синий контейнер."
     example_pl_2: "Makulatura trafia do niebieskiego pojemnika."
     example_en_2: "Waste paper goes in the blue bin."
   "c2d1e4454fb37760":
@@ -1141,7 +1141,7 @@ words:
   "dad124114af5e625":
     why: "#631: no example the cloze can gap; one that names the word"
     example_de_3: "Die Ergebnisse könnten eine andere Erklärung nahelegen."
-    example_ru_3: "Результаты могут наводить на другое объяснение."
+    example_ru_3: "Результаты могут наводить на мысль о другом объяснении."
     example_pl_3: "Wyniki mogą sugerować inne wyjaśnienie."
     example_en_3: "The results might suggest a different explanation."
   "6f8a13e044ebe7b4":
@@ -1219,7 +1219,7 @@ words:
   "bd4b70ffc170cbfb":
     why: "#631: the example did not name its word"
     example_de_2: "Die Versiegelung rückgängig zu machen ist teuer."
-    example_ru_2: "Вернуть почве проницаемость стоит дорого."
+    example_ru_2: "Отменить запечатывание почвы стоит дорого."
     example_pl_2: "Odwrócenie zasklepienia gleby jest kosztowne."
     example_en_2: "Reversing soil sealing is expensive."
   "6391e2d4e5b11fcb":
@@ -1302,7 +1302,7 @@ words:
   "2ff8b2dc916f0019":
     why: "#631: the example did not name its word"
     example_de_2: "Laut Aufgabenstellung müssen alle Leitpunkte bearbeitet werden."
-    example_ru_2: "Согласно заданию, нужно раскрыть все ключевые пункты."
+    example_ru_2: "Согласно формулировке задания, нужно раскрыть все ключевые пункты."
     example_pl_2: "Zgodnie z poleceniem trzeba omówić wszystkie punkty wiodące."
     example_en_2: "According to the task, all guiding points must be addressed."
   "a04cf2bfb54e3634":
@@ -1542,7 +1542,7 @@ words:
   "affb8ef95c07922c":
     why: "#631: the example did not name its word"
     example_de_2: "Beim Dienst nach Vorschrift wird alles korrekt erledigt, aber nichts darüber hinaus."
-    example_ru_2: "При работе строго по инструкции всё делается правильно, но ничего сверх."
+    example_ru_2: "При итальянской забастовке всё делается правильно, но ничего сверх."
     example_pl_2: "Przy strajku włoskim wszystko jest robione poprawnie, ale nic ponad to."
     example_en_2: "When working to rule, everything is done correctly, but nothing more."
   "05a12e3ebce0c154":
@@ -1638,7 +1638,7 @@ words:
   "03006936991022d7":
     why: "#631: the example did not name its word"
     example_de_2: "Wer Komplexität reduziert, zahlt dafür einen Preis."
-    example_ru_2: "Кто упрощает сложное, платит за это свою цену."
+    example_ru_2: "Кто снижает сложность, платит за это определённую цену."
     example_pl_2: "Kto redukuje złożoność, płaci za to pewną cenę."
     example_en_2: "Anyone who reduces complexity pays a price for it."
   "0cf46f07c8bfb1d9":
@@ -1698,13 +1698,13 @@ words:
   "bd6182241e04f344":
     why: "#631: the example did not name its word"
     example_de_2: "Im Sackerl steckt die österreichische Verkleinerungsform -erl."
-    example_ru_2: "В Sackerl — австрийский уменьшительный суффикс -erl."
+    example_ru_2: "В слове Sackerl — австрийский уменьшительный суффикс -erl."
     example_pl_2: "W Sackerl kryje się austriacka forma zdrobnienia -erl."
     example_en_2: "'Sackerl' contains the Austrian diminutive -erl."
   "9513d1ada7bfa1bf":
     why: "#631: the example did not name its word"
     example_de_2: "Sauerei ist etwas derb, aber in Alltagsgesprächen häufig."
-    example_ru_2: "Sauerei — грубовато, но часто в повседневной речи."
+    example_ru_2: "Sauerei — грубовато, но часто встречается в повседневной речи."
     example_pl_2: "Sauerei jest nieco dosadne, ale częste w codziennych rozmowach."
     example_en_2: "'Sauerei' is somewhat coarse but common in everyday speech."
   "fd40def571cc2966":
@@ -1809,7 +1809,7 @@ words:
   "fdec5b93329f77e8":
     why: "#631: the example did not name its word"
     example_de_2: "Eine Watschn ist öfter bildlich als wörtlich gemeint."
-    example_ru_2: "Watschn чаще имеют в виду в переносном смысле, чем в прямом."
+    example_ru_2: "Watschn чаще употребляют в переносном смысле, чем в прямом."
     example_pl_2: "Watschn częściej ma znaczenie przenośne niż dosłowne."
     example_en_2: "A 'Watschn' is more often meant figuratively than literally."
   "b7cf957a07406571":
@@ -1958,7 +1958,7 @@ words:
   "0015074736a38184":
     why: "#631: the example did not name its word"
     example_de_2: "Unter Prüfungsbedingungen heißt: gleiche Uhrzeit, kein Wörterbuch, keine Pause."
-    example_ru_2: "В экзаменационных условиях — значит: то же время суток, без словаря, без перерыва."
+    example_ru_2: "«В экзаменационных условиях» значит: то же время суток, без словаря, без перерыва."
     example_pl_2: "„W warunkach egzaminacyjnych” oznacza: ta sama pora dnia, bez słownika, bez przerwy."
     example_en_2: "Under exam conditions means: same time of day, no dictionary, no break."
   "a081c266739ed1c7":

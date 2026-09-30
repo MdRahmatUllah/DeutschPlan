@@ -35,4 +35,4 @@ german,Kasse,,,false-friend,,"„die Kasse” to kasa (w sklepie, na dworcu), al
 german,Bank,,,false-friend,,"„die Bank” to bank, ale też ławka. Liczba mnoga: die Banken (banki), die Bänke (ławki)."
 german,anrufen,,,,"«anrufen» требует винительного падежа: Ich rufe dich an — не «dir», хотя по-русски «звоню тебе».","jemanden anrufen + biernik: Ich rufe dich an (dzwonię do ciebie), bez „zu”."
 german,Dose,,,false-friend,"«die Dose» — это банка (консервная, жестяная), а не доза. Доза — die Dosis.","„die Dose” to puszka, nie doza/dawka. Dawka to „die Dosis”."
-german,Marke,,,false-friend,"«die Marke» — это марка товара, бренд. Почтовая марка — die Briefmarke.",
+german,Marke,,,false-friend,"«die Marke» — прежде всего марка товара, бренд; почтовая марка — обычно die Briefmarke.",
