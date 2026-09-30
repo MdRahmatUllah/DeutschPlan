@@ -530,7 +530,7 @@ claiming the same issue. A hand edit skips that check.
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
 | #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | done | agent-1 |  | #1146 |
 | #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | done | agent-0 |  | #1145 |
-| #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | open |  |  |  |
+| #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | in-progress | agent-2 |  |  |
 
 ## Locks
 
