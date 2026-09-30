@@ -124,9 +124,22 @@ void main() {
         match.group(1)!,
     };
     expect(declared, hasLength(greaterThan(10)));
+    // #1134: declared for the pipeline (#1128), read by no screen yet. The
+    // build that reads it lists it, with a bundled course that has it.
+    const unread = <String>{'category_translations'};
+    expect(declared, containsAll(unread));
     expect(<String>{
       for (final table in dao.courseTables) table.actualTableName,
-    }, declared);
+    }, declared.difference(unread));
+  });
+
+  test('#1134 the course this build bundles fits it', () async {
+    final real = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+    await real.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(realContent())}' AS c",
+    );
+    expect(await ContentDao(real).fitsBuild(), isTrue);
+    await real.close();
   });
 
   test('a second run reuses the installed copy', () async {

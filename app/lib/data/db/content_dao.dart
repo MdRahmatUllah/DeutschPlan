@@ -388,8 +388,10 @@ class ContentDao extends DatabaseAccessor<AppDatabase> with _$ContentDaoMixin {
     return true;
   }
 
-  /// Every table `content_schema.drift` declares, as [fitsBuild] checks
-  /// them; a test holds the list to the schema file.
+  /// Every table `content_schema.drift` declares that this build reads, as
+  /// [fitsBuild] checks them; a test holds the list to the schema file.
+  /// `category_translations` (#1128) isn't read yet, and the bundled course
+  /// predates it (#1134): the build that reads it lists it here.
   List<TableInfo<Table, Object?>> get courseTables =>
       <TableInfo<Table, Object?>>[
         meta,
