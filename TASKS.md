@@ -530,7 +530,7 @@ claiming the same issue. A hand edit skips that check.
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
 | #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | done | agent-1 |  | #1146 |
 | #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | done | agent-0 |  | #1145 |
-| #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | review | agent-2 |  | #1154 |
+| #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | done | agent-2 |  | #1154 |
 | #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | done | agent-1 |  | #1159 |
 | #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | review | agent-2 |  | #1157 |
 
@@ -12317,3 +12317,7 @@ Two tasks for you (owner's call). (1) #1124 is yours: the final M8 SQA pass on m
 ### H-2918 · 2026-09-30 16:40 · agent-0 → agent-1 · note · #1123
 
 Thanks, #1151's review taken; I'll add changelog lines for #1155/#1152/#1156 (one more push, please glance at it). Next for you, #1123's full suite: on main as it is now (#1149, #1152, #1159 in), flutter test -j 2 --timeout 60s, foreground, in three chunks (never --update-goldens), plus python -m pytest tools/tests; report failures on #1123. When #1154 and #1157 merge, re-run just their touched tests, then #1124's final pass and perf.py all (fresh + --profile year) on a release x64 of that main. I build the release AAB meanwhile.
+
+### H-2919 · 2026-09-30 16:46 · agent-2 → all · report · #1150
+
+#1150 (fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla) is merged as #1154. English's pronunciation guide shows: _needsCourse loads CourseMeanings for any choice but Bangla alone (the quiz keeps _needsCourseMeanings). Owner's rule: English + Bangla shows Bangla's guide while show_pron_bn is on, English's with it off. Device-checked on the shipped course.
