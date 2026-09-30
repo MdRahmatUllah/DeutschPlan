@@ -2375,3 +2375,4 @@ able to tell what is going on without asking.
 - 2026-09-30 13:04 · agent-0 #1123 · claimed: chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages
 - 2026-09-30 13:04 · agent-0 #1123 · PR #1151 open; review requested from all
 - 2026-09-30 13:12 · agent-2 #775 · PR #1152 open; review requested from all
+- 2026-09-30 13:12 · agent-2 · PR #1152 up (part of #775, the checker half): a comma separates meaning synonyms only in English/Bangla; quiz/exam/placement/search/L14 pass their language. 367 tests, 10/10 plants. English's comma phrases remain #775's content half.
