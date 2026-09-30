@@ -29,7 +29,9 @@ import 'package:sogda/services/start_report.dart';
 class OnboardingWelcomePage extends StatefulWidget {
   const OnboardingWelcomePage({super.key, this.onStart, this.onRestored});
 
-  final VoidCallback? onStart;
+  /// *Let's start*: page 2, pushed once it resolves (#1156 preselects its
+  /// meanings first). The page is busy until then (#1158).
+  final FutureOr<void> Function()? onStart;
 
   /// After a restore that brought in a step: Today, skipping the rest of
   /// setup. A file with none carries on to page 2 ([onStart]). Null hides
@@ -62,7 +64,11 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
           .read(planRepositoryProvider)
           .hasEnrollment();
       if (!mounted) return;
-      (enrolled ? widget.onRestored : widget.onStart)?.call();
+      if (enrolled) {
+        widget.onRestored?.call();
+      } else {
+        await widget.onStart?.call();
+      }
     } on ImportException catch (refused) {
       error = refused.reason == ImportRefusal.newerSchema
           ? l10n.exportImportNewer
@@ -83,6 +89,22 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
     }
   }
 
+  /// *Let's start*, once: busy until page 2 is pushed, so a second tap
+  /// before then pushes no second page 2 (#1158). Only until the push: back
+  /// on page 1, the button works again.
+  Future<void> _start() async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await widget.onStart?.call();
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -99,7 +121,7 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
       headline: l10n.onboardingWelcomeHeadline,
       headerArt: const _RisingChart(),
       primaryLabel: l10n.onboardingWelcomeStart,
-      onPrimary: widget.onStart,
+      onPrimary: widget.onStart == null ? null : () => unawaited(_start()),
       busy: _busy,
       error: _error,
       secondaryLabel: widget.onRestored == null
