@@ -10,7 +10,7 @@ last-read: 2796
 
 ## Next
 
-While #1139 is in review: #1120 PR 2 (exams: exam_attempts gets its language (user-db lock), generator lang, intro; W2 + compare quiz in the primary). Then #1121.
+While #1142 is in review: Polish C1 #1117 and C2 #1118 reviews (agent-0's H-2793). Then re-checks of #1114 and #1116 when fixed.
 
 ## Memory
 
