@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:sogda/data/db/app_database.dart' show Word;
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/domain/answer_check.dart' show meaningAnswers;
 import 'package:sogda/domain/edit_distance.dart';
 import 'package:sogda/domain/text_norm.dart';
@@ -170,7 +171,15 @@ class SearchRepository {
 
   /// [step] keeps every tier to one step (L2's search icon), in each query,
   /// so the caps count that step's rows only.
-  Future<SearchResults> search(String query, {String? step}) async {
+  ///
+  /// [meanings] adds the learner's meaning languages beyond English and
+  /// Bangla (#1121), whose words are found by their meaning there, after the
+  /// German, English and Bangla ones in each tier.
+  Future<SearchResults> search(
+    String query, {
+    String? step,
+    Meanings? meanings,
+  }) async {
     // NFC's nukta letters, as `bangla` is stored: the exact tier matches the
     // column as typed, and a keyboard may type ড় as its one letter (#716).
     final trimmed = query.trim();
@@ -211,8 +220,15 @@ class SearchRepository {
               .prefixMatches(_prefixQuery(key), step, _prefixLimit)
               .get();
 
-    take(await _exact(raw, key, alt, step, prefixed), exactLimit);
-    take(_startsWith(prefixed), startsWithLimit);
+    final other = await _inOtherLanguages(raw, step, meanings);
+    take(<WordHit>[
+      ...await _exact(raw, key, alt, step, prefixed),
+      ...other.exact,
+    ], exactLimit);
+    take(<WordHit>[
+      ..._startsWith(prefixed),
+      ...other.startsWith,
+    ], startsWithLimit);
     take(await _similar(key, alt, step), similarLimit);
 
     return SearchResults(
@@ -267,6 +283,51 @@ class SearchRepository {
       ...sorted.where((hit) => !folded.contains(hit.uid)),
       ...sorted.where((hit) => folded.contains(hit.uid)),
     ];
+  }
+
+  /// Tiers 1 and 2 in the learner's languages beyond English and Bangla
+  /// (#1121): [CourseMeanings.find] in each, the words in [step] only, the
+  /// most frequent first.
+  Future<({List<WordHit> exact, List<WordHit> startsWith})> _inOtherLanguages(
+    String raw,
+    String? step,
+    Meanings? meanings,
+  ) async {
+    const none = (exact: <WordHit>[], startsWith: <WordHit>[]);
+    if (meanings == null) return none;
+    final key = meaningKey(raw);
+    final exact = <String>{};
+    final startsWith = <String>{};
+    for (final lang in meanings.choice.languages) {
+      if (lang == 'en' || lang == 'bn') continue;
+      final found = await meanings.course.find(lang, key);
+      exact.addAll(found.exact);
+      startsWith.addAll(found.startsWith);
+    }
+    startsWith.removeAll(exact);
+    if (exact.isEmpty && startsWith.isEmpty) return none;
+    // Each tier's rows apart, each capped as the German prefix tier is.
+    Future<Map<String, Word>> read(Set<String> uids) async => <String, Word>{
+      if (uids.isNotEmpty)
+        for (final row
+            in await _content
+                .wordsByUids(uids.toList(), step, _prefixLimit)
+                .get())
+          row.uid: row,
+    };
+    final rows = <String, Word>{
+      ...await read(exact),
+      ...await read(startsWith),
+    };
+    List<WordHit> hits(Set<String> uids, SearchTier tier) => <WordHit>[
+      for (final uid in uids)
+        if (rows[uid] case final word?)
+          WordHit(word: word, tier: tier, rank: -_freq(word)),
+    ]..sort(_byRank);
+    return (
+      exact: hits(exact, SearchTier.exact),
+      startsWith: hits(startsWith, SearchTier.startsWith),
+    );
   }
 
   /// Tier 2. FTS ranks these; frequency breaks the ties BR-SEARCH-01 cares

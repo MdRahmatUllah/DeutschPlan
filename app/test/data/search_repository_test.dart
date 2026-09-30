@@ -5,11 +5,18 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/text_norm.dart';
+import 'package:sogda/features/search/search_screen.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 import '../db/content_fixture.dart';
@@ -40,6 +47,126 @@ void main() {
 
     tearDown(() async {
       await db.close();
+    });
+
+    group('#1121 in the chosen languages beyond English and Bangla', () {
+      // Russian and Polish meanings, one with ё and one with ł: a learner
+      // types them as е and l, and FTS5 folds neither.
+      Future<Meanings> choose(MeaningChoice choice) async {
+        await db.customStatement('''
+          INSERT OR IGNORE INTO c.course_languages
+            (code, name, own_name, script, ord) VALUES
+            ('ru', 'Russian', 'Русский', 'Cyrl', 3),
+            ('pl', 'Polish', 'Polski', 'Latn', 4)
+        ''');
+        await db.customStatement('''
+          INSERT OR IGNORE INTO c.word_meanings
+            (word_uid, lang, meaning, pronunciation) VALUES
+            ('${ContentFixture.haus}', 'ru', 'дом / жильё', NULL),
+            ('${ContentFixture.tuer}', 'ru', 'дверь', NULL),
+            ('${ContentFixture.haus}', 'pl', 'dom / chałupa', NULL),
+            ('${ContentFixture.strasse}', 'pl', 'ulica', NULL)
+        ''');
+        return Meanings(choice, await loadCourseMeanings(ContentDao(db)));
+      }
+
+      Future<List<(String, SearchTier)>> found(
+        String query,
+        MeaningChoice choice, {
+        String? step,
+      }) async => <(String, SearchTier)>[
+        for (final hit in (await search.search(
+          query,
+          step: step,
+          meanings: await choose(choice),
+        )).words)
+          (hit.word.german, hit.tier),
+      ];
+
+      test(
+        'a Russian meaning finds its word, exactly or by its start',
+        () async {
+          const ru = MeaningChoice('ru', 'en');
+          expect(await found('дом', ru), <(String, SearchTier)>[
+            ('Haus', SearchTier.exact),
+          ]);
+          expect(await found('двер', ru), <(String, SearchTier)>[
+            ('Tür', SearchTier.startsWith),
+          ]);
+          expect(await found('жил', ru), <(String, SearchTier)>[
+            ('Haus', SearchTier.startsWith),
+          ], reason: 'a later word of the meaning');
+        },
+      );
+
+      test('with ё typed as е, and ł as l', () async {
+        expect(
+          await found('жилье', const MeaningChoice('ru')),
+          <(String, SearchTier)>[('Haus', SearchTier.exact)],
+        );
+        expect(
+          await found('ЖИЛЬЁ', const MeaningChoice('ru')),
+          <(String, SearchTier)>[('Haus', SearchTier.exact)],
+        );
+        expect(
+          await found('chalupa', const MeaningChoice('pl', 'en')),
+          <(String, SearchTier)>[('Haus', SearchTier.exact)],
+        );
+      });
+
+      test('a language not chosen is not searched', () async {
+        expect(await found('дом', const MeaningChoice('en', 'bn')), isEmpty);
+        expect(await found('ulica', const MeaningChoice('ru')), isEmpty);
+        expect(
+          await found('ulica', const MeaningChoice('ru', 'pl')),
+          <(String, SearchTier)>[('Straße', SearchTier.exact)],
+          reason: 'the second language too',
+        );
+      });
+
+      test("L2's step keeps it to that step's words", () async {
+        expect(
+          await found('дом', const MeaningChoice('ru'), step: 'A1.2'),
+          isEmpty,
+        );
+      });
+
+      test("R1 searches the learner's languages: its results through the "
+          'providers', () async {
+        await choose(const MeaningChoice('ru'));
+        final settings = SettingsRepository(db);
+        await settings.load();
+        addTearDown(settings.dispose);
+        await writeMeaningChoice(settings, const MeaningChoice('ru', 'en'));
+        final container = ProviderContainer(
+          overrides: <Override>[
+            appDatabaseProvider.overrideWithValue(db),
+            settingsProvider.overrideWithValue(settings),
+          ],
+        );
+        addTearDown(container.dispose);
+        final results = container.listen(
+          searchResultsProvider('дом'),
+          (_, _) {},
+        );
+        addTearDown(results.close);
+        final view = await container.read(searchResultsProvider('дом').future);
+        expect(
+          <String>[for (final row in view.words) row.word.word.word.german],
+          <String>['Haus'],
+        );
+        expect(view.words.single.word.meaning, 'дом / жильё · house');
+      });
+
+      test('German, English and Bangla find what they always did', () async {
+        final ru = const MeaningChoice('ru', 'en');
+        for (final query in <String>['Haus', 'house', 'Tür', 'বাড়ি']) {
+          expect(await found(query, ru), <(String, SearchTier)>[
+            for (final hit in (await search.search(query)).words)
+              (hit.word.german, hit.tier),
+          ], reason: query);
+        }
+      });
     });
 
     group('BR-SEARCH-02 — exact', () {
