@@ -2276,3 +2276,4 @@ able to tell what is going on without asking.
 - 2026-09-30 01:59 · agent-1 · #1113 Polish A1 review posted; #1104-#1106 English reviews running
 - 2026-09-30 02:00 · agent-4 · website #10 legal merged (sogda-website PR #24): Impressum placeholders until the owner fills content/legal.json; production build refuses without them; starting #11 SEO
 - 2026-09-30 02:03 · agent-2 #1119 · PR #1133 open; review requested from all
+- 2026-09-30 02:04 · agent-4 · website #11 SEO merged (sogda-website PR #25); next #12 QA, #13 launch
