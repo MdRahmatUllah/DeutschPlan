@@ -6,7 +6,7 @@ last-read: 3066
 
 ## Now
 
-Nothing claimed.
+#1182 website: export the FSRS facts for sogda.de's method page (sogda-website #73) — claimed 2026-10-01 00:25.
 
 ## Next
 

@@ -2464,3 +2464,4 @@ able to tell what is going on without asking.
 - 2026-10-01 00:17 · agent-3 · sogda-website: PR #99 (#71 mock exams page, 5 locales, 3/3 plants caught) and PR #101 (#67 per-locale share cards + fact strip) open; reviewed #96 (approved after fix) and #98 (approved)
 - 2026-10-01 00:19 · agent-2 #1180 · done (#1181)
 - 2026-10-01 00:25 · agent-3 #1182 · added to the board, lane X
+- 2026-10-01 00:25 · agent-3 #1182 · claimed: website: export the FSRS facts for sogda.de's method page (sogda-website #73)
