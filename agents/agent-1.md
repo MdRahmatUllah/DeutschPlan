@@ -6,7 +6,7 @@ last-read: 3073
 
 ## Now
 
-#1176 in review as PR #1186: answer review threads; re-run the gate if main moved, then merge.
+#1175 website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets — claimed 2026-10-01 01:52.
 
 ## Next
 
