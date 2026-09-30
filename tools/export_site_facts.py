@@ -37,6 +37,23 @@ SCHEMA = 1
 # every level page, so change it only on purpose.
 SEED = "sogda-site-v1"
 SAMPLE = 25  # the owner's O3 default (sogda-website #56)
+# The words of a first year in Germany that the site's audience pages show
+# (sogda-website #69), each as the course has it, with its step. A word the
+# course drops fails the export.
+FEATURED = (
+    "Anmeldung",
+    "Termin",
+    "Visum",
+    "Aufenthaltstitel",
+    "Ausländerbehörde",
+    "Behörde",
+    "Mietvertrag",
+    "Krankenversicherung",
+    "Bewerbung",
+    "Ausbildung",
+    "Studium",
+    "Einbürgerung",
+)
 # ponytail: the one minSdk the app has had; add a row when minSdk moves.
 ANDROID = {26: "8.0"}
 LISTING_LANGUAGES = {
@@ -139,10 +156,44 @@ def facts(db_path: Path = DB, sample: int = SAMPLE) -> dict:
         for uid, lang, topic in db.execute("select grammar_uid, lang, topic from grammar_translations"):
             topics.setdefault(uid, {})[lang] = topic
         per_step, paper = mock_exam()
+        columns = "uid, german, article, forms, pos, english, bangla, pron_bn"
+
+        def word(uid, german, article, forms, pos, english, bangla, pron_bn):
+            """A word as the app shows it: English's and Bangla's texts in the
+            course's own columns (#1147), English's guide in word_meanings
+            (#1082), Russian's and Polish's there too."""
+            others = meanings.get(uid, {})
+            return {
+                "uid": uid,
+                "german": german,
+                "article": article,
+                "forms": forms,
+                "pos": pos,
+                "meaning": {
+                    "en": english,
+                    "bn": bangla,
+                    **{lang: m for lang, (m, _) in others.items() if lang != "en"},
+                },
+                "guide": {
+                    "en": others.get("en", (None, None))[1],
+                    "bn": pron_bn,
+                    **{lang: g for lang, (_, g) in others.items() if lang != "en"},
+                },
+            }
+
+        featured = []
+        for german in FEATURED:
+            row = db.execute(
+                f"select {columns}, sublevel_code from words where german = ? and kind = 'vocab'",
+                (german,),
+            ).fetchone()
+            if row is None:
+                sys.exit(f"export_site_facts: the featured word {german!r} isn't in the course")
+            featured.append({**word(*row[:-1]), "step": row[-1]})
         out_steps = []
         for code, level, ord_, word_count, grammar_count in steps:
             words = db.execute(
-                "select uid, german, article, forms, pos, english, bangla, pron_bn from words"
+                f"select {columns} from words"
                 " where sublevel_code = ? and kind = 'vocab' and pos != 'phrase'",
                 (code,),
             ).fetchall()
@@ -158,29 +209,7 @@ def facts(db_path: Path = DB, sample: int = SAMPLE) -> dict:
                     "words": word_count,
                     "grammar_topics": grammar_count,
                     "grammar": [{"uid": uid, "topic": {"en": topic, **topics.get(uid, {})}} for uid, topic in grammar],
-                    "sample": [
-                        {
-                            "uid": uid,
-                            "german": german,
-                            "article": article,
-                            "forms": forms,
-                            "pos": pos,
-                            # As the app shows them: English's and Bangla's texts
-                            # in the course's own columns (#1147), and English's
-                            # guide in word_meanings (#1082).
-                            "meaning": {
-                                "en": english,
-                                "bn": bangla,
-                                **{lang: m for lang, (m, _) in meanings.get(uid, {}).items() if lang != "en"},
-                            },
-                            "guide": {
-                                "en": meanings.get(uid, {}).get("en", (None, None))[1],
-                                "bn": pron_bn,
-                                **{lang: g for lang, (_, g) in meanings.get(uid, {}).items() if lang != "en"},
-                            },
-                        }
-                        for uid, german, article, forms, pos, english, bangla, pron_bn in picked
-                    ],
+                    "sample": [word(*row) for row in picked],
                 }
             )
         levels = [
@@ -221,6 +250,7 @@ def facts(db_path: Path = DB, sample: int = SAMPLE) -> dict:
         "mock_exam": paper,
         "levels": levels,
         "steps": out_steps,
+        "featured": featured,
         "listing": {
             code: {key: texts[(heading, field)] for field, key in LISTING_FIELDS.items()}
             for heading, code in LISTING_LANGUAGES.items()

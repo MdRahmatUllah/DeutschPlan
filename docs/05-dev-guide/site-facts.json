@@ -7435,6 +7435,248 @@
    ]
   }
  ],
+ "featured": [
+  {
+   "uid": "aa43cde805b59ad2",
+   "german": "Anmeldung",
+   "article": "die",
+   "forms": "Anmeldungen",
+   "pos": "noun",
+   "meaning": {
+    "en": "registration",
+    "bn": "নিবন্ধন",
+    "pl": "rejestracja / zameldowanie / zapisy",
+    "ru": "регистрация / запись"
+   },
+   "guide": {
+    "en": "AN-mel-doong",
+    "bn": "আনমেল্ডুং",
+    "pl": "AN-mel-dung",
+    "ru": "Анмэльдунг"
+   },
+   "step": "A1.2"
+  },
+  {
+   "uid": "4a51e6804d593c0b",
+   "german": "Termin",
+   "article": "der",
+   "forms": "Termine",
+   "pos": "noun",
+   "meaning": {
+    "en": "appointment",
+    "bn": "অ্যাপয়েন্টমেন্ট / নির্ধারিত সময়",
+    "pl": "wizyta / termin",
+    "ru": "запись (к врачу) / встреча"
+   },
+   "guide": {
+    "en": "tair-MEEN",
+    "bn": "টের্মিন",
+    "pl": "ter-MIN",
+    "ru": "тэрмИн"
+   },
+   "step": "A1.1"
+  },
+  {
+   "uid": "aa3449ebb3c0418e",
+   "german": "Visum",
+   "article": "das",
+   "forms": "Visa",
+   "pos": "noun",
+   "meaning": {
+    "en": "visa",
+    "bn": "ভিসা",
+    "pl": "wiza",
+    "ru": "виза"
+   },
+   "guide": {
+    "en": "VEE-zoom",
+    "bn": "ভিজুম",
+    "pl": "WI-zum",
+    "ru": "вИзум"
+   },
+   "step": "A1.2"
+  },
+  {
+   "uid": "18d22c301955f6a5",
+   "german": "Aufenthaltstitel",
+   "article": "der",
+   "forms": "Aufenthaltstitel",
+   "pos": "noun",
+   "meaning": {
+    "en": "residence permit",
+    "bn": "বসবাসের অনুমতিপত্র",
+    "pl": "tytuł pobytowy / zezwolenie na pobyt",
+    "ru": "разрешение на пребывание / ВНЖ"
+   },
+   "guide": {
+    "en": "OWF-ent-halts-tee-tel",
+    "bn": "আউফএন্টহাল্ট্‌সটিটেল",
+    "pl": "AUF-ent-halts-ti-tel",
+    "ru": "Ауфэнтхальтститэль"
+   },
+   "step": "A2.1"
+  },
+  {
+   "uid": "9e9b0275d70d1a67",
+   "german": "Ausländerbehörde",
+   "article": "die",
+   "forms": "Ausländerbehörden",
+   "pos": "noun",
+   "meaning": {
+    "en": "immigration office",
+    "bn": "অভিবাসন অফিস",
+    "pl": "urząd do spraw cudzoziemców",
+    "ru": "ведомство по делам иностранцев"
+   },
+   "guide": {
+    "en": "OWSS-len-der-buh-hur-duh",
+    "bn": "আউসলেন্ডারবেহ্যোর্ডে",
+    "pl": "AUS-len-da-be-hör-de",
+    "ru": "Ауслэндабэхёрдэ"
+   },
+   "step": "A2.1"
+  },
+  {
+   "uid": "07ae248ed9e92bc8",
+   "german": "Behörde",
+   "article": "die",
+   "forms": "Behörden",
+   "pos": "noun",
+   "meaning": {
+    "en": "authority / government agency",
+    "bn": "সরকারি কর্তৃপক্ষ",
+    "pl": "urząd / organ władzy",
+    "ru": "ведомство / госорган"
+   },
+   "guide": {
+    "en": "buh-HUR-duh",
+    "bn": "বেহ্যোর্ডে",
+    "pl": "be-HÖR-de",
+    "ru": "бэхёрдэ"
+   },
+   "step": "A2.1"
+  },
+  {
+   "uid": "54284341946802d7",
+   "german": "Mietvertrag",
+   "article": "der",
+   "forms": "Mietverträge",
+   "pos": "noun",
+   "meaning": {
+    "en": "rental contract / lease",
+    "bn": "ভাড়ার চুক্তি",
+    "pl": "umowa najmu",
+    "ru": "договор аренды"
+   },
+   "guide": {
+    "en": "MEET-fair-trahk",
+    "bn": "মিটফেয়াট্রাক",
+    "pl": "MIT-fea-trak",
+    "ru": "мИтфатрак"
+   },
+   "step": "A2.1"
+  },
+  {
+   "uid": "8d1248357af5d135",
+   "german": "Krankenversicherung",
+   "article": "die",
+   "forms": "Krankenversicherungen",
+   "pos": "noun",
+   "meaning": {
+    "en": "health insurance",
+    "bn": "স্বাস্থ্যবিমা",
+    "pl": "ubezpieczenie zdrowotne",
+    "ru": "медицинское страхование / медстраховка"
+   },
+   "guide": {
+    "en": "KRANK-en-fair-zihy-uh-roong",
+    "bn": "ক্রাংকেনফেয়াজিশারুং",
+    "pl": "KRAN-ken-fea-zi-śe-rung",
+    "ru": "крАнкэнфазихерунг"
+   },
+   "step": "A1.1"
+  },
+  {
+   "uid": "08f4b3624ff47694",
+   "german": "Bewerbung",
+   "article": "die",
+   "forms": "Bewerbungen",
+   "pos": "noun",
+   "meaning": {
+    "en": "application",
+    "bn": "চাকরির আবেদন",
+    "pl": "podanie o pracę / aplikacja",
+    "ru": "заявление о приёме на работу"
+   },
+   "guide": {
+    "en": "buh-VAIR-boong",
+    "bn": "বেভের্বুং",
+    "pl": "be-WER-bung",
+    "ru": "бэвЭрбунг"
+   },
+   "step": "A2.1"
+  },
+  {
+   "uid": "bee1c493774c6c27",
+   "german": "Ausbildung",
+   "article": "die",
+   "forms": "Ausbildungen",
+   "pos": "noun",
+   "meaning": {
+    "en": "vocational training / education",
+    "bn": "প্রশিক্ষণ / শিক্ষা",
+    "pl": "kształcenie zawodowe / wykształcenie",
+    "ru": "профессиональное обучение / образование"
+   },
+   "guide": {
+    "en": "OWSS-bil-doong",
+    "bn": "আউসবিল্ডুং",
+    "pl": "AUS-bil-dung",
+    "ru": "Аусбильдунг"
+   },
+   "step": "A2.1"
+  },
+  {
+   "uid": "509eeddbc7ea602e",
+   "german": "Studium",
+   "article": "das",
+   "forms": "Studien",
+   "pos": "noun",
+   "meaning": {
+    "en": "studies / degree course",
+    "bn": "উচ্চশিক্ষা / পড়াশোনা (বিশ্ববিদ্যালয়)",
+    "pl": "studia",
+    "ru": "учёба в вузе / высшее образование"
+   },
+   "guide": {
+    "en": "SHTOO-dyoom",
+    "bn": "শ্টুডিউম",
+    "pl": "SZTU-di-jum",
+    "ru": "штУдиум"
+   },
+   "step": "A2.1"
+  },
+  {
+   "uid": "40d490b785f2ddb1",
+   "german": "Einbürgerung",
+   "article": "die",
+   "forms": "Einbürgerungen",
+   "pos": "noun",
+   "meaning": {
+    "en": "naturalisation",
+    "bn": "নাগরিকত্ব লাভ",
+    "pl": "naturalizacja / nadanie obywatelstwa",
+    "ru": "натурализация / получение гражданства"
+   },
+   "guide": {
+    "en": "AIN-bewr-guh-roong",
+    "bn": "আইনব্যুর্গেরুং",
+    "pl": "AJN-bür-ge-rung",
+    "ru": "Айнбюргэрунг"
+   },
+   "step": "B1.2"
+  }
+ ],
  "listing": {
   "en": {
    "title": "Sogda: German A1–C2",
