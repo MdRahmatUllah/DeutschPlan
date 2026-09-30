@@ -499,4 +499,55 @@ void main() {
     expect(isSelected(tester, 'Русский'), isTrue);
     expect(meaningChoiceOf(stored), const MeaningChoice('ru'));
   });
+
+  testWidgets('#1158 two quick taps on Let\'s start push one page 2', (
+    tester,
+  ) async {
+    late AppDatabase db;
+    late SettingsRepository stored;
+    await tester.runAsync(() async {
+      db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+      stored = SettingsRepository(db);
+      await stored.load();
+    });
+    addTearDown(
+      () => tester.runAsync(() async {
+        await stored.dispose();
+        await db.close();
+      }),
+    );
+    final router = buildRouter(initialLocation: '/onboarding/1');
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(stored),
+          meaningSampleProvider.overrideWith((ref) async => null),
+        ],
+        child: MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: supportedLocales,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.runAsync(() async {
+      await tester.tap(find.text(l10n.onboardingWelcomeStart));
+      await tester.tap(find.text(l10n.onboardingWelcomeStart));
+    });
+    for (var i = 0; i < 5; i++) {
+      await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+      await tester.pump();
+    }
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byType(OnboardingMeaningPage, skipOffstage: false),
+      findsOneWidget,
+    );
+  });
 }

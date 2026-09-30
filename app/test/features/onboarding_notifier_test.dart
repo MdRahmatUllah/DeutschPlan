@@ -142,6 +142,21 @@ void main() {
       },
     );
 
+    test(
+      'an empty meaning_primary, as a backup may bring, is no choice',
+      () async {
+        await setUpWith();
+        await settings.write(SettingKeys.meaningPrimary, 'ru');
+        await container
+            .read(appDatabaseProvider)
+            .customStatement(
+              "UPDATE settings SET value = '' WHERE key = 'meaning_primary'",
+            );
+        await settings.load();
+        expect(await start(UiLanguage.bangla), const MeaningChoice('bn', 'en'));
+      },
+    );
+
     test('with no course to read, the two it always has', () async {
       await setUpWith(course: false);
       expect(await start(UiLanguage.russian), MeaningChoice.fallback);

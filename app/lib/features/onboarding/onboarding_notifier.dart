@@ -139,9 +139,8 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   Future<void> preselectMeaning() async {
     final settings = ref.read(settingsProvider);
     final primary = settings.read(SettingKeys.meaningPrimary);
-    if (primary != null &&
-        primary.isNotEmpty &&
-        meaningChoiceOf(settings) != state.preselected) {
+    // An empty stored value reads as none (`StringSetting`).
+    if (primary != null && meaningChoiceOf(settings) != state.preselected) {
       return;
     }
     Set<String> shipped;
