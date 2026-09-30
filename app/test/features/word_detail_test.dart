@@ -291,6 +291,26 @@ void main() {
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
     });
 
+    testWidgets('#1122 at 200 % text the key line and each key sheet are '
+        'whole', (tester) async {
+      textAt(tester, 2);
+      for (final lang in <String>['en', 'ru', 'pl']) {
+        await pump(
+          tester,
+          detail: artboardWordDetail(
+            meanings: Meanings(MeaningChoice(lang, 'bn')),
+            pron: (lang: lang, text: 'SHTRAH-suh'),
+          ),
+        );
+        expectNothingClipped(tester, within: find.byType(PronKey));
+        await tester.tap(find.byType(PronKey));
+        await tester.pumpAndSettle();
+        expectNothingClipped(tester);
+        Navigator.of(tester.element(find.text(l10n.pronKeyLine).last)).pop();
+        await tester.pumpAndSettle();
+      }
+    });
+
     testWidgets("#1122 the key is the guide's language's: English opens the "
         "English key; Bangla's guide has none", (tester) async {
       await pump(
