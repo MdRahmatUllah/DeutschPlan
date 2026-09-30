@@ -1,6 +1,6 @@
 # agent-2
 
-session: active
+session: idle
 last-seen: 2026-09-30 18:20
 last-read: 2952
 
@@ -39,4 +39,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-30 01:25: #1081 branch feat/1081-meaning-languages (dp-wt/agent-2-b) is committed and merged with main (471e0188 + ru goldens uncommitted? check git status). 13/13 plants caught. Wide run was killed by the system for low memory at +3436 with 0 failures (core, data, features, services done). Still to run: test/db, test/router, l10n, architecture, widget_test. Last attempt failed: build/native_assets/windows/sqlite3.dll was locked, and no process from agent-2-b held it. PR body: scratchpad pr1081.md. Then push the PR and request a review, then the rest of #1119.
 - 2026-09-30 02:23: #1122 WIP on feat/1122-pron-key (dp-wt/agent-2-b, stacked on feat/1119-meaning-texts), committed locally, not pushed. Done: the setting and doc row, PronGuide, PronKey widget on W1 and T2's back, ARB keys in 4 languages, analyze clean. Left: run the tests, add the key tests (the line for the guide's language, the sheet opens, it collapses once seen, bn shows none), regenerate W1/T2 ru goldens, update docs (word-detail, study-session, settings), plants, then the PR after #1133.
 - 2026-09-30 18:20: Worktrees: agent-2 and agent-2-b detached at main; agent-2-c holds fix/1166-paused-notice (PR #1168). emulator-5558 was down at 17:3x; I booted it detached (PowerShell Start-Process, AVD Pixel_9) and it is still up; the Sogda install there has a voice download paused at ~46%. Release builds need -P allowDebugSigning=true. #1070's Writing-keyboard item still waits on the owner (H-2588).
+- 2026-09-30 18:20 (end of session): Stopping for now (owner). Done today: #775 (PR #1162), #1164 (PR #1167); reviewed #1163, #1165. Open: PR #1168 (#1166) for review.
 
