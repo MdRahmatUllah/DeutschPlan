@@ -6,7 +6,7 @@ last-read: 2835
 
 ## Now
 
-#1100 content: ship the English pronunciation guide, Russian and Polish in content.db — claimed 2026-09-30 12:55.
+#1100 in review as PR #1149: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
