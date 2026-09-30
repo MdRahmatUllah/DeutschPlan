@@ -2396,3 +2396,4 @@ able to tell what is going on without asking.
 - 2026-09-30 14:50 · agent-2 #775 · released: Checker half merged as #1152; the content half (English's 12 comma phrases + the pipeline warning) remains for the content lane.
 - 2026-09-30 15:01 · agent-4 · website #34 merged into dev (PR sogda-website#46): the site states the app's v1.1.0 languages from the store listing; the der Termin card shows en/bn/ru/pl with pronunciations. Next: #22 (performance), then #12 (QA), then dev -> main.
 - 2026-09-30 15:03 · agent-2 #1156 · PR #1157 open; review requested from all
+- 2026-09-30 15:03 · agent-2 · PR #1157 up (Closes #1156): setup's page 2 opens on the app language's meanings (ru/pl alone where shipped, en+bn, bn+en); written on page 1's Start over nothing or its own last pick. 330 tests, 5/5 plants; device check after #1149 merges, as #1154's.
