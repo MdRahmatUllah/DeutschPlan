@@ -2,6 +2,7 @@ import 'dart:ui' show Locale;
 
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/features/onboarding/onboarding_welcome_page.dart';
 
@@ -26,10 +27,21 @@ void main() {
     builder: (context) =>
         OnboardingWelcomePage(onStart: () {}, onRestored: () {}),
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'onboarding_welcome_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    overrides: <Override>[languagesProvider.overrideWith(_English.new)],
+    builder: (context) =>
+        OnboardingWelcomePage(onStart: () {}, onRestored: () {}),
+  );
 }
 
 class _English extends Languages {
   @override
-  ({MeaningLanguage meaning, UiLanguage ui}) build() =>
-      (meaning: MeaningLanguage.both, ui: UiLanguage.english);
+  ({MeaningChoice meaning, UiLanguage ui}) build() =>
+      (meaning: MeaningChoice.of(MeaningLanguage.both), ui: UiLanguage.english);
 }

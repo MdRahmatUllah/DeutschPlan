@@ -89,11 +89,11 @@ void main() {
           examples: <StudyExample>[
             (
               german: 'Ich habe die Rechnung noch nicht bezahlt.',
-              english: "I haven't paid the bill yet.",
+              translation: "I haven't paid the bill yet.",
             ),
             (
               german: 'Können wir bitte die Rechnung haben?',
-              english: 'Could we have the bill, please?',
+              translation: 'Could we have the bill, please?',
             ),
           ],
           tip: null,
@@ -118,6 +118,15 @@ void main() {
     devices: const <GoldenDevice>[GoldenDevice.phone],
     textAudit: false,
     locale: const Locale('pl'),
+    builder: (_) => screen(),
+  );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'study_back_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
     builder: (_) => screen(),
   );
 

@@ -1165,9 +1165,20 @@ def gate_languages(
             if gaps:
                 short.append(f"{book}: {', '.join(gaps)}")
 
+        held = ""
+        if language.code == "en" and short and "en" not in allow_partial:
+            # #1099: English always ships (it is the course's own text), but a part
+            # it never had, as the pronunciation guide, only once it is complete.
+            new_parts = parts - {part for part, code in LEGACY_FIELDS if code == "en"}
+            partial = sorted(part for part in new_parts if totals[part][0] < totals[part][1])
+            for row in (*words, *grammar):
+                for part in partial:
+                    row.texts.pop((part, "en"), None)
+            if partial:
+                held = "; " + ", ".join(PART_NAMES[part] for part in partial) + " held back"
         complete = language.code == "en" or not short
         if complete:
-            verdict = "ships"
+            verdict = "ships" + held
         elif language.code in allow_partial:
             verdict = "partial, built for testing (--allow-partial)"
         else:
@@ -1315,6 +1326,96 @@ def read_tips(path) -> list[Tip]:
                 )
             )
     return tips
+
+
+def read_category_names(path) -> dict[str, dict[str, str]]:
+    """#1128: `content/category_names.csv`, a category's English `name` (as
+    the workbooks spell it) and a column per meaning language's code.
+
+    Returns each name, trimmed and lower-cased as categories are matched,
+    with its texts by code; a blank cell is no text. A malformed file fails
+    the build, naming what to fix.
+    """
+    import csv
+
+    if path is None:
+        return {}
+    if not path.exists():
+        raise PipelineError(
+            f"{path} is missing. It is named by `category_names:` in "
+            f"content/manifest.yaml; add the file or remove the key."
+        )
+    codes = {language.code for language in LANGUAGES.values()}
+    table: dict[str, dict[str, str]] = {}
+    # utf-8-sig: Excel's "CSV UTF-8" starts with a BOM (#697 TL-13).
+    with path.open(encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = reader.fieldnames or []
+        if not fields or fields[0] != "name":
+            raise PipelineError(f"{path}: the first column must be `name`, got {fields[:1]}")
+        unknown = [field for field in fields[1:] if field not in codes]
+        if unknown:
+            raise PipelineError(
+                f"{path}: {', '.join(unknown)} is no meaning language's code "
+                f"(known: {', '.join(sorted(codes))})"
+            )
+        for line, row in enumerate(reader, start=2):
+            name = (row["name"] or "").strip()
+            if not name:
+                raise PipelineError(f"{path} line {line}: the name is empty")
+            if name.lower() in table:
+                raise PipelineError(f"{path} line {line}: {name!r} is listed twice")
+            table[name.lower()] = {
+                code: text.strip()
+                for code in fields[1:]
+                if (text := row.get(code) or "").strip()
+            }
+    return table
+
+
+def gate_category_names(
+    table: dict[str, dict[str, str]],
+    categories: Sequence[str],
+    shipped: Sequence[str],
+    allow_partial: Sequence[str] = (),
+) -> tuple[dict[str, dict[str, str]], list[str]]:
+    """PIPE-08 for category names (#1128): the texts that ship, by category
+    name (lower case), and a report line per language the CSV names.
+
+    A shipped language's names ship when every category of the course has
+    one, as any part of it (#1080); otherwise none do, and its learners see
+    English's, as before. A language with no column (Bangla today) has
+    nothing to report. English's are `categories.name` itself. A name the
+    course has no category for is an error: text nobody would see.
+    """
+    course = list(dict.fromkeys(name.strip().lower() for name in categories))
+    stray = sorted(set(table) - set(course))
+    if stray:
+        raise PipelineError(
+            f"{len(stray)} category name(s) in the CSV match no category of the "
+            f"course: {', '.join(repr(name) for name in stray[:5])}. Fix the name "
+            f"as the workbooks spell it, or delete the row."
+        )
+    names: dict[str, dict[str, str]] = {}
+    report: list[str] = []
+    for code in shipped:
+        if code == "en":
+            continue
+        have = [key for key in course if code in table.get(key, {})]
+        if not have:
+            continue
+        if len(have) < len(course) and code not in allow_partial:
+            missing = [key for key in course if key not in have]
+            report.append(
+                f"category names {code}: {len(have)}/{len(course)}, held back "
+                f"(no name for {', '.join(repr(key) for key in missing[:3])}"
+                f"{' …' if len(missing) > 3 else ''})"
+            )
+            continue
+        report.append(f"category names {code}: {len(have)}/{len(course)}, ship")
+        for key in have:
+            names.setdefault(key, {})[code] = table[key][code]
+    return names, report
 
 
 def resolve_tips(tips: Sequence, words: Sequence) -> tuple[list[ResolvedTip], list[str]]:

@@ -10,8 +10,8 @@
 
 | Page | Content | Setting written |
 | --- | --- | --- |
-| 1 Welcome | The app language first (#1078): a caption *App language* over one chip per language, each named in itself (English · বাংলা · Polski), the current one ticked; a tap switches the whole app at once, this page included. Then three points: offline · exam-structured 12 steps · progress stays on the phone. Button *Let's start*; under it the link *Restore a backup* (#822, below) | `ui_language` (a restore: the file's) |
-| 2 Meaning language | Cards English / বাংলা / Both with sample `die Wohnung → …`; note "You can change it later in Settings." The meaning language alone: page 1 set the app's, and Polish screens with English meanings stay Polish (#1078). The Bangla pronunciation follows: off for English only, on for বাংলা or Both (#527) | `meaning_language`, `show_pron_bn` |
+| 1 Welcome | The app language first (#1078): a caption *App language* over one chip per language, each named in itself (English · বাংলা · Polski · Русский, #1079), the current one ticked; a tap switches the whole app at once, this page included. Then three points: offline · exam-structured 12 steps · progress stays on the phone. Button *Let's start*; under it the link *Restore a backup* (#822, below) | `ui_language` (a restore: the file's) |
+| 2 Meaning language | A card for each language the course ships (`course_languages`, #1081), named in itself (English, বাংলা, Русский), with the sample `die Wohnung → …` in it: the picked card is the first meaning. Under the cards, *Also show*: chips for a second language (None, or any other the course ships). Picking the second as the first swaps the two. Note "You can change it later in Settings." The meaning languages alone: page 1 set the app's, and Polish screens with English meanings stay Polish (#1078). The Bangla pronunciation follows: off with no Bangla chosen, on with Bangla first or second (#527) | `meaning_primary`, `meaning_secondary`, `show_pron_bn` |
 | 3 Starting point | 12 step chips in level rows with word counts (A1.1 pre-selected); link *Not sure? Take a 3-minute check* → S3 | chosen step |
 | 4 Daily pace | New words slider 3–30 (in restart setup Settings' 1–50, where the learner's pace may already be: the owner, 2026-09-28, #1011 ME-4) with live estimate "A1.1 takes about 91 days at 7 words a day" (637 words; the artboard's 69 counted 480); presets Relaxed 5 · Steady 7 · Intensive 15; revisions stepper (10) with note "Due cards beyond this wait for tomorrow"; weekday chips | `daily_new`, `revise_count`, `study_days_mask` |
 | 5 Reminder & voice | Reminder switch (off) + time 19:30, note about permission; *Hear it: „Guten Tag!"* (system voice); Supertonic card (its size from the model manifest, about 400 MB, #245; Wi-Fi only, the default voice style F1) with *Download now* / *Later*; button *Start learning* | `reminder_*`, starts download |
@@ -35,7 +35,7 @@
 
 **Business rules.** BR-COURSE-04, BR-PLAN-08.
 
-**First run (#1078).** Before page 1 draws, the app language is the phone's when Sogda speaks it (English, বাংলা, Polski; `bootstrap` writes `ui_language` once, if it has no value), and English otherwise. A phone set to Polish opens setup in Polish; the learner's choice after is never overridden.
+**First run (#1078).** Before page 1 draws, the app language is the phone's when Sogda speaks it (English, বাংলা, Polski, Русский; `bootstrap` writes `ui_language` once, if it has no value), and English otherwise. A phone set to Polish opens setup in Polish; the learner's choice after is never overridden.
 
 **States.** Restart-setup mode hides page 1 and pre-fills current values; page 5's card reads the voice's real state, as above.
 

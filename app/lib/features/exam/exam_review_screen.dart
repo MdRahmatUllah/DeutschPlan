@@ -14,7 +14,6 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/data/repositories/grammar_repository.dart'
     show TopicWithState;
-import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/answer_check.dart' show Verdict;
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart' show verdictFor;
@@ -359,13 +358,13 @@ class _Card extends ConsumerWidget {
         ];
       case WordQuestion(section: ExamSection.articles, ref: final uid)
           when _genderTip(ref.watch(studyBackProvider(uid)).value?.tip):
-        final tip = ref.watch(studyBackProvider(uid)).value!.tip!;
-        final meaning = ref
-            .watch(settingsProvider)
-            .read(SettingKeys.meaningLanguage);
+        final tip = tipText(
+          ref.watch(studyBackProvider(uid)).value?.tip,
+          ref.watch(meaningsProvider).choice,
+        );
         final rules = ref.watch(examGenderTopicProvider).value;
         return <Widget>[
-          note(tipText(tip, meaning)),
+          ?(tip == null ? null : note(tip)),
           if (rules != null)
             _Link(label: l10n.practiceSeeRule, onTap: () => onSeeRule(rules)),
         ];
@@ -379,7 +378,7 @@ class _Card extends ConsumerWidget {
           if (example != null)
             _Example(
               german: example.german,
-              english: example.english,
+              translation: example.translation,
               onPlay: () => unawaited(say(ref, context, example.german)),
             ),
           _Link(label: l10n.examReviewOpenWord, onTap: () => onOpenWord(uid)),
@@ -395,19 +394,19 @@ class _Card extends ConsumerWidget {
 class _Example extends StatelessWidget {
   const _Example({
     required this.german,
-    required this.english,
+    required this.translation,
     required this.onPlay,
   });
 
   final String german;
-  final String? english;
+  final String? translation;
   final VoidCallback onPlay;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
-    final english = this.english;
+    final translation = this.translation;
     return Semantics(
       container: true,
       button: true,
@@ -435,9 +434,9 @@ class _Example extends StatelessWidget {
                       german: true,
                       color: tokens.color.textSecondary,
                     ),
-                    if (english != null)
+                    if (translation != null)
                       SgText(
-                        english,
+                        translation,
                         role: SgTextRole.label,
                         weight: 400,
                         color: tokens.color.textSecondary,
@@ -562,11 +561,11 @@ String? _at(List<String> list, String? given) {
   return i != null && i >= 0 && i < list.length ? list[i] : given;
 }
 
-/// An interference tip that is a gender rule: it names an article
+/// An interference tip that is a gender rule: its English names an article
 /// ('Every "-ung" noun is "die".'). A false friend's or a stress tip is
 /// no help under an Articles question.
 bool _genderTip(StudyTip? tip) =>
-    tip != null && RegExp(r'"(der|die|das)"').hasMatch(tip.en);
+    RegExp(r'"(der|die|das)"').hasMatch(tip?['en'] ?? '');
 
 /// A rule's first sentence: up to a full stop, a question or an exclamation
 /// mark that a capital follows, so "um 8 Uhr; …" and "Inf." stay whole.

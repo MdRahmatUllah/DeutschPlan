@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:material_ui/material_ui.dart' show BuildContext, Locale, Widget;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/onboarding/onboarding_meaning_page.dart';
@@ -54,10 +55,19 @@ void main() {
     locale: const Locale('pl'),
     builder: page,
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'onboarding_meaning_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    builder: page,
+  );
 }
 
 class _BothPicked extends Languages {
   @override
-  ({MeaningLanguage meaning, UiLanguage ui}) build() =>
-      (meaning: MeaningLanguage.both, ui: UiLanguage.english);
+  ({MeaningChoice meaning, UiLanguage ui}) build() =>
+      (meaning: MeaningChoice.of(MeaningLanguage.both), ui: UiLanguage.english);
 }

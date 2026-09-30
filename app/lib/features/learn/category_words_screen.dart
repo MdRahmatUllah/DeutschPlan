@@ -30,11 +30,11 @@ part 'category_words_screen.g.dart';
 Stream<List<StepWord>> categoryWords(Ref ref, int id) {
   // Watched (#694 CC-4): a change in Settings re-emits the list at once,
   // not at the next write to its words.
-  final meaning = ref.watch(languagesProvider.select((l) => l.meaning));
+  final meanings = ref.watch(meaningsProvider);
   return ref
       .watch(wordRepositoryProvider)
       .watchCategory(id)
-      .map((words) => withMeanings(meaning, words));
+      .map((words) => withMeanings(meanings, words));
 }
 
 /// L6's level chips: All · A1 · A2 · B1 · B2+, where B2+ is B2 to C2.

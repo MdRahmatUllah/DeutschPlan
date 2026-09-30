@@ -36,6 +36,13 @@ CREATE TABLE categories (
   description TEXT
 );
 
+CREATE TABLE category_translations (
+  category_id INTEGER NOT NULL REFERENCES categories (id) ON DELETE CASCADE,
+  lang        TEXT NOT NULL,
+  name        TEXT NOT NULL,
+  PRIMARY KEY (category_id, lang)
+);
+
 CREATE TABLE words (
   uid               TEXT PRIMARY KEY NOT NULL,
   sublevel_code     TEXT NOT NULL REFERENCES sublevels (code),

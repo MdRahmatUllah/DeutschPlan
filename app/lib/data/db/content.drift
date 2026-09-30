@@ -81,6 +81,37 @@ examplesForWord:
 tipsForWord:
   SELECT * FROM interference_tips WHERE word_uid = :uid;
 
+-- #1081: the meaning languages the course ships (#1080), in its order.
+courseLanguageList:
+  SELECT * FROM course_languages ORDER BY ord;
+
+-- #1081: every shipped meaning and pronunciation, read once into
+-- `CourseMeanings`: the lists (L2, L6, R1, T4) show a meaning a row.
+allWordMeanings:
+  SELECT word_uid, lang, meaning, pronunciation FROM word_meanings;
+
+-- #1081: a word's example lines, each translated into :lang, or into
+-- English where :lang has no examples of its own (Bangla, #598).
+-- The word's lines first, so drift's parameters read (uid, lang).
+examplesForWordIn(:uid AS TEXT, :lang AS TEXT):
+  SELECT l.ord AS ord, l.german AS german,
+         coalesce(t.translation, en.translation) AS translation
+  FROM (SELECT ord, german FROM word_examples WHERE word_uid = :uid) l
+  LEFT JOIN word_example_translations t
+    ON t.word_uid = :uid AND t.ord = l.ord AND t.lang = :lang
+  LEFT JOIN word_example_translations en
+    ON en.word_uid = :uid AND en.ord = l.ord AND en.lang = 'en'
+  ORDER BY l.ord;
+
+-- #1081: a word's interference tips, one per language whose speakers have
+-- one (#1080's `tip_<code>`).
+wordTipsFor:
+  SELECT lang, tip FROM word_tips WHERE word_uid = :uid;
+
+-- #1081: the grammar topics the course has in :lang.
+grammarTranslationsIn:
+  SELECT * FROM grammar_translations WHERE lang = :lang;
+
 -- W2 (#142): the course words a set's member may be — its own search key,
 -- not a phrase, not another set — the set's step first, then the course's
 -- order. `ContentDao.compareSet` takes the first that fits.

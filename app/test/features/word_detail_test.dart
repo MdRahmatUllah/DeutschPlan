@@ -19,6 +19,7 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/content_update.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/rating_service.dart' show CardMode;
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -1021,10 +1022,10 @@ void main() {
       expect(
         find.text(
           l10n.studyTip(
-            tipText((
-              en: 'Straße is die, not der.',
-              bn: 'Straße হলো die।',
-            ), settings.read(SettingKeys.meaningLanguage)),
+            tipText(const <String, String>{
+              'en': 'Straße is die, not der.',
+              'bn': 'Straße হলো die।',
+            }, meaningChoiceOf(settings))!,
           ),
         ),
         findsOneWidget,
@@ -1066,51 +1067,51 @@ void main() {
     semantics.dispose();
   });
 
-  test(
-    '#1077 FR-W1-01 English only, as M3 leaves it (the switch still on): '
-    "W1's caption has no Bangla pronunciation; it returns with Bangla",
-    () async {
-      final db = AppDatabase.memory();
-      addTearDown(db.close);
-      final content = ContentFixture.write(
-        '${tempDir('sg_pron').path}/content.db',
-      );
-      await db.customStatement(
-        "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
-      );
-      final settings = SettingsRepository(db);
-      await settings.load();
-      addTearDown(settings.dispose);
-      final container = ProviderContainer(
-        overrides: <Override>[
-          appDatabaseProvider.overrideWithValue(db),
-          settingsProvider.overrideWithValue(settings),
-          contentUpdaterProvider.overrideWithValue(
-            _Aliased(db, const <String, String>{}),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-      final hold = container.listen(
-        wordDetailProvider(ContentFixture.haus),
-        (_, _) {},
-      );
-      addTearDown(hold.close);
-      Future<WordDetail?> read() =>
-          container.read(wordDetailProvider(ContentFixture.haus).future);
+  test('#1077 FR-W1-01 English only, as M3 leaves it (the switch still on): '
+      "W1's caption has no Bangla pronunciation; it returns with Bangla", () async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final content = ContentFixture.write(
+      '${tempDir('sg_pron').path}/content.db',
+    );
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+    );
+    await db.customStatement(
+      "UPDATE c.words SET pron_bn = 'হাউস' WHERE uid = '${ContentFixture.haus}'",
+    );
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+        contentUpdaterProvider.overrideWithValue(
+          _Aliased(db, const <String, String>{}),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    final hold = container.listen(
+      wordDetailProvider(ContentFixture.haus),
+      (_, _) {},
+    );
+    addTearDown(hold.close);
+    Future<WordDetail?> read() =>
+        container.read(wordDetailProvider(ContentFixture.haus).future);
 
-      expect((await read())!.pron, isTrue, reason: 'both, the default');
-      await container
-          .read(languagesProvider.notifier)
-          .setMeaning(MeaningLanguage.english);
-      expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
-      expect((await read())!.pron, isFalse);
-      await container
-          .read(languagesProvider.notifier)
-          .setMeaning(MeaningLanguage.both);
-      expect((await read())!.pron, isTrue);
-    },
-  );
+    expect((await read())!.pron, 'হাউস', reason: 'both, the default');
+    await container
+        .read(languagesProvider.notifier)
+        .setMeaning(MeaningChoice.of(MeaningLanguage.english));
+    expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
+    expect((await read())!.pron, isNull);
+    await container
+        .read(languagesProvider.notifier)
+        .setMeaning(MeaningChoice.of(MeaningLanguage.both));
+    expect((await read())!.pron, 'হাউস');
+  });
 
   test('#854 PIPE-09 an old uid, from a link written before an update '
       're-keyed its word, opens the word it became', () async {

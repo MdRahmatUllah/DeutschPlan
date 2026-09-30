@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -152,7 +153,9 @@ class _AppLanguage extends ConsumerWidget {
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
-            runSpacing: 8,
+            // Rows apart by their targets, so a screen reader reads them as
+            // drawn when larger text wraps them (#952).
+            runSpacing: AdaptiveTapTarget.runSpacing(32),
             children: <Widget>[
               for (final language in UiLanguage.values)
                 SgChip(

@@ -157,4 +157,34 @@ void main() {
       );
     }
   });
+
+  test("#1098 the picker preview's line is short in every language, and a cut "
+      'one ends in an ellipsis', () {
+    // The S24's 2x2 preview cut "Today's plan and the word of the day" to
+    // "…and the word" with no mark: the line sits beside a 48 dp ring at
+    // 11 sp, about 8 letters a line, 3 lines at most.
+    const res = 'android/app/src/main/res';
+    final preview = File('$res/layout/widget_preview.xml').readAsStringSync();
+    final line = RegExp(r'<TextView[^>]*@string/widget_preview_line[^>]*>')
+        .firstMatch(preview);
+    expect(line, isNotNull, reason: 'the preview shows its own line');
+    expect(line![0], contains('android:ellipsize="end"'));
+
+    final folders = Directory(res)
+        .listSync()
+        .whereType<Directory>()
+        .where((dir) => File('${dir.path}/strings.xml').existsSync());
+    expect(folders, isNotEmpty);
+    for (final dir in folders) {
+      final text = RegExp(
+        r'<string name="widget_preview_line">([^<]*)</string>',
+      ).firstMatch(File('${dir.path}/strings.xml').readAsStringSync());
+      expect(text, isNotNull, reason: dir.path);
+      expect(
+        text!.group(1)!.replaceAll(r"\'", "'").length,
+        lessThanOrEqualTo(16),
+        reason: '${dir.path}: "${text.group(1)}" runs past two lines',
+      );
+    }
+  });
 }

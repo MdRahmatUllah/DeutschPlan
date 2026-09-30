@@ -466,9 +466,9 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
       searchKey: 'haus',
       searchKeyAlt: 'haus',
     );
-    final cloze = clozeOf(word, const <({String german, String? english})>[
-      (german: 'Das ist gut.', english: null),
-      (german: 'Das Haus ist groß.', english: 'The house is big.'),
+    final cloze = clozeOf(word, const <({String german, String? translation})>[
+      (german: 'Das ist gut.', translation: null),
+      (german: 'Das Haus ist groß.', translation: 'The house is big.'),
     ]);
     expect(cloze?.example.german, 'Das Haus ist groß.');
     expect(cloze?.gap, (start: 4, end: 8));
@@ -489,8 +489,8 @@ VALUES ('$haus', 'learning', 8, 5, 2, 0, 2, 'cloze')
       searchKey: 'lesen',
       searchKeyAlt: 'lesen',
     );
-    final cloze = clozeOf(lesen, const <({String german, String? english})>[
-      (german: 'Er liest die Zeitung.', english: null),
+    final cloze = clozeOf(lesen, const <({String german, String? translation})>[
+      (german: 'Er liest die Zeitung.', translation: null),
     ]);
     expect(cloze?.gap, (start: 3, end: 8));
   });

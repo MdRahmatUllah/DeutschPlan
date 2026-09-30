@@ -89,11 +89,11 @@ void main() {
             examples: <StudyExample>[
               (
                 german: 'Ich habe die Rechnung noch nicht bezahlt.',
-                english: "I haven't paid the bill yet.",
+                translation: "I haven't paid the bill yet.",
               ),
               (
                 german: 'Können wir bitte die Rechnung haben?',
-                english: 'Could we have the bill, please?',
+                translation: 'Could we have the bill, please?',
               ),
             ],
             tip: null,

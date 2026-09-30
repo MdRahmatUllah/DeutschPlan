@@ -2,4 +2,5 @@
 <resources>
     <string name="widget_description">আজকের পরিকল্পনা আর দিনের শব্দ</string>
     <string name="widget_empty">দিনের পরিকল্পনা করতে Sogda খুলুন</string>
+    <string name="widget_preview_line">আজকের পরিকল্পনা</string>
 </resources>

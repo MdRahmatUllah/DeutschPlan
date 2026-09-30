@@ -66,3 +66,31 @@ speaker reviews them before release.
 | Meaning language; app language | język znaczeń; język aplikacji | |
 | Today, Learn, Search, Me (tabs) | Dziś, Nauka, Szukaj, Profil | the English names |
 | Again, Hard, Good, Easy (ratings) | Znowu, Trudne, Dobre, Łatwe | the English names |
+
+## Russian UI terms
+
+One Russian word per term, as for Polish (#1079). Messages speak to the
+learner as *ты*; a button is an infinitive or a noun (*Начать*, *Сохранить*);
+a past tense that needs a gender is avoided (a noun, an impersonal form, or
+"label: {count}"). Quotes are « ». A message that names a tab or a button uses
+the Russian label. `test/l10n_test.dart` fails on the rejected spellings and on
+an English tab or rating label inside a Russian message. Drafted by an agent:
+a native speaker reviews them before release.
+
+| English | Русский | Not |
+| --- | --- | --- |
+| Step (a course unit) | этап | шаг (a setup page's "Шаг 1 из 5" only) |
+| Backlog | пропущенное | бэклог |
+| Revision, revise; a review | повторение, повторить | |
+| Due; left ("3 left") | к повторению; осталось 3 | |
+| To do (a word's status) | К изучению | |
+| Learning (a word's status) | Изучаю | |
+| Done (a word's status) | Выучено | Сделано |
+| Suspended | Отложено | |
+| Voice | голос | |
+| Mock | пробный экзамен | мок-экзамен |
+| Quiz | тест | |
+| Streak | серия | |
+| Meaning language; app language | язык значений; язык приложения | |
+| Today, Learn, Search, Me (tabs) | Сегодня, Учёба, Поиск, Профиль | the English names |
+| Again, Hard, Good, Easy (ratings) | Снова, Трудно, Хорошо, Легко | the English names |

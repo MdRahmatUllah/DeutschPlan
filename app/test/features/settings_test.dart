@@ -12,6 +12,7 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -23,6 +24,7 @@ import 'package:sogda/features/me/settings_screen.dart';
 import 'package:sogda/features/today/today_providers.dart'
     show voiceInstalledProvider;
 import 'package:sogda/l10n/generated/app_localizations.dart';
+import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/model_downloads.dart' show DownloadPhase;
@@ -399,32 +401,57 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    await choose(l10n.settingsMeaning, l10n.settingsBangla);
-    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.bangla);
-    // The meaning alone: S2's one choice sets both, M3's two rows don't.
+    // #1081: Bangla first, the English it was first after it.
+    await choose(l10n.settingsMeaning, 'বাংলা');
+    expect(meaningChoiceOf(settings), const MeaningChoice('bn', 'en'));
+    // The meaning alone: M3's rows leave the app language (#1078).
     expect(settings.read(SettingKeys.uiLanguage), UiLanguage.english);
 
-    await choose(l10n.settingsMeaning, l10n.settingsEnglish);
+    await choose(l10n.settingsMeaningSecond, l10n.settingsMeaningNone);
+    expect(meaningChoiceOf(settings), const MeaningChoice('bn'));
+    await choose(l10n.settingsMeaning, 'English');
+    expect(meaningChoiceOf(settings), const MeaningChoice('en'));
+    await choose(l10n.settingsMeaningSecond, 'বাংলা');
+    expect(meaningChoiceOf(settings), const MeaningChoice('en', 'bn'));
     await choose(l10n.settingsUiLanguage, 'বাংলা');
     expect(settings.read(SettingKeys.uiLanguage), UiLanguage.bangla);
-    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.english);
+    expect(meaningChoiceOf(settings), const MeaningChoice('en', 'bn'));
+  });
+
+  testWidgets('#1081 the meaning rows list the languages the course ships, '
+      'each named in itself; the second offers none, and never the first', (
+    tester,
+  ) async {
+    await pump(tester);
+    expect(find.text(l10n.settingsMeaningSecond), findsOneWidget);
+
+    await tester.tap(find.text(l10n.settingsMeaningSecond));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.settingsMeaningNone), findsOneWidget);
+    // English is the first: the row's and the app language's values only.
+    expect(find.text('English'), findsNWidgets(2));
+    expect(find.text('Polski'), findsNothing, reason: 'not in the course');
   });
 
   testWidgets('#1078 M3 lists every app language, each named in itself', (
     tester,
   ) async {
     await pump(tester);
-    expect(find.text('English'), findsOneWidget, reason: "the row's value");
+    expect(
+      find.text('English'),
+      findsNWidgets(2),
+      reason: "the app's row and the first meaning's",
+    );
 
     await tester.tap(find.text(l10n.settingsUiLanguage));
     await tester.pumpAndSettle();
-    for (final name in <String>['English', 'বাংলা', 'Polski']) {
+    for (final name in UiLanguage.values.map((l) => l.nativeName)) {
       expect(find.text(name), findsWidgets, reason: name);
     }
     await tester.tap(find.text('Polski'));
     await tester.pumpAndSettle();
     expect(settings.read(SettingKeys.uiLanguage), UiLanguage.polish);
-    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.both);
+    expect(meaningChoiceOf(settings), const MeaningChoice('en', 'bn'));
   });
 
   testWidgets('#537 #1077 FR-M3-04 the Bangla pronunciation switch is offered '
@@ -439,14 +466,14 @@ void main() {
     }
 
     expect(settings.read(SettingKeys.showPronBn), isTrue);
-    await choose(l10n.settingsMeaning, l10n.settingsEnglish);
-    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.english);
+    await choose(l10n.settingsMeaningSecond, l10n.settingsMeaningNone);
+    expect(meaningChoiceOf(settings), const MeaningChoice('en'));
     // English only: no Bangla pronunciation to switch, the row gone at once.
     expect(find.text(l10n.settingsShowPronBn), findsNothing);
     expect(settings.read(SettingKeys.showPronBn), isTrue, reason: 'as set');
 
-    await choose(l10n.settingsMeaning, l10n.settingsBangla);
-    expect(settings.read(SettingKeys.meaningLanguage), MeaningLanguage.bangla);
+    await choose(l10n.settingsMeaning, 'বাংলা');
+    expect(meaningChoiceOf(settings), const MeaningChoice('bn'));
     expect(find.text(l10n.settingsShowPronBn), findsOneWidget);
     await tester.tap(switchFor(l10n.settingsShowPronBn));
     await tester.pumpAndSettle();

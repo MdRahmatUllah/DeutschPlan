@@ -1,11 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/onboarding/onboarding_shell.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -29,10 +32,11 @@ Future<WordWithState?> meaningSample(Ref ref) =>
 
 /// S2 page 2 · Meaning language. `Onboarding-android.html`.
 ///
-/// Three cards, each showing the same word the way that option would. The
-/// choice is written as it is tapped — see [Languages.chooseMeaning] — so
-/// coming back to this page shows what was picked (FR-S2-02) without a draft
-/// to carry it.
+/// A card for each language the course ships (#1081), each showing the same
+/// word in it: the chosen one is the first meaning. Under them, *Also show*
+/// adds a second, or none. The choice is written as it is tapped — see
+/// [Languages.chooseMeaning] — so coming back to this page shows what was
+/// picked (FR-S2-02) without a draft to carry it.
 class OnboardingMeaningPage extends ConsumerWidget {
   const OnboardingMeaningPage({super.key, this.onContinue, this.onBack});
 
@@ -44,27 +48,25 @@ class OnboardingMeaningPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final tokens = context.tokens;
     final chosen = ref.watch(languagesProvider).meaning;
+    final languages = ref.watch(courseLanguagesProvider).value ?? baseLanguages;
     final sample = ref.watch(meaningSampleProvider).value?.word;
+    // Beyond English and Bangla, a card's sample is the course's.
+    final course = languages.every((l) => l.code == 'en' || l.code == 'bn')
+        ? CourseMeanings.none
+        : ref.watch(courseMeaningsProvider).value ?? CourseMeanings.none;
 
-    String? sampleFor(MeaningLanguage option) {
+    // A card with nothing to show gets no sample line rather than a dangling
+    // arrow: `bangla` is nullable in the schema.
+    String? sampleIn(String code) {
       if (sample == null) return null;
-      final bangla = sample.bangla;
-
-      // `bangla` is nullable in the schema. A card with nothing to show gets
-      // no sample line rather than a dangling arrow; *Both* falls back to the
-      // English it does have.
-      final meaning = switch (option) {
-        MeaningLanguage.english => sample.english,
-        MeaningLanguage.bangla => bangla,
-        MeaningLanguage.both =>
-          bangla == null
-              ? sample.english
-              : l10n.onboardingMeaningSampleBoth(sample.english, bangla),
-      };
+      final meaning = Meanings(chosen, course).of(sample, code);
       if (meaning == null) return null;
       final german = [sample.article, sample.german].nonNulls.join(' ');
       return l10n.onboardingMeaningSample(german, meaning);
     }
+
+    void choose(MeaningChoice choice) =>
+        ref.read(languagesProvider.notifier).chooseMeaning(choice);
 
     return OnboardingShell(
       page: OnboardingPage.meaningLanguage,
@@ -77,23 +79,55 @@ class OnboardingMeaningPage extends ConsumerWidget {
         children: <Widget>[
           // Room for the badge, which sits 10 dp above the first card's edge.
           const SizedBox(height: 10),
-          for (final option in MeaningLanguage.values)
+          for (final language in languages)
             Padding(
               padding: const EdgeInsets.only(bottom: 14),
               child: _LanguageCard(
-                title: switch (option) {
-                  MeaningLanguage.english => l10n.onboardingMeaningEnglish,
-                  MeaningLanguage.bangla => l10n.onboardingMeaningBangla,
-                  MeaningLanguage.both => l10n.onboardingMeaningBoth,
-                },
-                sample: sampleFor(option),
-                selected: option == chosen,
-                onTap: () =>
-                    ref.read(languagesProvider.notifier).chooseMeaning(option),
+                // Each named in itself, as a learner looks for it.
+                title: language.ownName,
+                sample: sampleIn(language.code),
+                selected: language.code == chosen.primary,
+                // The second chosen first: the two swap places.
+                onTap: () => choose(
+                  MeaningChoice(
+                    language.code,
+                    chosen.secondary == language.code
+                        ? chosen.primary
+                        : chosen.secondary,
+                  ),
+                ),
               ),
             ),
+          SgText(
+            l10n.onboardingMeaningAlso,
+            role: SgTextRole.label,
+            weight: 600,
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: AdaptiveTapTarget.runSpacing(32),
+            children: <Widget>[
+              SgChip(
+                label: l10n.onboardingMeaningNone,
+                kind: SgChipKind.filter,
+                selected: chosen.secondary == null,
+                onTap: () => choose(MeaningChoice(chosen.primary)),
+              ),
+              for (final language in languages)
+                if (language.code != chosen.primary)
+                  SgChip(
+                    label: language.ownName,
+                    kind: SgChipKind.filter,
+                    selected: chosen.secondary == language.code,
+                    onTap: () =>
+                        choose(MeaningChoice(chosen.primary, language.code)),
+                  ),
+            ],
+          ),
           // The artboard's 14 dp gap runs between the cards and the note as
           // well, and the note adds 4 of its own.
+          const SizedBox(height: 14),
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: SgText(
@@ -133,7 +167,7 @@ class _LanguageCard extends StatelessWidget {
     final tokens = context.tokens;
 
     return Semantics(
-      // One of three, so a screen reader says which is picked and that
+      // One of several, so a screen reader says which is picked and that
       // picking another unpicks this.
       selected: selected,
       button: true,

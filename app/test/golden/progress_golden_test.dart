@@ -40,6 +40,15 @@ void main() {
     locale: const Locale('pl'),
     builder: screen,
   );
+  // #1079: in Russian: Cyrillic drawn, not boxes.
+  goldenTest(
+    'progress_ru',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    textAudit: false,
+    locale: const Locale('ru'),
+    builder: screen,
+  );
   // #1060: the Month range, its last label ("28 Sep") inside the card.
   goldenTest(
     'progress_month',

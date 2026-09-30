@@ -14,6 +14,8 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/learn/step_detail_screen.dart';
@@ -433,7 +435,11 @@ void main() {
         addTearDown(router.dispose);
         await tester.pumpWidget(
           ProviderScope(
-            overrides: todayStub(),
+            overrides: <Override>[
+              ...todayStub(),
+              // Setup's page 1 picks the app language (#1078, #1127).
+              languagesProvider.overrideWith(_English.new),
+            ],
             child: MaterialApp.router(
               routerConfig: router,
               theme: AppTheme.light(),
@@ -692,4 +698,11 @@ void main() {
       expect(resolveDeepLink(Uri.parse('$deepLinkScheme://today')), '/today');
     });
   });
+}
+
+/// English screens with English and Bangla meanings: the defaults.
+class _English extends Languages {
+  @override
+  ({MeaningChoice meaning, UiLanguage ui}) build() =>
+      (meaning: const MeaningChoice('en', 'bn'), ui: UiLanguage.english);
 }
