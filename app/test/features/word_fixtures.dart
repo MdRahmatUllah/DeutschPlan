@@ -16,7 +16,7 @@ WordDetail artboardWordDetail({
   WordStatus status = WordStatus.done,
   MeaningLanguage meaning = MeaningLanguage.both,
   Meanings? meanings,
-  String? pron = 'স্ট্রাসে',
+  PronGuide? pron = (lang: 'bn', text: 'স্ট্রাসে'),
   List<({String german, String? translation})>? examples,
   bool translate = false,
   String kind = 'vocab',

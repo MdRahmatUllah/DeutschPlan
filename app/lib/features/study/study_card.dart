@@ -248,7 +248,7 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                       // A long compound's forms break at a syllable, not at any
                       // letter; a shorter word wraps whole (#419).
                       SgScript.allowBreaks(
-                        frontCaption(word, l10n, pron: pron),
+                        frontCaption(word, l10n, pron: pron?.text),
                       ),
                       role: SgTextRole.caption,
                       color: tokens.color.textSecondary,
@@ -290,6 +290,8 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                 child: StudyBack(
                   word: word,
                   meanings: meanings,
+                  guide: pron?.lang,
+                  pronKeySeen: settings.read(SettingKeys.pronKeySeen),
                   extras: extras,
                   updated: updated,
                   onPlay: (sentence) => unawaited(_speak(text: sentence)),

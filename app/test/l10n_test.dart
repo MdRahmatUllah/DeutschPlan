@@ -140,6 +140,10 @@ void main() {
     // (accessibility-performance.md). Names and units stay as they are.
     const onPurpose = <String>{
       'appTitle',
+      // #1122: each key is in its guide's language, whatever the app's.
+      'pronKeyEn',
+      'pronKeyRu',
+      'pronKeyPl',
       'settingsVoiceSupertonic',
       'exportImportSizeKb',
       'exportImportSizeMb',

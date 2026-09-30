@@ -22,6 +22,10 @@ String ownNameOf(String code, List<CourseLanguageName> languages) {
   return code;
 }
 
+/// A pronunciation guide and the language it is written for: the key under
+/// it is that language's (#1122).
+typedef PronGuide = ({String lang, String text});
+
 /// A word's text in one meaning language (#1080's `word_meanings`).
 typedef WordMeaningText = ({String meaning, String? pronunciation});
 
@@ -106,12 +110,12 @@ class Meanings {
   /// The pronunciation guide: the primary's, or the secondary's where the
   /// primary has none (English's, until #1082). Bangla's only while [bangla]
   /// (`show_pron_bn`, the learner's choice within Bangla, #1077).
-  String? pronunciation(Word word, {required bool bangla}) {
+  PronGuide? pronunciation(Word word, {required bool bangla}) {
     for (final lang in choice.languages) {
       final guide = lang == 'bn'
           ? (bangla ? word.pronBn : null)
           : course.pronunciation(word.uid, lang);
-      if (guide != null && guide.isNotEmpty) return guide;
+      if (guide != null && guide.isNotEmpty) return (lang: lang, text: guide);
     }
     return null;
   }
