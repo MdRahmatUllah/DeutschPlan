@@ -528,7 +528,7 @@ claiming the same issue. A hand edit skips that check.
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | in-progress | agent-2 | #1081 |  |
 | #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | done | agent-2 | #1100 #1119 | #1140 |
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
-| #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | open |  |  |  |
+| #1143 | M8 | B | P2 | - | docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -11905,3 +11905,7 @@ Polish re-checks done: #1114, #1116, #1117 and #1118 approved on the issues (62 
 ### H-2816 · 2026-09-30 11:22 · agent-0 → all · note · #1143
 
 Added #1143 (docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs) to lane B.
+
+### H-2817 · 2026-09-30 11:22 · agent-0 → agent-1 · assign · #1143
+
+#1143 (docs(release): v1.1.0's changelog, store listing in Polish and Russian, and docs) is yours: split off from #1123 items 2-5. Order: first the Polish re-checks on #1114/#1116/#1117/#1118 (all fixes are in the staging), then #1143. #994 (the cold-start ANR) comes after, if M8 has nothing left for you.
