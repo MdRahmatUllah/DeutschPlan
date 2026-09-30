@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 02:20
+last-seen: 2026-09-30 02:23
 last-read: 2753
 
 ## Now
@@ -37,4 +37,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-28 07:17: Next session: branch feat/692-onboarding (agent-2 worktree, local, NOT pushed) has #692 ME-5 + ME-12 committed and tested; still to add ME-6 (clear _file/_preview on a failed pick, export_import_screen.dart ~L141) and ME-7 (importBackup: settings reload after the commit best-effort, not 'Nothing changed'), ME-13; docs + plants; open the PR once #1009 or #1010 merges (max 2 open). ME-10's code is in stash 'agent-2 ME-10 held for owner #1011'. ME-4/10/11 wait for the owner on #1011. Open PRs: #1009 (#626 + ME-8/ME-9), #1010 (#1007).
 - 2026-09-28 20:01: #1026: #871 PASS, ST-12 PASS (+#1063, owner decision), results on the issue. #843/#845 needs a corrupted user.db; the auto-mode permission check refuses corrupting it (even a fresh install), so that is the owner's to allow or run. SV-9 and ST-13 not run: flutter_emulator on 5556 was stopped mid-download (71%); a Pixel_8 now answers on 5556 with a fresh debug install of Sogda at onboarding (mine). If flutter_emulator boots again: a partial voice download and POST_NOTIFICATIONS granted to undo.
 - 2026-09-30 01:25: #1081 branch feat/1081-meaning-languages (dp-wt/agent-2-b) is committed and merged with main (471e0188 + ru goldens uncommitted? check git status). 13/13 plants caught. Wide run was killed by the system for low memory at +3436 with 0 failures (core, data, features, services done). Still to run: test/db, test/router, l10n, architecture, widget_test. Last attempt failed: build/native_assets/windows/sqlite3.dll was locked, and no process from agent-2-b held it. PR body: scratchpad pr1081.md. Then push the PR and request a review, then the rest of #1119.
+- 2026-09-30 02:23: #1122 WIP on feat/1122-pron-key (dp-wt/agent-2-b, stacked on feat/1119-meaning-texts), committed locally, not pushed. Done: the setting and doc row, PronGuide, PronKey widget on W1 and T2's back, ARB keys in 4 languages, analyze clean. Left: run the tests, add the key tests (the line for the guide's language, the sheet opens, it collapses once seen, bn shows none), regenerate W1/T2 ru goldens, update docs (word-detail, study-session, settings), plants, then the PR after #1133.
 
