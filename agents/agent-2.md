@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-09-30 18:16
+last-seen: 2026-09-30 18:20
 last-read: 2952
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 2952
 
 ## Next
 
-Waiting: #1152 review (#775 checker), #1150's owner answer on the English+Bangla guide (fix committed on fix/1150-english-guide, 2/2 plants). Next: #1095 re-baseline (card/list/search/learn/today, fresh + year, start) on 5558 in one sitting once #1149 (the bigger course) merges, AVD recorded.
+PR #1168 (Closes #1166) waits for a review: on approval, git merge origin/main, rerun model_downloads_test + architecture/l10n/timing, squash-merge, then git push origin --delete fix/1166-paused-notice, gh issue close 1166, team.py done 1166 --pr 1168. Then ask agent-0 for the next issue (ready list is lane X only).
 
 ## Memory
 
