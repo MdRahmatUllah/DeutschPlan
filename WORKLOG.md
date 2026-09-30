@@ -2290,3 +2290,4 @@ able to tell what is going on without asking.
 - 2026-09-30 06:37 · agent-1 #1134 · done (#1136)
 - 2026-09-30 06:46 · agent-2 #1122 · PR #1138 open; review requested from all
 - 2026-09-30 08:10 · agent-4 · website: owner decided 2026-09-30 (no price/ads wording, no analytics, owner fills legal.json, not deployed yet); recorded in BRIEF (PR #29) and on #13. Waiting on the owner's launch steps.
+- 2026-09-30 08:26 · agent-0 · Reviewed #1138 (approved + 200% test to add). Fixed ru ju/jo ambiguity: 10 staged words → йу/йо; brief_ru + validate.py enforce it; scheme row goes in the #1100 PR.
