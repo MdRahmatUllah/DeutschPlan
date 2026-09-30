@@ -111,6 +111,7 @@ class TestCorrections:
         ("entry", "message"),
         [
             ({"why": "t", "example_xx_1": "?"}, "no language the pipeline knows"),
+            ({"why": "t", "example_bn_1": "?"}, "Bangla has no example lines"),
             ({"why": "t", "example_ru_4": "too far"}, "the cell has 2 lines"),
         ],
     )

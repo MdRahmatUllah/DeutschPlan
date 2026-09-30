@@ -905,6 +905,12 @@ def apply_corrections(words: Sequence, corrections: dict[str, dict], fields) -> 
                         f"corrections: {uid} sets {field}, and {code} is no "
                         f"language the pipeline knows."
                     )
+                if code == "bn":
+                    # Bangla has no example lines: one would ship alone (#1145).
+                    raise PipelineError(
+                        f"corrections: {uid} sets {field}, but Bangla has no "
+                        f"example lines."
+                    )
                 _set_example(word, code, int(example.group(2)), _checked(uid, field, value), uid)
             elif field in fields:
                 setattr(word, field, _checked(uid, field, value))
