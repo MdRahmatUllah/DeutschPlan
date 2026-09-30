@@ -14,7 +14,6 @@ import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
-import 'package:sogda/domain/quiz_builder.dart' show QuizDirection;
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
@@ -330,6 +329,8 @@ void main() {
       for (final write in <Future<void> Function()>[
         () => settings.write(SettingKeys.desiredRetention, 0.85),
         () => settings.write(SettingKeys.meaningLanguage, MeaningLanguage.both),
+        // #1120: the languages chosen since #1081.
+        () => settings.write(SettingKeys.meaningSecondary, 'bn'),
       ]) {
         final before = c.read(quizBuilderProvider);
         await write();
@@ -339,21 +340,20 @@ void main() {
     });
   });
 
-  group('#339 the quiz builder', () {
+  group('#339 #1120 the quiz builder', () {
     test(
-      "mixed leaves out the meaning language the learner didn't choose",
+      'asks in the meaning languages the learner chose, and no other',
       () async {
-        for (final (meaning, skipped)
-            in <(MeaningLanguage, Set<QuizDirection>)>[
-              (MeaningLanguage.english, <QuizDirection>{QuizDirection.deBn}),
-              (MeaningLanguage.bangla, <QuizDirection>{QuizDirection.deEn}),
-              (MeaningLanguage.both, <QuizDirection>{}),
-            ]) {
+        for (final (meaning, languages) in <(MeaningLanguage, List<String>)>[
+          (MeaningLanguage.english, <String>['en']),
+          (MeaningLanguage.bangla, <String>['bn']),
+          (MeaningLanguage.both, <String>['en', 'bn']),
+        ]) {
           await settings.write(SettingKeys.meaningLanguage, meaning);
           final c = container();
           expect(
-            c.read(quizBuilderProvider).notInMixed,
-            skipped,
+            c.read(quizBuilderProvider).languages,
+            languages,
             reason: '$meaning',
           );
         }

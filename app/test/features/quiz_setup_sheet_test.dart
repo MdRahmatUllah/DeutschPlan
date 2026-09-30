@@ -8,6 +8,7 @@ import 'package:sogda/core/components/sg_chip.dart';
 import 'package:sogda/core/providers/app_providers.dart'
     show settingsSourceProvider;
 import 'package:sogda/core/theme/app_theme.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/quiz_builder.dart';
 import 'package:sogda/features/learn/step_detail_screen.dart';
@@ -36,6 +37,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     MeaningLanguage meaning = MeaningLanguage.english,
+    MeaningChoice? choice,
   }) async {
     started = null;
     tester.view
@@ -78,10 +80,15 @@ void main() {
     );
     await tester.pumpAndSettle();
     // The learner's setting, before L7 opens and reads it.
-    (ProviderScope.containerOf(tester.element(find.byType(StepDetailScreen)))
-                .read(settingsSourceProvider)
-            as StubSettings)
-        .put(SettingKeys.meaningLanguage, meaning);
+    final settings = ProviderScope.containerOf(
+      tester.element(find.byType(StepDetailScreen)),
+    ).read(settingsSourceProvider) as StubSettings;
+    settings.put(SettingKeys.meaningLanguage, meaning);
+    if (choice != null) {
+      settings
+        ..put(SettingKeys.meaningPrimary, choice.primary)
+        ..put(SettingKeys.meaningSecondary, choice.secondary);
+    }
     await tester.tap(find.text(l10n.quizCustom));
     await tester.pumpAndSettle();
   }
@@ -106,13 +113,11 @@ void main() {
     }
   });
 
-  testWidgets('all six directions are offered, DE → EN first and chosen', (
-    tester,
-  ) async {
+  testWidgets('#1120 German → the learner\'s language first and chosen, '
+      'then its way back; no language the learner reads not', (tester) async {
     await pump(tester);
     final labels = <String>[
       'DE → EN',
-      'DE → বাংলা',
       'EN → DE',
       l10n.quizDirectionArticles,
       l10n.quizDirectionListening,
@@ -121,6 +126,7 @@ void main() {
     for (final label in labels) {
       expect(chip(label), findsOneWidget, reason: label);
     }
+    expect(chip('DE → বাংলা'), findsNothing, reason: 'Bangla not chosen');
     expect(
       find.text(l10n.quizForms),
       findsOneWidget,
@@ -138,10 +144,29 @@ void main() {
   ) async {
     await pump(tester, meaning: MeaningLanguage.bangla);
     expect(selected(tester, 'DE → বাংলা'), isTrue);
-    expect(selected(tester, 'DE → EN'), isFalse);
+    expect(chip('বাংলা → DE'), findsOneWidget);
+    expect(chip('DE → EN'), findsNothing);
 
     await pump(tester, meaning: MeaningLanguage.both);
     expect(selected(tester, 'DE → EN'), isTrue);
+    expect(chip('DE → বাংলা'), findsOneWidget, reason: 'the second language');
+    expect(chip('EN → DE'), findsOneWidget);
+    expect(chip('বাংলা → DE'), findsNothing, reason: 'the first one only');
+  });
+
+  testWidgets('#1120 a Russian learner reading English second: DE → ru, '
+      'DE → EN, ru → DE', (tester) async {
+    await pump(tester, choice: const MeaningChoice('ru', 'en'));
+    // No course here: a language is named by its code, as ownNameOf does.
+    expect(selected(tester, 'DE → ru'), isTrue);
+    expect(chip('DE → EN'), findsOneWidget);
+    expect(chip('ru → DE'), findsOneWidget);
+    expect(chip('EN → DE'), findsNothing);
+    await tester.tap(chip('ru → DE'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.quizStart(l10n.quizQuestions(20))));
+    await tester.pumpAndSettle();
+    expect(started!.direction, 'ru>de');
   });
 
   testWidgets('BR-QUIZ-01 lengths 10 / 20 / 30, 20 chosen; sources this step, '
@@ -326,7 +351,7 @@ void main() {
         started!.sourceRef,
         started!.timer,
       ),
-      ('enDe', 10, 'category', '1', true),
+      ('en>de', 10, 'category', '1', true),
     );
   });
 
@@ -339,7 +364,8 @@ void main() {
   });
 
   test('builds valid QuizArgs for every combination', () {
-    for (final direction in customDirections) {
+    const choice = MeaningChoice('ru', 'en');
+    for (final direction in customDirections(choice)) {
       for (final length in quizLengths) {
         for (final source in <QuizSource>[
           QuizSource.stepLearned,
@@ -356,11 +382,8 @@ void main() {
               timer: timer,
             );
             final label = '$direction $length $source $timer';
-            expect(
-              QuizDirection.parse(args.direction),
-              direction,
-              reason: label,
-            );
+            final ask = parseAsk(args.direction, primary: () => 'ru');
+            expect(askWire(ask.direction, ask.lang), direction, reason: label);
             expect(QuizSource.parse(args.source), source, reason: label);
             expect(args.sourceRef, switch (source) {
               QuizSource.stepLearned => 'A2.1',
@@ -377,13 +400,24 @@ void main() {
         }
       }
     }
-    expect(customDirections, isNot(contains(QuizDirection.forms)));
+    expect(customDirections(choice), <String>[
+      'de>ru',
+      'de>en',
+      'ru>de',
+      'articles',
+      'listening',
+      'mixed',
+    ]);
+    expect(
+      customDirections(const MeaningChoice('en')),
+      isNot(contains('de>bn')),
+    );
   });
 
   test('a category quiz needs its category', () {
     expect(
       () => customQuiz(
-        direction: QuizDirection.deEn,
+        direction: 'de>en',
         length: 10,
         source: QuizSource.category,
         step: 'A2.1',
@@ -395,7 +429,7 @@ void main() {
 
   test('a seed can be given, so a quiz can be rebuilt', () {
     final a = customQuiz(
-      direction: QuizDirection.deEn,
+      direction: 'de>en',
       length: 10,
       source: QuizSource.allLearned,
       step: 'A1.1',

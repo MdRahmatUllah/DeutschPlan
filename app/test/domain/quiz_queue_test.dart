@@ -8,7 +8,8 @@ void main() {
   QuizItem item(int ord) => QuizItem(
     ord: ord,
     wordUid: 'w$ord',
-    direction: QuizDirection.deEn,
+    direction: QuizDirection.toMeaning,
+    lang: 'en',
     prompt: 'p$ord',
     expected: 'e$ord',
   );
@@ -80,7 +81,8 @@ void main() {
     const tiles = QuizItem(
       ord: 1,
       wordUid: 'haus',
-      direction: QuizDirection.deBn,
+      direction: QuizDirection.toMeaning,
+      lang: 'bn',
       prompt: 'das Haus',
       expected: 'বাড়ি',
       options: <String>['গাড়ি', 'বাড়ি', 'দরজা', 'রাস্তা'],
@@ -103,7 +105,8 @@ void main() {
       const QuizItem(
         ord: 1,
         wordUid: 'p',
-        direction: QuizDirection.enDe,
+        direction: QuizDirection.fromMeaning,
+        lang: 'en',
         prompt: "that's not right",
         expected: 'Das stimmt nicht',
         options: <String>['Das stimmt nicht', 'Das geht', 'Das passt', 'Na'],
@@ -120,7 +123,8 @@ void main() {
       const QuizItem(
         ord: 1,
         wordUid: 'du',
-        direction: QuizDirection.enDe,
+        direction: QuizDirection.fromMeaning,
+        lang: 'en',
         prompt: 'you',
         expected: 'du',
         options: <String>['du', 'ich', 'er', 'wir'],

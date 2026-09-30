@@ -84,17 +84,19 @@ class _A1Dao extends ContentDao {
       ];
 
   @override
-  Future<List<PlacementWord>> placementPool(String step) async =>
-      <PlacementWord>[
-        for (final (i, (article, german, english)) in nouns.indexed)
-          PlacementWord(
-            uid: '$step-$i',
-            article: article,
-            german: german,
-            english: english,
-            pos: 'noun',
-          ),
-      ];
+  Future<List<PlacementWord>> placementPool(
+    String step, {
+    String lang = 'en',
+  }) async => <PlacementWord>[
+    for (final (i, (article, german, english)) in nouns.indexed)
+      PlacementWord(
+        uid: '$step-$i',
+        article: article,
+        german: german,
+        english: english,
+        pos: 'noun',
+      ),
+  ];
 }
 
 class _FixedLanguages extends Languages {

@@ -14,6 +14,7 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/exam_repository.dart'
     show QuizMistakeRowsResult, QuizResult;
 import 'package:sogda/domain/quiz_builder.dart' show QuizDirection;
@@ -141,7 +142,11 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
               // Down, never up: 79.5 % is not the 80 % that turns it Lime.
               (share * 100).floor(),
               _time(l10n, attempt.startedAt, attempt.finishedAt),
-              quizTitle(l10n, widget.args),
+              quizTitle(
+                l10n,
+                widget.args,
+                ref.watch(courseLanguagesProvider).value ?? baseLanguages,
+              ),
             ),
             closeLabel: l10n.quizClose,
             onClose: close,

@@ -41,6 +41,7 @@ class QuizQueue {
           ord: item.ord,
           wordUid: item.wordUid,
           direction: item.direction,
+          lang: item.lang,
           prompt: item.prompt,
           expected: item.expected,
           options: <String>[...item.options.skip(1), item.options.first],

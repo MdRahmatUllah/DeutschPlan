@@ -71,10 +71,10 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
       _session = PlacementSession(
         steps: <String>[for (final step in steps) step.code],
         seed: widget.seed ?? ref.read(clockProvider)().microsecondsSinceEpoch,
-        // Page 2's choice: Bangla meanings for a learner who reads them in
-        // Bangla first. English then Bangla keeps English, which keeps the
+        // Page 2's choice: the meanings in the learner's first language
+        // (#1120). English then Bangla keeps English, which keeps the
         // options short.
-        useBangla: ref.read(languagesProvider).meaning.primary == 'bn',
+        lang: ref.read(languagesProvider).meaning.primary,
       );
       await _advance();
     } on Object {
@@ -85,7 +85,9 @@ class PlacementScreenState extends ConsumerState<PlacementScreen> {
   }
 
   Future<List<PlacementWord>> _pool(String step) async =>
-      _pools[step] ??= await ref.read(contentDaoProvider).placementPool(step);
+      _pools[step] ??= await ref
+          .read(contentDaoProvider)
+          .placementPool(step, lang: _session!.lang);
 
   /// Draws the next item, or ends the check. A step whose words cannot make
   /// one — too few of them — ends it there too, suggesting that step.

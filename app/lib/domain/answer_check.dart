@@ -320,11 +320,14 @@ Verdict _best(
 /// half the answer scores full marks. [article] false keeps it for a German
 /// phrase too, whose leading "das" is a word of it (#687 AN-10).
 Verdict _compare(
-  String given,
-  String expected, {
+  String givenText,
+  String expectedText, {
   required bool german,
   bool article = true,
 }) {
+  // #1120: a meaning in Polish or Russian, typed without its marks.
+  final given = german ? givenText : _foldMeaning(givenText);
+  final expected = german ? expectedText : _foldMeaning(expectedText);
   final strip = german && article;
   final key = searchKey(given, stripArticle: strip);
   final alt = searchKeyAlt(given, stripArticle: strip);
@@ -378,6 +381,18 @@ Verdict _compare(
 }
 
 String _clean(String text) => text.trim().toLowerCase();
+
+/// What a meaning in the course's other languages drops before it is keyed
+/// (#1120): Polish ł, which has no decomposition, so `text_norm`'s Latin
+/// strip keeps it (ą ć ę ń ó ś ź ż it folds already); Russian ё for е, as
+/// Russians write it; and the combining acute a stress guide puts on a
+/// vowel. Here, not in [searchKey], whose keys match the pipeline's.
+String _foldMeaning(String text) => text
+    .replaceAll('ł', 'l')
+    .replaceAll('Ł', 'L')
+    .replaceAll('ё', 'е')
+    .replaceAll('Ё', 'Е')
+    .replaceAll('\u0301', '');
 
 /// Whether [given] is [expected] with one character mistyped, under BR-ANS-01.
 ///

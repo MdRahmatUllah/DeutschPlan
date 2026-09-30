@@ -43,9 +43,11 @@ class QuizRunService {
     required int seed,
     required PlanDate today,
     String? sourceRef,
+    String? lang,
   }) async {
     final quiz = await _builder.build(
       direction: direction,
+      lang: lang,
       source: source,
       sourceRef: sourceRef,
       length: length,
@@ -55,7 +57,7 @@ class QuizRunService {
     if (quiz.items.isEmpty) return QuizRun(quiz: quiz, attemptId: null);
     final id = await _exams.beginQuiz(
       startedAt: _now().toUtc().toIso8601String(),
-      direction: direction.name,
+      direction: askWire(direction, lang),
       source: source.name,
       sourceRef: sourceRef,
       seed: seed,

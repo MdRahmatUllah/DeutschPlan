@@ -5,12 +5,15 @@ import 'package:sogda/domain/compare_set.dart';
 import 'package:sogda/domain/fsrs.dart';
 import 'package:sogda/domain/plan_engine.dart' show PlanDate, daysBetween;
 
-/// What a quiz asks (`quiz-engine.md`). The wire names are what `QuizArgs`
-/// and `quiz_attempts.direction` carry.
+/// What a quiz asks (`quiz-engine.md`). What `QuizArgs` and
+/// `quiz_attempts.direction` carry is [askWire]'s: a meaning direction with
+/// its language, the others by their names.
 enum QuizDirection {
-  deEn,
-  deBn,
-  enDe,
+  /// German → a meaning language, the item's [QuizItem.lang] (#1120).
+  toMeaning,
+
+  /// A meaning language → German.
+  fromMeaning,
   articles,
   listening,
   forms,
@@ -28,6 +31,46 @@ enum QuizDirection {
     orElse: () => throw ArgumentError.value(wire, 'direction'),
   );
 }
+
+/// A quiz's direction and, for a meaning direction, its language (#1120).
+typedef QuizAsk = ({QuizDirection direction, String? lang});
+
+/// [direction] as `QuizArgs` and `quiz_attempts` carry it: `de>ru` is German
+/// → Russian, `ru>de` Russian → German, and the others are their names.
+String askWire(QuizDirection direction, [String? lang]) {
+  assert(
+    lang != null ||
+        direction != QuizDirection.toMeaning &&
+            direction != QuizDirection.fromMeaning,
+    'a meaning direction has its language',
+  );
+  return switch (direction) {
+    QuizDirection.toMeaning => 'de>$lang',
+    QuizDirection.fromMeaning => '$lang>de',
+    _ => direction.name,
+  };
+}
+
+/// [wire] read back. Before #1120 the meaning directions were `deEn`,
+/// `deBn` and `enDe`, which asked German → English, German → Bangla and the
+/// learner's meaning language → German: a stored quiz and its *Retry* ask
+/// the same, [primary] giving the learner's first language (asked only for
+/// `enDe`). Throws on a wire no direction has.
+QuizAsk parseAsk(String wire, {required String Function() primary}) =>
+    switch (wire) {
+      'deEn' => (direction: QuizDirection.toMeaning, lang: 'en'),
+      'deBn' => (direction: QuizDirection.toMeaning, lang: 'bn'),
+      'enDe' => (direction: QuizDirection.fromMeaning, lang: primary()),
+      _ when wire.startsWith('de>') && wire.length > 3 => (
+        direction: QuizDirection.toMeaning,
+        lang: wire.substring(3),
+      ),
+      _ when wire.endsWith('>de') && wire.length > 3 => (
+        direction: QuizDirection.fromMeaning,
+        lang: wire.substring(0, wire.length - 3),
+      ),
+      _ => (direction: QuizDirection.parse(wire), lang: null),
+    };
 
 /// Where a quiz's words come from (BR-QUIZ-01).
 enum QuizSource {
@@ -66,6 +109,7 @@ class QuizWord {
     this.synonyms,
     this.stability = 0,
     this.lastReview,
+    this.meanings = const <String, String>{},
   });
 
   final String uid;
@@ -88,6 +132,18 @@ class QuizWord {
 
   /// The local day it was last reviewed; null for a word never reviewed.
   final PlanDate? lastReview;
+
+  /// Its meanings in the course's languages beyond English and Bangla, by
+  /// code (#1120): what a quiz in them asks. Empty when none is chosen.
+  final Map<String, String> meanings;
+
+  /// Its meaning in [lang]: its own English and Bangla, the others from
+  /// [meanings]; null where it has none.
+  String? meaningIn(String lang) => switch (lang) {
+    'en' => english,
+    'bn' => bangla,
+    _ => meanings[lang],
+  };
 
   /// "der Mietvertrag", or "arbeiten".
   String get headword => article == null ? german : '$article $german';
@@ -130,6 +186,7 @@ class QuizItem {
     this.hint,
     this.phrase = false,
     this.also = const <GermanAnswer>[],
+    this.lang,
   });
 
   /// 1-based, as `quiz_answers.ord`.
@@ -139,43 +196,51 @@ class QuizItem {
   /// Never [QuizDirection.mixed]: a mixed quiz's items each have their own.
   final QuizDirection direction;
 
-  /// What is shown: the headword (deEn, deBn, listening — where the runner
-  /// plays it), the meaning (enDe), the noun without its article (articles),
-  /// or the infinitive / singular / base form (forms, with [form]).
+  /// The meaning language of a [QuizDirection.toMeaning] or
+  /// [QuizDirection.fromMeaning] item (#1120); null for the others.
+  final String? lang;
+
+  /// What is shown: the headword (DE → a meaning, listening — where the
+  /// runner plays it), the meaning (a meaning → DE), the noun without its
+  /// article (articles), or the infinitive / singular / base form (forms,
+  /// with [form]).
   final String prompt;
 
-  /// What `answer_check` compares against: a meaning list for deEn/deBn, a
-  /// headword for enDe and listening, `der|die|das`, or the form.
+  /// What `answer_check` compares against: a meaning list for DE → a
+  /// meaning, a headword for a meaning → DE and listening, `der|die|das`, or
+  /// the form.
   final String expected;
 
   /// Four tiles for the multiple-choice layout — [expected] and three
-  /// distractors in a seeded order — on the meaning directions (deEn, deBn,
-  /// enDe). Empty for the others, whose answers are typed or fixed.
+  /// distractors in a seeded order — on the meaning directions. Empty for
+  /// the others, whose answers are typed or fixed.
   final List<String> options;
 
   /// Which form a forms item asks for.
   final FormLabel? form;
 
-  /// The Bangla meaning under an English EN → DE prompt, for a learner
-  /// who reads both (`quiz.md`: "EN/BN prompt"); null otherwise.
+  /// The second meaning language's meaning under a meaning → DE prompt, for
+  /// a learner who reads two (`quiz.md`: "EN/BN prompt"); null otherwise.
   final String? hint;
 
-  /// EN → DE and listening: [expected] is a phrase whose leading article-like
-  /// word is typed like the rest ([QuizWord.isPhrase]).
+  /// A meaning → DE and listening: [expected] is a phrase whose leading
+  /// article-like word is typed like the rest ([QuizWord.isPhrase]).
   final bool phrase;
 
-  /// EN → DE: the course's other words whose meaning cell is [prompt], each
-  /// as right as [expected] ("you": du, dich, Sie; #832).
+  /// A meaning → DE: the course's other words whose meaning cell is
+  /// [prompt], each as right as [expected] ("you": du, dich, Sie; #832).
   final List<GermanAnswer> also;
 
   /// Whether the runner asks with the tiles rather than a field: DE →
   /// বাংলা, since typing Bangla needs a Bangla keyboard, which a learner of
   /// German can't be assumed to have; and a compare item, whose tiles are
   /// its set's members. The other meaning items are typed, as `quiz.md`
-  /// lays them out.
+  /// lays them out: a learner who reads Russian or Polish has its keyboard.
   bool get tiles =>
       direction == QuizDirection.compare ||
-      direction == QuizDirection.deBn && options.length == 4;
+      direction == QuizDirection.toMeaning &&
+          lang == 'bn' &&
+          options.length == 4;
 }
 
 class Quiz {
@@ -185,9 +250,13 @@ class Quiz {
     required this.seed,
     required this.items,
     this.sourceRef,
+    this.lang,
   });
 
   final QuizDirection direction;
+
+  /// A meaning direction's language (#1120).
+  final String? lang;
   final QuizSource source;
   final String? sourceRef;
   final int seed;
@@ -199,30 +268,36 @@ class QuizBuilder {
   QuizBuilder(
     this._store, {
     Fsrs? fsrs,
-    this.meanings = const <QuizDirection>{
-      QuizDirection.deEn,
-      QuizDirection.deBn,
-    },
-  }) : _fsrs = fsrs ?? Fsrs();
+    this.languages = const <String>['en', 'bn'],
+  }) : assert(languages.length == 1 || languages.length == 2),
+       _fsrs = fsrs ?? Fsrs();
 
   final QuizStore _store;
   final Fsrs _fsrs;
 
-  /// The learner's meaning language, as the directions that ask for it:
-  /// DE → EN for English, DE → বাংলা for Bangla, both for "both". EN → DE
-  /// asks in it (#387), and a mixed quiz leaves the other out (#339).
-  final Set<QuizDirection> meanings;
+  /// The learner's meaning languages, primary first (#1081). A mixed quiz
+  /// asks German → each and the primary → German (#339), whose prompt has
+  /// the second's meaning under it (#387).
+  final List<String> languages;
 
-  /// The meaning direction a mixed quiz leaves out: DE → বাংলা for an
-  /// English-only learner, DE → EN for a Bangla-only one; none for "both".
-  Set<QuizDirection> get notInMixed => const <QuizDirection>{
-    QuizDirection.deEn,
-    QuizDirection.deBn,
-  }.difference(meanings);
+  /// A mixed quiz's turns: German → the primary, → the second language (a
+  /// turn a learner with one skips), the primary → German, then the others.
+  List<QuizAsk> get rotation => <QuizAsk>[
+    (direction: QuizDirection.toMeaning, lang: languages.first),
+    (
+      direction: QuizDirection.toMeaning,
+      lang: languages.length > 1 ? languages[1] : null,
+    ),
+    (direction: QuizDirection.fromMeaning, lang: languages.first),
+    (direction: QuizDirection.articles, lang: null),
+    (direction: QuizDirection.listening, lang: null),
+    (direction: QuizDirection.forms, lang: null),
+  ];
 
   /// [length] questions at most — fewer when fewer words qualify. The same
   /// [seed] over the same progress builds the same quiz, which is what lets
-  /// `quiz_attempts.seed` rebuild it.
+  /// `quiz_attempts.seed` rebuild it. [lang] is a meaning direction's
+  /// language (#1120).
   Future<Quiz> build({
     required QuizDirection direction,
     required QuizSource source,
@@ -230,6 +305,7 @@ class QuizBuilder {
     required int seed,
     required PlanDate today,
     String? sourceRef,
+    String? lang,
   }) async {
     if (direction == QuizDirection.compare) {
       final set = await _store.compareSet(sourceRef ?? '');
@@ -238,6 +314,7 @@ class QuizBuilder {
         source: source,
         sourceRef: sourceRef,
         seed: seed,
+        lang: lang,
         items: set == null
             ? const <QuizItem>[]
             : compareQuizItems(
@@ -252,7 +329,7 @@ class QuizBuilder {
     final learned = await _store.learned(source, ref: sourceRef);
     final eligible = direction == QuizDirection.mixed
         ? learned
-        : learned.where((word) => applies(direction, word)).toList();
+        : learned.where((word) => applies(direction, word, lang)).toList();
     final picked = pickWords(
       eligible,
       length: length,
@@ -269,8 +346,8 @@ class QuizBuilder {
     final items = <QuizItem>[];
     for (final (i, word) in picked.indexed) {
       final asked = direction == QuizDirection.mixed
-          ? mixedDirection(i, word, skip: notInMixed)
-          : direction;
+          ? mixedDirection(i, word, rotation)
+          : (direction: direction, lang: lang);
       items.add(
         await _item(
           i + 1,
@@ -287,6 +364,7 @@ class QuizBuilder {
       source: source,
       sourceRef: sourceRef,
       seed: seed,
+      lang: lang,
       items: items,
     );
   }
@@ -294,7 +372,7 @@ class QuizBuilder {
   Future<QuizItem> _item(
     int ord,
     QuizWord word,
-    QuizDirection direction,
+    QuizAsk ask,
     Random random,
     Future<List<QuizWord>> Function() pool,
     Map<String, List<QuizWord>> shared,
@@ -304,44 +382,51 @@ class QuizBuilder {
       return <String>[value(word), ...wrong]..shuffle(random);
     }
 
+    final direction = ask.direction;
     switch (direction) {
-      case QuizDirection.deEn:
+      case QuizDirection.toMeaning:
+        final lang = ask.lang!;
         return QuizItem(
           ord: ord,
           wordUid: word.uid,
           direction: direction,
+          lang: lang,
           prompt: word.headword,
-          expected: word.english,
-          options: await tiles((w) => w.english),
+          expected: word.meaningIn(lang)!,
+          options: await tiles((w) => w.meaningIn(lang) ?? ''),
         );
-      case QuizDirection.deBn:
+      case QuizDirection.fromMeaning:
+        // #387: in the learner's meaning language, as the exam's Reverse,
+        // English where the word has none in it; and, for a learner who
+        // reads two, the other one's meaning under it — but not under a
+        // prompt that fell back: "landlord" over "landlord" says nothing.
+        final lang = ask.lang!;
+        final asked = word.meaningIn(lang);
+        final inLang = (asked ?? '').trim().isNotEmpty;
+        final prompt = inLang ? asked! : word.english;
+        final other =
+            inLang && languages.length == 2 && languages.contains(lang)
+            ? languages.firstWhere((l) => l != lang)
+            : null;
+        final hint = other == null ? null : word.meaningIn(other);
         return QuizItem(
           ord: ord,
           wordUid: word.uid,
           direction: direction,
-          prompt: word.headword,
-          expected: word.bangla!,
-          options: await tiles((w) => w.bangla ?? ''),
-        );
-      case QuizDirection.enDe:
-        // #387: in the learner's meaning language, as the exam's Reverse:
-        // Bangla for a Bangla-only learner where the word has it, and the
-        // Bangla under the English only for "both".
-        final bangla =
-            !meanings.contains(QuizDirection.deEn) &&
-            (word.bangla ?? '').trim().isNotEmpty;
-        final prompt = bangla ? word.bangla! : word.english;
-        final hint = meanings.length == 2 ? word.bangla : null;
-        return QuizItem(
-          ord: ord,
-          wordUid: word.uid,
-          direction: direction,
+          lang: lang,
           prompt: prompt,
           expected: word.headword,
           options: await tiles((w) => w.headword),
           hint: hint,
           phrase: word.isPhrase,
-          also: otherAnswers(word, prompt, shared, hint: hint),
+          also: otherAnswers(
+            word,
+            prompt,
+            shared,
+            hint: other == null || hint == null
+                ? null
+                : (lang: other, text: hint),
+          ),
         );
       case QuizDirection.articles:
         return QuizItem(
@@ -387,9 +472,8 @@ Verdict grade(QuizItem item, String given) => switch (item.direction) {
   // A tile is the answer or it isn't. Its text is the whole meaning cell,
   // which `checkMeaning` would split into synonyms and match none of.
   _ when item.tiles => given == item.expected ? Verdict.correct : Verdict.wrong,
-  QuizDirection.deEn ||
-  QuizDirection.deBn => checkMeaning(given, item.expected),
-  QuizDirection.enDe || QuizDirection.listening => checkGerman(
+  QuizDirection.toMeaning => checkMeaning(given, item.expected),
+  QuizDirection.fromMeaning || QuizDirection.listening => checkGerman(
     given,
     item.expected,
     phrase: item.phrase,
@@ -402,62 +486,55 @@ Verdict grade(QuizItem item, String given) => switch (item.direction) {
   QuizDirection.mixed => throw StateError('an item has its own direction'),
 };
 
-/// EN → DE's other right answers when [word] is asked by [prompt]: the
-/// course's other words whose meaning cell it is, from
-/// [QuizStore.sharedMeanings] (#832). Under a Bangla [hint] ("both"), only
-/// those whose Bangla it is too: "you" over তুমি is du, not Sie.
+/// A meaning → DE's other right answers when [word] is asked by [prompt]:
+/// the course's other words whose meaning cell it is, from
+/// [QuizStore.sharedMeanings] (#832). Under a [hint] (a learner who reads
+/// two languages), only those whose meaning in its language it is too:
+/// "you" over তুমি is du, not Sie.
 List<GermanAnswer> otherAnswers(
   QuizWord word,
   String prompt,
   Map<String, List<QuizWord>> shared, {
-  String? hint,
+  ({String lang, String text})? hint,
 }) => <GermanAnswer>[
   for (final other in shared[prompt] ?? const <QuizWord>[])
-    if (other.uid != word.uid && (hint == null || other.bangla == hint))
+    if (other.uid != word.uid &&
+        (hint == null || other.meaningIn(hint.lang) == hint.text))
       other.answer,
 ];
 
-/// The directions a mixed quiz rotates through, in order.
-const List<QuizDirection> rotation = <QuizDirection>[
-  QuizDirection.deEn,
-  QuizDirection.deBn,
-  QuizDirection.enDe,
-  QuizDirection.articles,
-  QuizDirection.listening,
-  QuizDirection.forms,
-];
-
-/// Item [index] of a mixed quiz: the rotation's next direction that applies
-/// to [word] and isn't in [skip]. EN → DE always does, so there is always
-/// one.
-QuizDirection mixedDirection(
-  int index,
-  QuizWord word, {
-  Set<QuizDirection> skip = const <QuizDirection>{},
-}) {
+/// Item [index] of a mixed quiz: the next of [rotation]'s turns that
+/// applies to [word]; a meaning turn without a language is skipped. The
+/// meaning → DE turn always applies, so there is always one.
+QuizAsk mixedDirection(int index, QuizWord word, List<QuizAsk> rotation) {
   for (var k = 0; k < rotation.length; k++) {
-    final direction = rotation[(index + k) % rotation.length];
-    if (!skip.contains(direction) && applies(direction, word)) {
-      return direction;
-    }
+    final ask = rotation[(index + k) % rotation.length];
+    final meaning =
+        ask.direction == QuizDirection.toMeaning ||
+        ask.direction == QuizDirection.fromMeaning;
+    if (meaning && ask.lang == null) continue;
+    if (applies(ask.direction, word, ask.lang)) return ask;
   }
-  return QuizDirection.enDe;
+  return rotation.firstWhere((a) => a.direction == QuizDirection.fromMeaning);
 }
 
 /// Whether [word] can be asked in [direction] (`quiz-engine.md`: articles
-/// needs an article, forms a parsable `forms` cell).
-bool applies(QuizDirection direction, QuizWord word) => switch (direction) {
-  QuizDirection.deEn || QuizDirection.enDe || QuizDirection.listening => true,
-  QuizDirection.mixed => true,
-  QuizDirection.compare => false,
-  QuizDirection.deBn => (word.bangla ?? '').trim().isNotEmpty,
-  QuizDirection.articles => const <String>{
-    'der',
-    'die',
-    'das',
-  }.contains(word.article),
-  QuizDirection.forms => parseForms(word).isNotEmpty,
-};
+/// needs an article, forms a parsable `forms` cell, German → a meaning
+/// language the word's meaning in [lang]).
+bool applies(QuizDirection direction, QuizWord word, [String? lang]) =>
+    switch (direction) {
+      QuizDirection.fromMeaning || QuizDirection.listening => true,
+      QuizDirection.mixed => true,
+      QuizDirection.compare => false,
+      QuizDirection.toMeaning =>
+        lang != null && (word.meaningIn(lang) ?? '').trim().isNotEmpty,
+      QuizDirection.articles => const <String>{
+        'der',
+        'die',
+        'das',
+      }.contains(word.article),
+      QuizDirection.forms => parseForms(word).isNotEmpty,
+    };
 
 /// The `(label, form)` pairs in [word]'s `forms` cell.
 ///
@@ -576,6 +653,10 @@ Set<String> _meanings(QuizWord w) => senses(w.english);
 bool _synonyms(QuizWord a, Set<String> meanings, QuizWord b) {
   if (meanings.intersection(_meanings(b)).isNotEmpty) return true;
   if (_sameBangla(a.bangla, b.bangla)) return true;
+  // #1120: a Russian or Polish tile that reads as the answer, alike.
+  for (final MapEntry(key: lang, value: cell) in a.meanings.entries) {
+    if (_sameBangla(cell, b.meanings[lang])) return true;
+  }
   bool names(QuizWord w, QuizWord other) =>
       _hasWords(w.synonyms ?? '', other.german);
   return names(a, b) || names(b, a);

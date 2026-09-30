@@ -4,8 +4,8 @@
 
 | Function | Input | Verdicts |
 | --- | --- | --- |
-| `checkMeaning(given, expectedList)` | DE→EN / DE→BN | correct · almost · wrong |
-| `checkGerman(given, german, article)` | EN→DE, cloze, forms | correct · almost · wrongArticle · wrong |
+| `checkMeaning(given, expectedList)` | German → a meaning language | correct · almost · wrong |
+| `checkGerman(given, german, article)` | a meaning language → German, cloze, forms | correct · almost · wrongArticle · wrong |
 | `checkArticle(given, article)` | Articles | correct · wrong |
 | `checkForm(given, expectedForm)` | Forms quiz | as `checkGerman` without article logic |
 
@@ -16,6 +16,8 @@ Notes and alternatives (#645): `splitMeanings` splits a meaning cell at `/`, `,`
 Phrases (#687): a phrase with no article of its own (`pos = phrase`, `article` NULL: "Das stimmt nicht", "den Tisch decken") is typed whole. Its leading der, die, das, den, dem or des is one of its words, so it is neither optional nor a *wrong article*: "stimmt nicht" and "die Tisch decken" are wrong. EN→DE and listening items carry it as `phrase` (the quiz's `QuizItem`, the exam's `WordQuestion`, kept in the row's prompt JSON); a paper stored before it has none and grades as it did.
 
 Umlauts (#675): German is compared on two keys. The expanded one (ä → ae) decides *correct*, so "Tür", "Tuer" and "Straße"/"Strasse" are right. A match only on the folded key (ä → a) is *almost*: a bare vowel can be another word or form, the very thing a gap fill, a forms item or a listening item tests. Meanings (English, Bangla) keep the folded match as *correct*.
+
+Meanings in the course's other languages (#1120): a typed meaning is right without its marks, compared folded on both sides: Polish ą ć ę ł ń ó ś ź ż as a c e l n o s z z (`zolty` for *żółty*, `lawka` for *ławka*), Russian ё as е (`елка` for *ёлка*), and a combining acute (U+0301) is ignored. Case and spacing are ignored, as everywhere. Bangla keeps its raw match (#716), and German is untouched by this: its umlauts follow #675. A meaning list (`a / b`) takes any of its items, as English does.
 
 Letters and hyphens (#699): BR-ANS-01's typo gate counts the letters of the expected word with ß as one, so the five-letter "Größe" gets no typo allowance ("Grüße" is wrong), while "Straße" does. A meaning's hyphen may be left out: "email" is right for "e-mail", in a check and on Search's exact tier. A German one may not: "Email" is enamel, not "E-Mail".
 

@@ -906,7 +906,7 @@ class QuizRoute extends GoRouteData with $QuizRoute {
       args:
           state.extra as QuizArgs? ??
           const QuizArgs(
-            direction: 'deEn',
+            direction: 'de>en',
             source: 'allLearned',
             seed: 0,
             length: 0,

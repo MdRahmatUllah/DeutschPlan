@@ -82,7 +82,8 @@ void main() {
   });
 
   Future<QuizRun> start({int seed = 42}) => service.start(
-    direction: QuizDirection.enDe,
+    direction: QuizDirection.fromMeaning,
+    lang: 'en',
     source: QuizSource.allLearned,
     length: 10,
     seed: seed,
@@ -98,7 +99,7 @@ void main() {
     // Ten asked for, two learned words to ask: still a Quick 10.
     expect(
       (attempt.seed, attempt.direction, attempt.source, attempt.length),
-      (42, 'enDe', 'allLearned', 10),
+      (42, 'en>de', 'allLearned', 10),
     );
     final answers = await quizAnswers(run.attemptId!);
     expect(answers, hasLength(2));
@@ -297,7 +298,8 @@ void main() {
 
   test('a source with nothing learned records nothing', () async {
     final run = await service.start(
-      direction: QuizDirection.deEn,
+      direction: QuizDirection.toMeaning,
+      lang: 'en',
       source: QuizSource.stepLearned,
       sourceRef: 'B2.2',
       length: 10,
