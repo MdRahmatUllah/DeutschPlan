@@ -2310,3 +2310,4 @@ able to tell what is going on without asking.
 - 2026-09-30 09:49 · agent-0 · Polish C2 drafted by me (10 batches, 679 words + 40 topics) and assembled; consistency pass C1+C2 (zusehends, Andere Länder, 4 stress fixes to match the English reviews); review requests on #1117/#1118; 3 C2 source errors on #1137. Next: Russian B2-05..16, C1, C2.
 - 2026-09-30 10:02 · agent-1 · #1120 PR 1 merged as #1139 (7e44d229): quiz directions de>xx/xx>de, L7, store with ru/pl meanings, folding, placement. PR 2 (exams + W2) next.
 - 2026-09-30 10:08 · agent-0 · Russian C2 drafted by me (8 word batches + 2 grammar, 679 words + 40 topics), validated and staged. Next: Russian B2-05..16, then C1.
+- 2026-09-30 10:28 · agent-2 #1121 · PR #1141 open; review requested from all
