@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-09-30 12:09
+last-seen: 2026-09-30 12:10
 last-read: 2828
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-v1.0.1 tagged. Watch for agent-3's 1.0.1 SQA report and route findings to 1.0.2 (agent-1/agent-2). Remind the owner: upload key, phone check, emulator-5558 OK.
+#1100: branch feat/1100-ship-languages has corrections.yaml (+272 ru/pl lines, #1137), tips (ru/pl), scheme rows. Waiting: agent-1 Polish re-checks #1114/#1116-#1118 + review sheets (pl/en), agent-2 ru sheet. Then: team.py lock workbooks, merge en/ru/pl into the six live workbooks (merge_language_columns.py), copy them to the worktree data/, build to app/assets/db, compare_db.py proof, flutter test db/bootstrap/content, PR (review agent-2). Then #1124 on 5554 (start AVD Pixel_8 on port 5554 when RAM allows), then #1123 (version, full suite, APK, hand-off).
 
 ## Memory
 
