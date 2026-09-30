@@ -332,8 +332,10 @@ Future<CourseMeanings> courseMeanings(Ref ref) =>
 /// #1081: the learner's meaning languages ([Languages]) and the course's
 /// meanings in them, which every screen showing a meaning reads.
 ///
-/// English and Bangla come from the word's own row, so the course's are read
-/// only for a language beyond them; until they are, a word shows English.
+/// Bangla's meaning and guide are the word's own row, and so is English's
+/// meaning, so the course's are read only for a language beyond them or for
+/// English's guide (#1082, #1150); until they are, a word shows English and
+/// the guide the row has.
 @riverpod
 Meanings meanings(Ref ref) {
   final choice = ref.watch(languagesProvider).meaning;
@@ -359,10 +361,15 @@ Future<Meanings> meaningsLoaded(Ref ref) async {
   }
 }
 
-/// Whether [choice] has a language beyond the word's own English and Bangla.
-// ponytail: English's pronunciation guide (#1082) is in the course only:
-// when it ships, 'en' leaves this check.
+/// Whether [choice] reads anything from the course's meaning tables: a
+/// language beyond the word's own English and Bangla, or English, whose
+/// pronunciation guide is there alone (#1082, #1150).
 bool _needsCourse(MeaningChoice choice) =>
+    choice.languages.any((lang) => lang != 'bn');
+
+/// Whether [choice] has a meaning beyond the word's own English and Bangla:
+/// all the quiz reads from the course (#1120).
+bool _needsCourseMeanings(MeaningChoice choice) =>
     !choice.languages.every((lang) => lang == 'en' || lang == 'bn');
 
 @riverpod
@@ -653,7 +660,7 @@ DriftQuizStore quizStore(Ref ref) {
     ref.watch(wordRepositoryProvider),
     settings,
     ref.watch(contentDaoProvider),
-    _needsCourse(meaningChoiceOf(settings))
+    _needsCourseMeanings(meaningChoiceOf(settings))
         ? ref.watch(courseMeaningsProvider.future)
         : null,
   );

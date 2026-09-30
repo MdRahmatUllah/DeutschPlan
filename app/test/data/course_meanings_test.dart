@@ -180,6 +180,48 @@ void main() {
     expect(again, lessThan(const Duration(milliseconds: 50)));
   });
 
+  test("#1150 #1082 an English learner's guide is the course's English one; "
+      "a Bangla learner's is the word's own, the course unread", () async {
+    final dao = await open();
+    await dao.attachedDatabase.customStatement(
+      'INSERT INTO c.word_meanings (word_uid, lang, meaning, pronunciation) '
+      "VALUES ('${ContentFixture.haus}', 'en', 'house', 'HOWSS')",
+    );
+    final settings = SettingsRepository(dao.attachedDatabase);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(dao.attachedDatabase),
+        settingsProvider.overrideWithValue(settings),
+      ],
+    );
+    addTearDown(container.dispose);
+    final haus = await dao.wordByUid(ContentFixture.haus).getSingle();
+    Future<Meanings> meanings(MeaningChoice choice) async {
+      await writeMeaningChoice(settings, choice);
+      await pumpEventQueue();
+      return container.read(meaningsLoadedProvider.future);
+    }
+
+    expect(
+      (await meanings(const MeaningChoice('en')))
+          .pronunciation(haus, bangla: true),
+      (lang: 'en', text: 'HOWSS'),
+    );
+    expect(
+      (await meanings(const MeaningChoice('en', 'bn')))
+          .pronunciation(haus, bangla: true),
+      (lang: 'en', text: 'HOWSS'),
+      reason: "the first language's guide (settings.md)",
+    );
+    expect(
+      (await meanings(const MeaningChoice('bn'))).course,
+      same(CourseMeanings.none),
+      reason: "Bangla's meaning and guide are the word's own row",
+    );
+  });
+
   test('#1128 the category names follow the primary meaning language: '
       "English's are the course's own, and a language without a name keeps "
       'it', () async {
