@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -5,6 +6,8 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
+import 'package:sogda/domain/exam_generator.dart'
+    show ExamSection, WordQuestion;
 import 'package:sogda/features/exam/exam_review_screen.dart';
 import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -193,6 +196,52 @@ void main() {
     await tester.scrollUntilVisible(find.text('Ich habe gegangen.'), 300);
     expect(find.text('gegangen.'), findsOneWidget, reason: 'index 2, the word');
     expect(find.text('bin'), findsOneWidget);
+  });
+
+  testWidgets("#775 a Russian paper's meanings split as Russian's: a typo in "
+      'one held by its comma is almost', (tester) async {
+    final base = reviewResult();
+    await pump(
+      tester,
+      result: (
+        attempt: base.attempt.copyWith(meaningLang: const Value('ru')),
+        rows: <ExamResultRow>[
+          for (final row in base.rows)
+            row.ord == 3
+                ? (
+                    ord: row.ord,
+                    item: const WordQuestion(
+                      ExamSection.vocabulary,
+                      'ausgehen',
+                      prompt: 'davon ausgehen, dass',
+                      expected: 'исходить из того, что / полагать',
+                    ),
+                    given: 'исходит из того что',
+                    points: 0.0,
+                    rubric: row.rubric,
+                    flagged: row.flagged,
+                  )
+                : row,
+        ],
+        previous: base.previous,
+        passPercent: base.passPercent,
+        missed: base.missed,
+        added: base.added,
+      ),
+    );
+    await tap(tester, l10n.examReviewWrong(13));
+    final given = find.text('исходит из того что');
+    await tester.scrollUntilVisible(given, 300);
+    final card = find.ancestor(
+      of: given,
+      matching: find.byWidgetPredicate(
+        (w) => w.runtimeType.toString() == '_Card',
+      ),
+    );
+    expect(
+      find.descendant(of: card, matching: find.text(l10n.examReviewAlmost)),
+      findsOneWidget,
+    );
   });
 
   testWidgets('a right card says so and shows no correction', (tester) async {
