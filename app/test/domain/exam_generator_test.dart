@@ -41,13 +41,15 @@ void main() {
   /// A step of [count] words: every third a der/die/das noun with a plural
   /// (all of them with [nouns]), the rest verbs with forms; every other with
   /// an example that says it (all of them with [nouns]), categories as
-  /// [category] spreads them, Bangla on all but every fifth; and [topics]
-  /// grammar topics, each with its own example.
+  /// [category] spreads them, Bangla on all but every fifth, Russian (with
+  /// [russian]) on all but every fourth; and [topics] grammar topics, each
+  /// with its own example.
   ExamPool pool({
     int count = 200,
     int topics = 12,
     String step = 'A2.1',
     bool nouns = false,
+    bool russian = false,
   }) => ExamPool(
     step: step,
     level: step.split('.').first,
@@ -62,6 +64,9 @@ void main() {
             article: noun(i, nouns) ? const ['der', 'die', 'das'][i % 3] : null,
             pos: noun(i, nouns) ? 'noun' : 'verb',
             bangla: i % 5 == 0 ? null : 'অর্থ $i',
+            meanings: <String, String>{
+              if (russian && i % 4 != 0) 'ru': 'значение $i',
+            },
             forms: noun(i, nouns)
                 ? '-er'
                 : 'sag${tag(i)}t · hat gesag${tag(i)}t',
@@ -380,7 +385,7 @@ void main() {
     });
 
     test('in Bangla, the Bangla meaning where there is one', () {
-      final bangla = buildExam(pool(), seed: 1, bangla: true);
+      final bangla = buildExam(pool(), seed: 1, lang: 'bn');
       for (final item in bangla.items.whereType<WordQuestion>()) {
         final i = int.parse(item.ref.substring(1));
         final meaning = i % 5 == 0 ? 'meaning $i' : 'অর্থ $i';
@@ -391,9 +396,30 @@ void main() {
       }
     });
 
+    test('#1120 in Russian, the Russian meaning where there is one, typed', () {
+      final russian = buildExam(pool(russian: true), seed: 1, lang: 'ru');
+      var asked = 0;
+      for (final item in russian.items.whereType<WordQuestion>()) {
+        final i = int.parse(item.ref.substring(1));
+        final meaning = i % 4 == 0 ? 'meaning $i' : 'значение $i';
+        if (item.section == ExamSection.vocabulary) {
+          asked++;
+          expect(item.expected, meaning);
+          expect(item.tiles, isEmpty, reason: 'a Russian keyboard: typed');
+        }
+        if (item.section == ExamSection.reverse) expect(item.prompt, meaning);
+      }
+      expect(asked, greaterThan(0));
+      expect(
+        <String>[for (final item in russian.items) item.ref],
+        <String>[for (final item in buildExam(pool(), seed: 1).items) item.ref],
+        reason: 'the language changes what is asked in, not what is drawn',
+      );
+    });
+
     test('#798 in Bangla, Vocabulary is four tiles: the Bangla meaning and '
         'three others, seeded apart from the paper', () {
-      final bangla = buildExam(pool(), seed: 1, bangla: true);
+      final bangla = buildExam(pool(), seed: 1, lang: 'bn');
       final asked = <WordQuestion>[
         for (final item in bangla.items.whereType<WordQuestion>())
           if (item.section == ExamSection.vocabulary) item,
@@ -423,7 +449,7 @@ void main() {
       // without them.
       expect(
         <ExamRow>[
-          for (final item in buildExam(pool(), seed: 1, bangla: true).items)
+          for (final item in buildExam(pool(), seed: 1, lang: 'bn').items)
             item.encode(),
         ],
         <ExamRow>[for (final item in bangla.items) item.encode()],
@@ -471,7 +497,7 @@ void main() {
       );
       var asked = 0;
       for (var seed = 1; seed <= 3; seed++) {
-        for (final item in buildExam(paired, seed: seed, bangla: true).items) {
+        for (final item in buildExam(paired, seed: seed, lang: 'bn').items) {
           if (item is! WordQuestion || item.section != ExamSection.vocabulary) {
             continue;
           }
@@ -774,8 +800,8 @@ void main() {
   group('FR-L12-01 a paper survives being stored', () {
     test('every item decodes to what was encoded, #798 tiles too', () {
       for (var seed = 1; seed <= 3; seed++) {
-        for (final bangla in <bool>[false, true]) {
-          final exam = buildExam(pool(), seed: seed, bangla: bangla);
+        for (final lang in <String>['en', 'bn']) {
+          final exam = buildExam(pool(), seed: seed, lang: lang);
           for (final item in exam.items) {
             final row = item.encode();
             expect(ExamItem.decode(row).encode(), row, reason: row.prompt);

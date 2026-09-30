@@ -187,6 +187,10 @@ CREATE TABLE exam_attempts (
   max_points    REAL    NOT NULL DEFAULT 0,
   passed        INTEGER NOT NULL DEFAULT 0,
   status        TEXT    NOT NULL DEFAULT 'in_progress',
+  -- #1120: the meaning language the paper was built in, its Vocabulary and
+  -- Reverse asked in (`en`, `bn`, `ru` …). A retake in another one draws a
+  -- new paper. NULL: sat before v5, in the language the learner had then.
+  meaning_lang  TEXT,
   CHECK (status IN ('in_progress', 'finished', 'abandoned')),
   CHECK (seed BETWEEN 1 AND 3)
 );

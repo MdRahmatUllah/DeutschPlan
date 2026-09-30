@@ -10,6 +10,7 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/features/learn/step_exams.dart';
@@ -76,9 +77,8 @@ class ExamStart extends _$ExamStart {
         step: step,
         seed: seed,
         listening: settings.read(SettingKeys.listeningQuestions),
-        bangla:
-            settings.read(SettingKeys.meaningLanguage) ==
-            MeaningLanguage.bangla,
+        // #1120: in the learner's first meaning language.
+        lang: meaningChoiceOf(settings).primary,
         startedAt: ref.read(clockProvider)().toUtc().toIso8601String(),
       );
       // Only once the attempt exists: a failed start must not change the

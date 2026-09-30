@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show immutable, listEquals;
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/course_text.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/exam_grading.dart';
@@ -186,6 +187,7 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
     required int seed,
     required String startedAt,
     required List<ExamQuestion> questions,
+    String? meaningLang,
   }) => db.transaction(() async {
     // A crash mid-exam, or a double-tap on *Begin exam*, leaves an attempt
     // nothing ever finishes or abandons. It would sit `in_progress` for good
@@ -204,6 +206,7 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
         sublevelCode: sublevelCode,
         seed: seed,
         startedAt: startedAt,
+        meaningLang: Value(meaningLang),
       ),
     );
 
@@ -227,10 +230,15 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
 
   /// What [step]'s three mocks are drawn from (#83): its words but the
   /// suspended ones, with their examples and categories, its grammar topics,
-  /// and the connectors the writing check counts.
-  Future<ExamPool> pool(String step) async {
+  /// and the connectors the writing check counts. In [lang] (#1120): a
+  /// word's meaning in it when it is one of the course's languages beyond
+  /// English and Bangla, and the examples' translations.
+  Future<ExamPool> pool(String step, {String lang = 'en'}) async {
+    final course = lang == 'en' || lang == 'bn'
+        ? CourseMeanings.none
+        : await loadCourseMeanings(ContentDao(db));
     final examples = <String, List<({String german, String english})>>{};
-    for (final row in await examExamples(step).get()) {
+    for (final row in await examExamples(lang, step).get()) {
       (examples[row.uid] ??= <({String german, String english})>[]).add((
         german: row.german,
         english: row.english ?? '',
@@ -254,6 +262,7 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
               bangla: row.bangla,
               forms: row.forms,
               synonyms: row.synonyms,
+              meanings: course.meaningsOf(row.uid),
             ),
             category: row.categoryId,
             examples: examples[row.uid] ?? const [],
@@ -315,38 +324,51 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
   /// answer row (see [begin]); the attempt's id is what L12 opens.
   ///
   /// The paper is the seed's stored one, so a retake is the same mock
-  /// ([storedPaper]). Two cases draw a new one instead (`buildExam`, against
-  /// the other seeds' stored papers, so it shares nothing with them): the
-  /// first sitting, and a stored paper whose listening questions no longer
-  /// match [listening], since FR-L10-04 leaves them out when it is off.
+  /// ([storedPaper]). Three cases draw a new one instead (`buildExam`,
+  /// against the other seeds' stored papers, so it shares nothing with
+  /// them): the first sitting; a stored paper whose listening questions no
+  /// longer match [listening], since FR-L10-04 leaves them out when it is
+  /// off; and one built in another meaning language than [lang], the
+  /// learner's first now (#1120). A paper from before v5 records none and
+  /// stays the same mock.
   Future<int> start({
     required String step,
     required int seed,
     required bool listening,
-    required bool bangla,
+    required String lang,
     required String startedAt,
   }) async {
-    var paper = await storedPaper(step, seed);
-    if (paper != null &&
-        paper.any((q) => q.section == ExamSection.listening.name) !=
-            listening) {
-      paper = null;
-    }
-    paper ??= <ExamQuestion>[
-      for (final (i, item) in buildExam(
-        await pool(step),
-        seed: seed,
-        listening: listening,
-        bangla: bangla,
-        sat: await satRefs(step),
-      ).items.indexed)
-        ExamQuestion.of(i + 1, item),
-    ];
+    final stored = await storedPaper(step, seed);
+    final built = (await latestAttempt(
+      step,
+      seed,
+    ).getSingleOrNull())?.meaningLang;
+    final reuse =
+        stored != null &&
+        stored.any((q) => q.section == ExamSection.listening.name) ==
+            listening &&
+        // A paper from before v5 was built in English or Bangla (#1120, the
+        // review of #1142): a learner reading Russian or Polish now gets one
+        // of their own, not that paper forever.
+        (built == null ? lang == 'en' || lang == 'bn' : built == lang);
     return begin(
       sublevelCode: step,
       seed: seed,
       startedAt: startedAt,
-      questions: paper,
+      questions: reuse
+          ? stored
+          : <ExamQuestion>[
+              for (final (i, item) in buildExam(
+                await pool(step, lang: lang),
+                seed: seed,
+                listening: listening,
+                lang: lang,
+                sat: await satRefs(step),
+              ).items.indexed)
+                ExamQuestion.of(i + 1, item),
+            ],
+      // A paper reused from before v5 keeps its language unknown.
+      meaningLang: reuse ? built : lang,
     );
   }
 

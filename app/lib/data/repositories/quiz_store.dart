@@ -1,5 +1,6 @@
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -110,6 +111,8 @@ class DriftQuizStore implements QuizStore {
     ];
   }
 
+  /// W2's set in the learner's first language (#1120), as W2 shows it.
   @override
-  Future<CompareSet?> compareSet(String uid) => _content.compareSet(uid);
+  Future<CompareSet?> compareSet(String uid) =>
+      _content.compareSet(uid, lang: meaningChoiceOf(_settings).primary);
 }

@@ -84,11 +84,15 @@ examWords:
     AND COALESCE(s.status, '') != 'suspended'
   ORDER BY w.seq;
 
--- Their example sentences, the gap fills' source.
+-- Their example sentences, the gap fills' source, each translated into
+-- :lang, or into English where :lang has none (Bangla, #598; #1120).
 examExamples:
-  SELECT e.word_uid AS uid, e.german AS german, e.english AS english
+  SELECT e.word_uid AS uid, e.german AS german,
+    coalesce(t.translation, e.english) AS english
   FROM word_examples e
   JOIN words w ON w.uid = e.word_uid
+  LEFT JOIN word_example_translations t
+    ON t.word_uid = e.word_uid AND t.ord = e.ord AND t.lang = :lang
   WHERE w.sublevel_code = :step AND w.kind = 'vocab'
   ORDER BY w.seq, e.ord;
 

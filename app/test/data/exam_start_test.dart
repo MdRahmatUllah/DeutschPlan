@@ -39,9 +39,21 @@ void main() {
     step: 'A2.1',
     seed: seed,
     listening: listening,
-    bangla: false,
+    lang: 'en',
     startedAt: '2026-09-2${seed}T08:00:00Z',
   );
+
+  Future<int> startIn(int seed, String lang) => exams.start(
+    step: 'A2.1',
+    seed: seed,
+    listening: true,
+    lang: lang,
+    startedAt: '2026-09-2${seed}T09:00:00Z',
+  );
+
+  Future<String?> langOf(int id) async => (await (db.select(
+    db.examAttempts,
+  )..where((t) => t.id.equals(id))).getSingle()).meaningLang;
 
   Future<List<ExamAnswer>> rows(int id) => exams.answersFor(id).get();
   String key(String ref) => ref.split('#').first;
@@ -80,6 +92,59 @@ void main() {
       expect(again.map((r) => r.itemRef), first.map((r) => r.itemRef));
     },
   );
+
+  test('#1120 an attempt records its language: a retake in it is the same '
+      'mock, in another a paper of its own, and the first keeps what its '
+      'learner saw', () async {
+    final english = await start(1);
+    expect(await langOf(english), 'en');
+    final seen = [for (final r in await rows(english)) r.prompt];
+
+    final again = await startIn(1, 'en');
+    expect([for (final r in await rows(again)) r.prompt], seen);
+
+    final bangla = await startIn(1, 'bn');
+    expect(await langOf(bangla), 'bn');
+    final words = <String, String?>{
+      for (final w in (await exams.pool('A2.1')).words)
+        w.word.uid: w.word.bangla,
+    };
+    final vocabulary = [
+      for (final r in await rows(bangla))
+        if (r.section == 'vocabulary') r,
+    ];
+    expect(
+      vocabulary.where((r) => r.expected == words[key(r.itemRef!)]),
+      isNotEmpty,
+      reason: 'asked in Bangla now',
+    );
+    expect(
+      [for (final r in await rows(english)) r.prompt],
+      seen,
+      reason: "the English attempt's review reads what was asked then",
+    );
+  });
+
+  test('#1120 a paper sat before v5 records no language: its retake stays '
+      'the same mock in English or Bangla, which it was built in, and a '
+      'Russian learner gets a paper of their own', () async {
+    final old = await start(1);
+    await (db.update(db.examAttempts)..where((t) => t.id.equals(old))).write(
+      const ExamAttemptsCompanion(meaningLang: Value(null)),
+    );
+    final seen = [for (final r in await rows(old)) r.prompt];
+
+    final again = await startIn(1, 'bn');
+    expect([for (final r in await rows(again)) r.prompt], seen);
+    expect(await langOf(again), null);
+
+    final russian = await startIn(1, 'ru');
+    expect(
+      await langOf(russian),
+      'ru',
+      reason: 'drawn in Russian and recorded, not the old paper again',
+    );
+  });
 
   test('FR-L10-04 a retake after listening went off leaves it out', () async {
     await start(1);

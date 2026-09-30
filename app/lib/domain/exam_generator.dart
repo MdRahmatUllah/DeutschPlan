@@ -591,14 +591,14 @@ String _key(String ref) => ref.split('#').first;
 /// moved, a content update — still shares nothing with them. A retake is
 /// the stored paper, not a new one.
 ///
-/// [bangla] asks Vocabulary for the Bangla meaning and words Reverse's
-/// prompt in Bangla, where the course has one — the learner's meaning
-/// language. [listening] false is FR-L10-04.
+/// [lang] is the learner's first meaning language (#1120): Vocabulary asks
+/// for the meaning in it and Reverse's prompt is in it, where the word has
+/// one, else in English. [listening] false is FR-L10-04.
 Exam buildExam(
   ExamPool pool, {
   required int seed,
   bool listening = true,
-  bool bangla = false,
+  String lang = 'en',
   Map<int, Set<String>> sat = const <int, Set<String>>{},
 }) {
   if (seed < 1 || seed > 3) throw RangeError.range(seed, 1, 3, 'seed');
@@ -762,7 +762,7 @@ Exam buildExam(
             _wordQuestion(
               section,
               w.word,
-              bangla,
+              lang,
               randoms[s]!,
               pool.sharedMeanings,
               tilePool,
@@ -796,21 +796,23 @@ bool _fits(ExamSection section, QuizWord word) => switch (section) {
 WordQuestion _wordQuestion(
   ExamSection section,
   QuizWord word,
-  bool bangla,
+  String lang,
   Random random,
   Map<String, List<QuizWord>> shared,
   List<QuizWord> tilePool,
   Random tileRandom,
 ) {
-  final inBangla = bangla && (word.bangla ?? '').trim().isNotEmpty;
-  final meaning = inBangla ? word.bangla! : word.english;
+  final asked = word.meaningIn(lang);
+  final inLang = (asked ?? '').trim().isNotEmpty;
+  final meaning = inLang ? asked! : word.english;
   switch (section) {
     case ExamSection.vocabulary:
       // #798: a Bangla meaning is picked from the quiz's DE → বাংলা tiles,
       // since a learner of German can't be assumed a Bangla keyboard; typed
-      // when the step has too few distractors, as the quiz's is.
+      // when the step has too few distractors, as the quiz's is. Russian and
+      // Polish are typed, as in the quiz (#1120).
       final tiles = <String>[];
-      if (inBangla) {
+      if (lang == 'bn' && inLang) {
         final wrong = distractors(
           word,
           tilePool,

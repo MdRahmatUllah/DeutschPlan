@@ -1,10 +1,18 @@
 import 'package:drift/drift.dart' show DatabaseConnection, Variable;
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
+import 'package:sogda/data/repositories/quiz_store.dart';
+import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/compare_set.dart';
 import 'package:sogda/domain/quiz_builder.dart' show QuizItem;
+import 'package:sogda/features/words/compare_screen.dart';
 
 import 'content_fixture.dart';
 
@@ -196,6 +204,86 @@ void main() {
     }
     final lieber = compareMembers(await set('Liebe / Lieber …')).last;
     expect(lieber.example?.german, 'Lieber Tom, danke für deine Nachricht.');
+  });
+
+  test('#1120 in Russian: a word and its sentences in Russian where the '
+      'course has them, English where not; English and Bangla as '
+      'before', () async {
+    final (set, _, _) = (await everySet()).firstWhere(
+      (s) =>
+          s.$1.resolved.length >= 2 &&
+          s.$1.resolved.values.first.examples.isNotEmpty,
+    );
+    final member = set.resolved.values.first;
+    final other = set.resolved.values.last;
+    // This test's own rows: the bundled course ships no Russian yet (#1100).
+    await db.customStatement(
+      'INSERT INTO c.word_meanings (word_uid, lang, meaning) VALUES '
+      "('${set.word.uid}', 'ru', 'набор'), ('${member.uid}', 'ru', 'слово')",
+    );
+    await db.customStatement(
+      'INSERT INTO c.word_example_translations '
+      "(word_uid, ord, lang, translation) VALUES ('${member.uid}', 1, 'ru', "
+      "'Перевод.')",
+    );
+
+    final russian = (await dao.compareSet(set.word.uid, lang: 'ru'))!;
+    expect(russian.word.english, 'набор');
+    final word = russian.resolved.values.firstWhere((w) => w.uid == member.uid);
+    expect(word.english, 'слово');
+    expect(word.examples.first.english, 'Перевод.');
+    expect(
+      russian.resolved.values.firstWhere((w) => w.uid == other.uid).english,
+      other.english,
+      reason: 'no Russian: its English',
+    );
+    for (final lang in <String>['en', 'bn']) {
+      final same = (await dao.compareSet(set.word.uid, lang: lang))!;
+      expect(same.word.english, set.word.english, reason: lang);
+      expect(
+        same.resolved.values.first.examples.first.english,
+        member.examples.first.english,
+        reason: lang,
+      );
+    }
+
+    // W2 and its quiz read it in the learner's first language.
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    await writeMeaningChoice(settings, const MeaningChoice('ru', 'en'));
+    final store = DriftQuizStore(WordRepository(db, settings), settings, dao);
+    expect((await store.compareSet(set.word.uid))!.word.english, 'набор');
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+      ],
+    );
+    addTearDown(container.dispose);
+    final watching = container.listen(
+      compareViewProvider(set.word.uid),
+      (_, _) {},
+    );
+    addTearDown(watching.close);
+    final view = (await container.read(
+      compareViewProvider(set.word.uid).future,
+    ))!;
+    expect(
+      view.members.firstWhere((m) => m.uid == member.uid).meaning,
+      'слово',
+    );
+
+    // An open W2 follows a switch in M3, as W1 does.
+    await writeMeaningChoice(settings, const MeaningChoice('en'));
+    await pumpEventQueue();
+    final english = (await container.read(
+      compareViewProvider(set.word.uid).future,
+    ))!;
+    expect(
+      english.members.firstWhere((m) => m.uid == member.uid).meaning,
+      isNot('слово'),
+    );
   });
 
   test('a uid that is not in the course: null', () async {

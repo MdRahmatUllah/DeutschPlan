@@ -57,7 +57,10 @@ Stream<CompareView?> compareView(Ref ref, String uid) async* {
   // Everything watched is read before the first await, as W1's provider.
   final dao = ref.watch(contentDaoProvider);
   final words = ref.watch(wordRepositoryProvider);
-  final set = await dao.compareSet(uid);
+  // #1120: in the learner's first meaning language, following a switch in
+  // M3 as W1 does.
+  final lang = ref.watch(languagesProvider).meaning.primary;
+  final set = await dao.compareSet(uid, lang: lang);
   if (set == null) {
     yield null;
     return;

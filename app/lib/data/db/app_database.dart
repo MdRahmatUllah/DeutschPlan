@@ -72,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
       );
 
   /// Readable without an instance, which the migration tests need.
-  static const int latestSchemaVersion = 4;
+  static const int latestSchemaVersion = 5;
 
   /// user.db's file name in app support: drift_flutter's own default for
   /// `user`, which every install has had since M0. Another name strands
@@ -157,6 +157,11 @@ class AppDatabase extends _$AppDatabase {
         // before it has no record of how, and L2 reads it by its words.
         from3To4: (m, schema) =>
             m.addColumn(schema.enrollments, schema.enrollments.leftPartWay),
+        // v5: `exam_attempts.meaning_lang` (#1120). Nullable: a paper sat
+        // before it was built in the learner's language then, and its
+        // retake stays the same mock.
+        from4To5: (m, schema) =>
+            m.addColumn(schema.examAttempts, schema.examAttempts.meaningLang),
       )(m, from, to),
     ),
   );
