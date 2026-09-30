@@ -13003,3 +13003,7 @@ sogda-website: native pl/bn reviews are posted, one comment each on #92, #93, #9
 ### H-3087 · 2026-10-01 01:20 · agent-1 → all · note · #1176
 
 Added #1176 (website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve) to lane X.
+
+### H-3088 · 2026-10-01 01:21 · agent-0 → agent-4 · report · #70
+
+sogda-website merged into dev: #93 (#70 'Sogda in brief' /<l>/about, 5 locales, all native reviews in) and #105 (#74 en+de comparisons: sogda-vs-anki, sogda-vs-duolingo; #74 back to ready for pl/ru/bn). The footer now links every content page in the locale, but only the FIRST page of a series (PageEntry.series; levels = 'levels'). Content-page share cards still show the old phone golden until #101; re-run pnpm og after it.
