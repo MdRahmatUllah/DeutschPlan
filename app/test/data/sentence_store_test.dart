@@ -4,9 +4,13 @@ import 'dart:io';
 import 'package:drift/drift.dart'
     show DatabaseConnection, Table, TableInfo, Variable;
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
 import 'package:sogda/data/repositories/sentence_store.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -24,7 +28,10 @@ void main() {
 
   setUp(() async {
     directory = tempDir('sogda_sentences');
-    final content = ContentFixture.write('${directory.path}/content.db').file;
+    final content = ContentFixture.write(
+      '${directory.path}/content.db',
+      russian: true,
+    ).file;
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     await db.customStatement(
       "ATTACH DATABASE '${ContentDao.attachPath(content)}' AS c",
@@ -56,6 +63,58 @@ INSERT INTO word_state (word_uid, status, introduced_on) VALUES
       (ContentFixture.tuer, 1),
     });
   });
+
+  test("#1119 a sentence's translation is in the primary meaning language, "
+      'English where it has none, the day it was shown too', () async {
+    var lang = 'ru';
+    final russian = DriftSentenceStore(db, () => lang);
+    Future<Map<(String, int), String?>> translations() async => {
+      for (final c in await russian.candidates(today, gapDays: 14))
+        (c.wordUid, c.ord): c.translation,
+    };
+    expect(await translations(), <(String, int), String?>{
+      (ContentFixture.haus, 1): 'Дом большой.',
+      (ContentFixture.haus, 2): null,
+      (ContentFixture.tuer, 1): 'The door is open.',
+    });
+
+    final picked = await russian.candidates(today, gapDays: 14);
+    await russian.record(today, picked);
+    expect([
+      for (final c in await russian.shownOn(today)) c.translation,
+    ], contains('Дом большой.'));
+    lang = 'bn';
+    expect(
+      [for (final c in await russian.shownOn(today)) c.translation],
+      contains('The house is big.'),
+      reason: 'no Bangla sentences: English (#598)',
+    );
+  });
+
+  test(
+    "#1119 the app's store reads in the learner's first meaning language",
+    () async {
+      final settings = SettingsRepository(db);
+      await settings.load();
+      addTearDown(settings.dispose);
+      final container = ProviderContainer(
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(db),
+          settingsProvider.overrideWithValue(settings),
+        ],
+      );
+      addTearDown(container.dispose);
+      await writeMeaningChoice(settings, const MeaningChoice('ru', 'en'));
+      final haus =
+          (await container
+                  .read(sentenceStoreProvider)
+                  .candidates(today, gapDays: 14))
+              .firstWhere(
+                (c) => c.wordUid == ContentFixture.haus && c.ord == 1,
+              );
+      expect(haus.translation, 'Дом большой.');
+    },
+  );
 
   test(
     "#325 a candidate carries its word's German and part of speech",

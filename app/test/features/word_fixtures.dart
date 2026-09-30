@@ -15,11 +15,14 @@ WordDetail artboardWordDetail({
   String german = 'Straße',
   WordStatus status = WordStatus.done,
   MeaningLanguage meaning = MeaningLanguage.both,
+  Meanings? meanings,
+  String? pron = 'স্ট্রাসে',
+  List<({String german, String? translation})>? examples,
   bool translate = false,
   String kind = 'vocab',
 }) => WordDetail(
-  meanings: Meanings(MeaningChoice.of(meaning)),
-  pron: 'স্ট্রাসে',
+  meanings: meanings ?? Meanings(MeaningChoice.of(meaning)),
+  pron: pron,
   translate: translate,
   word: WordWithState(
     word: Word(
@@ -58,16 +61,18 @@ WordDetail artboardWordDetail({
     ),
     status: status,
   ),
-  examples: const <({String german, String? translation})>[
-    (
-      german: 'Die Straße ist wegen Bauarbeiten gesperrt.',
-      translation: 'The street is closed because of roadworks.',
-    ),
-    (
-      german: 'Wir wohnen in einer ruhigen Straße.',
-      translation: 'We live on a quiet street.',
-    ),
-  ],
+  examples:
+      examples ??
+      const <({String german, String? translation})>[
+        (
+          german: 'Die Straße ist wegen Bauarbeiten gesperrt.',
+          translation: 'The street is closed because of roadworks.',
+        ),
+        (
+          german: 'Wir wohnen in einer ruhigen Straße.',
+          translation: 'We live on a quiet street.',
+        ),
+      ],
 );
 
 /// "reviewed 5 times · last: Good".
