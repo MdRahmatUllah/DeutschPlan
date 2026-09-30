@@ -2370,3 +2370,4 @@ able to tell what is going on without asking.
 - 2026-09-30 12:54 · agent-0 #1118 · done
 - 2026-09-30 12:55 · agent-0 #1100 · claimed: content: ship the English pronunciation guide, Russian and Polish in content.db
 - 2026-09-30 12:55 · agent-0 #1100 · PR #1149 open; review requested from all
+- 2026-09-30 12:56 · agent-0 · locked pubspec: #1123: version 1.1.0+4
