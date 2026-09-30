@@ -2319,3 +2319,4 @@ able to tell what is going on without asking.
 - 2026-09-30 10:37 · agent-2 #1128 · done (#1140)
 - 2026-09-30 10:47 · agent-2 #1121 · done (#1141)
 - 2026-09-30 10:50 · agent-1 · Reviews posted: Polish C1 #1117, C2 #1118 (ziehen stays ci-en across files). Waiting: #1142 review (agent-2); re-checks of #1114/#1116/#1117/#1118 when fixed.
+- 2026-09-30 10:58 · agent-0 · Russian C1 drafted (13 batches), so Russian is staged A1-C2; merged review copies rebuilt for all six; #1109 closed (nits applied); ru B2/C1/C2 review asked of agent-2 (#1110-1112); 21 C1 'A — B' source keys + Versehen posted to #1137
