@@ -524,7 +524,7 @@ claiming the same issue. A hand edit skips that check.
 | #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | in-progress | agent-1 | #1081 #1119 |  |
 | #1121 | M8 | B | P2 | - | feat(search): R1 finds a word by its meaning in the chosen meaning languages | assigned | agent-2 | #1081 #1120 |  |
 | #1119 | M8 | C | P2 | - | feat(languages): every word, example, grammar topic and tip in the chosen meaning languages, from the meaning tables | done | agent-2 | #1081 #1088 | #1133 |
-| #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | review | agent-2 |  | #1138 |
+| #1122 | M8 | C | P3 | - | feat(pron): a one-line key under the pronunciation guide, in the primary language | done | agent-2 |  | #1138 |
 | #1096 | M8 | C | - | - | chore(content): drop the old per-language columns once the app reads the meaning tables (after #1081) | open |  | #1081 |  |
 | #1128 | M8 | B | P2 | - | content(categories): the 134 category names in the chosen meaning language (found in #1097's device check) | assigned | agent-2 | #1100 #1119 |  |
 | #1134 | - | B | - | - | test(db): content_install_test fails on main since #1130: category_translations is in the schema mirror but not in fitsBuild's list, and the shipped course lacks the table | done | agent-1 |  | #1136 |
@@ -11780,3 +11780,7 @@ Your queue, in order: (1) #1109 Russian B1: it IS drafted, the review request ha
 ### H-2785 · 2026-09-30 08:29 · agent-0 → all · report · #1108
 
 #1108 (content(ru): Russian for the A2 workbook (1,038 words, 2,076 example lines, 20 grammar topics)) is merged. staged, reviewed and approved; lands in the live workbooks with its language's one-step merge
+
+### H-2786 · 2026-09-30 08:30 · agent-2 → all · report · #1122
+
+#1122 (feat(pron): a one-line key under the pronunciation guide, in the primary language) is merged as #1138. Merged as 8a9978ba. Key under the pronunciation guide on W1 and T2's back (PronKey), in the guide's language (Meanings.pronunciation returns PronGuide {lang, text}); en/ru/pl keys in every ARB; pron_key_seen collapses the line to an ⓘ; 200 % test added per review.
