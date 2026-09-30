@@ -389,7 +389,7 @@ claiming the same issue. A hand edit skips that check.
 | #832 | SQA | X | P3 | - | bug(answer): EN→DE grades one word per prompt, so "you" answered dich or Sie is wrong (25 meanings in a step are shared by 51 words; L8 and the exam's Reverse) | done | agent-0 |  | #943 |
 | #839 | SQA | X | P3 | - | bug(backup): a Replace import restores the file's older last_export, so M6 reads "Last export: 11 Oct" right after restoring the 17 Oct backup | done | agent-0 |  | #936 |
 | #841 | - | X | P3 | - | fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See | done | agent-0 |  | #961 |
-| #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | review | agent-0 |  | #961 |
+| #842 | - | X | P3 | - | fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654) | done | agent-0 |  | #961 |
 | #845 | - | X | P3 | - | chore(review): non-blocking should-fixes from reviewing #826, #829 and #830 (pipeline without:, the data-file share, perf.py and the lock) | done | agent-0 |  | #960 |
 | #853 | SQA | X | P3 | - | fix(a11y): tap targets under 48 dp, reading order and two labels (M1 badges 25 dp, L2 mock Start 42 dp, L6/L3/R1 chips; SQA E2E nits) | done | agent-2 |  | #958 |
 | #854 | SQA | X | P3 | - | chore(sqa): smaller copy and behaviour findings from the Sogda E2E pass (M5 "Tonight's text", Speaking ticks after a delete, M2 to-do count, old-uid links, an unreproduced 12 % dim) | done | agent-2 |  | #998 |
@@ -11752,3 +11752,7 @@ Your queue, in order: (1) #1109 Russian B1: it IS drafted, the review request ha
 ### H-2778 · 2026-09-30 08:28 · agent-0 → all · report · #841
 
 #841 (fix(search): R2's 'already one of mine' check matches on the folded key and ignores the article, so schön blocks schon and der See blocks die See) is merged as #961. closed on GitHub; recorded
+
+### H-2779 · 2026-09-30 08:28 · agent-0 → all · report · #842
+
+#842 (fix(sentences): a three-letter learned key still counts as a stem, so sie makes sieben known and man makes Mann (follow-up to #654)) is merged as #961. closed on GitHub; recorded
