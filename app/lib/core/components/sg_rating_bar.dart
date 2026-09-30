@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 
@@ -67,16 +68,16 @@ class SgRatingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.tokens;
+    final gap = context.tokens.spacing.sm;
 
-    // One height for the four, the tallest's: an interval of a thousand
+    // One height for a row, its tallest button's: an interval of a thousand
     // days wraps in Bangla at 200 %, and its button grows with the others
     // (#580). Each button's Column fills the row's height, which this bounds.
-    return IntrinsicHeight(
+    Widget row(List<SgRating> ratings) => IntrinsicHeight(
       child: Row(
         children: <Widget>[
-          for (final rating in SgRating.values) ...<Widget>[
-            if (rating != SgRating.again) SizedBox(width: tokens.spacing.sm),
+          for (final (i, rating) in ratings.indexed) ...<Widget>[
+            if (i > 0) SizedBox(width: gap),
             Expanded(
               child: Opacity(
                 opacity: only == null || only!.contains(rating) ? 1 : 0.35,
@@ -93,6 +94,30 @@ class SgRatingBar extends StatelessWidget {
         ],
       ),
     );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // #1155: a label wider than a quarter of the row ("Хорошо",
+        // "Trudne" at 200 %) puts the bar in two rows of two rather than
+        // break the word. One role smaller wouldn't do: caption is 12 to
+        // label's 13, and "Хорошо" needs a fifth off.
+        final inside =
+            (constraints.maxWidth - 3 * gap) / 4 - 2 * _RatingButton.border;
+        if (SgRating.values.every(
+          (rating) => _RatingButton.labelWidth(context, rating) <= inside,
+        )) {
+          return row(SgRating.values);
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            row(const <SgRating>[SgRating.again, SgRating.hard]),
+            SizedBox(height: gap),
+            row(const <SgRating>[SgRating.good, SgRating.easy]),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -106,6 +131,31 @@ class _RatingButton extends StatelessWidget {
   final SgRating rating;
   final String? interval;
   final ValueChanged<SgRating>? onRated;
+
+  /// The artboard's 2 px border in the rating colour.
+  static const double border = 2;
+
+  /// [rating]'s label on one line, as it is drawn: bold, Bangla a role up.
+  static double labelWidth(BuildContext context, SgRating rating) {
+    final tokens = context.tokens;
+    TextStyle bold(TextStyle style) =>
+        DefaultTextStyle.of(context).style
+            .merge(style.copyWith(fontVariations: AppFonts.weight(700)));
+    final painter = TextPainter(
+      text: TextSpan(
+        children: SgScript.spans(
+          _label(context, rating),
+          latin: bold(SgText.styleFor(tokens, SgTextRole.label)),
+          bengali: bold(SgText.banglaStyleFor(tokens, SgTextRole.label)),
+        ),
+      ),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout();
+    final width = painter.width;
+    painter.dispose();
+    return width;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +194,7 @@ class _RatingButton extends StatelessWidget {
               decoration: BoxDecoration(
                 color: colour.withValues(alpha: rating.fillOpacity),
                 borderRadius: BorderRadius.circular(tokens.shape.button),
-                border: Border.all(color: colour, width: 2),
+                border: Border.all(color: colour, width: border),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
