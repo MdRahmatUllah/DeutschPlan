@@ -183,6 +183,22 @@ void main() {
     expect(best, lessThan(const Duration(milliseconds: 500)));
   });
 
+  test("#775 a meaning's comma is Russian's own: «что» finds «что», not "
+      'every «…, что»', () async {
+    const course = CourseMeanings(<String, Map<String, WordMeaningText>>{
+      'indem': <String, WordMeaningText>{
+        'ru': (meaning: 'тем, что / благодаря тому, что', pronunciation: null),
+      },
+      'was': <String, WordMeaningText>{
+        'ru': (meaning: 'что', pronunciation: null),
+      },
+    });
+    expect((await course.find('ru', meaningKey('что'))).exact, <String>['was']);
+    expect((await course.find('ru', meaningKey('тем, что'))).exact, <String>[
+      'indem',
+    ]);
+  });
+
   test('#1121 finding a word by its meaning in a language stays fast at '
       'course scale', () async {
     // 5,600 words, as the course has, each with a Russian meaning of two

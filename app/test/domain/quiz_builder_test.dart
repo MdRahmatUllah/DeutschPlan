@@ -380,6 +380,19 @@ void main() {
       expect(grade(haus, 'Дом'), Verdict.correct);
     });
 
+    test("#775 a Russian meaning's comma is its own: «что» alone is wrong", () {
+      const indem = QuizItem(
+        ord: 1,
+        wordUid: 'indem',
+        direction: QuizDirection.toMeaning,
+        prompt: 'indem',
+        expected: 'тем, что / благодаря тому, что',
+        lang: 'ru',
+      );
+      expect(grade(indem, 'что'), Verdict.wrong);
+      expect(grade(indem, 'благодаря тому, что'), Verdict.correct);
+    });
+
     test('Russian → German asks the Russian with the English under it, and '
         'English where the word has no Russian', () async {
       final quiz = await build(

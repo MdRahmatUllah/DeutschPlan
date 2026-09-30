@@ -13,8 +13,14 @@ import 'package:sogda/domain/grammar_item_generator.dart' show GapFill;
 import 'package:sogda/domain/text_norm.dart';
 
 /// The verdict [given] earns on a question item; null for Writing and
-/// Speaking, which have no single right answer.
-Verdict? verdictFor(ExamItem item, String given) => switch (item) {
+/// Speaking, which have no single right answer. [lang] is the language the
+/// paper asks meanings in (`exam_attempts.meaning_lang`; null before v5,
+/// English or Bangla), which decides how its meaning cells split (#775).
+Verdict? verdictFor(
+  ExamItem item,
+  String given, {
+  String? lang,
+}) => switch (item) {
   WordQuestion(
     :final section,
     :final expected,
@@ -27,7 +33,7 @@ Verdict? verdictFor(ExamItem item, String given) => switch (item) {
       // the whole cell, which `checkMeaning` would split and match none of.
       _ when tiles.isNotEmpty =>
         given == expected ? Verdict.correct : Verdict.wrong,
-      ExamSection.vocabulary => checkMeaning(given, expected),
+      ExamSection.vocabulary => checkMeaning(given, expected, lang: lang),
       ExamSection.articles => checkArticle(given, expected),
       ExamSection.wordForms => checkForm(given, expected),
       // Reverse and Listening: the headword, article optional; a phrase
@@ -238,7 +244,12 @@ bool rubricCounts(ExamItem item, String? given) => item is WritingTask
 /// A rubric scores only what is there to assess: Writing's needs a text,
 /// and Speaking's a recording — its [given] is the recording, and a section
 /// skipped or a recording deleted is 0 (FR-L12S-01, FR-L12S-04).
-double itemPoints(ExamItem item, {String? given, String? rubric}) {
+double itemPoints(
+  ExamItem item, {
+  String? given,
+  String? rubric,
+  String? lang,
+}) {
   final ticks = rubricTicks(rubric);
   int ticked(int of) => ticks.take(of).where((t) => t).length;
   return switch (item) {
@@ -247,7 +258,7 @@ double itemPoints(ExamItem item, {String? given, String? rubric}) {
           (rubricCounts(item, given) ? ticked(2) : 0),
     SpeakingTask() => rubricCounts(item, given) ? ticked(4).toDouble() : 0,
     // A blank answer needs no guard of its own: every check marks it wrong.
-    _ => given == null ? 0 : verdictFor(item, given)!.score,
+    _ => given == null ? 0 : verdictFor(item, given, lang: lang)!.score,
   };
 }
 
@@ -265,10 +276,11 @@ typedef PaperScore = ({
 PaperScore scorePaper(
   List<({ExamItem item, String? given, String? rubric})> answers, {
   required int passPercent,
+  String? lang,
 }) {
   final points = <double>[
     for (final a in answers)
-      itemPoints(a.item, given: a.given, rubric: a.rubric),
+      itemPoints(a.item, given: a.given, rubric: a.rubric, lang: lang),
   ];
   final total = points.fold(0.0, (sum, p) => sum + p);
   final max = answers.fold(0.0, (sum, a) => sum + a.item.section.points);
