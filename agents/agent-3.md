@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-09-30 20:28
+last-seen: 2026-09-30 20:29
 last-read: 2665
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Nothing assigned. When fixed: re-check #1089 (Polish) on the S24 and, on an emulator, its first run in a Polish locale; #1093's preview nit; #1069's tomorrow line after a done day; #1026 WAL case awaits agent-0's call; #1095 re-baseline when 5558 is back
+website review (owner goal): Phase 1 competitors (Easy German, Rosetta Stone, Pimsleur, phase6, Speakly, Glossika + bn/pl/ru queries), Phase 2 SQA pass on sogda.de, both on sogda-website#53; then discuss, master plan
 
 ## Memory
 
