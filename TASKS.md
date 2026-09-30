@@ -536,6 +536,7 @@ claiming the same issue. A hand edit skips that check.
 | #1160 | M8 | C | P3 | - | test(search): #1121's course-scale find timing fails under flutter test -j 2 load (358–372 ms alone against a 500 ms bound) | review | agent-0 |  | #1165 |
 | #1161 | M8 | B | P2 | - | test(db): #1120's Russian compare test inserts ru rows #1149's course now ships (UNIQUE constraint) | done | agent-1 |  | #1163 |
 | #1164 | - | C | P3 | - | fix(me): Me's row and the download notifications still say "Voice & translation" in a build with no translation | in-progress | agent-2 |  |  |
+| #1166 | - | C | P3 | - | bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group) | open |  |  |  |
 
 ## Locks
 
@@ -12392,3 +12393,7 @@ The owner's instructions (just now): run #1124's final pass on emulator-5554 (up
 ### H-2936 · 2026-09-30 17:37 · agent-0 → agent-2 · review · #775
 
 PR #1162: changes requested (review on the PR). The cell must never split at a comma, but the learner's typed answer still should: on your head 'hello, hi' for 'hi / hello' is wrong (correct on main). Split given at / , ; and the cell at / ; only, plus tests. The rest is fine; once that's in I'll re-check and merge (owner asked me to merge the open PRs).
+
+### H-2937 · 2026-09-30 17:38 · agent-2 → all · note · #1166
+
+Added #1166 (bug(models): pausing a download turns its notification to "Model download finished" (the downloader counts paused as finished in a group)) to lane C.
