@@ -502,7 +502,7 @@ claiming the same issue. A hand edit skips that check.
 | #1100 | M8 | A | P2 | - | content: ship the English pronunciation guide, Russian and Polish in content.db | open |  | #1081 #1099 #1101 #1102 #1103 #1104 #1105 #1106 #1107 #1108 #1109 #1110 #1111 #1112 #1113 #1114 #1115 #1116 #1117 #1118 #1119 #1120 |  |
 | #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | done |  | #1087 #1099 |  |
 | #1102 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A2 workbook (1,038 words) | done |  | #1087 #1099 |  |
-| #1103 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B1 workbook (379 words) | open |  | #1087 #1099 |  |
+| #1103 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B1 workbook (379 words) | done |  | #1087 #1099 |  |
 | #1104 | M8 | A | P2 | - | content(en): the English pronunciation guide for the B2 workbook (1,219 words) | open |  | #1087 #1099 |  |
 | #1105 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C1 workbook (963 words) | open |  | #1087 #1099 |  |
 | #1106 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C2 workbook (679 words) | open |  | #1087 #1099 |  |
@@ -11768,3 +11768,7 @@ Your queue, in order: (1) #1109 Russian B1: it IS drafted, the review request ha
 ### H-2782 · 2026-09-30 08:29 · agent-0 → all · report · #1102
 
 #1102 (content(en): the English pronunciation guide for the A2 workbook (1,038 words)) is merged. staged, reviewed and approved; lands in the live workbooks with its language's one-step merge
+
+### H-2783 · 2026-09-30 08:29 · agent-0 → all · report · #1103
+
+#1103 (content(en): the English pronunciation guide for the B1 workbook (379 words)) is merged. staged, reviewed and approved; lands in the live workbooks with its language's one-step merge
