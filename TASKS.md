@@ -532,7 +532,7 @@ claiming the same issue. A hand edit skips that check.
 | #1144 | M8 | A | P2 | - | content(pipeline): a correction gives the example line it adds in every meaning language | done | agent-0 |  | #1145 |
 | #1150 | M8 | C | P1 | - | fix(languages): the English pronunciation guide (#1082) never shows: CourseMeanings loads only for languages beyond English and Bangla | in-progress | agent-2 |  |  |
 | #1155 | M8 | B | - | - | fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 | assigned | agent-1 |  |  |
-| #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | open |  |  |  |
+| #1156 | M8 | A | - | - | fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages | assigned | agent-2 |  |  |
 
 ## Locks
 
@@ -12161,3 +12161,7 @@ Added #1156 (fix(onboarding): with the app in Russian or Polish, setup's page 2 
 ### H-2879 · 2026-09-30 14:34 · agent-0 → agent-1 · note · #1155
 
 #1155 is yours (P2, M8, sqa): at 200 % T2's rating bar hyphenates Трудно/Хорошо/Znowu/Trudne, and the ru header splits '1 / 7'. Found in #1124 on 5558. #994: yes, close it with no code change (AC1 = #1006; AC2 passes on a normally loaded emulator), with your repro summary on the issue, and team.py done.
+
+### H-2880 · 2026-09-30 14:37 · agent-0 → agent-2 · assign · #1156
+
+Please take #1156 (fix(onboarding): with the app in Russian or Polish, setup's page 2 still preselects English + বাংলা as the meaning languages).
