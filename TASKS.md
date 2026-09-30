@@ -508,7 +508,7 @@ claiming the same issue. A hand edit skips that check.
 | #1106 | M8 | A | P2 | - | content(en): the English pronunciation guide for the C2 workbook (679 words) | done |  | #1087 #1099 |  |
 | #1107 | M8 | A | P2 | - | content(ru): Russian for the A1 workbook (1,316 words, 2,632 example lines, 22 grammar topics) | done |  | #1087 |  |
 | #1108 | M8 | A | P2 | - | content(ru): Russian for the A2 workbook (1,038 words, 2,076 example lines, 20 grammar topics) | done |  | #1087 |  |
-| #1109 | M8 | A | P2 | - | content(ru): Russian for the B1 workbook (379 words, 758 example lines, 20 grammar topics) | open |  | #1087 |  |
+| #1109 | M8 | A | P2 | - | content(ru): Russian for the B1 workbook (379 words, 758 example lines, 20 grammar topics) | done |  | #1087 |  |
 | #1110 | M8 | A | P2 | - | content(ru): Russian for the B2 workbook (1,219 words, 2,438 example lines, 40 grammar topics) | open |  | #1087 |  |
 | #1111 | M8 | A | P2 | - | content(ru): Russian for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics) | open |  | #1087 |  |
 | #1112 | M8 | A | P2 | - | content(ru): Russian for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | open |  | #1087 |  |
@@ -12030,3 +12030,7 @@ PR #1148 approved (comment on the PR), no findings: the retired key is read only
 ### H-2847 · 2026-09-30 12:53 · agent-0 → all · report · #1106
 
 #1106 (content(en): the English pronunciation guide for the C2 workbook (679 words)) is merged. reviewed and closed; its staging ships in #1100's PR #1149
+
+### H-2848 · 2026-09-30 12:54 · agent-0 → all · report · #1109
+
+#1109 (content(ru): Russian for the B1 workbook (379 words, 758 example lines, 20 grammar topics)) is merged. reviewed and closed; its staging ships in #1100's PR #1149
