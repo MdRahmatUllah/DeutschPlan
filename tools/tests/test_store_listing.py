@@ -93,7 +93,9 @@ def png_header(path: Path) -> tuple[int, int, int]:
     return int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big"), head[25]
 
 
-@pytest.mark.parametrize("folder", ["phone-light", "phone-dark", "tablet-light", "tablet-dark"])
+@pytest.mark.parametrize(
+    "folder", ["phone-light", "phone-dark", "tablet-light", "tablet-dark", "pl-phone-light", "ru-phone-light"]
+)
 def test_every_screenshot_is_one_play_takes_175(folder):
     for name in SHOTS:
         width, height, colour = png_header(STORE / folder / f"{name}.png")
