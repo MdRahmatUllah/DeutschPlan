@@ -347,7 +347,10 @@ class ExamRepository extends DatabaseAccessor<AppDatabase>
         stored != null &&
         stored.any((q) => q.section == ExamSection.listening.name) ==
             listening &&
-        (built == null || built == lang);
+        // A paper from before v5 was built in English or Bangla (#1120, the
+        // review of #1142): a learner reading Russian or Polish now gets one
+        // of their own, not that paper forever.
+        (built == null ? lang == 'en' || lang == 'bn' : built == lang);
     return begin(
       sublevelCode: step,
       seed: seed,

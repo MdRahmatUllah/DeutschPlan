@@ -273,6 +273,17 @@ void main() {
       view.members.firstWhere((m) => m.uid == member.uid).meaning,
       'слово',
     );
+
+    // An open W2 follows a switch in M3, as W1 does.
+    await writeMeaningChoice(settings, const MeaningChoice('en'));
+    await pumpEventQueue();
+    final english = (await container.read(
+      compareViewProvider(set.word.uid).future,
+    ))!;
+    expect(
+      english.members.firstWhere((m) => m.uid == member.uid).meaning,
+      isNot('слово'),
+    );
   });
 
   test('a uid that is not in the course: null', () async {

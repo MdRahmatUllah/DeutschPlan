@@ -125,8 +125,9 @@ void main() {
     );
   });
 
-  test('#1120 a paper sat before v5 records no language, and its retake '
-      'stays the same mock in any language', () async {
+  test('#1120 a paper sat before v5 records no language: its retake stays '
+      'the same mock in English or Bangla, which it was built in, and a '
+      'Russian learner gets a paper of their own', () async {
     final old = await start(1);
     await (db.update(db.examAttempts)..where((t) => t.id.equals(old))).write(
       const ExamAttemptsCompanion(meaningLang: Value(null)),
@@ -136,6 +137,13 @@ void main() {
     final again = await startIn(1, 'bn');
     expect([for (final r in await rows(again)) r.prompt], seen);
     expect(await langOf(again), null);
+
+    final russian = await startIn(1, 'ru');
+    expect(
+      await langOf(russian),
+      'ru',
+      reason: 'drawn in Russian and recorded, not the old paper again',
+    );
   });
 
   test('FR-L10-04 a retake after listening went off leaves it out', () async {

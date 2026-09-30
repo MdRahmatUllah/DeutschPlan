@@ -14,7 +14,6 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/plan_repository.dart' show PlanKind;
 import 'package:sogda/data/repositories/word_actions.dart' show Undo;
 import 'package:sogda/data/repositories/word_repository.dart';
@@ -58,8 +57,9 @@ Stream<CompareView?> compareView(Ref ref, String uid) async* {
   // Everything watched is read before the first await, as W1's provider.
   final dao = ref.watch(contentDaoProvider);
   final words = ref.watch(wordRepositoryProvider);
-  // #1120: in the learner's first meaning language.
-  final lang = meaningChoiceOf(ref.watch(settingsSourceProvider)).primary;
+  // #1120: in the learner's first meaning language, following a switch in
+  // M3 as W1 does.
+  final lang = ref.watch(languagesProvider).meaning.primary;
   final set = await dao.compareSet(uid, lang: lang);
   if (set == null) {
     yield null;
