@@ -630,6 +630,31 @@ def drop_article_duplicates(words: Sequence) -> tuple[list, list[str]]:
     return kept, warnings
 
 
+def comma_lists(words: Sequence) -> list[str]:
+    """#775: a word's English meaning that lists synonyms with a comma.
+
+    A comma never separates a meaning's synonyms (BR-ANS-01): the app grades
+    and searches ` / ` alone, so "house, home" takes neither word alone.
+    A phrase's or a note's comma is its own ("the bill, please"), and so is
+    another language's («тем, что»): only a studied word's English is
+    checked, which is where a list would be authored. A warning, not a
+    failure: the text is right, the separator is not.
+    """
+    import re
+
+    warnings = []
+    for word in words:
+        if word.kind != "vocab" or word.pos == "phrase":
+            continue
+        if "," in re.sub(r"\([^)]*\)", "", word.english or ""):
+            warnings.append(
+                f"comma list: {word.source_file} All Words row {word.row} "
+                f"({word.german!r}): its English {word.english!r} lists with a "
+                f"comma, which never separates synonyms. Use ' / '."
+            )
+    return warnings
+
+
 def cross_level_duplicates(words: Sequence) -> list[str]:
     """#635: one word, the same German, part of speech and English, in two
     or more levels. The uid differs by its level, so nothing else notices,

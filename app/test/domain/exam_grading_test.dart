@@ -41,7 +41,7 @@ void main() {
 
   group('BR-ANS-01…04 every item through answer_check', () {
     test('Vocabulary: any listed meaning; a typo is almost', () {
-      final item = word(ExamSection.vocabulary, 'flat, apartment');
+      final item = word(ExamSection.vocabulary, 'flat / apartment');
       expect(verdictFor(item, 'apartment'), Verdict.correct);
       expect(verdictFor(item, 'apartmnet'), Verdict.almost);
       expect(verdictFor(item, 'house'), Verdict.wrong);
@@ -52,24 +52,14 @@ void main() {
         ExamSection.vocabulary,
         'тем, что / благодаря тому, что',
       );
-      expect(verdictFor(item, 'что', lang: 'ru'), Verdict.wrong);
-      expect(verdictFor(item, 'тем, что', lang: 'ru'), Verdict.correct);
-      expect(itemPoints(item, given: 'что', lang: 'ru'), 0);
+      expect(verdictFor(item, 'что'), Verdict.wrong);
+      expect(verdictFor(item, 'тем, что'), Verdict.correct);
+      expect(itemPoints(item, given: 'что'), 0);
       expect(
-        scorePaper(
-          <({ExamItem item, String? given, String? rubric})>[
-            (item: item, given: 'что', rubric: null),
-          ],
-          passPercent: 60,
-          lang: 'ru',
-        ).total,
+        scorePaper(<({ExamItem item, String? given, String? rubric})>[
+          (item: item, given: 'что', rubric: null),
+        ], passPercent: 60).total,
         0,
-      );
-      expect(
-        verdictFor(item, 'что'),
-        Verdict.correct,
-        reason:
-            'a paper from before v5 was English or Bangla: the comma splits',
       );
     });
 
@@ -164,7 +154,7 @@ void main() {
     });
 
     test('BR-ANS-04 points: correct 1, almost 0.5, the rest 0', () {
-      final item = word(ExamSection.vocabulary, 'flat, apartment');
+      final item = word(ExamSection.vocabulary, 'flat / apartment');
       expect(itemPoints(item, given: 'flat'), 1);
       expect(itemPoints(item, given: 'apartmnet'), 0.5);
       expect(itemPoints(item, given: 'house'), 0);

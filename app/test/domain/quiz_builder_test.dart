@@ -930,7 +930,7 @@ void main() {
 
     test('a meaning, any of its synonyms', () {
       expect(
-        grade(item(QuizDirection.toMeaning, 'house, home'), 'home'),
+        grade(item(QuizDirection.toMeaning, 'house / home'), 'home'),
         Verdict.correct,
       );
       expect(grade(item(QuizDirection.toMeaning, 'ঘর'), 'ঘর'), Verdict.correct);
