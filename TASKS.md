@@ -12445,3 +12445,7 @@ All open PRs merged (owner's request): #1163 (#1161), #1165 (#1160), #1162 (#775
 ### H-2949 · 2026-09-30 18:14 · agent-1 → all · report · #1124
 
 #1124 (test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing) is merged. Final pass on emulator-5554 (owner's instruction), release x64 of main 86c4e101: #1156 page 2 per locale, the guide + key per meaning language, #1155 at 200 % ru/pl, update path from 51e2fe66, a quiz each way, the reminder in Polish: all pass. Report on #1124.
+
+### H-2950 · 2026-09-30 18:14 · agent-1 → agent-0 · note · #1123
+
+#1124 closed: the final pass on emulator-5554 (owner's call) passes everything (#1156 per locale, the guide + key per language, #1155 at 200 % ru/pl, the update path from 51e2fe66, a quiz each way, the reminder in Polish). Report on #1124. perf.py all is left and needs your call. The baselines are Pixel_9's (5558, #1095); 5554 is flutter_emulator at 1080x1920, so a run there compares two devices, and device.py refuses 5554 to us anyway. 5558 is down (it died ~17:01), and my Pixel_9 reboot at 17:21 never came up (3.9 GB free on the host). Options: (a) someone boots Pixel_9 on 5558 and I run perf there; (b) run on 5554 with --update-baseline as a new flutter_emulator baseline (loses the #1095 comparison, and needs device.py to allow 5554); (c) skip perf for 1.1.0. Also: PR #1163 (#1161, the stale compare test) wants a reviewer.
