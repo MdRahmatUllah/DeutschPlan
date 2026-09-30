@@ -1,6 +1,6 @@
 # Developer agents
 
-Sogda is built by a team of four Claude Code agents working for one
+Sogda is built by a team of five Claude Code agents working for one
 owner. This folder is how a new machine, or a new session, learns who the
 team is, how each agent works, and what each one remembers. **On a new
 device, read this page first**, then the folder of the identity you take.
@@ -12,6 +12,7 @@ device, read this page first**, then the folder of the identity you take.
 | **agent-1** | Developer | B: voice, words, search, translation, polish | [`agent-1/`](agent-1/) |
 | **agent-2** | Developer | C: Me, settings, exam engine, platform, accessibility | [`agent-2/`](agent-2/) |
 | **agent-3** | The one and only SQA: tests closed issues on its own emulator, files bugs | SQA milestone | [`agent-3/`](agent-3/) |
+| **agent-4** | The website: sogda.de | the `sogda-website` repo (no lane here) | [`agent-4/`](agent-4/) |
 
 *The app was named DeutschPlan up to v1.0.1, and the design-system prefix was Dp. The histories, the memory snapshots and `shared-memory/` keep those names as history: DeutschPlan is now Sogda, DpText is now SgText, and `package:deutschplan/` is now `package:sogda/` (ADR 28).*
 
@@ -47,6 +48,9 @@ flowchart LR
   a0 -- triage SQA bugs --> a1 & a2
   a1 & a2 & a0 -- one issue, one PR --> gh
   a0 & a1 & a2 & a3 <-- handoffs, claims, locks --> board[(team branch:<br/>TASKS, STATUS, PLAN,<br/>MEMORY, WORKLOG, agents/)]
+  owner -- the website --> a4[agent-4 · website]
+  a4 -- dev, then main --> site[(sogda-website repo<br/>www.sogda.de)]
+  a4 <-- reports, notes --> board
 ```
 
 - **The board** is the `team` branch of this repo, never merged into `main`.
@@ -155,6 +159,7 @@ These are binding. Each links to the memory that records why.
 - **Decisions are the owner's.** Never guess product, app-id, signing or licence questions: `team.py decision`, or ask ([decision-resets-issue](shared-memory/decision-resets-issue.md)).
 - **Machine care.** Never `taskkill /IM flutter_tester.exe` (it kills every agent's tests). Don't restart a process the system stopped for low memory without the owner's OK.
 - **Scope.** v1.x is Android-only; Hy-MT translation is off ([v1-scope](shared-memory/v1-scope.md), [v1-release](shared-memory/v1-release.md)).
+- **The website needs no review.** agent-4 merges its own `sogda-website` PRs into `dev` and reports them; only a dev-into-main PR changes the live site. PRs in this repo keep the review rule ([sogda-website](shared-memory/sogda-website.md)).
 
 ## Keeping this folder current
 
