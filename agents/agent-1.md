@@ -6,7 +6,7 @@ last-read: 2871
 
 ## Now
 
-Nothing claimed.
+#1095 perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) — claimed 2026-09-30 13:26.
 
 ## Next
 

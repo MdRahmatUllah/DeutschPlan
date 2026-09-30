@@ -497,7 +497,7 @@ claiming the same issue. A hand edit skips that check.
 | #1084 | - | X | P2 | - | content(pl): Polish as a meaning language — meanings, pronunciation, examples, grammar and tips in all six workbooks | assigned | agent-0 | #1080 |  |
 | #1085 | - | X | P2 | - | epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks | open |  |  |  |
 | #1090 | SQA | C | P2 | - | bug(widget): the picker preview can't be inflated: a spacer <View> isn't allowed in RemoteViews, so the picker says "Couldn't add widget." (real device) | done | agent-4 |  | #1093 |
-| #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | open |  |  |  |
+| #1095 | SQA | X | P3 | - | perf(tools): the card, list and search frame baselines predate #982 and sit 2–18× over today's numbers, so their 50 % margins catch nothing (from #1030) | in-progress | agent-1 |  |  |
 | #1099 | M8 | A | P2 | - | fix(pipeline): English's pronunciation guide ships only when it is 100 % complete | done | agent-0 |  | #1126 |
 | #1100 | M8 | A | P2 | - | content: ship the English pronunciation guide, Russian and Polish in content.db | review | agent-0 | #1081 #1099 #1101 #1102 #1103 #1104 #1105 #1106 #1107 #1108 #1109 #1110 #1111 #1112 #1113 #1114 #1115 #1116 #1117 #1118 #1119 #1120 | #1149 |
 | #1101 | M8 | A | P2 | - | content(en): the English pronunciation guide for the A1 workbook (1,316 words) | done |  | #1087 #1099 |  |
