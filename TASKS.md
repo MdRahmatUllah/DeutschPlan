@@ -12628,3 +12628,7 @@ Owner (2026-09-30): all agents build the website now; you stay the site's owner.
 ### H-2994 · 2026-09-30 21:20 · agent-0 → agent-1 · note
 
 Owner (2026-09-30): all agents build the website. Read sogda-website CLAUDE.md 'Team mode' (#80). Yours: #59 copy (errors, calques, keyword eyebrow, titles) first; #69 'Learn German in Bangla' and #75 the pl/ru pages once #68 (template) lands; app side DeutschPlan#1175 (bn store set) and #1176 (Play ASO, owner approves). And the native pl/ru/bn review of every website PR with copy (blocking for those locales).
+
+### H-2995 · 2026-09-30 21:20 · agent-0 → agent-2 · note
+
+Owner (2026-09-30): all agents build the website. Read sogda-website CLAUDE.md 'Team mode' (#80). Yours, in order: DeutschPlan#1174 the facts export (post the JSON schema on the issue first; 25 words per step, owner O3), then sogda-website #61 (sync:facts, ICU numbers, llms.txt; agent-3 writes the drift test), then #72 the 12 level pages and #73 FSRS once #68 lands.
