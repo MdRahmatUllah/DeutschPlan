@@ -32,7 +32,9 @@ neither a profile build nor a glass theme nor a studied day. Its data goes
 with it, a downloaded voice model included: re-download it if a check needs
 it.
 
-    --update-baseline   write today's numbers into tools/perf_baseline.json
+    --update-baseline   write today's numbers into tools/perf_baseline.json,
+              with the AVD they come from; a run on another AVD says so
+              (#1095)
 
 A metric fails when it grows past its baseline by more than its margin. The
 emulator is not the mid-range phone the budgets are written for, so an
@@ -369,6 +371,14 @@ def report(measured: dict[str, float], doc: dict) -> bool:
     return passed
 
 
+def avd_note(recorded: str | None, current: str | None) -> str | None:
+    """#1095: baselines from another AVD compare two devices, not two builds."""
+    if recorded and current and recorded != current:
+        return (f"NOTE: the baselines were recorded on {recorded}, this run is on {current}: "
+                "re-baseline every metric in one sitting before trusting a verdict")
+    return None
+
+
 def keep_device() -> None:
     """Refreshes the device lock before each long step, so `perf.py all`
     never outlives the lock's 45-minute stale window (#697 TL-5)."""
@@ -418,6 +428,7 @@ def main(argv: list[str] | None = None) -> int:
     year = args.profile == "year"
     prefix = YEAR if year else ""
     measured: dict[str, float] = {}
+    avd = None  # a size run has no device
     if year and args.what in ("start", "all"):
         keep_device()
         build_seed()  # before the splits: its build shares their folder
@@ -426,6 +437,8 @@ def main(argv: list[str] | None = None) -> int:
         measured.update(measure_size())
     if args.what != "size":
         dev = device.Device(args.device)
+        avd = (f"{dev.sh('getprop', 'ro.boot.qemu.avd_name').strip() or '?'} "
+               f"(API {dev.sh('getprop', 'ro.build.version.sdk').strip()})")
         try:
             if args.what in ("frames", "all"):
                 keep_device()
@@ -440,6 +453,9 @@ def main(argv: list[str] | None = None) -> int:
 
     doc = json.loads(BASELINE.read_text(encoding="utf-8"))
     passed = report(measured, doc)
+    note = avd_note(doc.get("avd"), avd)
+    if note:
+        print(f"\n{note}")
     if args.update_baseline:
         if not passed:
             # Deliberate re-baselining (a feature that grows the app) is the
@@ -449,6 +465,7 @@ def main(argv: list[str] | None = None) -> int:
                 "becomes the new one. Check the table above first."
             )
         doc["metrics"].update(measured)
+        doc["avd"] = avd or doc.get("avd")
         BASELINE.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
         print(f"\nbaseline written: {BASELINE}")
         return 0
