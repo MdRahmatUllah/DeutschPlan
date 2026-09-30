@@ -6,7 +6,7 @@ last-read: 2958
 
 ## Now
 
-#1172 test(backlog): #664's one-read check counts #1154's one-time course-meanings load (3 reads, expected 2) — claimed 2026-09-30 20:50.
+#1172 in review as PR #1173: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
