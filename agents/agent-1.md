@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-09-30 15:23
+last-seen: 2026-09-30 15:25
 last-read: 2892
 
 ## Now
 
-#1155 fix(a11y): at 200 % text, T2's rating bar breaks Трудно, Хорошо, Znowu and Trudne mid-word, and the Russian header splits 1 / 7 — claimed 2026-09-30 14:46.
+#1155 in review as PR #1159: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
