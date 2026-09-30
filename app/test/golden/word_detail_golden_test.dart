@@ -67,11 +67,11 @@ void main() {
               MeaningChoice('ru', 'en'),
               CourseMeanings(<String, Map<String, WordMeaningText>>{
                 'uid-strasse': <String, WordMeaningText>{
-                  'ru': (meaning: 'улица', pronunciation: 'штра́сэ'),
+                  'ru': (meaning: 'улица', pronunciation: 'штрАсэ'),
                 },
               }),
             ),
-            pron: 'штра́сэ',
+            pron: 'штрАсэ',
             examples: const <({String german, String? translation})>[
               (
                 german: 'Die Straße ist wegen Bauarbeiten gesperrt.',

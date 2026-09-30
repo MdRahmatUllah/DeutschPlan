@@ -95,7 +95,7 @@ void main() {
             MeaningChoice('ru', 'en'),
             CourseMeanings(<String, Map<String, WordMeaningText>>{
               'r3': <String, WordMeaningText>{
-                'ru': (meaning: 'счёт', pronunciation: 'рэ́хнунг'),
+                'ru': (meaning: 'счёт', pronunciation: 'рЭхнунг'),
               },
             }),
           ),

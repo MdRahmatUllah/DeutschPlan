@@ -182,9 +182,9 @@ class ContentFixture {
       INSERT INTO course_languages (code, name, own_name, script, ord) VALUES
         ('ru', 'Russian', 'Русский', 'Cyrl', 3);
       INSERT INTO word_meanings (word_uid, lang, meaning, pronunciation) VALUES
-        ('$haus', 'ru', 'дом', 'хаус'),
-        ('$tuer', 'ru', 'дверь', 'тюа'),
-        ('$strasse', 'ru', 'улица', 'штра́сэ');
+        ('$haus', 'ru', 'дом', 'хАус'),
+        ('$tuer', 'ru', 'дверь', 'тЮа'),
+        ('$strasse', 'ru', 'улица', 'штрАсэ');
       INSERT INTO word_example_translations (word_uid, ord, lang, translation)
       VALUES ('$haus', 1, 'ru', 'Дом большой.');
       INSERT INTO grammar_translations

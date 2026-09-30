@@ -45,7 +45,7 @@ void main() {
     expect(meanings.meaning(ContentFixture.haus, 'en'), 'house');
     expect(meanings.meaning(ContentFixture.haus, 'bn'), 'বাড়ি');
     expect(meanings.meaning(ContentFixture.haus, 'ru'), 'дом');
-    expect(meanings.pronunciation(ContentFixture.strasse, 'ru'), 'штра́сэ');
+    expect(meanings.pronunciation(ContentFixture.strasse, 'ru'), 'штрАсэ');
     expect(meanings.pronunciation(ContentFixture.haus, 'en'), isNull);
     expect(meanings.meaning(ContentFixture.haus, 'pl'), isNull);
     expect(
@@ -78,7 +78,7 @@ void main() {
     );
     const course = CourseMeanings(<String, Map<String, WordMeaningText>>{
       'haus': <String, WordMeaningText>{
-        'ru': (meaning: 'дом', pronunciation: 'хаус'),
+        'ru': (meaning: 'дом', pronunciation: 'хАус'),
       },
     });
     String? guide(MeaningChoice choice, {bool bangla = true}) =>
@@ -87,8 +87,8 @@ void main() {
     expect(guide(const MeaningChoice('en', 'bn')), 'হাউস', reason: 'en none');
     expect(guide(const MeaningChoice('en', 'bn'), bangla: false), isNull);
     expect(guide(const MeaningChoice('en')), isNull, reason: 'no Bangla');
-    expect(guide(const MeaningChoice('ru', 'bn')), 'хаус');
-    expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хаус');
+    expect(guide(const MeaningChoice('ru', 'bn')), 'хАус');
+    expect(guide(const MeaningChoice('bn', 'ru'), bangla: false), 'хАус');
   });
 
   test('#1119 the whole shipped course loads its meanings once, quickly: '
