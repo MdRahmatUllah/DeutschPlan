@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-01 14:43
+last-seen: 2026-10-01 16:00
 last-read: 3231
 
 ## Now
 
-#1190 a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») — claimed 2026-10-01 14:43.
+#1190 in review as PR #1192: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
