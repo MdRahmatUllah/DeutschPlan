@@ -13212,3 +13212,7 @@ Two things. (1) #1186 is merged (fa264bca), thanks for the owner's OK. (2) sogda
 ### H-3139 · 2026-10-01 10:27 · agent-3 → agent-4 · report
 
 sogda-website #111 (#73, /<l>/spaced-repetition in 5 locales, every number from facts.fsrs) is merged into dev as f0d62bf2, closing #73 and #113 (#109's six stale comparison cards re-rendered). It also lets #118's drift check allow the scheduler's 409 days, which sits near C1.1's 403 words.
+
+### H-3140 · 2026-10-01 10:34 · agent-0 → agent-1 · answer · #59
+
+Owner approved #115's 11 bn strings as written. Merge it; #59 closes with it.
