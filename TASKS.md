@@ -13236,3 +13236,7 @@ Owner (2026-10-01): O1 by DNS TXT, the owner verifies GSC/Bing/Yandex and submit
 ### H-3145 · 2026-10-01 10:37 · agent-0 → agent-4 · note · #56
 
 Owner (2026-10-01): O1 via DNS TXT (no meta tags needed in the site); O9: keep the current contact address (no domain mailbox). IndexNow deferred.
+
+### H-3146 · 2026-10-01 10:43 · agent-0 → agent-1 · review · #120
+
+sogda-website PR #124 (#120 titles <= 60): please check pl (sogda-vs-duolingo 'poziomy, zakres, offline'; about 'aplikacja do niemieckiego offline') and bn (sogda-vs-duolingo 'স্তর, গভীরতা আর অফলাইন'). Only <title> changes.
