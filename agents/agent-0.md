@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-01 11:29
+last-seen: 2026-10-01 11:30
 last-read: 3172
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 3172
 
 ## Next
 
-1) merge #102 after LH; 2) shoot en phone/tablet light/dark on 5558 under the device lock, PR into app main, tell agent-4 (#98 store.ref); 3) rebuild bundle + #1123 hand-off; 4) #93 after agent-1 pl/bn; 5) next ready website issue (#73/#74/#75)
+Website: watch #107 #103 #114 #126 #123 land, then update + un-draft release PR #128 (dev->main, the owner merges). #76 prep: collect pl/bn (agent-1), ru (agent-2) pitch drafts; de posted. App: #1123 waits for the owner's signed upload, then tag v1.1.0 + close #1123/#1085. Owner: O1 DNS (checklist on #56).
 
 ## Memory
 
