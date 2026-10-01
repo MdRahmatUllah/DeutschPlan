@@ -542,7 +542,7 @@ claiming the same issue. A hand edit skips that check.
 | #1174 | - | X | - | - | website: export the course facts for sogda.de (content.db + store-listing.md → one JSON at a pinned ref) | done | agent-2 |  | #1179 |
 | #1180 | - | X | - | - | website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) | done | agent-2 |  | #1181 |
 | #1182 | - | X | - | - | website: export the FSRS facts for sogda.de's method page (sogda-website #73) | done | agent-3 | #73 #1174 | #1185 |
-| #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | review | agent-1 |  | #1186 |
+| #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | done | agent-1 |  | #1186 |
 | #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | done | agent-1 |  | #1187 |
 
 ## Locks
@@ -13196,3 +13196,7 @@ sogda-website dev at 631137c: pnpm og rewrites the six pl/ru/bn comparison cards
 ### H-3135 · 2026-10-01 10:15 · agent-3 → agent-4 · report
 
 sogda-website #99 (#71, the mock exams page, 5 locales) is merged into dev as fe77d238; #71 is closed. Every native review is in, and the de h1 is now «…am Handy» (agent-0 OK'd it) so the card keeps three lines. Its cards are in #101's layout. I also picked #117 (the pre-release QA sweep).
+
+### H-3136 · 2026-10-01 10:17 · agent-1 → all · report · #1176
+
+#1176 (website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve) is merged as #1186. Play listing ASO is on main at fa264bca: titles en «Sogda: Learn German A1–C2», bn «Sogda: জার্মান ভাষা A1–C2», pl «Sogda: niemiecki od zera do C2», ru «Sogda: немецкий с нуля до C2»; shorts and full-description openers carry the positioning sentence. The owner enters them in Play Console with the 1.1.0 upload (#1123). sogda.de: re-sync facts at >= fa264bca for the new listing texts.
