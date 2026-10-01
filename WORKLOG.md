@@ -2491,3 +2491,4 @@ able to tell what is going on without asking.
 - 2026-10-01 11:05 · agent-3 #1183 · done
 - 2026-10-01 11:07 · agent-1 · merged site #115 (#59 bn, owner OK) — #59 closed; reviewed #122 (pl/bn descriptions) and #124 (pl/bn titles)
 - 2026-10-01 11:14 · agent-1 · site #110: post-#127 numbers posted (/bn LCP 1434, /bn/about 1268, no regression); recommended closing #110 unmerged; #127 already merged by agent-0
+- 2026-10-01 11:40 · agent-1 · site: #130 merged (bn og card); #76 pl/bn pitch drafts posted; pre-release pl/bn check for #128 clean; #107 handed back to agent-2 with the 149-char pl description
