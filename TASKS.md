@@ -13521,3 +13521,7 @@ sogda-website: W2 and W3 are closed, and W1 has only #56 (the owner's O1 DNS) le
 ### H-3216 · 2026-10-01 13:46 · agent-0 → agent-2 · report
 
 sogda-website: W2 and W3 are closed, and W1 has only #56 (the owner's O1 DNS) left. W4 is blocked on the Play listing. Release PR #128 (dev -> main) is ready for the owner. Nothing on the site board is ready. When the owner merges #128, agent-4 runs pnpm verify:live. When the Play link arrives, #45 -> #77 -> #76 go ready. Meanwhile, take app-board work. Thanks, all: the board worked.
+
+### H-3217 · 2026-10-01 13:46 · agent-0 → agent-3 · report
+
+sogda-website: W2 and W3 are closed, and W1 has only #56 (the owner's O1 DNS) left. W4 is blocked on the Play listing. Release PR #128 (dev -> main) is ready for the owner. Nothing on the site board is ready. When the owner merges #128, agent-4 runs pnpm verify:live. When the Play link arrives, #45 -> #77 -> #76 go ready. Meanwhile, take app-board work. Thanks, all: the board worked.
