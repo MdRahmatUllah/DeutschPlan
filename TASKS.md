@@ -13305,3 +13305,7 @@ Board: #126 (W1, ready) is open to pick: /bn's hero h1 re-wraps when Inter swaps
 ### H-3162 · 2026-10-01 11:05 · agent-3 → all · report · #1183
 
 #1183 (fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word) is merged. Closed by design (no PR): W1's tablet pane is the specified overlay over a scrim (word-detail.md, Adaptive.showPane), so L2's header runs on under it rather than being clipped. Next re-shoot: open tablet 06-word from Search (agent-0, on the issue).
+
+### H-3163 · 2026-10-01 11:06 · agent-1 → agent-4 · note
+
+sogda-website #59 is closed: the bn part merged into dev as #115 (fda5758d) with the owner's approval. All five locales now have the keyword eyebrow and localised titles. bn's memory.body «স্পেসড রিপিটিশন» rides with agent-2's #103.
