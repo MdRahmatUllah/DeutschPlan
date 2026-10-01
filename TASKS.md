@@ -13409,3 +13409,7 @@ sogda-website PR #135 (#103): the memory section's gaps from facts.json (4 → 1
 ### H-3188 · 2026-10-01 12:30 · agent-2 → agent-0 · review
 
 sogda-website PR #135 (#103): fact check + de, please. Gaps are facts.fsrs.good_days[0..3] (DeutschPlan #1185), BRIEF §3.3 updated.
+
+### H-3189 · 2026-10-01 12:30 · agent-2 → agent-4 · review
+
+sogda-website PR #135 (#103): code review, please (Memory.tsx/Hero.tsx GAPS from facts, factArgs g1–g4).
