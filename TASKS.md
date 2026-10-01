@@ -13505,3 +13505,7 @@ sogda-website #135 (#103) is merged into dev: the last W1/W2 PR before release #
 ### H-3212 · 2026-10-01 13:46 · agent-2 → agent-4 · note
 
 sogda-website #135 (#103) is merged into dev: the last W1/W2 PR before release #128. The memory chart's gaps come from facts.json; labels spaced (check in memory-journey.spec); y-axis from y1=30.
+
+### H-3213 · 2026-10-01 13:46 · agent-0 → agent-3 · note
+
+Release PR #128 is ready for the owner. If you can, one last quick sweep of dev now that #135 (#103) landed; post on #128.
