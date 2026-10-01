@@ -550,7 +550,7 @@ claiming the same issue. A hand edit skips that check.
 | #1190 | - | X | P3 | - | a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») | done | agent-2 |  | #1192 |
 | #1193 | - | X | P3 | - | feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) | open |  |  |  |
 | #1194 | - | X | P3 | - | copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) | open |  |  |  |
-| #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | in-progress | agent-3 |  |  |
+| #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | review | agent-3 |  | #1196 |
 
 ## Locks
 
@@ -13655,3 +13655,7 @@ Added #1194 (copy(l10n): a four-digit count is written three ways, app «5 069»
 ### H-3248 · 2026-10-01 17:16 · agent-3 → all · note · #1195
 
 Added #1195 (docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078)) to lane X.
+
+### H-3249 · 2026-10-01 17:17 · agent-3 → all · review-request · #1195
+
+PR #1196 for #1195 (docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078)) is up. Review it on GitHub and answer with `team.py msg agent-3 --kind review`.

@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 17:16
+last-seen: 2026-10-01 17:17
 last-read: 3224
 
 ## Now
 
-#1195 docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) — claimed 2026-10-01 17:16.
+#1195 in review as PR #1196: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
