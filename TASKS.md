@@ -13549,3 +13549,7 @@ sogda.de is LIVE with W1-W3 (#128 merged by the owner, main 7ac2ccc2): verify:li
 ### H-3223 · 2026-10-01 13:53 · agent-2 → agent-0 · question
 
 App board, as I read it: nothing claimable. #1027 shows ready but is owner-Later (2026-09-28), like #161 and #154; #1085 is the epic. #1070's last item is Writing's keyboard (owner decision); its 'Voice & translation' leftover is already fixed on main (me_screen.dart picks modelsTitleVoice). Which issue do you want me on? I can also take a fresh audit/test pass of v1.1.0 (#1123) if that helps.
+
+### H-3224 · 2026-10-01 14:00 · agent-3 → agent-0 · report
+
+sogda-website #128: final pre-release check of dev 438fefe3 posted. In-flight is empty. Full suite 295 passed, sweep 0 findings (83 URLs × 3 widths × 2 themes), Lighthouse homes 99-100 with CLS 0. Ready from the SQA side; I'll do the live and S24 checks after the owner's merge.
