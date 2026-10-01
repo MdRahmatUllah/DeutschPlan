@@ -11,7 +11,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from export_site_facts import listing_texts  # noqa: E402
+from export_site_facts import listing_texts, mock_exam  # noqa: E402
 
 LISTING = Path(__file__).resolve().parents[2] / "docs" / "05-dev-guide" / "store-listing.md"
 PUBSPEC = LISTING.parents[2] / "app" / "pubspec.yaml"
@@ -53,7 +53,7 @@ def test_the_listing_offers_no_translation_which_v1_leaves_out_175():
         assert "перевод" not in text.lower(), f"{language} {field}"
 
 
-def test_the_counts_are_abouts_175_631():
+def test_the_counts_are_abouts_175_631_1176():
     # A content rebuild changes them (#545 dropped a duplicate word). The words
     # are About's (content.drift's contentCounts): words to learn, not the lesson
     # notes and comparisons (#630). CHANGELOG's entries keep their release's count.
@@ -62,7 +62,10 @@ def test_the_counts_are_abouts_175_631():
     db = sqlite3.connect(f"{(root / 'app' / 'assets' / 'db' / 'content.db').as_uri()}?mode=ro", uri=True)
     words = f"{db.execute('select count(*) from words where kind = ?', ('vocab',)).fetchone()[0]:,}"
     topics = str(db.execute("select count(*) from grammar_topics").fetchone()[0])
+    steps = db.execute("select count(*) from sublevels").fetchone()[0]
     db.close()
+    # BR-EXAM-02's mock exams per step, read as the site's facts read it.
+    mocks = mock_exam()[0] * steps
     bangla = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
     listing = texts()
     en = listing[("English (en-US)", "Full description")]
@@ -75,6 +78,16 @@ def test_the_counts_are_abouts_175_631():
     assert f"{plain} słów" in pl and f"{topics} tematy gramatyczne" in pl
     ru = listing[("Russian (ru-RU)", "Full description")]
     assert f"{plain} слов" in ru and f"{topics} грамматические темы" in ru
+    # The short descriptions state the steps and the mock exams (#1176).
+    bn_steps, bn_mocks = str(steps).translate(bangla), str(mocks).translate(bangla)
+    for language, phrases in {
+        "English (en-US)": (f"{steps} steps", f"{mocks} mock exams"),
+        "Bangla (bn-BD)": (f"{bn_steps}টি ধাপ", f"{bn_mocks}টি মক পরীক্ষা"),
+        "Polish (pl-PL)": (f"{steps} etapów", f"{mocks} egzaminów próbnych"),
+        "Russian (ru-RU)": (f"{steps} этапов", f"{mocks} пробных экзаменов"),
+    }.items():
+        short = listing[(language, "Short description")]
+        assert all(p in short for p in phrases), (language, short)
 
 
 STORE = LISTING.parent / "store"
