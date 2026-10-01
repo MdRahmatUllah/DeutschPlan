@@ -6,7 +6,7 @@ last-read: 3251
 
 ## Now
 
-Nothing claimed.
+#1197 copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» — claimed 2026-10-01 17:28.
 
 ## Next
 

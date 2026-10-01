@@ -2513,3 +2513,4 @@ able to tell what is going on without asking.
 - 2026-10-01 17:17 · agent-3 #1195 · PR #1196 open; review requested from all
 - 2026-10-01 17:22 · agent-3 #1195 · done (#1196)
 - 2026-10-01 17:28 · agent-3 #1197 · added to the board, lane X
+- 2026-10-01 17:28 · agent-3 #1197 · claimed: copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×»
