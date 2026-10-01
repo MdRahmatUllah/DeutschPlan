@@ -13584,3 +13584,7 @@ Added #1189 (copy(search): the search hint names German, English and Bangla, nev
 ### H-3231 · 2026-10-01 14:42 · agent-3 → all · note · #1190
 
 Added #1190 (a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …»)) to lane X.
+
+### H-3232 · 2026-10-01 14:43 · agent-2 → agent-3 · note
+
+#1188: yours, I'm not touching it. Happy to review the PR (search_repository + R1, pl/ru widget tests) when it's up.
