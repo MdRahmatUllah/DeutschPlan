@@ -440,9 +440,9 @@ class SettingsScreen extends ConsumerWidget {
                 value: speedQuarters.clamp(speed.min, speed.max),
                 builder: (shown, hold) => _Row(
                   title: l10n.settingsSpeed,
-                  subtitle: l10n.settingsSpeedLine(l10n.digits(_times(shown))),
+                  subtitle: l10n.settingsSpeedLine(_times(l10n, shown)),
                   labelledByControl: true,
-                  controlValue: l10n.digits('${_times(shown)}×'),
+                  controlValue: '${_times(l10n, shown)}×',
                   trailing: _slider(
                     SgSlider(
                       value: shown,
@@ -450,8 +450,7 @@ class SettingsScreen extends ConsumerWidget {
                       max: speed.max,
                       compact: true,
                       label: l10n.settingsSpeed,
-                      describe: (quarters) =>
-                          l10n.digits('${_times(quarters)}×'),
+                      describe: (quarters) => '${_times(l10n, quarters)}×',
                       onChanged: hold,
                       onChangeEnd: (quarters) =>
                           set(SettingKeys.ttsSpeed, quarters / 4),
@@ -609,10 +608,10 @@ class SettingsScreen extends ConsumerWidget {
   /// The artboard's 120 dp slider beside its row's text.
   static Widget _slider(SgSlider slider) => SizedBox(width: 120, child: slider);
 
-  /// Quarters as the speed reads: 4 is "1.0", 3 is "0.75".
-  static String _times(int quarters) => quarters.isEven
-      ? (quarters / 4).toStringAsFixed(1)
-      : (quarters / 4).toStringAsFixed(2);
+  /// Quarters as the speed reads: 4 is "1.0", 3 is "0.75" («0,75» in
+  /// Polish, #1197).
+  static String _times(AppLocalizations l10n, int quarters) =>
+      l10n.decimal(quarters / 4, quarters.isEven ? 1 : 2);
 
   /// "Mon–Sat · 19:30 · only when something is due", from M5's settings.
   static String _studyDays(BuildContext context, SettingsRepository settings) {

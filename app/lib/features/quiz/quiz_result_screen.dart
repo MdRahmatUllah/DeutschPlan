@@ -23,7 +23,6 @@ import 'package:sogda/features/quiz/quiz_screen.dart' show quizTitle;
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/word_row.dart' show WordPlayButton;
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/routes.dart';
 
 part 'quiz_result_screen.g.dart';
@@ -135,8 +134,8 @@ class _QuizResultViewState extends ConsumerState<QuizResultView> {
           _Score(
             colour: colour,
             score: l10n.quizResultScore(
-              l10n.digits(quizPoints(attempt.scorePoints)),
-              l10n.digits(quizPoints(attempt.maxPoints)),
+              quizPoints(l10n, attempt.scorePoints),
+              quizPoints(l10n, attempt.maxPoints),
             ),
             line: l10n.quizResultLine(
               // Down, never up: 79.5 % is not the 80 % that turns it Lime.

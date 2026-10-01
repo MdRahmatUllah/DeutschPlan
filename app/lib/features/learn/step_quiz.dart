@@ -15,7 +15,6 @@ import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/quiz/quiz_names.dart';
 import 'package:sogda/features/quiz/quiz_setup_sheet.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
-import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/routes.dart';
 
 part 'step_quiz.g.dart';
@@ -261,7 +260,7 @@ class LastQuizCard extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: SgText(
                   // "১৬" in Bangla, as the line beside it (#690 LQ-6).
-                  l10n.digits(quizPoints(quiz.score)),
+                  quizPoints(l10n, quiz.score),
                   role: SgTextRole.label,
                   weight: 700,
                   color: tokens.color.onAccent,
@@ -276,8 +275,8 @@ class LastQuizCard extends StatelessWidget {
               children: <Widget>[
                 SgText(
                   l10n.quizLast(
-                    l10n.digits(quizPoints(quiz.score)),
-                    l10n.digits(quizPoints(quiz.outOf)),
+                    quizPoints(l10n, quiz.score),
+                    quizPoints(l10n, quiz.outOf),
                   ),
                   role: SgTextRole.body,
                   weight: 600,
