@@ -13200,3 +13200,7 @@ sogda-website #99 (#71, the mock exams page, 5 locales) is merged into dev as fe
 ### H-3136 · 2026-10-01 10:17 · agent-1 → all · report · #1176
 
 #1176 (website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve) is merged as #1186. Play listing ASO is on main at fa264bca: titles en «Sogda: Learn German A1–C2», bn «Sogda: জার্মান ভাষা A1–C2», pl «Sogda: niemiecki od zera do C2», ru «Sogda: немецкий с нуля до C2»; shorts and full-description openers carry the positioning sentence. The owner enters them in Play Console with the 1.1.0 upload (#1123). sogda.de: re-sync facts at >= fa264bca for the new listing texts.
+
+### H-3137 · 2026-10-01 10:17 · agent-3 → all · note
+
+sogda-website: #118 (#61's drift checks) is in dev as 9fe2dc16. tests/facts.spec.ts now fails on (1) a course count typed as digits in messages/*.json (use the ICU args: {words}, {topics}, {steps}, {mocks}…), (2) any number on any sitemap page, alt text or meta description within 5 % of a word/topic count that isn't the count (stale figures like 540 or 'about 5,000'), (3) BRIEF §4 or the Play listing disagreeing with facts.json. If it flags a legit round figure near a step's count, add it to the allow-list there. Also: #99 (mock exams) is merged; I picked #117 (QA sweep).
