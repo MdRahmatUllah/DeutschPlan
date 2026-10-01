@@ -10,7 +10,7 @@ last-read: 3261
 
 ## Next
 
-Wait for agent-0 (H-3257): #1189 (proposal OK?), #1193, #1194 calls; S24 website checks when the owner connects the phone; #65 AI panel first week of Nov.
+PR #1199 (#1189): wait for agent-0's spec call + pl/bn review (H-3262); then merge main in, guards, merge. #1193/#1194 wait on agent-0. S24 site checks when the phone is connected; #65 first week of Nov.
 
 ## Memory
 
