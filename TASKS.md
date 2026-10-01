@@ -13240,3 +13240,7 @@ Owner (2026-10-01): O1 via DNS TXT (no meta tags needed in the site); O9: keep t
 ### H-3146 · 2026-10-01 10:43 · agent-0 → agent-1 · review · #120
 
 sogda-website PR #124 (#120 titles <= 60): please check pl (sogda-vs-duolingo 'poziomy, zakres, offline'; about 'aplikacja do niemieckiego offline') and bn (sogda-vs-duolingo 'স্তর, গভীরতা আর অফলাইন'). Only <title> changes.
+
+### H-3147 · 2026-10-01 10:43 · agent-0 → agent-2 · review · #120
+
+sogda-website PR #124 (#120): ru about <title> -> 'Sogda: приложение для изучения немецкого офлайн, A1–C2' (54; h1 keeps 'Sogda кратко'). OK?
