@@ -199,8 +199,20 @@ Sogda — полный курс немецкого, который работа�
 `store/pl-phone-light` and `store/ru-phone-light`, the same six screens, taken as the English ones were (the release x86_64 APK on emulator-5558, wiped, API 36, 1080 × 2160, the demo status bar), from the course with Russian and Polish (#1100):
 
 - **The app language and the first meaning language** are Polish for `pl-phone-light` and Russian for `ru-phone-light`, with no second meaning. So each card shows that language's meaning, its pronunciation guide and its example lines: *danke* → *dziękuję / dzięki*, `/DAN-ke/`; → *спасибо*, `/дАнкэ/`.
-- **Upload them** under the Polish (pl-PL) and Russian (ru-RU) listings. The English phone and tablet sets serve the other languages.
+- **Upload them** under the Polish (pl-PL) and Russian (ru-RU) listings. The English phone and tablet sets serve English and any listing without its own set.
 - **No dark or tablet sets** in Polish and Russian: Play shows a listing's own screenshots where it has them, and the phone set is what it requires.
+
+### Bangla (#1175)
+
+`store/bn-phone-light`, the same six screens, taken the same way (the release x86_64 APK on emulator-5558, a fresh install, API 36, 1080 × 2160, the demo status bar with full Wi-Fi):
+
+- **The app language is Bangla, and the meanings are Bangla first and English second**, setup's default for a Bangla app (#1156). So *danke* shows *ধন্যবাদ* with *thanks / thank you* under it, and the Bangla-letter guide `/ডাংকে/`. The course has no Bangla example lines, grammar rules or topic names, so those show in English, as every Bangla learner sees them.
+- **Upload them** under the Bangla (bn-BD) listing. sogda.de's `/bn` shows them too (sogda-website #66).
+- **The sequence**, which gives the states the Polish set shows: onboarding with the defaults (the meanings as setup offers them, A1.1, 7 new words a day), no name, the voice card dismissed. Then:
+  1. Rate the first three new cards *Good*. The fourth, *danke* (4 / 7), is `02-card-front`, and turned over it is `03-card-back`.
+  2. Close the session. Today at 3 / 8 is `01-today`.
+  3. The course tab is `04-course`, A1.1 is `05-step`, and *Auf Wiedersehen*'s sheet over it is `06-word`.
+- **Re-shoot every set with each release** (`release.md`, step 7), so the listings never show an older app's screens or counts.
 
 ## Website and icon
 
@@ -209,6 +221,7 @@ Sogda — полный курс немецкого, который работа�
   - **What it holds:**
     - the course's counts from `content.db`;
     - the mock paper's shape (BR-EXAM-02/03 and the app's `ExamSection`);
+    - the scheduler's numbers (#1182): BR-FSRS-01, BR-PLAN-02's defaults and `fsrs-scheduler.md`'s reference values, which `fsrs_test.dart` checks against the file;
     - the version and the Android floor from the build files;
     - 25 sample words per step, chosen by a hash of their uid so they only change with the step;
     - these listing texts, verbatim.
