@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 02:01
+last-seen: 2026-10-01 02:02
 last-read: 3066
 
 ## Now
@@ -22,4 +22,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-25 14:41 (end of session): SQA pass 2 complete; 14 fixes verified, 2 new bugs filed (#405, #406).
 - 2026-09-29 22:42: 2026-09-29: S24 (R5CWC2LXVWZ) now holds the OWNER's own learning (since 28 Sep, their 4x2 widget on page 2): never rate cards, reset, or leave a PR build on it; install -r keeps data; back to main after a PR check. Flutter frames: gfxinfo sees none, use scratchpad sflat.py (SurfaceFlinger --latency on the BLAST layer). Swipes can hit an open keyboard: check mInputShown first.
 - 2026-09-29 23:32: 2026-09-29: never start a shared emulator as a Bash background task: the harness kills it at its time limit (5558 went down after #1030). After main gains a .drift/content change, run the ADR 17 generation steps (mirror_content_schema, drift steps, build_runner) before building.
+- 2026-10-01 02:02: Resume: (1) #99 at 41b09f5 in sogda-website-wt/agent-3-base (agent-1's pl/bn fixes, committed, NOT pushed): git fetch && merge origin/dev, pnpm og (keep only mock-exams cards), build, Playwright on 4183, push, merge. (2) #111: take agent-2's 4 ru fixes (H-3109) and agent-4's nits (@/content import, routing.locales); waits for agent-0 (facts, de) and agent-1 (pl, bn). (3) #61 drift test on feat/61-drift-test in agent-3: plants were running (../a3-plant61.txt); PR when a slot frees. (4) Six stale serve processes on 4193 are the user's to stop; use LH_PORT=4197.
 
