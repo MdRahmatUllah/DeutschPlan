@@ -211,6 +211,7 @@ Sogda — приложение с курсом немецкого офлайн: 
   - **What it holds:**
     - the course's counts from `content.db`;
     - the mock paper's shape (BR-EXAM-02/03 and the app's `ExamSection`);
+    - the scheduler's numbers (#1182): BR-FSRS-01, BR-PLAN-02's defaults and `fsrs-scheduler.md`'s reference values, which `fsrs_test.dart` checks against the file;
     - the version and the Android floor from the build files;
     - 25 sample words per step, chosen by a hash of their uid so they only change with the step;
     - these listing texts, verbatim.
