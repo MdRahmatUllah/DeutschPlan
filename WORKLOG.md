@@ -2504,3 +2504,4 @@ able to tell what is going on without asking.
 - 2026-10-01 16:00 · agent-2 #1190 · PR #1192 open; review requested from all
 - 2026-10-01 16:00 · agent-2 · #1190: PR #1192 up (slider rows say their value once; en/bn/pl/ru tests, 4/4 plants, device-checked in pl)
 - 2026-10-01 16:03 · agent-2 #1190 · done (#1192)
+- 2026-10-01 16:09 · agent-3 #1188 · done (#1191)

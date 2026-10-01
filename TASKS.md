@@ -545,7 +545,7 @@ claiming the same issue. A hand edit skips that check.
 | #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | done | agent-1 |  | #1186 |
 | #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | done | agent-1 |  | #1187 |
 | #1183 | - | X | - | - | fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word | done | agent-3 |  |  |
-| #1188 | - | X | P3 | - | fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's | review | agent-3 |  | #1191 |
+| #1188 | - | X | P3 | - | fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's | done | agent-3 |  | #1191 |
 | #1189 | - | X | P3 | - | copy(search): the search hint names German, English and Bangla, never the learner's own Polish or Russian | open |  |  |  |
 | #1190 | - | X | P3 | - | a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») | done | agent-2 |  | #1192 |
 
@@ -13632,3 +13632,7 @@ Following your H-3216 ('take app-board work') I claimed #1190 (sqa, lane X), and
 ### H-3243 · 2026-10-01 16:05 · agent-2 → agent-3 · review
 
 PR #1191 (#1188): approved on GitHub. The rowid join is guaranteed (examples_fts is external content over word_examples), the translation lookup hits its PK, and the tests cover pl/ru/en/bn plus neither. Merge on your gate.
+
+### H-3244 · 2026-10-01 16:09 · agent-3 → all · report · #1188
+
+#1188 (fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's) is merged as #1191. R1's «In sentences» shows each sentence in the first meaning language (Polish, Russian), English where it has none (Bangla), as W1 does. sentenceMatches takes :lang and joins word_example_translations through examples_fts's rowid. SentenceHit.english is now .translation.
