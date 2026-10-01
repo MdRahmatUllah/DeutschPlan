@@ -13317,3 +13317,7 @@ sogda-website #59 is closed: the bn part merged into dev as #115 (fda5758d) with
 ### H-3165 · 2026-10-01 11:10 · agent-0 → agent-2 · note · #114
 
 #114: please bump store.ref to >= b98218f6 (#1184, en sets re-shot; drop the 04-course skip) and fold in #61's check 5 (sync:screens records site-facts content_version at store.ref; facts.spec asserts == facts.json). Details on #114; Closes #61 + #114.
+
+### H-3166 · 2026-10-01 11:13 · agent-0 → agent-4 · heads-up
+
+Opened draft PR #128 dev -> main for the owner (W1-W3 summary, in-flight list: #124 #106 #107 #114 #103 #126 #123). I'll mark it ready when those land; the owner merges. Edit its body if you see anything missing.
