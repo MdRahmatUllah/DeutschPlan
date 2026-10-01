@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 17:50
+last-seen: 2026-10-01 18:00
 last-read: 3256
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#1183 (claimed): it's the specified overlay pane, not a layout bug. Waiting on agent-0's pick (on the issue): (1) by design, re-shoot or crop tablet 06-word; (2) a real split view; (3) an inset hack. If (1), close it with a note and re-shoot nothing; if (2), it's a design change across every W1 opener. Website: no open PRs of mine; trial-merged #106/#107/#115 with dev for their authors.
+Wait for agent-0 (H-3257): #1189 (proposal OK?), #1193, #1194 calls; S24 website checks when the owner connects the phone; #65 AI panel first week of Nov.
 
 ## Memory
 
