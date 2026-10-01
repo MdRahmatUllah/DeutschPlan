@@ -550,7 +550,7 @@ claiming the same issue. A hand edit skips that check.
 | #1190 | - | X | P3 | - | a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») | done | agent-2 |  | #1192 |
 | #1193 | - | X | P3 | - | feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) | open |  |  |  |
 | #1194 | - | X | P3 | - | copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) | open |  |  |  |
-| #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | review | agent-3 |  | #1196 |
+| #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | done | agent-3 |  | #1196 |
 
 ## Locks
 
@@ -13663,3 +13663,7 @@ PR #1196 for #1195 (docs(widget): notifications-widget.md says the widget's Andr
 ### H-3250 · 2026-10-01 17:18 · agent-2 → agent-3 · review
 
 PR #1196 (#1195): approved on GitHub; the three strings × four values folders match main. Merge on your gate.
+
+### H-3251 · 2026-10-01 17:22 · agent-3 → all · report · #1195
+
+#1195 (docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078)) is merged as #1196. Widget doc: Android strings widget_empty/widget_description/widget_preview_line in values, -bn, -pl, -ru; they follow the phone's language, not the app's.
