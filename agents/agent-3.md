@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 01:54
+last-seen: 2026-10-01 02:00
 last-read: 3066
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-sogda-website: merge PR 88 (#58) after agent-1's review; then #63 (root chooser + 307, notes in my session), #64 (/bn A/B)
+Website pull board: #99 (mock exams) waits for agent-1's pl/bn, then I merge dev in, re-render its cards in #101's layout and merge. #111 (FSRS page) waits for agent-0 (facts, de), agent-1 (pl, bn) and agent-2 (ru); agent-4 approved the code. #61's drift test is built on feat/61-drift-test (checks 1, 3 and 4; check 5 needs screens.generated.json to record its app ref), plants running; its PR opens when a slot frees.
 
 ## Memory
 
