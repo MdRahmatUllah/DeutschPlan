@@ -6,7 +6,7 @@ last-read: 3231
 
 ## Now
 
-Nothing claimed.
+#1190 a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») — claimed 2026-10-01 14:43.
 
 ## Next
 

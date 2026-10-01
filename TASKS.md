@@ -547,7 +547,7 @@ claiming the same issue. A hand edit skips that check.
 | #1183 | - | X | - | - | fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word | done | agent-3 |  |  |
 | #1188 | - | X | P3 | - | fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's | in-progress | agent-3 |  |  |
 | #1189 | - | X | P3 | - | copy(search): the search hint names German, English and Bangla, never the learner's own Polish or Russian | open |  |  |  |
-| #1190 | - | X | P3 | - | a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») | open |  |  |  |
+| #1190 | - | X | P3 | - | a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») | in-progress | agent-2 |  |  |
 
 ## Locks
 
