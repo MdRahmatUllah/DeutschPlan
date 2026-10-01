@@ -108,6 +108,27 @@
   "@searchHint": {
     "description": "R1 search field placeholder."
   },
+  "searchHintOne": "Search German or {last, select, en{English} bn{Bangla} pl{Polish} ru{Russian} other{English}}",
+  "@searchHintOne": {
+    "description": "#1189: R1 search field placeholder for a learner with one meaning language: German, then that language (`last`, a meaning-language code: en, bn, pl or ru). Bangla puts the locative on the last name.",
+    "placeholders": {
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "searchHintTwo": "Search German, {first, select, en{English} bn{Bangla} pl{Polish} ru{Russian} other{English}} or {last, select, en{English} bn{Bangla} pl{Polish} ru{Russian} other{English}}",
+  "@searchHintTwo": {
+    "description": "#1189: R1 search field placeholder for a learner with two meaning languages: German, then the primary (`first`) and the secondary (`last`), each a meaning-language code: en, bn, pl or ru. Bangla puts the locative on the last name.",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
   "searchClear": "Clear",
   "@searchClear": {
     "description": "R1 search field's clear button, for screen readers."

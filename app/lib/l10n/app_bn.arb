@@ -21,6 +21,8 @@
   "tabLearn": "শিখুন",
   "tabSearch": "খুঁজুন",
   "searchHint": "জার্মান, ইংরেজি বা বাংলায় খুঁজুন",
+  "searchHintOne": "জার্মান বা {last, select, en{ইংরেজিতে} bn{বাংলায়} pl{পোলিশে} ru{রুশে} other{ইংরেজিতে}} খুঁজুন",
+  "searchHintTwo": "জার্মান, {first, select, en{ইংরেজি} bn{বাংলা} pl{পোলিশ} ru{রুশ} other{ইংরেজি}} বা {last, select, en{ইংরেজিতে} bn{বাংলায়} pl{পোলিশে} ru{রুশে} other{ইংরেজিতে}} খুঁজুন",
   "searchClear": "মুছুন",
   "searchRemoveStep": "শুধু {step} নয়, সব ধাপে খুঁজুন",
   "searchExact": "হুবহু মিল · {count}",
