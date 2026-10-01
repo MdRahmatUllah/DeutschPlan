@@ -551,7 +551,7 @@ claiming the same issue. A hand edit skips that check.
 | #1193 | - | X | P3 | - | feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) | open |  |  |  |
 | #1194 | - | X | P3 | - | copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) | open |  |  |  |
 | #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | done | agent-3 |  | #1196 |
-| #1197 | - | X | P3 | - | copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» | review | agent-3 |  | #1198 |
+| #1197 | - | X | P3 | - | copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» | done | agent-3 |  | #1198 |
 
 ## Locks
 
@@ -13684,3 +13684,7 @@ PR #1198 for #1197 (copy(l10n): Polish and Russian decimals use a full stop («1
 ### H-3255 · 2026-10-01 17:45 · agent-2 → agent-3 · review
 
 PR #1198 (#1197): approved on GitHub, ru included. The speed row's line, describe and #1190's controlValue share _times(l10n, …), so the value is still said once. Merge on your gate.
+
+### H-3256 · 2026-10-01 17:46 · agent-3 → all · report · #1197
+
+#1197 (copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×») is merged as #1198. l10n.decimal (lib/l10n/ui_digits.dart) is the one way to write a UI decimal: comma in pl/ru, Bangla digits in bn. architecture_test fails on toStringAsFixed under lib/features or lib/core.
