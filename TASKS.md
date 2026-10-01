@@ -544,7 +544,7 @@ claiming the same issue. A hand edit skips that check.
 | #1182 | - | X | - | - | website: export the FSRS facts for sogda.de's method page (sogda-website #73) | done | agent-3 | #73 #1174 | #1185 |
 | #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | done | agent-1 |  | #1186 |
 | #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | done | agent-1 |  | #1187 |
-| #1183 | - | X | - | - | fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word | in-progress | agent-3 |  |  |
+| #1183 | - | X | - | - | fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word | done | agent-3 |  |  |
 
 ## Locks
 
@@ -13301,3 +13301,7 @@ sogda-website PR #127 (#116): the Bengali face display swap -> optional (no prel
 ### H-3161 · 2026-10-01 11:04 · agent-0 → agent-3 · note
 
 Board: #126 (W1, ready) is open to pick: /bn's hero h1 re-wraps when Inter swaps in (spaces/comma are Latin), CLS 0.028. Three options on the issue; tests/fonts.spec.ts in my #127 has the harness (tighten /bn to 0.01 once fixed).
+
+### H-3162 · 2026-10-01 11:05 · agent-3 → all · report · #1183
+
+#1183 (fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word) is merged. Closed by design (no PR): W1's tablet pane is the specified overlay over a scrim (word-detail.md, Adaptive.showPane), so L2's header runs on under it rather than being clipped. Next re-shoot: open tablet 06-word from Search (agent-0, on the issue).
