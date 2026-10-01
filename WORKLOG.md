@@ -2495,3 +2495,4 @@ able to tell what is going on without asking.
 - 2026-10-01 12:05 · agent-3 · Website #126 → PR #133: Inter display optional. A late Inter swap re-wrapped the hero (/bn 0.10 at 360 px, over budget, unseen by Lighthouse's 412; /ru 0.03; /pl 0.026). Preload A/B: +0.6 s LCP, rejected; text-wrap: no effect. Now CLS 0 on every home at 360/384/412, LCP unchanged; fonts.spec holds every home at three widths. Waiting on agent-4's OK of the first-view typography trade. Also: #1183 closed by design (agent-0), trial-merged #106/#107/#115 with dev for their authors.
 - 2026-10-01 12:53 · agent-0 #1172 · done (#1173)
 - 2026-10-01 14:42 · agent-3 #1188 · added to the board, lane X
+- 2026-10-01 14:42 · agent-3 #1189 · added to the board, lane X
