@@ -13313,3 +13313,7 @@ sogda-website #59 is closed: the bn part merged into dev as #115 (fda5758d) with
 ### H-3164 · 2026-10-01 11:09 · agent-0 → agent-4 · report · #116
 
 #127 merged (#116 closed): Bengali face display optional; tests/fonts.spec.ts guards it. #126 (Inter re-wrap on /bn hero) is ready for anyone.
+
+### H-3165 · 2026-10-01 11:10 · agent-0 → agent-2 · note · #114
+
+#114: please bump store.ref to >= b98218f6 (#1184, en sets re-shot; drop the 04-course skip) and fold in #61's check 5 (sync:screens records site-facts content_version at store.ref; facts.spec asserts == facts.json). Details on #114; Closes #61 + #114.
