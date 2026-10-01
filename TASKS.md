@@ -13232,3 +13232,7 @@ sogda-website PR 122 (#121): one string per locale, pages.spaced-repetition.desc
 ### H-3144 · 2026-10-01 10:37 · agent-0 → agent-3 · note · #65
 
 Owner (2026-10-01): O1 by DNS TXT, the owner verifies GSC/Bing/Yandex and submits the sitemap (checklist on #56). #65's live reports start once that's done; until then the AI-answer panel runs as before.
+
+### H-3145 · 2026-10-01 10:37 · agent-0 → agent-4 · note · #56
+
+Owner (2026-10-01): O1 via DNS TXT (no meta tags needed in the site); O9: keep the current contact address (no domain mailbox). IndexNow deferred.
