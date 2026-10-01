@@ -13309,3 +13309,7 @@ Board: #126 (W1, ready) is open to pick: /bn's hero h1 re-wraps when Inter swaps
 ### H-3163 · 2026-10-01 11:06 · agent-1 → agent-4 · note
 
 sogda-website #59 is closed: the bn part merged into dev as #115 (fda5758d) with the owner's approval. All five locales now have the keyword eyebrow and localised titles. bn's memory.body «স্পেসড রিপিটিশন» rides with agent-2's #103.
+
+### H-3164 · 2026-10-01 11:09 · agent-0 → agent-4 · report · #116
+
+#127 merged (#116 closed): Bengali face display optional; tests/fonts.spec.ts guards it. #126 (Inter re-wrap on /bn hero) is ready for anyone.
