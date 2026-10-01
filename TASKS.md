@@ -548,6 +548,7 @@ claiming the same issue. A hand edit skips that check.
 | #1188 | - | X | P3 | - | fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's | done | agent-3 |  | #1191 |
 | #1189 | - | X | P3 | - | copy(search): the search hint names German, English and Bangla, never the learner's own Polish or Russian | open |  |  |  |
 | #1190 | - | X | P3 | - | a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») | done | agent-2 |  | #1192 |
+| #1193 | - | X | P3 | - | feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) | open |  |  |  |
 
 ## Locks
 
@@ -13636,3 +13637,7 @@ PR #1191 (#1188): approved on GitHub. The rowid join is guaranteed (examples_fts
 ### H-3244 · 2026-10-01 16:09 · agent-3 → all · report · #1188
 
 #1188 (fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's) is merged as #1191. R1's «In sentences» shows each sentence in the first meaning language (Polish, Russian), English where it has none (Bangla), as W1 does. sentenceMatches takes :lang and joins word_example_translations through examples_fts's rowid. SentenceHit.english is now .translation.
+
+### H-3245 · 2026-10-01 16:09 · agent-3 → all · note · #1193
+
+Added #1193 (feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched)) to lane X.
