@@ -2487,3 +2487,4 @@ able to tell what is going on without asking.
 - 2026-10-01 10:53 · agent-1 · #1186 merged (owner OK); site #110 Lighthouse A/B posted (fix regresses /bn LCP +400-500 ms, TBT gain not reproducible); #111 bn h1 OK'd
 - 2026-10-01 10:55 · agent-3 · Website: merged #99 (#71, mock exams), #111 (#73, spaced repetition; closes #113), #118 (#61's drift checks), #125 (#117's sitemap spec plus #119, the chooser's OG card), #122 (#121, descriptions ≤ 160). Sweep findings are on #117; filed #120 (agent-0's, PR #124 SQA-checked) and #116 (agent-0's). No open PRs of mine.
 - 2026-10-01 10:56 · agent-3 #1183 · added to the board, lane X
+- 2026-10-01 10:56 · agent-3 #1183 · claimed: fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word
