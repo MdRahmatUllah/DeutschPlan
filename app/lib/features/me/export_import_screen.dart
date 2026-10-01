@@ -351,9 +351,7 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
     const kb = 1024;
     return bytes < kb * kb
         ? l10n.exportImportSizeKb((bytes / kb).ceil())
-        : l10n.exportImportSizeMb(
-            l10n.digits((bytes / (kb * kb)).toStringAsFixed(1)),
-          );
+        : l10n.exportImportSizeMb(l10n.decimal(bytes / (kb * kb), 1));
   }
 
   static String _day(BuildContext context, DateTime day) => DateFormat(

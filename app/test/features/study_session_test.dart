@@ -558,35 +558,43 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) VALUES
     });
   });
 
-  testWidgets("#689 TD-15 FR-T2-09 the menu's speeds are in Bangla digits "
-      'in Bangla', (tester) async {
-    await tester.runAsync(open);
-    addTearDown(
-      () => tester.runAsync(() async {
-        await settings.dispose();
-        await db.close();
-      }),
-    );
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: overrides(),
-        child: MaterialApp(
-          theme: AppTheme.light(),
-          locale: const Locale('bn'),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: supportedLocales,
-          home: const Scaffold(
-            body: StudyMenu(item: StudyItem(SessionBlockKind.revise, strasse)),
+  // Bangla's digits (#689 TD-15), and Polish's decimal comma (#1197).
+  for (final (code, speeds) in <(String, List<String>)>[
+    ('bn', ['০.৭৫×', '১×', '১.২৫×']),
+    ('pl', ['0,75×', '1×', '1,25×']),
+  ]) {
+    testWidgets("#689 TD-15 #1197 FR-T2-09 the menu's speeds are in the UI "
+        "language's digits and separator, in $code", (tester) async {
+      await tester.runAsync(open);
+      addTearDown(
+        () => tester.runAsync(() async {
+          await settings.dispose();
+          await db.close();
+        }),
+      );
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides(),
+          child: MaterialApp(
+            theme: AppTheme.light(),
+            locale: Locale(code),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: supportedLocales,
+            home: const Scaffold(
+              body: StudyMenu(
+                item: StudyItem(SessionBlockKind.revise, strasse),
+              ),
+            ),
           ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('০.৭৫×'), findsOneWidget);
-    expect(find.text('১×'), findsOneWidget);
-    expect(find.text('১.২৫×'), findsOneWidget);
-    expect(find.text('0.75×'), findsNothing);
-  });
+      );
+      await tester.pumpAndSettle();
+      for (final speed in speeds) {
+        expect(find.text(speed), findsOneWidget);
+      }
+      expect(find.text('0.75×'), findsNothing);
+    });
+  }
 
   test('a report is a pre-filled issue on the project', () {
     final uri = StudyMenu.reportUri(

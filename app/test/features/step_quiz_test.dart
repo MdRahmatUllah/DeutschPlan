@@ -344,7 +344,9 @@ void main() {
       final box = tester.widget<Container>(
         find
             .ancestor(
-              of: find.text(quizPoints(score)),
+              of: find.text(
+                quizPoints(lookupAppLocalizations(const Locale('en')), score),
+              ),
               matching: find.byType(Container),
             )
             .first,

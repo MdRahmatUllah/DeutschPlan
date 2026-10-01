@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 
 final RegExp _latinDigit = RegExp('[0-9]');
@@ -17,4 +18,14 @@ extension UiDigits on AppLocalizations {
       (digit) => String.fromCharCode(0x09E6 + digit[0]!.codeUnitAt(0) - 0x30),
     );
   }
+
+  /// [value] to [places] decimals with the UI language's separator (#1197):
+  /// «1,25» in Polish and Russian, «1.25» in English, «১.২৫» in Bangla. For
+  /// a decimal the code writes itself; `toStringAsFixed` always writes «.».
+  String decimal(num value, int places) => digits(
+    NumberFormat.decimalPatternDigits(
+      locale: localeName,
+      decimalDigits: places,
+    ).format(value),
+  );
 }

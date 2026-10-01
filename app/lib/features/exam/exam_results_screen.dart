@@ -262,6 +262,7 @@ class _Result extends StatelessWidget {
         l10n.examResultCompare(
           l10n.digits(
             _signed(
+              l10n,
               (percent - _percent(before.scorePoints, before.maxPoints))
                   .toDouble(),
             ),
@@ -283,8 +284,8 @@ class _Result extends StatelessWidget {
                 share: share,
                 percent: percent,
                 points: l10n.examResultPoints(
-                  l10n.digits(_points(attempt.scorePoints)),
-                  l10n.digits(_points(attempt.maxPoints)),
+                  _points(l10n, attempt.scorePoints),
+                  _points(l10n, attempt.maxPoints),
                 ),
                 passPercent: result.passPercent,
                 line: line,
@@ -364,16 +365,16 @@ class _Result extends StatelessWidget {
 int _percent(double points, double max) =>
     max == 0 ? 0 : (points / max * 100 + 1e-9).floor();
 
-/// "37", or "36.5": an *almost* answer counts a half (BR-ANS-04).
-String _points(double points) => points == points.roundToDouble()
-    ? '${points.round()}'
-    : points.toStringAsFixed(1);
+/// "37", or "36.5": an *almost* answer counts a half (BR-ANS-04). «36,5» in
+/// Polish (#1197), in the UI language's digits.
+String _points(AppLocalizations l10n, double points) =>
+    l10n.decimal(points, points == points.roundToDouble() ? 0 : 1);
 
 /// "+15", "−2.5", "±0".
-String _signed(double delta) => delta > 0
-    ? '+${_points(delta)}'
+String _signed(AppLocalizations l10n, double delta) => delta > 0
+    ? '+${_points(l10n, delta)}'
     : delta < 0
-    ? '−${_points(-delta)}'
+    ? '−${_points(l10n, -delta)}'
     : '±0';
 
 /// The block on the result's colour: close, the badge, the score, the pass
@@ -667,10 +668,7 @@ class _SectionRow extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
     final task = this.task;
-    final score = l10n.examResultSectionPoints(
-      l10n.digits(_points(points)),
-      max,
-    );
+    final score = l10n.examResultSectionPoints(_points(l10n, points), max);
     final bar = Container(
       height: 8,
       clipBehavior: Clip.antiAlias,

@@ -885,6 +885,23 @@ void main() {
     });
   }
 
+  // #1197: the speed takes the language's separator, as the line's own copy
+  // does: «1,0× · … 0,75×» in Polish, not «1.0×» beside «0,75×».
+  for (final (code, speed) in <(String, String)>[
+    ('en', '1.0'),
+    ('bn', '১.০'),
+    ('pl', '1,0'),
+    ('ru', '1,0'),
+  ]) {
+    testWidgets('#1197 the speech rate reads $speed× in $code', (tester) async {
+      await pump(tester, locale: Locale(code));
+      final t = lookupAppLocalizations(Locale(code));
+      expect(find.text(t.settingsSpeedLine(speed)), findsOneWidget);
+      final slider = tester.widget<SgSlider>(sliderFor(t.settingsSpeed));
+      expect(slider.describe!(slider.value), '$speed×');
+    });
+  }
+
   test('FR-M3-01 reviews a day: the sum of 1 ÷ interval, sampled', () {
     final fsrs = Fsrs();
     // At 90 % the interval is the stability: 1 + 1/10.

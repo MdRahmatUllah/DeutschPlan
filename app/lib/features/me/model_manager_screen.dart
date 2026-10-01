@@ -131,19 +131,14 @@ Future<StorageSpace?> phoneSpace(Ref ref) =>
 
 /// A size as M4 writes it: whole megabytes below a gigabyte ("399 MB"), and
 /// gigabytes to one decimal above, a whole one without it ("1.1 GB",
-/// "64 GB"), in the UI language's digits.
+/// "64 GB"), in the UI language's digits and decimal separator («1,1 GB» in
+/// Polish, #1197).
 String modelSize(AppLocalizations l10n, int bytes) {
   if (bytes < 1000000000) {
     return l10n.modelsSizeMb(l10n.digits((bytes / 1e6).round()));
   }
-  final gigabytes = (bytes / 1e9).toStringAsFixed(1);
-  return l10n.modelsSizeGb(
-    l10n.digits(
-      gigabytes.endsWith('.0')
-          ? gigabytes.substring(0, gigabytes.length - 2)
-          : gigabytes,
-    ),
-  );
+  final tenths = (bytes / 1e8).round();
+  return l10n.modelsSizeGb(l10n.decimal(tenths / 10, tenths % 10 == 0 ? 0 : 1));
 }
 
 /// The licence M8 bundles for [modelId] (FR-M4-04's link opens its text),

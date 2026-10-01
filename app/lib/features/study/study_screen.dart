@@ -896,11 +896,11 @@ class _StudyMenuState extends ConsumerState<StudyMenu> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    // "০.৭৫×" in Bangla (#425, #689 TD-15).
+    // "০.৭৫×" in Bangla (#425, #689 TD-15), «0,75×» in Polish (#1197).
     final speeds = <double, String>{
-      0.75: l10n.digits('0.75×'),
+      0.75: '${l10n.decimal(0.75, 2)}×',
       1.0: l10n.digits('1×'),
-      1.25: l10n.digits('1.25×'),
+      1.25: '${l10n.decimal(1.25, 2)}×',
     };
     final settings = ref.watch(settingsProvider);
     final autoplay = settings.read(SettingKeys.autoplayHeadword);

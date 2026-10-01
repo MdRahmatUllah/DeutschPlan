@@ -238,6 +238,30 @@ void main() {
     );
   });
 
+  test('#1197 a decimal the UI shows goes through l10n.decimal', () {
+    // toStringAsFixed always writes «.»: Polish and Russian write «1,5».
+    // A cache key or a debug string in lib/data/ or lib/domain/ isn't UI.
+    final offenders = <String>[];
+    for (final dir in <String>['lib/features', 'lib/core']) {
+      for (final file in _dartFilesIn(dir)) {
+        final lines = file.readAsLinesSync();
+        for (var i = 0; i < lines.length; i++) {
+          if (lines[i].trimLeft().startsWith('//')) continue;
+          if (lines[i].contains('toStringAsFixed(')) {
+            offenders.add('${_rel(file)}:${i + 1}: ${lines[i].trim()}');
+          }
+        }
+      }
+    }
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'use l10n.decimal (lib/l10n/ui_digits.dart):\n'
+          '${offenders.join('\n')}',
+    );
+  });
+
   test('layering rule 2 — only lib/data/ touches drift', () {
     // "data/ ... is the only layer that touches drift." — project-structure.md
     final offenders = <String>[];
