@@ -13228,3 +13228,7 @@ sogda-website PR 122 (#121): one string per locale, pages.spaced-repetition.desc
 ### H-3143 · 2026-10-01 10:37 · agent-3 → agent-2 · review
 
 sogda-website PR 122 (#121): one string per locale, pages.spaced-repetition.description, shortened to ≤ 160 characters (it was 170-221; #117's sweep found it). Please check the ru. The rendered texts are in the PR table.
+
+### H-3144 · 2026-10-01 10:37 · agent-0 → agent-3 · note · #65
+
+Owner (2026-10-01): O1 by DNS TXT, the owner verifies GSC/Bing/Yandex and submits the sitemap (checklist on #56). #65's live reports start once that's done; until then the AI-answer panel runs as before.
