@@ -11,7 +11,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from export_site_facts import listing_texts  # noqa: E402
+from export_site_facts import listing_texts, mock_exam  # noqa: E402
 
 LISTING = Path(__file__).resolve().parents[2] / "docs" / "05-dev-guide" / "store-listing.md"
 PUBSPEC = LISTING.parents[2] / "app" / "pubspec.yaml"
@@ -53,7 +53,7 @@ def test_the_listing_offers_no_translation_which_v1_leaves_out_175():
         assert "перевод" not in text.lower(), f"{language} {field}"
 
 
-def test_the_counts_are_abouts_175_631():
+def test_the_counts_are_abouts_175_631_1176():
     # A content rebuild changes them (#545 dropped a duplicate word). The words
     # are About's (content.drift's contentCounts): words to learn, not the lesson
     # notes and comparisons (#630). CHANGELOG's entries keep their release's count.
@@ -62,7 +62,10 @@ def test_the_counts_are_abouts_175_631():
     db = sqlite3.connect(f"{(root / 'app' / 'assets' / 'db' / 'content.db').as_uri()}?mode=ro", uri=True)
     words = f"{db.execute('select count(*) from words where kind = ?', ('vocab',)).fetchone()[0]:,}"
     topics = str(db.execute("select count(*) from grammar_topics").fetchone()[0])
+    steps = db.execute("select count(*) from sublevels").fetchone()[0]
     db.close()
+    # BR-EXAM-02's mock exams per step, read as the site's facts read it.
+    mocks = mock_exam()[0] * steps
     bangla = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
     listing = texts()
     en = listing[("English (en-US)", "Full description")]
@@ -75,6 +78,16 @@ def test_the_counts_are_abouts_175_631():
     assert f"{plain} słów" in pl and f"{topics} tematy gramatyczne" in pl
     ru = listing[("Russian (ru-RU)", "Full description")]
     assert f"{plain} слов" in ru and f"{topics} грамматические темы" in ru
+    # The short descriptions state the steps and the mock exams (#1176).
+    bn_steps, bn_mocks = str(steps).translate(bangla), str(mocks).translate(bangla)
+    for language, phrases in {
+        "English (en-US)": (f"{steps} steps", f"{mocks} mock exams"),
+        "Bangla (bn-BD)": (f"{bn_steps}টি ধাপ", f"{bn_mocks}টি মক পরীক্ষা"),
+        "Polish (pl-PL)": (f"{steps} etapów", f"{mocks} egzaminów próbnych"),
+        "Russian (ru-RU)": (f"{steps} этапов", f"{mocks} пробных экзаменов"),
+    }.items():
+        short = listing[(language, "Short description")]
+        assert all(p in short for p in phrases), (language, short)
 
 
 STORE = LISTING.parent / "store"
@@ -99,12 +112,18 @@ def test_every_screenshot_is_one_play_takes_175(folder):
         assert max(width, height) <= 2 * min(width, height), f"{folder}/{name}: over 2:1"
 
 
-def test_the_title_the_website_and_the_icon_are_the_brand_kits_602():
+def test_the_title_the_website_and_the_icon_are_the_brand_kits_602_1176():
     listing = texts()
-    assert listing[("English (en-US)", "Title")] == "Sogda: German A1–C2"
-    assert listing[("Bangla (bn-BD)", "Title")] == "Sogda: জার্মান A1–C2"
-    assert listing[("Polish (pl-PL)", "Title")] == "Sogda: niemiecki A1–C2"
-    assert listing[("Russian (ru-RU)", "Title")] == "Sogda: немецкий A1–C2"
+    # "Sogda: " and the phrase people search in each language (#1176).
+    assert listing[("English (en-US)", "Title")] == "Sogda: Learn German A1–C2"
+    assert listing[("Bangla (bn-BD)", "Title")] == "Sogda: জার্মান ভাষা A1–C2"
+    assert listing[("Polish (pl-PL)", "Title")] == "Sogda: niemiecki od zera do C2"
+    assert listing[("Russian (ru-RU)", "Title")] == "Sogda: немецкий с нуля до C2"
+    for language in LANGUAGES:
+        # Their trademarks, and Play's policy on third-party marks: never in a
+        # title or a short description, the texts Play searches first.
+        for field in ("Title", "Short description"):
+            assert not re.search(r"goethe|telc", listing[(language, field)], re.I), (language, field)
     text = LISTING.read_text(encoding="utf-8")
     assert "**Website:** https://sogda.de" in text
     icon = re.search(r"\*\*App icon:\*\* \[`([^`]+)`\]", text)[1]

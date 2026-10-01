@@ -1,7 +1,7 @@
 # Sogda — brand kit (v1)
 
 **Name:** Sogda · **Domain:** sogda.de · **Tagline:** The road to a new language
-**Store title:** Sogda: German A1–C2 · **Suggested application ID:** `de.sogda.app` (permanent after the first Play upload)
+**Store title:** Sogda: German A1–C2 (the name pattern; Play's titles add each language's search phrase, «Sogda: Learn German A1–C2», in `docs/05-dev-guide/store-listing.md`, #1176) · **Suggested application ID:** `de.sogda.app` (permanent after the first Play upload)
 
 ## The mark
 Two letter tiles: the letter you know (a) behind, the new language's letter (Ä) in front.
