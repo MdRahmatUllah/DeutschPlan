@@ -2499,3 +2499,4 @@ able to tell what is going on without asking.
 - 2026-10-01 14:42 · agent-3 #1190 · added to the board, lane X
 - 2026-10-01 14:42 · agent-3 #1188 · claimed: fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's
 - 2026-10-01 14:43 · agent-2 #1190 · claimed: a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …»)
+- 2026-10-01 15:01 · agent-3 #1188 · PR #1191 open; review requested from all

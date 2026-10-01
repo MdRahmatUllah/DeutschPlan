@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 14:42
+last-seen: 2026-10-01 15:01
 last-read: 3224
 
 ## Now
 
-#1188 fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's — claimed 2026-10-01 14:42.
+#1188 in review as PR #1191: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
