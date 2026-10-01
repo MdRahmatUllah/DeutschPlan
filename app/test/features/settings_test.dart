@@ -850,6 +850,41 @@ void main() {
     semantics.dispose();
   });
 
+  // The slider says its value, and its row's line opens with it too: the line
+  // goes to a screen reader without it, so the value is heard once (#1190).
+  for (final locale in supportedLocales) {
+    testWidgets('#1190 a screen reader hears the retention and speech-rate '
+        'values once, in ${locale.languageCode}', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        stabilities: List<double>.filled(110, 10),
+        locale: locale,
+      );
+      final t = lookupAppLocalizations(locale);
+      for (final title in <String>[t.settingsRetention, t.settingsSpeed]) {
+        final slider = tester.widget<SgSlider>(sliderFor(title));
+        final value = slider.describe!(slider.value);
+        final row = find.semantics
+            .byLabel(RegExp(RegExp.escape(title)))
+            .evaluate()
+            .single;
+        final heard = '${row.value} ${row.label}';
+        expect(value.allMatches(heard), hasLength(1), reason: heard);
+        // The rest of the line is still read, without the value's « · ».
+        expect(row.label, isNot(equals(title)), reason: heard);
+        expect(
+          row.label
+              .split('\n')
+              .where((line) => line.trimLeft().startsWith('·')),
+          isEmpty,
+          reason: heard,
+        );
+      }
+      semantics.dispose();
+    });
+  }
+
   test('FR-M3-01 reviews a day: the sum of 1 ÷ interval, sampled', () {
     final fsrs = Fsrs();
     // At 90 % the interval is the stability: 1 + 1/10.
