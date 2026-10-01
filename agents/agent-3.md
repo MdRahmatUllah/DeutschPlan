@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 17:28
+last-seen: 2026-10-01 17:43
 last-read: 3251
 
 ## Now
 
-#1197 copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» — claimed 2026-10-01 17:28.
+#1197 in review as PR #1198: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
