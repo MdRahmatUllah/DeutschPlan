@@ -136,9 +136,39 @@ void main() {
     });
 
     test('sentenceMatches names the headword above the sentence', () async {
-      final hits = await dao.sentenceMatches('"offen"', null, 5).get();
+      final hits = await dao.sentenceMatches('en', '"offen"', null, 5).get();
       expect(hits.single.head, 'Tür');
       expect(hits.single.german, 'Die Tür ist offen.');
+    });
+
+    test('#1188 FR-R1-01 sentenceMatches translates into the first meaning '
+        'language, English where it has none', () async {
+      final ru = ContentFixture.write('${directory.path}/ru.db', russian: true);
+      final ruDb = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+      addTearDown(ruDb.close);
+      await ruDb.customStatement(
+        "ATTACH DATABASE '${ContentDao.attachPath(ru.file)}' AS c",
+      );
+      final ruDao = ContentDao(ruDb);
+      Future<Map<String, String?>> lines(String lang) async =>
+          <String, String?>{
+            for (final hit
+                in await ruDao.sentenceMatches(lang, '"Haus"', null, 5).get())
+              hit.german: hit.translation,
+          };
+
+      // Russian's own line where the course has one; none where neither
+      // Russian nor English has the line.
+      expect(await lines('ru'), <String, String?>{
+        'Das Haus ist groß.': 'Дом большой.',
+        'Ich sehe das Haus.': null,
+      });
+      // Bangla has no example lines (#598): English stands in, as on W1.
+      expect(await lines('bn'), <String, String?>{
+        'Das Haus ist groß.': 'The house is big.',
+        'Ich sehe das Haus.': null,
+      });
+      expect((await lines('en'))['Das Haus ist groß.'], 'The house is big.');
     });
   });
 

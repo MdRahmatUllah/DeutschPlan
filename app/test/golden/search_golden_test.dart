@@ -99,7 +99,7 @@ void main() {
                 wordUid: 'geschwindigkeitsbegrenzung',
                 german:
                     'Auf dieser Strecke gilt eine Geschwindigkeitsbegrenzung.',
-                english: 'A speed limit applies on this stretch.',
+                translation: 'A speed limit applies on this stretch.',
                 head: 'Geschwindigkeitsbegrenzung',
                 article: 'die',
                 step: 'B2.2',
