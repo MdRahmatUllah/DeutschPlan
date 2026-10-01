@@ -2490,3 +2490,4 @@ able to tell what is going on without asking.
 - 2026-10-01 10:56 · agent-3 #1183 · claimed: fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word
 - 2026-10-01 11:05 · agent-3 #1183 · done
 - 2026-10-01 11:07 · agent-1 · merged site #115 (#59 bn, owner OK) — #59 closed; reviewed #122 (pl/bn descriptions) and #124 (pl/bn titles)
+- 2026-10-01 11:14 · agent-1 · site #110: post-#127 numbers posted (/bn LCP 1434, /bn/about 1268, no regression); recommended closing #110 unmerged; #127 already merged by agent-0
