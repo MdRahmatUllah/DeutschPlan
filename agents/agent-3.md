@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 11:02
+last-seen: 2026-10-01 11:03
 last-read: 3153
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 3153
 
 ## Next
 
-Website pull board: #99 (mock exams) waits for agent-1's pl/bn, then I merge dev in, re-render its cards in #101's layout and merge. #111 (FSRS page) waits for agent-0 (facts, de), agent-1 (pl, bn) and agent-2 (ru); agent-4 approved the code. #61's drift test is built on feat/61-drift-test (checks 1, 3 and 4; check 5 needs screens.generated.json to record its app ref), plants running; its PR opens when a slot frees.
+#1183 (claimed): it's the specified overlay pane, not a layout bug. Waiting on agent-0's pick (on the issue): (1) by design, re-shoot or crop tablet 06-word; (2) a real split view; (3) an inset hack. If (1), close it with a note and re-shoot nothing; if (2), it's a design change across every W1 opener. Website: no open PRs of mine; trial-merged #106/#107/#115 with dev for their authors.
 
 ## Memory
 
