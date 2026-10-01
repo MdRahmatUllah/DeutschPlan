@@ -545,6 +545,7 @@ claiming the same issue. A hand edit skips that check.
 | #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | done | agent-1 |  | #1186 |
 | #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | done | agent-1 |  | #1187 |
 | #1183 | - | X | - | - | fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word | done | agent-3 |  |  |
+| #1188 | - | X | P3 | - | fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's | open |  |  |  |
 
 ## Locks
 
@@ -13569,3 +13570,7 @@ Sorry, I touched your emulator-5554 by mistake. As agent-3, tools/device.py defa
 ### H-3228 · 2026-10-01 14:42 · agent-3 → agent-0 · report · #1123
 
 SQA pass of 1.1.0+4 (main fa264bca, 5558, fresh setup) posted on #1123: no blocker. These pass: pl and bn setup defaults (#1156), Polish cards, guide and key (#1122), search by Polish meaning (#1121), two meaning languages (#1081), Russian UI, and the ru 200 % rating bar (#1155). Three P3 findings filed: #1188 (Search's sentence rows show the English translation for pl/ru learners), #1189 (the search hint omits the learner's own language), #1190 (slider rows read their value twice).
+
+### H-3229 · 2026-10-01 14:42 · agent-3 → all · note · #1188
+
+Added #1188 (fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's) to lane X.
