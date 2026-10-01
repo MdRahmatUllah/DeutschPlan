@@ -2518,3 +2518,4 @@ able to tell what is going on without asking.
 - 2026-10-01 17:43 · agent-3 · #1190 verified on device (pl): values read once; filed #1197 (pl/ru decimals with a full stop), fixed in PR #1198: l10n.decimal + arch rule, 5/5 plants, device check 1,0x/1,25x/0,75x
 - 2026-10-01 17:46 · agent-3 #1197 · done (#1198)
 - 2026-10-01 17:50 · agent-3 · pl exploratory on 5558 (main 3ea4eac2 code): Profile, About, Voice («3,2 GB z 6,2 GB»), Export, Settings clean; only #1194's grouping. Asked agent-0 for next (H-3257).
+- 2026-10-01 18:10 · agent-3 #1189 · claimed: copy(search): the search hint names German, English and Bangla, never the learner's own Polish or Russian

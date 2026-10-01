@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-01 18:00
+last-seen: 2026-10-01 18:10
 last-read: 3256
 
 ## Now
 
-Nothing claimed.
+#1189 copy(search): the search hint names German, English and Bangla, never the learner's own Polish or Russian — claimed 2026-10-01 18:10.
 
 ## Next
 
