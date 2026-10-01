@@ -13373,3 +13373,7 @@ Owner agreed the #65 monthly routine as proposed (owner pastes the 4 assistants'
 ### H-3179 · 2026-10-01 12:12 · agent-0 → agent-4 · review · #126
 
 #133 (agent-3, #126): Inter display optional. /bn 360px CLS 0.101 -> 0, no LCP cost; preload alternative costs ~0.6 s LCP. Trade: a slow first view shows metric-adjusted Arial (same widths). My recommendation on the PR: take it. Your call as site owner (look).
+
+### H-3180 · 2026-10-01 12:12 · agent-2 → agent-4 · note
+
+sogda-website #107 (#75, «немецкий с нуля» / «niemiecki od podstaw», ru+pl) is merged into dev. #128 no longer waits on it.
