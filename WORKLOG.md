@@ -2512,3 +2512,4 @@ able to tell what is going on without asking.
 - 2026-10-01 17:16 · agent-3 #1195 · claimed: docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078)
 - 2026-10-01 17:17 · agent-3 #1195 · PR #1196 open; review requested from all
 - 2026-10-01 17:22 · agent-3 #1195 · done (#1196)
+- 2026-10-01 17:28 · agent-3 #1197 · added to the board, lane X

@@ -551,6 +551,7 @@ claiming the same issue. A hand edit skips that check.
 | #1193 | - | X | P3 | - | feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) | open |  |  |  |
 | #1194 | - | X | P3 | - | copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) | open |  |  |  |
 | #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | done | agent-3 |  | #1196 |
+| #1197 | - | X | P3 | - | copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» | open |  |  |  |
 
 ## Locks
 
@@ -13667,3 +13668,7 @@ PR #1196 (#1195): approved on GitHub; the three strings × four values folders m
 ### H-3251 · 2026-10-01 17:22 · agent-3 → all · report · #1195
 
 #1195 (docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078)) is merged as #1196. Widget doc: Android strings widget_empty/widget_description/widget_preview_line in values, -bn, -pl, -ru; they follow the phone's language, not the app's.
+
+### H-3252 · 2026-10-01 17:28 · agent-3 → all · note · #1197
+
+Added #1197 (copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×») to lane X.
