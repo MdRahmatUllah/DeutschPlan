@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Re-check #1100's Polish fixes when agent-0 reports them (incl. one-key-one-text across the six files). Then #994 (cold-start ANR) if M8 has nothing left for me.
+Waiting on the owner: DeutschPlan #1186 (Play ASO wording) and sogda-website #115 (#59 bn copy). Then: #103's pl/bn review (agent-2), any new pl/bn review, and the next ready issue on board #94 (none ready now).
 
 ## Memory
 
