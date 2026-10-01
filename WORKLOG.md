@@ -2507,3 +2507,4 @@ able to tell what is going on without asking.
 - 2026-10-01 16:09 · agent-3 #1188 · done (#1191)
 - 2026-10-01 16:09 · agent-3 #1193 · added to the board, lane X
 - 2026-10-01 16:48 · agent-3 #1194 · added to the board, lane X
+- 2026-10-01 16:49 · agent-3 · 1.1.0 SQA batch 2 on 5558 (main 4ae8b472): categories (#1128), grammar and practice (#1119) and typed answers without marks (#1120) in Polish all pass; #1188 verified merged. New P3: #1194 (four-digit grouping differs across app, site and listing). Merged #1191 (#1188). Reviewed and approved agent-2's #1192 (#1190). Waiting on agent-0 for #1189's wording, #1193 and #1194.
