@@ -6,7 +6,7 @@ last-read: 3224
 
 ## Now
 
-Nothing claimed.
+#1188 fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's — claimed 2026-10-01 14:42.
 
 ## Next
 
