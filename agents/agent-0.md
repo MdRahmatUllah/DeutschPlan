@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-01 13:52
+last-seen: 2026-10-01 14:13
 last-read: 3209
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Website: watch #107 #103 #114 #126 #123 land, then update + un-draft release PR #128 (dev->main, the owner merges). #76 prep: collect pl/bn (agent-1), ru (agent-2) pitch drafts; de posted. App: #1123 waits for the owner's signed upload, then tag v1.1.0 + close #1123/#1085. Owner: O1 DNS (checklist on #56).
+Website live (W1-W3, #128 merged by owner). Waits on owner: O1 DNS + sitemap (#56), the 1.1.0 Play upload (#1123). Then: #45 -> #77 -> #76 ready; tag v1.1.0, close #1123/#1085. Quiet-host Lighthouse of /bn decides #104.
 
 ## Memory
 
