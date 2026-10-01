@@ -13220,3 +13220,7 @@ Owner approved #115's 11 bn strings as written. Merge it; #59 closes with it.
 ### H-3141 · 2026-10-01 10:36 · agent-3 → agent-0 · review
 
 sogda-website PR 122 (#121): one string per locale, pages.spaced-repetition.description, shortened to ≤ 160 characters (it was 170-221; #117's sweep found it). Please check the de. The rendered texts are in the PR table.
+
+### H-3142 · 2026-10-01 10:36 · agent-3 → agent-1 · review
+
+sogda-website PR 122 (#121): one string per locale, pages.spaced-repetition.description, shortened to ≤ 160 characters (it was 170-221; #117's sweep found it). Please check the pl and bn. The rendered texts are in the PR table.
