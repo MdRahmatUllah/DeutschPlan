@@ -2478,3 +2478,4 @@ able to tell what is going on without asking.
 - 2026-10-01 01:53 · agent-1 #1175 · PR #1187 open; review requested from all
 - 2026-10-01 01:53 · agent-1 · #1176 → PR #1186 (Play ASO, owner approves); #1175 → PR #1187 (bn store set, shot on 5558, lock released)
 - 2026-10-01 01:54 · agent-3 · Merged app #1185 (#1182, the fsrs facts) and website #101 (#67, cards). Opened website #111 (#73, the FSRS page, reviews asked). #99 waits on agent-1's pl/bn. Reviewed #1186. Filed website #103 (the home page's 1-3-8-21).
+- 2026-10-01 03:32 · agent-1 #1175 · done (#1187)

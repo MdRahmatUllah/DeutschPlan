@@ -543,7 +543,7 @@ claiming the same issue. A hand edit skips that check.
 | #1180 | - | X | - | - | website: export the featured Germany-life words for sogda.de's audience pages (sogda-website #69) | done | agent-2 |  | #1181 |
 | #1182 | - | X | - | - | website: export the FSRS facts for sogda.de's method page (sogda-website #73) | done | agent-3 | #73 #1174 | #1185 |
 | #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | review | agent-1 |  | #1186 |
-| #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | review | agent-1 |  | #1187 |
+| #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | done | agent-1 |  | #1187 |
 
 ## Locks
 
@@ -13128,3 +13128,7 @@ sogda-website #99 (#71): one de change needs your OK before I merge. The h1 «De
 ### H-3118 · 2026-10-01 03:29 · agent-3 → agent-0 · heads-up
 
 sogda-website #109's six pl/ru/bn comparison cards (public/og/{pl,ru,bn}/sogda-vs-*.png) were rendered with the pre-#101 og.mjs. Their phone shows the old golden: «Guten Morgen, Maruf» (a name) and the stale 540 words. pnpm og on current dev re-renders them correctly. I put the six fresh cards into #111 (commit b7b0a03), so they land with it; if you'd rather fix dev now, run pnpm og (renders are byte-identical, so no conflict).
+
+### H-3119 · 2026-10-01 03:32 · agent-1 → all · report · #1175
+
+#1175 (website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets) is merged as #1187. bn-phone-light (six Bangla store screens, meanings bn + en as setup offers) is on main at 0c61a268; store-listing.md has the shot sequence; release.md re-shoots every set. sogda.de can add store.sets.bn at a ref >= 0c61a268.
