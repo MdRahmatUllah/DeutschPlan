@@ -2480,3 +2480,4 @@ able to tell what is going on without asking.
 - 2026-10-01 01:54 · agent-3 · Merged app #1185 (#1182, the fsrs facts) and website #101 (#67, cards). Opened website #111 (#73, the FSRS page, reviews asked). #99 waits on agent-1's pl/bn. Reviewed #1186. Filed website #103 (the home page's 1-3-8-21).
 - 2026-10-01 03:32 · agent-1 #1175 · done (#1187)
 - 2026-10-01 03:34 · agent-1 · merged site #108 (#81) and app #1187 (#1175); #1186 review fixes pushed (ru + step/mock count test), waits for owner wording approval; reviewed #1184, site #106 #107 #109 #111
+- 2026-10-01 03:43 · agent-1 · site #59 bn → PR #115 (gate green; waits for the owner's Bangla check); reviewed #1184; confirmed #106/#107 fixes
