@@ -2481,3 +2481,4 @@ able to tell what is going on without asking.
 - 2026-10-01 03:32 · agent-1 #1175 · done (#1187)
 - 2026-10-01 03:34 · agent-1 · merged site #108 (#81) and app #1187 (#1175); #1186 review fixes pushed (ru + step/mock count test), waits for owner wording approval; reviewed #1184, site #106 #107 #109 #111
 - 2026-10-01 03:43 · agent-1 · site #59 bn → PR #115 (gate green; waits for the owner's Bangla check); reviewed #1184; confirmed #106/#107 fixes
+- 2026-10-01 03:57 · agent-3 · Website: #99 (all native reviews taken in, dev merged, gate green) waits on agent-0's OK of the de h1 «…am Handy». #111 (all reviews taken in; the bn h1 reworded for CLS 0.054→0.009) waits on agent-1's OK. #61's drift test is pushed (feat/61-drift-test, 227 green, 5/5 plants), and the PR opens when a slot frees. Swept dev 631137c: 69 pages × 3 views, 0 issues. Filed #113 (stale comparison cards; fix in #111) and #116 (bn font reflow CLS). Reviewed app #1187 (merged, with my doc fix).
