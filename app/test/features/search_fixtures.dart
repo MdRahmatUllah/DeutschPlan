@@ -78,7 +78,7 @@ SearchView artboardSearch() => SearchView(
     SentenceHit(
       wordUid: 'strasse',
       german: 'Die Straße ist wegen Bauarbeiten gesperrt.',
-      english: 'The street is closed because of roadworks.',
+      translation: 'The street is closed because of roadworks.',
       head: 'Straße',
       article: 'die',
       step: 'A1.1',

@@ -41,7 +41,7 @@ class SentenceHit {
   const SentenceHit({
     required this.wordUid,
     required this.german,
-    required this.english,
+    required this.translation,
     required this.head,
     required this.article,
     required this.step,
@@ -50,7 +50,9 @@ class SentenceHit {
 
   final String wordUid;
   final String german;
-  final String? english;
+
+  /// In the first meaning language, or English where it has none (#1188).
+  final String? translation;
 
   /// The headword the sentence belongs to, shown above it.
   final String head;
@@ -233,7 +235,13 @@ class SearchRepository {
 
     return SearchResults(
       words: words,
-      sentences: await _sentences(raw, key, alt, step),
+      sentences: await _sentences(
+        raw,
+        key,
+        alt,
+        step,
+        meanings?.choice.primary ?? 'en',
+      ),
     );
   }
 
@@ -385,12 +393,14 @@ class SearchRepository {
   /// the text as typed, and the key respelled (`tuer` → `tur`, `strasse` →
   /// `straße`). Those go to the German column only: `tur`* in the English
   /// is "Turn on the light". The key itself searches both, so "house" still
-  /// finds the sentences that mean it.
+  /// finds the sentences that mean it. Each comes with its translation into
+  /// [lang], the first meaning language (#1188).
   Future<List<SentenceHit>> _sentences(
     String raw,
     String key,
     String alt,
     String? step,
+    String lang,
   ) async {
     if (key.length < _minimumSentenceLength) return const <SentenceHit>[];
     final german = <String>{alt, raw.toLowerCase(), _respelled(key)}
@@ -399,6 +409,7 @@ class SearchRepository {
         forms.map((form) => _prefixQuery(form, columns: false)).join(' OR ');
     final rows = await _content
         .sentenceMatches(
+          lang,
           german.isEmpty
               ? any(<String>[key])
               : '${any(<String>[key])} OR german : (${any(german)})',
@@ -411,7 +422,7 @@ class SearchRepository {
         SentenceHit(
           wordUid: row.wordUid,
           german: row.german,
-          english: row.english,
+          translation: row.translation,
           head: row.head,
           article: row.article,
           step: row.step,

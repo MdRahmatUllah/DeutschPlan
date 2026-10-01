@@ -60,13 +60,20 @@ trigramCandidates(:step AS TEXT OR NULL):
 --
 -- `marked` is the sentence with each matched word between  and 
 -- (FTS5's own `highlight()`), so R1 marks exactly what matched.
-sentenceMatches(:step AS TEXT OR NULL):
+--
+-- The translation is the first meaning language's (#1188), as W1's
+-- `examplesForWordIn`: :lang's line, or English where :lang has none (Bangla).
+-- `examples_fts` indexes `word_examples` by rowid, which gives the line's ord.
+sentenceMatches(:lang AS TEXT, :step AS TEXT OR NULL):
   SELECT e.word_uid AS wordUid, e.german AS german,
-         NULLIF(e.english, '') AS english,
+         coalesce(t.translation, NULLIF(e.english, '')) AS translation,
          w.german AS head, w.article AS article, w.sublevel_code AS step,
          highlight(examples_fts, 1, char(1), char(2)) AS marked
   FROM examples_fts e
   JOIN words w ON w.uid = e.word_uid
+  JOIN word_examples x ON x.rowid = e.rowid
+  LEFT JOIN word_example_translations t
+    ON t.word_uid = e.word_uid AND t.ord = x.ord AND t.lang = :lang
   WHERE examples_fts MATCH :query
     AND (:step IS NULL OR w.sublevel_code = :step)
   ORDER BY e.rank

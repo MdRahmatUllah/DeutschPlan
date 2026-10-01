@@ -84,6 +84,39 @@ void main() {
       ];
 
       test(
+        '#1188 FR-R1-01 a sentence comes with its translation into the first '
+        'meaning language',
+        () async {
+          // Polish's course_languages row first: the line refers to it.
+          await choose(const MeaningChoice('pl'));
+          await db.customStatement('''
+            INSERT OR IGNORE INTO c.word_example_translations
+              (word_uid, ord, lang, translation) VALUES
+              ('${ContentFixture.haus}', 1, 'pl', 'Dom jest duży.')
+          ''');
+          Future<String?> translation(MeaningChoice choice) async =>
+              (await search.search('Haus', meanings: await choose(choice)))
+                  .sentences
+                  .firstWhere((s) => s.german == 'Das Haus ist groß.')
+                  .translation;
+
+          expect(
+            await translation(const MeaningChoice('pl', 'en')),
+            'Dom jest duży.',
+          );
+          expect(
+            await translation(const MeaningChoice('en', 'pl')),
+            'The house is big.',
+          );
+          // Bangla has no example lines (#598): English, as on W1.
+          expect(
+            await translation(const MeaningChoice('bn')),
+            'The house is big.',
+          );
+        },
+      );
+
+      test(
         'a Russian meaning finds its word, exactly or by its start',
         () async {
           const ru = MeaningChoice('ru', 'en');

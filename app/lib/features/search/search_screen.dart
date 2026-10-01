@@ -845,7 +845,7 @@ class _SentenceRow extends StatelessWidget {
       SgTextRole.body,
       color: tokens.color.ink,
     ).copyWith(fontStyle: FontStyle.italic);
-    final english = sentence.english;
+    final translation = sentence.translation;
     final head = sentence.article == null
         ? sentence.head
         : '${sentence.article} ${sentence.head}';
@@ -884,10 +884,10 @@ class _SentenceRow extends StatelessWidget {
                         : style,
                   ),
               ]),
-              if (english != null) ...<Widget>[
+              if (translation != null) ...<Widget>[
                 const SizedBox(height: 2),
                 SgText(
-                  english,
+                  translation,
                   role: SgTextRole.label,
                   weight: 400,
                   color: tokens.color.textSecondary,
