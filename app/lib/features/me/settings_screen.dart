@@ -259,6 +259,7 @@ class SettingsScreen extends ConsumerWidget {
                               .round(),
                         ),
                   labelledByControl: true,
+                  controlValue: l10n.settingsPercent(retention),
                   trailing: _slider(
                     SgSlider(
                       value: retention,
@@ -441,6 +442,7 @@ class SettingsScreen extends ConsumerWidget {
                   title: l10n.settingsSpeed,
                   subtitle: l10n.settingsSpeedLine(l10n.digits(_times(shown))),
                   labelledByControl: true,
+                  controlValue: l10n.digits('${_times(shown)}×'),
                   trailing: _slider(
                     SgSlider(
                       value: shown,
@@ -853,6 +855,7 @@ class _Row extends StatelessWidget {
     this.value,
     this.onTap,
     this.labelledByControl = false,
+    this.controlValue,
   });
 
   final String title;
@@ -864,6 +867,11 @@ class _Row extends StatelessWidget {
   /// The control already says the title — a switch's label, a slider's — so
   /// a screen reader hears it once.
   final bool labelledByControl;
+
+  /// The value the control announces (a slider's), when the subtitle opens
+  /// with it too: a screen reader hears the subtitle without it, so the value
+  /// is said once (#1190).
+  final String? controlValue;
 
   @override
   Widget build(BuildContext context) {
@@ -896,10 +904,13 @@ class _Row extends StatelessWidget {
                   else
                     heading,
                   if (subtitle != null)
-                    SgText(
+                    _spoken(
                       subtitle,
-                      role: SgTextRole.caption,
-                      color: tokens.color.textSecondary,
+                      SgText(
+                        subtitle,
+                        role: SgTextRole.caption,
+                        color: tokens.color.textSecondary,
+                      ),
                     ),
                 ],
               ),
@@ -951,5 +962,18 @@ class _Row extends StatelessWidget {
               child: row,
             ),
     );
+  }
+
+  /// The subtitle as a screen reader hears it: without the leading value the
+  /// control has already said («90% · ≈ 3 reviews/day» → «≈ 3 reviews/day»).
+  Widget _spoken(String subtitle, Widget text) {
+    final said = controlValue;
+    if (said == null || !subtitle.startsWith(said)) return text;
+    final rest = subtitle
+        .substring(said.length)
+        .replaceFirst(RegExp(r'^\s*·\s*'), '');
+    return rest.isEmpty
+        ? ExcludeSemantics(child: text)
+        : Semantics(label: rest, excludeSemantics: true, child: text);
   }
 }
