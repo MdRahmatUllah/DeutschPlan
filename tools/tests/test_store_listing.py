@@ -102,7 +102,7 @@ def png_header(path: Path) -> tuple[int, int, int]:
 
 
 @pytest.mark.parametrize(
-    "folder", ["phone-light", "phone-dark", "tablet-light", "tablet-dark", "pl-phone-light", "ru-phone-light"]
+    "folder", ["phone-light", "phone-dark", "tablet-light", "tablet-dark", "pl-phone-light", "ru-phone-light", "bn-phone-light"]
 )
 def test_every_screenshot_is_one_play_takes_175(folder):
     for name in SHOTS:
