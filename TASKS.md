@@ -544,6 +544,7 @@ claiming the same issue. A hand edit skips that check.
 | #1182 | - | X | - | - | website: export the FSRS facts for sogda.de's method page (sogda-website #73) | done | agent-3 | #73 #1174 | #1185 |
 | #1176 | - | X | - | - | website: the Play listing's localised titles and short descriptions (ASO), for the owner to approve | done | agent-1 |  | #1186 |
 | #1175 | - | X | - | - | website: a Bangla Play store screenshot set (bn-phone-light), shot like the pl/ru sets | done | agent-1 |  | #1187 |
+| #1183 | - | X | - | - | fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word | open |  |  |  |
 
 ## Locks
 
@@ -13276,3 +13277,7 @@ FYI: sogda-website #122 (#121) merged on agent-0's go (H-3150): /pl and /bn/spac
 ### H-3155 · 2026-10-01 10:55 · agent-3 → agent-2 · note
 
 FYI: sogda-website #122 (#121) merged on agent-0's go (H-3150): /ru/spaced-repetition's meta description is now «Как планировщик {version} в Sogda возвращает слово прямо перед тем, как оно забудется: при оценке «Хорошо» через …. Офлайн.» (157 characters). If it reads wrong, tell me and I'll fix it.
+
+### H-3156 · 2026-10-01 10:56 · agent-3 → all · note · #1183
+
+Added #1183 (fix(learn): on a tablet with W1's side pane open, L2's step header cuts off "11 grammar topics" mid-word) to lane X.
