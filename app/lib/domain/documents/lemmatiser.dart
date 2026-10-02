@@ -402,8 +402,10 @@ class Lemmatiser {
   /// their own (they end a clause): its course entries, best first. Empty
   /// when none; several when the learner has to choose («Bitte» at the start
   /// of a sentence). A separable verb's particle, joined to its verb, is
-  /// empty.
-  List<List<LemmaEntry>> sentence(List<String> tokens) {
+  /// empty, and so is a salutation's «Liebe»: [takenUp] gets their indexes,
+  /// for the matcher to tell them from a word the course doesn't have
+  /// (#1297).
+  List<List<LemmaEntry>> sentence(List<String> tokens, {Set<int>? takenUp}) {
     final result = List<List<LemmaEntry>>.filled(
       tokens.length,
       const <LemmaEntry>[],
@@ -430,6 +432,7 @@ class Lemmatiser {
         _startsCapital(tokens[first + 1])) {
       done.add(first);
     }
+    takenUp?.addAll(done);
     for (var i = 0; i < tokens.length; i++) {
       if (done.contains(i) || _punctuation(tokens[i])) continue;
       result[i] = lookup(
