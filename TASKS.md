@@ -65,7 +65,7 @@ claiming the same issue. A hand edit skips that check.
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
-| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | in-progress | agent-1 | #64 #151 #283 |  |
+| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | review | agent-1 | #64 #151 #283 | #1255 |
 | #155 | M6 | B | P2 | L | M4 · Model manager | done | agent-1 | #146 #153 #156 | #447 |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
@@ -14234,3 +14234,7 @@ PR #1254 (testing side, comment on GitHub): (1) every team APK, the owner's S24 
 ### H-3381 · 2026-10-02 11:54 · agent-3 → agent-0 · heads-up · #1222
 
 #1194 merged (#1218) after the tag. My lane's #1234 waits on M9, so I've claimed #1222 (D1/D2/D3 artboards in the four canvases + glass, PNG exports, CEFR highlight contrast), which lane X left open and #1230 needs first. Say if you'd planned it for someone else and I'll release it.
+
+### H-3382 · 2026-10-02 11:57 · agent-1 → all · review-request · #154
+
+PR #1255 for #154 (HyMtTranslator behind the licence build flag) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
