@@ -9,10 +9,11 @@ app code: its sources are `docs/marketing/` and `tools/media/` in this repo,
 and the Play store assets in `docs/05-dev-guide/store/`.
 
 **Onboarding takes one command.** Start Claude Code in the main checkout
-(`<root>/deutschplan`) and type **`/agent-5`** (`.claude/commands/agent-5.md`).
-It sets up the worktrees, joins the board, reads this folder and starts the
-session. Run it again on any later day: every setup step skips itself once
-done.
+(`<root>/deutschplan`) and type **`/agent-5`**. The command
+(`.claude/commands/agent-5.md`) prints [`ONBOARD.md`](ONBOARD.md) from
+`origin/main` and follows it: it sets up the worktrees, joins the board, reads
+this folder and starts the session. Run it again on any later day: every setup
+step skips itself once done.
 
 ## Where it works
 
@@ -20,8 +21,8 @@ done.
 |---|---|---|
 | **App worktree** | `<root>/dp-wt/agent-5` | One branch per issue from `origin/main`, for `docs/marketing/`, `tools/media/` and store assets |
 | **Media worktree** | `<root>/dp-media`, branch `media` | What it **renders**: stills, videos, graphics in review. Never merged into `main`; see that branch's README |
-| **Board clone** | `<root>/dp-team/agent-5` | `team.py` keeps it; `agents/agent-5.md` is its Now, Next and Memory |
-| **Website clone** | `<root>/sogda-website` (read only) | Facts, pages to link, `scripts/og.mjs` as the pattern for rendered images. Website changes go to agent-4 as issues |
+| **Board clone** | `<root>/dp-team/agent-5` | `team.py` keeps it, run as `cd <root>/dp-wt/agent-5 && python tools/team.py …`; `agents/agent-5.md` is its Now, Next and Memory |
+| **Website clone** | `<root>/sogda-website-wt/agent-5` (its own, read only; never agent-4's `<root>/sogda-website`) | Facts, pages to link, `scripts/og.mjs` as the pattern for rendered images, read from `origin/main` (the live site). Website changes go to agent-4 as issues |
 | **Lane** | **M** on the board | Milestones **MK1 · Marketing foundations** and **MK2 · Play launch campaign** (later MK*n*), label `marketing` |
 
 ## The owner's rules (binding)
@@ -53,7 +54,7 @@ done.
   - vertical: 1080 × 1920;
   - landscape: 1920 × 1080.
 - **Video:** `adb -s emulator-5558 shell screenrecord` under the device lock, driven by `tools/device.py` taps, the way the Play screenshots are shot (`store-listing.md`, *Screenshots*). Then `ffmpeg` to cut, frame, caption (one caption file per language) and encode H.264/AAC MP4.
-- **The app's own screens:** the Play sets in `docs/05-dev-guide/store/<set>/` (en, bn, pl and ru), and the goldens in `app/test/golden/goldens/` (which use fixture data, so check their numbers against the facts).
+- **The app's own screens:** the Play sets in `docs/05-dev-guide/store/`: English `phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, plus `bn-phone-light`, `pl-phone-light` and `ru-phone-light`, and the goldens in `app/test/golden/goldens/` (which use fixture data, so check their numbers against the facts).
 - **Routines:** once a routine works by hand (the weekly due-list), the owner can make it scheduled (Claude Code `/schedule`). Ask first.
 - **No new heavy dependency** without agent-0's OK. Prefer what's installed.
 
@@ -92,6 +93,6 @@ Commits are authored by `MdRahmatUllah <rahmat.ullah@infinitibit.com>` (the repo
 - **the product:** #1208 a feature review of 1.1.0;
 - **brand:** #1209 templates.
 
-**MK2 (Play launch, blocked on the listing):** #1210 the launch-day kit, #1211 the promo video, #1212 the outreach list, with sogda-website #76's pitches.
+**MK2 (Play launch):** #1211 the promo video, which can be made before launch once #1206 exists. Blocked on the listing (#1123): #1210 the launch-day kit, and #1212 the outreach list, with sogda-website #76's pitches.
 
 **Memory:** [`memory.md`](memory.md). **What it built:** [`work-history.md`](work-history.md).

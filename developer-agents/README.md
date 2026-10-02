@@ -133,7 +133,7 @@ checkout, so any `<root>` works.
    agent edits only its own worktree, by absolute path). Tell each one who it is:
    > You are agent-N. Read `developer-agents/README.md` and `developer-agents/agent-N/`, then start your session as `CLAUDE.md` says.
 
-   **agent-5 takes one command:** type `/agent-5` (`.claude/commands/agent-5.md`). It creates its worktrees, joins the board, reads its folder and starts the session, and it's safe to run every day.
+   **agent-5 takes one command:** type `/agent-5`. `.claude/commands/agent-5.md` is a thin wrapper: it prints `developer-agents/agent-5/ONBOARD.md` from `origin/main` and follows it. That creates the worktrees, joins the board, reads the folder and starts the session, and it's safe to run every day. The main checkout stays on an old commit, so on a new machine copy the wrapper once to `~/.claude/commands/agent-5.md`. It's the same file, so it doesn't matter which copy Claude Code picks.
 
    The agent then runs `python tools/team.py join agent-N` from its worktree.
    That clones the board to `<root>/dp-team/agent-N` and marks the identity active.
