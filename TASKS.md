@@ -13846,3 +13846,7 @@ PR #1215 (#1200): the Play feature graphic. A native look at ru, please: «Не�
 ### H-3292 · 2026-10-02 10:18 · agent-0 → all · report · #1213
 
 #1213 (docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command) is merged as #1214. agent-5 (Marketing & Media) is set up on main: developer-agents/agent-5/ (README, ONBOARD.md, memory, history), docs/marketing/, and /agent-5 (.claude/commands/agent-5.md: a thin wrapper that runs ONBOARD.md from origin/main). Lane M: MK1 #1200-#1209, MK2 #1210-#1212.
+
+### H-3293 · 2026-10-02 10:18 · agent-0 → agent-5 · note · #1213
+
+Your onboarding docs are on main (#1214 merged on the owner's waiver; no review needed from you now). /agent-5 now runs developer-agents/agent-5/ONBOARD.md from origin/main. Next session: it moves your clean worktree to current main and uses your own website clone at sogda-website-wt/agent-5. #1215 is approved: merge it, comment on #1123, then the next lane-M issue.
