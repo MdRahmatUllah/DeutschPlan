@@ -66,7 +66,7 @@ outside: the course's own data, plus rules, plus one small table we write.
 
 **One class per lemma, in this order:** stop word, known, probably known, new in the course, mine, outside the course. A course word wins over *Mine*: a word of my own that the course also has (`custom_words.matched_uid`) is offered as the course word, and D2 shows its "My word" mark too.
 
-**The matcher** (`domain/documents/matcher.dart`, `matchText`) runs on a snapshot the data layer reads once: each course word's step, level and `freq`, and the learner's statuses, the uids any day's plan has held, *My words*' search keys and the active step. In it:
+**The matcher** (`domain/documents/matcher.dart`, `matchText`) runs in an isolate (`DocumentRepository.match`, #1230) on a snapshot the data layer reads once (`matcherInput`): each course word's step, level and `freq`, and the learner's statuses, the uids any day's plan has held, *My words*' search keys and the active step. In it:
 - **An ambiguous lemma** takes the class of its reading most worth offering (new, then probably known, then known), and D2 asks which before *Add*.
 - **No step under way:** nothing is probably known.
 - **A word the sentence took up** (a split particle, «findet … statt», a salutation) has a reading of its own, so it is never *outside the course*.
@@ -78,7 +78,7 @@ outside: the course's own data, plus rules, plus one small table we write.
 - **`documents`** (id, title, source `paste|share|pdf|photo`, created_at, body, image_paths JSON, page_count, word_count). `body` is the text: drift's tables have a `text()` of their own (#1226). Kept, as the owner decided (#1220):
   - the text always; the images while *Save original images* (`doc_save_images`, default on) is on, in app-private storage (`<appSupport>/documents/<id>/`);
   - **auto-delete** after `doc_autodelete_days` (default 0, never).
-- **`document_words`** (document_id, lemma_key, surface, sentence, class, added `0|1`), one row per lemma and sentence (PK(document_id, lemma_key, sentence)): what D2 showed, so reopening a document needs no new run.
+- **`document_words`** (document_id, lemma_key, surface, sentence, class, added `0|1`), one row per lemma and sentence (PK(document_id, lemma_key, sentence)): what each run found, for D3's counts and for what was added. Reopening runs the matcher again (FR-D2-07), and an earlier row keeps its `added`.
 - **`word_contexts`** (id, word_key, sentence, document_id NULL, created_at): the learner's sentences for a word.
   - `word_key` is a course `uid` or `custom:<id>`.
   - A sentence outlives its document: deleting a document sets `document_id` to NULL, and the sentence stays on the card.

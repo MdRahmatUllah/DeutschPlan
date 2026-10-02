@@ -248,7 +248,7 @@ CREATE TABLE documents (
   word_count  INTEGER NOT NULL DEFAULT 0
 );
 
--- What D2 showed for a document, so reopening it needs no new run: a lemma
+-- What each run of a document found, for D3's counts and what was added: a lemma
 -- (a course uid, or the lemma for a word outside the course) once per sentence
 -- it was met in.
 CREATE TABLE document_words (

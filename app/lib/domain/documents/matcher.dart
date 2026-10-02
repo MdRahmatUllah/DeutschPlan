@@ -57,7 +57,11 @@ class LearnerSnapshot {
 
 /// A lemma of the document, once, with every place it stands.
 class DocWord {
-  DocWord._(this.entries, this.surface, this.docClass, this.compound);
+  DocWord._(this.key, this.entries, this.surface, this.docClass, this.compound);
+
+  /// Its lemma, as `document_words.lemma_key` stores it: the course uids
+  /// (`|`-joined when ambiguous), or `outside:` and the search key.
+  final String key;
 
   /// Its course entries: several when the learner has to choose («Morgen»
   /// at the start of a sentence), none when it's outside the course.
@@ -122,6 +126,7 @@ DocumentMatch matchText(
       if (entries.isNotEmpty) {
         key = entries.map((e) => e.uid).join('|');
         create = () => DocWord._(
+          key,
           entries,
           token.text,
           _courseClass(entries, course, learner),
@@ -147,6 +152,7 @@ DocumentMatch matchText(
         final search = searchKey(token.text, stripArticle: false);
         key = 'outside:$search';
         create = () => DocWord._(
+          key,
           const <LemmaEntry>[],
           token.text,
           learner.mine.contains(search) ? DocClass.mine : DocClass.outside,
