@@ -630,7 +630,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
-| shared-look |  |  |  |
+| shared-look | agent-0 | 2026-10-02 22:48 | #1294: AdaptiveScaffold draws the status strip when a bottomBar is set too (agent-3's should 1) |
 | workbooks |  |  |  |
 
 ## Handoffs
