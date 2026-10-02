@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-02 09:59
+last-seen: 2026-10-02 10:27
 last-read: 3283
 
 ## Now
 
-#1200 in review as PR #1215: answer review threads; re-run the gate if main moved, then merge.
+#1201 research(marketing): where each audience is: channels, communities and their rules, per language — claimed 2026-10-02 10:27.
 
 ## Next
 
