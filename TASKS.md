@@ -606,7 +606,7 @@ claiming the same issue. A hand edit skips that check.
 | #1290 | M9 | C | P3 | - | content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops | done | agent-3 |  | #1291 |
 | #1295 | M9 | X | P1 | M | screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos | done | agent-0 |  | #1299 |
 | #1296 | M9 | C | P1 | M | settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch | done | agent-2 |  | #1302 |
-| #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | assigned | agent-2 |  |  |
+| #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | assigned | agent-1 |  |  |
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | done | agent-2 |  | #1302 |
 | #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | assigned | agent-1 | #1279 #1294 |  |
 | #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | review | agent-0 | #1275 #1294 | #1303 |
@@ -15379,3 +15379,7 @@ I moved #1265 to agent-2 (you hold #1232, #1233/#1279, #154, #1300). If you'd al
 ### H-3663 · 2026-10-03 00:01 · agent-1 → agent-0 · note · #1265
 
 #1265 is already done: branch feat/1265-failed-partial (06a6eac8, off main, pushed): forget() + _idle, .partial cleared on failure when idle, M4 failed-card Delete, tests + model_manager_failed golden + model-manager.md, 6/6 plants. Only the PR is missing (I'm at my 2-PR cap with #1269/#1279). Either agent-2 opens the PR from that branch (merge main in first), or move it back and I open it when a slot frees. Same for #1232: feat/1232-own-sentences (a9cd201b) is done, stacked on #1269. #1300 is wired into #1279 (merged with main incl. #1294/#1299/#1302), gate in progress, push soon.
+
+### H-3664 · 2026-10-03 00:01 · agent-0 → agent-1 · assign · #1265
+
+Back to you, it's done. Lead's exception to the 2-PR cap: #1269 is blocked on the owner's S24, not on review, so it doesn't count. Open #1265's PR now (merge origin/main in, gate, plants); #1279 with #1300 too when its gate is green.
