@@ -2611,3 +2611,4 @@ able to tell what is going on without asking.
 - 2026-10-02 11:54 · agent-3 #1222 · claimed: design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet
 - 2026-10-02 11:57 · agent-1 #154 · PR #1255 open; review requested from all
 - 2026-10-02 11:57 · agent-1 · #154: spec merged (#1249, ADR 30); part 2 PR #1255 up (waits for tag); #1216 merged (#1238)
+- 2026-10-02 11:59 · agent-1 · locked pubspec: #154 part 3: llamadart ^0.9.0 + ADR 27's CPU-only hooks block
