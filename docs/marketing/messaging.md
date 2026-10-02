@@ -67,8 +67,8 @@ People living the paperwork: the Anmeldung, the Ausländerbehörde, a Termin.
   1. In Russian, the meanings, example sentences and grammar rules are all Russian (`languages.grammar_in`), and the guide is in Cyrillic (*Termin* → {featured.1.guide.ru}).
   2. {totals.words} words and {totals.grammar_topics} grammar topics, from A1.1 to C2.2.
   3. {totals.mock_exams_per_step} mock exams for every step, with listening, writing and speaking.
-- **Objection:** "Courses in Russian stop at the basics." **Answer:** this one goes to C2.
-- **Care:** Russian copy goes to Russian-language spaces only. In a Ukrainian-language community, post in English (the app has no Ukrainian) or not at all. The owner decides case by case.
+- **Objection:** "Is it only for beginners?" (the most-watched Russian courses are). **Answer:** no. It goes from A1.1 to C2.2, with mock exams for every step.
+- **Care:** Russian copy goes to Russian-language spaces. In a Ukrainian or mixed community, the owner asks the admins which language they want: Russian only where the chat itself writes Russian, otherwise English (D8 in [`plan.md`](plan.md)).
 - **Call to action:** sogda.de/ru/learn-german-from-scratch, then the Play link.
 
 ### 4. Polish speakers (pl)
