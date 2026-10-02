@@ -835,6 +835,23 @@ void main() {
       );
     });
 
+    test("#687 AN-7 a day topped up by the next step counts only the course's "
+        "words against daily_new, not the queue's", () async {
+      store.wordsByStep
+        ..['A1.1'] = <String>['a1']
+        ..['A1.2'] = <String>['b1', 'b2', 'b3'];
+      final engine = engineWith(autoAdvance: false, docDailyCap: 2);
+      final first = await engine.openDay(monday);
+      expect(first.newToday, <String>['a1', 'd1', 'd2']);
+      await engine.startNextStep(
+        monday,
+        dailyNew: 3,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      final topped = await engine.openDay(monday);
+      expect(topped.newToday, <String>['a1', 'd1', 'd2', 'b1', 'b2']);
+    });
+
     test('#622 after an import, replanToday tops today up from the queue '
         'too', () async {
       store.queue.clear();
