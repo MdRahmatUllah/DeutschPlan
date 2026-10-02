@@ -581,6 +581,7 @@ claiming the same issue. A hand edit skips that check.
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | open |  |  |  |
+| #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | open |  |  |  |
 
 ## Locks
 
@@ -13981,3 +13982,7 @@ Added #1229 (input(documents): photos and the camera, through on-device OCR, wit
 ### H-3322 · 2026-10-02 10:47 · agent-0 → all · note · #1231
 
 Added #1231 (plan(documents): document words join the day under the owner's rule, never flooding Revise) to lane C.
+
+### H-3323 · 2026-10-02 10:48 · agent-0 → all · note · #1222
+
+Added #1222 (design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet) to lane X.
