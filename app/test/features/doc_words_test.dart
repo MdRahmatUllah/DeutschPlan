@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart' show RenderParagraph;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -62,6 +63,33 @@ void main() {
     );
     await tester.pumpAndSettle();
     return router;
+  }
+
+  /// Where the [nth] [word] is drawn: found in the text as laid out, not
+  /// in its labels («Nachzahlung, new, B1»), which `find.textRange` reads.
+  Offset wordAt(WidgetTester tester, String word, [int nth = 0]) {
+    for (final element in find.byType(RichText).evaluate()) {
+      final paragraph = element.renderObject! as RenderParagraph;
+      final text = paragraph.text.toPlainText(includeSemanticsLabels: false);
+      var at = -1;
+      for (var i = 0; i <= nth; i++) {
+        at = text.indexOf(word, at + 1);
+        if (at < 0) break;
+      }
+      if (at < 0) continue;
+      final box = paragraph
+          .getBoxesForSelection(
+            TextSelection(baseOffset: at, extentOffset: at + word.length),
+          )
+          .first;
+      return paragraph.localToGlobal(box.toRect().center);
+    }
+    throw StateError('$word is not drawn');
+  }
+
+  Future<void> longPressWord(WidgetTester tester, String word) async {
+    await tester.longPressAt(wordAt(tester, word));
+    await tester.pumpAndSettle();
   }
 
   Future<void> tapWord(WidgetTester tester, String word) async {
@@ -268,9 +296,134 @@ void main() {
     await tapWord(tester, 'Morgen');
     expect(find.text(l10n.docWordsCardWhich), findsOneWidget);
     expect(find.text(l10n.docWordsCardAdd), findsNothing);
-    await tester.tap(find.text('morgen'));
+    await tester.tap(find.textContaining('morgen · '));
     await tester.pumpAndSettle();
     expect(find.text(l10n.docWordsCardAdd), findsOneWidget);
+  });
+
+  testWidgets('an ambiguous word\'s readings say their step and meaning, '
+      'and its mark takes the lowest level (agent-3 on #1294)', (tester) async {
+    final semantics = tester.ensureSemantics();
+    final settings = StubSettings()
+      ..put(SettingKeys.docShowProbablyKnown, true);
+    await pump(
+      tester,
+      docWordsStub(
+        documents: FakeDocuments(body: 'Am Montag fällt der Unterricht aus.'),
+        settings: settings,
+      ),
+    );
+    expect(
+      find.semantics.byLabel(l10n.docWordsSemNew('fällt', 'A2')),
+      findsOne,
+    );
+    await tapWord(tester, 'fällt');
+    expect(find.text(l10n.docWordsCardWhich), findsOneWidget);
+    expect(find.textContaining('ausfallen · A2.2 · '), findsOneWidget);
+    expect(find.textContaining('ausfallen · C1.1 · '), findsOneWidget);
+    semantics.dispose();
+  });
+
+  testWidgets('a long press adds a new word at once, and a word added '
+      'already is left alone (agent-3 on #1294)', (tester) async {
+    final plan = FakePlan();
+    await pump(tester, docWordsStub(plan: plan));
+    await longPressWord(tester, 'Nachzahlung');
+    expect(plan.added, <List<String>>[
+      <String>[uidOf('Nachzahlung')],
+    ]);
+    // Past the toast, then again on the word now added.
+    await tester.pump(const Duration(seconds: 3));
+    await longPressWord(tester, 'Nachzahlung');
+    expect(plan.added, hasLength(1));
+  });
+
+  testWidgets('FR-D2-03 an Add that starts today takes a slot off the cap '
+      'note (agent-3 on #1294)', (tester) async {
+    await pump(tester, docWordsStub(plan: FakePlan(slots: 2)));
+    final fresh = docMatch(artboardLetter).words
+        .where((w) => w.docClass == DocClass.newInCourse && !w.ambiguous)
+        .length;
+    expect(find.text(l10n.docWordsCapNote(5, fresh - 2)), findsOneWidget);
+    await tapWord(tester, 'Nachzahlung');
+    await tester.tap(find.text(l10n.docWordsCardAdd));
+    await tester.pumpAndSettle();
+    // One fewer to add, and one fewer slot: the same words wait.
+    expect(find.text(l10n.docWordsCapNote(5, fresh - 1 - 1)), findsOneWidget);
+  });
+
+  testWidgets('FR-D2-03 a level button that would add what Add all does is '
+      'left out (agent-3 on #1294)', (tester) async {
+    await pump(
+      tester,
+      docWordsStub(
+        documents: FakeDocuments(body: 'Die Kündigung und die Nebenkosten.'),
+      ),
+    );
+    expect(find.text(l10n.docWordsAddAll(2)), findsOneWidget);
+    expect(find.text(l10n.docWordsAddLevel('A2', 2)), findsNothing);
+  });
+
+  testWidgets('an added word keeps its check on its line: a word joiner '
+      '(agent-3 on #1294)', (tester) async {
+    final joined = 'Nachzahlung${String.fromCharCode(0x2060)}';
+    await pump(
+      tester,
+      docWordsStub(
+        documents: FakeDocuments(added: <String>{uidOf('Nachzahlung')}),
+      ),
+    );
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is RichText &&
+            w.text.toPlainText(includeSemanticsLabels: false).contains(joined),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('back from R2, the document is read again, the word now mine '
+      '(agent-3 on #1294)', (tester) async {
+    final documents = FakeDocuments();
+    final router = await pump(tester, docWordsStub(documents: documents));
+    expect(documents.runs, 1);
+    await tapWord(tester, 'Wasserzähler');
+    await tester.tap(find.text(l10n.docWordsCardAddMine));
+    await tester.pumpAndSettle();
+    router.pop();
+    await tester.pumpAndSettle();
+    expect(documents.runs, 2);
+  });
+
+  testWidgets('the card bolds the word where it stands, not inside another '
+      'word (agent-3 on #1294)', (tester) async {
+    await pump(
+      tester,
+      docWordsStub(
+        documents: FakeDocuments(body: 'Die Kontonummer steht auf dem Konto.'),
+        // Konto is A1: probably known to this A2 learner.
+        settings: StubSettings()..put(SettingKeys.docShowProbablyKnown, true),
+      ),
+    );
+    // The second «Konto»: the first is inside «Kontonummer».
+    await tester.tapAt(wordAt(tester, 'Konto', 1));
+    await tester.pumpAndSettle();
+    final bold = find.byWidgetPredicate((w) {
+      if (w is! RichText) return false;
+      final spans = <InlineSpan>[];
+      w.text.visitChildren((span) {
+        spans.add(span);
+        return true;
+      });
+      final at = spans.indexWhere(
+        (s) => s is TextSpan && s.style?.fontWeight == FontWeight.w700,
+      );
+      return at > 0 &&
+          (spans[at] as TextSpan).text == 'Konto' &&
+          (spans[at - 1] as TextSpan).text!.endsWith('auf dem ');
+    });
+    expect(bold, findsOneWidget);
   });
 
   testWidgets('a text with nothing new says so', (tester) async {

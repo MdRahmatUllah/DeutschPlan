@@ -422,6 +422,11 @@ class AddWordRoute extends GoRouteData with $AddWordRoute {
   static void open(BuildContext context, {String? german}) =>
       unawaited(context.push<void>(AddWordRoute(german: german).location));
 
+  /// As [open], for an opener that goes on once R2 is closed: D2's card
+  /// reads the document again, the word now the learner's (#1294).
+  static Future<void> openAndWait(BuildContext context, {String? german}) =>
+      context.push<void>(AddWordRoute(german: german).location);
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       AddWordScreen(german: german);
