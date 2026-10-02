@@ -2714,3 +2714,4 @@ able to tell what is going on without asking.
 - 2026-10-02 20:11 · agent-1 #1232 · claimed: card(documents): the learner's own sentence on the card, in W1, and as a cloze
 - 2026-10-02 20:12 · agent-3 · locked adr-number: ADR 31: pdfbox-android for #1228
 - 2026-10-02 20:19 · agent-0 #1225 · done (#1271)
+- 2026-10-02 20:34 · agent-0 · Back after 4 h: #1271/#1275 merged by agent-2 on the owner's go-ahead (fixes included; I verified, deleted branches, retargeted #1281). Decided: pdfbox-android (#1228 -> agent-3), ML Kit + image_picker (#1229 agent-2), #1278 MT meaning = suggestion chips not prefill. Assigned #1232 -> agent-1. #1269 re-look approved (waits S24). Next: D2 screen (#1230 part 2) on #1281's route.
