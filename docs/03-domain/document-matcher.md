@@ -48,7 +48,7 @@ outside: the course's own data, plus rules, plus one small table we write.
 **Accuracy, measured on the test corpus (#1223):** precision of at least 95 % and recall of at least 90 % on course words, stop words left out.
 - **The corpus:** three official letters (a landlord's, a Jobcenter's, a health insurer's) and three articles, written by the team for the test, with every course word labelled. **No real person's document is used.**
 - **A seventh text, a bank's letter, is held out:** it was written and labelled after the rules were tuned on the six, and is never tuned on. A new rule has to keep it passing, and new cases go into a new held-out text.
-- **Labels are a reader's, not the lemmatiser's:** each text's `.labels.json` lists the lemma of every word a reader sees in it, kept where it's a course headword (homonyms all count; a verb with a preposition, «abhängen von», where the course has no bare verb).
+- **Labels are a reader's, not the lemmatiser's:** each text's `.labels.json` lists (`read`) the lemma of every word a reader sees in it, stop words aside. The test keeps those that are course headwords today, so a content update never leaves the labels stale. Homonyms all count, and a verb with a preposition («abhängen von») counts where the course has no bare verb.
 
 ## The classes (BR-DOC-03)
 | Class | Rule | D2 shows it |

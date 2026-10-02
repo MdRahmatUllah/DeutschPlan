@@ -41,6 +41,37 @@ List<List<String>> sentencesOf(String text) => <List<String>>[
     ],
 ];
 
+/// A reader's lemmas for a text (each `.labels.json`'s `read`), as the
+/// course's headwords today, so a content update never leaves the labels
+/// stale. «a|b» is the first of them that the course has. Homonyms all
+/// count («schon», «schon (Partikel)»); a headword with more to it
+/// («abhängen von») only where the course has no bare one.
+Set<String> goldOf(List<String> read, List<LemmaEntry> course) {
+  final byHead = <String, List<LemmaEntry>>{};
+  for (final entry in course) {
+    final head = Lemmatiser.headOf(entry);
+    if (head != null) byHead.putIfAbsent(head, () => <LemmaEntry>[]).add(entry);
+  }
+  bool bare(LemmaEntry e) =>
+      e.german
+          .replaceAll(RegExp(r'\([^)]*\)'), ' ')
+          .split(' ')
+          .where((w) => w.isNotEmpty && w != 'sich')
+          .length ==
+      1;
+  final gold = <String>{};
+  for (final item in read) {
+    for (final lemma in item.split('|')) {
+      final entries = byHead[lemma];
+      if (entries == null) continue;
+      final bareOnes = entries.where(bare).toList();
+      gold.addAll((bareOnes.isEmpty ? entries : bareOnes).map((e) => e.german));
+      break;
+    }
+  }
+  return gold;
+}
+
 /// The headwords [lemmatiser] finds in [text], stop words left out.
 Set<String> found(Lemmatiser lemmatiser, String text) => <String>{
   for (final tokens in sentencesOf(text))
@@ -50,13 +81,14 @@ Set<String> found(Lemmatiser lemmatiser, String text) => <String>{
 };
 
 void main() {
+  late List<LemmaEntry> course;
   late Lemmatiser lemmatiser;
   late Map<String, LemmaEntry> byGerman;
 
   setUpAll(() {
-    final entries = courseEntries();
-    lemmatiser = Lemmatiser(entries);
-    byGerman = <String, LemmaEntry>{for (final e in entries) e.german: e};
+    course = courseEntries();
+    lemmatiser = Lemmatiser(course);
+    byGerman = <String, LemmaEntry>{for (final e in course) e.german: e};
   });
 
   List<String> lemmas(String sentence) => <String>[
@@ -64,8 +96,8 @@ void main() {
       entries.map((e) => e.german).join('|'),
   ];
 
-  test('#1223 BR-DOC-03: the course words of the six corpus texts, at least '
-      '95 % precision and 90 % recall', () {
+  test('#1223 BR-DOC-03: the course words of the corpus (six texts and a '
+      'held-out seventh), at least 95 % precision and 90 % recall', () {
     final corpus = Directory('test/fixtures/documents/corpus');
     var predicted = 0;
     var correct = 0;
@@ -75,12 +107,11 @@ void main() {
       (f) => f.path.endsWith('.txt'),
     )) {
       final labels = File(file.path.replaceFirst('.txt', '.labels.json'));
-      final gold = <String>{
-        ...((jsonDecode(labels.readAsStringSync())
-                    as Map<String, dynamic>)['lemmas']
-                as List)
-            .cast<String>(),
-      };
+      final read =
+          (jsonDecode(labels.readAsStringSync())
+                  as Map<String, dynamic>)['read']
+              as List;
+      final gold = goldOf(read.cast<String>(), course);
       final hits = found(lemmatiser, file.readAsStringSync());
       predicted += hits.length;
       correct += hits.intersection(gold).length;
