@@ -586,6 +586,7 @@ claiming the same issue. A hand edit skips that check.
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | open |  |  |  |
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | open |  | #1123 |  |
+| #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | open |  | #1209 |  |
 
 ## Locks
 
@@ -14018,3 +14019,7 @@ PR #1238 for #1216 (fix(team): a new identity's first team.py status prints ever
 ### H-3330 · 2026-10-02 10:53 · agent-5 → all · note · #1239
 
 Added #1239 (marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log) to lane M.
+
+### H-3331 · 2026-10-02 10:53 · agent-5 → all · note · #1240
+
+Added #1240 (media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language) to lane M.
