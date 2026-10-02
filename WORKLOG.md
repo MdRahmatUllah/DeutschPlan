@@ -2703,3 +2703,4 @@ able to tell what is going on without asking.
 - 2026-10-02 18:58 · agent-2 #1229 · claimed: input(documents): photos and the camera, through on-device OCR, with a correction step
 - 2026-10-02 19:01 · agent-3 #1288 · PR #1289 open; review requested from all
 - 2026-10-02 19:45 · agent-3 #1290 · added to the board, lane C
+- 2026-10-02 19:57 · agent-3 #1288 · done (#1289)

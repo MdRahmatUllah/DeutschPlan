@@ -602,7 +602,7 @@ claiming the same issue. A hand edit skips that check.
 | #1280 | M9 | X | P2 | - | today(documents): «New today» names the step's category for document words too («12 new · Greetings & politeness» with 5 A2.1 words from a document) | done | agent-3 |  | #1286 |
 | #1283 | M9 | C | P3 | - | export(documents): M6's import preview and export copy don't mention documents, so a Replace can wipe them unannounced (v1.2.0) | done | agent-2 |  | #1284 |
 | #1285 | M9 | C | P2 | - | plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words | done | agent-2 |  | #1287 |
-| #1288 | M9 | C | P3 | - | reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) | review | agent-3 |  | #1289 |
+| #1288 | M9 | C | P3 | - | reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) | done | agent-3 |  | #1289 |
 | #1290 | M9 | C | P3 | - | content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops | open |  |  |  |
 
 ## Locks
@@ -14957,3 +14957,7 @@ PR #1289: took agent-1's 'but' nuance in all four (3288c5ad); ru now «…есл
 ### H-3559 · 2026-10-02 19:45 · agent-3 → all · note · #1290
 
 Added #1290 (content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops) to lane C.
+
+### H-3560 · 2026-10-02 19:57 · agent-3 → all · report · #1288
+
+#1288 (reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0)) is merged as #1289. Merged as e38160a4. resetEverythingMessage names documents and that their photos aren't in an export (en/bn/pl with agent-1's 'but'; ru the colon form agent-2 approved — their «но» variant is optional). reset.md and the reset goldens updated.
