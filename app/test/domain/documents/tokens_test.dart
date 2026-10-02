@@ -32,21 +32,45 @@ void main() {
 
   test('#1224: a blank line ends a sentence; one line break doesn\'t', () {
     expect(
-      words('Einladung\n\nSehr geehrte Frau Okafor,\nmit diesem Schreiben'),
+      words('Einladung\n\nWir schreiben Ihnen,\nmit diesem Brief'),
       <List<String>>[
         <String>['Einladung'],
-        <String>[
-          'Sehr',
-          'geehrte',
-          'Frau',
-          'Okafor',
-          ',',
-          'mit',
-          'diesem',
-          'Schreiben',
-        ],
+        <String>['Wir', 'schreiben', 'Ihnen', ',', 'mit', 'diesem', 'Brief'],
       ],
     );
+  });
+
+  test('#1297 a salutation alone on its line is a sentence of its own, '
+      'though the letter goes on in lower case', () {
+    for (final (greeting, rest) in <(String, String)>[
+      ('Sehr geehrter Herr Becker,', 'leider müssen wir'),
+      ('Liebe Eltern,', 'am kommenden Montag'),
+      ('Guten Tag,', 'wir schreiben Ihnen'),
+    ]) {
+      final sentences = splitText('$greeting\n$rest.');
+      expect(sentences, hasLength(2), reason: greeting);
+      expect(
+        '$rest.'.startsWith(sentences.last.tokens.first.text),
+        isTrue,
+        reason: greeting,
+      );
+    }
+    // A comma at a line's end in a sentence that isn't a greeting stays,
+    // and so does a wrapped line that only starts like one (agent-1).
+    expect(
+      splitText(
+        'Hallo und herzlich willkommen zu unserem neuen Kurs für Eltern,\n'
+        'wir freuen uns.',
+      ),
+      hasLength(1),
+    );
+    for (final text in <String>[
+      'Liebe ist das Wichtigste,\nsagt sie.',
+      'Lieber spät als nie,\nsagt man.',
+    ]) {
+      expect(splitText(text), hasLength(1), reason: text);
+    }
+    expect(splitText('Wir bitten Sie,\nuns anzurufen.'), hasLength(1));
   });
 
   test('#1224: every token points at itself in the text', () {

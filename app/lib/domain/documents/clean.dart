@@ -111,7 +111,7 @@ String? documentTitle(String body, {int max = 60}) {
   ];
   if (lines.isEmpty) return null;
   final line = lines
-      .firstWhere((l) => !_salutation.hasMatch(l), orElse: () => lines.first)
+      .firstWhere((l) => !salutationLine.hasMatch(l), orElse: () => lines.first)
       .replaceAll(RegExp(r'[,;:]+$'), '');
   if (line.length <= max) return line;
   final space = line.lastIndexOf(' ', max);
@@ -121,8 +121,14 @@ String? documentTitle(String body, {int max = 60}) {
 final RegExp _letter = RegExp(r'\p{L}', unicode: true);
 
 /// A line that is a salutation alone: «Liebe Eltern,», «Sehr geehrte Frau
-/// Okafor,», «Guten Tag,».
-final RegExp _salutation = RegExp(
-  r'^(liebe[rs]?|sehr geehrte[rs]?|hallo|guten (tag|morgen|abend))\b.*,$',
-  caseSensitive: false,
+/// Okafor,», «Guten Tag,». No part of the title, nor of the first sentence
+/// (`splitText`, #1297). At most five words after the greeting: a wrapped
+/// line that starts «Hallo und herzlich willkommen …,» is text (agent-1).
+/// «Liebe» greets only before a capital, as the lemmatiser's rule has it:
+/// «Liebe ist das Wichtigste,» and «Lieber spät als nie,» are text
+/// (agent-2).
+final RegExp salutationLine = RegExp(
+  r'^([Ll]iebe[rs]?(?=\s+\p{Lu})|[Ss]ehr geehrte[rs]?|[Hh]allo|'
+  r'[Gg]uten ([Tt]ag|[Mm]orgen|[Aa]bend))\b(\s+\S+){0,5},$',
+  unicode: true,
 );

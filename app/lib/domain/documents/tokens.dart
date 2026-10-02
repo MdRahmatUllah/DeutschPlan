@@ -5,6 +5,7 @@ library;
 
 import 'dart:math' show min;
 
+import 'package:sogda/domain/documents/clean.dart' show salutationLine;
 import 'package:sogda/domain/documents/lemmatiser.dart';
 import 'package:sogda/domain/documents/stop_words.dart';
 
@@ -132,7 +133,9 @@ const Set<String> _abbreviations = <String>{
 /// A sentence ends at «.», «!» or «?» before a space (a closing quote or
 /// bracket may come between: «…ab.“ Danach»), at a blank line, and at a
 /// line that ends in a comma when the next one starts with a capital (a
-/// letter's greeting: «Sehr geehrte Frau Okafor,↵Vielen Dank …»). Not
+/// letter's greeting: «Sehr geehrte Frau Okafor,↵Vielen Dank …»), and at a
+/// salutation alone on its line however the next starts: German goes on in
+/// lower case («Sehr geehrter Herr Becker,↵leider …», #1297). Not
 /// after an abbreviation («z. B.», «Nr.») or a day or month as digits («am
 /// 14. Oktober», «15.11.»), unless a pronoun or an article follows («Raum
 /// 2. Wir …»). A year ends one («im Jahr 2025.»), and so does the stop
@@ -154,7 +157,14 @@ List<DocSentence> splitText(String text) {
     }
     ends.add(m.end);
   }
-  ends.add(text.length);
+  for (final line in _line.allMatches(text)) {
+    if (line.end < text.length && salutationLine.hasMatch(line[0]!.trim())) {
+      ends.add(line.end + 1);
+    }
+  }
+  ends
+    ..add(text.length)
+    ..sort();
 
   final sentences = <DocSentence>[];
   var start = 0;
@@ -198,6 +208,8 @@ const int docMaxChars = 20000;
 }
 
 bool _highSurrogate(int unit) => unit >= 0xD800 && unit <= 0xDBFF;
+
+final RegExp _line = RegExp(r'^.*$', multiLine: true);
 
 final RegExp _end = RegExp(
   r'[.!?]+["“”»«’)]*(?=\s)|\n[ \t]*\n|,[ \t]*\n(?=[ \t]*\p{Lu})',
