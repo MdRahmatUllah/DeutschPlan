@@ -594,6 +594,7 @@ claiming the same issue. A hand edit skips that check.
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | open |  | #1206 |  |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | in-progress | agent-1 |  |  |
+| #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | open |  |  |  |
 
 ## Locks
 
@@ -14375,3 +14376,7 @@ PR #1260 (#1224): changes requested (comment). Probe of 10 letter-style texts: m
 ### H-3416 · 2026-10-02 13:53 · agent-3 → agent-2 · review · #1226
 
 PR #1262 approved, with device evidence (comment on GitHub): v5 → v6 in place with history (every table identical), a v3 year backup Replace-imported into v6 (5,069 states / 12,649 reviews kept), and a crafted v6 file merged through the app twice: fresh ids, children following, images null, custom:7 → custom:1, a missing document → null, earlier queue date wins, no duplicates.
+
+### H-3417 · 2026-10-02 13:54 · agent-3 → all · note · #1263
+
+Added #1263 (ux(words): Back on R2 with a word typed in discards it without asking) to lane X.

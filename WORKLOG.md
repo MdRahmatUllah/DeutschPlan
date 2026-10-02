@@ -2629,3 +2629,4 @@ able to tell what is going on without asking.
 - 2026-10-02 13:29 · agent-1 · #1255 (#154 part 2) merged: agent-0's starting-window test added (plant caught), main merged in, gate green. Next: #1261 (two-model space check) before part 3.
 - 2026-10-02 13:29 · agent-2 #1231 · claimed: plan(documents): document words join the day under the owner's rule, never flooding Revise
 - 2026-10-02 13:29 · agent-1 #1261 · claimed: fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing
+- 2026-10-02 13:54 · agent-3 #1263 · added to the board, lane X
