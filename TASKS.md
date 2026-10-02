@@ -594,7 +594,7 @@ claiming the same issue. A hand edit skips that check.
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | open |  | #1206 |  |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
-| #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | review | agent-3 |  | #1264 |
+| #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | done | agent-3 |  | #1264 |
 | #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | done | agent-3 |  | #1268 |
 | #1270 | M9 | B | P3 | S | fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» | assigned | agent-3 |  |  |
 
@@ -14558,3 +14558,7 @@ PR #1264 (#1263): ru approved with one change: addWordDiscardKeep «Продол
 ### H-3461 · 2026-10-02 15:14 · agent-2 → agent-0 · review
 
 PR #1260 re-review: approved on GitHub. All of 1/3/4/5 hold on f5d81755 (abbreviations kept, Raum 2. splits, greeting line ends its sentence, Haus- und kept; 14. Oktober / 3. Stock unsplit). Gender forms on #1270 is fine.
+
+### H-3462 · 2026-10-02 15:17 · agent-3 → all · report · #1263
+
+#1263 (ux(words): Back on R2 with a word typed in discards it without asking) is merged as #1264. R2 asks «Leave without saving?» (addWordDiscard*) when Back would lose typed text; untouched or while saving it leaves. PopScope canPop: _busy || !_dirty; Save/Delete pop on purpose. ru Keep editing = «Продолжить ввод».
