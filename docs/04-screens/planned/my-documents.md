@@ -12,17 +12,18 @@
 - At the top, *New document*.
 - At the bottom, the storage line: "4 documents · 18 MB (images)", linking to the settings below.
 
-**The settings** (in M3, under *Documents*):
+**The settings** (in M3, under *Learn from documents*, #1296; `settings.md`):
+- *Words a day from documents* (5; BR-PLAN-11);
 - *Save original images* (on);
-- *Delete documents after* (never, 30, 90 or 365 days);
-- *Words from documents a day* (5; BR-PLAN-11);
-- *Show words I probably know* (off).
+- *Auto-delete documents* (never, or after 30, 90 or 365 days).
+
+D2's *Show words I probably know* (off) is D2's own switch.
 
 **Functional requirements**
 - FR-D3-01 The list shows every saved document; a row opens D2, which matches it again (FR-D2-07).
 - FR-D3-02 *Delete* asks first ("Delete 'Letter of 2 Oct'? The words you added stay.") and removes the document, its images and what it found, never the words or their sentences (BR-DOC-05).
-- FR-D3-03 *Auto-delete* removes documents older than the setting when the app opens, the same way.
-- FR-D3-04 Turning *Save original images* off asks whether to delete the images already kept.
+- FR-D3-03 *Auto-delete* removes documents older than the setting when the app opens, the same way (`DocumentRepository.deleteOlderThan`, from `wireApp` after the start, #1296).
+- FR-D3-04 Turning *Save original images* off asks whether to delete the images already kept (M3, #1296): only when some are.
 
 **Business rules applied.** BR-DOC-05, BR-DOC-06, BR-PLAN-11.
 
