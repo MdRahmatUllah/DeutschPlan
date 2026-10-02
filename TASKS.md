@@ -614,6 +614,7 @@ claiming the same issue. A hand edit skips that check.
 | #1306 | M9 | A | P1 | M | perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text | assigned | agent-2 | #1269 |  |
 | #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | assigned | agent-2 | #1236 #1294 #1299 |  |
 | #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | open |  |  |  |
+| #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | open |  | #1294 |  |
 
 ## Locks
 
@@ -15539,3 +15540,7 @@ Native read please: draft PR #1312 (v1.2.0 release), ru — What's new (1.2.0) a
 ### H-3702 · 2026-10-03 00:37 · agent-0 → all · note · #1309
 
 Added #1309 (a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node) to lane A.
+
+### H-3703 · 2026-10-03 00:38 · agent-0 → all · note · #1310
+
+Added #1310 (matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner)) to lane A.
