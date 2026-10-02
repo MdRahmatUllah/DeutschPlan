@@ -227,12 +227,14 @@ bool likelyName(
   }
   if (before != null && _determiners.hasMatch(before)) return false;
   if (before != null &&
-      RegExp(r'(e|en|em|er|es)$').hasMatch(before) &&
+      _inflected.hasMatch(before) &&
       previousEntries.any((e) => e.pos == 'adj' || e.pos == 'num')) {
     return false;
   }
   return !_nounEnding.hasMatch(token.toLowerCase());
 }
+
+final RegExp _inflected = RegExp(r'e[mnrs]?$');
 
 final RegExp _titles = RegExp(r'^(frau|herr|herrn|familie|dr|prof)$');
 

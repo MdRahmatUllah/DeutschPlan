@@ -35,8 +35,8 @@ class LemmaEntry {
 }
 
 /// A gender form's ending after its stem, one word with it (#1270): «:in»,
-/// «*innen», «_innen», «/innen», «/-innen».
-const String genderSuffix = r'[:*_/]-?in(?:nen)?(?!\p{L})';
+/// «*innen», «_innen», «/innen», «/-innen», and with a capital I («:Innen»).
+const String genderSuffix = r'[:*_/]-?[Ii]n(?:nen)?(?!\p{L})';
 
 final RegExp _genderForm = RegExp('^(.+)$genderSuffix\$', unicode: true);
 
