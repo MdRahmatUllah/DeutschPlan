@@ -485,7 +485,7 @@ claiming the same issue. A hand edit skips that check.
 | #1067 | SQA | B | P3 | - | bug(sentences): T5 says a phrase's word ("Dank" in "Vielen Dank") is not from the course the day it is learned (real device) | done | agent-0 |  | #1091 |
 | #1068 | SQA | B | P3 | - | bug(search): R1's field leaves the keyboard's autocorrect on for German search terms (real device) | done | agent-0 |  | #1091 |
 | #1069 | SQA | C | P3 | - | bug(widget): the 2×2 widget on One UI cuts "Tomorrow · 7 revisions · 7…" (real device) | done | agent-2 |  | #1072 |
-| #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | needs-decision |  |  | #1074 |
+| #1070 | SQA | C | P3 | - | chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist) | done |  |  | #1074 |
 | #1075 | - | X | P2 | - | content: split the A1+A2+B1 workbook into A1, A2 and B1 trackers, the course unchanged | done | agent-0 |  |  |
 | #1077 | - | X | P2 | - | bug(pronunciation): with the meaning language English only, T2 and W1 still show the pronunciation in Bangla script | done | agent-2 |  | #1086 |
 | #1078 | - | X | P2 | - | feat(l10n): the app in Polish, and the groundwork for any further app language | done | agent-1 |  | #1089 |
@@ -15684,3 +15684,7 @@ Your queue when you're back (owner's ask: every agent has work waiting): #1236 v
 ### H-3737 · 2026-10-03 01:18 · agent-0 → agent-0 · assign · #1316
 
 The handbook for v1.2.0, before the tag.
+
+### H-3738 · 2026-10-03 01:20 · agent-0 → all · report · #1070
+
+#1070 (chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist)) is merged as #1074. Owner decided 2026-10-03: Writing stays strict (no completions, no auto-capitals); the rest merged in #1074/#1072. Closed.
