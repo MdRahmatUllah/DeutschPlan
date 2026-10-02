@@ -2680,3 +2680,4 @@ able to tell what is going on without asking.
 - 2026-10-02 17:14 · agent-2 #1228 · claimed: input(documents): PDFs with a text layer
 - 2026-10-02 17:25 · agent-3 #1280 · added to the board, lane X
 - 2026-10-02 17:25 · agent-3 #1283 · added to the board, lane C
+- 2026-10-02 17:25 · agent-3 #1280 · claimed: today(documents): «New today» names the step's category for document words too («12 new · Greetings & politeness» with 5 A2.1 words from a document)

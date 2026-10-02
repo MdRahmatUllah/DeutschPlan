@@ -6,7 +6,7 @@ last-read: 3523
 
 ## Now
 
-Nothing claimed.
+#1280 today(documents): «New today» names the step's category for document words too («12 new · Greetings & politeness» with 5 A2.1 words from a document) — claimed 2026-10-02 17:25.
 
 ## Next
 
