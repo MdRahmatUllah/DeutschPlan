@@ -38,6 +38,7 @@ import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
+import 'my_documents_fixtures.dart' show myDocumentsStub;
 import 'search_fixtures.dart';
 import 'today_fixtures.dart';
 
@@ -1081,6 +1082,15 @@ void main() {
       await tester.tap(find.text(l10n.docImportTitle));
       await settle(tester);
       expect(router!.state.uri.path, '/search/import');
+    });
+
+    testWidgets('#1295 once a document is kept, it opens D3', (tester) async {
+      await pump(tester, routed: true, extra: myDocumentsStub());
+      await tester.ensureVisible(find.text(l10n.docImportTitle));
+      await tester.tap(find.text(l10n.docImportTitle));
+      await settle(tester);
+      expect(router!.state.uri.path, '/search/documents');
+      expect(find.text(l10n.myDocumentsNew), findsOneWidget);
     });
   });
 
