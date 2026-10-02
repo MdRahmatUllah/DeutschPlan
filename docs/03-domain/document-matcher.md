@@ -67,13 +67,20 @@ outside: the course's own data, plus rules, plus one small table we write.
 
 **One class per lemma, in this order:** stop word, known, probably known, new in the course, mine, outside the course. A course word wins over *Mine*: a word of my own that the course also has (`custom_words.matched_uid`) is offered as the course word, and D2 shows its "My word" mark too.
 
+**The matcher** (`domain/documents/matcher.dart`, `matchText`) runs in an isolate (`DocumentRepository.match`, #1230) on a snapshot the data layer reads once (`matcherInput`): each course word's step (its place in the course's order of steps), level and `freq`, and the learner's statuses, the uids any day's plan has held, *My words*' search keys and the active step. In it:
+- **An ambiguous lemma** takes the class of its reading most worth offering (new, then probably known, then known), and D2 asks which before *Add*.
+- **A course word that is also one of *My words*** (`custom_words.matched_uid`) is offered as the course word with D2's "My word" mark, and it's never *probably known*: the learner added it, so they don't know it.
+- **No step under way:** nothing is probably known.
+- **A word the sentence took up** (a split particle, «findet … statt», a salutation) has a reading of its own, so it is never *outside the course*.
+- **Mine and outside the course** are keyed by the form's search key, so an inflected form of a word outside the course is an entry of its own.
+
 **Not German (FR-D1-04, `germanShare` in `tokens.dart`):** fewer than 50 % of the word tokens (after step 4) lemmatise to a course word or a stop word, or are a compound of course words. Names and all-capital words (REWE, SEPA) count neither way, so a bank statement full of them is still German. The corpus test pins it: every German text is above, an English and a Bangla text are below.
 
 ## Data (`user.db`, schema change in #1226)
 - **`documents`** (id, title, source `paste|share|pdf|photo`, created_at, body, image_paths JSON, page_count, word_count). `body` is the text: drift's tables have a `text()` of their own (#1226). Kept, as the owner decided (#1220):
   - the text always; the images while *Save original images* (`doc_save_images`, default on) is on, in app-private storage (`<appSupport>/documents/<id>/`);
   - **auto-delete** after `doc_autodelete_days` (default 0, never).
-- **`document_words`** (document_id, lemma_key, surface, sentence, class, added `0|1`), one row per lemma and sentence (PK(document_id, lemma_key, sentence)): what D2 showed, so reopening a document needs no new run.
+- **`document_words`** (document_id, lemma_key, surface, sentence, class, added `0|1`), one row per lemma and sentence (PK(document_id, lemma_key, sentence)): what each run found, for D3's counts and for what was added. Reopening runs the matcher again (FR-D2-07), and an earlier row keeps its `added`.
 - **`word_contexts`** (id, word_key, sentence, document_id NULL, created_at): the learner's sentences for a word.
   - `word_key` is a course `uid` or `custom:<id>`.
   - A sentence outlives its document: deleting a document sets `document_id` to NULL, and the sentence stays on the card.
@@ -105,7 +112,7 @@ The result is labelled *machine-translated* (`custom_words.mt = 1`) and can be e
 - The lemmatiser on the corpus, with precision and recall as asserted numbers.
 - The separable-verb, compound and ambiguity cases each named in a test.
 - The classes, BR-DOC-03 case by case.
-- The isolate's budget, in `perf.py`, and D2's first frame with a 20,000-character text, next to it.
+- The budget: `matcher_test` checks a two-page letter on the host. On the device it's `perf.py`'s line with D2 (#1230), which runs the matcher in an isolate, next to D2's first frame with a 20,000-character text.
 - The test names carry BR-DOC and FR-D ids.
 
 **The shared fixtures,** in `app/test/fixtures/documents/`, written or photographed by the team (no real person's document). The unit tests and SQA's device pass (#1234) use the same files:
