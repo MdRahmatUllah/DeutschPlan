@@ -47,12 +47,7 @@ class TranslationLine extends ConsumerWidget {
               color: tokens.color.textSecondary,
             );
     }
-    // A long German compound breaks only where it must (#165).
-    return SgText(
-      line,
-      role: SgTextRole.bodyLarge,
-      german: to == 'de',
-      breakTooWide: true,
-    );
+    // German breaks a word too long for its line at a syllable (#419).
+    return SgText(line, role: SgTextRole.bodyLarge, german: to == 'de');
   }
 }

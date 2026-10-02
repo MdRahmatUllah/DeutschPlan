@@ -304,12 +304,15 @@ void main() {
 }
 
 /// The translator's answers for the search (#154): the artboard's word, its
-/// meaning; and into German, the word back.
+/// meaning; and into German, a longer compound.
 class _Translations extends Fake implements TranslationRepository {
   @override
   Future<String?> translate(
     String text, {
     required String from,
     required String to,
-  }) async => to == 'de' ? text : "the landlord's confirmation of a move";
+  }) async => to == 'de'
+      // Longer than a line at 200 %: it must break, only where it may.
+      ? '${text}sformular'
+      : "the landlord's confirmation of a move";
 }
