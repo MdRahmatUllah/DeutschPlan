@@ -1,11 +1,16 @@
 import 'dart:math' as math;
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 
 /// #1228 (ADR 31): a PDF's text layer, page by page, read on the phone by
 /// pdfbox-android (`PdfText.kt`) over `sogda/pdf`. Android only for now: iOS
 /// (Later) would answer the same channel from PDFKit.
 abstract interface class PdfText {
+  /// D1's *Choose a PDF*: the system's file picker, PDFs only; a path, or
+  /// null when the learner backs out.
+  Future<String?> choose();
+
   /// Opens [source], a `content:` URI (the picker, a share) or a path: its
   /// handle and how many pages it has. Throws [PdfLocked] for a password,
   /// [PdfUnreadable] for anything else.
@@ -36,6 +41,12 @@ class PlatformPdfText implements PdfText {
   const PlatformPdfText();
 
   static const MethodChannel _channel = MethodChannel('sogda/pdf');
+
+  @override
+  Future<String?> choose() async => (await FilePicker.pickFile(
+    type: FileType.custom,
+    allowedExtensions: const <String>['pdf'],
+  ))?.path;
 
   @override
   Future<({int handle, int pages})> open(String source) async {
@@ -77,16 +88,19 @@ const int maxPdfPages = 30;
 /// D1 sends to the photo path instead (FR-D1-01).
 typedef PdfRead = ({List<String> pages, int pageCount, bool scan});
 
-/// [source]'s text layer, a page at a time: [onPage] before each (D1's
-/// "Reading page 2 of 4…"), and [cancelled] asked between two pages, which
-/// answers null (FR-D1-05). The document is closed however it ends.
+/// [source]'s text layer, a page at a time: [onOpen] with how many pages it
+/// has (D1 says at once when it's over 30), [onPage] before each («Reading
+/// page 2 of 4…»), and [cancelled] asked between two pages, which answers
+/// null (FR-D1-05). The document is closed however it ends.
 Future<PdfRead?> readPdf(
   PdfText pdf,
   String source, {
+  void Function(int pages)? onOpen,
   void Function(int page, int of)? onPage,
   bool Function()? cancelled,
 }) async {
   final opened = await pdf.open(source);
+  onOpen?.call(opened.pages);
   try {
     final count = math.min(opened.pages, maxPdfPages);
     final pages = <String>[];

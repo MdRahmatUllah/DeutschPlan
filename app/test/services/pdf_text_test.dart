@@ -12,6 +12,9 @@ class _FakePdf implements PdfText {
   final List<int> closed = <int>[];
 
   @override
+  Future<String?> choose() async => '/picked.pdf';
+
+  @override
   Future<({int handle, int pages})> open(String source) async =>
       (handle: 7, pages: texts.length);
 
@@ -57,6 +60,23 @@ void main() {
       expect(read!.pages, hasLength(maxPdfPages));
       expect(read.pageCount, 45);
       expect(pdf.asked.last, 30);
+    });
+
+    test('says how many pages it has as soon as it is open, before a page is '
+        'read', () async {
+      final pdf = _FakePdf(List<String>.filled(45, _letter));
+      int? told;
+      int? readWhenTold;
+      await readPdf(
+        pdf,
+        '/x.pdf',
+        onOpen: (pages) {
+          told = pages;
+          readWhenTold = pdf.asked.length;
+        },
+      );
+      expect(told, 45);
+      expect(readWhenTold, 0);
     });
 
     test('a scan, no page with a text layer, says so; one page of text is '

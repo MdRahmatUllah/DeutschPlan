@@ -5278,6 +5278,28 @@
   "@docImportChooseImagesDetail": {
     "description": "D1: the line under Choose images."
   },
+  "docImportChoosePdf": "Choose a PDF",
+  "@docImportChoosePdf": {
+    "description": "#1228: D1's choice: a PDF from the file picker; also the button of the locked PDF's panel."
+  },
+  "docImportChoosePdfDetail": "Its text, up to {count} pages",
+  "@docImportChoosePdfDetail": {
+    "description": "#1228: D1's PDF choice, the line under it (the artboard's): how many pages are read at most (BR-DOC-02).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPdfScan": "This PDF is a scan: take photos of it instead.",
+  "@docImportPdfScan": {
+    "description": "#1228: a PDF with no text layer (a scan): its pages are pictures; the panel's button is Choose images."
+  },
+  "docImportPdfLocked": "This PDF needs a password. Open it in another app and copy its text instead.",
+  "@docImportPdfLocked": {
+    "description": "#1228: a password-protected PDF, which Sogda doesn't ask a password for; the panel's button is Choose a PDF."
+  },
   "docImportPhotos": "{count, plural, =1{1 photo} other{{count} photos}}",
   "@docImportPhotos": {
     "description": "D1 while photographing or reading photos: how many there are.",
