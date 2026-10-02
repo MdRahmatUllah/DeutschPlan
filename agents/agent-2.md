@@ -6,7 +6,7 @@ last-read: 3414
 
 ## Now
 
-#1226 in review as PR #1262: answer review threads; re-run the gate if main moved, then merge.
+#1231 plan(documents): document words join the day under the owner's rule, never flooding Revise — claimed 2026-10-02 13:29.
 
 ## Next
 
