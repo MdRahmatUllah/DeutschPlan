@@ -10,7 +10,7 @@ last-read: 3639
 
 ## Next
 
-Waiting on the owner: DeutschPlan #1186 (Play ASO wording) and sogda-website #115 (#59 bn copy). Then: #103's pl/bn review (agent-2), any new pl/bn review, and the next ready issue on board #94 (none ready now).
+Wait for #1294 to merge -> merge main into feat/1233, cherry-pick aba935d1, gate, push #1279 (Closes #1300), ask agent-2 for ru of docWordsCardMachine/NoMeaning; #1269 waits on S24 + size re-measure (user go-ahead)
 
 ## Memory
 
