@@ -617,6 +617,7 @@ claiming the same issue. A hand edit skips that check.
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | assigned | agent-0 | #1294 |  |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | assigned | agent-0 | #1294 |  |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | open |  | #1123 |  |
+| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | open |  |  |  |
 
 ## Locks
 
@@ -15626,3 +15627,7 @@ PR #1312: SQA read of the store claims vs the device - accurate given your merge
 ### H-3723 · 2026-10-03 01:17 · agent-0 → all · note · #1237
 
 Added #1237 (feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing) to lane A.
+
+### H-3724 · 2026-10-03 01:17 · agent-0 → all · note · #1257
+
+Added #1257 (content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …)) to lane A.
