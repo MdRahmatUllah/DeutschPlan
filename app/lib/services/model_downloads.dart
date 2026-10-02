@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' show FileSystemException;
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
@@ -93,6 +92,11 @@ abstract interface class ModelDownloads {
 
   /// [modelId]'s download as it moves, from its last known state on.
   Stream<DownloadProgress> watch(String modelId);
+
+  /// Whether any model is starting, queued, running, paused or being
+  /// checked: M4's *Delete* then keeps `models/.partial`, which every
+  /// model's download shares (#154).
+  bool get downloading;
 }
 
 class BackgroundModelDownloads implements ModelDownloads {
@@ -103,53 +107,16 @@ class BackgroundModelDownloads implements ModelDownloads {
     DeviceStorage? storage,
     this._wifiGrace = const Duration(seconds: 2),
     DownloadNotice? notice,
-    bool Function(String modelId)? isOffered,
     this._pauseGrace = const Duration(seconds: 1),
   ]) : _downloader = downloader ?? FileDownloader(),
        _storage = storage ?? const PlatformDeviceStorage(),
-       _notice = notice ?? const PlatformDownloadNotice(),
-       _offered = isOffered ?? offered;
+       _notice = notice ?? const PlatformDownloadNotice();
 
   final ModelRepository _models;
   final SettingsRepository _settings;
   final FileDownloader _downloader;
   final DeviceStorage _storage;
   final DownloadNotice _notice;
-
-  /// FR-M4-04's gate, here and not only on M4's buttons (#692 ME-3): a
-  /// download this build doesn't offer is refused, whatever asks for it,
-  /// files or a record left by a build with the flag on included. ADR 9 and
-  /// the Tencent licence's exclusions.
-  final bool Function(String modelId) _offered;
-
-  /// #1036 (#692 ME-3): a download this build doesn't offer, left in flight
-  /// by a build that did (a record, a task the system killed, files half
-  /// there), is cancelled, its records deleted and its staging cleared, so
-  /// the downloader's restart can't resume it and nothing of it lands. The
-  /// model is then not downloaded or, with files that landed before, ready
-  /// with *Delete*.
-  Future<void> _dropUnoffered() async {
-    final groups = <String>{
-      for (final record in await _downloader.database.allRecords())
-        record.group,
-    };
-    for (final group in groups.where((group) => !_offered(group))) {
-      await _downloader.cancelAll(group: group);
-      await _downloader.database.deleteAllRecords(group: group);
-      final staging = await _models.stagingFor(group);
-      try {
-        if (staging.existsSync()) staging.deleteSync(recursive: true);
-      } on FileSystemException {
-        // The next launch clears it; this one must still start the rest.
-      }
-    }
-  }
-
-  void _refuseUnoffered(String modelId) {
-    if (!_offered(modelId)) {
-      throw StateError('$modelId is not offered in this build (FR-M4-04)');
-    }
-  }
 
   /// The one notification every model file shares.
   static const String notificationGroup = 'models';
@@ -215,8 +182,6 @@ class BackgroundModelDownloads implements ModelDownloads {
       ],
     );
     _updates = _downloader.updates.listen((update) => unawaited(_on(update)));
-    // Before the downloader queues anything again (#1036).
-    await _dropUnoffered();
     // The downloader's own record: a task the system or the learner killed
     // is scheduled again, and one that finished while the app was away says
     // so now.
@@ -225,12 +190,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     // its record stands in for the update (#156, AC 1).
     final manifest = await _models.manifest();
     for (final record in await _downloader.database.allRecords()) {
-      // Nor one this build doesn't offer: `start()` replays the updates
-      // stored while no engine listened, which writes a gated model's records
-      // again after the drop (#1036).
-      if (manifest.model(record.group) == null || !_offered(record.group)) {
-        continue;
-      }
+      if (manifest.model(record.group) == null) continue;
       final files = _files.putIfAbsent(record.group, () => <String, _File>{});
       final known = files[record.task.filename];
       // What this launch has heard since, or a later attempt, stands.
@@ -261,7 +221,6 @@ class BackgroundModelDownloads implements ModelDownloads {
   /// that fails.
   @override
   Future<void> start(String modelId) async {
-    _refuseUnoffered(modelId);
     if (_starting.contains(modelId) || _inFlight(modelId)) return;
     _starting.add(modelId);
     try {
@@ -301,7 +260,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     final l10n = lookupAppLocalizations(
       _settings.read(SettingKeys.uiLanguage).locale,
     );
-    final screen = _screen(l10n);
+    final screen = l10n.modelsTitle;
     _downloader.configureNotification(
       running: TaskNotification(
         l10n.modelNotifyRunning,
@@ -323,11 +282,6 @@ class BackgroundModelDownloads implements ModelDownloads {
       groupNotificationId: _group,
     );
   }
-
-  /// M4's title, which the notes name: *Voice* in a build without Hy-MT
-  /// (#1164), as Me's row.
-  static String _screen(AppLocalizations l10n) =>
-      enableHymtDownload ? l10n.modelsTitle : l10n.modelsTitleVoice;
 
   /// *Wi-Fi only* is on and the phone is off Wi-Fi: a queued file waits,
   /// by the downloader's own reading of the network.
@@ -384,12 +338,17 @@ class BackgroundModelDownloads implements ModelDownloads {
         done: 0,
       );
     }
-    // A new attempt starts its own notification, the old ones taken down,
-    // unless another model is still downloading under them (#756). A file
+    // A new attempt starts its own notification, the old ones taken down
+    // (#756). While another model is still downloading it joins that one's
+    // instead: a new group would take over the platform's one configuration
+    // and leave the other's files counted under the old (#154). A file
     // queued again after a network drop stays in its attempt's.
-    if (attempt) {
+    // ponytail: a model that failed keeps its files here for Retry, so until
+    // it is retried a second model joins its stale group too: harmless with
+    // two models, a per-model check if a third comes.
+    if (attempt && _files.keys.every((id) => id == modelId)) {
       _group = '$notificationGroup-${++_attempts}';
-      if (_files.keys.every((id) => id == modelId)) await _notice.clear();
+      await _notice.clear();
     }
     _notify();
     await _downloader.enqueueAll(tasks);
@@ -405,13 +364,11 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   @override
   Future<void> resume(String modelId) async {
-    _refuseUnoffered(modelId);
     await _downloader.resumeAll(group: modelId);
   }
 
   @override
   Future<void> retry(String modelId) async {
-    _refuseUnoffered(modelId);
     final files = _files[modelId];
     if (files == null) {
       // A checksum failed (verifying forgets the files), or nothing is known:
@@ -454,6 +411,14 @@ class BackgroundModelDownloads implements ModelDownloads {
     yield* controller.stream;
   }
 
+  @override
+  bool get downloading =>
+      _starting.isNotEmpty ||
+      _last.values.any(
+        (p) =>
+            p.phase != DownloadPhase.ready && p.phase != DownloadPhase.failed,
+      );
+
   Future<void> _applyWifi({bool reschedule = true}) => _downloader.requireWiFi(
     _settings.read(SettingKeys.modelsWifiOnly)
         ? RequireWiFi.forAllTasks
@@ -463,9 +428,6 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   Future<void> _on(TaskUpdate update) async {
     final modelId = update.task.group;
-    // #1036: a download this build doesn't offer never lands, whatever
-    // reports on it late.
-    if (!_offered(modelId)) return;
     final files = _files.putIfAbsent(modelId, () => <String, _File>{});
     final name = update.task.filename;
     final before = files[name];
@@ -583,11 +545,11 @@ class BackgroundModelDownloads implements ModelDownloads {
           status == ModelStatus.ready
               ? (
                   l10n.modelNotifyComplete,
-                  l10n.modelNotifyCompleteNote(_screen(l10n)),
+                  l10n.modelNotifyCompleteNote(l10n.modelsTitle),
                 )
               : (
                   l10n.modelNotifyFailed,
-                  l10n.modelNotifyFailedNote(_screen(l10n)),
+                  l10n.modelNotifyFailedNote(l10n.modelsTitle),
                 ),
         );
         // Nothing downloading any more: what a force-stopped task left can
@@ -658,7 +620,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     );
     return _notice.say(_group, (
       l10n.modelNotifyPaused,
-      l10n.modelNotifyPausedNote(_screen(l10n)),
+      l10n.modelNotifyPausedNote(l10n.modelsTitle),
     ));
   }
 
