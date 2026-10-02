@@ -6,7 +6,7 @@ last-read: 3570
 
 ## Now
 
-Nothing claimed.
+#1228 input(documents): PDFs with a text layer — claimed 2026-10-02 20:10.
 
 ## Next
 
