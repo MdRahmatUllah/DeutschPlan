@@ -563,6 +563,7 @@ claiming the same issue. A hand edit skips that check.
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | open |  |  |  |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
+| #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 
 ## Locks
 
@@ -13767,3 +13768,7 @@ Added #1209 (media: marketing templates from the brand kit: frames, type, colour
 ### H-3273 · 2026-10-02 09:43 · agent-0 → all · note · #1210
 
 Added #1210 (marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist) to lane M.
+
+### H-3274 · 2026-10-02 09:43 · agent-0 → all · note · #1211
+
+Added #1211 (media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles) to lane M.
