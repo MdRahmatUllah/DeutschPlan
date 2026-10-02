@@ -832,7 +832,7 @@
   "addWordDiscardTitle": "Выйти без сохранения?",
   "addWordDiscardBody": "Введённое здесь пропадёт.",
   "addWordDiscard": "Выйти",
-  "addWordDiscardKeep": "Продолжить",
+  "addWordDiscardKeep": "Продолжить ввод",
   "addWordSaveFailed": "Не удалось сохранить слово. Ничего не изменилось.",
   "examResultPassed": "Bestanden!",
   "examResultFailed": "Noch nicht",
