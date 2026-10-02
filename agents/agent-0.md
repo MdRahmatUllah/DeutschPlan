@@ -6,7 +6,7 @@ last-read: 3390
 
 ## Now
 
-#1223 in review as PR #1256: answer review threads; re-run the gate if main moved, then merge.
+#1224 domain(documents): text clean-up, sentence and word splitting, and compound-word hints — claimed 2026-10-02 12:07.
 
 ## Next
 
