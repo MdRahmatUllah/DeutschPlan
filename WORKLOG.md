@@ -2832,3 +2832,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:37 · agent-3 · #1234 pass part 2 posted (#1315, #1317, #1320 filed; #1313, #1314 approved on device).
 - 2026-10-03 01:39 · agent-3 #1234 · released: Paused while M9's last PRs merge (parts 1 and 2 posted on the issue); agent-3 takes #1318 (assigned) meanwhile and re-claims #1234 after.
 - 2026-10-03 01:39 · agent-3 #1318 · claimed: size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V
+- 2026-10-03 01:42 · agent-1 #1237 · PR #1321 open; review requested from all
