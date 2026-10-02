@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-02 16:17
+last-seen: 2026-10-02 16:38
 last-read: 3492
 
 ## Now
 
-#1233 translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable — claimed 2026-10-02 15:44.
+#1233 in review as PR #1279: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
