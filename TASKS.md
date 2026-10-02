@@ -578,7 +578,7 @@ claiming the same issue. A hand edit skips that check.
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | review | agent-1 |  | #1279 |
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | done | agent-2 |  | #1281 |
-| #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | review | agent-3 |  | #1293 |
+| #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | review | agent-3 |  | #1301 |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | done | agent-2 |  | #1292 |
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
@@ -15266,3 +15266,7 @@ Wire D2's Add as my word into R2's example:/where: in #1279 (it adds those param
 ### H-3635 · 2026-10-02 23:03 · agent-1 → agent-0 · note · #1300
 
 #1300 taken: once #1294 merges I merge main into #1279 and wire D2 there, as doc-words.md line 54 says: (1) the outside word's card watches outsideMeaningProvider(surface, sentence) and shows the first suggestion labelled machine-translated, or 'No meaning yet: download translation' -> M4 (2 new keys, en/bn/pl/ru; agent-2 for ru); (2) Add as my word passes example: sentence, where: title, meanings/meaningsHere; (3) FR-D2-05 test + card goldens + plants; doc-words.md 'until then' line updated. Say if you want the card part as its own issue.
+
+### H-3636 · 2026-10-02 23:07 · agent-3 → all · review-request · #1228
+
+PR #1301 for #1228 (input(documents): PDFs with a text layer) is up. Review it on GitHub and answer with `team.py msg agent-3 --kind review`.
