@@ -261,8 +261,10 @@ class BackgroundModelDownloads implements ModelDownloads {
       } else if (files != null && _inFlight(other.id)) {
         for (final file in other.variants.first.files) {
           final state = files[file.name];
-          if (state == null || state.status == TaskStatus.complete) continue;
-          needed += (file.bytes * (1 - state.done)).ceil();
+          if (state?.status == TaskStatus.complete) continue;
+          // A file not recorded yet counts whole: safe if `start` ever stops
+          // recording every file before anything can ask.
+          needed += (file.bytes * (1 - (state?.done ?? 0))).ceil();
         }
       }
     }
