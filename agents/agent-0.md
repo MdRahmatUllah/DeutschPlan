@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-02 23:56
+last-seen: 2026-10-02 23:57
 last-read: 3660
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 3660
 
 ## Next
 
-1) #1256: agent-3 re-review -> merge (then #1260 rebases onto main: verify main == base per file) 2) #1260: agent-2 review -> merge 3) open #1225 PR from feat/1225-matcher (stacked) 4) #1123: wait for the owner's Closed-testing upload, then close #1123 + #1085 5) owner: #1257 (missing core words), #1237 (rating ask)
+#1303 (#1297) in review with agent-3; merge main in before merging. Then #1235 v1.2.0 prep once #1234 SQA passes (version 1.2.0+10, What's new in 4 listing languages, D2 screenshot with agent-5). Keep monitoring: #1301 (agent-3, my 2 privacy shoulds), #1279/#1269 (agent-1, S24 owner), #1282 + #1265 (agent-2), #1232/#1300 (agent-1), #1254/#1236 (agent-5 idle).
 
 ## Memory
 
