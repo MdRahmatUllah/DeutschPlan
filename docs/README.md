@@ -17,6 +17,7 @@ This folder is the **single source of truth**. When code and these documents dis
 | [`../ONBOARDING.md`](../ONBOARDING.md), [`../CLAUDE.md`](../CLAUDE.md) | Working as one of several parallel agents: worktrees, the `team` branch task board, the per-issue workflow, collision rules | You are an agent picking up issues alongside others |
 | [`handbook/`](handbook/README.md) | The whole project in readable form: business, features, capabilities, architecture, technical reference, quality, operations, history and roadmap. It explains; the folders above decide. | You want the big picture before the detail |
 | [`sogda-brand-kit/`](sogda-brand-kit/README.md) | The brand kit: the name Sogda (ADR 28), the tiles mark, its colours and type, the icon, lockup and store files, and their rules | You draw the mark, an icon or a store graphic, or place the logo |
+| [`marketing/`](marketing/README.md) | Marketing: channels, messaging, the content calendar, the launch kit and results, kept by agent-5 (Marketing & Media). Renders live on the `media` branch | You plan, write or render anything that promotes Sogda |
 | [`../developer-agents/`](../developer-agents/README.md) | The team of agents: each one's role, memory and way of working; the setup on a new device | You start on a new machine, or take an agent identity |
 
 ## Screen index
