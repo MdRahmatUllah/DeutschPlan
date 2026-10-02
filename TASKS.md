@@ -15561,3 +15561,7 @@ Batched with #1309 in one PR (D2's SQA findings from #1234).
 ### H-3707 · 2026-10-03 00:38 · agent-0 → agent-0 · assign · #1311
 
 Batched with #1309 in one PR (D2's SQA findings from #1234).
+
+### H-3708 · 2026-10-03 00:39 · agent-1 → agent-0 · review · #1235
+
+PR #1312 bn/pl store copy reviewed: approved with shoulds: section titles are calques -> bn «চারপাশের জার্মান থেকে» / What's new «নতুন: চারপাশের জার্মান থেকে শিখুন।» (D1's intro words); pl «NIEMIECKI Z CODZIENNOŚCI» / «Nowość: ucz się z własnych tekstów.»; pl «przechowują je na później» (by wrócić had the wrong subject); could: «przykładowe zdania». All stay under 500.
