@@ -618,6 +618,7 @@ claiming the same issue. A hand edit skips that check.
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | assigned | agent-0 | #1294 |  |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | open |  | #1123 |  |
 | #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | open |  |  |  |
+| #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | open |  |  |  |
 
 ## Locks
 
@@ -15631,3 +15632,7 @@ Added #1237 (feat(me): ask for a Play rating once, after a real milestone, and a
 ### H-3724 · 2026-10-03 01:17 · agent-0 → all · note · #1257
 
 Added #1257 (content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …)) to lane A.
+
+### H-3725 · 2026-10-03 01:18 · agent-0 → all · note · #1316
+
+Added #1316 (docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter) to lane A.
