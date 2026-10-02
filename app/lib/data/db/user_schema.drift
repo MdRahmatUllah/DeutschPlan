@@ -226,7 +226,58 @@ CREATE TABLE custom_words (
   where_seen  TEXT,
   example     TEXT,
   matched_uid TEXT,
-  times_seen  INTEGER NOT NULL DEFAULT 1
+  times_seen  INTEGER NOT NULL DEFAULT 1,
+  -- 1: the meaning is machine-translated (#1233), until the learner edits it.
+  mt          INTEGER NOT NULL DEFAULT 0
+);
+
+-- v1.2.0, Learn from your documents (#1219, `document-matcher.md` *Data*).
+-- A text the learner brought in: kept, as the owner decided (#1220), the text
+-- always and its images (`image_paths`, under `<appSupport>/documents/<id>/`)
+-- while `doc_save_images` is on. An export carries the text, never the images
+-- (BR-DOC-06).
+CREATE TABLE documents (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  title       TEXT    NOT NULL,
+  -- paste, share, pdf or photo.
+  source      TEXT    NOT NULL,
+  created_at  TEXT    NOT NULL,
+  body        TEXT    NOT NULL,
+  image_paths TEXT,
+  page_count  INTEGER NOT NULL DEFAULT 1,
+  word_count  INTEGER NOT NULL DEFAULT 0
+);
+
+-- What D2 showed for a document, so reopening it needs no new run: a lemma
+-- (a course uid, or the lemma for a word outside the course) once per sentence
+-- it was met in.
+CREATE TABLE document_words (
+  document_id INTEGER NOT NULL REFERENCES documents (id) ON DELETE CASCADE,
+  lemma_key   TEXT    NOT NULL,
+  surface     TEXT    NOT NULL,
+  sentence    TEXT    NOT NULL,
+  class       TEXT    NOT NULL,
+  added       INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (document_id, lemma_key, sentence)
+);
+
+-- The learner's own sentences for a word: a course uid or `custom:<id>`. A
+-- sentence outlives its document, which then reads NULL.
+CREATE TABLE word_contexts (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  word_key    TEXT    NOT NULL,
+  sentence    TEXT    NOT NULL,
+  document_id INTEGER REFERENCES documents (id) ON DELETE SET NULL,
+  created_at  TEXT    NOT NULL,
+  UNIQUE (word_key, sentence)
+);
+
+-- Course words added from documents, in order; BR-PLAN-11 plans them, and
+-- `planned_on` is the day one went into a plan.
+CREATE TABLE doc_queue (
+  word_key   TEXT PRIMARY KEY NOT NULL,
+  added_at   TEXT NOT NULL,
+  planned_on TEXT
 );
 
 -- Per-day totals for the streak and the charts. A rest day with no activity has
