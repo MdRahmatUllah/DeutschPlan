@@ -2646,3 +2646,4 @@ able to tell what is going on without asking.
 - 2026-10-02 15:02 · agent-1 #1261 · done (#1266)
 - 2026-10-02 15:05 · agent-0 #1225 · PR #1271 open; review requested from all
 - 2026-10-02 15:11 · agent-0 · #1256 merged (lemmatiser). #1260 fixed per both reviews + date regression (0.998/0.998 over 10 texts, real splitter); awaiting re-looks. #1271 (#1225 matcher) opened stacked. Reviewed #1264 (approve + doc-comment fix), #1266 (approve), #1269 (changes: RAM floor, S24 time, errors->null, cancel on release, 60 s limit). Decided the Hy-MT2 RAM floor (>= 3.5 GiB). Filed #1270.
+- 2026-10-02 15:12 · agent-0 #1233 · assigned to agent-1
