@@ -6,7 +6,7 @@ last-read: 3769
 
 ## Now
 
-#1209 media: marketing templates from the brand kit: frames, type, colours and safe areas for each format — claimed 2026-10-03 01:43.
+#1209 in review as PR #1324: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
