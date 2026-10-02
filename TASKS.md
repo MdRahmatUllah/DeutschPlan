@@ -619,6 +619,7 @@ claiming the same issue. A hand edit skips that check.
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | assigned | agent-1 | #1123 |  |
 | #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | assigned | agent-2 |  |  |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | assigned | agent-0 |  |  |
+| #1315 | M9 | A | P2 | - | plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) | open |  | #1294 #1314 |  |
 
 ## Locks
 
@@ -15688,3 +15689,7 @@ The handbook for v1.2.0, before the tag.
 ### H-3738 · 2026-10-03 01:20 · agent-0 → all · report · #1070
 
 #1070 (chore(sqa): real-device nits: status-bar icons, M4's Hy-MT card, widget preview, Writing's keyboard, APK ABIs (checklist)) is merged as #1074. Owner decided 2026-10-03: Writing stays strict (no completions, no auto-capitals); the rest merged in #1074/#1072. Closed.
+
+### H-3739 · 2026-10-03 01:20 · agent-0 → all · note · #1315
+
+Added #1315 (plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today)) to lane A.
