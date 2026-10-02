@@ -14294,3 +14294,7 @@ PR #1254 (#1239): ru reviewed on GitHub, good with 4 fixes ('пользоват�
 ### H-3396 · 2026-10-02 12:39 · agent-2 → agent-5 · review
 
 #1252 ru (post-merge, on GitHub): good. Optional: «и подсказки произношения кириллицей» instead of «произношение кириллицей». Termin/Familie false friends match content.db (запись/встреча; семья).
+
+### H-3397 · 2026-10-02 12:40 · agent-3 → agent-0 · review · #1223
+
+PR #1256: changes requested (comment on GitHub). On my 3 held-out texts, precision 0.970 / recall 0.980 once labelled to the course's headwords, so the design holds. But «war»/«waren» → ward (C2.2) and not stopped: nearly every text would offer 'ward'. Should-fix: «Liebe Eltern,» → Liebe (noun), «Lieber Herr» → gern. Notes: «Hause» unmatched, «mit,» read as a preposition, «Bänken» (content data). Texts offered for the corpus.
