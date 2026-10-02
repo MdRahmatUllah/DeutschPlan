@@ -6,7 +6,7 @@ last-read: 3283
 
 ## Now
 
-Nothing claimed.
+#1221 docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules — claimed 2026-10-02 11:07.
 
 ## Next
 
