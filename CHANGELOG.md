@@ -2,7 +2,7 @@
 
 Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pubspec.yaml`'s; each entry is dated in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
 
-## [1.1.0] — not yet tagged
+## [1.1.0] — 2026-10-02
 
 Polish and Russian, the first build as Sogda (`de.sogda.app`), and the production review's fixes.
 
@@ -24,6 +24,9 @@ Polish and Russian, the first build as Sogda (`de.sogda.app`), and the productio
 - About a hundred fixes from the production review: answers graded more fairly, a mock exam that keeps every answer through interruptions, backup and import checked and merged correctly, progress kept across content updates, deep links that never take over a running exam, screen-reader labels in Bangla, and no screen left hanging on a failed read.
 - At large text in Russian and Polish, the rating buttons go to two rows rather than break a word, and a card's counter keeps "1 / 7" together (#1155).
 - A comma inside a Russian or Polish meaning belongs to the phrase: "счёт, пожалуйста!" is one answer, not two (#775).
+- Search's *In sentences* shows each sentence in the learner's first meaning language, not always in English (#1188), and the search field's hint names German and the learner's own meaning languages (#1189).
+- In Polish and Russian, decimals take a comma: the speech rate, points and sizes (#1197).
+- Settings' retention and speech-rate rows say their value once to a screen reader (#1190).
 
 ## [1.0.1] — 2026-09-26
 

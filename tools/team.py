@@ -171,12 +171,14 @@ class Board:
         return "\n".join(lines) + "\n" + "".join(self.new_handoffs)
 
 
-def handoffs_for(text: str, agent: str, after: int) -> list[str]:
-    """Handoffs to [agent] or to everyone, newer than [after], not its own."""
+def handoffs_for(text: str, agent: str, after: int, joined: int = 0) -> list[str]:
+    """Handoffs to [agent] or to everyone, newer than [after], not its own.
+    A handoff to everyone from before the agent [joined] isn't its (#1216)."""
     shown = []
     for entry in re.split(r"(?m)^(?=### H-\d+ )", text):
         m = re.match(r"### H-(\d+) · [^·]+ · (\S+) → (\S+) ·", entry)
-        if m and int(m.group(1)) > after and m.group(3) in (agent, "all") and m.group(2) != agent:
+        if (m and int(m.group(1)) > after and m.group(3) in (agent, "all") and m.group(2) != agent
+                and not (m.group(3) == "all" and int(m.group(1)) <= joined)):
             shown.append(entry.strip())
     return shown
 
@@ -201,6 +203,7 @@ AGENT_TEMPLATE = """# {agent}
 session: active
 last-seen: {stamp}
 last-read: 0
+joined: {joined}
 
 ## Now
 
@@ -552,7 +555,11 @@ def cmd_join(root: Path, agent: str, force: bool) -> None:
         path = agent_path(root, agent)
         if not path.exists():
             path.parent.mkdir(exist_ok=True)
-            path.write_text(AGENT_TEMPLATE.format(agent=agent, stamp=now()), encoding="utf-8", newline="\n")
+            # The newest handoff at the join: the team's older notes to "all"
+            # aren't this agent's to act on; ones to it by name still are (#1216).
+            joined = max(Board((root / "TASKS.md").read_text(encoding="utf-8")).handoff_ids(), default=0)
+            path.write_text(AGENT_TEMPLATE.format(agent=agent, stamp=now(), joined=joined),
+                            encoding="utf-8", newline="\n")
             append_log(root, agent, "joined the team")
             return
         text = path.read_text(encoding="utf-8")
@@ -577,8 +584,9 @@ def cmd_status(root: Path, agent: str, closed=issue_closed) -> None:
     sync(root)
     text = (root / "TASKS.md").read_text(encoding="utf-8")
     board = Board(text)
-    after = int(read_field(agent_path(root, agent).read_text(encoding="utf-8"), "last-read") or 0)
-    unread = handoffs_for(text, agent, after)
+    mine = agent_path(root, agent).read_text(encoding="utf-8")
+    # An identity from before #1216 has no joined: line, so it sees what it always did.
+    unread = handoffs_for(text, agent, int(read_field(mine, "last-read") or 0), int(read_field(mine, "joined") or 0))
     print(f"== {agent}: {len(unread)} unread handoff(s)" + (" — act on them, then `team.py ack`" if unread else ""))
     for entry in unread:
         print("   " + entry.replace("\n", "\n   "))

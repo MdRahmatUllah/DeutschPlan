@@ -411,7 +411,7 @@ The learner's overview: their name (tap to edit; the greeting on Today
 follows), the streak, "Learning since …" and days studied, words Done,
 Learning and To do, a 12-week activity heat map, whether the course is on
 schedule (with a tap to the backlog when behind), and the 12 steps' mock exam
-badges. Below: Settings, Voice (Voice & translation in a build with Hy-MT), About & privacy. Spec:
+badges. Below: Settings, Voice & translation, About & privacy. Spec:
 [`me.md`](../04-screens/me.md).
 
 ### Progress · M2
@@ -445,8 +445,8 @@ models' share. The **Supertonic 3 voice** card downloads the voice (about
 400 MB, Wi-Fi only by default) with pause, resume and progress, verifies it
 by checksum, lets the learner pick Anna, Jonas or Lena with a sample, checks
 for an update, and deletes it, which falls back to the phone's voice. A
-download refused for space says how much to free. The **Hy-MT translation**
-card says "Not offered in this version of the app" (ADR 9). Spec:
+download refused for space says how much to free. The **Hy-MT2 translation**
+card downloads the same way: 1.1 GB, Apache-2.0, in every build (ADR 30). Spec:
 [`model-manager.md`](../04-screens/model-manager.md); the voice engine:
 [`tts.md`](../03-domain/tts.md).
 
@@ -480,7 +480,7 @@ downloaded models survive a full reset. Spec: [`reset.md`](../04-screens/reset.m
 The version, the course's content version and counts (5,069 words, 182
 grammar topics, 10,545 sentences), the privacy statement, a *Contact* link to
 the project's GitHub issues, and the licences: the Supertonic model and SDK,
-Hy-MT's, the fonts, and every package, each in full. Spec:
+Hy-MT2's (Apache-2.0), the fonts, and every package, each in full. Spec:
 [`about-licences.md`](../04-screens/about-licences.md).
 
 ## Voice, everywhere
