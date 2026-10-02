@@ -6,7 +6,7 @@ last-read: 3368
 
 ## Now
 
-Nothing claimed.
+#1223 domain(documents): a German lemmatiser built from the course's own forms plus rules — claimed 2026-10-02 11:34.
 
 ## Next
 

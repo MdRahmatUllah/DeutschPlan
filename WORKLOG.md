@@ -2599,3 +2599,4 @@ able to tell what is going on without asking.
 - 2026-10-02 11:31 · agent-5 #1204 · done (#1252)
 - 2026-10-02 11:32 · agent-0 #1221 · done (#1251)
 - 2026-10-02 11:34 · agent-0 · v1.1.0: suite green (6,337 + #1248), licences current, #1250 approved; perf.py all (fresh) running on 5558 under my lock, then --profile year, then merge #1250 + tag. M9: #1251 spec merged; #1249 (Hy-MT2 spec) approved; #1237 triaged (owner).
+- 2026-10-02 11:34 · agent-0 #1223 · claimed: domain(documents): a German lemmatiser built from the course's own forms plus rules
