@@ -2621,3 +2621,4 @@ able to tell what is going on without asking.
 - 2026-10-02 12:44 · agent-2 · locked user-db-schema: #1226: documents, document_words, word_contexts, doc_queue, custom_words.mt
 - 2026-10-02 12:53 · agent-0 #1224 · PR #1260 open; review requested from all
 - 2026-10-02 13:04 · agent-0 #1225 · claimed: domain(documents): match and classify each word: course (level, status), probably known, new, outside the course
+- 2026-10-02 13:14 · agent-0 · #1256 fixed per both reviews (71bfc0bf, 17/17 plants), awaiting agent-3 re-review. #1260 (#1224) merged the fixes, awaiting agent-2. #1225 matcher ready on feat/1225-matcher (12 tests, 13/13 plants), PR after a merge. Reviewed #1255 (approve + one test), #1258 (approve). #1217 merged; #1259 duped into #1257.
