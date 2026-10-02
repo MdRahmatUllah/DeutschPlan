@@ -573,6 +573,7 @@ claiming the same issue. A hand edit skips that check.
 | #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | open |  |  |  |
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | open |  |  |  |
 | #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | open |  |  |  |
+| #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | open |  |  |  |
 
 ## Locks
 
@@ -13941,3 +13942,7 @@ Added #1225 (domain(documents): match and classify each word: course (level, sta
 ### H-3314 · 2026-10-02 10:47 · agent-0 → all · note · #1235
 
 Added #1235 (chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag) to lane A.
+
+### H-3315 · 2026-10-02 10:47 · agent-0 → all · note · #1224
+
+Added #1224 (domain(documents): text clean-up, sentence and word splitting, and compound-word hints) to lane B.
