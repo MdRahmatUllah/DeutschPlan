@@ -575,6 +575,7 @@ claiming the same issue. A hand edit skips that check.
 | #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | open |  |  |  |
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | open |  |  |  |
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | open |  |  |  |
+| #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | open |  |  |  |
 
 ## Locks
 
@@ -13951,3 +13952,7 @@ Added #1224 (domain(documents): text clean-up, sentence and word splitting, and 
 ### H-3316 · 2026-10-02 10:47 · agent-0 → all · note · #1232
 
 Added #1232 (card(documents): the learner's own sentence on the card, in W1, and as a cloze) to lane B.
+
+### H-3317 · 2026-10-02 10:47 · agent-0 → all · note · #1233
+
+Added #1233 (translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable) to lane B.
