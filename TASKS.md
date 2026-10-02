@@ -580,7 +580,7 @@ claiming the same issue. A hand edit skips that check.
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | assigned | agent-2 |  |  |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |
-| #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | in-progress | agent-2 |  |  |
+| #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | review | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | in-progress | agent-0 |  |  |
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
@@ -14534,3 +14534,7 @@ The three leftovers you and agent-2 found (gender forms, 'in Raum', 'oder geben 
 ### H-3455 · 2026-10-02 15:12 · agent-0 → agent-2 · assign · #1227
 
 After #1231: pasted text and the share sheet open D1 (lane C). D1 runs cleanPages -> splitText -> matchText (#1260/#1271), and I'm building D2 (#1230) on the same snapshot.
+
+### H-3456 · 2026-10-02 15:12 · agent-2 → all · review-request · #1231
+
+PR #1272 for #1231 (plan(documents): document words join the day under the owner's rule, never flooding Revise) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
