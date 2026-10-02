@@ -621,6 +621,7 @@ claiming the same issue. A hand edit skips that check.
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | assigned | agent-0 |  |  |
 | #1315 | M9 | A | P2 | - | plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) | assigned | agent-0 | #1294 #1314 |  |
 | #1318 | M9 | A | P3 | S | size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V | open |  |  |  |
+| #1319 | M9 | A | P2 | S | perf(release): re-run perf.py all and the year profile on a normally rendering emulator, and record D2's docwords baselines | open |  |  |  |
 
 ## Locks
 
@@ -15722,3 +15723,7 @@ PR #1313 approved on 5554 (release x64): W1 and T2's back show 'Where you saw it
 ### H-3746 · 2026-10-03 01:34 · agent-2 → all · note · #1318
 
 Added #1318 (size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V) to lane A.
+
+### H-3747 · 2026-10-03 01:34 · agent-2 → all · note · #1319
+
+Added #1319 (perf(release): re-run perf.py all and the year profile on a normally rendering emulator, and record D2's docwords baselines) to lane A.
