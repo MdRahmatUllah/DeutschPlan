@@ -60,8 +60,9 @@ const List<Licence> fontLicences = <Licence>[
 /// FR-M8-01 (#610): the native libraries in the APK that no package's
 /// LICENSE covers, bundled in full: ONNX Runtime (the Supertonic voice's
 /// engine) with its third-party notices, the Apache-2.0 Android libraries the
-/// plugins pull in, and desugar_jdk_libs, which the build compiles into the
-/// DEX (#848). `tools/licences.py` fetches and checks them.
+/// plugins pull in, desugar_jdk_libs, which the build compiles into the DEX
+/// (#848), and PdfBox-Android with Bouncy Castle, D1's PDF reader (#1228).
+/// `tools/licences.py` fetches and checks them.
 const List<Licence> nativeLicences = <Licence>[
   (
     name: 'ONNX Runtime',
@@ -102,6 +103,24 @@ const List<Licence> nativeLicences = <Licence>[
     name: 'desugar_jdk_libs',
     kind: 'GPL-2.0 with the Classpath Exception',
     asset: 'assets/licences/DesugarJdkLibs-GPL-2.0-Classpath-Exception.txt',
+    text: null,
+  ),
+  (
+    name: 'PdfBox-Android',
+    kind: 'Apache-2.0',
+    asset: 'assets/licences/PdfBox-Android-Apache-2.0.txt',
+    text: null,
+  ),
+  (
+    name: 'PdfBox-Android · NOTICE',
+    kind: 'Apache PDFBox',
+    asset: 'assets/licences/PdfBox-Android-NOTICE.txt',
+    text: null,
+  ),
+  (
+    name: 'Bouncy Castle',
+    kind: 'MIT',
+    asset: 'assets/licences/BouncyCastle-MIT.txt',
     text: null,
   ),
 ];

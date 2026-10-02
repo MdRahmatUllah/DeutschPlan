@@ -17,3 +17,8 @@
 # read in a release build failed with an NPE in its pipeline (#1229).
 -keep class com.google.mlkit.** { *; }
 -keep class com.google.android.gms.internal.mlkit_** { *; }
+
+# pdfbox-android (#1228, ADR 31) names its optional JPEG 2000 decoder, which
+# isn't on the classpath: R8 would fail on the missing class. A PDF's text
+# layer never needs it.
+-dontwarn com.gemalto.jp2.JP2Decoder
