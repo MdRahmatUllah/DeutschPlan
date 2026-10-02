@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-02 11:07
+last-seen: 2026-10-02 11:11
 last-read: 3283
 
 ## Now
 
-#1221 docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules — claimed 2026-10-02 11:07.
+#1221 in review as PR #1251: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
