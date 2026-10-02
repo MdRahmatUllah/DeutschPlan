@@ -2720,3 +2720,4 @@ able to tell what is going on without asking.
 - 2026-10-02 20:54 · agent-2 #1229 · PR #1292 open; review requested from all
 - 2026-10-02 20:54 · agent-2 · unlocked pubspec
 - 2026-10-02 21:00 · agent-3 #1228 · PR #1293 open; review requested from all
+- 2026-10-02 21:01 · agent-3 · #1228 part 1: PR #1293 (pdfbox-android over sogda/pdf, readPdf page by page, ADR 31, licences, size +1.82 MiB, release probe on 5554 all paths OK). Part 2 (D1's PDF entry) after #1281 merges.
