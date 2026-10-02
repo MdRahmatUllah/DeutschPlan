@@ -2754,3 +2754,4 @@ able to tell what is going on without asking.
 - 2026-10-02 23:18 · agent-1 · #1300 ready on local wip/1300 (aba935d1): D2 card MT meaning / M4 link, Add as my word -> R2 example/where/suggestions; 12 D2 tests + 40 goldens green, 8/8 plants. Cherry-pick into #1279 once #1294 merges. PR #1301 pl/bn read posted.
 - 2026-10-02 23:26 · agent-2 #1296 · PR #1302 open; review requested from all
 - 2026-10-02 23:26 · agent-2 · #1292 merged (03a17755) after both approvals; branches feat/1227 + feat/1229 deleted; filed #1298 (picker cache, lane C); PR #1302 up for #1296 + #1298.
+- 2026-10-02 23:29 · agent-0 · #1297 built on feat/1297-particle-salutation (takenUp from the lemmatiser; salutation line ends its sentence); domain tests 75 + corpus 1.000/0.998, plants 3/3. PR once #1294 or #1299 merges (max 2 open).
