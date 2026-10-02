@@ -116,6 +116,15 @@ def test_every_screenshot_is_one_play_takes_175(folder):
         assert max(width, height) <= 2 * min(width, height), f"{folder}/{name}: over 2:1"
 
 
+@pytest.mark.parametrize("locale", ["en", "bn", "pl", "ru"])
+def test_every_feature_graphic_is_one_play_takes_1200(locale):
+    # tools/media/feature_graphic.py renders them; Play wants 1024 x 500, no alpha, under 15 MB.
+    path = STORE / "feature-graphic" / f"{locale}.png"
+    assert png_header(path) == (1024, 500, 2), f"{locale}: (width, height, colour type), 2 is RGB"
+    assert path.stat().st_size < 15 * 1024 * 1024, locale
+    assert f"store/feature-graphic/{locale}.png" in LISTING.read_text(encoding="utf-8"), f"{locale}: not linked"
+
+
 def test_the_title_the_website_and_the_icon_are_the_brand_kits_602_1176():
     listing = texts()
     # "Sogda: " and the phrase people search in each language (#1176).
