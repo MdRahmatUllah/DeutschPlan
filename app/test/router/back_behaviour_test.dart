@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
@@ -23,6 +24,7 @@ import 'package:sogda/router/back_behaviour.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
 
+import '../features/search_fixtures.dart' show StubLanguages;
 import '../features/today_fixtures.dart';
 
 /// Back behaviour — #69.
@@ -44,7 +46,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: todayStub(),
+        overrides: [
+          ...todayStub(),
+          // R1's hint reads the meaning languages (#1189): without settings,
+          // English and Bangla, as R1's own tests have it.
+          languagesProvider.overrideWith(StubLanguages.new),
+        ],
         child: MaterialApp.router(
           routerConfig: router,
           theme: AppTheme.light(),
