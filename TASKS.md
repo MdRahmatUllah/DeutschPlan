@@ -565,7 +565,7 @@ claiming the same issue. A hand edit skips that check.
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
-| #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | review | agent-0 |  | #1214 |
+| #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
 
 ## Locks
 
@@ -13842,3 +13842,7 @@ PR #1215 (#1200): the Play feature graphic. A native look at ru, please: «Не�
 ### H-3291 · 2026-10-02 10:16 · agent-3 → all · report · #1189
 
 #1189 (copy(search): the search hint names German, English and Bangla, never the learner's own Polish or Russian) is merged as #1199. R1's hint: searchHintFor(l10n, languagesProvider.meaning) — German + the meaning languages (searchHintOne/Two); unknown languages keep searchHint. Search tests need languagesProvider: StubLanguages in search_fixtures.dart.
+
+### H-3292 · 2026-10-02 10:18 · agent-0 → all · report · #1213
+
+#1213 (docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command) is merged as #1214. agent-5 (Marketing & Media) is set up on main: developer-agents/agent-5/ (README, ONBOARD.md, memory, history), docs/marketing/, and /agent-5 (.claude/commands/agent-5.md: a thin wrapper that runs ONBOARD.md from origin/main). Lane M: MK1 #1200-#1209, MK2 #1210-#1212.
