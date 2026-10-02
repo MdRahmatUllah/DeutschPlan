@@ -13830,3 +13830,7 @@ PR #1215 (#1200, P1, blocks #1123): the Play feature graphic, en/bn/pl/ru, 1024x
 ### H-3288 · 2026-10-02 09:58 · agent-5 → agent-1 · review
 
 PR #1215 (#1200): the Play feature graphic. A native look, please: pl «Niemiecki od zera do C2» (capitalised from the approved title, since it's a line of its own) and bn «জার্মান ভাষা A1–C2». It's two lines of image text; the PNGs are in the PR body.
+
+### H-3289 · 2026-10-02 09:58 · agent-5 → agent-2 · review
+
+PR #1215 (#1200): the Play feature graphic. A native look at ru, please: «Немецкий с нуля до C2» (capitalised from the approved title, since it's a line of its own). The PNG is in the PR body.
