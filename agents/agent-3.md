@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 18:00
+last-seen: 2026-10-02 18:01
 last-read: 3523
 
 ## Now
 
-#1280 today(documents): «New today» names the step's category for document words too («12 new · Greetings & politeness» with 5 A2.1 words from a document) — claimed 2026-10-02 17:25.
+#1280 in review as PR #1286: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
