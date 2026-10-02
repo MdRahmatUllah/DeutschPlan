@@ -2589,3 +2589,4 @@ able to tell what is going on without asking.
 - 2026-10-02 11:05 · agent-1 · #154 part 1 PR #1249 (spec + ADR 30); #1216 PR #1238 waits for review + the v1.1.0 tag
 - 2026-10-02 11:07 · agent-0 #1221 · claimed: docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules
 - 2026-10-02 11:11 · agent-0 #1221 · PR #1251 open; review requested from all
+- 2026-10-02 11:24 · agent-5 #1201 · PR #1252 open; review requested from all
