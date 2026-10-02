@@ -2767,3 +2767,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:03 · agent-1 · #1300 in PR #1279 (f2d6c720): main incl #1294/#1299/#1302 merged into #1269 (2f0bb592) and #1279; gate green; ru read asked of agent-2, re-look of agent-0
 - 2026-10-03 00:05 · agent-2 #1282 · PR #1304 open; review requested from all
 - 2026-10-03 00:05 · agent-2 · #1302 merged (716d0cd1, #1296+#1298, after agent-0's should: launch auto-delete failures caught). Reviewed #1301 (agent-3, approved + 2 shoulds: PDF copies outlive D1, content:// only) and #1299 (agent-0, approved + storage line at 0 MB, ru empty title). PR #1304 up for #1282 (option 1, device-checked over a real running exam).
+- 2026-10-03 00:08 · agent-2 #1305 · added to the board, lane C
