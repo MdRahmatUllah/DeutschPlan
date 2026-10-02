@@ -576,7 +576,15 @@ class _ModelCardView extends ConsumerWidget {
                   }),
                 ),
               ),
-              if (card.installed.bytesOnDisk > 0) deleteButton,
+              if (card.installed.bytesOnDisk > 0)
+                deleteButton
+              // #1265: a download that failed with nothing on the phone can
+              // still be let go of, and with it what it left half-written.
+              else if (card.live?.phase == DownloadPhase.failed)
+                _Action(
+                  label: l10n.modelsDeleteConfirm,
+                  onPressed: () => unawaited(_delete(context)),
+                ),
             ],
           ),
         ];
@@ -627,6 +635,10 @@ class _ModelCardView extends ConsumerWidget {
     );
     if (confirmed != true) return;
     try {
+      // #1265: a failed attempt is forgotten first, so it holds nothing.
+      if (card.live?.phase == DownloadPhase.failed) {
+        await container.read(modelDownloadsProvider).forget(card.entry.id);
+      }
       // Another model's download keeps `models/.partial`, which it shares
       // (#154).
       await container

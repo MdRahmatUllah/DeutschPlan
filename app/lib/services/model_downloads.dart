@@ -81,6 +81,11 @@ abstract interface class ModelDownloads {
   Future<void> pause(String modelId);
   Future<void> resume(String modelId);
 
+  /// M4's *Delete* on a download that failed (#1265): its attempt goes, its
+  /// tasks cancelled and their records with them, so the card reads what is
+  /// on the phone again and nothing keeps `models/.partial` for it.
+  Future<void> forget(String modelId);
+
   /// *Retry* after a failure. After a network failure, the files that
   /// arrived stay and the rest come again. After a checksum failure,
   /// everything the attempt left is thrown away and every file comes again.
@@ -232,6 +237,10 @@ class BackgroundModelDownloads implements ModelDownloads {
       _starting.remove(modelId);
     }
   }
+
+  /// No download in flight, nor one checking its space (#1265): a model that
+  /// failed keeps its files here for *Retry* but writes nothing.
+  bool get _idle => _starting.isEmpty && !_files.keys.any(_inFlight);
 
   bool _inFlight(String modelId) =>
       _files[modelId]?.values.any((file) => file.status.isNotFinalState) ??
@@ -554,7 +563,7 @@ class BackgroundModelDownloads implements ModelDownloads {
       // model is left downloading. Its own can stick at "Model download"
       // (a file that finished before the platform counted it queued), and
       // says *finished* though a checksum failed.
-      if (_files.isEmpty) {
+      if (_idle) {
         final l10n = lookupAppLocalizations(
           _settings.read(SettingKeys.uiLanguage).locale,
         );
@@ -609,9 +618,20 @@ class BackgroundModelDownloads implements ModelDownloads {
     // One file failed (a full disk, a host gone): the attempt stops. The
     // rest let go of what they held, and the platform's one notification,
     // which says *failed* only once no file is left running, says so (#428).
-    if (phase == DownloadPhase.failed && !wasFailed) {
-      await _downloader.cancelAll(group: modelId);
+    if (phase == DownloadPhase.failed) {
+      if (!wasFailed) await _downloader.cancelAll(group: modelId);
+      // #1265: *Retry* queues fresh tasks, so a failed attempt's part-files
+      // are no use: once no download is in flight, they go.
+      if (_idle) await _models.clearPartial();
     }
+  }
+
+  @override
+  Future<void> forget(String modelId) async {
+    await _downloader.cancelAll(group: modelId);
+    _files.remove(modelId);
+    _last.remove(modelId);
+    await _downloader.database.deleteAllRecords(group: modelId);
   }
 
   /// The model's phase from its files': one that failed fails it, one paused
