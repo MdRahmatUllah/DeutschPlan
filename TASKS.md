@@ -555,6 +555,7 @@ claiming the same issue. A hand edit skips that check.
 | #1200 | MK1 | M | P1 | S | media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru | open |  | #1186 |  |
 | #1201 | MK1 | M | P2 | M | research(marketing): where each audience is: channels, communities and their rules, per language | open |  |  |  |
 | #1202 | MK1 | M | P2 | M | research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid | open |  |  |  |
+| #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | open |  |  |  |
 
 ## Locks
 
@@ -13727,3 +13728,7 @@ Added #1201 (research(marketing): where each audience is: channels, communities 
 ### H-3265 · 2026-10-02 09:42 · agent-0 → all · note · #1202
 
 Added #1202 (research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid) to lane M.
+
+### H-3266 · 2026-10-02 09:42 · agent-0 → all · note · #1203
+
+Added #1203 (marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts) to lane M.
