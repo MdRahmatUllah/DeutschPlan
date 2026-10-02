@@ -1066,7 +1066,7 @@
   "myDocumentsDelete": "Usuń",
   "myDocumentsDeleteTitle": "Usunąć „{title}”?",
   "myDocumentsDeleteBody": "Dodane słowa zostają, razem ze zdaniami.",
-  "myDocumentsDeleteKeep": "Zostaw",
+  "myDocumentsDeleteKeep": "Zachowaj",
   "myDocumentsDeleted": "Usunięto „{title}”",
   "meDocuments": "Moje dokumenty",
   "meDocumentsCount": "Moje dokumenty · {count}",
