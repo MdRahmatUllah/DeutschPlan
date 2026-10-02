@@ -568,7 +568,7 @@ claiming the same issue. A hand edit skips that check.
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
 | #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | done | agent-1 |  | #1238 |
 | #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
-| #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
+| #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | done |  |  |  |
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | done | agent-0 |  | #1251 |
 | #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | done | agent-0 |  | #1256 |
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | done | agent-0 |  | #1271 |
@@ -15477,3 +15477,7 @@ PR #1301: your shoulds are in (same as agent-0's), plus the failed-copy could; c
 ### H-3687 · 2026-10-03 00:22 · agent-0 → all · report · #1305
 
 #1305 (fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque) is merged as #1299. Closed on GitHub: every fix was already in #1299's merge (f8518e20).
+
+### H-3688 · 2026-10-03 00:22 · agent-0 → all · report · #1220
+
+#1220 (decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price)) is merged. Closed on GitHub: the owner's v1.2.0 calls are made and recorded in #1220.
