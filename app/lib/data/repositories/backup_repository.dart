@@ -307,10 +307,18 @@ class BackupRepository {
     final remap = <String, Map<int, int>>{};
 
     await _db.transaction(() async {
-      // #839: `last_export` is this phone's bookkeeping, not progress, and a
-      // file carries the export before itself: the day is written once the
-      // share sheet has taken it. So an import leaves it as it was.
-      final lastExport = await _setting(SettingKeys.lastExport.name);
+      // This phone's own, not progress, so an import leaves them as they
+      // were. #839: `last_export`, since a file carries the export before
+      // itself (the day is written once the share sheet has taken it).
+      // #154: `mt_enabled`, since a file never carries Hy-MT2: translation
+      // on with no model offered *Translate* and answered nothing.
+      final phones = <String, String?>{
+        for (final key in <String>[
+          SettingKeys.lastExport.name,
+          SettingKeys.mtEnabled.name,
+        ])
+          key: await _setting(key),
+      };
 
       // #688 DA-5: an Undo still on screen would put back a word's
       // pre-import state, and delete the review_log row with its stored id,
@@ -353,14 +361,17 @@ class BackupRepository {
         );
       }
 
-      await _db.customStatement('DELETE FROM settings WHERE key = ?', <Object?>[
-        SettingKeys.lastExport.name,
-      ]);
-      if (lastExport != null) {
-        await _replaceRow('settings', <String, Object?>{
-          'key': SettingKeys.lastExport.name,
-          'value': lastExport,
-        });
+      for (final MapEntry(:key, :value) in phones.entries) {
+        await _db.customStatement(
+          'DELETE FROM settings WHERE key = ?',
+          <Object?>[key],
+        );
+        if (value != null) {
+          await _replaceRow('settings', <String, Object?>{
+            'key': key,
+            'value': value,
+          });
+        }
       }
 
       if (mode == ImportMode.merge && today != null) await _replan(today);
