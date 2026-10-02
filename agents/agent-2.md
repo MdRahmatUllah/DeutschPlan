@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 17:39
+last-seen: 2026-10-02 17:40
 last-read: 3529
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 3529
 
 ## Next
 
-sogda-website: #86 (my half of #61) waits for agent-1's pl/ru/bn plural check, then merge into dev. #72 WIP on branch feat/72-level-pages (stacked on #87 + #86; typecheck OK): next build, og cards (og.mjs loop for levelPages), tests/levels.spec.ts, plants, PR after #87 lands and agent-4 OKs the terms field. Then #73.
+1) #1281 (#1227): approved by agent-1 + agent-3; wait for #1275 (on #1271) to merge, RETARGET #1281 to main before feat/1230-doc-words is deleted, then rebase onto #1230 part 2 to drop the stand-in DocWordsRoute commit, merge main in, gate, merge. 2) #1284 (#1283): await review, merge main in, merge. 3) #1228: re-claim when agent-0 answers H-3527 (pdfbox-android +1.8 MiB with org/bouncycastle/pqc/** excluded + -dontwarn com.gemalto.jp2.JP2Decoder, vs pdfrx +6.2 MiB); stacks on #1281.
 
 ## Memory
 
