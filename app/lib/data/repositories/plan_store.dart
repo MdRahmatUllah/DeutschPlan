@@ -320,9 +320,18 @@ ORDER BY ord
     );
   }
 
+  /// The `new` row a queue row's `planned_on` day still holds for it. A day
+  /// whose rows went (a merge where the file wins, #658; a word removed from
+  /// the plan) no longer counts the word as used, and the word waits again
+  /// (#1285): the queue's own day is a note, the plan is the truth.
+  static const String _heldThere =
+      'SELECT 1 FROM plan_items p WHERE p.plan_date = q.planned_on '
+      "AND p.word_uid = q.word_key AND p.kind = 'new'";
+
   /// BR-PLAN-11: waiting means not planned by any route, still To-do (or
   /// never seen), and still a word of the course (BR-CONTENT-02: a removed
-  /// word's row stays, unread, as its history does).
+  /// word's row stays, unread, as its history does). A day planned that no
+  /// longer holds it is no plan.
   @override
   Future<List<String>> docWaiting({required int limit}) async {
     if (limit <= 0) return const <String>[];
@@ -333,7 +342,7 @@ SELECT q.word_key AS uid
 FROM doc_queue q
 JOIN words w ON w.uid = q.word_key AND w.kind = 'vocab'
 LEFT JOIN word_state s ON s.word_uid = q.word_key
-WHERE q.planned_on IS NULL
+WHERE (q.planned_on IS NULL OR NOT EXISTS ($_heldThere))
   AND COALESCE(s.status, 'todo') = 'todo'
   AND q.word_key NOT IN (SELECT word_uid FROM plan_items WHERE kind = 'new')
 ORDER BY q.added_at, q.rowid
@@ -355,10 +364,14 @@ LIMIT ?1
   Future<List<String>> docPlannedOn(PlanDate date) async {
     final rows = await _db
         .customSelect(
-          'SELECT word_key FROM doc_queue WHERE planned_on = ?1 '
-          'ORDER BY added_at, rowid',
+          'SELECT word_key FROM doc_queue q WHERE q.planned_on = ?1 '
+          'AND EXISTS ($_heldThere) '
+          'ORDER BY q.added_at, q.rowid',
           variables: <Variable<Object>>[Variable<String>(date)],
-          readsFrom: <ResultSetImplementation<Object, Object>>{_db.docQueue},
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.docQueue,
+            _db.planItems,
+          },
         )
         .get();
     return <String>[for (final row in rows) row.read<String>('word_key')];
