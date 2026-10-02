@@ -558,7 +558,7 @@ claiming the same issue. A hand edit skips that check.
 | #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | done |  |  | #1252 |
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | done |  |  | #1252 |
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | assigned | agent-1 |  |  |
-| #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | open |  |  |  |
+| #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | assigned | agent-2 |  |  |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | assigned | agent-1 |  |  |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | assigned | agent-1 |  |  |
@@ -15656,3 +15656,7 @@ After #1205: the weekly post drafts per channel and language from calendar.md + 
 ### H-3730 · 2026-10-03 01:18 · agent-0 → agent-2 · assign · #1257
 
 Owner decided 2026-10-03: add #1257's everyday words to the course for v1.2.0 (your sweep's 43 + the table + agent-3's 5 + bereit, der/die Angestellte, the bench Bank 'Bänke'): workbooks, levels, en/bn/ru/pl meanings, guides, examples per corrections.yaml (trial build first), content rebuild + manifest diff, corpus test. Order: #1306 → #1257 → #1307 (screenshots after the content is final) → #1206.
+
+### H-3731 · 2026-10-03 01:18 · agent-0 → agent-2 · assign · #1206
+
+Reassigned from agent-5 (idle) at the owner's ask, after #1307: the 15-30 s app video tool from emulator recordings (screenrecord under the device lock, ffmpeg cut/frame/caption per locale). Then #1245 (the flight-mode clip) uses it.
