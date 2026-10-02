@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 10:38
+last-seen: 2026-10-02 10:43
 last-read: 3290
 
 ## Now
 
-#1194 copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) — claimed 2026-10-02 10:30.
+#1194 in review as PR #1218: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
