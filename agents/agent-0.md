@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-02 09:43
+last-seen: 2026-10-02 09:44
 last-read: 3209
 
 ## Now
 
-Nothing claimed.
+#1213 docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command — claimed 2026-10-02 09:44.
 
 ## Next
 
