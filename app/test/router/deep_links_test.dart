@@ -803,6 +803,51 @@ void main() {
       );
     });
 
+    test("#1228 FR-D1-01 a shared PDF, only as another app's content, is "
+        'copied while its grant lasts, and only its path reaches D1, once', () {
+      final manifest = File('android/app/src/main/AndroidManifest.xml')
+          .readAsStringSync();
+      final filter = RegExp(
+        r'android:name="\.ShareActivity"[\s\S]*?</activity>',
+      ).firstMatch(manifest)![0]!;
+      expect(filter, contains('android:mimeType="application/pdf"'));
+
+      final share = File(
+        'android/app/src/main/kotlin/de/sogda/app/ShareActivity.kt',
+      ).readAsStringSync();
+      // The sender's grant ends with ShareActivity: the copy comes first.
+      expect(share, contains('File(cacheDir, "shared")'));
+      const copied = 'pendingPdf = runCatching { copyPdf(pdf) }.getOrNull()';
+      expect(share, contains(copied));
+      expect(
+        share.indexOf(copied),
+        lessThan(share.indexOf('runOnUiThread { finish() }')),
+        reason: 'copied before the activity, and its grant, ends',
+      );
+      // Only another app's content: no file: path, and no provider of
+      // Sogda's own, read with Sogda's permissions (a confused deputy).
+      expect(share, contains('uri.scheme == ContentResolver.SCHEME_CONTENT'));
+      expect(
+        share,
+        contains('uri.authority?.startsWith(packageName) == false'),
+      );
+      expect(
+        share,
+        contains(
+          'fun takePdf(): String? = pendingPdf.also { pendingPdf = null }',
+        ),
+        reason: 'taken once',
+      );
+
+      final activity = File(
+        'android/app/src/main/kotlin/de/sogda/app/MainActivity.kt',
+      ).readAsStringSync();
+      expect(
+        activity,
+        contains('"takePdf" -> result.success(ShareActivity.takePdf())'),
+      );
+    });
+
     test('iOS declares the scheme', () {
       final plist = File('ios/Runner/Info.plist').readAsStringSync();
 
@@ -842,4 +887,7 @@ class _SharedTexts implements SharedText {
     taken++;
     return null;
   }
+
+  @override
+  Future<String?> takePdf() async => null;
 }

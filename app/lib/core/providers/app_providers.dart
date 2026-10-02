@@ -62,6 +62,7 @@ import 'package:sogda/services/exam_recorder.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
 import 'package:sogda/services/page_photos.dart';
+import 'package:sogda/services/pdf_text.dart';
 import 'package:sogda/services/shared_text.dart';
 import 'package:sogda/services/translation/translator.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
@@ -575,6 +576,11 @@ SharedText sharedText(Ref ref) => const PlatformSharedText();
 /// (#1229).
 @riverpod
 PagePhotos pagePhotos(Ref ref) => PlatformPagePhotos();
+
+/// D1's PDFs: the file picker and their text layer, read on the phone
+/// (#1228, ADR 31).
+@riverpod
+PdfText pdfText(Ref ref) => const PlatformPdfText();
 
 /// Kept alive for the same reason: page 5's draft queues the voice (FR-S2-06).
 @Riverpod(keepAlive: true)
