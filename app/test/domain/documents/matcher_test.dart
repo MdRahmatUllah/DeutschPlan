@@ -116,6 +116,20 @@ void main() {
     );
   });
 
+  test('#1310 an ambiguous word is classed by its lowest reading too: '
+      '«allein» (A1.1 and C2.1) is probably known to an A2.1 learner', () {
+    final m = matchText(
+      'Das Kind darf allein nach Hause gehen.',
+      lemmatiser,
+      course,
+      learner(),
+    );
+    final allein = m.words.singleWhere((w) => w.surface == 'allein');
+    expect(allein.ambiguous, isTrue);
+    expect(allein.level, 'A1');
+    expect(allein.docClass, DocClass.probablyKnown);
+  });
+
   test('#1225 BR-DOC-03: known is learning, done or suspended', () {
     final m = match();
     for (final known in <String>[

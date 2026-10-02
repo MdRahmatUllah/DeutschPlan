@@ -21,7 +21,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 1. **The header:**
    - the document's title (editable; by default its first line with a letter, or "Text of 2 Oct": D1 names it, #1227);
    - the summary: "12 new · 4 probably known · 3 outside the course";
-   - a *Show words I probably know* switch (`doc_show_probably_known`).
+   - a *Show words I probably know* switch (`doc_show_probably_known`). To a screen reader it is one node, «Show words I probably know, switch», as M3's switches are; the legend below reads apart from it (#1309).
 2. **The text,** as extracted, scrollable, in reading size:
    - new course words have an underline and a soft fill in their level's colour (the CEFR colours of L1);
    - words that are mine carry a small "My word" mark;
@@ -56,7 +56,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 **Functional requirements**
 - FR-D2-01 Each lemma is shown in its class from BR-DOC-03; stop words are never marked.
 - FR-D2-02 *Add* on a course word puts it in the document queue with its sentence (BR-DOC-04, BR-PLAN-11); the toast says when it starts: "Added der Termin: you'll learn it today" when it joined today's plan, or "… from Thursday" (BR-PLAN-11's *Today*).
-- FR-D2-03 The bulk actions add every new course word of the chosen levels in one write, under the cap, and say how many: "Added 9 words: 5 today, 4 from tomorrow".
+- FR-D2-03 The bulk actions add every new course word of the chosen levels in one write, under the cap, and say how many: "Added 9: 5 today, the rest later"; "Added 5, all for today" when every one starts today; "Added 25: they start tomorrow or later" when today's slots are taken; and "Added 25: they wait in your queue" while no day can be said (the backlog pause, a cap of 0), as a single *Add* says (#1311).
 - FR-D2-04 *I know this* rates the word Easy (W1's *Mark known*), with W1's Undo. *Ignore* takes the mark away for this visit only.
 - FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example*, the document's title as *Where I saw it*, and the meaning (Hy-MT2's, labelled, or empty).
 - FR-D2-06 A word already mine gets the sentence added to its contexts, and no second word.

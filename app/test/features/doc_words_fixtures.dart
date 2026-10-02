@@ -105,9 +105,16 @@ class FakeDocuments extends Fake implements DocumentRepository {
 /// [PlanEngine]'s two document calls (#1272): today takes [slots], the rest
 /// start on Monday.
 class FakePlan extends Fake implements PlanEngine {
-  FakePlan({this.slots = 5, this.planned = const <String>{}});
+  FakePlan({
+    this.slots = 5,
+    this.paused = false,
+    this.planned = const <String>{},
+  });
 
   int slots;
+
+  /// No day can be said (the backlog pause, a cap of 0): every start null.
+  final bool paused;
 
   /// What today's plan has already by the course's route (#1315).
   final Set<String> planned;
@@ -128,6 +135,10 @@ class FakePlan extends Fake implements PlanEngine {
     added.add(uids);
     final starts = <String, PlanDate?>{};
     for (final uid in uids) {
+      if (paused) {
+        starts[uid] = null;
+        continue;
+      }
       starts[uid] = slots > 0 ? today : '2026-10-05';
       if (slots > 0) slots--;
     }

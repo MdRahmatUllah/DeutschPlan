@@ -238,10 +238,14 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
               ),
               null => l10n.docWordsAddedWaiting(words.single.surface),
             }
-          : l10n.docWordsAddedMany(
-              words.length,
-              days.where((d) => d == today).length,
-            );
+          // #1311: what happened, all today, some, none, or no day at all.
+          : switch (days.where((d) => d == today).length) {
+              final n when n == words.length => l10n.docWordsAddedManyToday(n),
+              0 when days.every((d) => d == null) =>
+                l10n.docWordsAddedManyWaiting(words.length),
+              0 => l10n.docWordsAddedManyLater(words.length),
+              final n => l10n.docWordsAddedMany(words.length, n),
+            };
       SgToast.show(context, message);
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -466,22 +470,29 @@ class _Controls extends ConsumerWidget {
             SgText(l10n.docWordsEmpty, role: SgTextRole.title),
             const SizedBox(height: 8),
           ],
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: SgText(
-                  l10n.docWordsShowProbablyKnown,
-                  role: SgTextRole.body,
+          // #1309: one node, «Show words I probably know, switch»: the
+          // switch says the title, as M3's rows do, and the legend below
+          // reads as the list item's text, apart from it.
+          MergeSemantics(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: ExcludeSemantics(
+                    child: SgText(
+                      l10n.docWordsShowProbablyKnown,
+                      role: SgTextRole.body,
+                    ),
+                  ),
                 ),
-              ),
-              AdaptiveSwitch(
-                value: showProbable,
-                semanticLabel: l10n.docWordsShowProbablyKnown,
-                onChanged: (on) => unawaited(
-                  ref.read(showProbablyKnownProvider.notifier).set(on),
+                AdaptiveSwitch(
+                  value: showProbable,
+                  semanticLabel: l10n.docWordsShowProbablyKnown,
+                  onChanged: (on) => unawaited(
+                    ref.read(showProbablyKnownProvider.notifier).set(on),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 8),
           Wrap(
