@@ -31,13 +31,16 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | | Pass mark | stepper 50–90 % | `exam_pass_percent` |
 | | Timer on by default | switch | `exam_timer_default` |
 | Translation | On-device translation | switch, subtitle status ("Hy-MT2 · downloading 42%") → M4 when not downloaded. Shown in every build (ADR 30) | `mt_enabled` |
+| Learn from documents | Words a day from documents | stepper 0–20, "Applies from tomorrow" (BR-PLAN-11, #1296) | `doc_daily_cap` |
+| | Save original images | switch; turned off while photos are kept, it asks whether to delete them (FR-D3-04) | `doc_save_images` |
+| | Auto-delete documents | Never / After 30, 90 or 365 days, "The words you added stay" (FR-D3-03) | `doc_autodelete_days` |
 | Data | Export / import | → M6 | |
 | | Reset | → M7, "One step, or everything" | |
 | | Restart setup | → S2 (restart mode) | |
 
 Details M3 settles (#146):
 - The rows are the table's, in its order. The artboards leave some out (practice sentences, the backlog pause, Mark Done, app language, Bangla pronunciation, listening questions); each sits where the table puts it, drawn as its neighbours are.
-- "Applies from tomorrow" is on *New words per day* and *Revisions per day*, the two BR-PLAN-08 names that M3 shows (the study days are M5's). *New words per day* also moves the open enrollment's `daily_new`, which is the pace the plan engine reads, as restart setup does; today's plan is left as it is.
+- "Applies from tomorrow" is on *New words per day*, *Revisions per day* and *Words a day from documents*, the BR-PLAN-08 names that M3 shows (the study days are M5's). A day keeps the documents' cap it opened with (`planned_doc_cap`, #1272). *New words per day* also moves the open enrollment's `daily_new`, which is the pace the plan engine reads, as restart setup does; today's plan is left as it is.
 - The meaning languages (#1081) are every meaning the app shows: T2's back and W1 put the first and the second on two lines, and a list's row (T4, L2, L6, R1) or T5's word sheet on one, "table · টেবিল", as the home-screen widget does (#689 TD-15). English stands in where the course has no meaning in the first. An example's translation, a grammar topic and the pronunciation guide are the first language's (English, or the second's guide, where it has none), with one exception, the owner's (#1150): an English + Bangla learner sees Bangla's guide while *Show Bangla pronunciation* is on, as before English's respelling shipped (#1082), and the English respelling with it off; an interference tip shows for each chosen language that has one. Picking the second as the first swaps the two. Until either row is used, the meanings are English's, then Bangla's.
 - *Unlock mock exams at* and *Pass mark* show the value and a chevron, as the artboards draw them, and open a choice in steps of five across the ranges above. *Meaning language*, *Second meaning language*, *App language* and *Theme* open the same kind of choice. The meaning and the app's language are set apart, here and in S2 (#1078).
 - *Speech speed* runs 0.5–1.5× in quarters, with the artboard's 1.0× at the middle: the grid the study menu's 0.75 / 1 / 1.25 are on, so both read a stored speed the same. Both write it with the UI language's decimal separator, «1,0×» and «0,75×» in Polish and Russian (#1197).
@@ -50,6 +53,10 @@ Details M3 settles (#146):
 - *Translation* shows in every build: Hy-MT2's licence needs no gate (ADR 30), so ADR 9's rule hiding the group while the build didn't offer the download (#513) is gone.
 - M4 and M6 are pushed over M3 (navigation.md), so back returns to Settings. A choice's list scrolls when it outgrows the sheet (a phone held sideways, 200 % text).
 - *Reset* opens M7's sheet (`reset.md`, #149).
+- *Learn from documents* (#1296, `my-documents.md`):
+  - *Save original images*, turned off while documents keep photos, asks "Delete the images already saved?" (FR-D3-04). *Delete images* drops every kept photo, and the documents keep their text; *Keep them* keeps them, and the switch stays off either way. Turned off with none kept, or turned on, it asks nothing.
+  - *Auto-delete documents* opens the same kind of choice as *Theme*. The documents older than it go at launch, after the start (`wireApp`), as D3's *Delete* takes one (FR-D3-03).
+  - D2's *Show words I probably know* is D2's own switch, not a row here.
 - *Glass* (FR-M3-02) gives the app `AppTheme.glass`, its light and smoked dark variants picked by the phone's light/dark, as theming.md says. Before #146 the root drew paper whatever was chosen. *System* and *Glass* follow the phone's light/dark switch while the app runs: `BootstrapHost` hears it as a binding observer and tells `themeProvider` (#644). Choosing *Light* or *Dark* stops that at once, even when the mode it resolves to is the one *System* had: the root follows the setting itself (`themeFollowsPlatformProvider`), not the resolved mode (#649).
 - Android: a Cobalt header over flat rows (on the aurora under glass). iOS: an upper-case header over an inset panel, and the stepper is the number beside UIStepper's − | + pill (as OnboardingPace-ios draws it too). Every row is 52 dp.
 

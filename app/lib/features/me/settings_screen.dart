@@ -108,9 +108,18 @@ class SettingsEditor extends _$SettingsEditor {
     await set(SettingKeys.mtEnabled, on);
     return true;
   }
+
+  /// FR-D3-04: whether any document keeps its photos, so that turning
+  /// *Save original images* off has something to ask about.
+  Future<bool> keepsImages() async =>
+      await ref.read(documentRepositoryProvider).imageBytes() > 0;
+
+  /// FR-D3-04: the photos already kept go; every document keeps its text.
+  Future<void> dropImages() =>
+      ref.read(documentRepositoryProvider).dropImages();
 }
 
-/// M3 · Settings: every learner-facing setting, in eight groups
+/// M3 · Settings: every learner-facing setting, in nine groups
 /// (`settings.md`). Material headers on Android, inset groups on iOS.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -146,6 +155,7 @@ class SettingsScreen extends ConsumerWidget {
     final unlock = settings.read(SettingKeys.examUnlockPercent);
     final pass = settings.read(SettingKeys.examPassPercent);
     final speedQuarters = (settings.read(SettingKeys.ttsSpeed) * 4).round();
+    final autodelete = settings.read(SettingKeys.docAutodeleteDays);
 
     String? secondName(String? code) =>
         code == null ? null : ownNameOf(code, languages);
@@ -155,6 +165,9 @@ class SettingsScreen extends ConsumerWidget {
       ThemeModeSetting.dark => l10n.settingsThemeDark,
       ThemeModeSetting.glass => l10n.settingsThemeGlass,
     };
+    String afterDays(int days) => days == 0
+        ? l10n.settingsDocAutodeleteNever
+        : l10n.settingsDocAutodeleteAfter(days);
     List<(int, String)> percents(({int min, int max}) range) => <(int, String)>[
       for (var p = range.min; p <= range.max; p += 5)
         (p, l10n.settingsPercent(p)),
@@ -553,6 +566,66 @@ class SettingsScreen extends ConsumerWidget {
                     }
                   },
                 ),
+              ),
+            ],
+          ),
+          // #1296: Learn from your documents (`document-matcher.md`).
+          _Group(
+            title: l10n.settingsGroupDocuments,
+            rows: <Widget>[
+              _Row(
+                title: l10n.settingsDocDailyCap,
+                // BR-PLAN-08: the plan today opened with keeps its cap.
+                subtitle: l10n.settingsFromTomorrow,
+                trailing: _stepper(
+                  settings,
+                  SettingKeys.docDailyCap,
+                  l10n.settingsDocDailyCapDecrease,
+                  l10n.settingsDocDailyCapIncrease,
+                  set,
+                ),
+              ),
+              _Row(
+                title: l10n.settingsDocSaveImages,
+                labelledByControl: true,
+                trailing: AdaptiveSwitch(
+                  value: settings.read(SettingKeys.docSaveImages),
+                  semanticLabel: l10n.settingsDocSaveImages,
+                  onChanged: (on) async {
+                    await set(SettingKeys.docSaveImages, on);
+                    // FR-D3-04: off, with photos kept, asks about those.
+                    if (on || !await editor.keepsImages()) return;
+                    if (!context.mounted) return;
+                    final drop = await Adaptive.showConfirm(
+                      context: context,
+                      title: l10n.settingsDocImagesDropTitle,
+                      message: l10n.settingsDocImagesDropMessage,
+                      confirmLabel: l10n.settingsDocImagesDrop,
+                      cancelLabel: l10n.settingsDocImagesKeep,
+                      destructive: true,
+                    );
+                    if (drop ?? false) await editor.dropImages();
+                  },
+                ),
+              ),
+              _Row(
+                title: l10n.settingsDocAutodelete,
+                subtitle: l10n.settingsDocAutodeleteNote,
+                value: afterDays(autodelete),
+                onTap: () async {
+                  final chosen = await _choose(
+                    context,
+                    l10n.settingsDocAutodelete,
+                    <(int, String)>[
+                      for (final days in SettingKeys.docAutodeleteDays.choices!)
+                        (days, afterDays(days)),
+                    ],
+                    autodelete,
+                  );
+                  if (chosen != null) {
+                    await set(SettingKeys.docAutodeleteDays, chosen);
+                  }
+                },
               ),
             ],
           ),
