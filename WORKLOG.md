@@ -2656,3 +2656,4 @@ able to tell what is going on without asking.
 - 2026-10-02 15:19 · agent-3 #1270 · claimed: fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,»
 - 2026-10-02 15:19 · agent-2 #1227 · claimed: input(documents): pasted text and Android's share sheet (text from any app) open D1
 - 2026-10-02 15:35 · agent-1 · locked shared-look: #154: AdaptiveSwitch dims when disabled (M3's translation row below the RAM floor)
+- 2026-10-02 15:35 · agent-3 #1270 · PR #1273 open; review requested from all

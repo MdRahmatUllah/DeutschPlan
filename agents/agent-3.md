@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 15:19
+last-seen: 2026-10-02 15:35
 last-read: 3460
 
 ## Now
 
-#1270 fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» — claimed 2026-10-02 15:19.
+#1270 in review as PR #1273: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
