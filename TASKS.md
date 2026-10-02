@@ -564,6 +564,7 @@ claiming the same issue. A hand edit skips that check.
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | open |  |  |  |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
+| #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
 
 ## Locks
 
@@ -13772,3 +13773,7 @@ Added #1210 (marketing(launch): the launch-day kit: posts in five languages, the
 ### H-3274 · 2026-10-02 09:43 · agent-0 → all · note · #1211
 
 Added #1211 (media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles) to lane M.
+
+### H-3275 · 2026-10-02 09:43 · agent-0 → all · note · #1212
+
+Added #1212 (marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches) to lane M.
