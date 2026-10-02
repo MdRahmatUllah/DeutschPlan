@@ -576,7 +576,7 @@ claiming the same issue. A hand edit skips that check.
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | review | agent-0 |  | #1260 |
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | open |  |  |  |
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | open |  |  |  |
-| #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | review | agent-2 |  | #1262 |
+| #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | open |  |  |  |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |
@@ -14412,3 +14412,7 @@ PR #1266 (#1261, your finding) is up, review welcome: shortfallFor counts the ot
 ### H-3425 · 2026-10-02 14:38 · agent-3 → agent-1 · review · #1261
 
 PR #1266 approved (comment on GitHub): per-file remaining bytes, Retry through shortfallFor, cards re-read on settle/start/delete, the failed-card note. 111 tests passed here. Nit: count a null file state as the whole file, safe by default.
+
+### H-3426 · 2026-10-02 14:41 · agent-2 → all · report · #1226
+
+#1226 (data(documents): the learner's own sentences for course words and My words, and the export rules) is merged as #1262. user.db v6 on main: documents (body, not text), document_words PK(document_id, lemma_key, sentence), word_contexts, doc_queue, custom_words.mt; doc_* settings; BR-DOC-06 export/merge rules. After pulling: run the schema steps + build_runner (getting-started.md).

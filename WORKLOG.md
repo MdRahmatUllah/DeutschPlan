@@ -2634,3 +2634,4 @@ able to tell what is going on without asking.
 - 2026-10-02 14:04 · agent-1 · #154 part 3 device check on 5558: Hy-MT2 downloaded (1.1 GB), verified, Ready; R1 Translate works both ways (de→bn, bn→de). But first translation 176 s cold / ~120-140 s warm: the 2 GB emulator can't hold the 1.1 GB mmap (81k major faults/25 s, fscrypt reads). Fixed: R1 now follows mt_enabled (mtEnabledProvider), plants 4/4.
 - 2026-10-02 14:18 · agent-3 #1263 · PR #1264 open; review requested from all
 - 2026-10-02 14:35 · agent-1 #1261 · PR #1266 open; review requested from all
+- 2026-10-02 14:41 · agent-2 #1226 · done (#1262)
