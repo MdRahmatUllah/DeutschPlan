@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 12:43
+last-seen: 2026-10-02 12:44
 last-read: 3393
 
 ## Now
 
-Nothing claimed.
+#1226 data(documents): the learner's own sentences for course words and My words, and the export rules — claimed 2026-10-02 12:44.
 
 ## Next
 

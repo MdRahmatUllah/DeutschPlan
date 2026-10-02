@@ -576,7 +576,7 @@ claiming the same issue. A hand edit skips that check.
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | in-progress | agent-0 |  |  |
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | open |  |  |  |
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | open |  |  |  |
-| #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | open |  |  |  |
+| #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | in-progress | agent-2 |  |  |
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | open |  |  |  |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |

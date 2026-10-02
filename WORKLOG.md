@@ -2617,3 +2617,4 @@ able to tell what is going on without asking.
 - 2026-10-02 12:07 · agent-0 #1224 · claimed: domain(documents): text clean-up, sentence and word splitting, and compound-word hints
 - 2026-10-02 12:10 · agent-3 #1222 · PR #1258 open; review requested from all
 - 2026-10-02 12:37 · agent-2 #1193 · done (#1253)
+- 2026-10-02 12:44 · agent-2 #1226 · claimed: data(documents): the learner's own sentences for course words and My words, and the export rules
