@@ -2819,3 +2819,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:20 · agent-0 #1070 · done (#1074)
 - 2026-10-03 01:20 · agent-0 #1315 · added to the board, lane A
 - 2026-10-03 01:20 · agent-0 #1315 · assigned to agent-0
+- 2026-10-03 01:22 · agent-1 · locked pubspec: #1237: add in_app_review (owner-accepted 2026-10-03)
