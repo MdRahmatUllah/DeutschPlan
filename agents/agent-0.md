@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-02 23:33
+last-seen: 2026-10-02 23:39
 last-read: 3652
 
 ## Now
 
-#1297 matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence — claimed 2026-10-02 23:18.
+Nothing claimed.
 
 ## Next
 
