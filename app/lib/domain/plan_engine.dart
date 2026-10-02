@@ -567,6 +567,9 @@ class PlanEngine {
       // onboarding, where a step enrolled today must still plan today.
       if (await _store.hasEverEnrolled()) {
         await _recordPlanned(today, mask: allDays);
+        // BR-PLAN-11: document words aren't the step's, so a day with none
+        // under way still takes them.
+        if (!await _isPaused(today)) await _topUpDocWords(today);
       }
       return;
     }
@@ -643,7 +646,8 @@ class PlanEngine {
   /// FR-D2-02/03 (BR-DOC-04, BR-PLAN-11): [uids] join the document queue,
   /// and an opened study day [today] with room takes them at once. Returns
   /// each one's first day: [today] when it's in today's plan, the study day
-  /// the queue reaches it on, or null with a cap of 0. A word already planned
+  /// the queue reaches it on, or null with a cap of 0 or while the backlog
+  /// pause holds (BR-PLAN-07: no day can be said). A word already planned
   /// by another route, or no longer To-do, is left out of the answer.
   Future<Map<String, PlanDate?>> addDocWords(
     List<String> uids,
@@ -653,11 +657,15 @@ class PlanEngine {
     await _store.queueDocWords(uids, at);
     final step = await _store.activeStep();
     final mask = await _store.plannedMask() ?? step?.studyDaysMask ?? allDays;
+    // BR-PLAN-07: while the pause holds, the queue waits for the backlog,
+    // and no start day can be said.
+    final paused = await _isPaused(today);
+    // No step under way still opens the day (BR-PLAN-11): document words
+    // aren't the step's.
     final open =
-        step != null &&
         await _store.lastPlannedDate() == today &&
         isStudyDay(today, mask) &&
-        !await _isPaused(today);
+        !paused;
     if (open) await _topUpDocWords(today);
 
     final todays = (await _store.docPlannedOn(today)).toSet();
@@ -669,7 +677,7 @@ class PlanEngine {
         !open &&
             await _store.lastPlannedDate() != today &&
             isStudyDay(today, days) &&
-            !await _isPaused(today)
+            !paused
         ? _docDailyCap - todays.length
         : 0;
     final starts = <String, PlanDate?>{
@@ -678,7 +686,7 @@ class PlanEngine {
     };
     for (final (position, uid) in waiting.indexed) {
       if (!wanted.contains(uid)) continue;
-      if (_docDailyCap <= 0) {
+      if (_docDailyCap <= 0 || paused) {
         starts[uid] = null;
       } else if (position < roomToday) {
         starts[uid] = today;
@@ -695,14 +703,18 @@ class PlanEngine {
 
   /// D2's cap note before *Add* (FR-D2-02, BR-PLAN-11): how many more words
   /// [today] can take from the document queue. None on a rest day, while
-  /// the backlog pause holds (BR-PLAN-07), with no step, or with a cap of 0.
+  /// the backlog pause holds (BR-PLAN-07), before setup, or with a cap of 0.
+  /// A finished step doesn't close it: document words aren't the step's.
   Future<int> docSlotsLeft(PlanDate today) async {
     final step = await _store.activeStep();
-    if (step == null) return 0;
-    // An opened day keeps the mask it was planned with (BR-PLAN-08).
+    if (step == null && !await _store.hasEverEnrolled()) return 0;
+    // An opened day keeps the mask it was planned with (BR-PLAN-08); with
+    // no step under way every day is a study day, as `generateNewThrough`
+    // plans it.
+    final days = step?.studyDaysMask ?? allDays;
     final mask = await _store.lastPlannedDate() == today
-        ? await _store.plannedMask() ?? step.studyDaysMask
-        : step.studyDaysMask;
+        ? await _store.plannedMask() ?? days
+        : days;
     if (!isStudyDay(today, mask) || await _isPaused(today)) return 0;
     final left =
         await _docCapOn(today) - (await _store.docPlannedOn(today)).length;
@@ -881,10 +893,12 @@ class PlanEngine {
 
     final step = await _store.activeStep();
     final mask = await _store.plannedMask() ?? step?.studyDaysMask ?? allDays;
-    if (step != null && isStudyDay(today, mask) && !await _isPaused(today)) {
-      final planned = await _coursePlannedOn(today);
-      if (planned < step.dailyNew) {
-        await _planDay(today, step, planned: planned);
+    if (isStudyDay(today, mask) && !await _isPaused(today)) {
+      if (step != null) {
+        final planned = await _coursePlannedOn(today);
+        if (planned < step.dailyNew) {
+          await _planDay(today, step, planned: planned);
+        }
       }
       await _topUpDocWords(today);
     }

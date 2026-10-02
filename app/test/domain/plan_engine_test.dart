@@ -915,6 +915,58 @@ void main() {
       },
     );
 
+    test('BR-PLAN-07 while the pause holds, Add says no start day: the queue '
+        'waits for the backlog', () async {
+      store.queue.clear();
+      await store.addToPlan(addDays(monday, -1), PlanKind.newWord, <String>[
+        'w0',
+      ]);
+      final engine = engineWith(docDailyCap: 2, pauseNewWhenBacklog: true);
+      await engine.openDay(monday);
+      expect(
+        await engine.addDocWords(<String>['d1', 'd2'], monday, at: at),
+        <String, PlanDate?>{'d1': null, 'd2': null},
+      );
+      expect(await store.docPlannedOn(monday), isEmpty);
+    });
+
+    test('a finished step with auto-advance off holds nothing back: document '
+        "words aren't the step's", () async {
+      final finished = store.enrollment!;
+      store
+        ..enrollment = null
+        ..enrolled.add(finished);
+      final engine = engineWith(docDailyCap: 2);
+      expect(await engine.docSlotsLeft(monday), 2, reason: 'not opened yet');
+      final plan = await engine.openDay(monday);
+      expect(plan.newToday, <String>['d1', 'd2']);
+      expect(await engine.docSlotsLeft(monday), 0);
+      expect(
+        await engine.addDocWords(<String>['d6'], monday, at: at),
+        // d3, d4 and d5 wait ahead of it, two a day.
+        <String, PlanDate?>{'d6': addDays(monday, 2)},
+      );
+    });
+
+    test("#622 and with no step under way, an import's replanToday tops "
+        'today up', () async {
+      final finished = store.enrollment!;
+      store
+        ..enrollment = null
+        ..enrolled.add(finished)
+        ..queue.clear();
+      final engine = engineWith(docDailyCap: 2);
+      await engine.openDay(monday);
+      // An Add on the opened day joins it.
+      expect(
+        await engine.addDocWords(<String>['d9'], monday, at: at),
+        <String, PlanDate?>{'d9': monday},
+      );
+      store.queue.addAll(<String>['d1', 'd2', 'd3']); // the file's
+      await engine.replanToday(monday);
+      expect(await store.docPlannedOn(monday), <String>['d9', 'd1']);
+    });
+
     test('#622 after an import, replanToday tops today up from the queue '
         'too', () async {
       store.queue.clear();
