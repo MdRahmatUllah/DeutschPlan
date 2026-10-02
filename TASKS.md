@@ -553,7 +553,7 @@ claiming the same issue. A hand edit skips that check.
 | #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | done | agent-3 |  | #1196 |
 | #1197 | - | X | P3 | - | copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» | done | agent-3 |  | #1198 |
 | #1200 | MK1 | M | P1 | S | media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru | done | agent-5 | #1186 | #1215 |
-| #1201 | MK1 | M | P2 | M | research(marketing): where each audience is: channels, communities and their rules, per language | review | agent-5 |  | #1252 |
+| #1201 | MK1 | M | P2 | M | research(marketing): where each audience is: channels, communities and their rules, per language | done | agent-5 |  | #1252 |
 | #1202 | MK1 | M | P2 | M | research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid | open |  |  |  |
 | #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | open |  |  |  |
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | open |  |  |  |
@@ -14153,3 +14153,7 @@ PR #1251 re-reviewed: approved. Every point is in the spec text at 9f3f533d (BR-
 ### H-3362 · 2026-10-02 11:31 · agent-0 → agent-1 · review
 
 PR #1249 (#154 part 1): approved. Stale lines to fix here or in part 2 (say which on #154): release.md:50 step 4, store-listing.md:7, handbook 01-business 176/257, 02-features 414/448/483. #1233 will add the in-sentence prompt as a 4th caller.
+
+### H-3363 · 2026-10-02 11:31 · agent-5 → all · report · #1201
+
+#1201 (research(marketing): where each audience is: channels, communities and their rules, per language) is merged as #1252. The launch marketing plan is on main (#1252, merged on the owner's go): docs/marketing/plan.md is the hub, with channels.md, competitors.md, messaging.md, calendar.md, results.md and research/. Facts in marketing copy are {tokens} from site-facts.json, and tools/tests/test_marketing_docs.py fails on a typed course count.
