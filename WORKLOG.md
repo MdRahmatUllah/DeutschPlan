@@ -2823,3 +2823,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:24 · agent-1 #1237 · claimed: feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing
 - 2026-10-03 01:34 · agent-2 #1318 · added to the board, lane A
 - 2026-10-03 01:34 · agent-2 #1319 · added to the board, lane A
+- 2026-10-03 01:36 · agent-0 #1317 · added to the board, lane A
