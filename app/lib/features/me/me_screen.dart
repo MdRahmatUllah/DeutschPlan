@@ -19,6 +19,7 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/domain/plan_stats.dart';
+import 'package:sogda/features/documents/my_documents_screen.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
@@ -231,6 +232,15 @@ class _Me extends ConsumerWidget {
                     // #1164: M4's title.
                     l10n.modelsTitle,
                     const ModelsRoute(),
+                  ),
+                  // D3 (#1295), in the search's stack with D1 and D2.
+                  (
+                    Icons.description_outlined,
+                    switch (ref.watch(myDocumentsProvider).value?.length) {
+                      null || 0 => l10n.meDocuments,
+                      final count => l10n.meDocumentsCount(count),
+                    },
+                    const MyDocumentsRoute(),
                   ),
                   (Icons.shield_outlined, l10n.meAbout, const AboutRoute()),
                 ],
@@ -865,7 +875,8 @@ class _Badge extends StatelessWidget {
   }
 }
 
-/// Settings, Voice (M4), About & privacy: one card, a row each.
+/// Settings, Voice (M4), My documents (D3), About & privacy: one card, a
+/// row each.
 class _Links extends StatelessWidget {
   const _Links({required this.links});
 

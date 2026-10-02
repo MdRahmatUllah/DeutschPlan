@@ -9,6 +9,8 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
+import 'package:sogda/data/repositories/document_repository.dart'
+    show DocumentEntry;
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_stats.dart';
 import 'package:sogda/features/me/me_screen.dart';
@@ -19,6 +21,7 @@ import 'package:sogda/main.dart'
 import '../core/keyboard.dart';
 import '../core/semantics_checks.dart';
 import 'me_fixtures.dart';
+import 'my_documents_fixtures.dart' show artboardDocuments;
 
 /// M1 · Me — #144.
 void main() {
@@ -54,12 +57,18 @@ void main() {
           ],
         ),
         GoRoute(path: '/today/backlog', builder: (_, state) => away(state)),
+        GoRoute(path: '/search/documents', builder: (_, state) => away(state)),
         GoRoute(path: '/learn/step/:code', builder: (_, state) => away(state)),
       ],
     );
   }
 
-  Future<void> pump(WidgetTester tester, [MeView? view, Locale? locale]) async {
+  Future<void> pump(
+    WidgetTester tester, [
+    MeView? view,
+    Locale? locale,
+    List<DocumentEntry> documents = const <DocumentEntry>[],
+  ]) async {
     went = null;
     tester.view
       ..physicalSize = const Size(390, 844) * 3
@@ -68,7 +77,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: UniqueKey(),
-        overrides: meStub(view),
+        overrides: meStub(view, documents),
         child: MaterialApp.router(
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
@@ -513,6 +522,8 @@ void main() {
     for (final (label, path) in <(String Function(), String)>[
       (() => l10n.meSettings, '/me/settings'),
       (() => l10n.modelsTitle, '/me/models'),
+      // D3 (#1295), in the search's stack with D1 and D2.
+      (() => l10n.meDocuments, '/search/documents'),
       (() => l10n.meAbout, '/me/about'),
     ]) {
       testWidgets('opens $path', (tester) async {
@@ -539,6 +550,13 @@ void main() {
         expect(went, path);
       });
     }
+  });
+
+  testWidgets('#1295 My documents says how many are kept', (tester) async {
+    await pump(tester, null, null, artboardDocuments());
+
+    expect(find.text(l10n.meDocumentsCount(4)), findsOneWidget);
+    expect(find.text(l10n.meDocuments), findsNothing);
   });
 
   testWidgets('a failed load says so, and retries', (tester) async {

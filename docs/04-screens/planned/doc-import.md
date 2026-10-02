@@ -76,7 +76,7 @@
     - **Only another app's `content:` URI** is taken. A `file:` path, or a provider under Sogda's own package (a plugin's), would be opened with Sogda's permissions, so a crafted share could have it copy its own private files.
     - **A copy that fails** (the grant revoked, the disk full) still opens D1, on its choices, so the share isn't lost unseen.
   - **The link** is an arrival like any other (`navigation.md`): a running exam holds it, a study session doesn't, and each share is numbered (`?arrival=`), so a second one onto D1 is read too.
-- **R1 idle's** *Learn from a document*, under *Add a word I found*, pushes D1 (`/search/import`); back returns to R1. Back from the pasted text's box, or from processing, returns to the choices.
+- **R1 idle's** *Learn from a document*, under *Add a word I found*, pushes D1 (`/search/import`); back returns to R1. Once a document is kept it pushes D3 instead, whose *New document* is D1 (#1295). Back from the pasted text's box, or from processing, returns to the choices.
 - The APK's growth is measured in `perf.py size`.
 
 **Tests.**
