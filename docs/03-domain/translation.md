@@ -11,7 +11,7 @@
 - **Offered in every build.** The licence is Apache-2.0: not gated, no regional exclusions, no NOTICE file. So the `ENABLE_HYMT_DOWNLOAD` build flag of ADR 9 and its EU/UK/KR reasoning are gone.
 - **The download is the voice's** (`model-manager.md`): pinned URL and sha256, the space check, the *Wi-Fi only* switch, and the swap into place. Two models can now download side by side:
   - deleting one never touches the other's download in flight (its partial file, its records);
-  - each model's notifications keep their own group.
+  - a new attempt while another model downloads joins that one's notification, so the shade keeps one for both.
 - **Deleting the model** turns `mt_enabled` off (FR-M4-03) and releases the engine.
 
 ## The binding
