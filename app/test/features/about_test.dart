@@ -180,8 +180,10 @@ void main() {
       );
     }
     expect(
-      File('assets/licences/HY-MT1.5-Tencent-HY.txt').readAsStringSync(),
-      startsWith('TENCENT HY COMMUNITY LICENSE AGREEMENT'),
+      File('assets/licences/Hy-MT2-Apache-2.0.txt').readAsStringSync(),
+      contains(
+        'Hy-MT2-1.8B-GGUF is licensed under the Apache License, Version 2.0.',
+      ),
     );
     // #610: ONNX Runtime ships in every APK (libonnxruntime.so).
     expect(
