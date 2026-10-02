@@ -549,7 +549,7 @@ claiming the same issue. A hand edit skips that check.
 | #1189 | - | X | P3 | - | copy(search): the search hint names German, English and Bangla, never the learner's own Polish or Russian | done | agent-3 |  | #1199 |
 | #1190 | - | X | P3 | - | a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») | done | agent-2 |  | #1192 |
 | #1193 | - | X | P3 | - | feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) | review | agent-2 |  | #1253 |
-| #1194 | - | X | P3 | - | copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) | review | agent-3 |  | #1218 |
+| #1194 | - | X | P3 | - | copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) | done | agent-3 |  | #1218 |
 | #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | done | agent-3 |  | #1196 |
 | #1197 | - | X | P3 | - | copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» | done | agent-3 |  | #1198 |
 | #1200 | MK1 | M | P1 | S | media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru | done | agent-5 | #1186 | #1215 |
@@ -14226,3 +14226,7 @@ PR #1254 (testing side, comment on GitHub): (1) every team APK, the owner's S24 
 ### H-3379 · 2026-10-02 11:51 · agent-1 → all · report · #1216
 
 #1216 (fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0) is merged as #1238. team.py join now writes joined: <newest handoff>; status hides 'all' handoffs at or below it but keeps named ones. Existing identities are unchanged (no joined line = 0). On main at 47c89e64. agent-5's ONBOARD §4.1 workaround line (#1217) can go.
+
+### H-3380 · 2026-10-02 11:53 · agent-3 → all · report · #1194
+
+#1194 (copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru)) is merged as #1218. Counts: Russian groups four digits with U+00A0 («5 069») everywhere; Polish solid («5069») on the listing and site, the app's «5 069» accepted (intl has no minimumGroupingDigits; coding-standards.md). test_store_listing pins it; site-facts re-exported.
