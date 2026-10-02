@@ -5171,6 +5171,97 @@
   "@addWordIntro": {
     "description": "R2: the line under the title."
   },
+  "docImportTitle": "Learn from a document",
+  "@docImportTitle": {
+    "description": "D1's title, and R1's way to it (#1227)."
+  },
+  "docImportIntro": "Bring the German you meet: a letter, a page, an article.",
+  "@docImportIntro": {
+    "description": "D1: the line under the title."
+  },
+  "docImportPaste": "Paste text",
+  "@docImportPaste": {
+    "description": "D1's choice that pastes text from the clipboard (FR-D1-01)."
+  },
+  "docImportPasteDetail": "From the clipboard",
+  "@docImportPasteDetail": {
+    "description": "D1: the line under Paste text."
+  },
+  "docImportPasteEmpty": "Nothing to paste: copy some German text first",
+  "@docImportPasteEmpty": {
+    "description": "D1: under Paste text, off, when the clipboard holds no text."
+  },
+  "docImportPrivacy": "Everything stays on this phone: reading and translation run here, offline.",
+  "@docImportPrivacy": {
+    "description": "D1: the privacy line under the choices (BR-DOC-01)."
+  },
+  "docImportTextLabel": "The text to read",
+  "@docImportTextLabel": {
+    "description": "D1: what a screen reader hears on the pasted text's box."
+  },
+  "docImportFind": "Find my words",
+  "@docImportFind": {
+    "description": "D1: the button under the pasted text that reads it."
+  },
+  "docImportCut": "Sogda reads only the first {count} characters: the rest is cut.",
+  "@docImportCut": {
+    "description": "D1: a text over the limit is cut (FR-D1-02). count is the limit, 20,000.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPasted": "Pasted text",
+  "@docImportPasted": {
+    "description": "D1 while processing: where the text came from."
+  },
+  "docImportShared": "Shared text",
+  "@docImportShared": {
+    "description": "D1 while processing: text another app shared."
+  },
+  "docImportReading": "Reading",
+  "@docImportReading": {
+    "description": "D1: the processing card's heading, in small capitals."
+  },
+  "docImportFinding": "Finding your words…",
+  "@docImportFinding": {
+    "description": "D1: the step that matches the text's words."
+  },
+  "docImportOffline": "On this phone, offline. It takes a few seconds.",
+  "@docImportOffline": {
+    "description": "D1: under the processing card."
+  },
+  "docImportCancel": "Cancel",
+  "@docImportCancel": {
+    "description": "D1: stops processing and saves nothing (FR-D1-05)."
+  },
+  "docImportNotGerman": "This doesn't look like German",
+  "@docImportNotGerman": {
+    "description": "D1: the text isn't German (FR-D1-04)."
+  },
+  "docImportNotGermanBody": "Sogda finds German words. In another language it finds few or none.",
+  "@docImportNotGermanBody": {
+    "description": "D1: under This doesn't look like German."
+  },
+  "docImportContinueAnyway": "Continue anyway",
+  "@docImportContinueAnyway": {
+    "description": "D1: goes on with a text that isn't German (FR-D1-04)."
+  },
+  "docImportFailed": "The text couldn't be read.",
+  "@docImportFailed": {
+    "description": "D1: the text couldn't be saved or matched."
+  },
+  "docImportUntitled": "Text of {date}",
+  "@docImportUntitled": {
+    "description": "A document's title when its text has no line of words: date is the day it was saved, as \"2 Oct\".",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "addWordArticle": "Article",
   "@addWordArticle": {
     "description": "R2: the heading over der / die / das / none, shown upper-case."

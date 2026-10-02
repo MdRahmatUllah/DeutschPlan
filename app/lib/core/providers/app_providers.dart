@@ -61,6 +61,7 @@ import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/exam_recorder.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
+import 'package:sogda/services/shared_text.dart';
 import 'package:sogda/services/translation/translator.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
 import 'package:sogda/services/tts/system_tts.dart';
@@ -564,6 +565,10 @@ NotificationPermission notificationPermission(Ref ref) =>
 /// The phone's free space: M4's storage card and its shortfall (#156).
 @riverpod
 DeviceStorage deviceStorage(Ref ref) => const PlatformDeviceStorage();
+
+/// Text shared from another app, for D1 to take (#1227).
+@riverpod
+SharedText sharedText(Ref ref) => const PlatformSharedText();
 
 /// Kept alive for the same reason: page 5's draft queues the voice (FR-S2-06).
 @Riverpod(keepAlive: true)
