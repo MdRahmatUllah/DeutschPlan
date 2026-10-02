@@ -6,7 +6,7 @@ last-read: 3209
 
 ## Now
 
-#1213 docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command — claimed 2026-10-02 09:44.
+#1213 in review as PR #1214: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
