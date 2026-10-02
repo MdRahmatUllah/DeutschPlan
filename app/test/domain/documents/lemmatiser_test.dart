@@ -132,13 +132,11 @@ void main() {
 
   // #1267: the held-out texts word for word. One broken rule barely moves the
   // corpus's floor, so each text's misses are pinned: a change here is a
-  // regression, or a fix, to name. The two known ones are written down.
-  test('#1267 BR-DOC-03: the held-out texts find their labels, but for two '
-      'known misses', () {
+  // regression, or a fix, to name. The known one is written down.
+  test('#1267 #1270 BR-DOC-03: the held-out texts find their labels, but for '
+      'one known miss', () {
     const known = <String, ({Set<String> extra, Set<String> missed})>{
-      // «…ab oder geben Sie ihm eine Erlaubnis mit,»: an imperative after
-      // «oder» isn't read as the particle verb (#1256's review).
-      'heldout_school': (extra: {'geben'}, missed: {}),
+      'heldout_school': (extra: {}, missed: {}),
       'heldout_doctor': (extra: {}, missed: {}),
       // «auf den Bänken»: the course's Bank has only «Banken» (content).
       'heldout_news': (extra: {}, missed: {'Bank'}),
@@ -259,6 +257,20 @@ void main() {
     expect(words[5], '');
     expect(byGerman, isNot(contains('hingehen')));
     expect(lemmas('Wo gehst du hin?')[1], 'gehen');
+  });
+
+  test('#1270: «und» and «oder» join main clauses, each with its own '
+      'particle verb', () {
+    expect(byGerman, contains('abholen'));
+    final words = lemmas(
+      'Bitte holen Sie Ihr Kind ab oder geben Sie ihm eine Erlaubnis mit.',
+    );
+    expect(words[1], 'abholen');
+    expect(words[5], '', reason: 'ab belongs to holen');
+    expect(words[7], '', reason: 'geben … mit is mitgeben, not in the course');
+    expect(words.last, '');
+    // A verb both clauses share still takes its particle from the second.
+    expect(lemmas('Ich rufe dich heute oder morgen an.')[1], 'anrufen');
   });
 
   test('#1223: adjective endings and comparison', () {

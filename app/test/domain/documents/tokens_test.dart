@@ -217,4 +217,70 @@ void main() {
     expect(share('english'), lessThan(germanThreshold));
     expect(share('bangla'), lessThan(germanThreshold));
   });
+
+  test('#1270: a gender form is one word, as its stem\'s course word', () {
+    final sentence = splitText(
+      'Alle Kund:innen, Mitarbeiter*innen, Lehrer_innen und Bürger/-innen '
+      'und jede Teilnehmer:in kommen um 10:30, auch Kolleg*Innen.',
+    ).single;
+    expect(sentence.words, <String>[
+      'Alle',
+      'Kund:innen',
+      ',',
+      'Mitarbeiter*innen',
+      ',',
+      'Lehrer_innen',
+      'und',
+      'Bürger/-innen',
+      'und',
+      'jede',
+      'Teilnehmer:in',
+      'kommen',
+      'um',
+      ',',
+      'auch',
+      'Kolleg*Innen',
+    ]);
+    final lemmas = <String>[
+      // The course has two Kunde: der Kunde, and C2's die Kunde (tidings).
+      for (final entries in lemmatiser.sentence(sentence.words))
+        entries.map((e) => e.german).toSet().join('|'),
+    ];
+    expect(
+      <String>[
+        for (final i in <int>[1, 3, 5, 7, 10, 15]) lemmas[i],
+      ],
+      <String>[
+        'Kunde',
+        'Mitarbeiter',
+        'Lehrer',
+        'Bürger',
+        'Teilnehmer',
+        'Kollege',
+      ],
+    );
+  });
+
+  test('#1270: a capital after an adjective or an ordinal with an ending is '
+      'a noun; after a preposition it can still be a name', () {
+    bool name(String token, String previous) => likelyName(
+      token,
+      sentenceStart: false,
+      compound: false,
+      previous: previous,
+      previousEntries: lemmatiser.lookup(previous),
+    );
+    expect(name('Schritt', 'wichtiger'), isFalse);
+    expect(name('Login', 'ersten'), isFalse);
+    expect(name('Schritt', 'wichtig'), isTrue, reason: 'no ending: an adverb');
+    expect(name('Fahrerinnen', 'noch'), isFalse, reason: 'ends like a noun');
+    expect(name('Raum', 'in'), isTrue, reason: 'as «in Krefeld»: the corpus');
+    // The cost, taken: a place after an adjective reads as a word.
+    expect(name('Berlin', 'schönen'), isFalse, reason: '«im schönen Berlin»');
+    // FR-D1-04: so Schritt, outside the course, is a word that isn't German.
+    expect(
+      germanShare(splitText('Das ist ein wichtiger Schritt.'), lemmatiser),
+      0.8,
+    );
+  });
 }

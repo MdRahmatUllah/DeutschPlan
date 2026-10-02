@@ -37,13 +37,14 @@ class DocSentence {
 
 final RegExp _letter = RegExp(r'\p{L}', unicode: true);
 
-/// Words (hyphenated ones whole: E-Mail, Online-Banking) and clause marks,
-/// but not a number's («245,80», «10:30»). A lone letter («z. B.», the B of
-/// «B1») is no word.
+/// Words (hyphenated ones whole: E-Mail, Online-Banking; gender forms too:
+/// Kund:innen) and clause marks, but not a number's («245,80», «10:30»). A
+/// lone letter («z. B.», the B of «B1») is no word.
 final RegExp _token = RegExp(
   // Two letters or more, or one before a hyphen (E-Mail).
   r'\p{L}\p{M}*(?:(?:\p{L}\p{M}*)+(?:-\p{L}\p{M}*(?:\p{L}\p{M}*)*)*'
   r'|(?:-\p{L}\p{M}*(?:\p{L}\p{M}*)*)+)'
+  '(?:$genderSuffix)?'
   r'|(?<!\d)[,;:]|[,;:](?!\d)',
   unicode: true,
 );
@@ -205,13 +206,17 @@ bool _endsSentence(String text, int dot) {
 /// has a capital in the middle of a sentence, isn't a compound of course
 /// words ([compound]) and doesn't end like a noun («-ung», «-heit»…). After
 /// a title («Frau Okafor») it always is; after an article or a determiner
-/// («Ihr Jobcenter», «die Handwerker») it isn't. A country in -ien
+/// («Ihr Jobcenter», «die Handwerker») it isn't, nor after an adjective or
+/// an ordinal with an ending ([previousEntries], the course's reading of
+/// [previous]: «wichtiger Schritt», «am ersten Login»). A preposition is no
+/// such sign: «aus Syrien», «nach Deutschland» (#1270). A country in -ien
 /// («Syrien») ends like a plural (Familien), so it reads as a noun.
 bool likelyName(
   String token, {
   required bool sentenceStart,
   required bool compound,
   String? previous,
+  List<LemmaEntry> previousEntries = const <LemmaEntry>[],
 }) {
   final before = previous?.toLowerCase();
   if (before != null && _titles.hasMatch(before)) return true;
@@ -221,8 +226,15 @@ bool likelyName(
     return false;
   }
   if (before != null && _determiners.hasMatch(before)) return false;
+  if (before != null &&
+      _inflected.hasMatch(before) &&
+      previousEntries.any((e) => e.pos == 'adj' || e.pos == 'num')) {
+    return false;
+  }
   return !_nounEnding.hasMatch(token.toLowerCase());
 }
+
+final RegExp _inflected = RegExp(r'e[mnrs]?$');
 
 final RegExp _titles = RegExp(r'^(frau|herr|herrn|familie|dr|prof)$');
 
@@ -233,7 +245,7 @@ final RegExp _determiners = RegExp(
 
 final RegExp _nounEnding = RegExp(
   r'(ung|heit|keit|schaft|tion|sion|tät|ment|nis|tum|ling|chen|lein|ismus|'
-  r'enz|anz|ik|ie|age|ur|ei|eur)(en|s|n)?$',
+  r'enz|anz|ik|ie|age|ur|ei|eur|innen)(en|s|n)?$',
 );
 
 /// The share of [sentences]' words that are German to the lemmatiser: a
@@ -247,11 +259,11 @@ double germanShare(List<DocSentence> sentences, Lemmatiser lemmatiser) {
   for (final sentence in sentences) {
     final lemmas = lemmatiser.sentence(sentence.words);
     final first = sentence.tokens.indexWhere((t) => t.isWord);
-    String? previous;
+    var previous = -1;
     for (final (i, token) in sentence.tokens.indexed) {
       if (!token.isWord) continue;
       final before = previous;
-      previous = token.text;
+      previous = i;
       if (lemmas[i].isNotEmpty ||
           stopForms.contains(token.text.toLowerCase())) {
         words++;
@@ -268,7 +280,8 @@ double germanShare(List<DocSentence> sentences, Lemmatiser lemmatiser) {
         token.text,
         sentenceStart: i == first,
         compound: compound,
-        previous: before,
+        previous: before < 0 ? null : sentence.tokens[before].text,
+        previousEntries: before < 0 ? const <LemmaEntry>[] : lemmas[before],
       )) {
         continue;
       }
