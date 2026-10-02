@@ -18,7 +18,6 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/plan_repository.dart' show ReviewSource;
 import 'package:sogda/data/repositories/search_repository.dart';
-import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/cloze.dart';
 import 'package:sogda/domain/fsrs.dart' show Rating;
 import 'package:sogda/domain/sentence_picker.dart';

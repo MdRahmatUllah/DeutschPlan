@@ -46,7 +46,7 @@ German into each meaning language the app offers (en, bn, ru, pl), and each of t
 ## The engine's life
 
 - **`translatorProvider`** gives `HyMtTranslator` (`hymtTranslatorProvider`, kept alive). While `mt_enabled` is off or the model isn't ready on the phone, it answers null, as `UnavailableTranslator` does, so nothing is cached then; a test without a model can still use `UnavailableTranslator`.
-- **Loaded on the first translation,** not at launch. That takes a few seconds; the device check records how long the first one takes. It stays loaded for the next one.
+- **Loaded on the first translation,** not at launch. It stays loaded for the next one. **Measured** (#154's device check, emulator-5558, 2 GB of RAM): R1's two lines took 2 to 5 minutes, cold or warm, even right after a reboot. The 1.1 GB mapping can't stay resident beside Android in 2 GB, so each token reads weights from flash again (81,000 major page faults in 25 s). It's memory, not threads (llama.cpp picks the cores). A phone with room for the mapping is still to be timed; whether phones below a RAM floor are offered the model is open on #154.
 - **Released** under memory pressure and when the app goes to the background, as the voice is (`VoiceRelease`). Also when the model is deleted.
 - **Reloaded** when a new download of it lands.
 - **One translation at a time.** A second request waits for the first.
