@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-02 10:53
+last-seen: 2026-10-02 10:54
 last-read: 3175
 
 ## Now
 
-#1216 in review as PR #1238: answer review threads; re-run the gate if main moved, then merge.
+#154 HyMtTranslator behind the licence build flag — claimed 2026-10-02 10:54.
 
 ## Next
 

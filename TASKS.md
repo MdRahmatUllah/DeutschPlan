@@ -65,7 +65,7 @@ claiming the same issue. A hand edit skips that check.
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
-| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | assigned | agent-1 | #64 #151 #283 |  |
+| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | in-progress | agent-1 | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | done | agent-1 | #146 #153 #156 | #447 |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
