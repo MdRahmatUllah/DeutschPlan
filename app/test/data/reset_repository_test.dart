@@ -243,6 +243,48 @@ void main() {
     expect(await count('undo_stack'), 0);
   });
 
+  test("#1226 FR-M7-01 a step reset takes its words off the documents' "
+      'queue, and their sentences stay: they are the learner\'s', () async {
+    await db.customStatement(
+      'INSERT INTO doc_queue (word_key, added_at) VALUES '
+      "('${ContentFixture.haus}', '2026-09-20T08:00:00Z'), "
+      "('${ContentFixture.strasse}', '2026-09-20T08:00:00Z')",
+    );
+    await db.customStatement(
+      'INSERT INTO word_contexts (word_key, sentence, created_at) VALUES '
+      "('${ContentFixture.haus}', 'Das Haus ist groß.', '2026-09-20T08:00:00Z')",
+    );
+    await reset.resetStep('A1.1', today: today);
+    final queued = await db
+        .customSelect('SELECT word_key FROM doc_queue')
+        .get();
+    expect(
+      <String>[for (final row in queued) row.read<String>('word_key')],
+      <String>[ContentFixture.strasse],
+      reason: "A1.2's word stays queued",
+    );
+    expect(await count('word_contexts'), 1);
+  });
+
+  test('#1226 FR-M7-02 everything empties the documents too', () async {
+    await db.customStatement(
+      'INSERT INTO documents (title, source, created_at, body) '
+      "VALUES ('Brief', 'paste', '2026-09-20T08:00:00Z', 'Text')",
+    );
+    await db.customStatement(
+      'INSERT INTO word_contexts (word_key, sentence, document_id, created_at) '
+      "VALUES ('${ContentFixture.haus}', 'Text', 1, '2026-09-20T08:00:00Z')",
+    );
+    await db.customStatement(
+      'INSERT INTO doc_queue (word_key, added_at) '
+      "VALUES ('${ContentFixture.haus}', '2026-09-20T08:00:00Z')",
+    );
+    await reset.resetEverything();
+    for (final table in <String>['documents', 'word_contexts', 'doc_queue']) {
+      expect(await count(table), 0, reason: table);
+    }
+  });
+
   test('FR-M7-02 everything goes but the theme and the language', () async {
     await settings.write(SettingKeys.themeMode, ThemeModeSetting.dark);
     await settings.write(SettingKeys.uiLanguage, UiLanguage.bangla);

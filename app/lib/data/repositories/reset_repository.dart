@@ -74,6 +74,12 @@ ORDER BY l.ord, s.ord
           <Object>[step],
         );
       }
+      // Its words leave the documents' queue (#1226). Their sentences stay:
+      // they're the learner's, not progress.
+      await _db.customStatement(
+        'DELETE FROM doc_queue WHERE word_key IN ($words)',
+        <Object>[step],
+      );
       for (final table in <String>['grammar_state', 'grammar_practice_log']) {
         await _db.customStatement(
           'DELETE FROM $table WHERE grammar_uid IN ($topics)',

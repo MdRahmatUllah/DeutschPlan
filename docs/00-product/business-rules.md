@@ -84,7 +84,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - BR-DOC-03 Each lemma found is classed as **known**, **probably known**, **new in the course**, **mine** or **outside the course**, as `03-domain/document-matcher.md` defines. Stop words are never offered. A lemma is listed once per document, with all its sentences.
 - BR-DOC-04 *Add* puts a course word in the document queue (BR-PLAN-11), with its sentence kept as a context. A word outside the course becomes one of *My words*: the sentence is its example, the document's title is its *where I saw it*, and its meaning is Hy-MT2's (labelled) or typed in. A word added again gets the new sentence, never a second card. *I know this* is W1's *Mark known* (FR-W1-02).
 - BR-DOC-05 Documents are kept, as the owner decided (#1220): the text always, and the images while *Save original images* is on (the default). *Auto-delete after N days* is off by default. Deleting a document never deletes the words added from it, and their sentences stay on the cards. A saved image loses its metadata (EXIF, GPS included).
-- BR-DOC-06 Export carries the documents' text, what each one found, the sentences and the queue. It never carries images. Import merges them like *My words* (the identities are in `03-domain/document-matcher.md`).
+- **BR-DOC-06** Export carries the documents' text, what each one found, the sentences and the queue. It never carries images. Import merges them like *My words* (the identities are in `03-domain/document-matcher.md`).
 - BR-DOC-07 A machine-translated meaning is labelled as such until the learner edits it.
 - BR-DOC-08 The feature is free, with no limits (#1220).
 

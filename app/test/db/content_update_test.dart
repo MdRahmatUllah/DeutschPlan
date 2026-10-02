@@ -622,6 +622,25 @@ void main() {
         'INSERT INTO custom_words (created_at, german, meaning, matched_uid) '
         "VALUES ('2026-01-02T08:00:00Z', 'Haus', 'house', '$haus')",
       );
+      // Learn from your documents (#1226): its sentence, its queue row and
+      // its D2 row follow it too.
+      await db.customStatement(
+        'INSERT INTO documents (id, title, source, created_at, body) '
+        "VALUES (1, 'Brief', 'paste', '2026-01-02T08:00:00Z', 'Das Haus.')",
+      );
+      await db.customStatement(
+        'INSERT INTO document_words '
+        '(document_id, lemma_key, surface, sentence, class) '
+        "VALUES (1, '$haus', 'Haus', 'Das Haus.', 'course')",
+      );
+      await db.customStatement(
+        'INSERT INTO word_contexts (word_key, sentence, created_at) '
+        "VALUES ('$haus', 'Das Haus.', '2026-01-02T08:00:00Z')",
+      );
+      await db.customStatement(
+        'INSERT INTO doc_queue (word_key, added_at) '
+        "VALUES ('$haus', '2026-01-02T08:00:00Z')",
+      );
     }
 
     test('keeps every row the learner has under the old uid', () async {
@@ -635,6 +654,14 @@ void main() {
           0,
           reason: '$table.$column still under the old uid',
         );
+        expect(await count(table, column, home), 1, reason: '$table.$column');
+      }
+      // #1226, by name: a column missing from the list would leave the loop.
+      for (final (table, column) in <(String, String)>[
+        ('word_contexts', 'word_key'),
+        ('doc_queue', 'word_key'),
+        ('document_words', 'lemma_key'),
+      ]) {
         expect(await count(table, column, home), 1, reason: '$table.$column');
       }
       final state = await db
