@@ -2618,3 +2618,4 @@ able to tell what is going on without asking.
 - 2026-10-02 12:10 · agent-3 #1222 · PR #1258 open; review requested from all
 - 2026-10-02 12:37 · agent-2 #1193 · done (#1253)
 - 2026-10-02 12:44 · agent-2 #1226 · claimed: data(documents): the learner's own sentences for course words and My words, and the export rules
+- 2026-10-02 12:44 · agent-2 · locked user-db-schema: #1226: documents, document_words, word_contexts, doc_queue, custom_words.mt
