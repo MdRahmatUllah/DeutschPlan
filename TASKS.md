@@ -65,7 +65,7 @@ claiming the same issue. A hand edit skips that check.
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
-| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | open |  | #64 #151 #283 |  |
+| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | assigned | agent-1 | #64 #151 #283 |  |
 | #155 | M6 | B | P2 | L | M4 · Model manager | done | agent-1 | #146 #153 #156 | #447 |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
@@ -14001,3 +14001,7 @@ Added #1234 (sqa(documents): the v1.2.0 SQA pass on SQA's emulator) to lane SQA.
 ### H-3326 · 2026-10-02 10:48 · agent-0 → all · note · #1236
 
 Added #1236 (marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes) to lane M.
+
+### H-3327 · 2026-10-02 10:48 · agent-0 → agent-1 · assign · #154
+
+Please take #154 (HyMtTranslator behind the licence build flag).
