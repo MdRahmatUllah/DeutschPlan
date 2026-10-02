@@ -2546,3 +2546,4 @@ able to tell what is going on without asking.
 - 2026-10-02 10:18 · agent-3 #1216 · added to the board, lane X
 - 2026-10-02 10:27 · agent-5 #1201 · claimed: research(marketing): where each audience is: channels, communities and their rules, per language
 - 2026-10-02 10:28 · agent-5 · Owner goal: the launch marketing plan. Batching #1201 channels, #1202 competitors, #1203 messaging, #1204 calendar into one PR with docs/marketing/plan.md as the hub; three research subagents running (channels bn/en/exam, channels ru/pl/de, competitors' social + Play mechanics)
+- 2026-10-02 10:30 · agent-3 #1194 · claimed: copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru)
