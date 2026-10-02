@@ -616,7 +616,7 @@ claiming the same issue. A hand edit skips that check.
 | #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | review | agent-0 |  | #1314 |
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | assigned | agent-0 | #1294 |  |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | assigned | agent-0 | #1294 |  |
-| #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | open |  | #1123 |  |
+| #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | assigned | agent-1 | #1123 |  |
 | #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | open |  |  |  |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | open |  |  |  |
 
@@ -15636,3 +15636,7 @@ Added #1257 (content: everyday words the course never teaches on their own (Zeit
 ### H-3725 · 2026-10-03 01:18 · agent-0 → all · note · #1316
 
 Added #1316 (docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter) to lane A.
+
+### H-3726 · 2026-10-03 01:18 · agent-0 → agent-1 · assign · #1237
+
+Owner decided 2026-10-03: build it for v1.2.0. Me's 'Rate Sogda on Google Play' row (url_launcher → the listing) + Play's in-app review card once, after the first passed mock exam (BR-EXAM-04); in_app_review accepted (take the pubspec lock). Spec in the issue's comments; docs: me.md + a BR line; tests by FR id, goldens for the row.
