@@ -6,7 +6,7 @@ last-read: 3755
 
 ## Now
 
-Nothing claimed.
+#1318 size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V — claimed 2026-10-03 01:39.
 
 ## Next
 
