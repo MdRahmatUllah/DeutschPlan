@@ -6,3 +6,8 @@
 # Supertonic synthesis crashed the release app with a ClassNotFoundException
 # (#152). flutter_onnxruntime ships no consumer rules of its own.
 -keep class ai.onnxruntime.** { *; }
+
+# pdfbox-android (#1228, ADR 31) names its optional JPEG 2000 decoder, which
+# isn't on the classpath: R8 would fail on the missing class. A PDF's text
+# layer never needs it.
+-dontwarn com.gemalto.jp2.JP2Decoder

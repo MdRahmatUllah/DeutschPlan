@@ -132,6 +132,9 @@ class MainActivity : FlutterActivity() {
                 }
             }
 
+        // D1's PDFs: their text layer, page by page (#1228).
+        PdfText.register(flutterEngine.dartExecutor.binaryMessenger, this)
+
         // The cold start's end: Today with its plan, or setup's first page.
         // The system logs it as "Fully drawn", after the first frame's
         // "Displayed", which is only the splash (#462).
