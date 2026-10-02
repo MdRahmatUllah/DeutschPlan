@@ -824,6 +824,7 @@
   "docImportCut": "Sogda শুধু প্রথম {count}টি অক্ষর পড়ে: বাকিটা বাদ যায়।",
   "docImportPasted": "পেস্ট করা টেক্সট",
   "docImportShared": "শেয়ার করা টেক্সট",
+  "docImportExamHeld": "আগে পরীক্ষা শেষ করুন, তারপর আবার শেয়ার করুন।",
   "docImportReading": "পড়া হচ্ছে",
   "docImportFinding": "আপনার শব্দগুলো খোঁজা হচ্ছে…",
   "docImportOffline": "এই ফোনেই, অফলাইনে। কয়েক সেকেন্ড লাগে।",

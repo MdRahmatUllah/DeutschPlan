@@ -5221,6 +5221,10 @@
   "@docImportShared": {
     "description": "D1 while processing: text another app shared."
   },
+  "docImportExamHeld": "Finish the exam first, then share it again.",
+  "@docImportExamHeld": {
+    "description": "#1282: a toast over a running mock exam when the learner shares a text or a PDF to Sogda: the exam holds it (FR-L12-04), so D1 didn't open."
+  },
   "docImportReading": "Reading",
   "@docImportReading": {
     "description": "D1: the processing card's heading, in small capitals."

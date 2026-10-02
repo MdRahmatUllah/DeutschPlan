@@ -824,6 +824,7 @@
   "docImportCut": "Sogda читает только первые {count} символов, остальное обрезается.",
   "docImportPasted": "Вставленный текст",
   "docImportShared": "Присланный текст",
+  "docImportExamHeld": "Сначала закончи экзамен, потом поделись снова.",
   "docImportReading": "Чтение",
   "docImportFinding": "Ищем твои слова…",
   "docImportOffline": "На этом телефоне, без интернета. Это займёт несколько секунд.",

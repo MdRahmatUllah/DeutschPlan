@@ -6,7 +6,7 @@
 
 **Reached from.**
 - R1 idle: *Learn from a document*, under *Add a word I found*;
-- **Android's share sheet:** "Share → Sogda" with text, a PDF or images. It opens D1 straight into processing, even mid-session, but never over a running exam (the deep-link rules);
+- **Android's share sheet:** "Share → Sogda" with text, a PDF or images. It opens D1 straight into processing, even mid-session, but never over a running exam (the deep-link rules). There, a toast says «Finish the exam first, then share it again.» (#1282): the learner shared from another app and would see nothing happen. What was shared isn't kept for later; the next share replaces it;
 - D3's *New document*.
 
 **Leads to.** D2 when processing ends.
@@ -68,7 +68,7 @@
 - **The share target:** an `ACTION_SEND` / `ACTION_SEND_MULTIPLE` intent filter for `text/plain`, `application/pdf` and `image/*`. Text is #1227's; the PDF and the images join it in #1228 and #1229.
   - **`ShareActivity`**, with no window of its own, holds the filter. It opens `MainActivity` as the widget does (`NEW_TASK | CLEAR_TOP`), with the link `sogda://import` alone. So the share lands in the app's own task and its one Flutter engine, never in the sender's task as a second copy of the app with `user.db` open twice.
   - **The text stays in the process** (`ShareActivity.take`), never on an intent and never as data (#613). `MainActivity` is exported and BROWSABLE, so an extra on its intent could come from any app, or from a web page's `intent://` link, and D1 would save it with no share sheet chosen. It reads none. D1 takes the text once (`sogda/share`, `SharedText.take`); a launch restored after the process died finds none, so the same document isn't saved twice.
-  - **The link** is an arrival like any other (`navigation.md`): a running exam holds it, a study session doesn't, and each share is numbered (`?arrival=`), so a second one onto D1 is read too.
+  - **The link** is an arrival like any other (`navigation.md`): a running exam holds it, and says so (#1282), a study session doesn't, and each share is numbered (`?arrival=`), so a second one onto D1 is read too.
 - **R1 idle's** *Learn from a document*, under *Add a word I found*, pushes D1 (`/search/import`); back returns to R1. Back from the pasted text's box, or from processing, returns to the choices.
 - The APK's growth is measured in `perf.py size`.
 
