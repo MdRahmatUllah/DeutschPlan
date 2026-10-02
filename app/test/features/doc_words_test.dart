@@ -7,6 +7,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/documents/matcher.dart';
+import 'package:sogda/domain/documents/tokens.dart' show docMaxChars;
+import 'package:sogda/features/documents/doc_import_screen.dart'
+    show docMaxPages;
 import 'package:sogda/features/documents/doc_words_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
@@ -24,12 +27,16 @@ void main() {
   });
 
   /// D2 over R1, with R2 as a page that says what it was given.
-  Future<GoRouter> pump(WidgetTester tester, List<Override> overrides) async {
+  Future<GoRouter> pump(
+    WidgetTester tester,
+    List<Override> overrides, {
+    String location = '/search/document/7',
+  }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     final router = GoRouter(
-      initialLocation: '/search/document/7',
+      initialLocation: location,
       routes: <RouteBase>[
         GoRoute(
           path: '/search',
@@ -37,8 +44,10 @@ void main() {
           routes: <RouteBase>[
             GoRoute(
               path: 'document/:id',
-              builder: (_, state) =>
-                  DocWordsScreen(id: int.parse(state.pathParameters['id']!)),
+              builder: (_, state) => DocWordsScreen(
+                id: int.parse(state.pathParameters['id']!),
+                cut: state.uri.queryParameters['cut'],
+              ),
             ),
             GoRoute(
               path: 'add',
@@ -445,6 +454,39 @@ void main() {
     });
     expect(bold, findsOneWidget);
   });
+
+  testWidgets("#1315 FR-D2-03 a word today's plan has already takes no slot "
+      'in the cap note', (tester) async {
+    await pump(
+      tester,
+      docWordsStub(
+        plan: FakePlan(slots: 2, planned: <String>{uidOf('Nachzahlung')}),
+      ),
+    );
+    final fresh = docMatch(artboardLetter).words
+        .where((w) => w.docClass == DocClass.newInCourse && !w.ambiguous)
+        .length;
+    expect(find.text(l10n.docWordsCapNote(5, fresh - 1 - 2)), findsOneWidget);
+  });
+
+  for (final (cut, note) in <(String, String Function())>[
+    ('text', () => l10n.docImportCut(docMaxChars)),
+    ('pages', () => l10n.docImportTooManyPages(docMaxPages)),
+  ]) {
+    testWidgets('#1320 FR-D1-02 D2 says what D1 cut ($cut), once it is open', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        docWordsStub(),
+        location: '/search/document/7?cut=$cut',
+      );
+      expect(find.text(note()), findsOneWidget);
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
+      expect(find.text(note()), findsNothing, reason: 'once, then gone');
+    });
+  }
 
   testWidgets('a text with nothing new says so', (tester) async {
     await pump(

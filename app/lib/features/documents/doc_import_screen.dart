@@ -76,6 +76,11 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   /// The PDF chosen (#1228): its file, its name for the intro, how many of
   /// its pages are being read, and how many were.
   String _pdfPath = '';
+
+  /// What this reading cut (FR-D1-02), for D2 to say (#1320): the text past
+  /// its 20,000 characters, or the photos or PDF past their 30 pages.
+  bool _textCut = false;
+  bool _pagesCut = false;
   String _pdfName = '';
   int _readingOf = 0;
   int _pdfPages = 0;
@@ -190,6 +195,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     final chosen = await ref.read(pagePhotosProvider).choose();
     if (!mounted || chosen.isEmpty) return;
     _photos = chosen.take(docMaxPages).toList();
+    _pagesCut = chosen.length > docMaxPages;
     if (chosen.length > docMaxPages) {
       SgToast.show(
         context,
@@ -225,6 +231,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
         _pdf,
         _pdfPath,
         onOpen: (pages) {
+          _pagesCut = pages > maxPdfPages;
           if (pages > maxPdfPages && mounted && run == _run) {
             SgToast.show(
               context,
@@ -339,6 +346,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   Future<void> _read(List<String> pages, {required String source}) async {
     final run = ++_run;
     final limited = limitText(cleanPages(pages));
+    _textCut = limited.cut;
     setState(() {
       _source = source;
       _body = limited.text;
@@ -395,7 +403,16 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
       unawaited(ref.read(pagePhotosProvider).discard(_photos));
     }
     if (!mounted || run != _run) return;
-    DocWordsRoute.instead(context, id);
+    // #1320: D2 says what was cut; this screen's note goes with it.
+    DocWordsRoute.instead(
+      context,
+      id,
+      cut: _textCut
+          ? 'text'
+          : (_source == 'photo' || _source == 'pdf') && _pagesCut
+          ? 'pages'
+          : null,
+    );
   }
 
   /// BR-DOC-05: the PDF's copy (the picker's, or a share's in

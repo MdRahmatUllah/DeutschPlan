@@ -105,9 +105,15 @@ class FakeDocuments extends Fake implements DocumentRepository {
 /// [PlanEngine]'s two document calls (#1272): today takes [slots], the rest
 /// start on Monday.
 class FakePlan extends Fake implements PlanEngine {
-  FakePlan({this.slots = 5});
+  FakePlan({this.slots = 5, this.planned = const <String>{}});
 
   int slots;
+
+  /// What today's plan has already by the course's route (#1315).
+  final Set<String> planned;
+
+  @override
+  Future<Set<String>> plannedToday(PlanDate today) async => planned;
   final List<List<String>> added = <List<String>>[];
 
   @override
