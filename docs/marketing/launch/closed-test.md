@@ -38,18 +38,23 @@ Play Console's labels are from Google's help pages (https://support.google.com/g
 5. [ ] **Create a release on the closed track,** upload the AAB, and roll it out. Google reviews it. The opt-in link appears only once the status reads "Published".
 
 **Day 0: open the test**
-6. [ ] **Copy the opt-in link** (Testers tab › Copy link).
-7. [ ] **Send the call for testers** (below). Send it first to the people who asked sogda.de to be told (O4), then to your own network, then to each community whose admins said yes.
-8. [ ] **Note in the log** the day each tester opts in. **The 14 days count from the day the 12th tester is in.**
+6. [ ] **Your own phone first.** Every APK the team handed out is debug-signed, and Play won't install its upload-key build over a `de.sogda.app` signed otherwise: the install fails, and uninstalling wipes the progress. So on your phone, and on any phone you gave a test APK:
+   - *Me › Settings › Export / import › Save to device*;
+   - uninstall Sogda;
+   - install it from the opt-in link;
+   - *Export / import › Import*, then *Replace*.
+7. [ ] **Copy the opt-in link** (Testers tab › Copy link). Open it once with the phone in Polish and once in Russian, and check the button's label against the calls («Zostań testerem», «Стать тестировщиком»).
+8. [ ] **Send the call for testers** (below). Send it first to the people who asked sogda.de to be told (O4), then to your own network, then to each community whose admins said yes.
+9. [ ] **Note in the log** the day each tester opts in. **The 14 days count from the day the 12th tester is in.**
 
 **Days 1–14: keep them in**
-9. [ ] Send the three short messages to the group (day 1, day 7, day 13, below).
-10. [ ] Log every piece of feedback. agent-5 files each bug or idea as an issue, and agent-0 triages.
-11. [ ] Keep at least 12 opted in. **Aim for 20** so that drop-outs don't reset the count.
+10. [ ] Send the three short messages to the group (day 1, day 7, day 13, below).
+11. [ ] Log every piece of feedback. agent-5 files each bug or idea as an issue, and agent-0 triages.
+12. [ ] Keep at least 12 opted in. **Aim for 20** so that drop-outs don't reset the count.
 
 **Day 14+: apply**
-12. [ ] **Dashboard › Apply for production,** with the answers drafted below and filled in from the log.
-13. [ ] **After approval,** release 1.1.0 to Production. The day the listing is live is *Live*, and launch day L is the first Tuesday or Wednesday after it ([`calendar.md`](../calendar.md)).
+13. [ ] **Dashboard › Apply for production,** with the answers drafted below and filled in from the log.
+14. [ ] **After approval,** release the tested build to Production. The day the listing is live is *Live*, and launch day L is the first Tuesday or Wednesday after it ([`calendar.md`](../calendar.md)).
 
 **In all, about three to four weeks:** a day or so for the closed release's review, 14 days of testing, up to about 7 days for the application's review, then the production release's own review.
 
@@ -70,7 +75,9 @@ Play Console's labels are from Google's help pages (https://support.google.com/g
 
 ## The call for testers
 
-One message per community or person. Each language is a *draft* until its native review: agent-1 for bn and pl, agent-2 for ru, agent-0 for en and de.
+One message per community or person. bn and pl had agent-1's native review, ru agent-2's, en and de agent-0's (#1254).
+
+**To anyone you sent a test APK,** add a line (agent-3, #1254): *"You have a test version from me: first save your progress (Me › Settings › Export / import › Save to device), uninstall it, install from the link, then Import › Replace."*
 
 ### en
 
@@ -87,7 +94,7 @@ One message per community or person. Each language is a *draft* until its native
 >
 > It needs Android {app.min_android} or newer. Thank you!
 
-### bn (*draft*)
+### bn
 
 > **Google Play-তে আসার আগে Sogda পরীক্ষা করতে সাহায্য করবেন?**
 >
@@ -96,49 +103,51 @@ One message per community or person. Each language is a *draft* until its native
 > নতুন অ্যাপ সবার জন্য খোলার আগে Google Play চায়, আসল মানুষ ১৪ দিন সেটি পরীক্ষা করুক। তাই জার্মান শিখছেন এমন কয়েকজনকে খুঁজছি, যাঁরা আগে ব্যবহার করে জানাবেন কী ভুল আছে বা কী নেই।
 >
 > ১. ফোনের Play Store-এ যে Google অ্যাকাউন্ট আছে, সেটি দিয়ে টেস্টারদের গ্রুপে যোগ দিন: <group-link>
-> ২. <opt-in-link> খুলে টেস্টার হওয়ার বোতামটি চাপুন (ইংরেজিতে "Become a tester"), তারপর Google Play থেকে Sogda ইনস্টল করুন।
+> ২. <opt-in-link> খুলে টেস্টার হওয়ার বোতামটি চাপুন (ফোনের ভাষা ইংরেজি হলে "Become a tester"), তারপর Google Play থেকে Sogda ইনস্টল করুন।
 > ৩. টানা ১৪ দিন টেস্টে থাকুন, আর বেশিরভাগ দিন কয়েক মিনিট ব্যবহার করুন।
 > ৪. যা চোখে পড়ে জানান: <feedback-address>, অথবা Play-এর প্রাইভেট ফিডব্যাকে।
 >
-> Android {app.min_android} বা তার নতুন সংস্করণ লাগবে। ধন্যবাদ!
+> Android {app.min_android} বা তার পরের সংস্করণ লাগবে। ধন্যবাদ!
 
-### pl (*draft*)
+### pl
 
 > **Pomóż przetestować Sogdę, zanim trafi do Google Play**
 >
-> Tworzę Sogdę, aplikację z kursem niemieckiego offline na Androida: od A1 do C2 w {totals.steps} etapach, {totals.words} słów, {totals.grammar_topics} tematy gramatyczne i {totals.mock_exams} egzaminów próbnych. Znaczenia, przykłady i reguły są po polsku, a wymowa jest zapisana polskimi literami. Bez konta.
+> Tworzę Sogdę, aplikację z kursem niemieckiego offline na Androida: od A1 do C2 w {totals.steps} etapach, {totals.words} słów, {totals.grammar_topics} tematy gramatyczne i {totals.mock_exams} egzaminów próbnych. Znaczenia, tłumaczenia przykładów i reguły są po polsku, a wymowa jest zapisana polskimi literami. Bez konta.
 >
 > Zanim nowa aplikacja stanie się dostępna dla wszystkich, Google Play wymaga, by przez 14 dni testowali ją prawdziwi ludzie. Szukam osób, które uczą się niemieckiego i chcą korzystać z niej jako pierwsze, a potem powiedzieć mi, co nie działa albo czego brakuje.
 >
 > 1. Dołącz do grupy testerów z kontem Google, którego używasz w Sklepie Play na telefonie: <group-link>
-> 2. Otwórz <opt-in-link>, kliknij przycisk, by zostać testerem („Become a tester”), i zainstaluj Sogdę z Google Play.
-> 3. Zostań w teście przez 14 dni z rzędu i zaglądaj do aplikacji na kilka minut w większość dni.
-> 4. Napisz, co zauważysz: <feedback-address> albo przez prywatną opinię w Google Play.
+> 2. Otwórz <opt-in-link>, stuknij „Zostań testerem” i zainstaluj Sogdę z Google Play.
+> 3. Zostań w teście przez 14 dni z rzędu i zaglądaj do aplikacji na kilka minut przez większość tych dni.
+> 4. Napisz, co zauważysz, na <feedback-address> albo w prywatnej opinii w Google Play.
 >
 > Potrzebny jest Android {app.min_android} lub nowszy. Dziękuję!
 
-### ru (*draft*)
+*The tokens fill numbers, not forms (agent-1): «{totals.grammar_topics} tematy gramatyczne» holds while the count takes Polish's *few* form (ending in 2–4, but not 12–14); one ending in 0, 1 or 5–9, such as 185, needs «tematów gramatycznych». The other three hold for today's counts. A count that changes gets a native re-read.*
+
+### ru
 
 > **Помоги протестировать Sogda до выхода в Google Play**
 >
 > Я делаю Sogda — приложение с офлайн-курсом немецкого для Android: от A1 до C2 за {totals.steps} этапов, {totals.words} слов, {totals.grammar_topics} грамматические темы и {totals.mock_exams} пробных экзаменов. Значения, примеры и правила — на русском, а произношение записано кириллицей. Без аккаунта.
 >
-> Прежде чем открыть новое приложение для всех, Google Play требует, чтобы его 14 дней тестировали живые люди. Ищу тех, кто учит немецкий и хочет пользоваться им первым, а потом рассказать, что не так или чего не хватает.
+> Прежде чем открыть новое приложение для всех, Google Play требует, чтобы его 14 дней тестировали живые люди. Ищу тех, кто учит немецкий, хочет первым попробовать Sogda, а потом рассказать, что не так или чего не хватает.
 >
-> 1. Вступи в группу тестировщиков с тем Google-аккаунтом, который стоит в Play Маркете на телефоне: <group-link>
-> 2. Открой <opt-in-link>, нажми кнопку, чтобы стать тестировщиком («Become a tester»), и установи Sogda из Google Play.
-> 3. Оставайся в тесте 14 дней подряд и заходи в приложение на несколько минут в большинство дней.
-> 4. Пиши, что заметишь: <feedback-address> — или через личный отзыв в Google Play.
+> 1. Вступи в группу тестировщиков с тем Google-аккаунтом, который используется в Google Play на телефоне: <group-link>
+> 2. Открой <opt-in-link>, нажми «Стать тестировщиком» (если телефон на английском — «Become a tester») и установи Sogda из Google Play.
+> 3. Оставайся в тесте 14 дней подряд и открывай приложение хотя бы на несколько минут почти каждый день.
+> 4. Пиши, что заметишь: <feedback-address> — или отправь отзыв разработчику прямо в Google Play.
 >
 > Нужен Android {app.min_android} или новее. Спасибо!
 
-### de (*draft*)
+### de
 
 > **Sogda vor dem Start auf Google Play testen?**
 >
 > Ich entwickle Sogda, eine Offline-Deutschkurs-App für Android: von A1 bis C2 in {totals.steps} Stufen, mit {totals.words} Wörtern, {totals.grammar_topics} Grammatikthemen und {totals.mock_exams} Probeprüfungen, dazu Bedeutungen und eine Aussprachehilfe auf Englisch, Bangla, Russisch oder Polnisch. Ohne Konto.
 >
-> Bevor eine neue App für alle erscheint, verlangt Google Play, dass echte Menschen sie 14 Tage lang testen. Ich suche Deutschlernende und Lehrkräfte, die sie mit Lernenden ausprobieren möchten: Sie nutzen Sogda zuerst und sagen mir, was nicht stimmt oder fehlt.
+> Bevor eine neue App für alle erscheint, verlangt Google Play, dass echte Menschen sie 14 Tage lang testen. Ich suche Deutschlernende, die Sogda als Erste nutzen und mir sagen, was nicht stimmt oder fehlt – und Lehrkräfte, die die App mit ihren Kursen ausprobieren möchten.
 >
 > 1. Treten Sie mit dem Google-Konto, das Ihr Handy im Play Store nutzt, der Testgruppe bei: <group-link>
 > 2. Öffnen Sie <opt-in-link>, tippen Sie auf die Schaltfläche, um Tester zu werden („Become a tester“), und installieren Sie Sogda aus Google Play.
@@ -155,7 +164,7 @@ The bn, pl, ru and de versions are in the launch kit (#1210). Until then, the ow
 
 ## The three messages to the group
 
-> **Day 1:** Thank you for testing Sogda! If anything looks wrong or confusing, or something's missing, write to <feedback-address>. Every report becomes a fix or a reply. Please stay in the test for 14 days in a row: leaving resets the count.
+> **Day 1:** Thank you for testing Sogda! If anything looks wrong or confusing, or something's missing, write to <feedback-address>, or use Play's private feedback. The app's own *Report a problem* opens a public GitHub page, so use it only if you're happy to be seen there. Every report becomes a fix or a reply. Please stay in the test for 14 days in a row: leaving resets the count.
 >
 > **Day 7:** Halfway there. If you've tried a mock exam, the speaking task or the voice, I'd love to hear how it went. Thank you for staying in.
 >
@@ -163,11 +172,13 @@ The bn, pl, ru and de versions are in the launch kit (#1210). Until then, the ow
 
 ## The feedback log
 
-agent-5 keeps it from what the owner forwards. **Codes only**, never a name or an address.
+agent-5 keeps it from what the owner forwards. **Codes only**, never a name or an address. A report made through the app's *Report a problem* is a public GitHub issue already: log it under the tester's code and link the issue.
 
-| Date | Tester | Lang | Where in the app | What they said | Issue | Changed? |
-|---|---|---|---|---|---|---|
-| — | T01 | — | — | — | — | — |
+Each entry carries what a fix needs (agent-3, #1254): what they did, what happened and what they expected; the version (*Me › About and privacy*, «Version 1.1.0 (build 4) · content 2026.09»); the phone and its Android version; and the app language with the meaning language(s), which half of 1.1.0's bugs depended on.
+
+| Date | Tester | Version | Phone, Android | App / meaning languages | Where in the app | Did, happened, expected | Issue | Changed? |
+|---|---|---|---|---|---|---|---|---|
+| — | T01 | — | — | — | — | — | — | — |
 
 **Opted in** (the 14 days run from the 12th):
 
