@@ -325,14 +325,19 @@ void wireApp(ProviderContainer container, Bootstrap bootstrap) {
 }
 
 /// FR-D3-03 (#1296): at launch, the documents older than M3's *Delete
-/// documents after* go, with their photos, as D3's *Delete* takes one.
+/// documents after* go, with their photos, as D3's *Delete* takes one. A
+/// failure costs the clean-up, never the start: the next launch tries again.
 Future<int> deleteOldDocuments(ProviderContainer container) => container
     .read(documentRepositoryProvider)
     .deleteOlderThan(
       container
           .read(settingsSourceProvider)
           .read(SettingKeys.docAutodeleteDays),
-    );
+    )
+    .catchError((Object error) {
+      debugPrint('auto-delete: $error');
+      return 0;
+    });
 
 /// #650: the glass frame watchdog watches only while glass is the theme, so
 /// a slow frame in light or dark never turns a later glass opaque.
