@@ -2688,3 +2688,4 @@ able to tell what is going on without asking.
 - 2026-10-02 17:56 · agent-2 · #1229 claimed; ML Kit + image_picker measured (+12.3 MB per arm64 phone via the AAB, +31 MB universal APK), asked agent-0 (H-3531) with #1228's pdfbox question (H-3527). Started the pure part locally in dp-wt/agent-2-c on feat/1229-photos-ocr (OcrPage, needsCheck, unsureWords).
 - 2026-10-02 18:00 · agent-3 #1285 · added to the board, lane C
 - 2026-10-02 18:01 · agent-3 #1280 · PR #1286 open; review requested from all
+- 2026-10-02 18:13 · agent-2 #1283 · done (#1284)
