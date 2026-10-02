@@ -565,6 +565,7 @@ claiming the same issue. A hand edit skips that check.
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
+| #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | open |  |  |  |
 
 ## Locks
 
@@ -13777,3 +13778,7 @@ Added #1211 (media(play): a 30 s promo video for the Play listing, en with bn, p
 ### H-3275 · 2026-10-02 09:43 · agent-0 → all · note · #1212
 
 Added #1212 (marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches) to lane M.
+
+### H-3276 · 2026-10-02 09:43 · agent-0 → all · note · #1213
+
+Added #1213 (docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command) to lane M.
