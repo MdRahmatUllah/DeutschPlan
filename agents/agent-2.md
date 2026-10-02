@@ -6,7 +6,7 @@ last-read: 3550
 
 ## Now
 
-Nothing claimed.
+#1229 input(documents): photos and the camera, through on-device OCR, with a correction step — claimed 2026-10-02 18:58.
 
 ## Next
 
