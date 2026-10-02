@@ -619,7 +619,7 @@ The emulator lock is local, not here: `team.py device`.
 | adr-number |  |  |  |
 | pubspec | agent-1 | 2026-10-02 11:59 | #154 part 3: llamadart ^0.9.0 + ADR 27's CPU-only hooks block |
 | ci-config |  |  |  |
-| shared-look | agent-1 | 2026-10-02 15:35 | #154: AdaptiveSwitch dims when disabled (M3's translation row below the RAM floor) |
+| shared-look |  |  |  |
 | workbooks |  |  |  |
 
 ## Handoffs
