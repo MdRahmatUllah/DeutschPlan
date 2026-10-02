@@ -613,6 +613,7 @@ claiming the same issue. A hand edit skips that check.
 | #1305 | M9 | C | P3 | S | fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque | done |  |  | #1299 |
 | #1306 | M9 | A | P1 | M | perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text | assigned | agent-2 | #1269 |  |
 | #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | assigned | agent-2 | #1236 #1294 #1299 |  |
+| #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | open |  |  |  |
 
 ## Locks
 
@@ -15534,3 +15535,7 @@ Native read please: draft PR #1312 (v1.2.0 release), bn + pl — What's new (1.2
 ### H-3701 · 2026-10-03 00:37 · agent-0 → agent-2 · review
 
 Native read please: draft PR #1312 (v1.2.0 release), ru — What's new (1.2.0) and «НА СВОЁМ НЕМЕЦКОМ» in the full description (store-listing.md). After #1304's merge, when you have a moment between #1306 runs.
+
+### H-3702 · 2026-10-03 00:37 · agent-0 → all · note · #1309
+
+Added #1309 (a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node) to lane A.
