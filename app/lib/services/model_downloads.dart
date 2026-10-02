@@ -73,8 +73,9 @@ abstract interface class ModelDownloads {
   Future<void> start(String modelId);
 
   /// The bytes the phone lacks for [modelId]'s download and [spaceMargin]:
-  /// what a disabled *Download* states. 0 when it fits, or when the phone
-  /// won't say.
+  /// what a disabled *Download* states, and after a failure what *Retry*
+  /// would fetch. The other downloads' bytes still to come count too
+  /// (#1261). 0 when it fits, or when the phone won't say.
   Future<int> shortfallFor(String modelId);
 
   Future<void> pause(String modelId);
@@ -238,12 +239,34 @@ class BackgroundModelDownloads implements ModelDownloads {
 
   @override
   Future<int> shortfallFor(String modelId) async {
-    final model = (await _models.manifest()).model(modelId);
+    final manifest = await _models.manifest();
+    final model = manifest.model(modelId);
     if (model == null || model.variants.isEmpty) return 0;
-    return shortfall(
-      needed: model.variants.first.bytes + ModelDownloads.spaceMargin,
-      space: await _storage.space(),
-    );
+    // After a network failure, *Retry* fetches only the files that didn't
+    // arrive (#428); otherwise every file comes.
+    final kept = _last[modelId]?.phase == DownloadPhase.failed
+        ? _files[modelId]
+        : null;
+    var needed = ModelDownloads.spaceMargin;
+    for (final file in model.variants.first.files) {
+      if (kept?[file.name]?.status != TaskStatus.complete) needed += file.bytes;
+    }
+    // #1261: the free space still holds what the other downloads have yet
+    // to write. Two downloads that each fit alone filled a phone to 0 bytes.
+    for (final other in manifest.models) {
+      if (other.id == modelId || other.variants.isEmpty) continue;
+      final files = _files[other.id];
+      if (_starting.contains(other.id)) {
+        needed += other.variants.first.bytes;
+      } else if (files != null && _inFlight(other.id)) {
+        for (final file in other.variants.first.files) {
+          final state = files[file.name];
+          if (state == null || state.status == TaskStatus.complete) continue;
+          needed += (file.bytes * (1 - state.done)).ceil();
+        }
+      }
+    }
+    return shortfall(needed: needed, space: await _storage.space());
   }
 
   /// One notification for every file of every model, in the UI language of
@@ -381,14 +404,7 @@ class BackgroundModelDownloads implements ModelDownloads {
     // A network failure: what arrived stays, and the rest comes again, if it
     // fits. A full disk is what failed a file in the first place (#428).
     bool missing(String name) => files[name]?.status != TaskStatus.complete;
-    final model = (await _models.manifest()).model(modelId);
-    var needed = ModelDownloads.spaceMargin;
-    for (final variant in model?.variants.take(1) ?? const <ModelVariant>[]) {
-      for (final file in variant.files) {
-        if (missing(file.name)) needed += file.bytes;
-      }
-    }
-    final short = shortfall(needed: needed, space: await _storage.space());
+    final short = await shortfallFor(modelId);
     if (short > 0) throw NotEnoughSpace(short);
     // The failed attempt's tasks stop, and their late updates have no say.
     await _downloader.cancelAll(group: modelId);
