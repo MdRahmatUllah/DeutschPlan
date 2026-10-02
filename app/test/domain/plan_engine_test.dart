@@ -852,6 +852,36 @@ void main() {
       expect(topped.newToday, <String>['a1', 'd1', 'd2', 'b1', 'b2']);
     });
 
+    test("FR-D2-02 the cap note: today's slots left, none on a rest day, "
+        'while paused or with a cap of 0', () async {
+      final engine = engineWith(docDailyCap: 3);
+      expect(await engine.docSlotsLeft(monday), 3, reason: 'not opened yet');
+      await engine.openDay(monday); // takes d1, d2, d3
+      expect(await engine.docSlotsLeft(monday), 0);
+      expect(await engineWith(docDailyCap: 5).docSlotsLeft(monday), 2);
+      expect(await engineWith().docSlotsLeft(monday), 0, reason: 'cap 0');
+
+      store.enrollment = ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 3,
+        studyDaysMask: PlanEngine.allDays & ~(1 << 1), // Tuesday off
+      );
+      expect(await engine.docSlotsLeft(tuesday), 0, reason: 'rest day');
+
+      await store.addToPlan(addDays(monday, -1), PlanKind.newWord, <String>[
+        'w0',
+      ]);
+      expect(
+        await engineWith(
+          docDailyCap: 3,
+          pauseNewWhenBacklog: true,
+        ).docSlotsLeft(addDays(monday, 2)),
+        0,
+        reason: 'paused',
+      );
+    });
+
     test('#622 after an import, replanToday tops today up from the queue '
         'too', () async {
       store.queue.clear();

@@ -688,6 +688,21 @@ class PlanEngine {
     return starts;
   });
 
+  /// D2's cap note before *Add* (FR-D2-02, BR-PLAN-11): how many more words
+  /// [today] can take from the document queue. None on a rest day, while
+  /// the backlog pause holds (BR-PLAN-07), with no step, or with a cap of 0.
+  Future<int> docSlotsLeft(PlanDate today) async {
+    final step = await _store.activeStep();
+    if (step == null) return 0;
+    // An opened day keeps the mask it was planned with (BR-PLAN-08).
+    final mask = await _store.lastPlannedDate() == today
+        ? await _store.plannedMask() ?? step.studyDaysMask
+        : step.studyDaysMask;
+    if (!isStudyDay(today, mask) || await _isPaused(today)) return 0;
+    final left = _docDailyCap - (await _store.docPlannedOn(today)).length;
+    return left < 0 ? 0 : left;
+  }
+
   /// The [n]th study day after [from] under [mask] (n ≥ 1).
   PlanDate _nthStudyDay(PlanDate from, int n, int mask) {
     var day = from;
