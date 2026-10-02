@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 18:13
+last-seen: 2026-10-02 18:32
 last-read: 3540
 
 ## Now
 
-#1285 plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words — claimed 2026-10-02 18:13.
+#1285 in review as PR #1287: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
