@@ -594,6 +594,100 @@ void main() {
     });
   });
 
+  // #1263: Back never loses a word typed in; an untouched R2 just goes.
+  group('#1263 FR-R2-03 leaving with text that is not saved', () {
+    Future<void> back(WidgetTester tester) async {
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('untouched, Back leaves at once, the German from the search '
+        'included', (tester) async {
+      await pump(tester, german: 'Pfandflasche');
+      await back(tester);
+      expect(find.text('R1'), findsOneWidget);
+      expect(find.text(l10n.addWordDiscardTitle), findsNothing);
+    });
+
+    testWidgets('typed in, Back asks; Keep editing stays with the text, Leave '
+        'goes and saves nothing', (tester) async {
+      await pump(tester, german: 'Pfandflasche');
+      await enter(tester, l10n.addWordMeaning, 'deposit bottle');
+      await back(tester);
+      expect(find.text(l10n.addWordDiscardTitle), findsOneWidget);
+      expect(find.text(l10n.addWordDiscardBody), findsOneWidget);
+
+      await tester.tap(find.text(l10n.addWordDiscardKeep));
+      await tester.pumpAndSettle();
+      expect(find.byType(AddWordScreen), findsOneWidget);
+      expect(find.text('deposit bottle'), findsOneWidget);
+
+      await back(tester);
+      await tester.tap(find.text(l10n.addWordDiscard));
+      await settle(tester);
+      expect(find.text('R1'), findsOneWidget);
+      final rows = await tester.runAsync(() => db.select(db.customWords).get());
+      expect(rows, isEmpty);
+    });
+
+    testWidgets("the header's back asks too, for any field and the article", (
+      tester,
+    ) async {
+      await pump(tester);
+      await enter(tester, l10n.addWordExample, 'Ich gebe die Flasche zurück.');
+      await tester.tap(find.byType(AdaptiveBackButton));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.addWordDiscardTitle), findsOneWidget);
+      await tester.tap(find.text(l10n.addWordDiscardKeep));
+      await tester.pumpAndSettle();
+
+      await enter(tester, l10n.addWordExample, '');
+      await back(tester);
+      expect(find.text('R1'), findsOneWidget, reason: 'emptied again');
+
+      await tester.tap(find.text('R1'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel('der'));
+      await tester.pump();
+      await back(tester);
+      expect(find.text(l10n.addWordDiscardTitle), findsOneWidget);
+    });
+
+    testWidgets('Save still goes back without asking', (tester) async {
+      await pump(tester, german: 'Pfandflasche');
+      await enter(tester, l10n.addWordMeaning, 'deposit bottle');
+      await tester.tap(find.text(l10n.addWordSave));
+      await settle(tester);
+      expect(find.text(l10n.addWordDiscardTitle), findsNothing);
+      expect(find.text('R1'), findsOneWidget);
+    });
+
+    testWidgets('edit mode: the word as loaded leaves at once, a change asks', (
+      tester,
+    ) async {
+      Future<int> saved() => db
+          .into(db.customWords)
+          .insert(
+            CustomWordsCompanion.insert(
+              createdAt: '2026-09-20T10:00:00Z',
+              german: 'Quittung',
+              meaning: 'receipt',
+            ),
+          );
+      await pump(tester, seed: saved);
+      expect(find.text('Quittung'), findsOneWidget);
+      await back(tester);
+      expect(find.text('R1'), findsOneWidget);
+
+      await tester.tap(find.text('R1'));
+      await tester.pumpAndSettle();
+      await settle(tester);
+      await enter(tester, l10n.addWordMeaning, 'receipt, till slip');
+      await back(tester);
+      expect(find.text(l10n.addWordDiscardTitle), findsOneWidget);
+    });
+  });
+
   group('edit mode', () {
     Future<int> saved() => db
         .into(db.customWords)
