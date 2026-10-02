@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
@@ -129,5 +132,43 @@ void main() {
 
   test('#1230: a document that is gone has nothing to match', () async {
     expect(await documents.match(404), isNull);
+  });
+
+  test('#1229 BR-DOC-05: a document keeps its photos under '
+      '<appSupport>/documents/<id>/, in page order, listed relative', () async {
+    final support = Directory.systemTemp.createTempSync('sg_docs');
+    addTearDown(() => support.deleteSync(recursive: true));
+    final shots = <String>[
+      for (final (i, name) in <String>['IMG_0042.JPG', 'scan'].indexed)
+        (File('${support.path}/$name')..writeAsBytesSync(<int>[i, 1, 2])).path,
+    ];
+    final id = await documents.create(
+      title: 'Nebenkosten',
+      source: 'photo',
+      body: 'Die Abrechnung.',
+      pageCount: 2,
+    );
+    await documents.saveImages(id, shots, support: support);
+
+    final saved = jsonDecode((await documents.document(id))!.imagePaths!);
+    expect(saved, <String>[
+      'documents/$id/page-1.jpg',
+      'documents/$id/page-2.jpg',
+    ]);
+    expect(
+      File('${support.path}/documents/$id/page-2.jpg').readAsBytesSync(),
+      <int>[1, 1, 2],
+    );
+
+    // FR-M7-02 and a Replace: every document's photos go.
+    await documents.deleteAllImages(support: support);
+    expect(Directory('${support.path}/documents').existsSync(), isFalse);
+    expect(
+      File(shots.first).existsSync(),
+      isTrue,
+      reason: 'the originals stay',
+    );
+    // And with none, there's nothing to fail on.
+    await documents.deleteAllImages(support: support);
   });
 }

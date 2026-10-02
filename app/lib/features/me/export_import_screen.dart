@@ -65,6 +65,13 @@ Future<void> importBackup(
     } on Object catch (error) {
       debugPrint('import: recordings not deleted: $error');
     }
+    // #1229: the file's documents come without their photos (BR-DOC-06),
+    // and the phone's are gone with their rows.
+    try {
+      await container.read(documentRepositoryProvider).deleteAllImages();
+    } on Object catch (error) {
+      debugPrint('import: document photos not deleted: $error');
+    }
   }
   // The settings cache, the plan engine (built with four of them, and kept
   // alive under Today) and Today's plan were read before the import: the

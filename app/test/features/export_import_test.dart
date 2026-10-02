@@ -14,6 +14,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
+import 'package:sogda/data/repositories/document_repository.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -123,6 +124,7 @@ void main() {
   late SettingsRepository settings;
   late FakeBackupFiles files;
   late _Recordings recordings;
+  late _Photos photos;
   late _Course course;
 
   setUpAll(() async {
@@ -188,6 +190,7 @@ void main() {
     );
     files = FakeBackupFiles();
     recordings = _Recordings();
+    photos = _Photos();
     course = _Course();
   });
 
@@ -213,6 +216,7 @@ void main() {
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 8)),
           backupFilesProvider.overrideWithValue(files),
           modelRepositoryProvider.overrideWithValue(recordings),
+          documentRepositoryProvider.overrideWithValue(photos),
           contentUpdaterProvider.overrideWithValue(course),
         ],
         child: MaterialApp(
@@ -463,6 +467,7 @@ void main() {
     expect(find.text(l10n.exportImportDone), findsOneWidget);
     expect(find.text(l10n.exportImportChoose), findsOneWidget);
     expect(recordings.deletions, 0, reason: "this phone's attempts stay");
+    expect(photos.deletions, 0, reason: "and this phone's documents' photos");
   });
 
   testWidgets('#809 FR-M6-03 a file from an older course comes in under the '
@@ -773,6 +778,9 @@ void main() {
       expect(await count('review_log'), 1);
       expect(settings.read(SettingKeys.learnerName), 'Rahim');
       expect(recordings.deletions, 1);
+      // #1229: the file's documents come without photos, and the phone's
+      // are gone.
+      expect(photos.deletions, 1);
     });
 
     testWidgets('a file with no step carries on to page 2', (tester) async {
@@ -825,6 +833,7 @@ void main() {
       expect(find.text(l10n.exportImportFailed), findsOneWidget);
       expect(await count('word_state'), 1);
       expect(recordings.deletions, 0);
+      expect(photos.deletions, 0);
     });
 
     testWidgets('backing out of the picker does nothing', (tester) async {
@@ -854,4 +863,12 @@ void main() {
     await pump(tester, chrome: AdaptiveChrome.cupertino);
     expect(find.text(l10n.settingsTitle), findsOneWidget);
   });
+}
+
+/// The documents' photos, deleted without a disk (#1229).
+class _Photos extends Fake implements DocumentRepository {
+  int deletions = 0;
+
+  @override
+  Future<void> deleteAllImages({Directory? support}) async => deletions++;
 }

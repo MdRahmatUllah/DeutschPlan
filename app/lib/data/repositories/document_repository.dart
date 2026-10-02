@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:isolate';
 
 import 'package:drift/drift.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/domain/documents/lemmatiser.dart';
@@ -42,6 +45,43 @@ class DocumentRepository {
           pageCount: Value(pageCount),
         ),
       );
+
+  /// BR-DOC-05: [id]'s photos, kept with it while *Save original images* is
+  /// on (#1229). Copied under `<appSupport>/documents/<id>/` in page order,
+  /// and listed in `image_paths` relative to `<appSupport>`, so a moved app
+  /// folder keeps them.
+  Future<void> saveImages(
+    int id,
+    List<String> photos, {
+    Directory? support,
+  }) async {
+    final root = support ?? await getApplicationSupportDirectory();
+    await Directory('${root.path}/documents/$id').create(recursive: true);
+    final kept = <String>[];
+    for (final (i, photo) in photos.indexed) {
+      final name = 'documents/$id/page-${i + 1}${_extension(photo)}';
+      await File(photo).copy('${root.path}/$name');
+      kept.add(name);
+    }
+    await (_db.update(_db.documents)..where((d) => d.id.equals(id))).write(
+      DocumentsCompanion(imagePaths: Value(jsonEncode(kept))),
+    );
+  }
+
+  /// Every document's photos: *Reset everything* (FR-M7-02) and a Replace,
+  /// whose documents come without them (BR-DOC-06). Best effort, after the
+  /// data, as the recordings go.
+  Future<void> deleteAllImages({Directory? support}) async {
+    final root = support ?? await getApplicationSupportDirectory();
+    final folder = Directory('${root.path}/documents');
+    if (folder.existsSync()) await folder.delete(recursive: true);
+  }
+
+  static String _extension(String path) {
+    final name = path.split(RegExp(r'[/\\]')).last;
+    final dot = name.lastIndexOf('.');
+    return dot > 0 ? name.substring(dot).toLowerCase() : '.jpg';
+  }
 
   /// FR-D1-04, before D1 saves anything: the share of [body]'s words the
   /// course knows (`germanShare`), read in an isolate as [match] is.
