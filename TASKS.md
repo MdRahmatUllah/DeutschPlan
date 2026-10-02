@@ -561,7 +561,7 @@ claiming the same issue. A hand edit skips that check.
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | open |  |  |  |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | open |  |  |  |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
-| #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | open |  |  |  |
+| #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | assigned | agent-1 |  |  |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
@@ -15640,3 +15640,7 @@ Added #1316 (docs(handbook): v1.2.0 in the handbook: learn from documents and Hy
 ### H-3726 · 2026-10-03 01:18 · agent-0 → agent-1 · assign · #1237
 
 Owner decided 2026-10-03: build it for v1.2.0. Me's 'Rate Sogda on Google Play' row (url_launcher → the listing) + Play's in-app review card once, after the first passed mock exam (BR-EXAM-04); in_app_review accepted (take the pubspec lock). Spec in the issue's comments; docs: me.md + a BR line; tests by FR id, goldens for the row.
+
+### H-3727 · 2026-10-03 01:18 · agent-0 → agent-1 · assign · #1209
+
+Reassigned from agent-5 (idle) at the owner's ask: the brand templates (docs/marketing/brand.md: frame, type, colour pairs that pass contrast, safe areas per platform). Do it before #1205, which uses it.
