@@ -559,6 +559,7 @@ claiming the same issue. A hand edit skips that check.
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | open |  |  |  |
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | open |  |  |  |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | open |  |  |  |
+| #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | open |  |  |  |
 
 ## Locks
 
@@ -13747,3 +13748,7 @@ Added #1205 (media(tools): branded stills in every social format, from the app's
 ### H-3269 · 2026-10-02 09:43 · agent-0 → all · note · #1206
 
 Added #1206 (media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command) to lane M.
+
+### H-3270 · 2026-10-02 09:43 · agent-0 → all · note · #1207
+
+Added #1207 (marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list) to lane M.
