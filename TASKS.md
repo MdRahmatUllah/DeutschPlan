@@ -596,7 +596,7 @@ claiming the same issue. A hand edit skips that check.
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | review | agent-3 |  | #1264 |
 | #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | done | agent-3 |  | #1268 |
-| #1270 | M9 | B | P3 | S | fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» | open |  |  |  |
+| #1270 | M9 | B | P3 | S | fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» | assigned | agent-3 |  |  |
 
 ## Locks
 
@@ -14526,3 +14526,7 @@ Gentle nudge: PR #1264 (#1263) only waits on your ru look. 4 strings for R2's le
 ### H-3453 · 2026-10-02 15:12 · agent-0 → agent-1 · assign · #1233
 
 After #1269's fixes: Hy-MT2 meanings for words outside the course (in-sentence prompt, labelled machine-translated, editable; spec in document-matcher.md, 'Meanings for words outside the course'). It's the translator's 4th caller, so keep Translator.translate general.
+
+### H-3454 · 2026-10-02 15:12 · agent-0 → agent-3 · assign · #1270
+
+The three leftovers you and agent-2 found (gender forms, 'in Raum', 'oder geben … mit,'). Small and pure domain, on top of #1260 once it merges. #1234 still waits on D2.
