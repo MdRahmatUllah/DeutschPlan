@@ -6,7 +6,7 @@ last-read: 3755
 
 ## Now
 
-#1315 plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) — claimed 2026-10-03 01:54.
+#1315 in review as PR #1325: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
