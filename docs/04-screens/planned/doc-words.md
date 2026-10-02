@@ -11,7 +11,7 @@
 
 The ink underline is what makes a word marked, and the fill says its level, which the card's chip also names, so the level is never shown by colour alone. Ink on every level's fill is at least 6.4:1 in all eight canvases (light, dark and glass, Android and iOS), and the underline gives the same margin for the non-text check. `docs/design/cefr-marks.json` has each canvas's surface, ink and blended fills with their ratios, for D2's goldens to pin.
 
-**Reached from.** D1 when processing ends, and D3's row (a saved document opens here with no new run, from `document_words`). **Leads to.**
+**Reached from.** D1 when processing ends, and D3's row (a saved document opens here and is matched again, so its marks follow what the learner has learnt since, FR-D2-07). **Leads to.**
 - the mini card, as a sheet on a phone or a side pane on a tablet, as W1 opens;
 - W1 (*Open* on a course word);
 - R2, pre-filled, for a word outside the course;

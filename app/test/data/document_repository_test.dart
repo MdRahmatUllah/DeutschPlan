@@ -123,8 +123,17 @@ void main() {
     expect(contexts, hasLength(1));
     expect(contexts.single.documentId, id);
 
+    // Learnt since: the rerun takes the new class, and keeps the add.
+    await db.customStatement(
+      "INSERT INTO word_state (word_uid, status) VALUES ('$key', 'learning')",
+    );
     await documents.match(id);
     expect(await documents.added(id), <String>{key});
+    final rows = await (db.select(
+      db.documentWords,
+    )..where((w) => w.lemmaKey.equals(key))).get();
+    expect(rows.map((r) => r.class$).toSet(), <String>{'known'});
+    expect(rows.every((r) => r.added == 1), isTrue);
   });
 
   test('#1230: a document that is gone has nothing to match', () async {
