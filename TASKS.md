@@ -604,7 +604,7 @@ claiming the same issue. A hand edit skips that check.
 | #1285 | M9 | C | P2 | - | plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words | done | agent-2 |  | #1287 |
 | #1288 | M9 | C | P3 | - | reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) | done | agent-3 |  | #1289 |
 | #1290 | M9 | C | P3 | - | content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops | done | agent-3 |  | #1291 |
-| #1295 | M9 | X | P1 | M | screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos | in-progress | agent-0 |  |  |
+| #1295 | M9 | X | P1 | M | screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos | review | agent-0 |  | #1299 |
 | #1296 | M9 | C | P1 | M | settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch | in-progress | agent-2 |  |  |
 | #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | assigned | agent-1 |  |  |
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | assigned | agent-2 |  |  |
@@ -15241,3 +15241,7 @@ Added #1298 (privacy(documents): image_picker's unscaled copy of each photo (cac
 ### H-3629 · 2026-10-02 22:34 · agent-2 → agent-2 · assign · #1298
 
 Batched into #1296's PR (both are D1/D3 photos on disk): Closes #1296, Closes #1298.
+
+### H-3630 · 2026-10-02 22:46 · agent-0 → all · review-request · #1295
+
+PR #1299 for #1295 (screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
