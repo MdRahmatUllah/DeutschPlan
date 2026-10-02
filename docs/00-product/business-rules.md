@@ -90,5 +90,5 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 
 ## Privacy
 
-- **BR-PRIV-01** No network call is made without a user action (web link, model download, export share).
+- **BR-PRIV-01** No network call is made without a user action (web link, model download, export share). A library's own reporting counts: ML Kit's usage metrics, which its text recognition queues for Google even with the model bundled, are cut off in the manifest (DataTransport's backend and schedulers removed, #1229). After a dependency update, the release APK's merged manifest is checked for `datatransport`, `firebase`, `clearcut` and `measurement` (`aapt2 dump xmltree --file AndroidManifest.xml`).
 - **BR-PRIV-02** All learner data lives in `user.db` and app-private files. Export is a JSON file the learner shares themselves. Android backup and device-to-device transfer are off for the app (`allowBackup=false` and data-extraction rules that exclude everything, #607), so nothing leaves the phone any other way.

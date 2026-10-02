@@ -834,7 +834,7 @@
   "docImportFailed": "টেক্সটটি পড়া যায়নি।",
   "docImportUntitled": "{date}-এর টেক্সট",
   "docImportTakePhotos": "ছবি তুলুন",
-  "docImportTakePhotosDetail": "ক্যামেরা দিয়ে, পাতার পর পাতা",
+  "docImportTakePhotosDetail": "ক্যামেরা দিয়ে, পৃষ্ঠার পর পৃষ্ঠা",
   "docImportChooseImages": "ছবি বেছে নিন",
   "docImportChooseImagesDetail": "এই ফোনে আগে থেকে থাকা ছবি",
   "docImportPhotos": "{count, plural, other{{count}টি ছবি}}",

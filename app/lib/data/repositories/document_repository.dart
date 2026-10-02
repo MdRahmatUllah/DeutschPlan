@@ -8,6 +8,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/domain/documents/lemmatiser.dart';
 import 'package:sogda/domain/documents/matcher.dart';
+import 'package:sogda/domain/documents/photo_privacy.dart';
 import 'package:sogda/domain/documents/tokens.dart';
 import 'package:sogda/domain/text_norm.dart';
 
@@ -49,7 +50,7 @@ class DocumentRepository {
       );
 
   /// BR-DOC-05: [id]'s photos, kept with it while *Save original images* is
-  /// on (#1229). Copied under `<appSupport>/documents/<id>/` in page order,
+  /// on (#1229), without their metadata. Copied under `<appSupport>/documents/<id>/` in page order,
   /// and listed in `image_paths` relative to `<appSupport>`, so a moved app
   /// folder keeps them.
   Future<void> saveImages(
@@ -61,8 +62,13 @@ class DocumentRepository {
     await Directory('${root.path}/documents/$id').create(recursive: true);
     final kept = <String>[];
     for (final (i, photo) in photos.indexed) {
+      // Rewritten without its metadata, never copied: no GPS, no camera,
+      // no time taken (BR-DOC-05). A format that can't be cleaned isn't
+      // kept; the document's text is.
+      final clean = withoutMetadata(await File(photo).readAsBytes());
+      if (clean == null) continue;
       final name = 'documents/$id/page-${i + 1}${_extension(photo)}';
-      await File(photo).copy('${root.path}/$name');
+      await File('${root.path}/$name').writeAsBytes(clean, flush: true);
       kept.add(name);
     }
     await (_db.update(_db.documents)..where((d) => d.id.equals(id))).write(

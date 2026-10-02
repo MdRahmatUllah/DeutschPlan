@@ -308,6 +308,10 @@ void main() {
         7: <String>['p1.jpg', 'p2.jpg'],
       });
       expect(router.state.uri.path, '/search/document/7');
+      expect(photos.discarded, <String>[
+        'p1.jpg',
+        'p2.jpg',
+      ], reason: "image_picker's copies, metadata and all, aren't kept twice");
     });
 
     testWidgets('BR-DOC-05 with Save original images off, the photos go', (
@@ -388,6 +392,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(photos.readPaths, <String>['g1.jpg', 'again.jpg']);
+      expect(photos.discarded.first, 'g1.jpg', reason: 'the page taken again');
       expect(docs.saved.single.body, 'Der Hausmeister kommt.');
       expect(docs.images[7], <String>['again.jpg']);
     });
@@ -437,11 +442,8 @@ void main() {
     ) async {
       final slow = Completer<OcrPage>();
       final docs = FakeDocuments();
-      await pump(
-        tester,
-        docs: docs,
-        photos: FakePhotos(chosen: <String>['g1.jpg'], pending: slow),
-      );
+      final photos = FakePhotos(chosen: <String>['g1.jpg'], pending: slow);
+      await pump(tester, docs: docs, photos: photos);
       await tester.tap(find.text(l10n.docImportChooseImages));
       await tester.pump();
       expect(find.text(l10n.docImportReadingPage(1, 1)), findsOneWidget);
@@ -450,6 +452,7 @@ void main() {
       slow.complete(page('Die Miete.'));
       await tester.pumpAndSettle();
       expect(docs.saved, isEmpty);
+      expect(photos.discarded, <String>['g1.jpg']);
       expect(find.text(l10n.docImportTakePhotos), findsOneWidget);
     });
 
@@ -577,6 +580,12 @@ class FakePhotos implements PagePhotos {
 
   /// The photos read, in order.
   final List<String> readPaths = <String>[];
+
+  /// The photos D1 was done with.
+  final List<String> discarded = <String>[];
+
+  @override
+  Future<void> discard(List<String> paths) async => discarded.addAll(paths);
 
   @override
   Future<String?> take() async => _taken.isEmpty ? null : _taken.removeAt(0);

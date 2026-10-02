@@ -8,6 +8,8 @@ import 'package:sogda/data/repositories/document_repository.dart';
 import 'package:sogda/domain/documents/matcher.dart';
 
 import '../db/content_fixture.dart' show realContent, tempDir;
+import '../domain/documents/photo_privacy_test.dart'
+    show exif, holds, jpeg, orientationOf;
 
 const String letter =
     'Der Vermieter schickt die Kündigung. Die Kündigung kommt pünktlich. '
@@ -144,29 +146,39 @@ void main() {
   });
 
   test('#1229 BR-DOC-05: a document keeps its photos under '
-      '<appSupport>/documents/<id>/, in page order, listed relative', () async {
+      '<appSupport>/documents/<id>/, in page order, listed relative, without '
+      'their metadata', () async {
     final support = tempDir('sg_docs');
+    // The camera's: its make and GPS in the EXIF. And one with none.
     final shots = <String>[
-      for (final (i, name) in <String>['IMG_0042.JPG', 'scan'].indexed)
-        (File('${support.path}/$name')..writeAsBytesSync(<int>[i, 1, 2])).path,
+      (File(
+        '${support.path}/IMG_0042.JPG',
+      )..writeAsBytesSync(jpeg(exif()))).path,
+      (File('${support.path}/scan')..writeAsBytesSync(jpeg())).path,
     ];
+    final webp = File('${support.path}/sticker.webp')
+      ..writeAsBytesSync(ascii.encode('RIFF....WEBP'));
     final id = await documents.create(
       title: 'Nebenkosten',
       source: 'photo',
       body: 'Die Abrechnung.',
       pageCount: 2,
     );
-    await documents.saveImages(id, shots, support: support);
+    await documents.saveImages(id, <String>[
+      ...shots,
+      webp.path,
+    ], support: support);
 
     final saved = jsonDecode((await documents.document(id))!.imagePaths!);
     expect(saved, <String>[
       'documents/$id/page-1.jpg',
       'documents/$id/page-2.jpg',
-    ]);
-    expect(
-      File('${support.path}/documents/$id/page-2.jpg').readAsBytesSync(),
-      <int>[1, 1, 2],
-    );
+    ], reason: "a WebP can't be cleaned, so it isn't kept");
+    final page1 = File('${support.path}/documents/$id/page-1.jpg')
+        .readAsBytesSync();
+    expect(holds(page1, 'SQA'), isFalse, reason: 'the camera make');
+    expect(orientationOf(page1), 6);
+    expect(holds(page1, 'PIXELS'), isTrue);
 
     // FR-M7-02 and a Replace: every document's photos go.
     await documents.deleteAllImages(support: support);

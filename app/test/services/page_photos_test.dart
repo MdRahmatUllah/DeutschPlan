@@ -3,6 +3,12 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 /// #1229: what ML Kit's text recognition brings into the app.
+///
+/// These pin the source files, against someone deleting the lines. The real
+/// proof is the release APK's merged manifest, where other libraries add
+/// their own: `aapt2 dump xmltree --file AndroidManifest.xml
+/// app-release.apk | grep -iE "datatransport|firebase|clearcut|measurement"`
+/// (BR-PRIV-01), run in the PR's device check.
 void main() {
   test('BR-PRIV-01 ML Kit reads the pages, and its usage metrics have no way '
       'out: DataTransport\'s backend and schedulers are removed', () {

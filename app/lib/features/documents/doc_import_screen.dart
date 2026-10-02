@@ -228,6 +228,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     final photo = await ref.read(pagePhotosProvider).take();
     if (!mounted || photo == null) return;
     final run = ++_run;
+    unawaited(ref.read(pagePhotosProvider).discard(<String>[_photos[i]]));
     setState(() {
       _photos = <String>[..._photos]..[i] = photo;
       _readingPage = i + 1;
@@ -297,16 +298,25 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
         debugPrint('D1: photos not kept: $error');
       }
     }
+    // The copies image_picker made, metadata and all, aren't kept twice.
+    if (_source == 'photo') {
+      unawaited(ref.read(pagePhotosProvider).discard(_photos));
+    }
     if (!mounted || run != _run) return;
     DocWordsRoute.instead(context, id);
   }
 
   /// FR-D1-05: back to the choices, with nothing saved.
-  void _cancel() => setState(() {
-    _run++;
-    _photos = const <String>[];
-    _stage = _Stage.choose;
-  });
+  void _cancel() {
+    if (_photos.isNotEmpty) {
+      unawaited(ref.read(pagePhotosProvider).discard(_photos));
+    }
+    setState(() {
+      _run++;
+      _photos = const <String>[];
+      _stage = _Stage.choose;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
