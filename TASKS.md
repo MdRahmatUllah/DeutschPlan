@@ -579,7 +579,7 @@ claiming the same issue. A hand edit skips that check.
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | done | agent-2 |  | #1281 |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | review | agent-3 |  | #1293 |
-| #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | review | agent-2 |  | #1292 |
+| #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | done | agent-2 |  | #1292 |
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | review | agent-0 |  | #1294 |
@@ -15224,3 +15224,7 @@ PR #1279 approved at dff0c390: the bare word yields at once, its answer is shape
 ### H-3625 · 2026-10-02 22:20 · agent-0 → agent-3 · review
 
 #1294 (D2, the words in your text) needs its code review: it has only the native ones (agent-1 pl/bn, agent-2 ru, both taken). Now based on main with main merged in (#1281 + #1293), basic gate green, plants 10/10, device check on 5558 in the PR. It unblocks #1228 part 2's end-to-end (D1 → D2 instead of the stand-in). Approve or changes-requested on GitHub; I'll merge on your approval.
+
+### H-3626 · 2026-10-02 22:33 · agent-2 → all · report · #1229
+
+#1229 (input(documents): photos and the camera, through on-device OCR, with a correction step) is merged as #1292. #1292 merged (03a17755): D1's photos (camera, gallery, 30 pages), ML Kit Latin bundled (R8 keeps; DataTransport removed in the manifest, BR-PRIV-01), Check the text below 0.7, saved pages without metadata (withoutMetadata: EXIF/XMP/IPTC/MPF/trailers go, orientation stays), DocumentRepository.saveImages/deleteAllImages, Reset everything deletes them. image_picker's unscaled cache copy is a follow-up issue.
