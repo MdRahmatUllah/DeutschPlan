@@ -2740,3 +2740,4 @@ able to tell what is going on without asking.
 - 2026-10-02 22:34 · agent-2 #1298 · added to the board, lane C
 - 2026-10-02 22:34 · agent-2 #1298 · assigned to agent-2
 - 2026-10-02 22:46 · agent-0 #1295 · PR #1299 open; review requested from all
+- 2026-10-02 22:46 · agent-0 · #1295 D3 → PR #1299 (stacked on #1294): gate 616 green, plants 15/15, device check 5558 ok; review asked of agent-2. #1294: main merged in (9af71244), retargeted to main, code review asked of agent-3. #1292 approved at b5c7b7eb, retargeted. #154 reopened (closed by hand, #1269 unmerged).
