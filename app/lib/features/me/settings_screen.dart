@@ -138,11 +138,6 @@ class SettingsScreen extends ConsumerWidget {
         .round();
     final stabilities = ref.watch(learnedStabilitiesProvider).value;
     final model = ref.watch(translationModelProvider).value;
-    // ADR 9: translation stays hidden while this build doesn't offer Hy-MT,
-    // unless a model is already on the phone, a build's that did (#513).
-    final translationShown =
-        enableHymtDownload ||
-        (model != null && model.status != ModelStatus.notDownloaded);
     final meaning = meaningChoiceOf(settings);
     // #1081: the course's languages, each named in itself.
     final languages = ref.watch(courseLanguagesProvider).value ?? baseLanguages;
@@ -532,36 +527,35 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
-          if (translationShown)
-            _Group(
-              title: l10n.settingsGroupTranslation,
-              rows: <Widget>[
-                _Row(
-                  title: l10n.settingsTranslation,
-                  subtitle: model == null
-                      ? null
-                      : l10n.settingsTranslationStatus(switch (model.status) {
-                          ModelStatus.downloading => 'downloading',
-                          ModelStatus.verifying => 'verifying',
-                          ModelStatus.ready => 'ready',
-                          ModelStatus.updateAvailable => 'update',
-                          ModelStatus.failed => 'failed',
-                          ModelStatus.notDownloaded => 'none',
-                        }, (model.progress * 100).round()),
-                  labelledByControl: true,
-                  trailing: AdaptiveSwitch(
-                    value: settings.read(SettingKeys.mtEnabled),
-                    semanticLabel: l10n.settingsTranslation,
-                    onChanged: (on) async {
-                      final done = await editor.translation(on: on);
-                      if (!done && context.mounted) {
-                        ModelsRoute.open(context);
-                      }
-                    },
-                  ),
+          _Group(
+            title: l10n.settingsGroupTranslation,
+            rows: <Widget>[
+              _Row(
+                title: l10n.settingsTranslation,
+                subtitle: model == null
+                    ? null
+                    : l10n.settingsTranslationStatus(switch (model.status) {
+                        ModelStatus.downloading => 'downloading',
+                        ModelStatus.verifying => 'verifying',
+                        ModelStatus.ready => 'ready',
+                        ModelStatus.updateAvailable => 'update',
+                        ModelStatus.failed => 'failed',
+                        ModelStatus.notDownloaded => 'none',
+                      }, (model.progress * 100).round()),
+                labelledByControl: true,
+                trailing: AdaptiveSwitch(
+                  value: settings.read(SettingKeys.mtEnabled),
+                  semanticLabel: l10n.settingsTranslation,
+                  onChanged: (on) async {
+                    final done = await editor.translation(on: on);
+                    if (!done && context.mounted) {
+                      ModelsRoute.open(context);
+                    }
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
           _Group(
             title: l10n.settingsGroupData,
             rows: <Widget>[

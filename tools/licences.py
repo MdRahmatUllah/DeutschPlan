@@ -38,8 +38,9 @@ SOURCES = {
     # supertonic_text.dart ports the SDK's core.py (supertonic 1.3.1).
     "Supertonic-SDK-MIT.txt":
         "https://raw.githubusercontent.com/supertone-oss-archive/supertonic-py/df0f9686dac7fbbde391b759e2ee5286a3737622/LICENSE",
-    "HY-MT1.5-Tencent-HY.txt":
-        "https://huggingface.co/tencent/HY-MT1.5-1.8B/resolve/dbad03788f49709801014c95d481a514c272ca52/License.txt",
+    # Hy-MT2 (ADR 30): Apache-2.0, at the revision the manifest pins.
+    "Hy-MT2-Apache-2.0.txt":
+        "https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF/resolve/a0c709d9fac510f2c807aa3af52872340dc37a4a/LICENSE.txt",
     "Inter-OFL.txt":
         "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/inter/OFL.txt",
     "NotoSansBengali-OFL.txt":
