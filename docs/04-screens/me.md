@@ -6,7 +6,7 @@
 
 **Reached from.** Me tab. **Leads to.** M2 (Words/Activity cards), T4 (schedule card when behind), L10 (exam badges), M3, M4, M9. There is no quick quiz here (#704): L7 opens from Learn.
 
-**Layout.** Cobalt header: name (tap to edit → `learner_name`), streak pill, "Learning since 19 Aug 2026 · 31 days studied". Words card: segmented bar + "1,248 Done · 312 Learning · 4,034 To do" + legend "Learning = seen, still being reviewed · Done = remembered for 7+ days · Suspended = paused by you". Activity card: 12-week heat-map. Schedule card: "2 days behind · 14 words in backlog · tap to catch up" (or "On schedule"). Mock exams card: "2 passed · A2.1 unlocks at 90%" + 12 step badges (Lime passed, Lagoon unlocked, Oat locked). List: Settings · Voice · About & privacy. The middle row is M4's title: *Voice & translation* in a build that offers Hy-MT (#1164, ADR 9).
+**Layout.** Cobalt header: name (tap to edit → `learner_name`), streak pill, "Learning since 19 Aug 2026 · 31 days studied". Words card: segmented bar + "1,248 Done · 312 Learning · 4,034 To do" + legend "Learning = seen, still being reviewed · Done = remembered for 7+ days · Suspended = paused by you". Activity card: 12-week heat-map. Schedule card: "2 days behind · 14 words in backlog · tap to catch up" (or "On schedule"). Mock exams card: "2 passed · A2.1 unlocks at 90%" + 12 step badges (Lime passed, Lagoon unlocked, Oat locked). List: Settings · Voice & translation · About & privacy. The middle row is M4's title (#1164); every build offers translation (ADR 30).
 
 **Functional requirements**
 - FR-M1-01 Counts from `stepProgressProvider` aggregated; legend text uses `done_stability_days`.

@@ -30,7 +30,7 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | Exams | Unlock mock exams at | stepper 50–100 % | `exam_unlock_percent` |
 | | Pass mark | stepper 50–90 % | `exam_pass_percent` |
 | | Timer on by default | switch | `exam_timer_default` |
-| Translation | On-device translation | switch, subtitle status ("Hy-MT 1.5 · downloading 42%") → M4 when not downloaded. The group shows only when this build offers Hy-MT, or a Hy-MT model is on the phone (ADR 9, #513) | `mt_enabled` |
+| Translation | On-device translation | switch, subtitle status ("Hy-MT2 · downloading 42%") → M4 when not downloaded. Shown in every build (ADR 30) | `mt_enabled` |
 | Data | Export / import | → M6 | |
 | | Reset | → M7, "One step, or everything" | |
 | | Restart setup | → S2 (restart mode) | |
@@ -47,7 +47,7 @@ Details M3 settles (#146):
 - The retention estimate (FR-M3-01) samples every n-th of at most 1,000 learned words (rated, not suspended), scaled back up. It counts what is revised: the course's words to learn and the learner's own, not a word a content update removed (BR-CONTENT-02, #867) or a lesson note or comparison (BR-CONTENT-04, #886). The stabilities are read once per visit; the slider re-sums them.
 - *Restart setup* opens once for two quick taps: the row holds until setup's page is up, the learner's values read in between (#704).
 - For FR-M3-03 the model is there when it is `ready`, or `updateAvailable` (the old one is whole). A download in progress is not, so the switch stays off and M4 opens.
-- *Translation* is hidden while the build doesn't offer Hy-MT's download (`ENABLE_HYMT_DOWNLOAD`, off in every v1.0 build, ADR 9) and no Hy-MT model is on the phone: the switch could never turn on. A model a flag-on build downloaded keeps the group, so it can still be turned off (#513). M4's Hy-MT card still reads "Not offered in this version of the app".
+- *Translation* shows in every build: Hy-MT2's licence needs no gate (ADR 30), so ADR 9's rule hiding the group while the build didn't offer the download (#513) is gone.
 - M4 and M6 are pushed over M3 (navigation.md), so back returns to Settings. A choice's list scrolls when it outgrows the sheet (a phone held sideways, 200 % text).
 - *Reset* opens M7's sheet (`reset.md`, #149).
 - *Glass* (FR-M3-02) gives the app `AppTheme.glass`, its light and smoked dark variants picked by the phone's light/dark, as theming.md says. Before #146 the root drew paper whatever was chosen. *System* and *Glass* follow the phone's light/dark switch while the app runs: `BootstrapHost` hears it as a binding observer and tells `themeProvider` (#644). Choosing *Light* or *Dark* stops that at once, even when the mode it resolves to is the one *System* had: the root follows the setting itself (`themeFollowsPlatformProvider`), not the resolved mode (#649).

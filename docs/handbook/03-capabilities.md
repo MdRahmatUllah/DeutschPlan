@@ -251,7 +251,7 @@ owner checks cold and warm start on a real phone before each release.
   v1.0.0 passed: size 72.44 MB, cold 3,268 ms, warm 807 ms, frames and search
   within their margins.
 - **Size.** The arm64 APK went from 159.5 MB to 72.3 MB when llama.cpp was cut
-  to its CPU backend (ADR 27), then to 51.2 MB when llamadart was removed (ADR 29). The APK stands in for the one-ABI download
+  to its CPU backend (ADR 27), then to 51.2 MB when llamadart was removed (ADR 29). Hy-MT2 brings llamadart's CPU libraries back (ADR 30, #154), and its PR measures the size again. The APK stands in for the one-ABI download
   Play serves, which is compressed and so smaller. The voice model is
   downloaded separately.
 - **Cold start** is measured to Android's "Fully drawn", which the app
@@ -299,7 +299,7 @@ or dark mode, and draws the glass theme as its opaque fallback.
 | Limit | Detail |
 |---|---|
 | **No iOS release** | Waits for a Mac: #171 (pipeline), #161 (widget), #398 (simulator smoke test) |
-| **No translation** | Hy-MT is off in every build (ADR 9); the translator (#154) and a replacement (#533) wait on the owner |
+| **No translation yet** | Hy-MT2 (Apache-2.0, offered in every build, ADR 30) is being built in #154 for v1.2.0; until it ships there is no translator |
 | **English-only parts of the course** | Example translations, grammar rules and category names |
 | **Self-assessed speaking and writing** | No speech recognition; the app checks length, target words and connectors, and the learner ticks the rubric |
 | **Thin B1** | 379 words, against 1,035 at A2 and 1,023 at B2; mock exams at A1.1–B1.2 reuse a grammar topic or two |
