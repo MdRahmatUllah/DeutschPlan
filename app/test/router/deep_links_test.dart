@@ -743,8 +743,8 @@ void main() {
       );
     });
 
-    test('#1227 Android takes a share in the app\'s own task, its text as '
-        'an extra, never as data', () {
+    test("#1227 Android takes a share in the app's own task, its text held "
+        'in the process, never on an intent', () {
       final manifest = File('android/app/src/main/AndroidManifest.xml')
           .readAsStringSync();
       final filter = RegExp(
@@ -753,6 +753,11 @@ void main() {
       expect(filter, contains('android.intent.action.SEND"'));
       expect(filter, contains('android:mimeType="text/plain"'));
       expect(filter, contains('android:noHistory="true"'));
+      expect(
+        filter,
+        isNot(contains('BROWSABLE')),
+        reason: 'a web page never sends a share',
+      );
 
       final share = File(
         'android/app/src/main/kotlin/de/sogda/app/ShareActivity.kt',
@@ -763,25 +768,29 @@ void main() {
         contains('FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP'),
       );
       expect(share, contains('.setData(Uri.parse(MainActivity.SHARE_LINK))'));
+      expect(share, contains('pending = text'));
+      expect(share, isNot(contains('putExtra')), reason: 'never on an intent');
       expect(
         share,
-        contains('.putExtra(MainActivity.EXTRA_SHARED_TEXT, text)'),
+        contains('fun take(): String? = pending.also { pending = null }'),
+        reason: 'taken once',
       );
 
+      // MainActivity is exported and BROWSABLE: an extra on its intent could
+      // come from any app, or a web page's intent:// link, and D1 would save
+      // it with no share sheet chosen. So it reads none.
       final activity = File(
         'android/app/src/main/kotlin/de/sogda/app/MainActivity.kt',
       ).readAsStringSync();
       expect(activity, contains('const val SHARE_LINK = "sogda://import"'));
       expect(
         activity,
-        contains('if (keep && intent.dataString == SHARE_LINK)'),
-        reason: "another intent's extra is dropped unread",
+        contains('"take" -> result.success(ShareActivity.take())'),
       );
       expect(
-        RegExp(r'takeShare\(intent, keep = savedInstanceState == null\)')
-            .hasMatch(activity),
-        isTrue,
-        reason: 'a launch restored from recents shares nothing twice',
+        RegExp(r'get\w*Extra|\.extras\b').hasMatch(activity),
+        isFalse,
+        reason: 'no intent extra reaches D1',
       );
     });
 

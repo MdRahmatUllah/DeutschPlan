@@ -40,17 +40,14 @@ class MainActivity : FlutterActivity() {
         /** `lib/services/shared_text.dart`: text shared from another app (#1227). */
         private const val SHARE_CHANNEL = "sogda/share"
 
-        /** Where [ShareActivity] sends a share: D1 (`deep_links.dart`). */
+        /**
+         * Where [ShareActivity] sends a share: D1 (`deep_links.dart`). The
+         * link alone: D1 takes the text from [ShareActivity.take].
+         */
         const val SHARE_LINK = "sogda://import"
-
-        /** The shared text, on [ShareActivity]'s intent to this activity. */
-        const val EXTRA_SHARED_TEXT = "de.sogda.app.SHARED_TEXT"
     }
 
     private var channel: MethodChannel? = null
-
-    /** The text [ShareActivity] passed on, until D1 takes it (#1227). */
-    private var sharedText: String? = null
     private var blurListener: Consumer<Boolean>? = null
 
     /**
@@ -62,10 +59,6 @@ class MainActivity : FlutterActivity() {
      * away the rest).
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        // #1227: a share is taken once. An activity restored from recents
-        // gets its first intent again, and D1 then opens with no text rather
-        // than saving the same document twice.
-        takeShare(intent, keep = savedInstanceState == null)
         ownLinksOnly(intent)
         super.onCreate(savedInstanceState)
         // #854: the system splash's exit reveal (Android 12+) is removed at
@@ -79,22 +72,10 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
-        takeShare(intent, keep = true)
         ownLinksOnly(intent)
         super.onNewIntent(intent)
     }
 
-    /**
-     * [ShareActivity]'s text, kept for D1 when [keep], and off the intent
-     * either way. Only with the share's own link: any other intent's extra
-     * is dropped unread.
-     */
-    private fun takeShare(intent: Intent, keep: Boolean) {
-        if (keep && intent.dataString == SHARE_LINK) {
-            sharedText = intent.getStringExtra(EXTRA_SHARED_TEXT)
-        }
-        intent.removeExtra(EXTRA_SHARED_TEXT)
-    }
 
     /** No `route` extra: the first route is the intent's `sogda:` link, if any. */
     override fun getInitialRoute(): String? = null
@@ -141,14 +122,12 @@ class MainActivity : FlutterActivity() {
                 }
             }
 
-        // #1227: D1 takes the shared text once; null when there's none.
+        // #1227: D1 takes the shared text once, from this process, never from
+        // an intent (ShareActivity); null when there's none.
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SHARE_CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
-                    "take" -> {
-                        result.success(sharedText)
-                        sharedText = null
-                    }
+                    "take" -> result.success(ShareActivity.take())
                     else -> result.notImplemented()
                 }
             }
