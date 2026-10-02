@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:sogda/data/db/app_database.dart' show Word;
 import 'package:sogda/data/db/content_dao.dart';
@@ -46,6 +48,7 @@ class SentenceHit {
     required this.article,
     required this.step,
     this.runs = const <(String, bool)>[],
+    this.translationRuns = const <(String, bool)>[],
   });
 
   final String wordUid;
@@ -63,6 +66,10 @@ class SentenceHit {
 
   /// [german] in runs, each marked when it is a word the query matched.
   final List<(String, bool)> runs;
+
+  /// [translation] in runs, the words the query matched marked, when the
+  /// sentence was found by its translation (#1193); empty when it wasn't.
+  final List<(String, bool)> translationRuns;
 }
 
 /// FTS5's `highlight()` output — matches between  and  — as runs of
@@ -417,7 +424,7 @@ class SearchRepository {
           sentenceLimit,
         )
         .get();
-    return <SentenceHit>[
+    final hits = <SentenceHit>[
       for (final row in rows)
         SentenceHit(
           wordUid: row.wordUid,
@@ -428,6 +435,107 @@ class SearchRepository {
           step: row.step,
           runs: markedRuns(row.marked ?? row.german),
         ),
+    ];
+    // English is in `examples_fts`, and Bangla has no lines (#598).
+    if (lang == 'en' || lang == 'bn') return hits;
+    // #1193: a Polish or Russian learner never sees the English a hit may
+    // have matched ("dom" in "domestic"): the hits whose German is marked
+    // come first, then those whose translation has the query, marked there,
+    // and the ones that show no match last.
+    final meaning = meaningKey(raw);
+    final all = <SentenceHit>[
+      for (final hit in hits) _markedInTranslation(hit, meaning),
+      ...await _byTranslation(raw, lang, step, hits),
+    ];
+    int rank(SentenceHit hit) => hit.runs.any((run) => run.$2)
+        ? 0
+        : hit.translationRuns.isNotEmpty
+        ? 1
+        : 2;
+    return <SentenceHit>[
+      for (var tier = 0; tier < 3; tier++)
+        ...all.where((hit) => rank(hit) == tier),
+    ].take(sentenceLimit).toList();
+  }
+
+  /// [hit] with [key]'s words marked in its translation, when its German has
+  /// nothing marked (FTS matched its English) and the translation has them.
+  static SentenceHit _markedInTranslation(SentenceHit hit, String key) {
+    final translation = hit.translation;
+    if (translation == null || hit.runs.any((run) => run.$2)) return hit;
+    final runs = markedWords(translation, key);
+    if (!runs.any((run) => run.$2)) return hit;
+    return SentenceHit(
+      wordUid: hit.wordUid,
+      german: hit.german,
+      translation: translation,
+      head: hit.head,
+      article: hit.article,
+      step: hit.step,
+      runs: hit.runs,
+      translationRuns: runs,
+    );
+  }
+
+  /// #1193: tier 4's sentences found by their translation into [lang] (a
+  /// Polish or Russian learner's), at most [sentenceLimit], none [found]
+  /// already. A line is found as #1121 finds a word by its
+  /// meaning: a word of it starts with the query, [meaningKey]ed, so ł and ё
+  /// may be typed as l and е. Lines that start with it come first, then the
+  /// most frequent words'. Its German has nothing to mark, so the matched
+  /// words are marked in its translation.
+  Future<List<SentenceHit>> _byTranslation(
+    String raw,
+    String lang,
+    String? step,
+    List<SentenceHit> found,
+  ) async {
+    final key = meaningKey(raw);
+    if (key.length < _minimumSentenceLength) return const <SentenceHit>[];
+    final starts = <_KeyedLine>[];
+    final within = <_KeyedLine>[];
+    for (final line in await _keyedLines(_content, lang)) {
+      if (step != null && line.step != step) continue;
+      if (line.key.startsWith(key)) {
+        starts.add(line);
+      } else if (line.key.contains(' $key')) {
+        within.add(line);
+      }
+    }
+    int byFreq(_KeyedLine a, _KeyedLine b) => b.freq.compareTo(a.freq);
+    // A line FTS found already may come back: room for those, then dropped.
+    final wanted = <_KeyedLine>[
+      ...starts..sort(byFreq),
+      ...within..sort(byFreq),
+    ].take(sentenceLimit).toList();
+    if (wanted.isEmpty) return const <SentenceHit>[];
+    final rows = <(String, int), ExamplesWithTranslationResult>{
+      for (final row
+          in await _content
+              .examplesWithTranslation(
+                lang,
+                <String>{for (final line in wanted) line.uid}.toList(),
+              )
+              .get())
+        (row.wordUid, row.ord): row,
+    };
+    final seen = <(String, String)>{
+      for (final hit in found) (hit.wordUid, hit.german),
+    };
+    return <SentenceHit>[
+      for (final line in wanted)
+        if (rows[(line.uid, line.ord)] case final row?
+            when seen.add((row.wordUid, row.german)))
+          SentenceHit(
+            wordUid: row.wordUid,
+            german: row.german,
+            translation: row.translation,
+            head: row.head,
+            article: row.article,
+            step: row.step,
+            runs: <(String, bool)>[(row.german, false)],
+            translationRuns: markedWords(row.translation, key),
+          ),
     ];
   }
 
@@ -534,3 +642,90 @@ enum WebSource {
 
   final String label;
 }
+
+/// [text] in runs with the words [key] (a [meaningKey]) matched marked: the
+/// text's words keyed one by one, the key's words found in a row, its last
+/// one as a prefix, as tier 4 matched the line (#1193). The punctuation
+/// around them stays unmarked: «pani,» marks «pani».
+List<(String, bool)> markedWords(String text, String key) {
+  final want = key.split(' ');
+  // Each key word of the text, with the span of the word it came from.
+  final words = <(String, int, int)>[
+    for (final word in RegExp(r'\S+').allMatches(text))
+      for (final part in meaningKey(word[0]!).split(' '))
+        if (part.isNotEmpty) (part, word.start, word.end),
+  ];
+  for (var i = 0; i + want.length <= words.length; i++) {
+    var matches = true;
+    for (var j = 0; j < want.length && matches; j++) {
+      final word = words[i + j].$1;
+      matches = j == want.length - 1
+          ? word.startsWith(want[j])
+          : word == want[j];
+    }
+    if (!matches) continue;
+    var start = words[i].$2;
+    var end = words[i + want.length - 1].$3;
+    while (start < end && !_letter.hasMatch(text[start])) {
+      start++;
+    }
+    while (end > start && !_letter.hasMatch(text[end - 1])) {
+      end--;
+    }
+    return <(String, bool)>[
+      if (start > 0) (text.substring(0, start), false),
+      (text.substring(start, end), true),
+      if (end < text.length) (text.substring(end), false),
+    ];
+  }
+  return <(String, bool)>[(text, false)];
+}
+
+final RegExp _letter = RegExp(r'[\p{L}\p{N}]', unicode: true);
+
+/// A line's translation keyed for tier 4's search by it (#1193), with its
+/// word's step and frequency.
+typedef _KeyedLine = ({String uid, int ord, String step, int freq, String key});
+
+/// [lang]'s lines, keyed once per content database on the first search in
+/// it, off the UI isolate: some 10,500 lines, as `CourseMeanings` keys its
+/// meanings.
+// ponytail: kept while the database is open, as `loadCourseMeanings` is: a
+// course update reaches it on the next start.
+Future<List<_KeyedLine>> _keyedLines(ContentDao dao, String lang) {
+  final byLang = _lineKeys[dao.attachedDatabase] ??=
+      <String, Future<List<_KeyedLine>>>{};
+  return byLang[lang] ??= () async {
+    try {
+      return await _keyOff(<(String, int, String, int, String)>[
+        for (final row in await dao.exampleTranslationsIn(lang).get())
+          (row.wordUid, row.ord, row.step, row.freq ?? 0, row.translation),
+      ]);
+    } on Object {
+      // Not kept: the next search tries again.
+      byLang.removeWhere((key, _) => key == lang);
+      rethrow;
+    }
+  }();
+}
+
+final Expando<Map<String, Future<List<_KeyedLine>>>> _lineKeys =
+    Expando<Map<String, Future<List<_KeyedLine>>>>();
+
+/// [lines] keyed on an isolate of its own. Its closure holds [lines] alone:
+/// one that shared [_keyedLines]'s would carry the cache's futures, which
+/// can't be sent.
+Future<List<_KeyedLine>> _keyOff(
+  List<(String, int, String, int, String)> lines,
+) => Isolate.run(
+  () => <_KeyedLine>[
+    for (final (uid, ord, step, freq, translation) in lines)
+      (
+        uid: uid,
+        ord: ord,
+        step: step,
+        freq: freq,
+        key: meaningKey(translation),
+      ),
+  ],
+);

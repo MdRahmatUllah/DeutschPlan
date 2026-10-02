@@ -72,12 +72,16 @@ def test_the_counts_are_abouts_175_631_1176():
     assert f"{words} words" in en and f"{topics} grammar topics" in en
     bn = listing[("Bangla (bn-BD)", "Full description")]
     assert f"{words.translate(bangla)}টি শব্দ" in bn and f"{topics.translate(bangla)}টি ব্যাকরণ" in bn
-    # Polish and Russian write four digits without a separator (#1143).
+    # CLDR's forms (#1194): Polish writes four digits solid, Russian groups
+    # them with a no-break space, as the app and sogda.de write it.
     plain = words.replace(",", "")
     pl = listing[("Polish (pl-PL)", "Full description")]
     assert f"{plain} słów" in pl and f"{topics} tematy gramatyczne" in pl
     ru = listing[("Russian (ru-RU)", "Full description")]
-    assert f"{plain} слов" in ru and f"{topics} грамматические темы" in ru
+    grouped = words.replace(",", " ")
+    assert f"{grouped} слов" in ru and f"{topics} грамматические темы" in ru
+    assert plain not in ru, "Russian groups the count: «5 069», not «5069»"
+    assert words.replace(",", " ") not in ru, "a no-break space, so the count never breaks"
     # The short descriptions state the steps and the mock exams (#1176).
     bn_steps, bn_mocks = str(steps).translate(bangla), str(mocks).translate(bangla)
     for language, phrases in {
