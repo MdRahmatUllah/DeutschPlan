@@ -30,6 +30,7 @@ import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/document_repository.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/data/repositories/exam_run_service.dart';
@@ -466,6 +467,14 @@ Translator translator(Ref ref) => const UnavailableTranslator();
 TranslationRepository translationRepository(Ref ref) => TranslationRepository(
   ref.watch(appDatabaseProvider),
   ref.watch(translatorProvider),
+  ref.watch(clockProvider),
+);
+
+/// Learn from your documents (#1230): D1's saved texts, the matcher's run
+/// and what D2 adds.
+@riverpod
+DocumentRepository documentRepository(Ref ref) => DocumentRepository(
+  ref.watch(appDatabaseProvider),
   ref.watch(clockProvider),
 );
 

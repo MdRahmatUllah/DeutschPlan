@@ -11,7 +11,7 @@
 
 The ink underline is what makes a word marked, and the fill says its level, which the card's chip also names, so the level is never shown by colour alone. Ink on every level's fill is at least 6.4:1 in all eight canvases (light, dark and glass, Android and iOS), and the underline gives the same margin for the non-text check. `docs/design/cefr-marks.json` has each canvas's surface, ink and blended fills with their ratios, for D2's goldens to pin.
 
-**Reached from.** D1 when processing ends, and D3's row (a saved document opens here with no new run, from `document_words`). **Leads to.**
+**Reached from.** D1 when processing ends, and D3's row (a saved document opens here and is matched again, so its marks follow what the learner has learnt since, FR-D2-07). **Leads to.**
 - the mini card, as a sheet on a phone or a side pane on a tablet, as W1 opens;
 - W1 (*Open* on a course word);
 - R2, pre-filled, for a word outside the course;
@@ -57,7 +57,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 - FR-D2-04 *I know this* rates the word Easy (W1's *Mark known*), with W1's Undo.
 - FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example*, the document's title as *Where I saw it*, and the meaning (Hy-MT2's, labelled, or empty).
 - FR-D2-06 A word already mine gets the sentence added to its contexts, and no second word.
-- FR-D2-07 The document and what it found are saved (BR-DOC-05); reopening it from D3 shows the same marks without a new run.
+- FR-D2-07 The document and what it found are saved (BR-DOC-05): D3 counts from `document_words`. Reopening it from D3 runs the matcher again on the saved text (under 500 ms), so its marks follow what the learner has learnt since, and what was added stays added.
 
 **Business rules applied.** BR-DOC-03, BR-DOC-04, BR-DOC-05, BR-DOC-07, BR-PLAN-11, BR-STATUS (Mark known), BR-PRIV-01.
 
