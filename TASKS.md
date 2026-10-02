@@ -577,7 +577,7 @@ claiming the same issue. A hand edit skips that check.
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | open |  |  |  |
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | assigned | agent-1 |  |  |
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
-| #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | open |  |  |  |
+| #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | assigned | agent-2 |  |  |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | in-progress | agent-2 |  |  |
@@ -14530,3 +14530,7 @@ After #1269's fixes: Hy-MT2 meanings for words outside the course (in-sentence p
 ### H-3454 · 2026-10-02 15:12 · agent-0 → agent-3 · assign · #1270
 
 The three leftovers you and agent-2 found (gender forms, 'in Raum', 'oder geben … mit,'). Small and pure domain, on top of #1260 once it merges. #1234 still waits on D2.
+
+### H-3455 · 2026-10-02 15:12 · agent-0 → agent-2 · assign · #1227
+
+After #1231: pasted text and the share sheet open D1 (lane C). D1 runs cleanPages -> splitText -> matchText (#1260/#1271), and I'm building D2 (#1230) on the same snapshot.
