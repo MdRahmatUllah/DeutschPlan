@@ -33,7 +33,7 @@ Created on first launch from `lib/data/db/user_schema.drift`, which is the autho
 
 `SettingsRepository` (`lib/data/repositories/`) reads this table into memory once and serves it synchronously, because settings are read during `build`. `setting_keys.dart` is the typed catalogue, and `test/data/settings_repository_test.dart` parses the table below and fails if a key or a default here and there disagree — so this is the source, not a copy of one.
 
-A write is in memory before it is on disk. A write that fails, or a transaction rolled back around one, reads the table back and tells the listeners of what moved, so a reminder scheduled from the write is taken back (`SettingsRepository.guard`, #688). `last_planned_date` and `planned_study_days` are read from the table, not from memory (`fresh`): the background task writes them through its own connection at 00:05, and an app alive since yesterday would otherwise plan the day again, and give a day opened without revisions some (BR-PLAN-08, #688).
+A write is in memory before it is on disk. A write that fails, or a transaction rolled back around one, reads the table back and tells the listeners of what moved, so a reminder scheduled from the write is taken back (`SettingsRepository.guard`, #688). `last_planned_date`, `planned_study_days` and `planned_doc_cap` are read from the table, not from memory (`fresh`): the background task writes them through its own connection at 00:05, and an app alive since yesterday would otherwise plan the day again, and give a day opened without revisions some (BR-PLAN-08, #688).
 
 | Key | Default | Screen |
 | --- | --- | --- |
@@ -70,6 +70,7 @@ A write is in memory before it is on disk. A write that fails, or a transaction 
 | `exam_timer` | 1 | L11 writes it on *Begin exam* (its switch starts from `exam_timer_default`); L12 reads it, fresh or resumed |
 | `last_export` | — | M6 — the day of the last export the share sheet took (`2026-09-20`); an import leaves it as it was (#839) |
 | `planned_study_days` | 0 | engine — the study-days mask `last_planned_date`'s day was planned with, so an M5 change is tomorrow's (BR-PLAN-08) |
+| `planned_doc_cap` | -1 | engine — the `doc_daily_cap` `last_planned_date`'s day was opened with, so an M3 change is tomorrow's (BR-PLAN-11); -1 until one is recorded |
 | `doc_daily_cap` | 5 | Settings (documents) — BR-PLAN-11's new words a day from documents, 0–20 (#1220, #1231) |
 | `doc_save_images` | 1 | Settings (documents) — keep a photo's or a PDF's pages with the document (#1220) |
 | `doc_autodelete_days` | 0 | Settings (documents) — delete a document after 30, 90 or 365 days; 0 never (#1220). An import refuses any other value (#820) |

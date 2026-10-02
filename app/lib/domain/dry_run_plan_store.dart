@@ -150,6 +150,19 @@ class DryRunPlanStore implements PlanStore {
     _plannedMask = mask;
   }
 
+  int? _plannedDocCap;
+  bool _plannedDocCapSet = false;
+
+  @override
+  Future<int?> plannedDocCap() async =>
+      _plannedDocCapSet ? _plannedDocCap : _inner.plannedDocCap();
+
+  @override
+  Future<void> setPlannedDocCap(int cap) async {
+    _plannedDocCapSet = true;
+    _plannedDocCap = cap;
+  }
+
   @override
   Future<String?> stepAfter(String sublevelCode) =>
       _inner.stepAfter(sublevelCode);

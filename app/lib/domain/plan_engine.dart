@@ -200,6 +200,11 @@ abstract interface class PlanStore {
   Future<int?> plannedMask();
   Future<void> setPlannedMask(int mask);
 
+  /// The document cap the last planned day was opened with (BR-PLAN-11),
+  /// null before one is recorded.
+  Future<int?> plannedDocCap();
+  Future<void> setPlannedDocCap(int cap);
+
   /// The step after [sublevelCode] in course order, or null at the end of the
   /// course (BR-COURSE-05).
   Future<String?> stepAfter(String sublevelCode);
@@ -625,9 +630,9 @@ class PlanEngine {
       (await _store.docPlannedOn(day)).length;
 
   /// BR-PLAN-11: [day] takes the document queue's oldest waiting words, up
-  /// to [_docDailyCap] less the ones it has already.
+  /// to its cap less the ones it has already.
   Future<void> _topUpDocWords(PlanDate day) async {
-    final room = _docDailyCap - (await _store.docPlannedOn(day)).length;
+    final room = await _docCapOn(day) - (await _store.docPlannedOn(day)).length;
     if (room <= 0) return;
     final picked = await _store.docWaiting(limit: room);
     if (picked.isEmpty) return;
@@ -699,9 +704,17 @@ class PlanEngine {
         ? await _store.plannedMask() ?? step.studyDaysMask
         : step.studyDaysMask;
     if (!isStudyDay(today, mask) || await _isPaused(today)) return 0;
-    final left = _docDailyCap - (await _store.docPlannedOn(today)).length;
+    final left =
+        await _docCapOn(today) - (await _store.docPlannedOn(today)).length;
     return left < 0 ? 0 : left;
   }
+
+  /// [day]'s document cap. An opened day keeps the one it was opened with,
+  /// so an M3 change is the next day's (BR-PLAN-11, -08).
+  Future<int> _docCapOn(PlanDate day) async =>
+      await _store.lastPlannedDate() == day
+      ? await _store.plannedDocCap() ?? _docDailyCap
+      : _docDailyCap;
 
   /// The [n]th study day after [from] under [mask] (n ≥ 1).
   PlanDate _nthStudyDay(PlanDate from, int n, int mask) {
@@ -722,11 +735,13 @@ class PlanEngine {
   /// a Revise block.
   ///
   /// [mask], when given, is what the day is planned with (BR-PLAN-08), written
-  /// only with the date: a day a step ran out on keeps the mask it had.
+  /// only with the date: a day a step ran out on keeps the mask it had. The
+  /// document cap goes with the date (BR-PLAN-11).
   Future<void> _recordPlanned(PlanDate today, {int? mask}) async {
     final last = await _store.lastPlannedDate();
     if (last == null || last.compareTo(today) < 0) {
       if (mask != null) await _store.setPlannedMask(mask);
+      await _store.setPlannedDocCap(_docDailyCap);
       await _store.setLastPlannedDate(today);
     }
   }

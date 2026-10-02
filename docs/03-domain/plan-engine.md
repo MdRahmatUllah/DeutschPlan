@@ -48,6 +48,7 @@ Words a learner adds from a document (D2's *Add*, BR-DOC-04) wait in `doc_queue`
 - **Today only.** A missed day walked by the catch-up gets the course's words and none of the queue's, which would be backlog. The queue's words wait instead, and are never backlog. Once planned, a word not studied is backlog like any new word.
 - **Waiting** means not planned by any route (its day, the course's own New today, W1's *Add to today*), still To-do, and still a word of the course. A removed word's row stays unread, as its history does (BR-CONTENT-02). A rest day, the backlog pause (BR-PLAN-07) and a cap of 0 take none.
 - **`addDocWords(uids, today)`** (FR-D2-02/03) queues the words, lets an opened study day take its share at once, and answers each word's first day: today, the study day the queue reaches it on under the cap (rest days skipped), or none with a cap of 0. A day not opened yet keeps its share for when it opens. `replanToday` (an import's merge) tops today up the same way.
+- **The cap a day opened with** holds for that day (BR-PLAN-08): opening it records `doc_daily_cap` as `planned_doc_cap`, and *Add*, `replanToday` and `docSlotsLeft` read today's room from it. An M3 change plans the next day, and `addDocWords`' start days after today use it.
 
 ### ensureRevise (BR-PLAN-03)
 

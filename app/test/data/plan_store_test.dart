@@ -616,6 +616,16 @@ ORDER BY w.seq_in_sublevel
         expect(plan.newToday.take(2), hasLength(2), reason: "the course's two");
         expect(plan.newToday.last, 's9');
         expect(await store.docPlannedOn(monday), <String>['s9']);
+        // BR-PLAN-08: the cap it opened with is stored, so a raised one
+        // waits for tomorrow.
+        expect(await store.plannedDocCap(), 1);
+        final raised = PlanEngine(
+          store: store,
+          reviseCount: 0,
+          backlogCatchupDays: 30,
+          docDailyCap: 3,
+        );
+        expect(await raised.docSlotsLeft(monday), 0);
       },
     );
   });

@@ -858,8 +858,11 @@ void main() {
       expect(await engine.docSlotsLeft(monday), 3, reason: 'not opened yet');
       await engine.openDay(monday); // takes d1, d2, d3
       expect(await engine.docSlotsLeft(monday), 0);
-      expect(await engineWith(docDailyCap: 5).docSlotsLeft(monday), 2);
-      expect(await engineWith().docSlotsLeft(monday), 0, reason: 'cap 0');
+      expect(
+        await engineWith().docSlotsLeft(addDays(monday, 2)),
+        0,
+        reason: 'cap 0',
+      );
 
       store.enrollment = ActiveStep(
         sublevelCode: 'A1.1',
@@ -881,6 +884,36 @@ void main() {
         reason: 'paused',
       );
     });
+
+    test(
+      "BR-PLAN-08 a cap change mid-day is the next day's: Add, "
+      'replanToday and the cap note keep the cap today opened with',
+      () async {
+        await engineWith(docDailyCap: 2).openDay(monday); // takes d1, d2
+        final raised = engineWith(docDailyCap: 4);
+        expect(await raised.docSlotsLeft(monday), 0);
+        expect(
+          await raised.addDocWords(<String>['d6', 'd7', 'd8'], monday, at: at),
+          // d3, d4, d5 wait ahead of them, four a day from Tuesday.
+          <String, PlanDate?>{
+            'd6': tuesday,
+            'd7': addDays(monday, 2),
+            'd8': addDays(monday, 2),
+          },
+        );
+        await raised.replanToday(monday);
+        expect(await store.docPlannedOn(monday), <String>['d1', 'd2']);
+
+        final next = await raised.openDay(tuesday);
+        expect(await store.docPlannedOn(tuesday), <String>[
+          'd3',
+          'd4',
+          'd5',
+          'd6',
+        ]);
+        expect(next.newToday, containsAllInOrder(<String>['d3', 'd6']));
+      },
+    );
 
     test('#622 after an import, replanToday tops today up from the queue '
         'too', () async {
@@ -2099,6 +2132,14 @@ class FakeStore implements PlanStore {
 
   @override
   Future<void> setPlannedMask(int mask) async => plannedStudyDays = mask;
+
+  int? docCapPlanned;
+
+  @override
+  Future<int?> plannedDocCap() async => docCapPlanned;
+
+  @override
+  Future<void> setPlannedDocCap(int cap) async => docCapPlanned = cap;
 
   /// The course, in order. `vocabulary` belongs to whichever step is active.
   List<String> course = <String>['A1.1', 'A1.2', 'A2.1'];

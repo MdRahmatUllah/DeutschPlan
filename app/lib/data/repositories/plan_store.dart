@@ -460,6 +460,17 @@ ORDER BY plan_date DESC, word_uid
   Future<void> setPlannedMask(int mask) =>
       _settings.write(SettingKeys.plannedStudyDays, mask);
 
+  /// Fresh, as [plannedMask] is: the 00:05 task records it too.
+  @override
+  Future<int?> plannedDocCap() async {
+    final cap = await _settings.fresh(SettingKeys.plannedDocCap);
+    return cap < 0 ? null : cap;
+  }
+
+  @override
+  Future<void> setPlannedDocCap(int cap) =>
+      _settings.write(SettingKeys.plannedDocCap, cap);
+
   /// The step after [sublevelCode] in course order (BR-COURSE-05).
   ///
   /// Ordered by the level first and the sublevel second: `sublevels.ord` runs
