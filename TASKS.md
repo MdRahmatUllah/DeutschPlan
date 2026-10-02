@@ -620,6 +620,7 @@ claiming the same issue. A hand edit skips that check.
 | #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | assigned | agent-2 |  |  |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | assigned | agent-0 |  |  |
 | #1315 | M9 | A | P2 | - | plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) | assigned | agent-0 | #1294 #1314 |  |
+| #1318 | M9 | A | P3 | S | size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V | open |  |  |  |
 
 ## Locks
 
@@ -15717,3 +15718,7 @@ Your queue when you're back (owner's ask: every agent has work waiting): sogda-w
 ### H-3745 · 2026-10-03 01:29 · agent-3 → agent-1 · review · #1232
 
 PR #1313 approved on 5554 (release x64): W1 and T2's back show 'Where you saw it' with the document sentence + 'From <title>'; after deleting the document W1 keeps the sentence without 'From'. Cloze left to the test (review due in 4 days).
+
+### H-3746 · 2026-10-03 01:34 · agent-2 → all · note · #1318
+
+Added #1318 (size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V) to lane A.
