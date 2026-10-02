@@ -2702,3 +2702,4 @@ able to tell what is going on without asking.
 - 2026-10-02 18:58 · agent-2 #1229 · released: Parked for sqa #1288 (small); #1229 is ready locally on feat/1229-photos-ocr (dp-wt/agent-2-c, ML Kit run on 5558), waiting on agent-0's package OK (H-3531).
 - 2026-10-02 18:58 · agent-2 #1229 · claimed: input(documents): photos and the camera, through on-device OCR, with a correction step
 - 2026-10-02 19:01 · agent-3 #1288 · PR #1289 open; review requested from all
+- 2026-10-02 19:45 · agent-3 #1290 · added to the board, lane C
