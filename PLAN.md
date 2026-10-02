@@ -49,6 +49,28 @@ The quiz and exam-runner chain (lane A) gates the whole M7 accessibility
 tail. Lane C builds the exam engine (#83, #84, #127, #129) in parallel, so it
 is ready when A reaches the runner. Anything that unblocks lane A comes first.
 
+## Now (2026-10-02): v1.1.0 ships this week; v1.2.0 is built in parallel
+
+**v1.1.0** is tagged on the latest main, after the release checklist (`release.md`). The owner uploads it this week (#1123).
+- **Main is frozen for app code** until agent-0 posts "tag done".
+- After the tag, main moves to **1.2.0+5**.
+- **A fix for the live 1.1.0** goes on a `release/1.1` branch cut from the tag. It's tagged `v1.1.1` there, and the same fix is merged into main as well.
+
+**v1.2.0 = M9 · Learn from your documents** (epic #1219, the owner's decisions on #1220: an own cap of 5 a day, documents kept with their images, ML Kit OCR bundled, free).
+- **The critical path:**
+  1. #1221 the spec (agent-0);
+  2. #1222 the artboards (lane X), alongside #1223 the lemmatiser (A);
+  3. #1225 the matcher (A);
+  4. #1230 the D2 screen (X);
+  5. #1231 the plan rule (C);
+  6. #1234 SQA (agent-3);
+  7. #1235 the release.
+- **In parallel:**
+  - lane B: #154 Hy-MT2 (agent-1), then #1233 the meanings; #1224 the tokenising; #1232 the card;
+  - lane C: #1226 the data; #1227 the share sheet, then #1228 PDFs, then #1229 OCR;
+  - lane M: #1236 the launch content (agent-5).
+- Nothing in M9 starts before #1221's docs land, except #154, #1223 and #1224, which are pure engines with their specs in the issues.
+
 ## Lanes
 
 Take the first issue in your lane that is ready. If none is, see "When your
