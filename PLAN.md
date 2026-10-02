@@ -6,14 +6,17 @@ this is the route. Change it when reality changes, and say so in a handoff
 
 ## The team
 
-Three agents work in parallel, each in its own worktree
+Six agents work in parallel, each in its own worktree
 (`F:/appDevs/dp-wt/<id>`):
 
 - **agent-0 is the lead.** It takes lane A, the critical path. It assigns work (`team.py assign`), reviews the others' PRs, closes epics and milestones, and relays the owner's decisions.
-- **agent-1 takes lane B:** the voice seam, words, search, translation and polish.
-- **agent-2 takes lane C:** Me, settings, the exam engine, platform work and accessibility.
+- **agent-1 takes lane B:** the voice seam, words, search, translation and polish. It is also the native reviewer for pl and bn.
+- **agent-2 takes lane C:** Me, settings, the exam engine, platform work and accessibility. It is also the native reviewer for ru.
+- **agent-3 is SQA:** it tests closed issues on its own emulator, and files bugs to milestone SQA.
+- **agent-4 is the website:** sogda.de, in the `sogda-website` repo, with its own board (that repo's #94). It has no lane here.
+- **agent-5 is Marketing & Media (since 2026-10-02): lane M.** It handles research, the marketing todo list, copy, images, videos, the posting plan, automation, and the app's features reviewed with findings filed as issues. It never publishes: the owner posts. Its guide is `developer-agents/agent-5/`, and the owner starts it with `/agent-5`.
 
-A fourth agent would join as `agent-3`. The lead then gives it part of a lane in a handoff.
+A new agent joins as `agent-6`, with a folder in `developer-agents/` and a lane here.
 
 Snapshot 2026-09-24:
 - **Done:** M0 (60 issues), M1 (19), M2 (19) and M3 (12, closed with epic #9).
@@ -97,6 +100,22 @@ Between issues the lead also:
 10. #145, #148, #149, #150, #172.
 11. #161 iOS widget: written blind, marked unverified.
 12. The accessibility tail: #162 → #165 → #168.
+
+**Lane M — agent-5 — Marketing & Media** (label `marketing`; rules in `developer-agents/agent-5/README.md`)
+
+*MK1 · Marketing foundations*
+1. **#1200 the Play feature graphic (P1).** Required before the first upload, so it blocks #1123.
+2. #1201 channels per audience, and #1202 competitors' marketing (research, in parallel).
+3. #1203 the messaging matrix, then #1204 the content calendar. Each needs the research.
+4. #1209 brand templates, then the tools: #1205 stills and #1206 videos.
+5. #1208 the feature review of 1.1.0: every finding becomes its own issue.
+6. #1207 automation: post drafts and the weekly due-list. Needs the calendar.
+
+*MK2 · Play launch campaign* (blocked until the app is listed, #1123)
+- #1211 the promo video. It can be made before launch, once #1206 exists.
+- #1210 the launch-day kit, and #1212 the outreach list with sogda-website #76's pitches.
+
+agent-5 files its own new todos as issues (`marketing`, an MK milestone), adds them with `team.py add <N> --lane M`, and keeps this list current. Copy goes to the native reviewers (agent-1 pl and bn, agent-2 ru), and facts and brand go to agent-0. **Nothing is published by an agent:** the owner posts.
 
 **Lane X — anyone, when their lane is blocked**
 - Follow-ups: #281 (L6 tests), #282 (glass word lists), #284 (dev-guide reconciliation).
