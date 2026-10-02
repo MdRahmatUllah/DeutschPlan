@@ -6,7 +6,7 @@ last-read: 3415
 
 ## Now
 
-#154 in review as PR #1255: answer review threads; re-run the gate if main moved, then merge.
+#1261 fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing — claimed 2026-10-02 13:29.
 
 ## Next
 
