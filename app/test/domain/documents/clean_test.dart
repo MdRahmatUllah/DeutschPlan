@@ -56,4 +56,41 @@ void main() {
     );
     expect(cleanPages(<String>['$head\nEin Brief.']), '$head\nEin Brief.');
   });
+
+  test('#1227 FR-D2-01 a document is named by its first line, cut at a word '
+      'end', () {
+    expect(
+      documentTitle('\n  Nebenkosten 2025  \nSehr geehrte'),
+      'Nebenkosten 2025',
+    );
+    expect(
+      documentTitle('Ihre Abrechnung der Betriebskosten für das Jahr', max: 20),
+      'Ihre Abrechnung der…',
+    );
+    expect(documentTitle(' \n\n '), isNull);
+    expect(documentTitle('…\n— 2 —\nLieber Max'), 'Lieber Max');
+  });
+
+  test("#1227 a letter's title is past its salutation, without a trailing "
+      'comma', () {
+    expect(
+      documentTitle('Liebe Eltern,\n\nam Montag fällt der Unterricht aus.'),
+      'am Montag fällt der Unterricht aus.',
+    );
+    expect(
+      documentTitle('Sehr geehrte Damen und Herren,\nIhre Abrechnung 2025'),
+      'Ihre Abrechnung 2025',
+    );
+    expect(
+      documentTitle('Betreff: Ihre Kündigung:'),
+      'Betreff: Ihre Kündigung',
+    );
+    // A salutation alone is all there is to name it by.
+    expect(documentTitle('Liebe Anna,'), 'Liebe Anna');
+    // On one line with the text, it's the first line as it is.
+    expect(
+      documentTitle('Hallo Max, wie geht es dir?'),
+      'Hallo Max, wie geht es dir?',
+    );
+  });
 }

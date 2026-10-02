@@ -98,3 +98,31 @@ String _joinHyphens(String text) => text
       RegExp(r'(\p{L})-\n(\p{Lu})', unicode: true),
       (m) => '${m[1]}-${m[2]}',
     );
+
+/// A document's title by default (`doc-words.md`): its first line with a
+/// letter in it, past a letter's salutation («Sehr geehrte Damen und
+/// Herren,» says who it's to, not what it's about), without a trailing
+/// comma or colon, cut at a word end to [max] characters. Null for a text
+/// with none, where D1 names it by its day.
+String? documentTitle(String body, {int max = 60}) {
+  final lines = <String>[
+    for (final l in body.split('\n'))
+      if (_letter.hasMatch(l)) l.trim(),
+  ];
+  if (lines.isEmpty) return null;
+  final line = lines
+      .firstWhere((l) => !_salutation.hasMatch(l), orElse: () => lines.first)
+      .replaceAll(RegExp(r'[,;:]+$'), '');
+  if (line.length <= max) return line;
+  final space = line.lastIndexOf(' ', max);
+  return '${line.substring(0, space > 0 ? space : max).trimRight()}…';
+}
+
+final RegExp _letter = RegExp(r'\p{L}', unicode: true);
+
+/// A line that is a salutation alone: «Liebe Eltern,», «Sehr geehrte Frau
+/// Okafor,», «Guten Tag,».
+final RegExp _salutation = RegExp(
+  r'^(liebe[rs]?|sehr geehrte[rs]?|hallo|guten (tag|morgen|abend))\b.*,$',
+  caseSensitive: false,
+);

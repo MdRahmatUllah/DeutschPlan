@@ -1040,6 +1040,15 @@ class _Idle extends ConsumerWidget {
             onPressed: () => AddWordRoute.open(context),
           ),
         ),
+        // D1 (#1227): the words of a letter or an article, at once.
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: SgButton(
+            label: l10n.docImportTitle,
+            kind: SgButtonKind.secondary,
+            onPressed: () => DocImportRoute.open(context),
+          ),
+        ),
       ],
     );
   }

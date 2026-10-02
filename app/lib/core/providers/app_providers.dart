@@ -30,6 +30,7 @@ import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/db/content_update.dart';
 import 'package:sogda/data/repositories/backup_repository.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
+import 'package:sogda/data/repositories/document_repository.dart';
 import 'package:sogda/data/repositories/exam_repository.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/data/repositories/exam_run_service.dart';
@@ -60,6 +61,8 @@ import 'package:sogda/services/device_storage.dart';
 import 'package:sogda/services/exam_recorder.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
+import 'package:sogda/services/page_photos.dart';
+import 'package:sogda/services/shared_text.dart';
 import 'package:sogda/services/translation/hymt_translator.dart';
 import 'package:sogda/services/translation/translator.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
@@ -517,6 +520,14 @@ Future<String?> translationOf(Ref ref, String text, String from, String to) {
       .translate(text, from: from, to: to, abandoned: gone.future);
 }
 
+/// Learn from your documents (#1230): D1's saved texts, the matcher's run
+/// and what D2 adds.
+@riverpod
+DocumentRepository documentRepository(Ref ref) => DocumentRepository(
+  ref.watch(appDatabaseProvider),
+  ref.watch(clockProvider),
+);
+
 /// Opens a web page in an in-app browser tab: R1's Duden · DWDS · Wiktionary
 /// · Linguee · Google chips (FR-R1-06). The app makes no request of its own
 /// (BR-PRIV-01); the browser does, because the learner tapped. False when
@@ -603,6 +614,15 @@ NotificationPermission notificationPermission(Ref ref) =>
 /// The phone's free space: M4's storage card and its shortfall (#156).
 @riverpod
 DeviceStorage deviceStorage(Ref ref) => const PlatformDeviceStorage();
+
+/// Text shared from another app, for D1 to take (#1227).
+@riverpod
+SharedText sharedText(Ref ref) => const PlatformSharedText();
+
+/// D1's photos: the camera, the gallery, and their text read on the phone
+/// (#1229).
+@riverpod
+PagePhotos pagePhotos(Ref ref) => PlatformPagePhotos();
 
 /// Kept alive for the same reason: page 5's draft queues the voice (FR-S2-06).
 @Riverpod(keepAlive: true)

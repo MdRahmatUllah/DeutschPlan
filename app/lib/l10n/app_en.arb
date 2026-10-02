@@ -5196,6 +5196,209 @@
   "@addWordIntro": {
     "description": "R2: the line under the title."
   },
+  "docImportTitle": "Learn from a document",
+  "@docImportTitle": {
+    "description": "D1's title, and R1's way to it (#1227)."
+  },
+  "docImportIntro": "Bring the German you meet: a letter, a page, an article.",
+  "@docImportIntro": {
+    "description": "D1: the line under the title."
+  },
+  "docImportPaste": "Paste text",
+  "@docImportPaste": {
+    "description": "D1's choice that pastes text from the clipboard (FR-D1-01)."
+  },
+  "docImportPasteDetail": "From the clipboard",
+  "@docImportPasteDetail": {
+    "description": "D1: the line under Paste text."
+  },
+  "docImportPasteEmpty": "Nothing to paste: copy some German text first",
+  "@docImportPasteEmpty": {
+    "description": "D1: under Paste text, off, when the clipboard holds no text."
+  },
+  "docImportPrivacy": "Everything stays on this phone: reading and translation run here, offline.",
+  "@docImportPrivacy": {
+    "description": "D1: the privacy line under the choices (BR-DOC-01)."
+  },
+  "docImportTextLabel": "The text to read",
+  "@docImportTextLabel": {
+    "description": "D1: what a screen reader hears on the pasted text's box."
+  },
+  "docImportFind": "Find my words",
+  "@docImportFind": {
+    "description": "D1: the button under the pasted text that reads it."
+  },
+  "docImportCut": "Sogda reads only the first {count} characters: the rest is cut.",
+  "@docImportCut": {
+    "description": "D1: a text over the limit is cut (FR-D1-02). count is the limit, 20,000.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPasted": "Pasted text",
+  "@docImportPasted": {
+    "description": "D1 while processing: where the text came from."
+  },
+  "docImportShared": "Shared text",
+  "@docImportShared": {
+    "description": "D1 while processing: text another app shared."
+  },
+  "docImportReading": "Reading",
+  "@docImportReading": {
+    "description": "D1: the processing card's heading, in small capitals."
+  },
+  "docImportFinding": "Finding your words…",
+  "@docImportFinding": {
+    "description": "D1: the step that matches the text's words."
+  },
+  "docImportOffline": "On this phone, offline. It takes a few seconds.",
+  "@docImportOffline": {
+    "description": "D1: under the processing card."
+  },
+  "docImportCancel": "Cancel",
+  "@docImportCancel": {
+    "description": "D1: stops processing and saves nothing (FR-D1-05)."
+  },
+  "docImportNotGerman": "This doesn't look like German",
+  "@docImportNotGerman": {
+    "description": "D1: the text isn't German (FR-D1-04)."
+  },
+  "docImportNotGermanBody": "Sogda finds German words. In another language it finds few or none.",
+  "@docImportNotGermanBody": {
+    "description": "D1: under This doesn't look like German."
+  },
+  "docImportContinueAnyway": "Continue anyway",
+  "@docImportContinueAnyway": {
+    "description": "D1: goes on with a text that isn't German (FR-D1-04)."
+  },
+  "docImportFailed": "The text couldn't be read.",
+  "@docImportFailed": {
+    "description": "D1: the text couldn't be saved or matched."
+  },
+  "docImportUntitled": "Text of {date}",
+  "@docImportUntitled": {
+    "description": "A document's title when its text has no line of words: date is the day it was saved, as \"2 Oct\".",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "docImportTakePhotos": "Take photos",
+  "@docImportTakePhotos": {
+    "description": "D1's choice that photographs pages with the camera (FR-D1-01, #1229)."
+  },
+  "docImportTakePhotosDetail": "The camera, page by page",
+  "@docImportTakePhotosDetail": {
+    "description": "D1: the line under Take photos."
+  },
+  "docImportChooseImages": "Choose images",
+  "@docImportChooseImages": {
+    "description": "D1's choice that reads photos from the gallery (FR-D1-01, #1229)."
+  },
+  "docImportChooseImagesDetail": "Photos already on this phone",
+  "@docImportChooseImagesDetail": {
+    "description": "D1: the line under Choose images."
+  },
+  "docImportPhotos": "{count, plural, =1{1 photo} other{{count} photos}}",
+  "@docImportPhotos": {
+    "description": "D1 while photographing or reading photos: how many there are.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPage": "Page {page}",
+  "@docImportPage": {
+    "description": "D1: one photographed page in the list, e.g. \"Page 2\".",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportAddPage": "Add a page",
+  "@docImportAddPage": {
+    "description": "D1: photographs one more page."
+  },
+  "docImportDone": "Done",
+  "@docImportDone": {
+    "description": "D1: the pages are all photographed; read them."
+  },
+  "docImportReadingPage": "Reading page {page} of {count}…",
+  "@docImportReadingPage": {
+    "description": "D1 processing a photo: page is the one being read, count all of them.",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportCheckTitle": "Check the text",
+  "@docImportCheckTitle": {
+    "description": "D1's Check the text (FR-D1-03): its title."
+  },
+  "docImportCheckIntro": "Photo {page} was hard to read. Fix the marked words, then continue.",
+  "@docImportCheckIntro": {
+    "description": "Check the text: under the title. page is the photo that was hard to read.",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportCheckCount": "{count, plural, =1{1 word to check} other{{count} words to check}}",
+  "@docImportCheckCount": {
+    "description": "Check the text: the pill with how many words were read with low confidence.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportTheText": "The text",
+  "@docImportTheText": {
+    "description": "Check the text: the box's heading, in small capitals."
+  },
+  "docImportCheckNote": "What you correct here is the text Sogda reads and saves.",
+  "@docImportCheckNote": {
+    "description": "Check the text: under the box (FR-D1-03: the edits are what is saved)."
+  },
+  "docImportContinue": "Continue",
+  "@docImportContinue": {
+    "description": "Check the text: the corrected text goes on to be read."
+  },
+  "docImportTakeAgain": "Take again",
+  "@docImportTakeAgain": {
+    "description": "Check the text: photographs the hard page again."
+  },
+  "docImportTooManyPages": "Sogda reads up to {count} pages: the rest are left out.",
+  "@docImportTooManyPages": {
+    "description": "D1: more pages than it reads (FR-D1-02). count is the limit, 30.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportNoText": "No text found on the photos. Take them again in good light.",
+  "@docImportNoText": {
+    "description": "D1: OCR found no text on any photo."
+  },
   "addWordArticle": "Article",
   "@addWordArticle": {
     "description": "R2: the heading over der / die / das / none, shown upper-case."
@@ -5824,9 +6027,9 @@
   "@resetEverythingTitle": {
     "description": "The ResetDialog artboard: the title."
   },
-  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history and my words on this phone. Export first if you might want it back. Type RESET to confirm.",
+  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history, my words and documents on this phone. Export first if you might want it back, but a document's photos aren't in the file. Type RESET to confirm.",
   "@resetEverythingMessage": {
-    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language."
+    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language. #1288: it names the documents, whose photos an export never holds (BR-DOC-06)."
   },
   "resetEverythingConfirm": "Reset",
   "@resetEverythingConfirm": {

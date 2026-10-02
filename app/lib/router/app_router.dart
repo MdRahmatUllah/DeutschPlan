@@ -18,7 +18,8 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
   // The router refers to itself: the deep-link branch has to know where the
   // learner already is before deciding whether to move them.
   late final GoRouter router;
-  // The speaking links so far: each *Pronounce* is a new arrival (#442).
+  // The speaking links and the shares so far: each *Pronounce* and each
+  // share is a new arrival (#442, #1227).
   var arrivals = 0;
 
   router = GoRouter(
@@ -90,7 +91,7 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
         if (state.uri.scheme != deepLinkScheme) return fallbackLocation;
 
         final resolved = resolveDeepLink(state.uri);
-        return wantsSpeech(Uri.parse(resolved))
+        return numberedArrival(Uri.parse(resolved))
             ? numbered(resolved, ++arrivals)
             : resolved;
       }

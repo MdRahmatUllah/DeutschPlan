@@ -1072,6 +1072,16 @@ void main() {
       await settle(tester);
       expect(router!.state.uri.path, '/search/add');
     });
+
+    testWidgets('#1227 Learn from a document, under it, opens D1', (
+      tester,
+    ) async {
+      await pump(tester, routed: true);
+      await tester.ensureVisible(find.text(l10n.docImportTitle));
+      await tester.tap(find.text(l10n.docImportTitle));
+      await settle(tester);
+      expect(router!.state.uri.path, '/search/import');
+    });
   });
 
   group('#139 not in the course', () {

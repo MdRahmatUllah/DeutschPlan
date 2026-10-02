@@ -60,6 +60,11 @@ String resolveDeepLink(Uri link) {
     case <String>['exam', final String code]:
       return '/learn/step/${Uri.encodeComponent(code)}?tab=exams';
 
+    // sogda://import — "Share → Sogda" (#1227): D1, which takes the text
+    // from `MainActivity`. Never the text itself, which stays out of links.
+    case <String>['import']:
+      return shareLocation;
+
     default:
       return fallbackLocation;
   }
@@ -105,7 +110,16 @@ const String speakOn = '1';
 bool wantsSpeech(Uri location) =>
     location.queryParameters[speakParameter] == speakOn;
 
-/// The *Pronounce* a link is, as the router numbers them (#442).
+/// D1, where a share lands (`DocImportRoute`).
+const String shareLocation = '/search/import';
+
+/// Whether an arrival is numbered: each *Pronounce* speaks, and each share
+/// is read, even onto the screen already open (#442, #1227).
+bool numberedArrival(Uri location) =>
+    wantsSpeech(location) || location.path == shareLocation;
+
+/// The *Pronounce* or the share a link is, as the router numbers them (#442,
+/// #1227).
 const String arrivalParameter = 'arrival';
 
 /// [location] as the [n]th speaking link: a link onto the word already open

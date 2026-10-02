@@ -22,6 +22,7 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/app_theme.dart' show StillPageTransitions;
 import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/features/day_complete/day_complete_screen.dart';
+import 'package:sogda/features/documents/doc_import_screen.dart';
 import 'package:sogda/features/exam/exam_results_screen.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
@@ -227,6 +228,8 @@ enum StepTab { words, grammar, quiz, exams }
           routes: <TypedRoute<RouteData>>[
             TypedGoRoute<AddWordRoute>(path: 'add'),
             TypedGoRoute<EditCustomWordRoute>(path: 'add/:id'),
+            TypedGoRoute<DocImportRoute>(path: 'import'),
+            TypedGoRoute<DocWordsRoute>(path: 'document/:id'),
           ],
         ),
       ],
@@ -433,6 +436,39 @@ class EditCustomWordRoute extends GoRouteData with $EditCustomWordRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       AddWordScreen(id: id);
+}
+
+class DocImportRoute extends GoRouteData with $DocImportRoute {
+  const DocImportRoute({this.arrival});
+
+  /// Pushed from R1 idle (`doc-import.md`), so back returns to the search.
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const DocImportRoute().location));
+
+  /// Which share this is, when "Share → Sogda" opened it (#1227): the router
+  /// numbers each, so a second share onto D1 is read too. D1 then takes the
+  /// shared text and goes straight to processing.
+  final String? arrival;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      DocImportScreen(arrival: arrival);
+}
+
+// ponytail: a stand-in until #1230 part 2 declares D2 here; dropped on the
+// rebase onto it.
+class DocWordsRoute extends GoRouteData with $DocWordsRoute {
+  const DocWordsRoute({required this.id});
+
+  final int id;
+
+  /// D1's end: D2 takes its place, so back returns to the search.
+  static void instead(BuildContext context, int id) =>
+      context.pushReplacement(DocWordsRoute(id: id).location);
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const SizedBox.shrink();
 }
 
 class MeRoute extends GoRouteData with $MeRoute {

@@ -19,7 +19,7 @@
 - *Show words I probably know* (off).
 
 **Functional requirements**
-- FR-D3-01 The list shows every saved document; a row opens D2 with no new run.
+- FR-D3-01 The list shows every saved document; a row opens D2, which matches it again (FR-D2-07).
 - FR-D3-02 *Delete* asks first ("Delete 'Letter of 2 Oct'? The words you added stay.") and removes the document, its images and what it found, never the words or their sentences (BR-DOC-05).
 - FR-D3-03 *Auto-delete* removes documents older than the setting when the app opens, the same way.
 - FR-D3-04 Turning *Save original images* off asks whether to delete the images already kept.

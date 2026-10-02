@@ -3,6 +3,8 @@
 /// can mark it where it stands.
 library;
 
+import 'dart:math' show min;
+
 import 'package:sogda/domain/documents/lemmatiser.dart';
 import 'package:sogda/domain/documents/stop_words.dart';
 
@@ -169,6 +171,33 @@ List<DocSentence> splitText(String text) {
   }
   return sentences;
 }
+
+/// The most of a document's text Sogda reads (FR-D1-02).
+const int docMaxChars = 20000;
+
+/// [text] (from `cleanPages`) cut to [limit] characters, if it's longer:
+/// at the last sentence end before the limit, or at the last word end if no
+/// sentence ends there (pipeline step 1, FR-D1-02). `cut` says whether
+/// anything went, for D1's note.
+({String text, bool cut}) limitText(String text, {int limit = docMaxChars}) {
+  if (text.length <= limit) return (text: text, cut: false);
+  // A little past the limit, so a sentence ending on it is seen to end.
+  // ponytail: only the head is split, so a 1 MB paste costs what 20 kB does.
+  final head = text.substring(0, min(text.length, limit + 200));
+  var end = 0;
+  for (final sentence in splitText(head)) {
+    if (sentence.end <= limit && sentence.end < head.length) end = sentence.end;
+  }
+  if (end == 0) {
+    final space = text.lastIndexOf(RegExp(r'\s'), limit);
+    end = space > 0 ? space : limit;
+    // Never half a surrogate pair.
+    if (_highSurrogate(text.codeUnitAt(end - 1))) end--;
+  }
+  return (text: text.substring(0, end).trimRight(), cut: true);
+}
+
+bool _highSurrogate(int unit) => unit >= 0xD800 && unit <= 0xDBFF;
 
 final RegExp _end = RegExp(
   r'[.!?]+["“”»«’)]*(?=\s)|\n[ \t]*\n|,[ \t]*\n(?=[ \t]*\p{Lu})',

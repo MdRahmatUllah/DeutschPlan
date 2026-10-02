@@ -589,12 +589,45 @@ ORDER BY w.seq_in_sublevel
       expect(await store.docWaiting(limit: 10), <String>['s3']);
     });
 
+    test(
+      "#1290 BR-CONTENT-02 a removed word's row stays, unread: it never "
+      'waits while the word is gone, and waits in its place if it returns',
+      () async {
+        await store.queueDocWords(<String>[
+          's3',
+          's4',
+          's5',
+        ], '2026-03-01T09:00:00Z');
+        // A content update takes s4 out of the course.
+        await db.customStatement(
+          "UPDATE c.words SET kind = 'note' WHERE uid = 's4'",
+        );
+        expect(await store.docWaiting(limit: 10), <String>['s3', 's5']);
+        final kept = await db
+            .customSelect('SELECT word_key FROM doc_queue ORDER BY rowid')
+            .get();
+        expect(
+          <String>[for (final row in kept) row.read<String>('word_key')],
+          <String>['s3', 's4', 's5'],
+          reason: 'kept, as its word_state is',
+        );
+
+        // A later update brings it back.
+        await db.customStatement(
+          "UPDATE c.words SET kind = 'vocab' WHERE uid = 's4'",
+        );
+        expect(await store.docWaiting(limit: 10), <String>['s3', 's4', 's5']);
+      },
+    );
+
     test("a day's used slots are the words planned on it", () async {
       await store.queueDocWords(<String>[
         's1',
         's2',
         's3',
       ], '2026-03-01T09:00:00Z');
+      // As the engine plans them: the rows, then the queue's day.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
       await store.markDocPlanned(monday, <String>['s1', 's2']);
       expect(await store.docPlannedOn(monday), <String>['s1', 's2']);
       expect(await store.docPlannedOn(addDays(monday, 1)), isEmpty);
@@ -626,6 +659,44 @@ ORDER BY w.seq_in_sublevel
           docDailyCap: 3,
         );
         expect(await raised.docSlotsLeft(monday), 0);
+      },
+    );
+
+    test(
+      '#1285 a day whose rows went (a merge where the file wins) frees '
+      'its queue words: they wait again, and the course keeps daily_new',
+      () async {
+        await enroll(dailyNew: 2);
+        await store.queueDocWords(<String>['s9', 's8'], '2026-03-01T09:00:00Z');
+        final engine = PlanEngine(
+          store: store,
+          reviseCount: 0,
+          backlogCatchupDays: 30,
+          docDailyCap: 2,
+        );
+        await engine.openDay(monday);
+        final course = (await store.plannedOn(
+          monday,
+          PlanKind.newWord,
+        )).where((uid) => uid != 's9' && uid != 's8').toList();
+        expect(course, hasLength(2));
+        expect(await store.docPlannedOn(monday), <String>['s9', 's8']);
+
+        // #658: the file's plan replaces the phone's, without the queue's rows,
+        // and the queue still says Monday.
+        await db.customStatement(
+          "DELETE FROM plan_items WHERE word_uid IN ('s9', 's8')",
+        );
+        expect(await store.docPlannedOn(monday), isEmpty);
+        expect(await store.docWaiting(limit: 10), <String>['s9', 's8']);
+
+        await engine.replanToday(monday);
+        expect(await store.plannedOn(monday, PlanKind.newWord), <String>[
+          ...course,
+          's9',
+          's8',
+        ], reason: "daily_new's two, and the queue's back, not two more");
+        expect(await store.docPlannedOn(monday), <String>['s9', 's8']);
       },
     );
   });
