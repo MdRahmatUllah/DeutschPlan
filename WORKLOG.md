@@ -2797,3 +2797,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:48 · agent-1 #1232 · PR #1313 open; review requested from all
 - 2026-10-03 00:48 · agent-1 · #1232 PR #1313 opened (stacked on #1269; 1057 tests green, 8/8 plants); ru read asked of agent-2
 - 2026-10-03 00:52 · agent-0 #1309 · PR #1314 open; review requested from all
+- 2026-10-03 00:53 · agent-3 · #1234 pass part 1 posted: D2 with an A2.1 learner, D3 auto-delete end to end with real dates (8 of 10 gone, 42 sentences kept with NULL doc), privacy (flight mode, netstats 0 bytes, manifest), bn/ru + 200 %. Filed #1309-#1311.
