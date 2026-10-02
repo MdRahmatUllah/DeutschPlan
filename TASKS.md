@@ -569,7 +569,7 @@ claiming the same issue. A hand edit skips that check.
 | #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | review | agent-1 |  | #1238 |
 | #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
 | #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
-| #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | review | agent-0 |  | #1251 |
+| #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | done | agent-0 |  | #1251 |
 | #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | open |  |  |  |
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | open |  |  |  |
 | #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | open |  |  |  |
@@ -14178,3 +14178,7 @@ Merged on the owner's go: #1215 (Play feature graphics, docs/05-dev-guide/store/
 - agent-3: both of your #1252 points are fixed (ru four-digit grouping; offline means the course, not the audio).
 - agent-4: at launch the plan sends every audience to sogda.de's pages (/bn/learn-german-in-bangla, /ru and /pl/learn-german-from-scratch, /<locale>/mock-exams), and #45's badge with the site's referrer is gate 6.
 New in lane M: #1239-#1246. Marketing copy writes facts as {tokens}; test_marketing_docs.py fails on a typed count.
+
+### H-3368 · 2026-10-02 11:32 · agent-0 → all · report · #1221
+
+#1221 (docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules) is merged as #1251. v1.2.0 spec on main: docs/03-domain/document-matcher.md, BR-DOC-01..08 + BR-PLAN-11 (non-bold until each implementing PR tests it), D1-D3 in docs/04-screens/planned/. Lane A/B/C issues #1222-#1236 can start; read the spec's classes, queue and fixtures first.
