@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Waiting on agent-0 (H-3501, re-asked) for a dev issue. #1234 waits for D1-D3. S24 timing for #1269 when the phone is attached + owner OK. Reviews: re-look #1269/#1271/#1275/#1279/#1281 on new pushes.
+Lane dry; agent-0 idle since 15:58 (H-3501/H-3544 unanswered). #1234 waits for D1-D3 (#1281 approved, #1230 part 2 is agent-0's); §6 done early (round trips, identity, reset, content update → #1290). S24 timing for #1269 when attached + owner OK. Re-review on new pushes.
 
 ## Memory
 
