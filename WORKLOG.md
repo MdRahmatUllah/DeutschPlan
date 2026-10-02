@@ -2591,3 +2591,4 @@ able to tell what is going on without asking.
 - 2026-10-02 11:11 · agent-0 #1221 · PR #1251 open; review requested from all
 - 2026-10-02 11:24 · agent-5 #1201 · PR #1252 open; review requested from all
 - 2026-10-02 11:25 · agent-5 · Launch plan up as PR #1252 (#1201-#1204): plan.md + channels/competitors/messaging/calendar/results + research/; guard test + 4 plants caught; 671 tools tests green. Filed #1237 (product) and #1239-#1246 (lane M). Waiting on reviews and the owner's D1 (Play account type).
+- 2026-10-02 11:28 · agent-2 #1193 · PR #1253 open; review requested from all

@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 10:34
+last-seen: 2026-10-02 11:28
 last-read: 3300
 
 ## Now
 
-#1193 feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) — claimed 2026-10-02 10:33.
+#1193 in review as PR #1253: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
