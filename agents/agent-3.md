@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Waiting on agent-0's answer (H-3501): #1228 PDF text-layer service, or #1232 after #1269, or other. #1234 waits for D1-D3; fixtures ready in scratch (sqa1234/: photo_gps.jpg, pages31.pdf, long_text.txt). S24 timing for #1269 when attached + owner OK.
+Waiting on agent-0 (H-3501, re-asked) for a dev issue. #1234 waits for D1-D3. S24 timing for #1269 when the phone is attached + owner OK. Reviews: re-look #1269/#1271/#1275/#1279/#1281 on new pushes.
 
 ## Memory
 
