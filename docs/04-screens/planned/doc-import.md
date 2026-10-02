@@ -42,7 +42,7 @@
 **Data.** It writes `documents` (and the images under `<appSupport>/documents/<id>/`), then opens D2 on its id, and D2 runs the matcher (`03-domain/document-matcher.md`).
 - **The text saved** is the clean one (`cleanPages`), cut to the limit (`limitText`: the last sentence end before 20,000 characters, else the last word end), since `match` reads `body` as it is. The note is a toast, and under the pasted text's box while it's over the limit.
 - **The German check** (FR-D1-04) runs before anything is saved: `DocumentRepository.germanShareOf(body)`, the lemmatiser in an isolate. *Continue anyway* saves; *Cancel* saves nothing.
-- **The title** is the text's first line with a letter in it, cut at a word end to 60 characters, or "Text of 2 Oct" when it has none (#1227). D2 lets the learner change it.
+- **The title** is the text's first line with a letter in it, cut at a word end to 60 characters, or "Text of 2 Oct" when it has none (#1227). A letter's salutation alone on its line («Sehr geehrte Damen und Herren,», «Liebe Eltern,») is passed over, since it says who the letter is to, not what it's about, and a trailing comma or colon goes. D2 lets the learner change it.
 - **`source`:** `paste` or `share` (#1227), `pdf` (#1228), `photo` (#1229).
 
 **Developer notes.**

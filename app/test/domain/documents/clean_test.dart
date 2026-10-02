@@ -70,4 +70,27 @@ void main() {
     expect(documentTitle(' \n\n '), isNull);
     expect(documentTitle('…\n— 2 —\nLieber Max'), 'Lieber Max');
   });
+
+  test("#1227 a letter's title is past its salutation, without a trailing "
+      'comma', () {
+    expect(
+      documentTitle('Liebe Eltern,\n\nam Montag fällt der Unterricht aus.'),
+      'am Montag fällt der Unterricht aus.',
+    );
+    expect(
+      documentTitle('Sehr geehrte Damen und Herren,\nIhre Abrechnung 2025'),
+      'Ihre Abrechnung 2025',
+    );
+    expect(
+      documentTitle('Betreff: Ihre Kündigung:'),
+      'Betreff: Ihre Kündigung',
+    );
+    // A salutation alone is all there is to name it by.
+    expect(documentTitle('Liebe Anna,'), 'Liebe Anna');
+    // On one line with the text, it's the first line as it is.
+    expect(
+      documentTitle('Hallo Max, wie geht es dir?'),
+      'Hallo Max, wie geht es dir?',
+    );
+  });
 }
