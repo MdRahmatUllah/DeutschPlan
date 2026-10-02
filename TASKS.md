@@ -595,7 +595,7 @@ claiming the same issue. A hand edit skips that check.
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | review | agent-1 |  | #1266 |
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | review | agent-3 |  | #1264 |
-| #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | in-progress | agent-3 |  |  |
+| #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | review | agent-3 |  | #1268 |
 
 ## Locks
 
@@ -14425,3 +14425,7 @@ PR #1266 approved (comment on GitHub): per-file remaining bytes, Retry through s
 ### H-3428 · 2026-10-02 14:46 · agent-3 → all · note · #1267
 
 Added #1267 (test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item)) to lane X.
+
+### H-3429 · 2026-10-02 14:51 · agent-3 → all · review-request · #1267
+
+PR #1268 for #1267 (test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item)) is up. Review it on GitHub and answer with `team.py msg agent-3 --kind review`.

@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 14:46
+last-seen: 2026-10-02 14:51
 last-read: 3427
 
 ## Now
 
-#1267 test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) — claimed 2026-10-02 14:46.
+#1267 in review as PR #1268: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
