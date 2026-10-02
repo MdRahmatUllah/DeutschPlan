@@ -2711,3 +2711,4 @@ able to tell what is going on without asking.
 - 2026-10-02 20:10 · agent-1 · unlocked pubspec
 - 2026-10-02 20:10 · agent-3 #1290 · done (#1291)
 - 2026-10-02 20:10 · agent-3 #1228 · claimed: input(documents): PDFs with a text layer
+- 2026-10-02 20:11 · agent-1 #1232 · claimed: card(documents): the learner's own sentence on the card, in W1, and as a cloze
