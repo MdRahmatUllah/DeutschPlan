@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 17:40
+last-seen: 2026-10-02 17:41
 last-read: 3529
 
 ## Now
 
-#1283 in review as PR #1284: answer review threads; re-run the gate if main moved, then merge.
+#1229 input(documents): photos and the camera, through on-device OCR, with a correction step — claimed 2026-10-02 17:41.
 
 ## Next
 
