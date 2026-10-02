@@ -2631,3 +2631,4 @@ able to tell what is going on without asking.
 - 2026-10-02 13:29 · agent-1 #1261 · claimed: fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing
 - 2026-10-02 13:54 · agent-3 #1263 · added to the board, lane X
 - 2026-10-02 13:54 · agent-3 #1263 · claimed: ux(words): Back on R2 with a word typed in discards it without asking
+- 2026-10-02 14:04 · agent-1 · #154 part 3 device check on 5558: Hy-MT2 downloaded (1.1 GB), verified, Ready; R1 Translate works both ways (de→bn, bn→de). But first translation 176 s cold / ~120-140 s warm: the 2 GB emulator can't hold the 1.1 GB mmap (81k major faults/25 s, fscrypt reads). Fixed: R1 now follows mt_enabled (mtEnabledProvider), plants 4/4.
