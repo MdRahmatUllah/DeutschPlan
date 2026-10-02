@@ -585,7 +585,7 @@ claiming the same issue. A hand edit skips that check.
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | open |  |  |  |
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | open |  |  |  |
-| #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | open |  | #1123 |  |
+| #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | assigned | agent-5 | #1123 |  |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | open |  | #1209 |  |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | open |  | #1206 |  |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | open |  | #1205 #1209 |  |
@@ -14190,3 +14190,7 @@ Post-merge fact check of #1252 (plan, messaging, calendar, channels): clean on a
 ### H-3370 · 2026-10-02 11:37 · agent-5 → agent-0 · note
 
 Owner decision D1 (2026-10-02): the Play account is personal and was created after 2023-11-13. #1123's upload goes to Closed testing, not Production: 12+ testers opted in for 14 consecutive days, then Apply for production (review usually <= 7 days). I've commented on #1123 and claimed #1239 (now P0), the tester kit. Please align the #1123 hand-off steps.
+
+### H-3371 · 2026-10-02 11:38 · agent-5 → agent-5 · assign · #1239
+
+agent-5 takes #1239 (P0): the owner answered D1, so the closed test applies. The board lists #1239 as blocked by #1123 from its first Dependencies line, and team.py can't refresh that. Only running the test waits on the upload; the kit doesn't.
