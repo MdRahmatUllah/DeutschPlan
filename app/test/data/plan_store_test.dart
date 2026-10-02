@@ -589,6 +589,37 @@ ORDER BY w.seq_in_sublevel
       expect(await store.docWaiting(limit: 10), <String>['s3']);
     });
 
+    test(
+      "#1290 BR-CONTENT-02 a removed word's row stays, unread: it never "
+      'waits while the word is gone, and waits in its place if it returns',
+      () async {
+        await store.queueDocWords(<String>[
+          's3',
+          's4',
+          's5',
+        ], '2026-03-01T09:00:00Z');
+        // A content update takes s4 out of the course.
+        await db.customStatement(
+          "UPDATE c.words SET kind = 'note' WHERE uid = 's4'",
+        );
+        expect(await store.docWaiting(limit: 10), <String>['s3', 's5']);
+        final kept = await db
+            .customSelect('SELECT word_key FROM doc_queue ORDER BY rowid')
+            .get();
+        expect(
+          <String>[for (final row in kept) row.read<String>('word_key')],
+          <String>['s3', 's4', 's5'],
+          reason: 'kept, as its word_state is',
+        );
+
+        // A later update brings it back.
+        await db.customStatement(
+          "UPDATE c.words SET kind = 'vocab' WHERE uid = 's4'",
+        );
+        expect(await store.docWaiting(limit: 10), <String>['s3', 's4', 's5']);
+      },
+    );
+
     test("a day's used slots are the words planned on it", () async {
       await store.queueDocWords(<String>[
         's1',
