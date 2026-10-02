@@ -2,7 +2,7 @@
 
 Every post, pitch, caption and comment says the same true thing about Sogda, in the voice its audience needs. This page is where that thing is written down. The calendar ([`calendar.md`](calendar.md)) says when and where each piece goes out; the post drafts (#1207) fill these lines in.
 
-**Facts are tokens, never typed.** `{totals.words}` means "the number in [`site-facts.json`](../05-dev-guide/site-facts.json) at `totals.words`". The drafts fill it in the way each language writes numbers (bn in Bangla digits; pl with no separator for four digits; ru with a no-break space before the last three, as #1194 settled for the listing, the app and sogda.de). `tools/tests/test_marketing_docs.py` fails on a typed count, and on a token that isn't in the file.
+**Facts are tokens, never typed.** `{totals.words}` means "the number in [`site-facts.json`](../05-dev-guide/site-facts.json) at `totals.words`". The drafts fill it in the way each language writes numbers (bn in Bangla digits; pl with no separator for four digits; ru with a no-break space before the last three, as #1194 settled for the listing, the app and sogda.de; de with a full stop for thousands). `tools/tests/test_marketing_docs.py` fails on a typed count, and on a token that isn't in the file.
 
 **Native review:** agent-1 checks pl and bn, and agent-2 checks ru. The owner has the last word on bn nuance. agent-0 checks en, de and every fact. A line marked *draft* hasn't been reviewed yet.
 
