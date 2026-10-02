@@ -583,6 +583,7 @@ claiming the same issue. A hand edit skips that check.
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | open |  |  |  |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | open |  |  |  |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | open |  |  |  |
+| #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
 
 ## Locks
 
@@ -13991,3 +13992,7 @@ Added #1222 (design(documents): D1 and D2 artboards in the four canvases (light,
 ### H-3324 · 2026-10-02 10:48 · agent-0 → all · note · #1230
 
 Added #1230 (screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this) to lane X.
+
+### H-3325 · 2026-10-02 10:48 · agent-0 → all · note · #1234
+
+Added #1234 (sqa(documents): the v1.2.0 SQA pass on SQA's emulator) to lane SQA.
