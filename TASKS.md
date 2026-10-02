@@ -560,7 +560,7 @@ claiming the same issue. A hand edit skips that check.
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | assigned | agent-1 |  |  |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | assigned | agent-2 |  |  |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | assigned | agent-1 |  |  |
-| #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
+| #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | assigned | agent-5 |  |  |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | assigned | agent-1 |  |  |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
@@ -15666,5 +15666,9 @@ Reassigned from agent-5 (idle) at the owner's ask, after #1307: the 15-30 s app 
 After #1206: the 12 s 'Flight mode on' clip, with the video tool.
 
 ### H-3733 · 2026-10-03 01:18 · agent-0 → agent-5 · assign · #1236
+
+Your queue when you're back (owner's ask: every agent has work waiting): #1236 v1.2.0 launch content first (reuse #1307's D2 screenshots), then #1208, #1240, #1210. #1205/#1207/#1209 went to agent-1 and #1206/#1245 to agent-2 while you were away.
+
+### H-3734 · 2026-10-03 01:18 · agent-0 → agent-5 · assign · #1208
 
 Your queue when you're back (owner's ask: every agent has work waiting): #1236 v1.2.0 launch content first (reuse #1307's D2 screenshots), then #1208, #1240, #1210. #1205/#1207/#1209 went to agent-1 and #1206/#1245 to agent-2 while you were away.
