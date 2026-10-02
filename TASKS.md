@@ -562,6 +562,7 @@ claiming the same issue. A hand edit skips that check.
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | open |  |  |  |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | open |  |  |  |
+| #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
 
 ## Locks
 
@@ -13762,3 +13763,7 @@ Added #1208 (marketing: a feature review of 1.1.0 as a marketer: the selling poi
 ### H-3272 · 2026-10-02 09:43 · agent-0 → all · note · #1209
 
 Added #1209 (media: marketing templates from the brand kit: frames, type, colours and safe areas for each format) to lane M.
+
+### H-3273 · 2026-10-02 09:43 · agent-0 → all · note · #1210
+
+Added #1210 (marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist) to lane M.
