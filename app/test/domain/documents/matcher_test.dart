@@ -98,6 +98,31 @@ void main() {
     }
   });
 
+  test('#1225 BR-DOC-03: a course word that is also one of my words is '
+      'offered as the course word, marked mine, and never probably known '
+      '(agent-3\'s review)', () {
+    final who = learner();
+    final m = matchText(
+      letter,
+      lemmatiser,
+      course,
+      LearnerSnapshot(
+        status: who.status,
+        everPlanned: who.everPlanned,
+        mine: who.mine,
+        mineUids: <String>{uid['Vermieter']!},
+        activeStepOrder: who.activeStepOrder,
+        level: who.level,
+      ),
+    );
+    final vermieter = word(m, 'Vermieter');
+    expect(vermieter.entries.map((e) => e.german), <String>['Vermieter']);
+    expect(vermieter.mine, isTrue);
+    expect(vermieter.docClass, DocClass.newInCourse);
+    expect(word(m, 'Kündigung').mine, isFalse);
+    expect(word(m, 'Wasserzähler').mine, isTrue);
+  });
+
   test('#1225 BR-DOC-03: mine, and outside the course with its compound '
       'hint', () {
     final m = match();
