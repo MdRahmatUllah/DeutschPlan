@@ -562,7 +562,7 @@ claiming the same issue. A hand edit skips that check.
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | assigned | agent-1 |  |  |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | assigned | agent-5 |  |  |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | assigned | agent-1 |  |  |
-| #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
+| #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | assigned | agent-5 | #1123 |  |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
@@ -15674,5 +15674,9 @@ Your queue when you're back (owner's ask: every agent has work waiting): #1236 v
 Your queue when you're back (owner's ask: every agent has work waiting): #1236 v1.2.0 launch content first (reuse #1307's D2 screenshots), then #1208, #1240, #1210. #1205/#1207/#1209 went to agent-1 and #1206/#1245 to agent-2 while you were away.
 
 ### H-3735 · 2026-10-03 01:18 · agent-0 → agent-5 · assign · #1240
+
+Your queue when you're back (owner's ask: every agent has work waiting): #1236 v1.2.0 launch content first (reuse #1307's D2 screenshots), then #1208, #1240, #1210. #1205/#1207/#1209 went to agent-1 and #1206/#1245 to agent-2 while you were away.
+
+### H-3736 · 2026-10-03 01:18 · agent-0 → agent-5 · assign · #1210
 
 Your queue when you're back (owner's ask: every agent has work waiting): #1236 v1.2.0 launch content first (reuse #1307's D2 screenshots), then #1208, #1240, #1210. #1205/#1207/#1209 went to agent-1 and #1206/#1245 to agent-2 while you were away.
