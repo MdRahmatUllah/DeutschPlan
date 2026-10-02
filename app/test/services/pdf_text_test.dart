@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/services/pdf_text.dart';
 
+import '../db/content_fixture.dart';
+
 /// A PDF of [texts], one per page, as the platform would read it.
 class _FakePdf implements PdfText {
   _FakePdf(this.texts, {this.failAt});
@@ -166,8 +168,7 @@ void main() {
 
     test('BR-DOC-05 discard deletes the copy D1 read, and a second one is '
         'nothing', () async {
-      final folder = Directory.systemTemp.createTempSync('pdf_copy');
-      addTearDown(() => folder.deleteSync(recursive: true));
+      final folder = tempDir('pdf_copy');
       final copy = File('${folder.path}/Brief.pdf')..writeAsStringSync('%PDF');
       const pdf = PlatformPdfText();
 

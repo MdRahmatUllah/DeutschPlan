@@ -80,8 +80,9 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   int _readingOf = 0;
   int _pdfPages = 0;
 
-  /// The PDF reader, kept for [dispose], where `ref` can't be read.
-  late final PdfText _pdf;
+  /// The PDF reader, read on first use and kept for [dispose], where `ref`
+  /// can't be read: a copy to drop there means it was read already.
+  late final PdfText _pdf = ref.read(pdfTextProvider);
 
   /// The photos, in page order, as they were taken or chosen (#1229).
   List<String> _photos = const <String>[];
@@ -102,7 +103,6 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   @override
   void initState() {
     super.initState();
-    _pdf = ref.read(pdfTextProvider);
     _lifecycle;
     _paste.addListener(_onPasteChanged);
     unawaited(_checkClipboard());
