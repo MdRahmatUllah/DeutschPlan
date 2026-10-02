@@ -84,19 +84,25 @@ ModelCardStatus cardStatusOf(ModelCard card) {
 Stream<ModelCard> modelCard(Ref ref, String id) async* {
   final models = ref.watch(modelRepositoryProvider);
   final downloads = ref.watch(modelDownloadsProvider);
-  final entry = (await models.manifest()).model(id);
+  final manifest = await models.manifest();
+  final entry = manifest.model(id);
   if (entry == null || entry.variants.isEmpty) return;
   // One build a model, as the manifest has it (#409).
   final variant = entry.variants.first;
 
   Future<ModelCard> card(DownloadProgress? live) async {
     final installed = await models.stateOf(entry, variant);
-    // Only a download to come asks the phone for its space.
-    final asks = live == null || live.phase == DownloadPhase.ready;
+    // Only a download to come asks the phone for its space: *Download*,
+    // *Update*, and *Retry* after a failure (#1261).
+    final asks =
+        live == null ||
+        live.phase == DownloadPhase.ready ||
+        live.phase == DownloadPhase.failed;
     final needsSpace =
         asks &&
         (installed.status == ModelStatus.notDownloaded ||
-            installed.status == ModelStatus.updateAvailable);
+            installed.status == ModelStatus.updateAvailable ||
+            installed.status == ModelStatus.failed);
     return (
       entry: entry,
       variant: variant,
@@ -109,11 +115,29 @@ Stream<ModelCard> modelCard(Ref ref, String id) async* {
   }
 
   yield await card(null);
-  await for (final live in downloads.watch(id)) {
-    // Bytes landed or went: the storage card reads the phone again.
-    if (live.phase == DownloadPhase.ready ||
-        live.phase == DownloadPhase.failed) {
-      ref.invalidate(phoneSpaceProvider);
+  bool settled(DownloadProgress p) =>
+      p.phase == DownloadPhase.ready || p.phase == DownloadPhase.failed;
+  // The space counts what the other downloads have yet to write (#1261):
+  // another model's landing or failing reads this card again, as null.
+  final moves = StreamController<DownloadProgress?>();
+  final heard = <StreamSubscription<Object?>>[
+    downloads.watch(id).listen(moves.add),
+    for (final other in manifest.models)
+      if (other.id != id)
+        downloads.watch(other.id).where(settled).listen((_) => moves.add(null)),
+  ];
+  ref.onDispose(() {
+    for (final sub in heard) {
+      unawaited(sub.cancel());
+    }
+    unawaited(moves.close());
+  });
+  DownloadProgress? live;
+  await for (final move in moves.stream) {
+    if (move != null) {
+      live = move;
+      // Bytes landed or went: the storage card reads the phone again.
+      if (settled(move)) ref.invalidate(phoneSpaceProvider);
     }
     yield await card(live);
   }
@@ -441,8 +465,9 @@ class _ModelCardView extends ConsumerWidget {
       } on Object {
         if (context.mounted) SgToast.show(context, l10n.modelsStartFailed);
       }
+      // Every card: the others' space counts this download now (#1261).
       container
-        ..invalidate(modelCardProvider(id))
+        ..invalidate(modelCardProvider)
         ..invalidate(phoneSpaceProvider);
     }
 
@@ -531,6 +556,9 @@ class _ModelCardView extends ConsumerWidget {
       case ModelCardStatus.failed:
         return <Widget>[
           note(l10n.modelsFailedNote),
+          // #1261: what Retry would fetch doesn't fit; Retry says so too.
+          if (card.shortfall > 0)
+            note(l10n.modelsNoSpaceNote(modelSize(l10n, card.shortfall))),
           _Actions(
             children: <Widget>[
               _Action(
@@ -616,8 +644,9 @@ class _ModelCardView extends ConsumerWidget {
       debugPrint('model delete: $error');
       if (context.mounted) SgToast.show(context, l10n.modelsDeleteFailed);
     } finally {
+      // Every card: the bytes freed may let another model fit (#1261).
       container
-        ..invalidate(modelCardProvider(card.entry.id))
+        ..invalidate(modelCardProvider)
         ..invalidate(phoneSpaceProvider)
         // Today's voice card and M3's row: a delete is no download (#757).
         ..invalidate(voiceInstalledProvider);
