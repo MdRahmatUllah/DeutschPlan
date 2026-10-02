@@ -47,6 +47,12 @@
 
 **Developer notes.**
 - **ML Kit text recognition, Latin script, bundled model** (no download from Google Play services). Its licence and terms go in `licences.py` and M8.
+- **A PDF's text layer** (#1228, ADR 31): pdfbox-android, from Kotlin over `sogda/pdf` (`PdfText.kt`), and `services/pdf_text.dart`'s `readPdf`, page by page:
+  - *Cancel* stops between two pages, and the document is closed however reading ends;
+  - at most 30 pages are read (BR-DOC-02), and `pageCount` says how many the file has, for the cut's note;
+  - **a scan** is a PDF with no page of 25 letters or more in its text layer: D1 then shows "This PDF is a scan…" with *Choose images*;
+  - a password-protected file is `PdfLocked`, anything unreadable `PdfUnreadable`: D1's error panel.
+  - `integration_test/pdf_probe.dart` runs it on a release build, where R8 runs, for a device check.
 - **The share target:** an `ACTION_SEND` / `ACTION_SEND_MULTIPLE` intent filter for `text/plain`, `application/pdf` and `image/*`. Text is #1227's; the PDF and the images join it in #1228 and #1229.
   - **`ShareActivity`**, with no window of its own, holds the filter. It opens `MainActivity` as the widget does (`NEW_TASK | CLEAR_TOP`), with the link `sogda://import` alone. So the share lands in the app's own task and its one Flutter engine, never in the sender's task as a second copy of the app with `user.db` open twice.
   - **The text stays in the process** (`ShareActivity.take`), never on an intent and never as data (#613). `MainActivity` is exported and BROWSABLE, so an extra on its intent could come from any app, or from a web page's `intent://` link, and D1 would save it with no share sheet chosen. It reads none. D1 takes the text once (`sogda/share`, `SharedText.take`); a launch restored after the process died finds none, so the same document isn't saved twice.
