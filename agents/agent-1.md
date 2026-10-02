@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-02 14:22
+last-seen: 2026-10-02 14:35
 last-read: 3421
 
 ## Now
 
-#1261 fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing — claimed 2026-10-02 13:29.
+#1261 in review as PR #1266: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
