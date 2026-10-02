@@ -6569,5 +6569,263 @@
   "modelsDeleteFailed": "Couldn't delete all of the model's files. Try again.",
   "@modelsDeleteFailed": {
     "description": "M4 toast when deleting a model's files fails part-way (#721)."
+  },
+  "docWordsSummary": "{fresh} new · {probable} probably known · {outside} outside the course",
+  "@docWordsSummary": {
+    "description": "D2's header line (doc-words.md): the counts of new words, words probably known, and words outside the course.",
+    "placeholders": {
+      "fresh": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "probable": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "outside": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsShowProbablyKnown": "Show words I probably know",
+  "@docWordsShowProbablyKnown": {
+    "description": "D2's switch: also mark the words of steps the learner skipped (doc_show_probably_known)."
+  },
+  "docWordsLegendNew": "{level} new",
+  "@docWordsLegendNew": {
+    "description": "D2's legend: the mark of a new word of this level. level is A1 … C2.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsLegendMine": "My word",
+  "@docWordsLegendMine": {
+    "description": "D2's legend and mark: a word that is one of My words."
+  },
+  "docWordsLegendOutside": "outside the course",
+  "@docWordsLegendOutside": {
+    "description": "D2's legend: the mark of a word outside the course."
+  },
+  "docWordsAddLevel": "Add my level ({level}) · {count}",
+  "@docWordsAddLevel": {
+    "description": "D2's bulk button (FR-D2-03): add every new word of the learner's level. level is A1 … C2; count how many.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddLevels": "Add {level} and {next} · {count}",
+  "@docWordsAddLevels": {
+    "description": "D2's bulk button (FR-D2-03): add the new words of the learner's level and the one above.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "next": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddAll": "Add all new · {count}",
+  "@docWordsAddAll": {
+    "description": "D2's bulk button (FR-D2-03): add every new course word in the text. count is how many.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsCapNote": "{cap} a day: the other {later} start tomorrow or later",
+  "@docWordsCapNote": {
+    "description": "D2's note under the bulk bar (BR-PLAN-11): cap is doc_daily_cap, later how many would start on a later day.",
+    "placeholders": {
+      "cap": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "later": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedToday": "Added {word}: you'll learn it today",
+  "@docWordsAddedToday": {
+    "description": "D2's toast (FR-D2-02): the word joined today's plan. word is the word as it stands in the text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedFrom": "Added {word}: from {day}",
+  "@docWordsAddedFrom": {
+    "description": "D2's toast (FR-D2-02): the word starts on a later study day. day is that day's name, Thursday.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedWaiting": "Added {word}: it waits in your queue",
+  "@docWordsAddedWaiting": {
+    "description": "D2's toast: the word waits in the document queue (a cap of 0, or the backlog pause), BR-PLAN-11.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedMany": "Added {count}: {today} today, the rest later",
+  "@docWordsAddedMany": {
+    "description": "D2's toast after a bulk add (FR-D2-03): count words added, today of them in today's plan.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "today": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsGone": "This document is no longer here.",
+  "@docWordsGone": {
+    "description": "D2 for a document that was deleted."
+  },
+  "docWordsFailed": "Couldn't read this document's words.",
+  "@docWordsFailed": {
+    "description": "D2 when the matcher's run fails."
+  },
+  "docWordsEmpty": "You know every word in this text",
+  "@docWordsEmpty": {
+    "description": "D2's empty state: no new word in the text (doc-words.md, States)."
+  },
+  "docWordsSemNew": "{word}, new, {level}",
+  "@docWordsSemNew": {
+    "description": "Screen reader: a new course word in D2's text. level is A1 … C2.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemProbable": "{word}, probably known",
+  "@docWordsSemProbable": {
+    "description": "Screen reader: a word D2 thinks the learner probably knows.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemOutside": "{word}, outside the course",
+  "@docWordsSemOutside": {
+    "description": "Screen reader: a word outside the course in D2's text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemMine": "{word}, my word",
+  "@docWordsSemMine": {
+    "description": "Screen reader: a word that is one of My words in D2's text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemAdded": "{word}, added",
+  "@docWordsSemAdded": {
+    "description": "Screen reader: a word already added from this document.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsCardInText": "In your text",
+  "@docWordsCardInText": {
+    "description": "D2's card: the heading over the sentence from the document."
+  },
+  "docWordsCardAdd": "Add",
+  "@docWordsCardAdd": {
+    "description": "D2's card button (FR-D2-02): add the word to learn."
+  },
+  "docWordsCardAdded": "Added",
+  "@docWordsCardAdded": {
+    "description": "D2's card button once the word is added."
+  },
+  "docWordsCardKnow": "I know this",
+  "@docWordsCardKnow": {
+    "description": "D2's card button (FR-D2-04): W1's Mark known."
+  },
+  "docWordsCardIgnore": "Ignore",
+  "@docWordsCardIgnore": {
+    "description": "D2's card button: no mark for this word in this document."
+  },
+  "docWordsCardOpen": "Open the word",
+  "@docWordsCardOpen": {
+    "description": "D2's card link: open the word's page (W1)."
+  },
+  "docWordsCardOutside": "Not in the course",
+  "@docWordsCardOutside": {
+    "description": "D2's card for a word outside the course."
+  },
+  "docWordsCardMine": "Already one of my words",
+  "@docWordsCardMine": {
+    "description": "D2's card for a word that is already one of My words."
+  },
+  "docWordsCardCompound": "Made of {parts}",
+  "@docWordsCardCompound": {
+    "description": "D2's card: a compound's parts, a hint only. parts is «Nebenkosten + Abrechnung».",
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsCardWhich": "Which word is it?",
+  "@docWordsCardWhich": {
+    "description": "D2's card for an ambiguous word: the learner chooses the reading first."
+  },
+  "docWordsCardAddMine": "Add as my word",
+  "@docWordsCardAddMine": {
+    "description": "D2's card button (FR-D2-05): open R2 to add the word as one of My words."
+  },
+  "docWordsCardKeepSentence": "Keep this sentence",
+  "@docWordsCardKeepSentence": {
+    "description": "D2's card for one of My words (FR-D2-06): keep this document's sentence with the word, no second word."
+  },
+  "docWordsSentenceKept": "Kept the sentence for {word}",
+  "@docWordsSentenceKept": {
+    "description": "D2's toast: the sentence is kept with the learner's own word (FR-D2-06). word as in the text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
   }
 }

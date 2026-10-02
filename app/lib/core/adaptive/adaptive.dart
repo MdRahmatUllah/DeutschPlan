@@ -147,7 +147,11 @@ class AdaptiveScaffold extends StatelessWidget {
                       data: MediaQuery.of(context)
                           .removePadding(removeBottom: true)
                           .removeViewInsets(removeBottom: true),
-                      child: body,
+                      // A screen's own bar at its foot keeps the strip too:
+                      // D2's text ran under the clock (agent-3, #1294).
+                      child: statusBarColour == null
+                          ? body
+                          : _StatusStrip(colour: statusBarColour!, child: body),
                     ),
             ),
             // The keyboard covers the tab bar rather than lifting it (#390):

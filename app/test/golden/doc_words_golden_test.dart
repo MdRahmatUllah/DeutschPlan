@@ -1,0 +1,53 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/features/documents/doc_words_screen.dart';
+
+import '../features/doc_words_fixtures.dart';
+import 'golden_harness.dart';
+
+/// D2 · The words in your text (#1230): the DocWords, DocWordsCard and
+/// DocWordsEmpty artboards (#1222), on the artboard's own letter, matched by
+/// the real lemmatiser; plus the long text the spec asks for.
+void main() {
+  goldenTest(
+    'doc_words',
+    overrides: docWordsStub(),
+    builder: (_) => const DocWordsScreen(id: 7),
+  );
+
+  goldenTest(
+    'doc_words_card',
+    textAudit: false,
+    overrides: docWordsStub(),
+    builder: (_) => const DocWordsScreen(id: 7),
+    act: (tester) async {
+      await tester.tapOnText(find.textRange.ofSubstring('Nachzahlung').first);
+      await tester.pumpAndSettle();
+    },
+  );
+
+  goldenTest(
+    'doc_words_empty',
+    textAudit: false,
+    overrides: docWordsStub(
+      documents: FakeDocuments(
+        body: 'Ich bin hier.\n\nDas Wetter ist gut.',
+        title: 'Kurz',
+      ),
+    ),
+    builder: (_) => const DocWordsScreen(id: 7),
+  );
+
+  // doc-words.md, *A very long text*: its first 20,000 characters, built a
+  // paragraph at a time.
+  goldenTest(
+    'doc_words_long',
+    textAudit: false,
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    overrides: docWordsStub(
+      documents: FakeDocuments(
+        body: List<String>.filled(30, artboardLetter).join('\n\n'),
+      ),
+    ),
+    builder: (_) => const DocWordsScreen(id: 7),
+  );
+}
