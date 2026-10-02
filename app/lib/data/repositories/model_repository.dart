@@ -112,7 +112,6 @@ class ModelEntry {
     required this.licence,
     required this.disables,
     required this.variants,
-    required this.regionExcluded,
   });
 
   factory ModelEntry.fromJson(Map<String, Object?> json) => ModelEntry(
@@ -120,11 +119,6 @@ class ModelEntry {
     name: json['name']! as String,
     licence: json['licence']! as String,
     disables: json['disables']! as String,
-    regionExcluded: <String>[
-      for (final region
-          in (json['region_excluded'] ?? <Object?>[]) as List<Object?>)
-        region! as String,
-    ],
     variants: <ModelVariant>[
       for (final variant in json['variants']! as List<Object?>)
         ModelVariant.fromJson(variant! as Map<String, Object?>),
@@ -143,11 +137,6 @@ class ModelEntry {
   /// model cannot quietly leave `tts_engine` pointing at an engine that is
   /// gone.
   final String disables;
-
-  /// Where the licence forbids distribution (`translation.md`: the Tencent HY
-  /// licence excludes the EU, UK and South Korea). The download button is
-  /// additionally gated on a build flag; this is what that flag is *for*.
-  final List<String> regionExcluded;
 
   final List<ModelVariant> variants;
 
@@ -216,18 +205,6 @@ class ModelState {
   double get progress =>
       variant.bytes == 0 ? 0 : (bytesOnDisk / variant.bytes).clamp(0, 1);
 }
-
-/// FR-M4-04: Hy-MT's download is offered only in a build made with
-/// `--dart-define=ENABLE_HYMT_DOWNLOAD=true`. Off by default: the Tencent HY
-/// licence excludes the EU, the UK and South Korea, and every v1.0 build
-/// keeps it off (ADR 9, `translation.md`). M4 offers the download, and M3
-/// shows its Translation group, by it (#513).
-const bool enableHymtDownload = bool.fromEnvironment('ENABLE_HYMT_DOWNLOAD');
-
-/// Whether this build offers [modelId]'s download (FR-M4-04): M4's buttons,
-/// and `ModelDownloads`, which refuses any other (#692 ME-3).
-bool offered(String modelId) =>
-    modelId != ModelRepository.translationModel || enableHymtDownload;
 
 /// Where models live on disk, and what makes one usable.
 ///
@@ -538,7 +515,12 @@ class ModelRepository {
   /// The setting is written after the files are gone, so a failure to delete
   /// leaves the model both present and enabled rather than enabled and
   /// missing. Which setting comes from [ModelEntry.disables].
-  Future<void> delete(ModelEntry entry) async {
+  ///
+  /// [keepPartial] while another model downloads: `models/.partial` is every
+  /// model's (the downloader's temporary path is one for the process), so
+  /// clearing it would fail that download. It is cleared once the last
+  /// download lands (#154).
+  Future<void> delete(ModelEntry entry, {bool keepPartial = false}) async {
     final active = await directoryFor(entry.id);
     for (final directory in <Directory>[
       active,
@@ -549,10 +531,7 @@ class ModelRepository {
     }
     // What an interrupted download left, which no model's folder holds
     // (#868). *Delete* is offered only once a model is in place.
-    // ponytail: .partial is every model's, so deleting one while another
-    // downloads fails that download (Retry fetches it again). Only the voice
-    // downloads in v1 (Hy-MT is off); a folder per model once two can.
-    await clearPartial();
+    if (!keepPartial) await clearPartial();
 
     switch (entry.disables) {
       case 'tts_engine':

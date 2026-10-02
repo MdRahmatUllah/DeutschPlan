@@ -581,8 +581,7 @@ void main() {
   });
 
   group('FR-M3-03 translation', () {
-    // Without a usable model: a failed download's, as a test build (Hy-MT
-    // not offered) shows the switch only for a model on the phone (#513).
+    // Without a usable model: a failed download's.
     testWidgets('on without a usable model: M4, and the switch stays off', (
       tester,
     ) async {
@@ -620,8 +619,8 @@ void main() {
       expect(went, isEmpty);
     });
 
-    testWidgets('#513 ADR 9: while this build offers no Hy-MT and none is '
-        'on the phone, there is no Translation group', (tester) async {
+    testWidgets('#154 ADR 30: the Translation group shows in every build, '
+        'with no model on the phone too', (tester) async {
       for (final model in <ModelState?>[
         null,
         downloadingModel(ModelStatus.notDownloaded),
@@ -629,9 +628,8 @@ void main() {
         // A new scope for each: one keeps its first overrides.
         await tester.pumpWidget(const SizedBox());
         await pump(tester, model: model);
-        expect(find.text(l10n.settingsGroupTranslation), findsNothing);
-        expect(find.text(l10n.settingsTranslation), findsNothing);
-        expect(find.text(l10n.settingsGroupData), findsOneWidget);
+        expect(find.text(l10n.settingsGroupTranslation), findsOneWidget);
+        expect(find.text(l10n.settingsTranslation), findsOneWidget);
       }
     });
 

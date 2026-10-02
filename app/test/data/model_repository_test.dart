@@ -57,7 +57,6 @@ void main() {
     name: 'test model',
     licence: 'test',
     disables: disables,
-    regionExcluded: const <String>[],
     variants: variants,
   );
 
@@ -151,38 +150,40 @@ void main() {
       }
     });
 
-    test("#409 Hy-MT is the owner's Q4_K_M build, the file that exists, "
+    test("#409 #154 Hy-MT2 is the owner's Q4_K_M build, the file that exists, "
         'pinned', () async {
       final manifest = ModelManifest.parse(
         await rootBundle.loadString(ModelRepository.manifestAsset),
       );
-      // `translation.md`: one build, from tencent/HY-MT1.5-1.8B-GGUF.
+      // `translation.md`: one build, from tencent/Hy-MT2-1.8B-GGUF.
       final variant = manifest.model('hymt')!.variants.single;
       expect(variant.id, 'q4_k_m');
       final file = variant.files.single;
-      expect(file.name, 'HY-MT1.5-1.8B-Q4_K_M.gguf');
+      expect(file.name, 'Hy-MT2-1.8B-Q4_K_M.gguf');
       expect(
         file.url.toString(),
-        'https://huggingface.co/tencent/HY-MT1.5-1.8B-GGUF/resolve/'
-        '265b2e615a7dc9b06c435dc878829ad99a512ba2/HY-MT1.5-1.8B-Q4_K_M.gguf',
+        'https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF/resolve/'
+        'a0c709d9fac510f2c807aa3af52872340dc37a4a/Hy-MT2-1.8B-Q4_K_M.gguf',
       );
       expect(variant.isPinned, isTrue, reason: 'its SHA-256 is known');
-      expect(variant.bytes, 1133080512, reason: 'about 1.1 GB');
+      expect(
+        file.sha256,
+        'dc5f44fcf1fa496ee7ad725982c0c8c5'
+        '53a4de00259b53af84c4b89fb0c06699',
+      );
+      expect(variant.bytes, 1133080448, reason: 'about 1.1 GB');
     });
 
-    test('the licence gate the Hy-MT model needs is in the manifest', () async {
-      final manifest = ModelManifest.parse(
-        await rootBundle.loadString(ModelRepository.manifestAsset),
-      );
-      // `translation.md`: the Tencent HY licence excludes the EU, UK and
-      // South Korea. The build flag gates the button; this is the data that
-      // says why the flag exists.
-      expect(
-        manifest.model('hymt')!.regionExcluded,
-        containsAll(<String>['EU', 'GB', 'KR']),
-      );
-      expect(manifest.model('supertonic3')!.regionExcluded, isEmpty);
-    });
+    test(
+      '#154 ADR 30: Hy-MT2 is Apache-2.0, so no build or region gates it',
+      () async {
+        final manifest = ModelManifest.parse(
+          await rootBundle.loadString(ModelRepository.manifestAsset),
+        );
+        expect(manifest.model('hymt')!.licence, 'Apache-2.0');
+        expect(manifest.model('hymt')!.name, 'Hy-MT2 translation');
+      },
+    );
 
     test('a missing field is a parse error, not a default', () {
       // A manifest that lost its `files` list would otherwise verify a model
