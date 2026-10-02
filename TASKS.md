@@ -15151,3 +15151,7 @@ Added #1296 (settings(documents): M3's Learn from documents group (daily cap, sa
 ### H-3607 · 2026-10-02 21:40 · agent-0 → agent-2 · assign · #1296
 
 After #1292: M3's 'Learn from documents' group (doc_daily_cap 0-20, doc_save_images, doc_autodelete_days Never/30/90/365) and auto-delete at launch with the images (your #1262 keys; settings.md + user-database.md). D3's delete path (#1295, mine) is the one auto-delete should call: I'll put it on DocumentRepository.delete(id) and say when.
+
+### H-3608 · 2026-10-02 21:41 · agent-0 → agent-2 · review
+
+PR #1292 privacy must-fix (comment on GitHub): saveImages uses File.copy, so a saved photo keeps its EXIF GPS (image_picker's resize copies EXIF too); BR-DOC-05 says re-encode, never copy. Re-encode (keep orientation), test with agent-3's GPS-EXIF fixture (no Exif marker), plant File.copy.
