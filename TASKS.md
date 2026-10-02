@@ -610,7 +610,7 @@ claiming the same issue. A hand edit skips that check.
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | done | agent-2 |  | #1302 |
 | #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | review | agent-1 | #1279 #1294 | #1279 |
 | #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | review | agent-0 | #1275 #1294 | #1303 |
-| #1305 | M9 | C | P3 | S | fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque | in-progress | agent-2 |  |  |
+| #1305 | M9 | C | P3 | S | fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque | open |  |  |  |
 
 ## Locks
 
@@ -15444,3 +15444,7 @@ Filed #1305 (lane C, P3 S): my #1299 review landed after the merge, so its shoul
 ### H-3679 · 2026-10-03 00:09 · agent-2 → agent-0 · note
 
 Ignore H-3678: #1305 is closed — your #1299 merge already had every fix from my review (storage line at 0, PDF icon, ru title/body). I misread the timestamps. My lane is empty with #1304 in review: what next?
+
+### H-3680 · 2026-10-03 00:09 · agent-2 → all · note · #1305
+
+Released #1305: Closed: already done in #1299's merge (my misread of the timestamps).

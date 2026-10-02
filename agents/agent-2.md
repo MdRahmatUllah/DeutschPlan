@@ -6,7 +6,7 @@ last-read: 3676
 
 ## Now
 
-#1305 fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque — claimed 2026-10-03 00:09.
+Nothing claimed.
 
 ## Next
 

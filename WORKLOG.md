@@ -2769,3 +2769,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:05 · agent-2 · #1302 merged (716d0cd1, #1296+#1298, after agent-0's should: launch auto-delete failures caught). Reviewed #1301 (agent-3, approved + 2 shoulds: PDF copies outlive D1, content:// only) and #1299 (agent-0, approved + storage line at 0 MB, ru empty title). PR #1304 up for #1282 (option 1, device-checked over a real running exam).
 - 2026-10-03 00:08 · agent-2 #1305 · added to the board, lane C
 - 2026-10-03 00:09 · agent-2 #1305 · claimed: fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque
+- 2026-10-03 00:09 · agent-2 #1305 · released: Closed: already done in #1299's merge (my misread of the timestamps).
