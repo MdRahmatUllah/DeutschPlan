@@ -807,5 +807,6 @@ class _Translator implements Translator {
     String text, {
     required String from,
     required String to,
+    Future<void>? abandoned,
   }) async => '$from→$to: $text';
 }

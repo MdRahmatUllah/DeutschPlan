@@ -501,10 +501,15 @@ bool mtEnabled(Ref ref) {
 /// T5's word sheet and R1's *Translate* (#154). Null with translation off or
 /// no model on the phone.
 @riverpod
-Future<String?> translationOf(Ref ref, String text, String from, String to) =>
-    ref
-        .watch(translationRepositoryProvider)
-        .translate(text, from: from, to: to);
+Future<String?> translationOf(Ref ref, String text, String from, String to) {
+  // Off the screen (a sheet closed), nobody waits for it: dropped, or
+  // stopped, rather than holding up the next one (#154).
+  final gone = Completer<void>();
+  ref.onDispose(gone.complete);
+  return ref
+      .watch(translationRepositoryProvider)
+      .translate(text, from: from, to: to, abandoned: gone.future);
+}
 
 /// Opens a web page in an in-app browser tab: R1's Duden · DWDS · Wiktionary
 /// · Linguee · Google chips (FR-R1-06). The app makes no request of its own

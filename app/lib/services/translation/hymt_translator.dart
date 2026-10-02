@@ -16,6 +16,10 @@ abstract interface class TranslationRunner {
   /// model at [modelPath] first, unless it is the one already loaded.
   Future<String> complete(String modelPath, String prompt);
 
+  /// Stops the [complete] under way, if one is: it returns at once, with
+  /// what it had.
+  void cancel();
+
   /// Lets go of the model: the next [complete] loads it again.
   Future<void> release();
 }
@@ -65,6 +69,12 @@ class HyMtTranslator implements Translator {
   /// One at a time: a second request, or a release, waits for the first.
   Future<void> _turn = Future<void>.value();
 
+  /// Raised by every [release]: a request from before it is dropped.
+  int _epoch = 0;
+
+  /// The request running now, if any: what [release] stops.
+  Object? _running;
+
   Future<T> _inTurn<T>(Future<T> Function() work) {
     final done = _turn.then((_) => work());
     _turn = done.then<void>((_) {}, onError: (Object _) {});
@@ -76,6 +86,7 @@ class HyMtTranslator implements Translator {
     String text, {
     required String from,
     required String to,
+    Future<void>? abandoned,
   }) {
     if (!languageNames.containsKey(from) || !languageNames.containsKey(to)) {
       throw ArgumentError(
@@ -83,15 +94,35 @@ class HyMtTranslator implements Translator {
         '${languageNames.keys.join(', ')}',
       );
     }
+    // #154: on a phone where one takes minutes, a sheet closed or a screen
+    // left must not hold the next translation behind its own.
+    final epoch = _epoch;
+    final request = Object();
+    var gone = false;
+    unawaited(
+      abandoned?.then((_) {
+        gone = true;
+        if (identical(_running, request)) _runner.cancel();
+      }),
+    );
+    bool dropped() => gone || epoch != _epoch;
     return _inTurn(() async {
+      if (dropped()) return null;
       if (!_settings.read(SettingKeys.mtEnabled)) return null;
       final path = await _modelPath();
-      if (path == null) return null;
-      final out = (await _runner.complete(
-        path,
-        promptFor(text, to: to),
-      )).trim();
-      return out.isEmpty ? null : out;
+      if (path == null || dropped()) return null;
+      _running = request;
+      try {
+        final out = (await _runner.complete(
+          path,
+          promptFor(text, to: to),
+        )).trim();
+        // Stopped part-way: half a translation is none, and isn't cached.
+        if (dropped()) return null;
+        return out.isEmpty ? null : out;
+      } finally {
+        _running = null;
+      }
     });
   }
 
@@ -115,7 +146,13 @@ class HyMtTranslator implements Translator {
 
   /// Lets go of the model (~1.1 GB mapped): under memory pressure, in the
   /// background, and before a delete. The next translation loads it again.
-  Future<void> release() => _inTurn(_runner.release);
+  /// What runs is stopped and what waits is dropped, both answering null: a
+  /// phone short of memory can't wait minutes for a translation to end.
+  Future<void> release() {
+    _epoch++;
+    if (_running != null) _runner.cancel();
+    return _inTurn(_runner.release);
+  }
 
   Future<void> dispose() async {
     await _landed?.cancel();
@@ -129,10 +166,16 @@ class LlamaRunner implements TranslationRunner {
   LlamaEngine? _engine;
   String? _loaded;
 
+  /// Set by [cancel]: also a cancel that came while the model loaded, which
+  /// llamadart would not see, as no generation was listened to yet.
+  bool _cancelled = false;
+
   @override
   Future<String> complete(String modelPath, String prompt) async {
+    _cancelled = false;
     final engine = await _open(modelPath);
     final out = StringBuffer();
+    if (_cancelled) return '';
     await for (final chunk in engine.create(
       <LlamaChatMessage>[
         LlamaChatMessage.fromText(role: LlamaChatRole.user, text: prompt),
@@ -147,11 +190,19 @@ class LlamaRunner implements TranslationRunner {
       ),
       enableThinking: false,
     )) {
+      // Leaving the loop cancels the subscription, which stops the backend.
+      if (_cancelled) break;
       if (chunk.choices.isEmpty) continue;
       final text = chunk.choices.first.delta.content;
       if (text != null) out.write(text);
     }
     return out.toString();
+  }
+
+  @override
+  void cancel() {
+    _cancelled = true;
+    _engine?.cancelGeneration();
   }
 
   Future<LlamaEngine> _open(String modelPath) async {

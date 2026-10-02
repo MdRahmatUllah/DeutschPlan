@@ -16,6 +16,7 @@ class TranslationRepository {
     String text, {
     required String from,
     required String to,
+    Future<void>? abandoned,
   }) async {
     final model = _translator.model;
     final cached =
@@ -29,7 +30,12 @@ class TranslationRepository {
             .getSingleOrNull();
     if (cached != null) return cached.result;
 
-    final result = await _translator.translate(text, from: from, to: to);
+    final result = await _translator.translate(
+      text,
+      from: from,
+      to: to,
+      abandoned: abandoned,
+    );
     if (result == null) return null;
     await _db
         .into(_db.translationCache)

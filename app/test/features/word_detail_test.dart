@@ -958,6 +958,33 @@ void main() {
       expect(find.text('অনুবাদ'), findsNWidgets(2));
     });
 
+    test('#154 leaving W1 abandons the translations it asked for and has '
+        'not got', () async {
+      final translations = _Translations(
+        (text, to) => 'অনুবাদ',
+        gate: Completer<void>().future,
+      );
+      final container = ProviderContainer(
+        overrides: <Override>[
+          translationRepositoryProvider.overrideWithValue(translations),
+        ],
+      );
+      addTearDown(container.dispose);
+      final w1 = container.listen(exampleTranslationsProvider('w'), (_, _) {});
+      unawaited(
+        container.read(exampleTranslationsProvider('w').notifier).translate(
+          <String>['Ich sehe das Haus.'],
+          to: 'bn',
+        ),
+      );
+      await pumpEventQueue();
+      var gone = false;
+      unawaited(translations.abandoned.single!.then((_) => gone = true));
+      w1.close();
+      await pumpEventQueue();
+      expect(gone, isTrue);
+    });
+
     testWidgets('FR-W1-05 an English learner is not offered Translate: the '
         'examples come in English already', (tester) async {
       await pump(
@@ -1343,12 +1370,17 @@ class _Translations implements TranslationRepository {
   /// While not complete, every translation waits for it.
   final Future<void>? gate;
 
+  /// Each request's word that nobody waits any more (#154).
+  final List<Future<void>?> abandoned = <Future<void>?>[];
+
   @override
   Future<String?> translate(
     String text, {
     required String from,
     required String to,
+    Future<void>? abandoned,
   }) async {
+    this.abandoned.add(abandoned);
     await gate;
     return answer(text, to);
   }

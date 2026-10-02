@@ -157,8 +157,16 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
 /// by their German, shown under each until the sheet closes.
 @riverpod
 class ExampleTranslations extends _$ExampleTranslations {
+  /// Completes when W1 goes: what it asked and hasn't got is dropped, or
+  /// stopped (#154).
+  late Completer<void> _gone;
+
   @override
-  Map<String, String> build(String uid) => const <String, String>{};
+  Map<String, String> build(String uid) {
+    final gone = _gone = Completer<void>();
+    ref.onDispose(gone.complete);
+    return const <String, String>{};
+  }
 
   /// The run under way: a second tap on *Translate* while it runs waits
   /// for it, and translates nothing twice (#694 CC-3).
@@ -175,7 +183,13 @@ class ExampleTranslations extends _$ExampleTranslations {
     final translations = ref.read(translationRepositoryProvider);
     final found = <String, String>{...state};
     for (final german in germans) {
-      final result = await translations.translate(german, from: 'de', to: to);
+      final result = await translations.translate(
+        german,
+        from: 'de',
+        to: to,
+        abandoned: _gone.future,
+      );
+      if (!ref.mounted) return;
       if (result != null) found[german] = result;
     }
     if (ref.mounted) state = found;

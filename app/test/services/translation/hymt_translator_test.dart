@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -22,16 +25,43 @@ class _Runner implements TranslationRunner {
 
   /// Holds [complete] until completed: a translation still running.
   Completer<void>? gate;
+  int cancels = 0;
+  bool _stopped = false;
 
   @override
   Future<String> complete(String modelPath, String prompt) async {
     asked.add((modelPath, prompt));
+    _stopped = false;
     await gate?.future;
-    return answer;
+    return _stopped ? 'half a transl' : answer;
+  }
+
+  /// As llamadart's: what runs returns at once, with what it had.
+  @override
+  void cancel() {
+    cancels++;
+    _stopped = true;
+    if (gate case final gate? when !gate.isCompleted) gate.complete();
   }
 
   @override
   Future<void> release() async => releases++;
+}
+
+/// The repository, faked: each request's [abandoned], and no answer yet.
+class _Asked extends Fake implements TranslationRepository {
+  final List<Future<void>?> abandoned = <Future<void>?>[];
+
+  @override
+  Future<String?> translate(
+    String text, {
+    required String from,
+    required String to,
+    Future<void>? abandoned,
+  }) {
+    this.abandoned.add(abandoned);
+    return Completer<String?>().future;
+  }
 }
 
 void main() {
@@ -194,6 +224,89 @@ void main() {
       expect(runner.asked, hasLength(2));
     },
   );
+
+  test('#154 a release stops the translation under way and drops those '
+      'waiting: a phone short of memory cannot wait minutes', () async {
+    await install();
+    runner.gate = Completer<void>();
+    final running = translator.translate('eins', from: 'de', to: 'en');
+    final waiting = translator.translate('zwei', from: 'de', to: 'en');
+    await pumpEventQueue();
+
+    final released = translator.release();
+    const soon = Duration(seconds: 5);
+    expect(await running.timeout(soon), isNull, reason: 'half is none');
+    expect(await waiting.timeout(soon), isNull);
+    await released.timeout(soon);
+    expect(runner.cancels, 1);
+    expect(runner.asked, hasLength(1), reason: 'the waiting one never ran');
+    expect(runner.releases, 1);
+
+    runner.gate = null;
+    expect(
+      await translator.translate('drei', from: 'de', to: 'en'),
+      'translated',
+      reason: 'the next one loads it again',
+    );
+  });
+
+  test('#154 a translation nobody waits for: dropped while it waits, '
+      'stopped while it runs, and neither cached', () async {
+    await install();
+    final repository = TranslationRepository(db, translator, DateTime.now);
+    runner.gate = Completer<void>();
+    final firstGone = Completer<void>();
+    final secondGone = Completer<void>();
+    final first = repository.translate(
+      'eins',
+      from: 'de',
+      to: 'en',
+      abandoned: firstGone.future,
+    );
+    final second = repository.translate(
+      'zwei',
+      from: 'de',
+      to: 'en',
+      abandoned: secondGone.future,
+    );
+    await pumpEventQueue();
+
+    secondGone.complete();
+    await pumpEventQueue();
+    expect(runner.cancels, 0, reason: 'a waiting one only drops');
+    firstGone.complete();
+    const soon = Duration(seconds: 5);
+    expect(await first.timeout(soon), isNull);
+    expect(await second.timeout(soon), isNull);
+    expect(runner.asked, hasLength(1));
+    expect(runner.cancels, 1);
+
+    runner.gate = null;
+    expect(
+      await repository.translate('eins', from: 'de', to: 'en'),
+      'translated',
+      reason: 'nothing half-done was cached',
+    );
+    expect(runner.asked, hasLength(2));
+  });
+
+  test("#154 R1's and T5's line off the screen abandons its translation", () {
+    final asked = _Asked();
+    final container = ProviderContainer(
+      overrides: <Override>[
+        translationRepositoryProvider.overrideWithValue(asked),
+      ],
+    );
+    addTearDown(container.dispose);
+    final line = container.listen(
+      translationOfProvider('Danke.', 'de', 'en'),
+      (_, _) {},
+    );
+    var gone = false;
+    unawaited(asked.abandoned.single!.then((_) => gone = true));
+    line.close();
+    return pumpEventQueue().then((_) => expect(gone, isTrue));
+  });
 
   test(
     '#154 a new download of the model that lands lets the loaded one go',
