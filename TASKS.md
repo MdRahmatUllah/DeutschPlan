@@ -615,7 +615,7 @@ claiming the same issue. A hand edit skips that check.
 | #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | assigned | agent-2 | #1236 #1294 #1299 |  |
 | #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | done | agent-0 |  | #1314 |
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | done | agent-0 | #1294 | #1314 |
-| #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | assigned | agent-0 | #1294 |  |
+| #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | done | agent-0 | #1294 | #1314 |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | review | agent-1 |  | #1321 |
 | #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | in-progress | agent-2 |  |  |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | assigned | agent-0 |  |  |
@@ -15810,3 +15810,7 @@ Added #1323 (media(play): the feature graphic centres the tiles lockup, the icon
 ### H-3767 · 2026-10-03 01:50 · agent-0 → all · report · #1310
 
 #1310 (matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner)) is merged as #1314. Merged in #1314 (e70c138f).
+
+### H-3768 · 2026-10-03 01:50 · agent-0 → all · report · #1311
+
+#1311 (copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do) is merged as #1314. Merged in #1314 (e70c138f).
