@@ -485,6 +485,29 @@ class Lemmatiser {
     return _sorted(candidates);
   }
 
+  /// «Nebenkostenabrechnung» → [Nebenkosten, Abrechnung]: a word the
+  /// course doesn't have, as course words, the last one a noun (the
+  /// compound's head), with a linking -s-, -es-, -n-, -en- or -e- between
+  /// («Integrationskurs» → Integration + Kurs). The longest head wins. Null
+  /// when it isn't one. A hint only: D2 never adds the parts.
+  List<String>? compoundParts(String word) {
+    for (var cut = 3; cut <= word.length - 3; cut++) {
+      final rest = word.substring(cut);
+      final head = '${rest[0].toUpperCase()}${rest.substring(1)}';
+      if (!lookup(head).any((e) => e.pos == 'noun')) continue;
+      final left = word.substring(0, cut);
+      for (final link in const <String>['', 's', 'es', 'n', 'en', 'e']) {
+        if (!left.endsWith(link) || left.length - link.length < 3) continue;
+        final stem = left.substring(0, left.length - link.length);
+        final parts = lookup(stem, sentenceStart: true).isNotEmpty
+            ? <String>[stem]
+            : compoundParts(stem);
+        if (parts != null) return <String>[...parts, head];
+      }
+    }
+    return null;
+  }
+
   static bool _capitalised(LemmaEntry entry) {
     final first = entry.german[0];
     return first != first.toLowerCase();

@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/domain/documents/clean.dart';
 import 'package:sogda/domain/documents/lemmatiser.dart';
 import 'package:sogda/domain/documents/stop_words.dart';
+import 'package:sogda/domain/documents/tokens.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 /// The course's words, from the shipped `content.db`, as the data layer will
@@ -28,17 +30,9 @@ List<LemmaEntry> courseEntries() {
   }
 }
 
-/// A stand-in for #1224's splitter: sentences at an end mark (not a date's
-/// «14.») or a line break, words and clause commas as tokens.
+/// [text] as #1224 splits it: its sentences' words and clause marks.
 List<List<String>> sentencesOf(String text) => <List<String>>[
-  for (final sentence in text.split(RegExp(r'(?<=[^0-9][.!?])\s+|\n+')))
-    <String>[
-      for (final match in RegExp(
-        r'\p{L}+(?:-\p{L}+)*|[,;]',
-        unicode: true,
-      ).allMatches(sentence))
-        match[0]!,
-    ],
+  for (final sentence in splitText(cleanPages(<String>[text]))) sentence.words,
 ];
 
 /// A reader's lemmas for a text (each `.labels.json`'s `read`), as the
@@ -104,7 +98,10 @@ void main() {
     var expected = 0;
     final report = StringBuffer();
     for (final file in corpus.listSync().whereType<File>().where(
-      (f) => f.path.endsWith('.txt'),
+      // The not-German texts (english, bangla) have no labels.
+      (f) =>
+          f.path.endsWith('.txt') &&
+          File(f.path.replaceFirst('.txt', '.labels.json')).existsSync(),
     )) {
       final labels = File(file.path.replaceFirst('.txt', '.labels.json'));
       final read =

@@ -11,7 +11,7 @@ no drift), fed by the data layer. The owner's decisions are on #1220.
 | 1 | **Text in.** Pasted or shared text as it is. A PDF's text layer page by page. A photo through ML Kit text recognition, with the model bundled (on the device, no download). Up to 30 pages or 20,000 characters, whichever comes first. The rest is cut at the last sentence end before the limit (the last word end, if the text has no sentence end there), with a note | `data/documents/` (platform) | #1227, #1228, #1229 |
 | 2 | **Clean-up.** Join words hyphenated across a line end («Ver-↵waltung» → Verwaltung), but keep a real hyphen («E-Mail»). Drop page numbers, and headers and footers that repeat on every page. Normalise quotes, dashes and spaces | `domain/documents/clean.dart` | #1224 |
 | 3 | **Sentences and tokens.** Split into sentences, minding the abbreviations «z. B.», «Nr.», «Str.», «bzw.», «ca.» and «Dr.», and into words with their sentence and offset | `domain/documents/tokens.dart` | #1224 |
-| 4 | **Skip.** Numbers, dates, amounts, IBANs, postcodes, e-mail addresses and URLs. A capitalised word in the middle of a sentence that neither the course nor step 5 knows as a noun is a name | `tokens.dart` | #1224 |
+| 4 | **Skip.** Numbers, dates, amounts, IBANs, postcodes, e-mail addresses and URLs, and lone letters («z. B.», the B of «B1»). A capitalised word in the middle of a sentence that the course doesn't know is a name (`likelyName`), unless it's a compound of course words, ends like a noun (-ung, -heit, -schaft, -tion…) or follows an article or a determiner («die Handwerker»). After a title (Frau, Herr, Familie, Dr, Prof) it always is. A country in -ien («Syrien») ends like a plural (Familien), so it reads as a noun | `tokens.dart` | #1224 |
 | 5 | **Lemmatise.** Each token gets its candidate course lemmas (below) | `domain/documents/lemmatiser.dart` | #1223 |
 | 6 | **Classify.** Each lemma gets one class, and a document lists a lemma once, with all its sentences (below) | `domain/documents/matcher.dart` | #1225 |
 | 7 | **Rank.** The learner's level first, then one above, then the rest by the course's `freq`. Words outside the course last, in order of appearance | `matcher.dart` | #1225 |
@@ -43,7 +43,7 @@ outside: the course's own data, plus rules, plus one small table we write.
   3. A word over a phrase, and the bare word over a headword with more to it (warten before «warten auf»).
   4. The headword nearest the token: «nächsten» is nächste before it is nah's superlative.
   - **Still open** (at the start of a sentence, where case says nothing: «Morgen»): the word is *ambiguous*, and D2 lets the learner choose. So are homonyms («schon», «schon (Partikel)»).
-- **Compounds:** a noun with no lemma is split at the longest known course nouns («Nebenkostenabrechnung» → Nebenkosten + Abrechnung), allowing the linking ‑s‑ or ‑n‑. The parts are only a hint in D2. The word itself is outside the course.
+- **Compounds** (`Lemmatiser.compoundParts`): a word with no lemma is split into course words, the last a noun (the compound's head), with a linking ‑s‑, ‑es‑, ‑n‑, ‑en‑ or ‑e‑ between («Nebenkostenabrechnung» → Nebenkosten + Abrechnung, «Integrationskurs» → Integration + Kurs). The longest head wins, and the first part may itself be a compound. The parts are only a hint in D2. The word itself is outside the course.
 
 **Accuracy, measured on the test corpus (#1223):** precision of at least 95 % and recall of at least 90 % on course words, stop words left out.
 - **The corpus:** three official letters (a landlord's, a Jobcenter's, a health insurer's) and three articles, written by the team for the test, with every course word labelled. **No real person's document is used.**
@@ -62,7 +62,7 @@ outside: the course's own data, plus rules, plus one small table we write.
 
 **One class per lemma, in this order:** stop word, known, probably known, new in the course, mine, outside the course. A course word wins over *Mine*: a word of my own that the course also has (`custom_words.matched_uid`) is offered as the course word, and D2 shows its "My word" mark too.
 
-**Not German (FR-D1-04):** fewer than 50 % of the word tokens (after step 4) lemmatise to a course word or a stop word. The corpus test pins it: every German text is above, an English and a Bangla text are below.
+**Not German (FR-D1-04, `germanShare` in `tokens.dart`):** fewer than 50 % of the word tokens (after step 4) lemmatise to a course word or a stop word. The corpus test pins it: every German text is above, an English and a Bangla text are below.
 
 ## Data (`user.db`, schema change in #1226)
 - **`documents`** (id, title, source `paste|share|pdf|photo`, created_at, text, image_paths JSON, page_count, word_count). Kept, as the owner decided (#1220):
