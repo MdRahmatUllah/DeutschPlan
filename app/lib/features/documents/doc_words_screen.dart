@@ -374,7 +374,10 @@ class _Controls extends ConsumerWidget {
     ).copyWith(color: tokens.color.ink, fontWeight: FontWeight.w700);
     // The legend draws each mark as the text does.
     Widget chip(String label, {Color? fill, bool dotted = false}) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      // The dotted one has no border, so no inset: it lines up with the text.
+      padding: dotted
+          ? const EdgeInsets.symmetric(vertical: 4)
+          : const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: fill,
         borderRadius: BorderRadius.circular(8),
