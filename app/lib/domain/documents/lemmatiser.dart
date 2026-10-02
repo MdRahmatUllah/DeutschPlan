@@ -149,9 +149,11 @@ class Lemmatiser {
     _add(head, entry, _Source.head);
     final masculine = entry.article == 'der';
     if (entry.article != 'die') {
-      // The genitive: des Vertrags, des Hauses.
+      // The genitive (des Vertrags, des Hauses), and the old dative's -e
+      // (nach Hause, im Jahre).
       _add('${head}s', entry, _Source.rule);
       _add('${head}es', entry, _Source.rule);
+      if (!head.endsWith('e')) _add('${head}e', entry, _Source.rule);
     }
     if (head.endsWith('e')) {
       // A weak noun (den Kunden) or an adjectival one (ein Angestellter).
@@ -238,6 +240,12 @@ class Lemmatiser {
 
   void _verb(LemmaEntry entry, String infinitive) {
     _add(infinitive, entry, _Source.head);
+    // A headword that is a form itself («ward», «mag», «dürfte») is no
+    // infinitive to conjugate: «war» is sein's, never ward's.
+    if (!infinitive.endsWith('n')) {
+      _otherForms(entry);
+      return;
+    }
     // forms: «kommt auf · ist aufgekommen», «befasst sich · hat sich befasst».
     final parts = (entry.forms ?? '').split('·').map((p) => p.trim()).toList();
     final present = _words(parts.first);
@@ -301,6 +309,8 @@ class Lemmatiser {
       '$stem${e}st',
       '$stem${e}t',
       '${stem}en',
+      // ich sammle: -eln drops its e before the ending.
+      if (infinitive.endsWith('eln')) '${stem.substring(0, stem.length - 2)}le',
     };
     final strong = _strong(infinitive);
     if (strong == null) {
@@ -392,12 +402,35 @@ class Lemmatiser {
       start = i + 1;
     }
     final first = tokens.indexWhere((t) => !_punctuation(t));
+    // A letter's salutation, «Liebe Eltern», «Lieber Herr Becker»: the
+    // adjective lieb, which is neither the noun Liebe nor gern's lieber.
+    if (first >= 0 &&
+        first + 1 < tokens.length &&
+        _salutation.hasMatch(tokens[first]) &&
+        _startsCapital(tokens[first + 1])) {
+      done.add(first);
+    }
     for (var i = 0; i < tokens.length; i++) {
       if (done.contains(i) || _punctuation(tokens[i])) continue;
-      result[i] = lookup(tokens[i], sentenceStart: i == first);
+      result[i] = lookup(
+        tokens[i],
+        sentenceStart: i == first,
+        afterArticle: i > 0 && _articles.contains(tokens[i - 1].toLowerCase()),
+      );
     }
     return result;
   }
+
+  static final RegExp _salutation = RegExp(r'^[Ll]ieb(e|er|es|en)$');
+
+  static bool _startsCapital(String token) =>
+      token[0] != token[0].toLowerCase();
+
+  /// What a nominalised infinitive follows: «das Lesen», «beim Lesen».
+  static const Set<String> _articles = <String>{
+    'das', 'dem', 'des', 'beim', 'zum', 'vom', 'im', 'am', 'ins', 'ans', //
+    'aufs', 'fürs', 'ums', 'durchs', 'übers',
+  };
 
   /// A clause [start, end) that ends in a separable particle, with one of
   /// its verbs' finite forms before it: «Ich rufe Sie morgen an». Failing
@@ -428,11 +461,20 @@ class Lemmatiser {
       }
     }
     // A particle verb the course doesn't have («findet … statt»): its verb
-    // is no form of finden, nor its particle the preposition statt.
+    // is no form of finden, nor its particle the preposition statt. A
+    // direction only (hin, her, los) leaves the verb as it is: «Wo gehst du
+    // hin?» is still gehen.
     if (!_separableParticles.contains(particle)) return;
     for (final i in before) {
-      if (!lookup(tokens[i]).any((e) => e.pos == 'verb')) continue;
-      done.addAll(<int>[i, end - 1]);
+      final sentenceStart = i == tokens.indexWhere((t) => !_punctuation(t));
+      if (!lookup(
+        tokens[i],
+        sentenceStart: sentenceStart,
+      ).any((e) => e.pos == 'verb')) {
+        continue;
+      }
+      done.add(end - 1);
+      if (!_directions.contains(particle)) done.add(i);
       return;
     }
   }
@@ -445,11 +487,18 @@ class Lemmatiser {
     'durch', 'über', 'um', 'unter', 'wider', 'hinter', 'voll',
   });
 
+  /// Particles that only add a direction to their verb.
+  static const Set<String> _directions = <String>{'hin', 'her', 'los'};
+
   /// [token]'s course entries, alone. Case decides first, where it can: in
   /// the middle of a sentence «Weg» is the noun and «weg» the adverb. Then
   /// the best source, then a word over a phrase, then the bare word over a
   /// headword with more to it (warten before «warten auf»).
-  List<LemmaEntry> lookup(String token, {bool sentenceStart = false}) {
+  List<LemmaEntry> lookup(
+    String token, {
+    bool sentenceStart = false,
+    bool afterArticle = false,
+  }) {
     final readings = _index[fold(token)];
     if (readings == null) return const <LemmaEntry>[];
     var candidates = readings.keys.toList();
@@ -457,9 +506,18 @@ class Lemmatiser {
     if (!sentenceStart && !allCaps) {
       final capital = token[0] != token[0].toLowerCase();
       // In the middle of a sentence a capital is a noun's or a name's, and a
-      // small letter never is: «Leben» is no form of leben (step 4), nor
-      // «kosten» of die Kosten.
-      candidates = candidates.where((e) => _capitalised(e) == capital).toList();
+      // small letter never is: «kosten» is no form of die Kosten. Only a
+      // nominalised infinitive after an article is its verb («beim Lesen»).
+      final matching = candidates
+          .where((e) => _capitalised(e) == capital)
+          .toList();
+      if (matching.isEmpty && capital && afterArticle) {
+        candidates = candidates
+            .where((e) => e.pos == 'verb' && fold(headOf(e)!) == fold(token))
+            .toList();
+      } else {
+        candidates = matching;
+      }
       if (candidates.isEmpty) return const <LemmaEntry>[];
     }
     final best = candidates
