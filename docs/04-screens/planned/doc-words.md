@@ -29,9 +29,9 @@ The ink underline is what makes a word marked, and the fill says its level, whic
    - probably-known words are dimmed when the switch is on, and plain otherwise;
    - a word that appears several times is marked each time, and its card lists every sentence.
 3. **The bulk bar,** pinned at the bottom:
-   - *Add my level* and *Add my level and one above*, side by side (one height for the pair), stacked above 100 % text;
+   - *Add my level* and *Add my level and one above*, side by side (one height for the pair), stacked above 100 % text. A button that would add what *Add all new* adds is left out (#1294);
    - *Add all new*, and the number each would add;
-   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes;
+   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes. This visit's adds that start today take their slots off it (#1294);
    - an ambiguous word is in no bulk action: its card asks which it is.
 
 **The mini card (a sheet).**
@@ -49,7 +49,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
   - Hy-MT2's meaning, labelled "machine-translated", or "No meaning yet: download translation" (a link to M4);
   - *Add as my word* opens R2 pre-filled (BR-DOC-04);
   - a compound shows its parts as a hint: "Nebenkosten + Abrechnung".
-- **An ambiguous word** («Weg» or «weg») asks which one, before *Add*.
+- **An ambiguous word** («Weg» or «weg») asks which one, before *Add*. Each choice says its step and first meaning, «ausfallen · A2.2 · to be cancelled», since two readings can share a spelling and an article. Its mark takes the lowest reading's level, the one a learner meets first (#1294).
 - **A word already mine** says so, and *Keep this sentence* keeps the document's sentence with it (FR-D2-06).
 - **Machine-translated meanings** come with #1279 (#1233): Hy-MT2's answers are tappable suggestions, never a pre-filled meaning (#1278). Until then, a word outside the course offers *Add as my word* with its German.
 
@@ -73,7 +73,9 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 
 **Interactions & motion.**
 - Tapping a word opens its card.
-- A long press on a new word adds it directly, with haptic feedback: a sighted shortcut, kept out of semantics (a screen reader adds from the card).
+- A long press on a new word adds it directly, with haptic feedback: a sighted shortcut, kept out of semantics (a screen reader adds from the card). On a word already added it does nothing.
+- A word's chip and its check stay on the word's line (word joiners).
+- Back from R2 after *Add as my word*, the document is read again, so the word shows as mine.
 - *Add* marks the word "added" with a check. It doesn't animate (#1230): the check needs no motion, so reduce motion has nothing to skip.
 
 **Data.**

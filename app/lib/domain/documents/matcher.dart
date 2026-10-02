@@ -189,7 +189,9 @@ DocumentMatch matchText(
           _courseClass(entries, course, learner),
           null,
           mine: entries.any((e) => learner.mineUids.contains(e.uid)),
-          level: course[entries.first.uid]?.level,
+          // An ambiguous word's lowest: the reading a learner meets first
+          // («ausfallen» A2.2 before C1.1, agent-3 on #1294).
+          level: _lowest(entries, course)?.level,
         );
       } else {
         // A word the sentence took up (a split particle, «findet … statt», a
@@ -293,4 +295,19 @@ List<DocWord> _ranked(
     return appearance[a]!.compareTo(appearance[b]!);
   });
   return <DocWord>[...inCourse, ...words.where((w) => w.entries.isEmpty)];
+}
+
+/// The earliest in the course of [entries]' words, or null when none is.
+CourseWordInfo? _lowest(
+  List<LemmaEntry> entries,
+  Map<String, CourseWordInfo> course,
+) {
+  CourseWordInfo? low;
+  for (final entry in entries) {
+    final info = course[entry.uid];
+    if (info != null && (low == null || info.stepOrder < low.stepOrder)) {
+      low = info;
+    }
+  }
+  return low;
 }

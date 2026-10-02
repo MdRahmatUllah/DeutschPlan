@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart'
     show GestureRecognizer, TapGestureRecognizer;
@@ -118,6 +119,10 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
 
   bool _busy = false;
 
+  /// This visit's adds that start today: they took today's slots, which
+  /// [DocWordsView.slotsLeft] read when the screen opened (agent-3, #1294).
+  int _startedToday = 0;
+
   @override
   void dispose() {
     for (final tap in _taps.values) {
@@ -140,9 +145,12 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
         word,
   ];
 
-  String _sentenceOf(DocWordsView view, DocWord word) {
+  /// The word's first sentence, trimmed, and where the word starts in it.
+  (String, int) _sentenceOf(DocWordsView view, DocWord word) {
     final sentence = view.match.sentences[word.sentences.first];
-    return view.document.body.substring(sentence.start, sentence.end).trim();
+    final raw = view.document.body.substring(sentence.start, sentence.end);
+    final lead = raw.length - raw.trimLeft().length;
+    return (raw.trim(), word.spans.first.$1 - sentence.start - lead);
   }
 
   /// FR-D2-02/03: the words join the document queue (BR-PLAN-11) with their
@@ -167,16 +175,19 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
           documentId: widget.id,
           lemmaKey: word.key,
           wordKey: word.entries.single.uid,
-          sentence: _sentenceOf(view, word),
+          sentence: _sentenceOf(view, word).$1,
         );
       }
       // Today shows the words it took at once (agent-3, #1280).
       ref.invalidate(todayPlanProvider);
       if (!mounted) return;
-      setState(() => _added.addAll(words.map((w) => w.key)));
       final days = <String?>[
         for (final word in words) starts[word.entries.single.uid],
       ];
+      setState(() {
+        _added.addAll(words.map((w) => w.key));
+        _startedToday += days.where((d) => d == today).length;
+      });
       final message = words.length == 1
           ? switch (days.single) {
               final day? when day == today => l10n.docWordsAddedToday(
@@ -241,9 +252,11 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
             Navigator.of(sheet).pop();
             WordRoute.open(context, uid);
           },
-          onAddMine: () {
+          onAddMine: () async {
             Navigator.of(sheet).pop();
-            AddWordRoute.open(context, german: word.surface);
+            await AddWordRoute.openAndWait(context, german: word.surface);
+            // Saved there, it is mine here: its chip and Keep this sentence.
+            if (mounted) ref.invalidate(docWordsProvider(widget.id));
           },
           onKeepSentence: () {
             Navigator.of(sheet).pop();
@@ -261,7 +274,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
           documentId: widget.id,
           lemmaKey: word.key,
           wordKey: 'custom:${word.customId}',
-          sentence: _sentenceOf(view, word),
+          sentence: _sentenceOf(view, word).$1,
         );
     if (!mounted) return;
     setState(() => _added.add(word.key));
@@ -290,7 +303,11 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
               _taps.putIfAbsent(word.key, () => TapGestureRecognizer())
                 ..onTap = () => unawaited(_openCard(view, word)),
           onLongPress: (word) {
-            if (word.docClass != DocClass.newInCourse || word.ambiguous) return;
+            if (word.docClass != DocClass.newInCourse ||
+                word.ambiguous ||
+                _isAdded(view, word)) {
+              return;
+            }
             unawaited(HapticFeedback.mediumImpact());
             unawaited(_add(view, <DocWord>[word]));
           },
@@ -317,7 +334,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
           bar = _BulkBar(
             level: view.match.level,
             fresh: fresh,
-            slotsLeft: view.slotsLeft,
+            slotsLeft: math.max(0, view.slotsLeft - _startedToday),
             cap: ref
                 .watch(settingsSourceProvider)
                 .read(SettingKeys.docDailyCap),
@@ -631,7 +648,11 @@ class _Paragraph extends StatelessWidget {
       byTap[tap] = word;
       spans.add(
         TextSpan(
-          text: fit(surface),
+          // A word joiner each side: the chip before and the check after
+          // stay on the word's line (agent-3, #1294).
+          text:
+              '${word.mine ? '\u2060' : ''}${fit(surface)}'
+              '${added ? '\u2060' : ''}',
           style: style,
           recognizer: tap,
           semanticsLabel: _label(l10n, word, surface, added),
@@ -750,7 +771,7 @@ class _BulkBar extends StatelessWidget {
           next != null &&
           mineAndNext.length > mine.length)
         (l10n.docWordsAddLevels(level!, next, mineAndNext.length), mineAndNext),
-    ];
+    ]..removeWhere((p) => p.$2.length == fresh.length);
     return SgSurface(
       kind: SgSurfaceKind.bar,
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -862,7 +883,7 @@ class _WordCard extends ConsumerStatefulWidget {
   });
 
   final DocWord word;
-  final String sentence;
+  final (String, int) sentence;
   final bool added;
   final ValueChanged<DocWord> onAdd;
   final ValueChanged<String> onKnow;
@@ -913,7 +934,16 @@ class _WordCardState extends ConsumerState<_WordCard> {
         const SizedBox(height: 8),
         for (final entry in word.entries) ...<Widget>[
           SgButton(
-            label: <String>[?entry.article, entry.german].join(' '),
+            // «ausfallen · A2.2 · to be cancelled»: two readings can share
+            // a spelling and an article (agent-3, #1294).
+            label: <String>[
+              <String>[?entry.article, entry.german].join(' '),
+              if (ref.watch(wordDetailProvider(entry.uid)).value
+                  case final detail?) ...<String>[
+                detail.word.word.sublevelCode,
+                ?detail.meanings.lines(detail.word.word).firstOrNull?.text,
+              ],
+            ].join(' · '),
             kind: SgButtonKind.secondary,
             compact: true,
             onPressed: () => setState(() => _uid = entry.uid),
@@ -992,7 +1022,11 @@ class _WordCardState extends ConsumerState<_WordCard> {
           color: tokens.color.textSecondary,
         ),
         const SizedBox(height: 2),
-        _Sentence(sentence: widget.sentence, word: word.surface),
+        _Sentence(
+          sentence: widget.sentence.$1,
+          at: widget.sentence.$2,
+          word: word.surface,
+        ),
         const SizedBox(height: 16),
         ..._actions(l10n, word, uid),
       ]);
@@ -1073,9 +1107,17 @@ class _WordCardState extends ConsumerState<_WordCard> {
 
 /// The sentence from the document, the word bold.
 class _Sentence extends StatelessWidget {
-  const _Sentence({required this.sentence, required this.word});
+  const _Sentence({
+    required this.sentence,
+    required this.at,
+    required this.word,
+  });
 
   final String sentence;
+
+  /// Where [word] stands in [sentence]: the first match could be inside
+  /// another word (agent-3, #1294).
+  final int at;
   final String word;
 
   @override
@@ -1085,7 +1127,9 @@ class _Sentence extends StatelessWidget {
       tokens,
       SgTextRole.body,
     ).copyWith(color: tokens.color.ink);
-    final at = sentence.indexOf(word);
+    final at = sentence.startsWith(word, this.at.clamp(0, sentence.length))
+        ? this.at
+        : sentence.indexOf(word);
     return SgRuns(
       at < 0
           ? <TextSpan>[TextSpan(text: sentence)]
