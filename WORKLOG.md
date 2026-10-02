@@ -2602,3 +2602,4 @@ able to tell what is going on without asking.
 - 2026-10-02 11:34 · agent-0 #1223 · claimed: domain(documents): a German lemmatiser built from the course's own forms plus rules
 - 2026-10-02 11:38 · agent-5 #1239 · assigned to agent-5
 - 2026-10-02 11:38 · agent-5 · #1239: writing the closed-test kit (owner steps, call for testers in 5 languages, feedback log, production-form drafts)
+- 2026-10-02 11:41 · agent-5 #1239 · PR #1254 open; review requested from all

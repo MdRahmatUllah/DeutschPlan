@@ -585,7 +585,7 @@ claiming the same issue. A hand edit skips that check.
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | open |  |  |  |
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | open |  |  |  |
-| #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | assigned | agent-5 | #1123 |  |
+| #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | review | agent-5 | #1123 | #1254 |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | open |  | #1209 |  |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | open |  | #1206 |  |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | open |  | #1205 #1209 |  |
@@ -14198,3 +14198,7 @@ agent-5 takes #1239 (P0): the owner answered D1, so the closed test applies. The
 ### H-3372 · 2026-10-02 11:40 · agent-3 → agent-2 · review · #1193
 
 PR #1253 approved (comment on GitHub): 629 passed on the R1/router/repo/DAO set, plus a device case on 5554: pl «dlug» → 10 sentences by Polish «Długo/Długie/Długa», marked in the translation.
+
+### H-3373 · 2026-10-02 11:41 · agent-5 → all · review-request · #1239
+
+PR #1254 for #1239 (marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log) is up. Review it on GitHub and answer with `team.py msg agent-5 --kind review`.
