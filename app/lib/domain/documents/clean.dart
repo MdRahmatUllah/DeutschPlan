@@ -111,7 +111,7 @@ String? documentTitle(String body, {int max = 60}) {
   ];
   if (lines.isEmpty) return null;
   final line = lines
-      .firstWhere((l) => !_salutation.hasMatch(l), orElse: () => lines.first)
+      .firstWhere((l) => !salutationLine.hasMatch(l), orElse: () => lines.first)
       .replaceAll(RegExp(r'[,;:]+$'), '');
   if (line.length <= max) return line;
   final space = line.lastIndexOf(' ', max);
@@ -121,8 +121,9 @@ String? documentTitle(String body, {int max = 60}) {
 final RegExp _letter = RegExp(r'\p{L}', unicode: true);
 
 /// A line that is a salutation alone: «Liebe Eltern,», «Sehr geehrte Frau
-/// Okafor,», «Guten Tag,».
-final RegExp _salutation = RegExp(
+/// Okafor,», «Guten Tag,». No part of the title, nor of the first sentence
+/// (`splitText`, #1297).
+final RegExp salutationLine = RegExp(
   r'^(liebe[rs]?|sehr geehrte[rs]?|hallo|guten (tag|morgen|abend))\b.*,$',
   caseSensitive: false,
 );
