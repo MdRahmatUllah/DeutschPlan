@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 19:57
+last-seen: 2026-10-02 19:58
 last-read: 3557
 
 ## Now
 
-Nothing claimed.
+#1290 content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops — claimed 2026-10-02 19:58.
 
 ## Next
 
