@@ -26,17 +26,33 @@ outside: the course's own data, plus rules, plus one small table we write.
   - a verb's 3rd-person present and participle, separable verbs included ("räumt auf · hat aufgeräumt");
   - an adjective's comparative and superlative, where `forms` gives them.
 - **Rules:**
-  - regular present and past endings (‑e, ‑st, ‑t, ‑en, ‑te, ‑test, ‑ten, ‑tet);
+  - regular present and past endings (‑e, ‑st, ‑t, ‑en, ‑te, ‑test, ‑ten, ‑tet), and ‑eln's «ich sammle»;
+  - a noun's old dative ‑e («nach Hause», «im Jahre»);
+  - a verb headword that is a form itself («ward», «mag», «dürfte») matches only itself, so «war» is sein's;
   - adjective endings (‑e, ‑en, ‑em, ‑er, ‑es), and on comparatives;
   - the participle's ge‑ prefix and its separable variant (an**ge**rufen);
   - zu‑infinitives (an**zu**rufen).
-- **A strong-verb table** (`assets/documents/strong_verbs.json`, written by the team, no licence): about 200 irregular verbs' Präteritum and Konjunktiv II stems (ging, gingen; käme; wüsste…) mapped to the infinitive.
-- **Separable verbs in a sentence:** when a finite verb has a known separable particle at the end of its clause («Ich **rufe** Sie morgen **an**.»), the pair maps to the particle verb (anrufen). The verb alone maps there only if the base verb isn't a course word on its own.
-- **Folding:** case, ß/ss and umlauts, the way search's key does. A form that matches two lemmas («Weg» and «weg», «sein» the verb and the pronoun) is resolved by capitalisation and the neighbouring words. If it's still open, the word is *ambiguous*, and D2 lets the learner choose.
+- **A strong-verb table** (`domain/documents/strong_verbs.dart`, a constant written by the team, no licence): about 145 strong, mixed and irregular verbs' Präteritum and Konjunktiv II (ging, käme, wüsste…). A prefixed or separable verb takes its base's row: verstehen is ver + stand, ankommen is an + kam.
+- **Separable verbs in a sentence:** when a finite verb has a known separable particle at the end of its clause («Ich **rufe** Sie morgen **an**.»), the pair maps to the particle verb (anrufen), and the particle has no lemma of its own.
+  - **No verb in that clause:** the sentence before it is searched, since a comma also sets off a list or an apposition («Bitte **bringen** Sie den Ausweis, den Lebenslauf und das Zeugnis **mit**.»).
+  - **A particle verb the course doesn't have** («findet … statt», «Geben Sie … mit»): both words have no lemma, since the verb is no form of finden and the particle is no preposition. A particle that only adds a direction (hin, her, los) leaves the verb as it is: «Wo gehst du hin?» is gehen.
+  - **Joined forms** (wenn er ankommt, anzurufen, angerufen) are forms of the particle verb.
+  - **A verb alone,** with no particle, is its base verb.
+- **Folding:** case, ß/ss and umlauts, the way search's key does (ä as ae, so «Mutter» isn't «Mütter»).
+- **Choosing among readings,** in this order:
+  1. **Case,** in the middle of a sentence: a capitalised token matches only capitalised headwords («Morgen» the noun), and a lower-case one only the others («morgen»). With none, it has no lemma (a name), except a nominalised infinitive after an article, which is its verb («beim Lesen», «das Leben»).
+  2. **The best-founded reading:** the headword itself, then `words.forms`, then a rule. So «gefallen» is gefallen before it is fallen's participle.
+  3. A word over a phrase, and the bare word over a headword with more to it (warten before «warten auf»).
+  4. The headword nearest the token: «nächsten» is nächste before it is nah's superlative.
+  - **Still open** (at the start of a sentence, where case says nothing: «Morgen»): the word is *ambiguous*, and D2 lets the learner choose. So are homonyms («schon», «schon (Partikel)»).
+- **A letter's salutation** («Liebe Eltern», «Lieber Herr Becker») is the adjective lieb, neither the noun Liebe nor gern's lieber, so it has no lemma.
 - **Compounds:** a noun with no lemma is split at the longest known course nouns («Nebenkostenabrechnung» → Nebenkosten + Abrechnung), allowing the linking ‑s‑ or ‑n‑. The parts are only a hint in D2. The word itself is outside the course.
 
-**Accuracy, measured on the test corpus (#1223):** precision of at least 95 % and recall of at least 90 % on course words.
+**Accuracy, measured on the test corpus (#1223):** precision of at least 95 % and recall of at least 90 % on course words, stop words left out.
 - **The corpus:** three official letters (a landlord's, a Jobcenter's, a health insurer's) and three articles, written by the team for the test, with every course word labelled. **No real person's document is used.**
+- **A seventh text, a bank's letter, is held out:** it was written and labelled after the rules were tuned on the six, and is never tuned on. A new rule has to keep it passing, and new cases go into a new held-out text.
+- **Three more are held out, by SQA (#1267):** a school letter, a doctor's letter and a news item (`heldout_*.txt`). They're in the corpus figure, and each text's misses are pinned in their own test. Two misses are known: an imperative after «oder» («oder geben Sie … mit»), and «Bänken», whose bench plural the course's *Bank* doesn't have. So any change in what these texts find is a regression or a fix to name.
+- **Labels are a reader's, not the lemmatiser's:** each text's `.labels.json` lists (`read`) the lemma of every word a reader sees in it, stop words aside. The test keeps those that are course headwords today, so a content update never leaves the labels stale. Homonyms all count, and a verb with a preposition («abhängen von») counts where the course has no bare verb.
 
 ## The classes (BR-DOC-03)
 | Class | Rule | D2 shows it |
@@ -46,7 +62,7 @@ outside: the course's own data, plus rules, plus one small table we write.
 | **New in the course** | A course word not yet studied, in the current step or later | Highlighted in its level's colour, to add |
 | **Mine** | Already one of *My words* (`custom_words`, by search key), and not a course word | Marked "My word", to add a sentence |
 | **Outside the course** | No lemma in the course | Underlined, to add as a word of my own |
-| *Stop word* | A lemma in `assets/documents/stop_words.txt` (written by the team: articles, pronouns, the commonest prepositions and conjunctions, *sein*, *haben*, *werden* and the modals), even when it's a course word | Plain, never offered |
+| *Stop word* | In `domain/documents/stop_words.dart` (written by the team), even when it's a course word: articles, pronouns and determiners with their endings, the commonest prepositions and conjunctions, all checked on the token; *sein*, *haben*, *werden* and the modals, checked on the lemma | Plain, never offered |
 
 **One class per lemma, in this order:** stop word, known, probably known, new in the course, mine, outside the course. A course word wins over *Mine*: a word of my own that the course also has (`custom_words.matched_uid`) is offered as the course word, and D2 shows its "My word" mark too.
 
@@ -92,6 +108,6 @@ The result is labelled *machine-translated* (`custom_words.mt = 1`) and can be e
 - The test names carry BR-DOC and FR-D ids.
 
 **The shared fixtures,** in `app/test/fixtures/documents/`, written or photographed by the team (no real person's document). The unit tests and SQA's device pass (#1234) use the same files:
-- `corpus/`: the six texts, each with a `.labels.json` of its course words, plus `english.txt` and `bangla.txt` (the not-German check);
+- `corpus/`: the six texts, the held-out seventh and SQA's three held-out ones (#1267), each with a `.labels.json` of its course words, plus `english.txt` and `bangla.txt` (the not-German check, #1225);
 - `text_layer.pdf` and `scanned.pdf` (the same letter, with and without a text layer);
 - `photo_1.jpg`, `photo_2.jpg` and `photo_blurred.jpg`: a printed team letter, the last one deliberately blurred (FR-D1-03).

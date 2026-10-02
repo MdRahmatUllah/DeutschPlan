@@ -321,7 +321,32 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 3));
   });
 
+  testWidgets('#1261 a download started reads the other card again: its '
+      'space counts this one now', (tester) async {
+    final read = <String>[];
+    await pump(
+      tester,
+      modelManagerStub(voice: cardOf(voiceEntry), read: read.add),
+    );
+    read.clear();
+    await tester.tap(find.text(l10n.modelsDownload('399 MB')));
+    await tester.pumpAndSettle();
+    expect(read, contains(ModelRepository.translationModel));
+  });
+
   group('FR-M4-03 Delete', () {
+    testWidgets('#1261 a delete reads the other card again: the bytes freed '
+        'may let it fit', (tester) async {
+      final read = <String>[];
+      await pump(tester, modelManagerStub(read: read.add));
+      read.clear();
+      await tester.tap(find.text(l10n.modelsDelete('399 MB')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.modelsDeleteConfirm));
+      await tester.pumpAndSettle();
+      expect(read, contains(ModelRepository.translationModel));
+    });
+
     testWidgets('asks first, and Keep keeps it', (tester) async {
       final models = FakeModels();
       await pump(tester, modelManagerStub(models: models));
@@ -584,6 +609,23 @@ void main() {
     expect(button(tester, l10n.modelsUpdate('399 MB')).onPressed, isNull);
   });
 
+  testWidgets('#1261 a failed download that would not fit again says how '
+      'much to free, under Retry', (tester) async {
+    await pump(
+      tester,
+      modelManagerStub(
+        voice: cardOf(
+          voiceEntry,
+          live: (phase: DownloadPhase.failed, progress: 0.4),
+          shortfall: 120000000,
+        ),
+      ),
+    );
+    expect(find.text(l10n.modelsFailedNote), findsOneWidget);
+    expect(find.text(l10n.modelsNoSpaceNote('120 MB')), findsOneWidget);
+    expect(find.text(l10n.retry), findsOneWidget);
+  });
+
   testWidgets("#428 a start the manager refuses for space says how much", (
     tester,
   ) async {
@@ -826,6 +868,31 @@ void main() {
       expect(asked, greaterThan(1), reason: 'bytes came or went');
     });
 
+    test('#1261 a failed download asks the space for its Retry', () async {
+      downloads.shortfall = 120000000;
+      final seen = await cards(() async {
+        downloads.live[ModelRepository.voiceModel]!.add((
+          phase: DownloadPhase.failed,
+          progress: 0.4,
+        ));
+      });
+      expect(cardStatusOf(seen.last), ModelCardStatus.failed);
+      expect(seen.last.shortfall, 120000000);
+    });
+
+    test('#1261 another model landing or failing reads the card again: the '
+        'space its download held is free', () async {
+      downloads.shortfall = 120000000;
+      final seen = await cards(() async {
+        downloads.shortfall = 0;
+        downloads.live['hymt']!.add((phase: DownloadPhase.ready, progress: 1));
+      });
+      expect(seen.map(cardStatusOf), <ModelCardStatus>[
+        ModelCardStatus.notEnoughSpace,
+        ModelCardStatus.notDownloaded,
+      ]);
+    });
+
     test(
       'its download as it moves, and once done, what it installed',
       () async {
@@ -866,8 +933,10 @@ class _Models extends FakeModels {
   ModelStatus status = ModelStatus.notDownloaded;
 
   @override
-  Future<ModelManifest> manifest() async =>
-      ModelManifest(version: 1, models: <ModelEntry>[voiceEntry]);
+  Future<ModelManifest> manifest() async => ModelManifest(
+    version: 1,
+    models: <ModelEntry>[voiceEntry, translationEntry],
+  );
 
   @override
   Future<ModelState> stateOf(
