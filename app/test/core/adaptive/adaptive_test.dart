@@ -446,45 +446,51 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets('#317 scrolled, a tab keeps a strip of its colour behind the '
-        'status bar; at rest the header bleeds to the top', (tester) async {
-      const lagoon = Color(0xFF00BFB3);
-      final list = ScrollController();
-      addTearDown(list.dispose);
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.light(),
-          home: MediaQuery(
-            data: const MediaQueryData(padding: EdgeInsets.only(top: 40)),
-            child: AdaptiveScaffold(
-              statusBarColour: lagoon,
-              body: ListView(
-                controller: list,
-                children: <Widget>[
-                  for (var i = 0; i < 40; i++)
-                    SizedBox(height: 60, child: Text('row $i')),
-                ],
+    // #1294: and a screen with a bar at its foot (D2's bulk bar), which
+    // lost the strip (agent-3).
+    for (final foot in <Widget?>[null, const SizedBox(height: 56)]) {
+      testWidgets('#317 scrolled, a tab keeps a strip of its colour behind '
+          'the status bar; at rest the header bleeds to the top '
+          '(${foot == null ? 'no bar' : 'a bar'} at its foot)', (tester) async {
+        const lagoon = Color(0xFF00BFB3);
+        final list = ScrollController();
+        addTearDown(list.dispose);
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            home: MediaQuery(
+              data: const MediaQueryData(padding: EdgeInsets.only(top: 40)),
+              child: AdaptiveScaffold(
+                statusBarColour: lagoon,
+                bottomBar: foot,
+                body: ListView(
+                  controller: list,
+                  children: <Widget>[
+                    for (var i = 0; i < 40; i++)
+                      SizedBox(height: 60, child: Text('row $i')),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-      Finder strip() =>
-          find.byWidgetPredicate((w) => w is ColoredBox && w.color == lagoon);
-      expect(strip(), findsNothing, reason: 'at rest');
+        );
+        Finder strip() =>
+            find.byWidgetPredicate((w) => w is ColoredBox && w.color == lagoon);
+        expect(strip(), findsNothing, reason: 'at rest');
 
-      list.jumpTo(200);
-      await tester.pump();
-      expect(
-        tester.getRect(strip()),
-        const Rect.fromLTWH(0, 0, 800, 40),
-        reason: 'over the status bar, its height',
-      );
+        list.jumpTo(200);
+        await tester.pump();
+        expect(
+          tester.getRect(strip()),
+          const Rect.fromLTWH(0, 0, 800, 40),
+          reason: 'over the status bar, its height',
+        );
 
-      list.jumpTo(0);
-      await tester.pump();
-      expect(strip(), findsNothing, reason: 'back at the top');
-    });
+        list.jumpTo(0);
+        await tester.pump();
+        expect(strip(), findsNothing, reason: 'back at the top');
+      });
+    }
 
     testWidgets('a root route gets no back button', (tester) async {
       await tester.pumpWidget(

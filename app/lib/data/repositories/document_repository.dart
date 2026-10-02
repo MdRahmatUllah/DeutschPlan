@@ -168,6 +168,9 @@ class DocumentRepository {
         },
         mine: <String>{for (final row in custom) searchKey(row.german)},
         mineUids: <String>{for (final row in custom) ?row.matchedUid},
+        mineIds: <String, int>{
+          for (final row in custom) searchKey(row.german): row.id,
+        },
         activeStepOrder: step == null ? null : order[step.code],
         level: step?.levelCode,
       ),

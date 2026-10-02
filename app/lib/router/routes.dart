@@ -23,6 +23,7 @@ import 'package:sogda/core/theme/app_theme.dart' show StillPageTransitions;
 import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/features/day_complete/day_complete_screen.dart';
 import 'package:sogda/features/documents/doc_import_screen.dart';
+import 'package:sogda/features/documents/doc_words_screen.dart';
 import 'package:sogda/features/exam/exam_results_screen.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
@@ -419,6 +420,11 @@ class AddWordRoute extends GoRouteData with $AddWordRoute {
   static void open(BuildContext context, {String? german}) =>
       unawaited(context.push<void>(AddWordRoute(german: german).location));
 
+  /// As [open], for an opener that goes on once R2 is closed: D2's card
+  /// reads the document again, the word now the learner's (#1294).
+  static Future<void> openAndWait(BuildContext context, {String? german}) =>
+      context.push<void>(AddWordRoute(german: german).location);
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       AddWordScreen(german: german);
@@ -455,8 +461,7 @@ class DocImportRoute extends GoRouteData with $DocImportRoute {
       DocImportScreen(arrival: arrival);
 }
 
-// ponytail: a stand-in until #1230 part 2 declares D2 here; dropped on the
-// rebase onto it.
+/// D2 · The words in your text (#1230): D1's end, and D3's row.
 class DocWordsRoute extends GoRouteData with $DocWordsRoute {
   const DocWordsRoute({required this.id});
 
@@ -468,7 +473,7 @@ class DocWordsRoute extends GoRouteData with $DocWordsRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const SizedBox.shrink();
+      DocWordsScreen(id: id);
 }
 
 class MeRoute extends GoRouteData with $MeRoute {
