@@ -5799,9 +5799,9 @@
   "@resetEverythingTitle": {
     "description": "The ResetDialog artboard: the title."
   },
-  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history and my words on this phone. Export first if you might want it back. Type RESET to confirm.",
+  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history, my words and documents on this phone. Export first if you might want it back, but a document's photos aren't in the file. Type RESET to confirm.",
   "@resetEverythingMessage": {
-    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language."
+    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language. #1288: it names the documents, whose photos an export never holds (BR-DOC-06)."
   },
   "resetEverythingConfirm": "Reset",
   "@resetEverythingConfirm": {
