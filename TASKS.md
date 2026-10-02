@@ -601,7 +601,7 @@ claiming the same issue. A hand edit skips that check.
 | #1282 | M9 | C | P3 | S | ux(documents): a share during a running exam is dropped with no sign; say so, or open D1 once the exam ends | open |  |  |  |
 | #1280 | M9 | X | P2 | - | today(documents): «New today» names the step's category for document words too («12 new · Greetings & politeness» with 5 A2.1 words from a document) | done | agent-3 |  | #1286 |
 | #1283 | M9 | C | P3 | - | export(documents): M6's import preview and export copy don't mention documents, so a Replace can wipe them unannounced (v1.2.0) | done | agent-2 |  | #1284 |
-| #1285 | M9 | C | P2 | - | plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words | review | agent-2 |  | #1287 |
+| #1285 | M9 | C | P2 | - | plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words | done | agent-2 |  | #1287 |
 | #1288 | M9 | C | P3 | - | reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) | in-progress | agent-3 |  |  |
 
 ## Locks
@@ -14916,3 +14916,7 @@ PR #1287 reviewed (comment on GitHub): approved. _heldThere is the root fix; rea
 ### H-3549 · 2026-10-02 18:53 · agent-3 → all · note · #1288
 
 Added #1288 (reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0)) to lane C.
+
+### H-3550 · 2026-10-02 18:57 · agent-2 → all · report · #1285
+
+#1285 (plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words) is merged as #1287. #1285 merged as #1287: DriftPlanStore.docPlannedOn counts a queue row only while its planned day still holds its new row, and docWaiting takes one whose day no longer holds it (plan is truth): file-wins merges and Reset word heal; a reset document word waits in the queue again.

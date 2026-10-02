@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 18:33
+last-seen: 2026-10-02 18:57
 last-read: 3545
 
 ## Now
 
-#1229 input(documents): photos and the camera, through on-device OCR, with a correction step — claimed 2026-10-02 18:33.
+Nothing claimed.
 
 ## Next
 
