@@ -346,6 +346,10 @@
   "@meAbout": {
     "description": "M1 list: opens M9."
   },
+  "meRatePlay": "Rate Sogda on Google Play",
+  "@meRatePlay": {
+    "description": "M1's last row (FR-M1-05, #1237): opens Sogda's listing in the Play Store app, where the learner can rate it. Android only."
+  },
   "meLoadFailed": "Your progress could not be loaded.",
   "@meLoadFailed": {
     "description": "M1 and M2 when the learner's progress cannot be read."

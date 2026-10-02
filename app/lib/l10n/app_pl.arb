@@ -55,6 +55,7 @@
   "meBadge": "{step}, {state}",
   "meSettings": "Ustawienia",
   "meAbout": "Informacje i prywatność",
+  "meRatePlay": "Oceń aplikację Sogda w Google Play",
   "meLoadFailed": "Nie udało się wczytać twoich postępów.",
   "examLeaveTitle": "Wyjść z egzaminu?",
   "examLeaveMessage": "Twoje dotychczasowe odpowiedzi zostaną zapisane jako nieukończone podejście. Zegar się zatrzyma. Egzamin próbny {mock} możesz zacząć od nowa na ekranie egzaminów.",

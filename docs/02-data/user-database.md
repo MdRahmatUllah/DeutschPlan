@@ -69,6 +69,7 @@ A write is in memory before it is on disk. A write that fails, or a transaction 
 | `learner_name` | — | Me |
 | `exam_timer` | 1 | L11 writes it on *Begin exam* (its switch starts from `exam_timer_default`); L12 reads it, fresh or resumed |
 | `last_export` | — | M6 — the day of the last export the share sheet took (`2026-09-20`); an import leaves it as it was (#839) |
+| `play_review_asked` | 0 | L13 — BR-RATE-01 (#1237): Play's review card has been asked for, after the first passed mock exam, so it never is again |
 | `planned_study_days` | 0 | engine — the study-days mask `last_planned_date`'s day was planned with, so an M5 change is tomorrow's (BR-PLAN-08) |
 | `planned_doc_cap` | -1 | engine — the `doc_daily_cap` `last_planned_date`'s day was opened with, so an M3 change is tomorrow's (BR-PLAN-11); -1 until one is recorded |
 | `doc_daily_cap` | 5 | M3 *Learn from documents* — BR-PLAN-11's new words a day from documents, 0–20 (#1220, #1231) |

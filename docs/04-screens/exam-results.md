@@ -14,6 +14,7 @@ Filter chips All · 40, Wrong only · 9, Flagged · 3. Cards per question: "Q3 �
 - FR-L13-01 Score = points ÷ max (BR-EXAM-03); `passed` per BR-EXAM-04; comparison with the previous finished attempt of the same step.
 - FR-L13-02 *Add missed words to revision* rates every wrong word item Again (source `exam`) and sets due = tomorrow.
 - FR-L13-03 Rubric ticks for Writing can be edited here if not done in the runner; editing recomputes the score.
+- FR-L13-04 A passed mock exam asks for Google Play's review card, the first time only (BR-RATE-01, #1237). It asks when the result shows passed, or when a rubric tick makes it pass. There's no question before the card and nothing on this screen about it. Play may not show it.
 - FR-L14-01 Explanations: word items → first example; grammar items → topic rule with link; articles → rule-of-thumb from the grammar content when available.
 
 ## Details L13 settles (#135)

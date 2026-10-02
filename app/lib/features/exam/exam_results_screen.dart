@@ -65,6 +65,18 @@ class ExamResultsScreen extends ConsumerStatefulWidget {
 class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
   bool _reviewing = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // BR-RATE-01 (#1237): a passed mock exam, the first, asks for Play's
+    // review card once; a rubric tick that makes it pass counts too.
+    ref.listenManual(examResultProvider(widget.attemptId), (_, next) {
+      if (next.value case final result? when result.attempt.passed != 0) {
+        unawaited(ref.read(playReviewProvider).afterPass());
+      }
+    }, fireImmediately: true);
+  }
+
   /// Out of a result that could not load: Learn, the course (#725).
   void _leave() => context.jumpToTab(const LearnRoute());
 
