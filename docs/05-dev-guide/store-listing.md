@@ -1,10 +1,10 @@
 # Store listing (Google Play)
 
-v1.0 ships on Android only (the owner, 2026-09-26). These are the texts for the Play Console, in English and Bangla (#175), and since v1.1.0 in Polish and Russian (#1143). Play's limits: title 30 characters, short description 80, full description 4,000, *What's new* 500; `tools/tests/test_store_listing.py` checks them. The Bangla, Polish and Russian reuse the app's own wording where it says the same thing (S2's promises, the voice card, the pronunciation key's line), and Polish and Russian speak to the reader as the app does (*ty*, with the courtesy capital *Twój* in Polish). A native reader checks the Bangla before the first upload; Polish and Russian ship on an agent's review (the owner, 2026-09-30).
+v1.0 ships on Android only (the owner, 2026-09-26). These are the texts for the Play Console, in English and Bangla (#175), and since v1.1.0 in Polish and Russian (#1143). Play's limits: title 30 characters, short description 80, full description 4,000, *What's new* 500; `tools/tests/test_store_listing.py` checks them. The Bangla, Polish and Russian reuse the app's own wording where it says the same thing (S2's promises, the voice card, the pronunciation key's line), and Polish and Russian speak to the reader as the app does (*ty*, with the courtesy capital *Twój* in Polish). Counts take CLDR's form: Polish writes four digits solid («5069», as sogda.de does), Russian groups them with a no-break space («5 069», as the app and sogda.de do, #1194). A native reader checks the Bangla before the first upload; Polish and Russian ship on an agent's review (the owner, 2026-09-30).
 
 v1.1.0's languages: **the app** in English, Bangla, Polish and Russian; **meanings** in English, Bangla, Russian and Polish, a first language and an optional second shown under it. Each listing leads with its own language; the Bangla listing keeps its audience's texts and adds the new languages.
 
-Translation (Hy-MT) is off in every v1.0 build (ADR 9), so the listing doesn't mention it.
+Translation is not in v1.1.0 (ADR 9 kept Hy-MT off until then), so the listing doesn't mention it. Hy-MT2 arrives with v1.2.0 (ADR 30, #154), whose store notes say so.
 
 **Search (#1176, sogda.de's master plan W4-b):** each title is "Sogda: " plus the phrase people search in that language, within Play's 30 characters. Neither a title nor a short description names "Goethe" or "telc" (their trademarks); `test_store_listing.py` checks both. The short description and the full description's second paragraph are the positioning sentence, the same one sogda.de, its FAQ and `llms.txt` use. The owner approves the wording before the listing changes.
 
@@ -146,11 +146,11 @@ Sogda: немецкий с нуля до C2
 ### Full description
 Учи немецкий день за днём, с ясным планом.
 
-Sogda — приложение с офлайн-курсом немецкого: от A1 до C2 за 12 этапов: 5069 слов, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети: твой прогресс остаётся на этом телефоне.
+Sogda — приложение с офлайн-курсом немецкого: от A1 до C2 за 12 этапов: 5 069 слов, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети: твой прогресс остаётся на этом телефоне.
 
 ЧТО ТЫ ВЫУЧИШЬ
 • 12 этапов от A1.1 до C2.2, по структуре экзаменов
-• 5069 слов, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами
+• 5 069 слов, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами
 • 182 грамматические темы, у каждой — правило и короткая практика; правила и примеры на русском
 • Значения на русском, а под ними, если хочешь, второй язык: английский, бенгальский или польский
 

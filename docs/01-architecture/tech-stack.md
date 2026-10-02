@@ -34,7 +34,7 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Localisation | `flutter_localizations` + `intl` | SDK / 0.20.x | ARB files for en/bn; German date on Today. |
 | TTS (system) | `flutter_tts` | 4.x | Zero-download fallback voice. |
 | TTS (on-device model) | `flutter_onnxruntime` | 1.8.x | Native ONNX Runtime wrapper (ORT 1.22+), 16 KB-page compliant on Android, SPM on iOS. Runs Supertonic 3. |
-| Translation model | none in v1.x (ADR 29, #609) | — | Hy-MT is off in every build (ADR 9), so its binding was removed. *Before #609:* `llamadart` 0.x, llama.cpp GGUF inference on **both** Android and iOS via native assets; `llama_cpp_flutter` is Apple-only, so it is not used. Loads Hy-MT1.5-1.8B GGUF. Bundles llama.cpp's CPU backend only, no LiteRT-LM (ADR 27, `hooks: user_defines:` in `pubspec.yaml`). |
+| Translation model | `llamadart` ^0.9.0 (ADR 30, #154) | Hy-MT2-1.8B Q4_K_M GGUF, an optional download | llama.cpp GGUF inference on **both** Android and iOS via native assets; it pins `llamadart-native` v0.5.0 (llama.cpp `7fe450e1`, which has `hunyuan-dense`). `llama_cpp_flutter` is Apple-only, so it is not used. Bundles llama.cpp's CPU backend only, no LiteRT-LM or Vulkan (ADR 27's `hooks: user_defines:` in `pubspec.yaml`, back with ADR 30). It was removed while Hy-MT was off (ADR 29, #609). |
 | Audio playback | `just_audio` | 0.10.x | Plays synthesised WAV/PCM and recorded speaking answers; one shared player. |
 | Audio recording | `record` | 7.x | Speaking section recorder (AAC/M4A), mic permission handling. |
 | Downloads | `background_downloader` | 9.x | Resumable, background, Wi-Fi-only model downloads with progress notifications on both platforms. |
@@ -66,4 +66,4 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 
 ## Licences to ship in About → Licences
 
-Flutter packages (auto-collected by `LicenseRegistry`), Supertonic 3 (OpenRAIL-M, model) and its sample code (MIT), Hy-MT1.5 (Tencent HY licence — **territorial restriction; verify before enabling downloads in the EU/UK/KR**), Inter and Noto Sans Bengali (OFL 1.1).
+Flutter packages (auto-collected by `LicenseRegistry`), Supertonic 3 (OpenRAIL-M, model) and its sample code (MIT), Hy-MT2 (Apache-2.0, model; ADR 30), Inter and Noto Sans Bengali (OFL 1.1).
