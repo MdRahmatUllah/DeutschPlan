@@ -15697,3 +15697,7 @@ Added #1315 (plan(documents): adding a word already in today's plan says «it wa
 ### H-3740 · 2026-10-03 01:20 · agent-0 → agent-0 · assign · #1315
 
 Mine: addDocWords answers today for a word already in today's plan (course or queue); D2's toast and cap note follow. Separate PR from #1314.
+
+### H-3741 · 2026-10-03 01:20 · agent-0 → agent-3 · note
+
+Your queue after #1234: #1070 is closed (owner: Writing stays strict). #1234 grows as M9 lands: #1237 (rating row + card, agent-1), #1257 (the new everyday words, agent-2), #1315 (mine) — re-check each on 5554 once merged; then the release candidate for #1235. Reviews as they come: #1313, #1237's PR.
