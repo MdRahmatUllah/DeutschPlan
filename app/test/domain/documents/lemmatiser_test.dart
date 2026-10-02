@@ -301,4 +301,44 @@ void main() {
     expect(isStopWord('wäre', lemmatiser.lookup('wäre')), isTrue);
     expect(isStopWord('Wohnung', lemmatiser.lookup('Wohnung')), isFalse);
   });
+
+  test('#1274 BR-DOC-03: sein\'s and werden\'s irregular forms are their '
+      'verb, and stopped', () {
+    for (final (sentence, at, verb) in <(String, int, String)>[
+      ('Ich bin heute zu Hause.', 1, 'sein'),
+      ('Bist du morgen da?', 0, 'sein'),
+      ('Die Unterlagen sind vollständig.', 2, 'sein'),
+      ('Ihr seid herzlich eingeladen.', 1, 'sein'),
+      ('Du wirst es sehen.', 1, 'werden'),
+      ('Der Antrag ist geprüft worden.', 4, 'werden'),
+    ]) {
+      final tokens = sentencesOf(sentence).single;
+      final entries = lemmatiser.sentence(tokens)[at];
+      expect(entries.map((e) => e.german), <String>[verb], reason: sentence);
+      expect(isStopWord(tokens[at], entries), isTrue, reason: sentence);
+    }
+  });
+
+  test('#1274 BR-DOC-03: «mag» is mögen\'s, stopped, before the C1 headword '
+      '«mag»', () {
+    expect(byGerman.keys, containsAll(<String>['mag', 'mögen']));
+    for (final (sentence, at) in <(String, int)>[
+      ('Ich mag den Sommer.', 1),
+      ('Magst du Kaffee?', 0),
+    ]) {
+      final tokens = sentencesOf(sentence).single;
+      final entries = lemmatiser.sentence(tokens)[at];
+      expect(entries.map((e) => e.german), <String>['mögen'], reason: sentence);
+      expect(isStopWord(tokens[at], entries), isTrue, reason: sentence);
+    }
+    // The other headwords that are a form stay what they were.
+    expect(lemmas('Das dürfte teuer werden.')[1], 'dürfte');
+  });
+
+  test('#1274: «weiß» is wissen or the colour, and D2 asks which', () {
+    expect(lemmas('Ich weiß es nicht.')[1], 'weiß|wissen');
+    expect(lemmas('Die Wand ist weiß.')[3], 'weiß|wissen');
+    expect(lemmas('Das weiße Auto steht dort.')[1], 'weiß');
+    expect(lemmas('Weißt du das?')[0], 'wissen');
+  });
 }

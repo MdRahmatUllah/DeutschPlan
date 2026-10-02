@@ -246,13 +246,17 @@ class Lemmatiser {
   }
 
   void _verb(LemmaEntry entry, String infinitive) {
-    _add(infinitive, entry, _Source.head);
     // A headword that is a form itself («ward», «mag», «dürfte») is no
-    // infinitive to conjugate: «war» is sein's, never ward's.
+    // infinitive to conjugate: «war» is sein's, never ward's. Its forms are
+    // as founded as a rule's, so a verb whose form it is reads first: «mag»
+    // is mögen's, not C1's concessive «mag» (#1274).
     if (!infinitive.endsWith('n')) {
-      _otherForms(entry);
+      for (final form in <String>[infinitive, ..._alternatives(entry.forms)]) {
+        _add(form, entry, _Source.rule);
+      }
       return;
     }
+    _add(infinitive, entry, _Source.head);
     // forms: «kommt auf · ist aufgekommen», «befasst sich · hat sich befasst».
     final parts = (entry.forms ?? '').split('·').map((p) => p.trim()).toList();
     final present = _words(parts.first);
@@ -318,6 +322,7 @@ class Lemmatiser {
       '${stem}en',
       // ich sammle: -eln drops its e before the ending.
       if (infinitive.endsWith('eln')) '${stem.substring(0, stem.length - 2)}le',
+      ...?irregularForms[infinitive],
     };
     final strong = _strong(infinitive);
     if (strong == null) {
@@ -553,6 +558,8 @@ class Lemmatiser {
       }
       if (candidates.isEmpty) return const <LemmaEntry>[];
     }
+    final key = fold(token);
+    final cased = candidates;
     final best = candidates
         .map((e) => readings[e]!.index)
         .reduce((a, b) => a < b ? a : b);
@@ -561,7 +568,6 @@ class Lemmatiser {
     candidates = _prefer(candidates, (e) => !_multiword(e));
     // Equally founded, the headword nearer the token: «nächsten» is
     // nächste's before it is nah's superlative.
-    final key = fold(token);
     int shared(LemmaEntry e) {
       final head = fold(headOf(e) ?? e.german);
       var n = 0;
@@ -573,8 +579,25 @@ class Lemmatiser {
 
     final nearest = candidates.map(shared).reduce((a, b) => a > b ? a : b);
     candidates = candidates.where((e) => shared(e) == nearest).toList();
+    final verb = _verbToo[key];
+    if (verb != null) {
+      candidates = <LemmaEntry>{
+        ...candidates,
+        ...cased.where((e) => headOf(e) == verb),
+      }.toList();
+    }
     return _sorted(candidates);
   }
+
+  /// A verb's form that is also an unrelated word's headword: both
+  /// readings stay, and D2 asks which (#1274). «Ich weiß nicht» is wissen,
+  /// «Die Wand ist weiß» the colour. Folded form → the verb.
+  // ponytail: a list, not a rule. The participles that are adjectives too
+  // (erlaubt, reserviert) are their verb's, so the adjective is fine there.
+  // Add a pair when a text finds another verb form like weiß.
+  static const Map<String, String> _verbToo = <String, String>{
+    'weiss': 'wissen',
+  };
 
   /// «Nebenkostenabrechnung» → [Nebenkosten, Abrechnung]: a word the
   /// course doesn't have, as course words, the last one a noun (the
