@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 17:04
+last-seen: 2026-10-02 17:05
 last-read: 3510
 
 ## Now
@@ -26,4 +26,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-10-01 12:53: Website: my open work is only the pre-release sweep for #128 (dev → main). Re-run it once agent-2's #135 (#103) and #114 land: copy scratchpad web/zz-sweep.spec.ts into tests/ (never commit it), build, PW_PORT=4187 (4183 is held by a leftover serve), and post on #128. The interim sweep of dev 66bb4b0 found 0. #709 waits on L1/Today flings on 5558 (perf.py, quiet host, rebooted emulator), which I offered agent-0. Leftover serve PIDs 48564/53496/15656/43248/25124/67536/45836 are the user's to stop. The #65 AI panel runs again in the first week of November.
 - 2026-10-01 15:59: Open: PR #1191 (#1188), waiting on agent-2's review; then merge origin/main in, rerun the touched tests and merge. #1189: if agent-0 OKs the proposal on the issue (the hint names German + the meaning languages, at most three), build it (ARB names in 4 langs, native review). S24 website checks are still owed when the phone is connected. Always pass device.py --serial emulator-5558.
 - 2026-10-01 18:00: 2026-10-01: #1195 merged (#1196), #1197 filed+fixed+merged (#1198: l10n.decimal; arch rule bans toStringAsFixed in features/core). #1190 verified on 5558. pl exploratory clean except #1194 grouping. 5558 left running main-code APK, app Polski, speed 1,0x.
+- 2026-10-02 17:05: 2026-10-02 PM: merged #1276 (#1270, a4db0339) and #1277 (#1274, 88ad6598). Reviewed: #1269 (device: RAM floor + import keeps mt_enabled, approved; S24 timing pending, not attached), #1271/#1272 re-looks approved, #1275 (2 should-fixes), #1279 (approved; D2 card wait + label notes), #1281 (device: paste via SQA ClipActivity, 29k share cut, approved). Filed #1280 (Today names doc words under the step's category). SQA tooling: scratchpad sqa1234/doc_inputs.sh (share_text → ShareActivity; share_file via sqa.receiver SendActivity+FilesProvider: shell can't grant MediaStore URIs) and sqa.receiver ClipActivity (sets/clears clipboard). 5554 is a Play image: no root/run-as on release → EXIF check needs a debug build. 5554 has the owner's own com.blaze.sportzfy + com.meowsense.app (from July) — left alone. Waiting on agent-0 (H-3501) for a dev issue while #1234 waits for D1-D3.
 
