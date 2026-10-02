@@ -5262,6 +5262,118 @@
       }
     }
   },
+  "docImportTakePhotos": "Take photos",
+  "@docImportTakePhotos": {
+    "description": "D1's choice that photographs pages with the camera (FR-D1-01, #1229)."
+  },
+  "docImportTakePhotosDetail": "The camera, page by page",
+  "@docImportTakePhotosDetail": {
+    "description": "D1: the line under Take photos."
+  },
+  "docImportChooseImages": "Choose images",
+  "@docImportChooseImages": {
+    "description": "D1's choice that reads photos from the gallery (FR-D1-01, #1229)."
+  },
+  "docImportChooseImagesDetail": "Photos already on this phone",
+  "@docImportChooseImagesDetail": {
+    "description": "D1: the line under Choose images."
+  },
+  "docImportPhotos": "{count, plural, =1{1 photo} other{{count} photos}}",
+  "@docImportPhotos": {
+    "description": "D1 while photographing or reading photos: how many there are.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPage": "Page {page}",
+  "@docImportPage": {
+    "description": "D1: one photographed page in the list, e.g. \"Page 2\".",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportAddPage": "Add a page",
+  "@docImportAddPage": {
+    "description": "D1: photographs one more page."
+  },
+  "docImportDone": "Done",
+  "@docImportDone": {
+    "description": "D1: the pages are all photographed; read them."
+  },
+  "docImportReadingPage": "Reading page {page} of {count}…",
+  "@docImportReadingPage": {
+    "description": "D1 processing a photo: page is the one being read, count all of them.",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportCheckTitle": "Check the text",
+  "@docImportCheckTitle": {
+    "description": "D1's Check the text (FR-D1-03): its title."
+  },
+  "docImportCheckIntro": "Photo {page} was hard to read. Fix the marked words, then continue.",
+  "@docImportCheckIntro": {
+    "description": "Check the text: under the title. page is the photo that was hard to read.",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportCheckCount": "{count, plural, =1{1 word to check} other{{count} words to check}}",
+  "@docImportCheckCount": {
+    "description": "Check the text: the pill with how many words were read with low confidence.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportTheText": "The text",
+  "@docImportTheText": {
+    "description": "Check the text: the box's heading, in small capitals."
+  },
+  "docImportCheckNote": "What you correct here is the text Sogda reads and saves.",
+  "@docImportCheckNote": {
+    "description": "Check the text: under the box (FR-D1-03: the edits are what is saved)."
+  },
+  "docImportContinue": "Continue",
+  "@docImportContinue": {
+    "description": "Check the text: the corrected text goes on to be read."
+  },
+  "docImportTakeAgain": "Take again",
+  "@docImportTakeAgain": {
+    "description": "Check the text: photographs the hard page again."
+  },
+  "docImportTooManyPages": "Sogda reads up to {count} pages: the rest are left out.",
+  "@docImportTooManyPages": {
+    "description": "D1: more pages than it reads (FR-D1-02). count is the limit, 30.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportNoText": "No text found on the photos. Take them again in good light.",
+  "@docImportNoText": {
+    "description": "D1: OCR found no text on any photo."
+  },
   "addWordArticle": "Article",
   "@addWordArticle": {
     "description": "R2: the heading over der / die / das / none, shown upper-case."

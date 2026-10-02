@@ -172,7 +172,13 @@ void main() {
       ...fontLicences,
       ...nativeLicences,
     ]) {
-      final asset = licence.asset!;
+      // ML Kit's terms are web pages, written in the app with their links
+      // (#1229); the rest are bundled texts.
+      final asset = licence.asset;
+      if (asset == null) {
+        expect(licence.text, contains('https://'), reason: licence.name);
+        continue;
+      }
       expect(
         await container.read(licenceTextProvider(asset).future),
         File(asset).readAsStringSync(),
@@ -278,7 +284,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final notices = nativeLicences.singleWhere(
-      (licence) => licence.asset!.endsWith('ThirdPartyNotices.txt'),
+      (licence) => licence.asset?.endsWith('ThirdPartyNotices.txt') ?? false,
     );
     await tester.scrollUntilVisible(
       find.text(notices.name),
