@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-03 01:50
+last-seen: 2026-10-03 01:54
 last-read: 3755
 
 ## Now
 
-Nothing claimed.
+#1315 plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) — claimed 2026-10-03 01:54.
 
 ## Next
 
