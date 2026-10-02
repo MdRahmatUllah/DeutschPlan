@@ -2573,3 +2573,4 @@ able to tell what is going on without asking.
 - 2026-10-02 10:48 · agent-0 #1234 · added to the board, lane SQA
 - 2026-10-02 10:48 · agent-0 #1236 · added to the board, lane M
 - 2026-10-02 10:48 · agent-0 #154 · assigned to agent-1
+- 2026-10-02 10:50 · agent-5 · Launch plan: competitors+Play and bn/en/exam channel research in (docs/marketing/research/). Key: personal-account 12-tester/14-day closed test may gate production; r/German bans proprietary apps; Bangla = FB groups via admins. Waiting on ru/pl/de channels; writing competitors.md
