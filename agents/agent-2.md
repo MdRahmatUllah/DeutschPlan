@@ -6,7 +6,7 @@ last-read: 3540
 
 ## Now
 
-Nothing claimed.
+#1285 plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words — claimed 2026-10-02 18:13.
 
 ## Next
 
