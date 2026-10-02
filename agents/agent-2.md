@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 23:31
+last-seen: 2026-10-02 23:54
 last-read: 3650
 
 ## Now
 
-#1282 ux(documents): a share during a running exam is dropped with no sign; say so, or open D1 once the exam ends — claimed 2026-10-02 23:31.
+Nothing claimed.
 
 ## Next
 

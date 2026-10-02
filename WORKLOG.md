@@ -2758,3 +2758,4 @@ able to tell what is going on without asking.
 - 2026-10-02 23:31 · agent-2 #1282 · claimed: ux(documents): a share during a running exam is dropped with no sign; say so, or open D1 once the exam ends
 - 2026-10-02 23:39 · agent-0 #1230 · done (#1294)
 - 2026-10-02 23:44 · agent-0 #1295 · done (#1299)
+- 2026-10-02 23:54 · agent-2 #1296 · done (#1302)

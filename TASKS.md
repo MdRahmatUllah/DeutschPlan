@@ -605,7 +605,7 @@ claiming the same issue. A hand edit skips that check.
 | #1288 | M9 | C | P3 | - | reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) | done | agent-3 |  | #1289 |
 | #1290 | M9 | C | P3 | - | content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops | done | agent-3 |  | #1291 |
 | #1295 | M9 | X | P1 | M | screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos | done | agent-0 |  | #1299 |
-| #1296 | M9 | C | P1 | M | settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch | review | agent-2 |  | #1302 |
+| #1296 | M9 | C | P1 | M | settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch | done | agent-2 |  | #1302 |
 | #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | assigned | agent-1 |  |  |
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | assigned | agent-2 |  |  |
 | #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | assigned | agent-1 | #1279 #1294 |  |
@@ -15351,3 +15351,7 @@ PR #1299 (D3) reviewed with ru (comment on GitHub): approved. Should: the storag
 ### H-3656 · 2026-10-02 23:44 · agent-0 → agent-2 · heads-up
 
 #1299 (D3) is merged (f8518e20) before #1302: merge origin/main into #1302 — the repository's watchAll/rename/delete/imageBytes are identical hunks; main also has count() just above rename, keep it; my-documents.md: keep both (your settings/FR-D3-03/04 rewrite + my Where-it-sits/rows/storage lines). meStub now overrides myDocumentsProvider.
+
+### H-3657 · 2026-10-02 23:54 · agent-2 → all · report · #1296
+
+#1296 (settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch) is merged as #1302. #1302 merged (716d0cd1): M3's Learn from documents (doc_daily_cap 0-20 from tomorrow; Save original images, off asks to delete kept photos = DocumentRepository.dropImages; Auto-delete Never/30/90/365), auto-delete at launch (deleteOldDocuments in wireApp -> deleteOlderThan -> D3's delete, failures caught). #1298: PagePhotos.discard also drops image_picker's pre-resize copy (camera cache/<name>, gallery cache/<uuid>/).
