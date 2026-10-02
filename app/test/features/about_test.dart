@@ -196,13 +196,23 @@ void main() {
       contains('Apache License'),
     );
     // #848: desugar_jdk_libs is compiled into the release DEX.
+    String native(String name) => File(
+      nativeLicences.singleWhere((licence) => licence.name == name).asset!,
+    ).readAsStringSync();
     expect(
-      File(nativeLicences.last.asset!).readAsStringSync(),
+      native('desugar_jdk_libs'),
       allOf(
         startsWith('The GNU General Public License (GPL)'),
         contains('"CLASSPATH" EXCEPTION TO THE GPL'),
       ),
-      reason: nativeLicences.last.name,
+    );
+    // #1228 (ADR 31): D1's PDF reader, with Apache PDFBox's NOTICE, and the
+    // Bouncy Castle it brings.
+    expect(native('PdfBox-Android'), contains('Apache License'));
+    expect(native('PdfBox-Android · NOTICE'), startsWith('Apache PDFBox'));
+    expect(
+      native('Bouncy Castle'),
+      contains('The Legion of the Bouncy Castle Inc.'),
     );
     // #172: the SDK whose text front end supertonic_text.dart ports.
     expect(
@@ -300,9 +310,9 @@ void main() {
       expect(find.text(package.name), findsOneWidget);
     }
     expect(find.text('BSD-2-Clause'), findsOneWidget);
-    // The three MIT packages, and above them the Supertonic SDK (#172) and
-    // ONNX Runtime (#610).
-    expect(find.text('MIT'), findsNWidgets(5));
+    // The three MIT packages, and above them the Supertonic SDK (#172), ONNX
+    // Runtime (#610) and Bouncy Castle (#1228).
+    expect(find.text('MIT'), findsNWidgets(6));
   });
 
   test('M8 the packages come from Flutter\'s licence registry', () async {
