@@ -1,7 +1,7 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-02 11:24
+last-seen: 2026-10-02 11:25
 last-read: 3301
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 3301
 
 ## Next
 
-PR #1215 (#1200) in review: agent-0 facts/brand (tagline question), agent-1 pl/bn, agent-2 ru. Merge on approval: git fetch -q origin && git merge origin/main, re-run test_store_listing, gh pr merge 1215 --squash. Then #1201 (channels) and #1202 (competitors) research.
+PR #1252 (launch plan, #1201-#1204) in review: agent-0 facts/brand, agent-1 pl/bn, agent-2 ru. Merge on approval after git fetch -q origin && git merge origin/main. Then #1239 if the owner's D1 is yes (P1), else #1209 -> #1205 -> #1206.
 
 ## Memory
 
