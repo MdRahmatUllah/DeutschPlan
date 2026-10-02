@@ -172,17 +172,16 @@ ADR.
 In practice (ADR 9), the project ships a model only if its licence covers
 every country where the app is offered. That has already cost a feature.
 
-- **On-device translation is off (ADR 9, #173).** The planned translator,
-  Hy-MT 1.5 (1.8B), is under the Tencent HY Community License, which
-  excludes the EU, the UK and South Korea. One Play build cannot keep the
-  download out of those regions, and many learners are in Germany. So v1.0
-  ships with the download flag off in every build, and the translation
-  settings are hidden. The code that would run it (#154) is deferred.
-- **A replacement is researched, not decided (#494, #533).** The
-  recommendation is Mozilla's Firefox/Bergamot tiny models: MPL-2.0, about
-  51 MB for German→English, English→German and English→Bangla, bundled in
-  the app. Google ML Kit was rejected because it downloads from Google and
-  sends usage metrics; NLLB-200 because its licence is non-commercial
+- **On-device translation was off until v1.2.0 (ADR 9, #173).** The
+  planned translator, Hy-MT 1.5 (1.8B), was under the Tencent HY Community
+  License, which excludes the EU, the UK and South Korea. One Play build
+  cannot keep the download out of those regions, and many learners are in
+  Germany, so v1.0 and v1.1 shipped with it off.
+- **Hy-MT2 brings it back (ADR 30, #154; the owner, #533).** Hy-MT2-1.8B
+  is Apache-2.0, with no regional exclusions, so v1.2.0 offers its 1.1 GB
+  download in every build. The other candidates (#494) lost on that: the
+  Firefox/Bergamot tiny models, Google ML Kit (a download from Google, usage
+  metrics), and NLLB-200 (a non-commercial licence)
   ([`translation.md`](../03-domain/translation.md)).
 - **The voice is Supertonic 3 under BigScience OpenRAIL-M**, a licence that
   allows commercial use with use-based restrictions. Its text ships in the
@@ -254,7 +253,7 @@ the product to?
 
 | Risk | Why it matters | What limits it today | Open action |
 |---|---|---|---|
-| **Licences** | A model licence can exclude a market (Hy-MT did) | Hy-MT off in every build (ADR 9); `licences.py check` at release | Owner: #533, the replacement translator |
+| **Licences** | A model licence can exclude a market (Hy-MT 1.5 did) | Hy-MT2 is Apache-2.0 (ADR 30); `licences.py check` at release | — |
 | **Models hosted by third parties** | The voice downloads from its maker's Hugging Face repository. If the files move, downloads fail until an app update, since the manifest ships in the app | SHA-256 checks; the phone's voice always works as a fallback | Consider mirroring the model files |
 | **Thin B1** | B1 has 379 words (A1 1,315, B2 1,023); `overview.md` marks it "to be expanded" | Mock exams at A1.1–B1.2 reuse a grammar topic or two and say so | New content in the workbooks |
 | **English-only content parts** | Grammar rules, example translations and category names are in English, even in the Bangla UI (#425) | Meanings, pronunciation, tips and the whole UI are in Bangla | Bangla translations through the workbooks and the pipeline |
