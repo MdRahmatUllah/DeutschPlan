@@ -26,23 +26,26 @@ outside: the course's own data, plus rules, plus one small table we write.
   - a verb's 3rd-person present and participle, separable verbs included ("räumt auf · hat aufgeräumt");
   - an adjective's comparative and superlative, where `forms` gives them.
 - **Rules:**
-  - regular present and past endings (‑e, ‑st, ‑t, ‑en, ‑te, ‑test, ‑ten, ‑tet);
+  - regular present and past endings (‑e, ‑st, ‑t, ‑en, ‑te, ‑test, ‑ten, ‑tet), and ‑eln's «ich sammle»;
+  - a noun's old dative ‑e («nach Hause», «im Jahre»);
+  - a verb headword that is a form itself («ward», «mag», «dürfte») matches only itself, so «war» is sein's;
   - adjective endings (‑e, ‑en, ‑em, ‑er, ‑es), and on comparatives;
   - the participle's ge‑ prefix and its separable variant (an**ge**rufen);
   - zu‑infinitives (an**zu**rufen).
 - **A strong-verb table** (`domain/documents/strong_verbs.dart`, a constant written by the team, no licence): about 145 strong, mixed and irregular verbs' Präteritum and Konjunktiv II (ging, käme, wüsste…). A prefixed or separable verb takes its base's row: verstehen is ver + stand, ankommen is an + kam.
 - **Separable verbs in a sentence:** when a finite verb has a known separable particle at the end of its clause («Ich **rufe** Sie morgen **an**.»), the pair maps to the particle verb (anrufen), and the particle has no lemma of its own.
   - **No verb in that clause:** the sentence before it is searched, since a comma also sets off a list or an apposition («Bitte **bringen** Sie den Ausweis, den Lebenslauf und das Zeugnis **mit**.»).
-  - **A particle verb the course doesn't have** («findet … statt»): both words have no lemma, since the verb is no form of finden and the particle is no preposition.
+  - **A particle verb the course doesn't have** («findet … statt», «Geben Sie … mit»): both words have no lemma, since the verb is no form of finden and the particle is no preposition. A particle that only adds a direction (hin, her, los) leaves the verb as it is: «Wo gehst du hin?» is gehen.
   - **Joined forms** (wenn er ankommt, anzurufen, angerufen) are forms of the particle verb.
   - **A verb alone,** with no particle, is its base verb.
 - **Folding:** case, ß/ss and umlauts, the way search's key does (ä as ae, so «Mutter» isn't «Mütter»).
 - **Choosing among readings,** in this order:
-  1. **Case,** in the middle of a sentence: a capitalised token matches only capitalised headwords («Morgen» the noun), and a lower-case one only the others («morgen»). With none, it has no lemma: a name, or «das Leben» where the course has only leben.
+  1. **Case,** in the middle of a sentence: a capitalised token matches only capitalised headwords («Morgen» the noun), and a lower-case one only the others («morgen»). With none, it has no lemma (a name), except a nominalised infinitive after an article, which is its verb («beim Lesen», «das Leben»).
   2. **The best-founded reading:** the headword itself, then `words.forms`, then a rule. So «gefallen» is gefallen before it is fallen's participle.
   3. A word over a phrase, and the bare word over a headword with more to it (warten before «warten auf»).
   4. The headword nearest the token: «nächsten» is nächste before it is nah's superlative.
   - **Still open** (at the start of a sentence, where case says nothing: «Morgen»): the word is *ambiguous*, and D2 lets the learner choose. So are homonyms («schon», «schon (Partikel)»).
+- **A letter's salutation** («Liebe Eltern», «Lieber Herr Becker») is the adjective lieb, neither the noun Liebe nor gern's lieber, so it has no lemma.
 - **Compounds** (`Lemmatiser.compoundParts`): a word with no lemma is split into course words, the last a noun (the compound's head), with a linking ‑s‑, ‑es‑, ‑n‑, ‑en‑ or ‑e‑ between («Nebenkostenabrechnung» → Nebenkosten + Abrechnung, «Integrationskurs» → Integration + Kurs). The longest head wins, and the first part may itself be a compound. The parts are only a hint in D2. The word itself is outside the course.
 
 **Accuracy, measured on the test corpus (#1223):** precision of at least 95 % and recall of at least 90 % on course words, stop words left out.

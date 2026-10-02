@@ -187,8 +187,48 @@ void main() {
   });
 
   test('#1223: a capital in the middle of a sentence with no noun behind it '
-      'is a name, not a form', () {
-    expect(lemmas('Wir sprechen über das Leben.')[4], '');
+      'is a name, not a form; after an article it is a nominalised '
+      'infinitive', () {
+    expect(lemmas('Wir sprechen mit Hansen.')[3], '');
+    expect(lemmas('Beim Lesen lerne ich viel.')[1], 'lesen');
+    expect(lemmas('Wir sprechen über das Leben.')[4], 'leben');
+  });
+
+  test('#1223: sein\'s Präteritum is sein, stopped, never the C2 headword '
+      '«ward»', () {
+    expect(byGerman, contains('ward'));
+    for (final (sentence, at) in <(String, int)>[
+      ('Das Wetter war schlecht.', 2),
+      ('Er war gestern krank.', 1),
+      ('Wir waren im Kino.', 1),
+    ]) {
+      final tokens = sentencesOf(sentence).single;
+      final entries = lemmatiser.sentence(tokens)[at];
+      expect(entries.map((e) => e.german), <String>['sein'], reason: sentence);
+      expect(isStopWord(tokens[at], entries), isTrue, reason: sentence);
+    }
+  });
+
+  test('#1223: a letter\'s salutation «Liebe …», «Lieber …» is no word to '
+      'offer; «Liebe» alone is the noun', () {
+    expect(lemmas('Liebe Eltern, wir laden Sie ein.')[0], '');
+    expect(lemmas('Lieber Herr Becker, danke.')[0], '');
+    expect(lemmas('Liebe ist schön.')[0], 'Liebe');
+  });
+
+  test('#1223: the old dative -e («nach Hause»), and -eln\'s 1st person', () {
+    expect(lemmas('Ich gehe nach Hause.')[3], 'Haus');
+    expect(lemmas('Ich sammle Briefmarken.')[1], 'sammeln');
+  });
+
+  test('#1223: a particle verb the course lacks, its verb opening the '
+      'sentence, is unmatched; a direction alone keeps the verb', () {
+    expect(byGerman, isNot(contains('mitgeben')));
+    final words = lemmas('Geben Sie ihm eine Erlaubnis mit, allein zu gehen.');
+    expect(words[0], '', reason: 'Geben … mit is mitgeben');
+    expect(words[5], '');
+    expect(byGerman, isNot(contains('hingehen')));
+    expect(lemmas('Wo gehst du hin?')[1], 'gehen');
   });
 
   test('#1223: adjective endings and comparison', () {
