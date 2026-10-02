@@ -252,6 +252,21 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     expect(find.text('The street is long.'), findsOneWidget);
   });
 
+  testWidgets('#1232 one longer than the course\'s examples (over 20 words, '
+      "a letter's): the course's example, and the sentence stays on the back", (
+    tester,
+  ) async {
+    const long =
+        'Wir möchten Sie darüber informieren, dass die Straße vor Ihrem Haus '
+        'wegen Bauarbeiten vom 3. bis zum 14. November gesperrt ist und Sie '
+        'Ihr Auto bitte in der Tiefgarage abstellen.';
+    expect(long.split(' ').length, greaterThan(clozeOwnMaxWords));
+    await pump(tester, mine: <String>[long]);
+    expect(find.byType(StudyClozeCard), findsOneWidget);
+    expect(find.text('The street is long.'), findsOneWidget);
+    expect(find.textContaining('Tiefgarage'), findsNothing);
+  });
+
   testWidgets("#1232 T2's back shows where the learner saw the word: the "
       "newest of their sentences, under the course's, with its document", (
     tester,

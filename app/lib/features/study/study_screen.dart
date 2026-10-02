@@ -53,12 +53,22 @@ Future<StudyCloze?> studyCloze(Ref ref, String uid) async {
   final back = await ref.watch(studyBackProvider(uid).future);
   // #1232: the learner's own sentences first, so the newest is the card's
   // choice whenever the word can be gapped there; the course's otherwise.
+  // A letter's long one stays in W1 and on the back.
   final mine = await ref.watch(wordContextsProvider(uid).future);
   return clozeOf(found.word, <StudyExample>[
-    for (final sentence in mine) (german: sentence.sentence, translation: null),
+    for (final sentence in mine)
+      if (sentence.sentence.trim().split(_space).length <= clozeOwnMaxWords)
+        (german: sentence.sentence, translation: null),
     ...back.examples,
   ]);
 }
+
+/// The longest own sentence the cloze takes (#1232): about the size of the
+/// course's examples. A letter's sentence of 40 words, with no translation
+/// under it, is a wall to read before the gap, at 200 % most of all.
+const int clozeOwnMaxWords = 20;
+
+final RegExp _space = RegExp(r'\s+');
 
 /// #430: what the session's cards will say, in their order: each word with
 /// its article, then its first example when `autoplay_example` is on. The
