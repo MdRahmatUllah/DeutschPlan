@@ -6,7 +6,7 @@ last-read: 3704
 
 ## Now
 
-#1235 chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag — claimed 2026-10-03 00:23.
+#1235 in review as PR #1312: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

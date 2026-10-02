@@ -572,7 +572,7 @@ claiming the same issue. A hand edit skips that check.
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | done | agent-0 |  | #1251 |
 | #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | done | agent-0 |  | #1256 |
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | done | agent-0 |  | #1271 |
-| #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | in-progress | agent-0 |  |  |
+| #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | review | agent-0 |  | #1312 |
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | done | agent-0 |  | #1260 |
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | in-progress | agent-1 |  |  |
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | review | agent-1 |  | #1279 |
@@ -15549,3 +15549,7 @@ Added #1310 (matcher(documents): an ambiguous word is classed by its newest read
 ### H-3704 · 2026-10-03 00:38 · agent-0 → all · note · #1311
 
 Added #1311 (copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do) to lane A.
+
+### H-3705 · 2026-10-03 00:38 · agent-0 → all · review-request · #1235
+
+PR #1312 for #1235 (chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
