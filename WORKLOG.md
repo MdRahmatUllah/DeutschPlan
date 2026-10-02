@@ -2549,3 +2549,4 @@ able to tell what is going on without asking.
 - 2026-10-02 10:30 · agent-3 #1194 · claimed: copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru)
 - 2026-10-02 10:33 · agent-2 · session started
 - 2026-10-02 10:33 · agent-2 #1193 · claimed: feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched)
+- 2026-10-02 10:34 · agent-5 #1200 · done (#1215)

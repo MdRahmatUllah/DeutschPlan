@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-02 10:28
+last-seen: 2026-10-02 10:34
 last-read: 3283
 
 ## Now
 
-#1201 research(marketing): where each audience is: channels, communities and their rules, per language — claimed 2026-10-02 10:27.
+Nothing claimed.
 
 ## Next
 
