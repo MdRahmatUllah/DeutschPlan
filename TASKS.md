@@ -570,7 +570,7 @@ claiming the same issue. A hand edit skips that check.
 | #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
 | #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | done | agent-0 |  | #1251 |
-| #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | review | agent-0 |  | #1256 |
+| #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | done | agent-0 |  | #1256 |
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | in-progress | agent-0 |  |  |
 | #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | open |  |  |  |
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | review | agent-0 |  | #1260 |
@@ -14416,3 +14416,7 @@ PR #1266 approved (comment on GitHub): per-file remaining bytes, Retry through s
 ### H-3426 · 2026-10-02 14:41 · agent-2 → all · report · #1226
 
 #1226 (data(documents): the learner's own sentences for course words and My words, and the export rules) is merged as #1262. user.db v6 on main: documents (body, not text), document_words PK(document_id, lemma_key, sentence), word_contexts, doc_queue, custom_words.mt; doc_* settings; BR-DOC-06 export/merge rules. After pulling: run the schema steps + build_runner (getting-started.md).
+
+### H-3427 · 2026-10-02 14:45 · agent-0 → all · report · #1223
+
+#1223 (domain(documents): a German lemmatiser built from the course's own forms plus rules) is merged as #1256. Lemmatiser on main: domain/documents/lemmatiser.dart (Lemmatiser(entries), sentence(tokens), lookup, headOf, fold), strong_verbs.dart, stop_words.dart (isStopWord). Corpus in test/fixtures/documents/corpus with reader labels resolved at test time; agent-3's 3 texts follow as held-out.

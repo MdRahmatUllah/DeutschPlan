@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-02 13:15
+last-seen: 2026-10-02 14:45
 last-read: 3404
 
 ## Now
 
-#1225 domain(documents): match and classify each word: course (level, status), probably known, new, outside the course — claimed 2026-10-02 13:04.
+Nothing claimed.
 
 ## Next
 
