@@ -72,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
       );
 
   /// Readable without an instance, which the migration tests need.
-  static const int latestSchemaVersion = 5;
+  static const int latestSchemaVersion = 6;
 
   /// user.db's file name in app support: drift_flutter's own default for
   /// `user`, which every install has had since M0. Another name strands
@@ -124,6 +124,10 @@ class AppDatabase extends _$AppDatabase {
     'exam_attempts',
     'exam_answers',
     'custom_words',
+    'documents',
+    'document_words',
+    'word_contexts',
+    'doc_queue',
     'daily_stats',
     'content_updates',
     'translation_cache',
@@ -162,6 +166,16 @@ class AppDatabase extends _$AppDatabase {
         // retake stays the same mock.
         from4To5: (m, schema) =>
             m.addColumn(schema.examAttempts, schema.examAttempts.meaningLang),
+        // v6: Learn from your documents (#1226). Four new tables, empty, and
+        // `custom_words.mt`, whose default 0 is right for every word already
+        // there: none was machine-translated.
+        from5To6: (m, schema) async {
+          await m.createTable(schema.documents);
+          await m.createTable(schema.documentWords);
+          await m.createTable(schema.wordContexts);
+          await m.createTable(schema.docQueue);
+          await m.addColumn(schema.customWords, schema.customWords.mt);
+        },
       )(m, from, to),
     ),
   );

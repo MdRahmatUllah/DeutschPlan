@@ -53,10 +53,10 @@ outside: the course's own data, plus rules, plus one small table we write.
 **Not German (FR-D1-04):** fewer than 50 % of the word tokens (after step 4) lemmatise to a course word or a stop word. The corpus test pins it: every German text is above, an English and a Bangla text are below.
 
 ## Data (`user.db`, schema change in #1226)
-- **`documents`** (id, title, source `paste|share|pdf|photo`, created_at, text, image_paths JSON, page_count, word_count). Kept, as the owner decided (#1220):
+- **`documents`** (id, title, source `paste|share|pdf|photo`, created_at, body, image_paths JSON, page_count, word_count). `body` is the text: drift's tables have a `text()` of their own (#1226). Kept, as the owner decided (#1220):
   - the text always; the images while *Save original images* (`doc_save_images`, default on) is on, in app-private storage (`<appSupport>/documents/<id>/`);
   - **auto-delete** after `doc_autodelete_days` (default 0, never).
-- **`document_words`** (document_id, lemma_key, surface, sentence, class, added `0|1`): what D2 showed, so reopening a document needs no new run.
+- **`document_words`** (document_id, lemma_key, surface, sentence, class, added `0|1`), one row per lemma and sentence (PK(document_id, lemma_key, sentence)): what D2 showed, so reopening a document needs no new run.
 - **`word_contexts`** (id, word_key, sentence, document_id NULL, created_at): the learner's sentences for a word.
   - `word_key` is a course `uid` or `custom:<id>`.
   - A sentence outlives its document: deleting a document sets `document_id` to NULL, and the sentence stays on the card.
