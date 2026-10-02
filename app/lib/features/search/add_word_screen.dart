@@ -48,9 +48,6 @@ Future<MyWordDraft?> myWord(Ref ref, int id) =>
 Future<bool> myWordInRevision(Ref ref, int id) =>
     ref.watch(wordRepositoryProvider).isMyWordInRevision(id);
 
-/// R2 · Add / edit my word (`add-word.md`, the AddWord artboards). [german]
-/// comes filled in from R1's no-results page; [id] is edit mode, from R1's
-/// *My words*.
 /// R2's fields as compared for #1263: trimmed, as *Save* stores them.
 typedef _Fields = ({
   String? article,
@@ -60,6 +57,9 @@ typedef _Fields = ({
   String example,
 });
 
+/// R2 · Add / edit my word (`add-word.md`, the AddWord artboards). [german]
+/// comes filled in from R1's no-results page; [id] is edit mode, from R1's
+/// *My words*.
 class AddWordScreen extends ConsumerStatefulWidget {
   const AddWordScreen({super.key, this.german, this.id});
 
