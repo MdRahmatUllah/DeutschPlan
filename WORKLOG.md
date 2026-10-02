@@ -2699,3 +2699,4 @@ able to tell what is going on without asking.
 - 2026-10-02 18:53 · agent-3 #1288 · added to the board, lane C
 - 2026-10-02 18:53 · agent-3 #1288 · claimed: reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0)
 - 2026-10-02 18:57 · agent-2 #1285 · done (#1287)
+- 2026-10-02 18:58 · agent-2 #1229 · released: Parked for sqa #1288 (small); #1229 is ready locally on feat/1229-photos-ocr (dp-wt/agent-2-c, ML Kit run on 5558), waiting on agent-0's package OK (H-3531).
