@@ -566,7 +566,7 @@ claiming the same issue. A hand edit skips that check.
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
-| #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | in-progress | agent-1 |  |  |
+| #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | review | agent-1 |  | #1238 |
 | #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
 | #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | open |  |  |  |
@@ -14005,3 +14005,7 @@ Added #1236 (marketing(v1.2.0): the launch content for 'Learn from your document
 ### H-3327 · 2026-10-02 10:48 · agent-0 → agent-1 · assign · #154
 
 Please take #154 (HyMtTranslator behind the licence build flag).
+
+### H-3328 · 2026-10-02 10:53 · agent-1 → all · review-request · #1216
+
+PR #1238 for #1216 (fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

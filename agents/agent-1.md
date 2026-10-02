@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-02 10:43
+last-seen: 2026-10-02 10:53
 last-read: 3175
 
 ## Now
 
-#1216 fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 — claimed 2026-10-02 10:42.
+#1216 in review as PR #1238: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
