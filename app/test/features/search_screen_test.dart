@@ -209,6 +209,62 @@ void main() {
       expect(marked, <String>['offen']);
     });
 
+    testWidgets('#1193 a sentence found by its translation marks the word '
+        'there, its German unmarked', (tester) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          searchResultsProvider.overrideWith(
+            (ref, query) => Stream.value(
+              const SearchView(
+                words: <SearchRow>[],
+                sentences: <SentenceHit>[
+                  SentenceHit(
+                    wordUid: 'haus',
+                    german: 'Ich sehe das Haus.',
+                    translation: 'Widzę ten dom.',
+                    head: 'Haus',
+                    article: 'das',
+                    step: 'A1.1',
+                    runs: <(String, bool)>[('Ich sehe das Haus.', false)],
+                    translationRuns: <(String, bool)>[
+                      ('Widzę ten ', false),
+                      ('dom', true),
+                      ('.', false),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+      await type(tester, 'dom');
+
+      final tokens = tester.element(find.byType(SearchScreen)).tokens;
+      List<String> marked(String plain) {
+        final text = tester
+            .widget<RichText>(
+              find.byWidgetPredicate(
+                (w) => w is RichText && w.text.toPlainText() == plain,
+              ),
+            )
+            .text;
+        final spans = <String>[];
+        text.visitChildren((span) {
+          if (span is TextSpan &&
+              span.style?.backgroundColor == tokens.color.accent) {
+            spans.add(span.text!);
+          }
+          return true;
+        });
+        return spans;
+      }
+
+      expect(marked('Widzę ten dom.'), <String>['dom']);
+      expect(marked('Ich sehe das Haus.'), isEmpty);
+    });
+
     testWidgets(
       'BR-SEARCH-02 a word typed with its umlaut finds its sentences',
       (tester) async {
