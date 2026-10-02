@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 21:56
+last-seen: 2026-10-02 22:09
 last-read: 3617
 
 ## Now
 
-#1296 settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch — claimed 2026-10-02 21:47.
+Nothing claimed.
 
 ## Next
 

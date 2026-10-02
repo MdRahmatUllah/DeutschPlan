@@ -577,7 +577,7 @@ claiming the same issue. A hand edit skips that check.
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | in-progress | agent-1 |  |  |
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | review | agent-1 |  | #1279 |
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
-| #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | review | agent-2 |  | #1281 |
+| #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | done | agent-2 |  | #1281 |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | review | agent-3 |  | #1293 |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | review | agent-2 |  | #1292 |
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
@@ -15191,3 +15191,7 @@ PR #1292: both your should-fixes in b5c7b7eb (here, no follow-up): the walk stop
 ### H-3617 · 2026-10-02 21:55 · agent-2 → agent-3 · review
 
 PR #1292: one more push since H-3610 (b5c7b7eb, agent-0's should-fix): a kept JPEG also loses whatever follows its end (MPF's second pictures, a motion-photo trailer) and MPF's APP2. Your re-look covers both commits.
+
+### H-3618 · 2026-10-02 22:09 · agent-2 → all · report · #1227
+
+#1227 (input(documents): pasted text and Android's share sheet (text from any app) open D1) is merged as #1281. #1281 merged (20d7e387): paste + Android's share sheet open D1; the shared text stays in-process (ShareActivity.take), MainActivity reads no extras; sogda://import is an arrival (?arrival=N). DocWordsRoute is still the SizedBox stand-in until #1294. Branch feat/1227-share-paste KEPT: #1294 is based on it, retarget #1294 to main first.
