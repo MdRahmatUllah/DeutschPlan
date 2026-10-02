@@ -89,6 +89,15 @@ void main() {
       expect(find.text(line), findsOneWidget);
     }
     expect(find.text(l10n.myDocumentsStorage(4, 18)), findsOneWidget);
+    // A PDF's icon is D1's Choose a PDF's (agent-3 on #1299).
+    expect(find.byIcon(Icons.picture_as_pdf_outlined), findsOneWidget);
+  });
+
+  testWidgets('with no photo kept, the storage line counts documents alone '
+      '(agent-3 on #1299)', (tester) async {
+    await pump(tester, myDocumentsStub(FakeMyDocuments()..bytes = 0));
+    expect(find.text(l10n.myDocumentsStorageNone(4)), findsOneWidget);
+    expect(find.text(l10n.myDocumentsStorage(4, 0)), findsNothing);
   });
 
   testWidgets('FR-D3-01 a row opens D2 on its document', (tester) async {
@@ -140,7 +149,7 @@ void main() {
     expect(find.text('Mietvertrag'), findsNothing);
     expect(find.text(l10n.myDocumentsDeleted('Mietvertrag')), findsOneWidget);
     // The photos went with it: the storage line is read again.
-    expect(find.text(l10n.myDocumentsStorage(3, 0)), findsOneWidget);
+    expect(find.text(l10n.myDocumentsStorageNone(3)), findsOneWidget);
     await tester.pump(const Duration(seconds: 5));
   });
 
@@ -208,6 +217,20 @@ void main() {
     );
     expect(row.label, contains('Mietvertrag'));
     expect(row.label, contains(l10n.myDocumentsAdded(12)));
+    semantics.dispose();
+  });
+
+  testWidgets('with one document, its menu is the ⋮ alone, not the card '
+      '(agent-3 on #1299)', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(
+      tester,
+      myDocumentsStub(FakeMyDocuments(artboardDocuments().take(1).toList())),
+    );
+    final menu = tester.getSemantics(
+      find.bySemanticsLabel(l10n.myDocumentsOptions('Nebenkosten 2025')),
+    );
+    expect(menu.rect.size, const Size(48, 48));
     semantics.dispose();
   });
 }

@@ -105,7 +105,12 @@ class _List extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: SgText(
-                l10n.myDocumentsStorage(entries.length, (bytes / mb).ceil()),
+                bytes == 0
+                    ? l10n.myDocumentsStorageNone(entries.length)
+                    : l10n.myDocumentsStorage(
+                        entries.length,
+                        (bytes / mb).ceil(),
+                      ),
                 role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
               ),
@@ -141,7 +146,7 @@ class _Row extends ConsumerWidget {
         l10n.myDocumentsPhotos(document.pageCount),
       ),
       'pdf' => (
-        Icons.description_outlined,
+        Icons.picture_as_pdf_outlined,
         l10n.myDocumentsPdf(document.pageCount),
       ),
       _ => (Icons.content_paste, l10n.myDocumentsText),
@@ -209,6 +214,9 @@ class _Row extends ConsumerWidget {
           ),
         ),
         Semantics(
+          // Its own node: with one row it took the whole card's bounds and
+          // read before the row (agent-3, #1299).
+          container: true,
           button: true,
           label: menu,
           excludeSemantics: true,

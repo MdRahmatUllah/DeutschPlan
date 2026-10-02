@@ -1079,6 +1079,7 @@
   "myDocumentsAdded": "{count}টি শব্দ যোগ হয়েছে",
   "myDocumentsNothingNew": "নতুন কিছু নেই",
   "myDocumentsStorage": "{count}টি ডকুমেন্ট · {megabytes} MB (ছবি)",
+  "myDocumentsStorageNone": "{count}টি ডকুমেন্ট",
   "myDocumentsOptions": "{title}-এর বিকল্প",
   "myDocumentsRename": "নাম বদলান",
   "myDocumentsDelete": "মুছে ফেলুন",

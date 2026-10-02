@@ -1079,6 +1079,7 @@
   "myDocumentsAdded": "{count, plural, one{{count} слово добавлено} few{{count} слова добавлено} many{{count} слов добавлено} other{{count} слова добавлено}}",
   "myDocumentsNothingNew": "ничего нового",
   "myDocumentsStorage": "{count, plural, one{{count} документ} few{{count} документа} many{{count} документов} other{{count} документа}} · {megabytes} МБ (фото)",
+  "myDocumentsStorageNone": "{count, plural, one{{count} документ} few{{count} документа} many{{count} документов} other{{count} документа}}",
   "myDocumentsOptions": "Действия: {title}",
   "myDocumentsRename": "Переименовать",
   "myDocumentsDelete": "Удалить",

@@ -1079,6 +1079,7 @@
   "myDocumentsAdded": "{count, plural, one{1 słowo dodane} few{{count} słowa dodane} many{{count} słów dodanych} other{{count} słowa dodane}}",
   "myDocumentsNothingNew": "nic nowego",
   "myDocumentsStorage": "{count, plural, one{1 dokument} few{{count} dokumenty} many{{count} dokumentów} other{{count} dokumentu}} · {megabytes} MB (zdjęcia)",
+  "myDocumentsStorageNone": "{count, plural, one{1 dokument} few{{count} dokumenty} many{{count} dokumentów} other{{count} dokumentu}}",
   "myDocumentsOptions": "Opcje: {title}",
   "myDocumentsRename": "Zmień nazwę",
   "myDocumentsDelete": "Usuń",

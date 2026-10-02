@@ -6850,6 +6850,16 @@
       }
     }
   },
+  "myDocumentsStorageNone": "{count, plural, one{1 document} other{{count} documents}}",
+  "@myDocumentsStorageNone": {
+    "description": "D3's footer when no photo is kept: how many documents.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "myDocumentsOptions": "Options for {title}",
   "@myDocumentsOptions": {
     "description": "Screen reader: a row's menu button. title is the document's.",
