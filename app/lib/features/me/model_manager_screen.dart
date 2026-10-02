@@ -71,10 +71,8 @@ ModelCardStatus cardStatusOf(ModelCard card) {
     ModelStatus.failed => ModelCardStatus.failed,
     ModelStatus.verifying => ModelCardStatus.verifying,
     ModelStatus.downloading => ModelCardStatus.downloading,
-    // FR-M4-04 before space: a download that isn't offered has no space to
-    // lack.
     ModelStatus.notDownloaded =>
-      card.shortfall > 0 && offered(card.entry.id)
+      card.shortfall > 0
           ? ModelCardStatus.notEnoughSpace
           : ModelCardStatus.notDownloaded,
   };
@@ -86,19 +84,25 @@ ModelCardStatus cardStatusOf(ModelCard card) {
 Stream<ModelCard> modelCard(Ref ref, String id) async* {
   final models = ref.watch(modelRepositoryProvider);
   final downloads = ref.watch(modelDownloadsProvider);
-  final entry = (await models.manifest()).model(id);
+  final manifest = await models.manifest();
+  final entry = manifest.model(id);
   if (entry == null || entry.variants.isEmpty) return;
   // One build a model, as the manifest has it (#409).
   final variant = entry.variants.first;
 
   Future<ModelCard> card(DownloadProgress? live) async {
     final installed = await models.stateOf(entry, variant);
-    // Only a download to come asks the phone for its space.
-    final asks = live == null || live.phase == DownloadPhase.ready;
+    // Only a download to come asks the phone for its space: *Download*,
+    // *Update*, and *Retry* after a failure (#1261).
+    final asks =
+        live == null ||
+        live.phase == DownloadPhase.ready ||
+        live.phase == DownloadPhase.failed;
     final needsSpace =
         asks &&
         (installed.status == ModelStatus.notDownloaded ||
-            installed.status == ModelStatus.updateAvailable);
+            installed.status == ModelStatus.updateAvailable ||
+            installed.status == ModelStatus.failed);
     return (
       entry: entry,
       variant: variant,
@@ -106,18 +110,34 @@ Stream<ModelCard> modelCard(Ref ref, String id) async* {
       live: live?.phase == DownloadPhase.ready ? null : live,
       // The manager's own check (#428), margin and all, so the card and
       // `start` never disagree.
-      shortfall: needsSpace && offered(id)
-          ? await downloads.shortfallFor(id)
-          : 0,
+      shortfall: needsSpace ? await downloads.shortfallFor(id) : 0,
     );
   }
 
   yield await card(null);
-  await for (final live in downloads.watch(id)) {
-    // Bytes landed or went: the storage card reads the phone again.
-    if (live.phase == DownloadPhase.ready ||
-        live.phase == DownloadPhase.failed) {
-      ref.invalidate(phoneSpaceProvider);
+  bool settled(DownloadProgress p) =>
+      p.phase == DownloadPhase.ready || p.phase == DownloadPhase.failed;
+  // The space counts what the other downloads have yet to write (#1261):
+  // another model's landing or failing reads this card again, as null.
+  final moves = StreamController<DownloadProgress?>();
+  final heard = <StreamSubscription<Object?>>[
+    downloads.watch(id).listen(moves.add),
+    for (final other in manifest.models)
+      if (other.id != id)
+        downloads.watch(other.id).where(settled).listen((_) => moves.add(null)),
+  ];
+  ref.onDispose(() {
+    for (final sub in heard) {
+      unawaited(sub.cancel());
+    }
+    unawaited(moves.close());
+  });
+  DownloadProgress? live;
+  await for (final move in moves.stream) {
+    if (move != null) {
+      live = move;
+      // Bytes landed or went: the storage card reads the phone again.
+      if (settled(move)) ref.invalidate(phoneSpaceProvider);
     }
     yield await card(live);
   }
@@ -146,7 +166,7 @@ String modelSize(AppLocalizations l10n, int bytes) {
 Licence? licenceFor(String modelId) {
   final name = switch (modelId) {
     ModelRepository.voiceModel => 'Supertonic 3',
-    ModelRepository.translationModel => 'Hy-MT',
+    ModelRepository.translationModel => 'Hy-MT2',
     _ => null,
   };
   if (name == null) return null;
@@ -173,20 +193,13 @@ class ModelManagerScreen extends ConsumerWidget {
         .watch(modelCardProvider(ModelRepository.translationModel))
         .value;
     final space = ref.watch(phoneSpaceProvider).value;
-    // #1070, as M3's Translation group (#513, ADR 9): Hy-MT shows only in a
-    // build that offers it, or with a model a build that did left on the
-    // phone.
-    final translationShown =
-        enableHymtDownload ||
-        (translation != null &&
-            translation.installed.status != ModelStatus.notDownloaded);
     final onPhone = <ModelCard?>[
       voice,
       translation,
     ].fold<int>(0, (sum, card) => sum + (card?.installed.bytesOnDisk ?? 0));
 
     final scaffold = AdaptiveScaffold(
-      title: translationShown ? l10n.modelsTitle : l10n.modelsTitleVoice,
+      title: l10n.modelsTitle,
       leading: AdaptiveBackButton(
         label: l10n.settingsTitle,
         onPressed: () => Navigator.of(context).maybePop(),
@@ -203,12 +216,12 @@ class ModelManagerScreen extends ConsumerWidget {
             _ModelCardView(voice),
             const SizedBox(height: 10),
           ],
-          if (translation != null && translationShown) ...<Widget>[
+          if (translation != null) ...<Widget>[
             _ModelCardView(translation),
             const SizedBox(height: 10),
           ],
           SgText(
-            translationShown ? l10n.modelsFooter : l10n.modelsFooterVoice,
+            l10n.modelsFooter,
             role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
@@ -355,25 +368,30 @@ class _ModelCardView extends ConsumerWidget {
         if (_isVoice || licence == null)
           subtitle
         else
-          // FR-M4-04: the licence link opens the full text.
-          AdaptiveTapTarget(
-            child: Semantics(
-              button: true,
-              label: l10n.modelsLicenceRead(licence.kind),
-              excludeSemantics: true,
-              onTap: () => unawaited(showLicence(context, licence)),
-              child: SgTappable(
+          // FR-M4-04: the licence link opens the full text. Its grown target
+          // reaches about 15 dp under the line, into a *Download* right below
+          // it (#478, #154): the padding keeps that out of its taps.
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: AdaptiveTapTarget(
+              child: Semantics(
+                button: true,
+                label: l10n.modelsLicenceRead(licence.kind),
+                excludeSemantics: true,
                 onTap: () => unawaited(showLicence(context, licence)),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Flexible(child: subtitle),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 14,
-                      color: tokens.color.textSecondary,
-                    ),
-                  ],
+                child: SgTappable(
+                  onTap: () => unawaited(showLicence(context, licence)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Flexible(child: subtitle),
+                      Icon(
+                        Icons.arrow_forward,
+                        size: 14,
+                        color: tokens.color.textSecondary,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -447,8 +465,9 @@ class _ModelCardView extends ConsumerWidget {
       } on Object {
         if (context.mounted) SgToast.show(context, l10n.modelsStartFailed);
       }
+      // Every card: the others' space counts this download now (#1261).
       container
-        ..invalidate(modelCardProvider(id))
+        ..invalidate(modelCardProvider)
         ..invalidate(phoneSpaceProvider);
     }
 
@@ -466,9 +485,6 @@ class _ModelCardView extends ConsumerWidget {
       }
     }
 
-    // FR-M4-04, #692 ME-3: a model this build doesn't offer can be deleted,
-    // and nothing that downloads it again: no Update, Retry or Resume.
-    final gated = !offered(id);
     final deleteButton = _Action(
       label: l10n.modelsDelete(freed),
       onPressed: () => unawaited(_delete(context)),
@@ -498,13 +514,12 @@ class _ModelCardView extends ConsumerWidget {
           _Actions(
             children: <Widget>[
               deleteButton,
-              if (!gated)
-                _Action(
-                  label: l10n.modelsUpdate(size),
-                  white: true,
-                  // FR-M4 *Not enough space*: an update is a download too.
-                  onPressed: short ? null : () => unawaited(act(download)),
-                ),
+              _Action(
+                label: l10n.modelsUpdate(size),
+                white: true,
+                // FR-M4 *Not enough space*: an update is a download too.
+                onPressed: short ? null : () => unawaited(act(download)),
+              ),
             ],
           ),
         ];
@@ -521,19 +536,18 @@ class _ModelCardView extends ConsumerWidget {
           ),
           _Actions(
             children: <Widget>[
-              if (!gated || live?.phase != DownloadPhase.paused)
-                _Action(
-                  label: live?.phase == DownloadPhase.paused
-                      ? l10n.modelsResume
-                      : l10n.modelsPause,
-                  onPressed: () => unawaited(
-                    act(
-                      () => live?.phase == DownloadPhase.paused
-                          ? downloads.resume(id)
-                          : downloads.pause(id),
-                    ),
+              _Action(
+                label: live?.phase == DownloadPhase.paused
+                    ? l10n.modelsResume
+                    : l10n.modelsPause,
+                onPressed: () => unawaited(
+                  act(
+                    () => live?.phase == DownloadPhase.paused
+                        ? downloads.resume(id)
+                        : downloads.pause(id),
                   ),
                 ),
+              ),
             ],
           ),
         ];
@@ -542,24 +556,26 @@ class _ModelCardView extends ConsumerWidget {
       case ModelCardStatus.failed:
         return <Widget>[
           note(l10n.modelsFailedNote),
+          // #1261: what Retry would fetch doesn't fit; Retry says so too.
+          if (card.shortfall > 0)
+            note(l10n.modelsNoSpaceNote(modelSize(l10n, card.shortfall))),
           _Actions(
             children: <Widget>[
-              if (!gated)
-                _Action(
-                  label: l10n.retry,
-                  // A download that failed is retried; files on the phone that
-                  // broke are fetched again from the start, space checked.
-                  onPressed: () => unawaited(
-                    act(() async {
-                      await askToNotifyDownload(
-                        container.read(notificationPermissionProvider),
-                      );
-                      return card.live == null
-                          ? downloads.start(id)
-                          : downloads.retry(id);
-                    }),
-                  ),
+              _Action(
+                label: l10n.retry,
+                // A download that failed is retried; files on the phone that
+                // broke are fetched again from the start, space checked.
+                onPressed: () => unawaited(
+                  act(() async {
+                    await askToNotifyDownload(
+                      container.read(notificationPermissionProvider),
+                    );
+                    return card.live == null
+                        ? downloads.start(id)
+                        : downloads.retry(id);
+                  }),
                 ),
+              ),
               if (card.installed.bytesOnDisk > 0) deleteButton,
             ],
           ),
@@ -577,18 +593,17 @@ class _ModelCardView extends ConsumerWidget {
         ];
       case ModelCardStatus.notDownloaded:
         return <Widget>[
-          if (gated) note(l10n.modelsHymtGated),
           _Actions(
             children: <Widget>[
               _Action(
                 label: l10n.modelsDownload(size),
                 white: true,
-                onPressed: gated ? null : () => unawaited(act(download)),
+                onPressed: () => unawaited(act(download)),
               ),
             ],
           ),
           // #501: why Download asks for notifications.
-          if (!gated) note(l10n.modelsNotifyWhy),
+          note(l10n.modelsNotifyWhy),
         ];
     }
   }
@@ -612,7 +627,14 @@ class _ModelCardView extends ConsumerWidget {
     );
     if (confirmed != true) return;
     try {
-      await container.read(modelRepositoryProvider).delete(card.entry);
+      // Another model's download keeps `models/.partial`, which it shares
+      // (#154).
+      await container
+          .read(modelRepositoryProvider)
+          .delete(
+            card.entry,
+            keepPartial: container.read(modelDownloadsProvider).downloading,
+          );
       // With `tts_engine` now the phone's, nothing would ask Supertonic
       // again: asked once, it finds its model gone and lets go of its
       // ~400 MB of sessions and its clips.
@@ -622,8 +644,9 @@ class _ModelCardView extends ConsumerWidget {
       debugPrint('model delete: $error');
       if (context.mounted) SgToast.show(context, l10n.modelsDeleteFailed);
     } finally {
+      // Every card: the bytes freed may let another model fit (#1261).
       container
-        ..invalidate(modelCardProvider(card.entry.id))
+        ..invalidate(modelCardProvider)
         ..invalidate(phoneSpaceProvider)
         // Today's voice card and M3's row: a delete is no download (#757).
         ..invalidate(voiceInstalledProvider);

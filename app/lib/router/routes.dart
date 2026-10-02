@@ -22,6 +22,9 @@ import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/theme/app_theme.dart' show StillPageTransitions;
 import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/features/day_complete/day_complete_screen.dart';
+import 'package:sogda/features/documents/doc_import_screen.dart';
+import 'package:sogda/features/documents/doc_words_screen.dart';
+import 'package:sogda/features/documents/my_documents_screen.dart';
 import 'package:sogda/features/exam/exam_results_screen.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
@@ -227,6 +230,9 @@ enum StepTab { words, grammar, quiz, exams }
           routes: <TypedRoute<RouteData>>[
             TypedGoRoute<AddWordRoute>(path: 'add'),
             TypedGoRoute<EditCustomWordRoute>(path: 'add/:id'),
+            TypedGoRoute<DocImportRoute>(path: 'import'),
+            TypedGoRoute<DocWordsRoute>(path: 'document/:id'),
+            TypedGoRoute<MyDocumentsRoute>(path: 'documents'),
           ],
         ),
       ],
@@ -416,6 +422,11 @@ class AddWordRoute extends GoRouteData with $AddWordRoute {
   static void open(BuildContext context, {String? german}) =>
       unawaited(context.push<void>(AddWordRoute(german: german).location));
 
+  /// As [open], for an opener that goes on once R2 is closed: D2's card
+  /// reads the document again, the word now the learner's (#1294).
+  static Future<void> openAndWait(BuildContext context, {String? german}) =>
+      context.push<void>(AddWordRoute(german: german).location);
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       AddWordScreen(german: german);
@@ -433,6 +444,56 @@ class EditCustomWordRoute extends GoRouteData with $EditCustomWordRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       AddWordScreen(id: id);
+}
+
+class DocImportRoute extends GoRouteData with $DocImportRoute {
+  const DocImportRoute({this.arrival});
+
+  /// Pushed from R1 idle (`doc-import.md`), so back returns to the search.
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const DocImportRoute().location));
+
+  /// Which share this is, when "Share → Sogda" opened it (#1227): the router
+  /// numbers each, so a second share onto D1 is read too. D1 then takes the
+  /// shared text and goes straight to processing.
+  final String? arrival;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      DocImportScreen(arrival: arrival);
+}
+
+/// D2 · The words in your text (#1230): D1's end, and D3's row.
+class DocWordsRoute extends GoRouteData with $DocWordsRoute {
+  const DocWordsRoute({required this.id});
+
+  final int id;
+
+  /// D1's end: D2 takes its place, so back returns to the search.
+  static void instead(BuildContext context, int id) =>
+      context.pushReplacement(DocWordsRoute(id: id).location);
+
+  /// D3's row: pushed over D3, so back returns to the list.
+  static void open(BuildContext context, int id) =>
+      unawaited(context.push<void>(DocWordsRoute(id: id).location));
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      DocWordsScreen(id: id);
+}
+
+/// D3 · My documents (#1295): in the search's stack with D1 and D2, so a
+/// row's D2 and *New document*'s D1 come back to it. Me's link jumps here.
+class MyDocumentsRoute extends GoRouteData with $MyDocumentsRoute {
+  const MyDocumentsRoute();
+
+  /// R1 idle's *Learn from a document* once a document is kept.
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const MyDocumentsRoute().location));
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const MyDocumentsScreen();
 }
 
 class MeRoute extends GoRouteData with $MeRoute {

@@ -12,12 +12,11 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
-import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/search/search_header.dart';
 import 'package:sogda/features/search/search_screen.dart'
     show myWordsProvider, sameWord, savedAs;
 import 'package:sogda/features/study/write_guard.dart';
@@ -47,6 +46,15 @@ Future<MyWordDraft?> myWord(Ref ref, int id) =>
 @riverpod
 Future<bool> myWordInRevision(Ref ref, int id) =>
     ref.watch(wordRepositoryProvider).isMyWordInRevision(id);
+
+/// R2's fields as compared for #1263: trimmed, as *Save* stores them.
+typedef _Fields = ({
+  String? article,
+  String german,
+  String meaning,
+  String where,
+  String example,
+});
 
 /// R2 · Add / edit my word (`add-word.md`, the AddWord artboards). [german]
 /// comes filled in from R1's no-results page; [id] is edit mode, from R1's
@@ -83,13 +91,22 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
   /// One write at a time: a double tap on *Save* saves once.
   bool _busy = false;
 
+  /// What the fields held when R2 opened: the search's German, or the word
+  /// being edited once it has loaded. Leaving with anything else asks first
+  /// (#1263).
+  _Fields? _baseline;
+
   @override
   void initState() {
     super.initState();
     _german.text = widget.german?.trim() ?? '';
     _checked = _german.text.trim();
+    _baseline = _fields;
     _german.addListener(_changed);
     _meaning.addListener(_refresh);
+    // Every field, so Back knows at once whether it would lose text (#1263).
+    _where.addListener(_refresh);
+    _example.addListener(_refresh);
     // The umlaut row shows while the German field is the one typed in.
     _germanFocus.addListener(_refresh);
     if (widget.id case final id?) unawaited(_load(id));
@@ -128,7 +145,33 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     setState(() {
       _article = word.article;
       _checked = word.german;
+      _baseline = _fields;
     });
+  }
+
+  _Fields get _fields => (
+    article: _article,
+    german: _german.text.trim(),
+    meaning: _meaning.text.trim(),
+    where: _where.text.trim(),
+    example: _example.text.trim(),
+  );
+
+  /// Typed or changed since R2 opened (#1263).
+  bool get _dirty => _fields != _baseline;
+
+  /// #1263: Back with text that isn't saved asks first; *Leave* drops it.
+  Future<void> _confirmLeave() async {
+    final l10n = AppLocalizations.of(context);
+    final leave = await Adaptive.showConfirm(
+      context: context,
+      title: l10n.addWordDiscardTitle,
+      message: l10n.addWordDiscardBody,
+      confirmLabel: l10n.addWordDiscard,
+      cancelLabel: l10n.addWordDiscardKeep,
+      destructive: true,
+    );
+    if (leave == true && mounted) Navigator.of(context).pop();
   }
 
   String get _name {
@@ -291,7 +334,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
       body: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const _Header(),
+          SearchHeader(title: l10n.addWordTitle, intro: l10n.addWordIntro),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             child: Column(
@@ -390,65 +433,16 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
         ],
       ),
     );
-    return tokens.isGlass
-        ? AuroraBackdrop(leading: tokens.color.die, child: scaffold)
-        : scaffold;
-  }
-}
-
-/// The Raspberry band: the way back, "My word" and what it is for.
-class _Header extends StatelessWidget {
-  const _Header();
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
-    final content = Padding(
-      padding: EdgeInsets.fromLTRB(
-        4,
-        MediaQuery.paddingOf(context).top + 4,
-        16,
-        16,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          AdaptiveBackButton(
-            colour: tokens.color.ink,
-            onPressed: () => Navigator.of(context).maybePop(),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 0, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Semantics(
-                  header: true,
-                  child: SgText(
-                    l10n.addWordTitle,
-                    role: SgTextRole.headline,
-                    color: tokens.color.ink,
-                  ),
-                ),
-                SgText(
-                  l10n.addWordIntro,
-                  role: SgTextRole.caption,
-                  color: tokens.color.ink,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    return PopScope(
+      // A save under way leaves as it always did: its own pop follows.
+      canPop: _busy || !_dirty,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) unawaited(_confirmLeave());
+      },
+      child: tokens.isGlass
+          ? AuroraBackdrop(leading: tokens.color.die, child: scaffold)
+          : scaffold,
     );
-    return tokens.isGlass
-        ? SgSurface(
-            kind: SgSurfaceKind.tint(tokens.color.die),
-            radius: 0,
-            child: content,
-          )
-        : SgHeaderFill(color: tokens.color.die, child: content);
   }
 }
 

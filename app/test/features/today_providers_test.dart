@@ -128,6 +128,55 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
     updates: <drift.TableInfo<drift.Table, Object?>>{db.reviewLog},
   );
 
+  /// #1280: [uids] as course words of another category («Arbeit») in the
+  /// document queue (BR-PLAN-11): planned today as `new` rows, or waiting.
+  Future<void> documentWords(
+    List<String> uids, {
+    required bool plannedToday,
+  }) async {
+    // The first build done, so the rows below land after it.
+    await container.read(todayViewProvider.future);
+    await db.customStatement(
+      'INSERT OR IGNORE INTO c.categories (id, name, description) '
+      "VALUES (2, 'Arbeit', 'Words about work')",
+    );
+    for (final (i, uid) in uids.indexed) {
+      await db.customStatement(
+        'INSERT INTO c.words (uid, sublevel_code, level_code, seq, '
+        'seq_in_sublevel, german, english, category_id, search_key, '
+        "search_key_alt, kind) VALUES (?, 'A2.1', 'A2', ?, ?, ?, ?, 2, ?, ?, "
+        "'vocab')",
+        <Object>[uid, 200 + i, i + 1, uid, uid, uid, uid],
+      );
+      await db.customStatement(
+        'INSERT INTO doc_queue (word_key, added_at, planned_on) VALUES '
+        "(?, '2026-09-20T10:0$i:00Z', ?)",
+        <Object?>[uid, if (plannedToday) today else null],
+      );
+      if (plannedToday) {
+        await db.customStatement(
+          'INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) '
+          "VALUES ('$today', ?, 'new', 'A1.1')",
+          <Object>[uid],
+        );
+      }
+    }
+    // The day opened again, as a resume opens it: `todayPlan` is read once.
+    container.invalidate(todayPlanProvider);
+    await pumpEventQueue();
+  }
+
+  test('#1280 BR-PLAN-11 today\'s words from documents are counted apart, and '
+      "the category is the course's words'", () async {
+    // Three of another category: with them, «Arbeit» would be the most.
+    await documentWords(<String>['d1', 'd2', 'd3'], plannedToday: true);
+    final view = await container.read(todayViewProvider.future);
+
+    expect(view.newToday.total, 5);
+    expect(view.newFromDocuments, 3);
+    expect(view.newCategory, 'Wohnen');
+  });
+
   test(
     '#729 #1004 the words studied: each rated in a session, the plan\'s '
     "or the backlog's, or known, once; not a quiz's, not yesterday's",
@@ -459,6 +508,19 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, completed_at, 
         reason: 'planning did not move on',
       );
       expect(settings.read(SettingKeys.plannedStudyDays), 99);
+    });
+
+    test("#1280 BR-PLAN-11 Tomorrow's category is the course's words', not "
+        "the document queue's", () async {
+      // Today opened with no room for document words; tomorrow takes both.
+      await settings.write(SettingKeys.plannedDocCap, 0);
+      await documentWords(<String>['d1', 'd2'], plannedToday: false);
+      await finishTheDay();
+      final view = await container.read(todayViewProvider.future);
+
+      expect(view.isDone, isTrue);
+      expect(view.tomorrow?.newWords, 3, reason: 'A1.2\'s one, and both');
+      expect(view.tomorrow?.category, 'Wohnen');
     });
 
     test("BR-PLAN-09 #817 Tomorrow's timings are read again on each rebuild, "

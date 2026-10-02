@@ -38,8 +38,9 @@ SOURCES = {
     # supertonic_text.dart ports the SDK's core.py (supertonic 1.3.1).
     "Supertonic-SDK-MIT.txt":
         "https://raw.githubusercontent.com/supertone-oss-archive/supertonic-py/df0f9686dac7fbbde391b759e2ee5286a3737622/LICENSE",
-    "HY-MT1.5-Tencent-HY.txt":
-        "https://huggingface.co/tencent/HY-MT1.5-1.8B/resolve/dbad03788f49709801014c95d481a514c272ca52/License.txt",
+    # Hy-MT2 (ADR 30): Apache-2.0, at the revision the manifest pins.
+    "Hy-MT2-Apache-2.0.txt":
+        "https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF/resolve/a0c709d9fac510f2c807aa3af52872340dc37a4a/LICENSE.txt",
     "Inter-OFL.txt":
         "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/inter/OFL.txt",
     "NotoSansBengali-OFL.txt":
@@ -60,6 +61,18 @@ SOURCES = {
     # with the Classpath Exception; the commit that prepared 2.1.5.
     "DesugarJdkLibs-GPL-2.0-Classpath-Exception.txt":
         "https://raw.githubusercontent.com/google/desugar_jdk_libs/73170c345e6a762fc6a1f0301bb15218850023ef/LICENSE",
+    # pdfbox-android 2.0.27.0 (#1228, ADR 31): D1's PDF text layer. Apache-2.0
+    # with Apache PDFBox's NOTICE, at the v2.0.27.0 tag.
+    "PdfBox-Android-Apache-2.0.txt":
+        "https://raw.githubusercontent.com/TomRoush/PdfBox-Android/45da92629dad5b3c9887eceefecc89a1423f5457/LICENSE.txt",
+    "PdfBox-Android-NOTICE.txt":
+        "https://raw.githubusercontent.com/TomRoush/PdfBox-Android/45da92629dad5b3c9887eceefecc89a1423f5457/NOTICE.txt",
+    # BouncyCastle 1.72, which pdfbox-android pulls in (bcprov, bcpkix, bcutil):
+    # MIT. 1.72's tag publishes it only as LICENSE.html; the same terms as
+    # text are LICENSE.md, first committed in b2c7e7b (2024), which M8 shows
+    # as text. They differ only in the years (2000-2021 there) and spelling.
+    "BouncyCastle-MIT.txt":
+        "https://raw.githubusercontent.com/bcgit/bc-java/b2c7e7b6bb79c983d5f0c1ab39a0bca9dd437edb/LICENSE.md",
 }
 
 LICENCE_FILES = ("LICENSE", "LICENCE", "COPYING")

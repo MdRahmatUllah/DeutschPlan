@@ -15,8 +15,9 @@ import 'package:sogda/data/repositories/setting_keys.dart';
 ///
 /// It is affordable: the doc lists thirty-nine keys. The app is the table's
 /// only writer while it runs, except the background tasks (their own
-/// connection), which write `last_planned_date` and `planned_study_days` through
-/// `openDay`. So those two are read with [fresh], from the table: the 00:05
+/// connection), which write `last_planned_date`, `planned_study_days` and
+/// `planned_doc_cap` through `openDay`. So those are read with [fresh], from
+/// the table: the 00:05
 /// task can plan today while the app is alive, and a cached yesterday would
 /// have the app plan it again (#688 DA-7).
 class SettingsRepository {

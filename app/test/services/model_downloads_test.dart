@@ -47,10 +47,9 @@ void main() {
     models: <ModelEntry>[
       ModelEntry(
         id: 'hymt',
-        name: 'Hy-MT 1.5',
+        name: 'Hy-MT2',
         licence: 'test',
         disables: 'mt_enabled',
-        regionExcluded: const <String>[],
         variants: <ModelVariant>[
           ModelVariant(id: 'q4_k_m', name: 'test build', files: files),
         ],
@@ -72,8 +71,6 @@ void main() {
     models = ModelRepository(settings, support: support)..useManifest(manifest);
     downloader = _Downloader();
     notice = _Notice();
-    // The download's mechanics, on a model any build could offer: the
-    // gate has its own test.
     downloads = BackgroundModelDownloads(
       models,
       settings,
@@ -81,7 +78,6 @@ void main() {
       null,
       const Duration(seconds: 2),
       notice,
-      (_) => true,
     );
   });
 
@@ -134,13 +130,19 @@ void main() {
       expect(downloader.running!.title, isNot(contains('{num')));
       expect(
         (downloader.complete!.title, downloader.complete!.body),
-        ('Model download finished', 'Voice says when it is ready'),
+        (
+          'Model download finished',
+          'Voice & translation says when it is ready',
+        ),
         reason: 'the checksums come after',
       );
       // #1164: M4 is *Voice* in a build without translation, and the notes
       // that send the learner there say so.
-      expect(downloader.paused!.body, 'Resumes on Wi-Fi, or from Voice');
-      expect(downloader.error!.body, 'Retry it from Voice');
+      expect(
+        downloader.paused!.body,
+        'Resumes on Wi-Fi, or from Voice & translation',
+      );
+      expect(downloader.error!.body, 'Retry it from Voice & translation');
     });
 
     test('the downloader picks up what was in flight: killed tasks are '
@@ -206,77 +208,6 @@ void main() {
       );
     });
 
-    test(
-      "#1036 FR-M4-04 a download this build doesn't offer, left by a "
-      "build that did: cancelled and cleared at launch, and nothing lands",
-      () async {
-        // The real gate, which says no to Hy-MT in this build.
-        final gated = BackgroundModelDownloads(
-          models,
-          settings,
-          downloader,
-          null,
-          const Duration(seconds: 2),
-          notice,
-        );
-        downloader.database.records.addAll(<TaskRecord>[
-          TaskRecord(earlier('one.gguf'), TaskStatus.complete, 1, 300),
-          TaskRecord(earlier('two.gguf'), TaskStatus.complete, 1, 100),
-        ]);
-
-        await gated.attach();
-        final heard = <DownloadPhase>[];
-        final watching = gated.watch('hymt').listen((p) => heard.add(p.phase));
-        addTearDown(watching.cancel);
-        // A late word on it lands nothing either.
-        downloader.updates$.add(
-          TaskStatusUpdate(earlier('two.gguf'), TaskStatus.complete),
-        );
-        await pumpEventQueue();
-
-        expect(downloader.calls, contains('cancel hymt'));
-        expect(heard, isEmpty, reason: 'the late word put it in no phase');
-        expect(downloader.database.records, isEmpty);
-        expect((await models.stagingFor('hymt')).existsSync(), isFalse);
-        final active = await models.directoryFor('hymt');
-        expect(
-          File('${active.path}/two.gguf').existsSync(),
-          isFalse,
-          reason: 'never activated',
-        );
-      },
-    );
-
-    for (final status in <TaskStatus>[TaskStatus.paused, TaskStatus.complete]) {
-      test("#1036 FR-M4-04 a gated model's record the downloader's start "
-          'writes back (${status.name}) is skipped too: no phase, nothing '
-          'lands', () async {
-        final gated = BackgroundModelDownloads(
-          models,
-          settings,
-          downloader,
-          null,
-          const Duration(seconds: 2),
-          notice,
-        );
-        downloader.onStart = () =>
-            downloader.database.records.addAll(<TaskRecord>[
-              TaskRecord(earlier('one.gguf'), status, 1, 300),
-              TaskRecord(earlier('two.gguf'), status, 1, 100),
-            ]);
-        final heard = <DownloadPhase>[];
-        final watching = gated.watch('hymt').listen((p) => heard.add(p.phase));
-        addTearDown(watching.cancel);
-
-        await gated.attach();
-        await pumpEventQueue();
-
-        expect(heard, isEmpty);
-        final active = await models.directoryFor('hymt');
-        expect(File('${active.path}/two.gguf').existsSync(), isFalse);
-      });
-    }
-
     test('every file finished while the app was away: the model verifies '
         'at launch', () async {
       downloader.database.records.addAll(<TaskRecord>[
@@ -299,7 +230,6 @@ void main() {
       null,
       const Duration(seconds: 2),
       null,
-      (_) => true,
     );
     await downloads.attach();
     await downloads.start('hymt');
@@ -323,31 +253,6 @@ void main() {
     );
     await expectLater(downloads.start('hymt'), throwsStateError);
     expect(downloader.queued, isEmpty);
-  });
-
-  test('#692 ME-3 FR-M4-04 a model this build does not offer is refused: '
-      'no start, no retry, no resume, whatever asks', () async {
-    final gated = BackgroundModelDownloads(
-      models,
-      settings,
-      downloader,
-      null,
-      const Duration(seconds: 2),
-      notice,
-    );
-    expect(offered(ModelRepository.translationModel), isFalse);
-    for (final attempt in <Future<void> Function(String)>[
-      gated.start,
-      gated.retry,
-      gated.resume,
-    ]) {
-      await expectLater(
-        attempt(ModelRepository.translationModel),
-        throwsStateError,
-      );
-    }
-    expect(downloader.queued, isEmpty);
-    expect(downloader.calls, isEmpty);
   });
 
   test('FR-M4-01 pause and resume act on the model\'s files, not '
@@ -375,6 +280,77 @@ void main() {
       expect(downloader.notification, 'models-2');
       expect(notice.clears, 2);
     });
+
+    test('#154 a second model started while one downloads joins its group: '
+        'one notification, nothing taken down', () async {
+      models.useManifest(
+        ModelManifest(
+          version: 1,
+          models: <ModelEntry>[
+            ...manifest.models,
+            ModelEntry(
+              id: 'supertonic3',
+              name: 'Supertonic 3',
+              licence: 'test',
+              disables: 'tts_engine',
+              variants: <ModelVariant>[
+                ModelVariant(
+                  id: 'default',
+                  name: 'test build',
+                  files: <ModelFile>[file('voice.onnx', 'c' * 50)],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      await downloads.attach();
+      await downloads.start('hymt');
+      expect(downloader.notification, 'models-1');
+      expect(notice.clears, 1);
+
+      await downloads.start('supertonic3');
+
+      expect(downloader.notification, 'models-1', reason: 'not models-2');
+      expect(notice.clears, 1, reason: "the first model's still counts");
+    });
+  });
+
+  test('#154 downloading: while a model is queued, paused or checked, '
+      'and not once it has failed', () async {
+    await downloads.attach();
+    expect(downloads.downloading, isFalse);
+
+    await downloads.start('hymt');
+    expect(downloads.downloading, isTrue);
+
+    await report((t) => TaskStatusUpdate(t, TaskStatus.failed), 'one.gguf');
+    await settled();
+    expect(downloads.downloading, isFalse, reason: 'failed: nothing in flight');
+
+    await downloads.retry('hymt');
+    expect(downloads.downloading, isTrue);
+  });
+
+  test('#154 downloading from the tap, before a file is queued: a Delete '
+      'while the space is checked keeps the partial file', () async {
+    final held = Completer<void>();
+    downloads = BackgroundModelDownloads(
+      models,
+      settings,
+      downloader,
+      _Storage(free: 400 + ModelDownloads.spaceMargin, hold: held.future),
+      const Duration(seconds: 2),
+      null,
+    );
+    final started = downloads.start('hymt');
+    await pumpEventQueue();
+    expect(downloader.queued, isEmpty, reason: 'still checking the space');
+    expect(downloads.downloading, isTrue);
+
+    held.complete();
+    await started;
+    expect(downloader.queued, hasLength(2));
   });
 
   group('#428 FR-M4-01 not enough space', () {
@@ -387,7 +363,6 @@ void main() {
         _Storage(free: 300),
         const Duration(seconds: 2),
         null,
-        (_) => true,
       );
       // 400 bytes of model and 100 MB to spare, over 300 bytes free.
       await expectLater(
@@ -404,6 +379,72 @@ void main() {
       expect((await models.stagingFor('hymt')).existsSync(), isFalse);
     });
 
+    test('#1261 another model still downloading counts what it has yet '
+        'to write: the second of two that each fit alone is refused', () async {
+      models.useManifest(
+        ModelManifest(
+          version: 1,
+          models: <ModelEntry>[
+            ...manifest.models,
+            ModelEntry(
+              id: 'voice',
+              name: 'Voice',
+              licence: 'test',
+              disables: 'tts_engine',
+              variants: <ModelVariant>[
+                ModelVariant(
+                  id: 'default',
+                  name: 'test build',
+                  files: <ModelFile>[file('voice.onnx', 'c' * 50)],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      final held = Completer<void>();
+      final storage = _Storage(
+        free: 449 + ModelDownloads.spaceMargin,
+        hold: held.future,
+      );
+      downloads = BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+        storage,
+        const Duration(seconds: 2),
+        null,
+      );
+      await downloads.attach();
+      // Still checking its space, nothing queued: all of hymt's 400 count.
+      final started = downloads.start('hymt');
+      final whileStarting = downloads.shortfallFor('voice');
+      held.complete();
+      await started;
+      expect(await whileStarting, 1, reason: '50 + 400 over 449 free');
+
+      // A quarter of one.gguf arrived: 225 of it and two.gguf's 100 to come,
+      // and the phone 75 bytes fuller.
+      await report((t) => TaskProgressUpdate(t, 0.25), 'one.gguf');
+      storage.free -= 75;
+      expect(await downloads.shortfallFor('voice'), 1);
+      await expectLater(
+        downloads.start('voice'),
+        throwsA(isA<NotEnoughSpace>().having((e) => e.bytes, 'bytes', 1)),
+      );
+
+      // Failed: it writes nothing more, so the voice fits.
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'one.gguf',
+      );
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
+      expect(await downloads.shortfallFor('voice'), 0);
+    });
+
     test('and one that fits, margin and all, is queued', () async {
       downloads = BackgroundModelDownloads(
         models,
@@ -412,7 +453,6 @@ void main() {
         _Storage(free: 400 + ModelDownloads.spaceMargin),
         const Duration(seconds: 2),
         null,
-        (_) => true,
       );
       expect(await downloads.shortfallFor('hymt'), 0);
       await downloads.start('hymt');
@@ -527,7 +567,6 @@ void main() {
         _Storage(free: 1 << 30),
         grace,
         notice,
-        (_) => true,
       );
       seen = <DownloadProgress>[];
       final sub = downloads.watch('hymt').listen(seen.add);
@@ -762,7 +801,6 @@ void main() {
         _Storage(free: 1 << 30),
         grace,
         null,
-        (_) => true,
       );
       final phases = <DownloadPhase>[];
       final sub = again.watch('hymt').listen((p) => phases.add(p.phase));
@@ -865,7 +903,6 @@ void main() {
         null,
         const Duration(seconds: 2),
         notice,
-        (_) => true,
         grace,
       );
       await paused.attach();
@@ -885,7 +922,10 @@ void main() {
       expect(notice.said, isEmpty, reason: 'two.gguf still downloads');
       await say(TaskStatus.paused, 'two.gguf');
       expect(notice.said, <(String, String)>[
-        ('Model download paused', 'Resumes on Wi-Fi, or from Voice'),
+        (
+          'Model download paused',
+          'Resumes on Wi-Fi, or from Voice & translation',
+        ),
       ]);
       expect(notice.groups, <String>[downloader.notification!]);
     });
@@ -959,7 +999,10 @@ void main() {
       expect(File('${active.path}/one.gguf').readAsStringSync(), one);
       // #506: the platform's notification can stick short of its end.
       expect(notice.said, <(String, String)>[
-        ('Model download finished', 'Voice says when it is ready'),
+        (
+          'Model download finished',
+          'Voice & translation says when it is ready',
+        ),
       ]);
       // #756: said on this attempt's own notification.
       expect(notice.groups, <String>[downloader.notification!]);
@@ -978,7 +1021,7 @@ void main() {
       expect(seen.last, DownloadPhase.failed);
       expect((await models.directoryFor('hymt')).existsSync(), isFalse);
       expect(notice.said, <(String, String)>[
-        ('A model download failed', 'Retry it from Voice'),
+        ('A model download failed', 'Retry it from Voice & translation'),
       ], reason: '#506: not "finished" when a checksum failed');
     });
 
@@ -1040,7 +1083,6 @@ void main() {
               name: 'Voice',
               licence: 'test',
               disables: 'tts_voice',
-              regionExcluded: const <String>[],
               variants: <ModelVariant>[
                 ModelVariant(
                   id: 'v1',
@@ -1118,7 +1160,6 @@ void main() {
           storage,
           const Duration(seconds: 2),
           null,
-          (_) => true,
         );
         downloader.queued.clear();
         await downloads.attach();
@@ -1164,7 +1205,6 @@ void main() {
           storage,
           const Duration(seconds: 2),
           null,
-          (_) => true,
         );
         downloader.queued.clear();
         await downloads.attach();
@@ -1382,12 +1422,18 @@ final TaskHttpException _serverError = TaskHttpException('Server Error', 500);
 
 /// A phone with [free] bytes to spare.
 class _Storage implements DeviceStorage {
-  _Storage({required this.free});
+  _Storage({required this.free, this.hold});
 
   int free;
 
+  /// Until it completes, the space is still being checked.
+  final Future<void>? hold;
+
   @override
-  Future<StorageSpace?> space() async => (free: free, total: free * 10);
+  Future<StorageSpace?> space() async {
+    await hold;
+    return (free: free, total: free * 10);
+  }
 }
 
 /// A repository whose rename into place fails, as on a full disk.

@@ -16,6 +16,7 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/system_bars.dart';
+import 'package:sogda/core/typography/app_fonts.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
@@ -902,12 +903,35 @@ class _SentenceRow extends StatelessWidget {
               ]),
               if (translation != null) ...<Widget>[
                 const SizedBox(height: 2),
-                SgText(
-                  translation,
-                  role: SgTextRole.label,
-                  weight: 400,
-                  color: tokens.color.textSecondary,
-                ),
+                // Found by its translation (#1193): the words the query
+                // matched are marked there, as the German's are above.
+                if (sentence.translationRuns.isNotEmpty)
+                  SgRuns(
+                    <TextSpan>[
+                      for (final (text, marked) in sentence.translationRuns)
+                        TextSpan(
+                          text: text,
+                          style: marked
+                              ? TextStyle(
+                                  backgroundColor: tokens.color.accent,
+                                  color: tokens.color.onAccent,
+                                )
+                              : null,
+                        ),
+                    ],
+                    style: SgText.styleFor(
+                      tokens,
+                      SgTextRole.label,
+                      color: tokens.color.textSecondary,
+                    ).copyWith(fontVariations: AppFonts.weight(400)),
+                  )
+                else
+                  SgText(
+                    translation,
+                    role: SgTextRole.label,
+                    weight: 400,
+                    color: tokens.color.textSecondary,
+                  ),
               ],
               const SizedBox(height: 2),
               SgText(
@@ -1015,8 +1039,28 @@ class _Idle extends ConsumerWidget {
             onPressed: () => AddWordRoute.open(context),
           ),
         ),
+        // D1 (#1227): the words of a letter or an article, at once; D3
+        // once one is kept, whose *New document* is D1 (#1295).
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: SgButton(
+            label: l10n.docImportTitle,
+            kind: SgButtonKind.secondary,
+            onPressed: () => unawaited(_learnFrom(context, ref)),
+          ),
+        ),
       ],
     );
+  }
+
+  Future<void> _learnFrom(BuildContext context, WidgetRef ref) async {
+    final kept = await ref.read(documentRepositoryProvider).count();
+    if (!context.mounted) return;
+    if (kept > 0) {
+      MyDocumentsRoute.open(context);
+    } else {
+      DocImportRoute.open(context);
+    }
   }
 }
 

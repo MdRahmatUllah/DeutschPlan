@@ -1044,6 +1044,47 @@
       }
     }
   },
+  "todayNewCategoryDocuments": "{count} new · {category} · {documents} from your documents",
+  "@todayNewCategoryDocuments": {
+    "description": "#1280: T1 New card subtitle when some of today's new words came from documents (BR-PLAN-11): the course's count with its category, then the documents' count. The category is course content.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "category": {
+        "type": "String"
+      },
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "todayNewPlainDocuments": "{count} new · {documents} from your documents",
+  "@todayNewPlainDocuments": {
+    "description": "#1280: T1 New card subtitle when some of today's new words came from documents and the course's have no category.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "todayNewFromDocuments": "{documents} from your documents",
+  "@todayNewFromDocuments": {
+    "description": "#1280: T1 New card subtitle when all of today's new words came from documents.",
+    "placeholders": {
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "todayBacklog": "Backlog · {count}",
   "@todayBacklog": {
     "description": "T1 section card title; opens T4.",
@@ -4000,6 +4041,64 @@
   "@settingsGroupData": {
     "description": "M3 group header."
   },
+  "settingsGroupDocuments": "Learn from documents",
+  "@settingsGroupDocuments": {
+    "description": "M3 group header (#1296): the settings of Learn from your documents."
+  },
+  "settingsDocDailyCap": "Words a day from documents",
+  "@settingsDocDailyCap": {
+    "description": "M3 row: doc_daily_cap, a stepper 0–20 (BR-PLAN-11): the new words a study day takes from the documents' queue, after the course's own."
+  },
+  "settingsDocDailyCapDecrease": "Decrease words a day from documents",
+  "@settingsDocDailyCapDecrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsDocDailyCapIncrease": "Increase words a day from documents",
+  "@settingsDocDailyCapIncrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsDocSaveImages": "Save original images",
+  "@settingsDocSaveImages": {
+    "description": "M3 switch: doc_save_images (BR-DOC-05): a photographed document keeps its pages' photos on this phone."
+  },
+  "settingsDocAutodelete": "Auto-delete documents",
+  "@settingsDocAutodelete": {
+    "description": "M3 row: doc_autodelete_days (FR-D3-03), its value beside it; opens the choice of Never or after 30, 90 or 365 days."
+  },
+  "settingsDocAutodeleteNote": "The words you added stay",
+  "@settingsDocAutodeleteNote": {
+    "description": "M3 subtitle under Auto-delete documents (BR-DOC-05): deleting a document never deletes the words added from it."
+  },
+  "settingsDocAutodeleteNever": "Never",
+  "@settingsDocAutodeleteNever": {
+    "description": "M3: Auto-delete documents is off (doc_autodelete_days 0)."
+  },
+  "settingsDocAutodeleteAfter": "{count, plural, =1{After 1 day} other{After {count} days}}",
+  "@settingsDocAutodeleteAfter": {
+    "description": "M3: a document is deleted this many days after it was added (30, 90 or 365).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "settingsDocImagesDropTitle": "Delete the images already saved?",
+  "@settingsDocImagesDropTitle": {
+    "description": "FR-D3-04: the question when Save original images is turned off while documents keep photos."
+  },
+  "settingsDocImagesDropMessage": "New documents won't keep their images. The documents you have keep their text, and the words you added stay.",
+  "@settingsDocImagesDropMessage": {
+    "description": "FR-D3-04's message: what deleting the kept photos does, and what stays (BR-DOC-05)."
+  },
+  "settingsDocImagesDrop": "Delete images",
+  "@settingsDocImagesDrop": {
+    "description": "FR-D3-04's button: delete the kept photos."
+  },
+  "settingsDocImagesKeep": "Keep them",
+  "@settingsDocImagesKeep": {
+    "description": "FR-D3-04's other button: keep the photos already saved."
+  },
   "settingsFromTomorrow": "Applies from tomorrow",
   "@settingsFromTomorrow": {
     "description": "M3 subtitle of a row whose change reaches the plan tomorrow (BR-PLAN-08): today's plan is fixed."
@@ -4280,9 +4379,9 @@
   "@settingsTranslation": {
     "description": "M3 switch: mt_enabled (FR-M3-03)."
   },
-  "settingsTranslationStatus": "Hy-MT 1.5 · {status, select, downloading{downloading {percent}%} verifying{checking the download} ready{ready} update{update available} failed{download failed} other{not downloaded}}",
+  "settingsTranslationStatus": "Hy-MT2 · {status, select, downloading{downloading {percent}%} verifying{checking the download} ready{ready} update{update available} failed{download failed} other{not downloaded}}",
   "@settingsTranslationStatus": {
-    "description": "M3 translation subtitle: the model's state (model-manager.md). Hy-MT 1.5 is the model's name.",
+    "description": "M3 translation subtitle: the model's state (model-manager.md). Hy-MT2 is the model's name.",
     "placeholders": {
       "status": {
         "type": "String"
@@ -4855,7 +4954,7 @@
   "@exportImportExportHeading": {
     "description": "M6's export card heading, shown in capitals."
   },
-  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings and my words. Share it to Drive or email it to yourself, or save it on this phone.",
+  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings, my words and documents (their text, not their images). Share it to Drive or email it to yourself, or save it on this phone.",
   "@exportImportExportBody": {
     "description": "M6's export card text (FR-M6-01)."
   },
@@ -5006,6 +5105,26 @@
       }
     }
   },
+  "exportImportDocuments": "{count, plural, =1{1 document} other{{count} documents}}",
+  "@exportImportDocuments": {
+    "description": "The chosen file's preview (#1283): how many documents it holds (D1, BR-DOC-06).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportSentences": "{count, plural, =1{1 sentence of my own} other{{count} sentences of my own}}",
+  "@exportImportSentences": {
+    "description": "The chosen file's preview (#1283): how many of the learner's own sentences from documents it holds (word_contexts).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "exportImportMerge": "Merge — keep the most recent of each word",
   "@exportImportMerge": {
     "description": "M6 radio: FR-M6-03."
@@ -5109,6 +5228,209 @@
   "addWordIntro": "Words you meet in real life. Saved on this phone, quizzed like any other.",
   "@addWordIntro": {
     "description": "R2: the line under the title."
+  },
+  "docImportTitle": "Learn from a document",
+  "@docImportTitle": {
+    "description": "D1's title, and R1's way to it (#1227)."
+  },
+  "docImportIntro": "Bring the German you meet: a letter, a page, an article.",
+  "@docImportIntro": {
+    "description": "D1: the line under the title."
+  },
+  "docImportPaste": "Paste text",
+  "@docImportPaste": {
+    "description": "D1's choice that pastes text from the clipboard (FR-D1-01)."
+  },
+  "docImportPasteDetail": "From the clipboard",
+  "@docImportPasteDetail": {
+    "description": "D1: the line under Paste text."
+  },
+  "docImportPasteEmpty": "Nothing to paste: copy some German text first",
+  "@docImportPasteEmpty": {
+    "description": "D1: under Paste text, off, when the clipboard holds no text."
+  },
+  "docImportPrivacy": "Everything stays on this phone: reading and translation run here, offline.",
+  "@docImportPrivacy": {
+    "description": "D1: the privacy line under the choices (BR-DOC-01)."
+  },
+  "docImportTextLabel": "The text to read",
+  "@docImportTextLabel": {
+    "description": "D1: what a screen reader hears on the pasted text's box."
+  },
+  "docImportFind": "Find my words",
+  "@docImportFind": {
+    "description": "D1: the button under the pasted text that reads it."
+  },
+  "docImportCut": "Sogda reads only the first {count} characters: the rest is cut.",
+  "@docImportCut": {
+    "description": "D1: a text over the limit is cut (FR-D1-02). count is the limit, 20,000.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPasted": "Pasted text",
+  "@docImportPasted": {
+    "description": "D1 while processing: where the text came from."
+  },
+  "docImportShared": "Shared text",
+  "@docImportShared": {
+    "description": "D1 while processing: text another app shared."
+  },
+  "docImportReading": "Reading",
+  "@docImportReading": {
+    "description": "D1: the processing card's heading, in small capitals."
+  },
+  "docImportFinding": "Finding your words…",
+  "@docImportFinding": {
+    "description": "D1: the step that matches the text's words."
+  },
+  "docImportOffline": "On this phone, offline. It takes a few seconds.",
+  "@docImportOffline": {
+    "description": "D1: under the processing card."
+  },
+  "docImportCancel": "Cancel",
+  "@docImportCancel": {
+    "description": "D1: stops processing and saves nothing (FR-D1-05)."
+  },
+  "docImportNotGerman": "This doesn't look like German",
+  "@docImportNotGerman": {
+    "description": "D1: the text isn't German (FR-D1-04)."
+  },
+  "docImportNotGermanBody": "Sogda finds German words. In another language it finds few or none.",
+  "@docImportNotGermanBody": {
+    "description": "D1: under This doesn't look like German."
+  },
+  "docImportContinueAnyway": "Continue anyway",
+  "@docImportContinueAnyway": {
+    "description": "D1: goes on with a text that isn't German (FR-D1-04)."
+  },
+  "docImportFailed": "The text couldn't be read.",
+  "@docImportFailed": {
+    "description": "D1: the text couldn't be saved or matched."
+  },
+  "docImportUntitled": "Text of {date}",
+  "@docImportUntitled": {
+    "description": "A document's title when its text has no line of words: date is the day it was saved, as \"2 Oct\".",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "docImportTakePhotos": "Take photos",
+  "@docImportTakePhotos": {
+    "description": "D1's choice that photographs pages with the camera (FR-D1-01, #1229)."
+  },
+  "docImportTakePhotosDetail": "The camera, page by page",
+  "@docImportTakePhotosDetail": {
+    "description": "D1: the line under Take photos."
+  },
+  "docImportChooseImages": "Choose images",
+  "@docImportChooseImages": {
+    "description": "D1's choice that reads photos from the gallery (FR-D1-01, #1229)."
+  },
+  "docImportChooseImagesDetail": "Photos already on this phone",
+  "@docImportChooseImagesDetail": {
+    "description": "D1: the line under Choose images."
+  },
+  "docImportPhotos": "{count, plural, =1{1 photo} other{{count} photos}}",
+  "@docImportPhotos": {
+    "description": "D1 while photographing or reading photos: how many there are.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPage": "Page {page}",
+  "@docImportPage": {
+    "description": "D1: one photographed page in the list, e.g. \"Page 2\".",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportAddPage": "Add a page",
+  "@docImportAddPage": {
+    "description": "D1: photographs one more page."
+  },
+  "docImportDone": "Done",
+  "@docImportDone": {
+    "description": "D1: the pages are all photographed; read them."
+  },
+  "docImportReadingPage": "Reading page {page} of {count}…",
+  "@docImportReadingPage": {
+    "description": "D1 processing a photo: page is the one being read, count all of them.",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportCheckTitle": "Check the text",
+  "@docImportCheckTitle": {
+    "description": "D1's Check the text (FR-D1-03): its title."
+  },
+  "docImportCheckIntro": "Photo {page} was hard to read. Fix the marked words, then continue.",
+  "@docImportCheckIntro": {
+    "description": "Check the text: under the title. page is the photo that was hard to read.",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportCheckCount": "{count, plural, =1{1 word to check} other{{count} words to check}}",
+  "@docImportCheckCount": {
+    "description": "Check the text: the pill with how many words were read with low confidence.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportTheText": "The text",
+  "@docImportTheText": {
+    "description": "Check the text: the box's heading, in small capitals."
+  },
+  "docImportCheckNote": "What you correct here is the text Sogda reads and saves.",
+  "@docImportCheckNote": {
+    "description": "Check the text: under the box (FR-D1-03: the edits are what is saved)."
+  },
+  "docImportContinue": "Continue",
+  "@docImportContinue": {
+    "description": "Check the text: the corrected text goes on to be read."
+  },
+  "docImportTakeAgain": "Take again",
+  "@docImportTakeAgain": {
+    "description": "Check the text: photographs the hard page again."
+  },
+  "docImportTooManyPages": "Sogda reads up to {count} pages: the rest are left out.",
+  "@docImportTooManyPages": {
+    "description": "D1: more pages than it reads (FR-D1-02). count is the limit, 30.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportNoText": "No text found on the photos. Take them again in good light.",
+  "@docImportNoText": {
+    "description": "D1: OCR found no text on any photo."
   },
   "addWordArticle": "Article",
   "@addWordArticle": {
@@ -5223,6 +5545,22 @@
   "addWordDeleteKeep": "Keep it",
   "@addWordDeleteKeep": {
     "description": "R2 edit mode: the confirm's cancel."
+  },
+  "addWordDiscardTitle": "Leave without saving?",
+  "@addWordDiscardTitle": {
+    "description": "#1263: R2's confirm when Back would leave typed text unsaved (a new word, or changes in edit mode)."
+  },
+  "addWordDiscardBody": "What you typed here will be lost.",
+  "@addWordDiscardBody": {
+    "description": "#1263: R2's leave confirm, the line under its title."
+  },
+  "addWordDiscard": "Leave",
+  "@addWordDiscard": {
+    "description": "#1263: R2's leave confirm, the button that leaves without saving."
+  },
+  "addWordDiscardKeep": "Keep editing",
+  "@addWordDiscardKeep": {
+    "description": "#1263: R2's leave confirm, the button that stays on R2 with the text."
   },
   "addWordSaveFailed": "Couldn't save the word. Nothing changed.",
   "@addWordSaveFailed": {
@@ -5722,9 +6060,9 @@
   "@resetEverythingTitle": {
     "description": "The ResetDialog artboard: the title."
   },
-  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history and my words on this phone. Export first if you might want it back. Type RESET to confirm.",
+  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history, my words and documents on this phone. Export first if you might want it back, but a document's photos aren't in the file. Type RESET to confirm.",
   "@resetEverythingMessage": {
-    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language."
+    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language. #1288: it names the documents, whose photos an export never holds (BR-DOC-06)."
   },
   "resetEverythingConfirm": "Reset",
   "@resetEverythingConfirm": {
@@ -5804,7 +6142,7 @@
   "@aboutLicences": {
     "description": "M9: the row to M8."
   },
-  "aboutLicencesNote": "Flutter packages · Supertonic OpenRAIL-M · Hy-MT · fonts (OFL)",
+  "aboutLicencesNote": "Flutter packages · Supertonic OpenRAIL-M · Hy-MT2 Apache-2.0 · fonts (OFL)",
   "@aboutLicencesNote": {
     "description": "M9: under the licences row, what M8 lists."
   },
@@ -5876,7 +6214,7 @@
   },
   "modelNotifyPausedNote": "Resumes on Wi-Fi, or from {screen}",
   "@modelNotifyPausedNote": {
-    "description": "Under the paused notification. screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "description": "Under the paused notification. screen is M4's title, modelsTitle (#1164).",
     "placeholders": {
       "screen": {
         "type": "String"
@@ -5889,7 +6227,7 @@
   },
   "modelNotifyCompleteNote": "{screen} says when it is ready",
   "@modelNotifyCompleteNote": {
-    "description": "Under the finished notification: M4 shows Ready, or Failed if a checksum fails (#438). screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "description": "Under the finished notification: M4 shows Ready, or Failed if a checksum fails (#438). screen is M4's title, modelsTitle (#1164).",
     "placeholders": {
       "screen": {
         "type": "String"
@@ -5902,7 +6240,7 @@
   },
   "modelNotifyFailedNote": "Retry it from {screen}",
   "@modelNotifyFailedNote": {
-    "description": "Under the failed notification. screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "description": "Under the failed notification. screen is M4's title, modelsTitle (#1164).",
     "placeholders": {
       "screen": {
         "type": "String"
@@ -5940,14 +6278,6 @@
         "format": "decimalPattern"
       }
     }
-  },
-  "modelsTitleVoice": "Voice",
-  "@modelsTitleVoice": {
-    "description": "M4's title in a build without translation (#1070, ADR 9), and Me's row that opens it (#1164)."
-  },
-  "modelsFooterVoice": "The voice runs entirely on the phone. Deleting it falls back to the phone's German voice.",
-  "@modelsFooterVoice": {
-    "description": "M4's footer in a build without translation (#1070)."
   },
   "modelsTitle": "Voice & translation",
   "@modelsTitle": {
@@ -6012,9 +6342,9 @@
   "@modelsVoiceTitle": {
     "description": "M4's voice card: its title. Supertonic 3 is the model's name."
   },
-  "modelsTranslationTitle": "Hy-MT 1.5 translation",
+  "modelsTranslationTitle": "Hy-MT2 translation",
   "@modelsTranslationTitle": {
-    "description": "M4's translation card: its title. Hy-MT 1.5 is the model's name."
+    "description": "M4's translation card: its title. Hy-MT2 is the model's name."
   },
   "modelsVoiceSubtitle": "{size} · {licence} licence",
   "@modelsVoiceSubtitle": {
@@ -6202,10 +6532,6 @@
       }
     }
   },
-  "modelsHymtGated": "Not offered in this version of the app",
-  "@modelsHymtGated": {
-    "description": "Under Hy-MT's download when the build's licence flag is off (FR-M4-04)."
-  },
   "modelsNotifyWhy": "It asks to show the download's progress in a notification",
   "@modelsNotifyWhy": {
     "description": "Under S2 page 5's Download now and M4's Download: why the download asks for the notification permission (Android 13+, iOS; #501, the owner's decision). A refusal still downloads."
@@ -6263,5 +6589,398 @@
   "modelsDeleteFailed": "Couldn't delete all of the model's files. Try again.",
   "@modelsDeleteFailed": {
     "description": "M4 toast when deleting a model's files fails part-way (#721)."
+  },
+  "docWordsSummary": "{fresh} new · {probable} probably known · {outside} outside the course",
+  "@docWordsSummary": {
+    "description": "D2's header line (doc-words.md): the counts of new words, words probably known, and words outside the course.",
+    "placeholders": {
+      "fresh": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "probable": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "outside": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsShowProbablyKnown": "Show words I probably know",
+  "@docWordsShowProbablyKnown": {
+    "description": "D2's switch: also mark the words of steps the learner skipped (doc_show_probably_known)."
+  },
+  "docWordsLegendNew": "{level} new",
+  "@docWordsLegendNew": {
+    "description": "D2's legend: the mark of a new word of this level. level is A1 … C2.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsLegendMine": "My word",
+  "@docWordsLegendMine": {
+    "description": "D2's legend and mark: a word that is one of My words."
+  },
+  "docWordsLegendOutside": "outside the course",
+  "@docWordsLegendOutside": {
+    "description": "D2's legend: the mark of a word outside the course."
+  },
+  "docWordsAddLevel": "Add my level ({level}) · {count}",
+  "@docWordsAddLevel": {
+    "description": "D2's bulk button (FR-D2-03): add every new word of the learner's level. level is A1 … C2; count how many.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddLevels": "Add {level} and {next} · {count}",
+  "@docWordsAddLevels": {
+    "description": "D2's bulk button (FR-D2-03): add the new words of the learner's level and the one above.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "next": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddAll": "Add all new · {count}",
+  "@docWordsAddAll": {
+    "description": "D2's bulk button (FR-D2-03): add every new course word in the text. count is how many.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsCapNote": "{cap} a day: the other {later} start tomorrow or later",
+  "@docWordsCapNote": {
+    "description": "D2's note under the bulk bar (BR-PLAN-11): cap is doc_daily_cap, later how many would start on a later day.",
+    "placeholders": {
+      "cap": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "later": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedToday": "Added {word}: you'll learn it today",
+  "@docWordsAddedToday": {
+    "description": "D2's toast (FR-D2-02): the word joined today's plan. word is the word as it stands in the text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedFrom": "Added {word}: from {day}",
+  "@docWordsAddedFrom": {
+    "description": "D2's toast (FR-D2-02): the word starts on a later study day. day is that day's name, Thursday.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedWaiting": "Added {word}: it waits in your queue",
+  "@docWordsAddedWaiting": {
+    "description": "D2's toast: the word waits in the document queue (a cap of 0, or the backlog pause), BR-PLAN-11.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedMany": "Added {count}: {today} today, the rest later",
+  "@docWordsAddedMany": {
+    "description": "D2's toast after a bulk add (FR-D2-03): count words added, today of them in today's plan.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "today": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsGone": "This document is no longer here.",
+  "@docWordsGone": {
+    "description": "D2 for a document that was deleted."
+  },
+  "docWordsFailed": "Couldn't read this document's words.",
+  "@docWordsFailed": {
+    "description": "D2 when the matcher's run fails."
+  },
+  "docWordsEmpty": "You know every word in this text",
+  "@docWordsEmpty": {
+    "description": "D2's empty state: no new word in the text (doc-words.md, States)."
+  },
+  "docWordsSemNew": "{word}, new, {level}",
+  "@docWordsSemNew": {
+    "description": "Screen reader: a new course word in D2's text. level is A1 … C2.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemProbable": "{word}, probably known",
+  "@docWordsSemProbable": {
+    "description": "Screen reader: a word D2 thinks the learner probably knows.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemOutside": "{word}, outside the course",
+  "@docWordsSemOutside": {
+    "description": "Screen reader: a word outside the course in D2's text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemMine": "{word}, my word",
+  "@docWordsSemMine": {
+    "description": "Screen reader: a word that is one of My words in D2's text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemAdded": "{word}, added",
+  "@docWordsSemAdded": {
+    "description": "Screen reader: a word already added from this document.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsCardInText": "In your text",
+  "@docWordsCardInText": {
+    "description": "D2's card: the heading over the sentence from the document."
+  },
+  "docWordsCardAdd": "Add",
+  "@docWordsCardAdd": {
+    "description": "D2's card button (FR-D2-02): add the word to learn."
+  },
+  "docWordsCardAdded": "Added",
+  "@docWordsCardAdded": {
+    "description": "D2's card button once the word is added."
+  },
+  "docWordsCardKnow": "I know this",
+  "@docWordsCardKnow": {
+    "description": "D2's card button (FR-D2-04): W1's Mark known."
+  },
+  "docWordsCardIgnore": "Ignore",
+  "@docWordsCardIgnore": {
+    "description": "D2's card button: no mark for this word in this document."
+  },
+  "docWordsCardOpen": "Open the word",
+  "@docWordsCardOpen": {
+    "description": "D2's card link: open the word's page (W1)."
+  },
+  "docWordsCardOutside": "Not in the course",
+  "@docWordsCardOutside": {
+    "description": "D2's card for a word outside the course."
+  },
+  "docWordsCardMine": "Already one of my words",
+  "@docWordsCardMine": {
+    "description": "D2's card for a word that is already one of My words."
+  },
+  "docWordsCardCompound": "Made of {parts}",
+  "@docWordsCardCompound": {
+    "description": "D2's card: a compound's parts, a hint only. parts is «Nebenkosten + Abrechnung».",
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsCardWhich": "Which word is it?",
+  "@docWordsCardWhich": {
+    "description": "D2's card for an ambiguous word: the learner chooses the reading first."
+  },
+  "docWordsCardAddMine": "Add as my word",
+  "@docWordsCardAddMine": {
+    "description": "D2's card button (FR-D2-05): open R2 to add the word as one of My words."
+  },
+  "docWordsCardKeepSentence": "Keep this sentence",
+  "@docWordsCardKeepSentence": {
+    "description": "D2's card for one of My words (FR-D2-06): keep this document's sentence with the word, no second word."
+  },
+  "docWordsSentenceKept": "Kept the sentence for {word}",
+  "@docWordsSentenceKept": {
+    "description": "D2's toast: the sentence is kept with the learner's own word (FR-D2-06). word as in the text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "myDocumentsTitle": "My documents",
+  "@myDocumentsTitle": {
+    "description": "D3's title: the documents the learner has kept (#1295)."
+  },
+  "myDocumentsNew": "New document",
+  "@myDocumentsNew": {
+    "description": "D3's button: open D1 for a new document."
+  },
+  "myDocumentsPhotos": "{count, plural, one{1 photo} other{{count} photos}}",
+  "@myDocumentsPhotos": {
+    "description": "D3's row: a document read from photos. count is how many.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsPdf": "{pages, plural, one{PDF, 1 page} other{PDF, {pages} pages}}",
+  "@myDocumentsPdf": {
+    "description": "D3's row: a document read from a PDF. pages is how many.",
+    "placeholders": {
+      "pages": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsText": "text",
+  "@myDocumentsText": {
+    "description": "D3's row: a document that came as text, pasted or shared."
+  },
+  "myDocumentsAdded": "{count, plural, one{1 word added} other{{count} words added}}",
+  "@myDocumentsAdded": {
+    "description": "D3's row (FR-D3-01): how many of its words the learner added.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsNothingNew": "nothing new",
+  "@myDocumentsNothingNew": {
+    "description": "D3's row: none of its words added."
+  },
+  "myDocumentsStorage": "{count, plural, one{1 document} other{{count} documents}} · {megabytes} MB (images)",
+  "@myDocumentsStorage": {
+    "description": "D3's footer: how many documents, and the megabytes their photos take (rounded up).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "megabytes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsStorageNone": "{count, plural, one{1 document} other{{count} documents}}",
+  "@myDocumentsStorageNone": {
+    "description": "D3's footer when no photo is kept: how many documents.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsOptions": "Options for {title}",
+  "@myDocumentsOptions": {
+    "description": "Screen reader: a row's menu button. title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "myDocumentsRename": "Rename",
+  "@myDocumentsRename": {
+    "description": "D3's row menu: rename the document."
+  },
+  "myDocumentsDelete": "Delete",
+  "@myDocumentsDelete": {
+    "description": "D3's row menu and the confirm's button: delete the document."
+  },
+  "myDocumentsDeleteTitle": "Delete “{title}”?",
+  "@myDocumentsDeleteTitle": {
+    "description": "D3's delete confirm (FR-D3-02). title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "myDocumentsDeleteBody": "The words you added stay, with their sentences.",
+  "@myDocumentsDeleteBody": {
+    "description": "D3's delete confirm: what stays (BR-DOC-05)."
+  },
+  "myDocumentsDeleteKeep": "Keep",
+  "@myDocumentsDeleteKeep": {
+    "description": "D3's delete confirm: cancel."
+  },
+  "myDocumentsDeleted": "Deleted “{title}”",
+  "@myDocumentsDeleted": {
+    "description": "D3's toast after a delete. title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "meDocuments": "My documents",
+  "@meDocuments": {
+    "description": "Me's link to D3, with no document kept yet."
+  },
+  "meDocumentsCount": "My documents · {count}",
+  "@meDocumentsCount": {
+    "description": "Me's link to D3: count is how many documents are kept.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsEmptyTitle": "Bring the German you meet",
+  "@myDocumentsEmptyTitle": {
+    "description": "D3's empty state, its title."
+  },
+  "myDocumentsEmptyBody": "A letter, a page, an article: Sogda marks the words you don't know yet, by level, and adds the ones you choose.",
+  "@myDocumentsEmptyBody": {
+    "description": "D3's empty state, under its title."
   }
 }

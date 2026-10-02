@@ -15,11 +15,11 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
-import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/domain/plan_stats.dart';
+import 'package:sogda/features/documents/my_documents_screen.dart';
 import 'package:sogda/features/today/today_providers.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
@@ -229,15 +229,18 @@ class _Me extends ConsumerWidget {
                   ),
                   (
                     Icons.mic_none,
-                    // #1164: M4's title, Voice in a build without Hy-MT.
-                    // ponytail: by the build alone. M4 also counts a Hy-MT
-                    // model an older build left on the phone (#513), which
-                    // no public build offered; watch translationModelProvider
-                    // here if one ever does.
-                    enableHymtDownload
-                        ? l10n.modelsTitle
-                        : l10n.modelsTitleVoice,
+                    // #1164: M4's title.
+                    l10n.modelsTitle,
                     const ModelsRoute(),
+                  ),
+                  // D3 (#1295), in the search's stack with D1 and D2.
+                  (
+                    Icons.description_outlined,
+                    switch (ref.watch(myDocumentsProvider).value?.length) {
+                      null || 0 => l10n.meDocuments,
+                      final count => l10n.meDocumentsCount(count),
+                    },
+                    const MyDocumentsRoute(),
                   ),
                   (Icons.shield_outlined, l10n.meAbout, const AboutRoute()),
                 ],
@@ -872,7 +875,8 @@ class _Badge extends StatelessWidget {
   }
 }
 
-/// Settings, Voice (M4), About & privacy: one card, a row each.
+/// Settings, Voice (M4), My documents (D3), About & privacy: one card, a
+/// row each.
 class _Links extends StatelessWidget {
   const _Links({required this.links});
 

@@ -17,7 +17,7 @@ part 'licences_screen.g.dart';
 typedef Licence = ({String name, String kind, String? asset, String? text});
 
 /// FR-M8-01: the on-device models' licences, bundled in full, as their
-/// makers publish them (`Supertone/supertonic-3`, `tencent/HY-MT1.5-1.8B`),
+/// makers publish them (`Supertone/supertonic-3`, `tencent/Hy-MT2-1.8B-GGUF`),
 /// and the Supertonic SDK's, whose text front end `supertonic_text.dart`
 /// ports (#172). `tools/licences.py` fetches and checks them.
 const List<Licence> modelLicences = <Licence>[
@@ -34,9 +34,9 @@ const List<Licence> modelLicences = <Licence>[
     text: null,
   ),
   (
-    name: 'Hy-MT 1.5 (1.8B)',
-    kind: 'Tencent HY Community License',
-    asset: 'assets/licences/HY-MT1.5-Tencent-HY.txt',
+    name: 'Hy-MT2 (1.8B)',
+    kind: 'Apache-2.0',
+    asset: 'assets/licences/Hy-MT2-Apache-2.0.txt',
     text: null,
   ),
 ];
@@ -60,8 +60,9 @@ const List<Licence> fontLicences = <Licence>[
 /// FR-M8-01 (#610): the native libraries in the APK that no package's
 /// LICENSE covers, bundled in full: ONNX Runtime (the Supertonic voice's
 /// engine) with its third-party notices, the Apache-2.0 Android libraries the
-/// plugins pull in, and desugar_jdk_libs, which the build compiles into the
-/// DEX (#848). `tools/licences.py` fetches and checks them.
+/// plugins pull in, desugar_jdk_libs, which the build compiles into the DEX
+/// (#848), and PdfBox-Android with Bouncy Castle, D1's PDF reader (#1228).
+/// `tools/licences.py` fetches and checks them.
 const List<Licence> nativeLicences = <Licence>[
   (
     name: 'ONNX Runtime',
@@ -81,10 +82,45 @@ const List<Licence> nativeLicences = <Licence>[
     asset: 'assets/licences/AndroidX-Apache-2.0.txt',
     text: null,
   ),
+  // #1229: Google's SDK and its bundled Latin model are no open-source
+  // licence, but terms, published as web pages: named here with their
+  // links, not fetched (`tools/licences.py` checks texts it can compare).
+  (
+    name: 'ML Kit text recognition (Latin, bundled)',
+    kind: 'ML Kit Terms of Service',
+    asset: null,
+    text:
+        'Sogda reads photographed pages with Google ML Kit text recognition, '
+        'its Latin model bundled in the app. It is used under the ML Kit '
+        'Terms of Service (https://developers.google.com/ml-kit/terms) and '
+        'the Google APIs Terms of Service '
+        '(https://developers.google.com/terms).\n\n'
+        'The pages are read on this phone. ML Kit\'s usage metrics are '
+        'never uploaded: Sogda leaves out the component that would send '
+        'them.',
+  ),
   (
     name: 'desugar_jdk_libs',
     kind: 'GPL-2.0 with the Classpath Exception',
     asset: 'assets/licences/DesugarJdkLibs-GPL-2.0-Classpath-Exception.txt',
+    text: null,
+  ),
+  (
+    name: 'PdfBox-Android',
+    kind: 'Apache-2.0',
+    asset: 'assets/licences/PdfBox-Android-Apache-2.0.txt',
+    text: null,
+  ),
+  (
+    name: 'PdfBox-Android · NOTICE',
+    kind: 'Apache PDFBox',
+    asset: 'assets/licences/PdfBox-Android-NOTICE.txt',
+    text: null,
+  ),
+  (
+    name: 'Bouncy Castle',
+    kind: 'MIT',
+    asset: 'assets/licences/BouncyCastle-MIT.txt',
     text: null,
   ),
 ];

@@ -79,6 +79,30 @@ sentenceMatches(:lang AS TEXT, :step AS TEXT OR NULL):
   ORDER BY e.rank
   LIMIT :limit;
 
+-- #1193: every example line's translation into :lang (Polish, Russian), which
+-- R1's tier 4 keys in memory to find a sentence by it, as #1121 finds a word
+-- by its meaning: FTS5 folds neither ł nor ё. With the word's step (L2's
+-- search keeps to one) and frequency (the most frequent first).
+exampleTranslationsIn:
+  SELECT t.word_uid AS wordUid, t.ord AS ord, t.translation AS translation,
+         w.sublevel_code AS step, w.freq AS freq
+  FROM word_example_translations t
+  JOIN words w ON w.uid = t.word_uid
+  WHERE t.lang = :lang;
+
+-- #1193: the lines of :uids, with their translation into :lang, as tier 4
+-- shows a sentence; the repository keeps the lines its search found (and
+-- has kept to L2's step already).
+examplesWithTranslation(:lang AS TEXT):
+  SELECT x.word_uid AS wordUid, x.ord AS ord, x.german AS german,
+         t.translation AS translation,
+         w.german AS head, w.article AS article, w.sublevel_code AS step
+  FROM word_examples x
+  JOIN words w ON w.uid = x.word_uid
+  JOIN word_example_translations t
+    ON t.word_uid = x.word_uid AND t.ord = x.ord AND t.lang = :lang
+  WHERE x.word_uid IN :uids;
+
 wordByUid:
   SELECT * FROM words WHERE uid = :uid;
 
@@ -169,3 +193,12 @@ contentCounts:
     (SELECT COUNT(*) FROM words WHERE kind = 'vocab') AS word_total,
     (SELECT COUNT(*) FROM grammar_topics) AS grammar_total,
     (SELECT COUNT(*) FROM word_examples) AS sentence_total;
+
+-- Documents (#1230): every word to learn, as the lemmatiser
+-- and the matcher read it (`document-matcher.md`): its forms, step, level
+-- and frequency. Notes and comparisons are never studied (BR-CONTENT-04), so
+-- never offered. The step's place in the course is `allSublevels`' order.
+lemmaWords:
+  SELECT uid, german, pos, article, forms, sublevel_code, level_code, freq
+  FROM words
+  WHERE kind = 'vocab';

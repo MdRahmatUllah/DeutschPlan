@@ -123,6 +123,12 @@ Future<void> _resetEverything(BuildContext context) async {
     return;
   }
   await _dropRecordings(container);
+  // #1229: the documents' photos, as the recordings (FR-M7-02).
+  try {
+    await container.read(documentRepositoryProvider).deleteAllImages();
+  } on Object catch (error) {
+    debugPrint('reset: document photos not deleted: $error');
+  }
   // What is kept alive and read before: a setup draft, a session, the plan.
   container
     ..invalidate(planEngineProvider)

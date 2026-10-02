@@ -65,6 +65,13 @@ Future<void> importBackup(
     } on Object catch (error) {
       debugPrint('import: recordings not deleted: $error');
     }
+    // #1229: the file's documents come without their photos (BR-DOC-06),
+    // and the phone's are gone with their rows.
+    try {
+      await container.read(documentRepositoryProvider).deleteAllImages();
+    } on Object catch (error) {
+      debugPrint('import: document photos not deleted: $error');
+    }
   }
   // The settings cache, the plan engine (built with four of them, and kept
   // alive under Today) and Today's plan were read before the import: the
@@ -388,6 +395,12 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
           l10n.exportImportExams(rows('exam_attempts')),
         if (rows('custom_words') > 0)
           l10n.exportImportMyWords(rows('custom_words')),
+        // A Replace deletes the phone's documents and their sentences
+        // (BR-DOC-06), so the file says how many it brings (#1283).
+        if (rows('documents') > 0)
+          l10n.exportImportDocuments(rows('documents')),
+        if (rows('word_contexts') > 0)
+          l10n.exportImportSentences(rows('word_contexts')),
       ].join(' · '),
     ]..removeWhere((line) => line.isEmpty);
   }

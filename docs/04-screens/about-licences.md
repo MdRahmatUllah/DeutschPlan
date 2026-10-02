@@ -6,7 +6,7 @@
 
 **About layout.** App mark (the app icon, `SgMark.appIcon` at 60 dp: the brand kit's tiles on the Lagoon square, #602); "Version 1.0.0 (build 41) · content 2026.09 · 21 Sep 2026"; **Privacy**: "Your progress stays on this phone. Sogda has no account, no server and no analytics. The internet is used only when you open a web search link or download a model."; **Open-source and model licences** → M8; **Contact** address; **Content**: "5,069 words · 182 grammar topics · 10,545 sentences" (from `meta`).
 
-**Licences layout.** Sections Models (Supertonic 3 — OpenRAIL-M; Hy-MT 1.5 (1.8B) — Hy-MT licence), Fonts (Inter, Noto Sans Bengali — OFL 1.1), Native libraries (ONNX Runtime — MIT, with its third-party notices; the Android libraries — Apache-2.0; #610; desugar_jdk_libs — GPL-2.0 with the Classpath Exception, #848), Packages (from `LicenseRegistry`).
+**Licences layout.** Sections Models (Supertonic 3 — OpenRAIL-M; Hy-MT2 (1.8B) — Apache-2.0), Fonts (Inter, Noto Sans Bengali — OFL 1.1), Native libraries (ONNX Runtime — MIT, with its third-party notices; the Android libraries — Apache-2.0; #610; desugar_jdk_libs — GPL-2.0 with the Classpath Exception, #848), Packages (from `LicenseRegistry`).
 
 **Functional requirements**
 - FR-M9-01 Version/build from `package_info_plus`; content version and counts from `c.meta`. The app's version shows on its own ("Version 1.0.0 (build 41)") when the course's facts can't be read (#692 ME-13).
@@ -26,7 +26,7 @@
 - **Models** (FR-M8-01): the licences are bundled unchanged, as their makers publish them (only git's line endings differ), in `assets/licences/`:
   - Supertonic 3 is under the BigScience OpenRAIL-M licence (`Supertone/supertonic-3`).
   - The Supertonic SDK is under MIT (`supertone-inc/supertonic-py`): `supertonic_text.dart` ports its text front end (#172).
-  - Hy-MT 1.5 (1.8B) is under the **Tencent HY Community License** (`tencent/HY-MT1.5-1.8B`). It is named that, not "Hy-MT licence" as the artboard has it. Its text excludes the EU, the UK and South Korea, which the model manager's region gate follows.
+  - Hy-MT2 (1.8B) is under **Apache-2.0** (`tencent/Hy-MT2-1.8B-GGUF`), not the Tencent HY Community License of Hy-MT 1.5 that the artboard names: no regional exclusions, so no region gate (ADR 30). Its text ships as `assets/licences/Hy-MT2-Apache-2.0.txt`.
 - **Fonts:** Inter and Noto Sans Bengali, SIL OFL 1.1, bundled.
 - **Native libraries** (#610): what ships in the APK that no package's LICENSE covers, so Flutter's registry can't list it.
   - **ONNX Runtime** 1.23.0, the Supertonic voice's engine (`libonnxruntime.so`, from Maven through flutter_onnxruntime, whose own LICENSE covers only the plugin): its MIT licence and its `ThirdPartyNotices.txt`, both from the release commit.

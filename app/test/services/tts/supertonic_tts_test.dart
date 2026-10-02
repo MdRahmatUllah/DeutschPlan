@@ -138,7 +138,6 @@ void main() {
                 name: 'Supertonic 3 voice',
                 licence: 'test',
                 disables: 'tts_engine',
-                regionExcluded: const <String>[],
                 variants: <ModelVariant>[
                   ModelVariant(
                     id: 'default',

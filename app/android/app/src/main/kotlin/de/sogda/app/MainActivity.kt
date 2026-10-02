@@ -28,14 +28,23 @@ import java.util.function.Consumer
  * the answer is always false here; iOS supplies it.
  */
 class MainActivity : FlutterActivity() {
-    private companion object {
-        const val CHANNEL = "sogda/glass"
+    companion object {
+        private const val CHANNEL = "sogda/glass"
 
         /** `lib/services/device_storage.dart`: M4's free space (#156). */
-        const val STORAGE_CHANNEL = "sogda/storage"
+        private const val STORAGE_CHANNEL = "sogda/storage"
 
         /** `lib/services/start_report.dart`: the start drawn in full (#462). */
-        const val START_CHANNEL = "sogda/start"
+        private const val START_CHANNEL = "sogda/start"
+
+        /** `lib/services/shared_text.dart`: text shared from another app (#1227). */
+        private const val SHARE_CHANNEL = "sogda/share"
+
+        /**
+         * Where [ShareActivity] sends a share: D1 (`deep_links.dart`). The
+         * link alone: D1 takes the text from [ShareActivity.take].
+         */
+        const val SHARE_LINK = "sogda://import"
     }
 
     private var channel: MethodChannel? = null
@@ -66,6 +75,7 @@ class MainActivity : FlutterActivity() {
         ownLinksOnly(intent)
         super.onNewIntent(intent)
     }
+
 
     /** No `route` extra: the first route is the intent's `sogda:` link, if any. */
     override fun getInitialRoute(): String? = null
@@ -111,6 +121,19 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        // #1227: D1 takes the shared text once, from this process, never from
+        // an intent (ShareActivity); null when there's none.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SHARE_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "take" -> result.success(ShareActivity.take())
+                    else -> result.notImplemented()
+                }
+            }
+
+        // D1's PDFs: their text layer, page by page (#1228).
+        PdfText.register(flutterEngine.dartExecutor.binaryMessenger, this)
 
         // The cold start's end: Today with its plan, or setup's first page.
         // The system logs it as "Fully drawn", after the first frame's

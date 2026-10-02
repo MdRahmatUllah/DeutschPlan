@@ -35,11 +35,15 @@ sealed class SettingKey<T> {
 }
 
 class IntSetting extends SettingKey<int> {
-  const IntSetting(super.name, super.defaultValue, [this.range]);
+  const IntSetting(super.name, super.defaultValue, [this.range, this.choices]);
 
   /// The values allowed: `settings.md`'s stepper, or a bound no screen
   /// sets. The one source for M3 and for an import's check (#820).
   final ({int min, int max})? range;
+
+  /// Where only some values in [range] are offered (`doc_autodelete_days`:
+  /// never, 30, 90 or 365 days), those; an import refuses the rest (#820).
+  final Set<int>? choices;
 
   @override
   int decode(String raw) => int.tryParse(raw) ?? defaultValue;
@@ -318,6 +322,10 @@ abstract final class SettingKeys {
   /// is tomorrow's, not today's. 0 until the engine records one.
   static const plannedStudyDays = IntSetting('planned_study_days', 0);
 
+  /// The `doc_daily_cap` today was planned with (BR-PLAN-11, -08): M3's
+  /// change is tomorrow's, not today's. -1 until the engine records one.
+  static const plannedDocCap = IntSetting('planned_doc_cap', -1);
+
   /// M6's "Last export: 20 Sep" (#148): the day of the last export the
   /// share sheet took. Unset until the first.
   static const lastExport = DateSetting('last_export');
@@ -341,6 +349,23 @@ abstract final class SettingKeys {
   /// when unset.
   static const recentSearches = StringSetting('recent_searches');
   static const learnerName = StringSetting('learner_name');
+
+  /// Learn from your documents (#1219, `document-matcher.md`), as the owner
+  /// decided (#1220): BR-PLAN-11's new words a day from documents (#1231),
+  /// whether a document keeps its pages' images, when one deletes itself
+  /// (0: never), and whether D2 lists the words the matcher thinks known.
+  static const docDailyCap = IntSetting('doc_daily_cap', 5, (min: 0, max: 20));
+  static const docSaveImages = BoolSetting('doc_save_images', true);
+  static const docAutodeleteDays = IntSetting(
+    'doc_autodelete_days',
+    0,
+    (min: 0, max: 365),
+    <int>{0, 30, 90, 365},
+  );
+  static const docShowProbablyKnown = BoolSetting(
+    'doc_show_probably_known',
+    false,
+  );
 
   /// Every key, in the order `user-database.md` lists them.
   static const List<SettingKey<Object?>> all = <SettingKey<Object?>>[
@@ -385,5 +410,10 @@ abstract final class SettingKeys {
     examTimer,
     lastExport,
     plannedStudyDays,
+    plannedDocCap,
+    docDailyCap,
+    docSaveImages,
+    docAutodeleteDays,
+    docShowProbablyKnown,
   ];
 }

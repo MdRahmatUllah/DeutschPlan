@@ -37,6 +37,7 @@ import '../core/semantics_checks.dart';
 import '../core/text_clipping.dart';
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
+import 'my_documents_fixtures.dart' show myDocumentsStub;
 import 'search_fixtures.dart';
 import 'today_fixtures.dart';
 
@@ -206,6 +207,62 @@ void main() {
         return true;
       });
       expect(marked, <String>['offen']);
+    });
+
+    testWidgets('#1193 a sentence found by its translation marks the word '
+        'there, its German unmarked', (tester) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          searchResultsProvider.overrideWith(
+            (ref, query) => Stream.value(
+              const SearchView(
+                words: <SearchRow>[],
+                sentences: <SentenceHit>[
+                  SentenceHit(
+                    wordUid: 'haus',
+                    german: 'Ich sehe das Haus.',
+                    translation: 'Widzę ten dom.',
+                    head: 'Haus',
+                    article: 'das',
+                    step: 'A1.1',
+                    runs: <(String, bool)>[('Ich sehe das Haus.', false)],
+                    translationRuns: <(String, bool)>[
+                      ('Widzę ten ', false),
+                      ('dom', true),
+                      ('.', false),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+      await type(tester, 'dom');
+
+      final tokens = tester.element(find.byType(SearchScreen)).tokens;
+      List<String> marked(String plain) {
+        final text = tester
+            .widget<RichText>(
+              find.byWidgetPredicate(
+                (w) => w is RichText && w.text.toPlainText() == plain,
+              ),
+            )
+            .text;
+        final spans = <String>[];
+        text.visitChildren((span) {
+          if (span is TextSpan &&
+              span.style?.backgroundColor == tokens.color.accent) {
+            spans.add(span.text!);
+          }
+          return true;
+        });
+        return spans;
+      }
+
+      expect(marked('Widzę ten dom.'), <String>['dom']);
+      expect(marked('Ich sehe das Haus.'), isEmpty);
     });
 
     testWidgets(
@@ -1014,6 +1071,25 @@ void main() {
       await tester.tap(find.text(l10n.searchAddWord));
       await settle(tester);
       expect(router!.state.uri.path, '/search/add');
+    });
+
+    testWidgets('#1227 Learn from a document, under it, opens D1', (
+      tester,
+    ) async {
+      await pump(tester, routed: true);
+      await tester.ensureVisible(find.text(l10n.docImportTitle));
+      await tester.tap(find.text(l10n.docImportTitle));
+      await settle(tester);
+      expect(router!.state.uri.path, '/search/import');
+    });
+
+    testWidgets('#1295 once a document is kept, it opens D3', (tester) async {
+      await pump(tester, routed: true, extra: myDocumentsStub());
+      await tester.ensureVisible(find.text(l10n.docImportTitle));
+      await tester.tap(find.text(l10n.docImportTitle));
+      await settle(tester);
+      expect(router!.state.uri.path, '/search/documents');
+      expect(find.text(l10n.myDocumentsNew), findsOneWidget);
     });
   });
 

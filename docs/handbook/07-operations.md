@@ -143,9 +143,8 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    (#719), or if a package ships no LICENSE file (which
    Flutter's `LicenseRegistry`, and so M8, would silently leave out).
    `python tools/licences.py update` fetches the texts again.
-4. **Translation stays off.** The release build passes no
-   `--dart-define=ENABLE_HYMT_DOWNLOAD` (ADR 9, #173). Changing that needs a
-   new ADR 9 entry first.
+4. **No translation flag.** Hy-MT2's download is offered in every build
+   (ADR 30); ADR 9's `ENABLE_HYMT_DOWNLOAD` is gone.
 5. **The bundle.** `python tools/release_android.py --require-upload-key` (in an
    agent's worktree with the device lock held: an app build takes it; the
    owner's checkout has none to take). It fails on a missing engine or app

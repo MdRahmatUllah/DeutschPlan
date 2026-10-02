@@ -1,0 +1,353 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/document_repository.dart';
+import 'package:sogda/domain/documents/matcher.dart';
+
+import '../db/content_fixture.dart' show realContent, tempDir;
+import '../domain/documents/photo_privacy_test.dart'
+    show exif, holds, jpeg, orientationOf;
+
+const String letter =
+    'Der Vermieter schickt die Kündigung. Die Kündigung kommt pünktlich. '
+    'Bitte überweisen Sie die Miete. Ich rufe einen Taxifahrer.';
+
+void main() {
+  late AppDatabase db;
+  late DocumentRepository documents;
+  late Map<String, String> uid;
+
+  setUp(() async {
+    db = AppDatabase.memory();
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(realContent())}' AS c",
+    );
+    documents = DocumentRepository(db, () => DateTime.utc(2026, 10, 2, 9));
+    uid = <String, String>{
+      for (final row in await ContentDao(db).lemmaWords().get())
+        row.german: row.uid,
+    };
+    // A learner in A2.1 who knows «überweisen», has had «pünktlich» planned,
+    // and keeps «Wasserzähler» as a word of their own.
+    await db.customStatement(
+      "INSERT INTO enrollments (sublevel_code, started_on, daily_new, "
+      "study_days_mask) VALUES ('A2.1', '2026-09-01', 10, 127)",
+    );
+    await db.customStatement(
+      "INSERT INTO word_state (word_uid, status) VALUES "
+      "('${uid['überweisen']}', 'done')",
+    );
+    await db.customStatement(
+      "INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code) "
+      "VALUES ('2026-09-02', '${uid['pünktlich']}', 'new', 'A1.1')",
+    );
+    await db.customStatement(
+      "INSERT INTO custom_words (created_at, german, meaning) VALUES "
+      "('2026-09-03', 'Wasserzähler', 'water meter')",
+    );
+    // «Miete», a course word of an earlier step, also kept as their own.
+    await db.customStatement(
+      "INSERT INTO custom_words (created_at, german, meaning, matched_uid) "
+      "VALUES ('2026-09-04', 'Miete', 'rent', '${uid['Miete']}')",
+    );
+  });
+
+  tearDown(() => db.close());
+
+  test('#1230: the matcher reads every word to learn, and the learner as they '
+      'stand', () async {
+    final input = await documents.matcherInput();
+    expect(input.entries.length, input.course.length);
+    expect(input.course, contains(uid['Kündigung']));
+    expect(input.learner.activeStepOrder, 3, reason: 'A2.1 is step 3');
+    expect(input.learner.level, 'A2');
+    expect(input.learner.status[uid['überweisen']], 'done');
+    expect(input.learner.everPlanned, contains(uid['pünktlich']));
+    expect(input.learner.mine, contains('wasserzaehler'));
+    expect(input.learner.mineUids, <String>{uid['Miete']!});
+  });
+
+  test('#1230 BR-DOC-03 FR-D2-07: a document\'s words are matched in an '
+      'isolate and saved, one row per lemma and sentence', () async {
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'paste',
+      body: letter,
+    );
+    final match = (await documents.match(id))!;
+    String classOf(String surface) =>
+        match.words.singleWhere((w) => w.surface == surface).docClass.name;
+    expect(classOf('Vermieter'), DocClass.probablyKnown.name);
+    expect(classOf('pünktlich'), DocClass.newInCourse.name);
+    expect(
+      classOf('Kündigung'),
+      DocClass.newInCourse.name,
+      reason: 'A2.1, the active step',
+    );
+    expect(classOf('überweisen'), DocClass.known.name);
+    expect(classOf('Taxifahrer'), DocClass.outside.name);
+    final miete = match.words.singleWhere((w) => w.surface == 'Miete');
+    expect(miete.mine, isTrue);
+    expect(
+      miete.docClass,
+      DocClass.newInCourse,
+      reason: 'mine: never probably known',
+    );
+
+    final rows = await db.select(db.documentWords).get();
+    final kuendigung = rows.where((r) => r.lemmaKey == uid['Kündigung']);
+    expect(kuendigung.map((r) => r.sentence), <String>[
+      'Der Vermieter schickt die Kündigung.',
+      'Die Kündigung kommt pünktlich.',
+    ]);
+    expect((await documents.document(id))!.wordCount, match.words.length);
+  });
+
+  test('#1230 BR-DOC-04: Add marks the word and keeps its sentence once; a '
+      'second run keeps what was added', () async {
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'paste',
+      body: letter,
+    );
+    await documents.match(id);
+    final key = uid['Kündigung']!;
+    for (var i = 0; i < 2; i++) {
+      await documents.recordAdd(
+        documentId: id,
+        lemmaKey: key,
+        wordKey: key,
+        sentence: 'Die Kündigung kommt pünktlich.',
+      );
+    }
+    expect(await documents.added(id), <String>{key});
+    final contexts = await db.select(db.wordContexts).get();
+    expect(contexts, hasLength(1));
+    expect(contexts.single.documentId, id);
+
+    // Learnt since: the rerun takes the new class, and keeps the add.
+    await db.customStatement(
+      "INSERT INTO word_state (word_uid, status) VALUES ('$key', 'learning')",
+    );
+    await documents.match(id);
+    expect(await documents.added(id), <String>{key});
+    final rows = await (db.select(
+      db.documentWords,
+    )..where((w) => w.lemmaKey.equals(key))).get();
+    expect(rows.map((r) => r.class$).toSet(), <String>{'known'});
+    expect(rows.every((r) => r.added == 1), isTrue);
+  });
+
+  test('#1295 FR-D3-01: the list, newest first, counts each added lemma '
+      'once, and follows an add', () async {
+    final older = await documents.create(
+      title: 'Old',
+      source: 'pdf',
+      body: letter,
+    );
+    final newer = await documents.create(
+      title: 'New',
+      source: 'paste',
+      body: letter,
+    );
+    await documents.match(newer);
+    final lists = documents.watchAll();
+    expect((await lists.first).map((e) => e.document.title), <String>[
+      'New',
+      'Old',
+    ]);
+    final key = uid['Kündigung']!;
+    // Twice, two sentences: one lemma added.
+    for (final sentence in <String>[
+      'Der Vermieter schickt die Kündigung.',
+      'Die Kündigung kommt pünktlich.',
+    ]) {
+      await documents.recordAdd(
+        documentId: newer,
+        lemmaKey: key,
+        wordKey: key,
+        sentence: sentence,
+      );
+    }
+    final now = await documents.watchAll().first;
+    expect(now.first.added, 1);
+    expect(now.last.document.id, older);
+    expect(now.last.added, 0);
+    // R1's *Learn from a document* goes to D3 once one is kept.
+    expect(await documents.count(), 2);
+  });
+
+  test('#1295: rename', () async {
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'paste',
+      body: letter,
+    );
+    await documents.rename(id, 'Kündigung');
+    expect((await documents.document(id))!.title, 'Kündigung');
+  });
+
+  test('#1295 FR-D3-02 BR-DOC-05: delete takes the document, what it found '
+      'and its photos; the words and their sentences stay', () async {
+    final support = tempDir('sogda_docs');
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'photo',
+      body: letter,
+    );
+    await documents.match(id);
+    final key = uid['Kündigung']!;
+    await documents.recordAdd(
+      documentId: id,
+      lemmaKey: key,
+      wordKey: key,
+      sentence: 'Die Kündigung kommt pünktlich.',
+    );
+    final photos = Directory('${support.path}/documents/$id')
+      ..createSync(recursive: true);
+    File('${photos.path}/page-1.jpg')
+        .writeAsBytesSync(List<int>.filled(1000, 1));
+    expect(await documents.imageBytes(support: support), 1000);
+
+    await documents.delete(id, support: support);
+    expect(await documents.document(id), isNull);
+    expect(await db.select(db.documentWords).get(), isEmpty);
+    final context = (await db.select(db.wordContexts).get()).single;
+    expect(context.wordKey, key, reason: 'the sentence stays with its word');
+    expect(context.documentId, isNull);
+    expect(photos.existsSync(), isFalse);
+    expect(await documents.imageBytes(support: support), 0);
+  });
+
+  group('#1296 FR-D3-03 auto-delete', () {
+    /// A document created [daysAgo] before the clock's 2 Oct, 09:00, with a
+    /// photo kept under [support].
+    Future<int> kept(Directory support, int daysAgo) async {
+      final id = await db
+          .into(db.documents)
+          .insert(
+            DocumentsCompanion.insert(
+              title: '$daysAgo days',
+              source: 'photo',
+              createdAt: DateTime.utc(
+                2026,
+                10,
+                2,
+                9,
+              ).subtract(Duration(days: daysAgo)).toIso8601String(),
+              body: letter,
+            ),
+          );
+      File('${support.path}/documents/$id/page-1.jpg')
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(<int>[1, 2, 3]);
+      return id;
+    }
+
+    test('BR-DOC-05: at 30 days, a document of 31 days goes with its photos '
+        'and one of 29 stays; its sentences stay', () async {
+      final support = tempDir('sg_autodelete');
+      final old = await kept(support, 31);
+      final recent = await kept(support, 29);
+      final key = uid['Kündigung']!;
+      await documents.recordAdd(
+        documentId: old,
+        lemmaKey: key,
+        wordKey: key,
+        sentence: 'Die Kündigung kommt pünktlich.',
+      );
+
+      expect(await documents.deleteOlderThan(30, support: support), 1);
+      expect(await documents.document(old), isNull);
+      expect(Directory('${support.path}/documents/$old').existsSync(), isFalse);
+      expect(await documents.document(recent), isNotNull);
+      expect(
+        File('${support.path}/documents/$recent/page-1.jpg').existsSync(),
+        isTrue,
+      );
+      final context = (await db.select(db.wordContexts).get()).single;
+      expect((context.wordKey, context.documentId), (key, null));
+    });
+
+    test('Never (0) deletes nothing, however old', () async {
+      final support = tempDir('sg_autodelete');
+      final ancient = await kept(support, 4000);
+      expect(await documents.deleteOlderThan(0, support: support), 0);
+      expect(await documents.document(ancient), isNotNull);
+    });
+  });
+
+  test('#1296 FR-D3-04: dropping the kept photos keeps every document\'s '
+      'text', () async {
+    final support = tempDir('sg_drop');
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'photo',
+      body: letter,
+    );
+    final shot = File('${support.path}/shot.jpg')
+      ..writeAsBytesSync(jpeg(exif()));
+    await documents.saveImages(id, <String>[shot.path], support: support);
+    expect(await documents.imageBytes(support: support), greaterThan(0));
+
+    await documents.dropImages(support: support);
+    final document = (await documents.document(id))!;
+    expect(document.imagePaths, isNull);
+    expect(document.body, letter);
+    expect(await documents.imageBytes(support: support), 0);
+  });
+
+  test('#1230: a document that is gone has nothing to match', () async {
+    expect(await documents.match(404), isNull);
+  });
+
+  test('#1229 BR-DOC-05: a document keeps its photos under '
+      '<appSupport>/documents/<id>/, in page order, listed relative, without '
+      'their metadata', () async {
+    final support = tempDir('sg_docs');
+    // The camera's: its make and GPS in the EXIF. And one with none.
+    final shots = <String>[
+      (File(
+        '${support.path}/IMG_0042.JPG',
+      )..writeAsBytesSync(jpeg(exif()))).path,
+      (File('${support.path}/scan')..writeAsBytesSync(jpeg())).path,
+    ];
+    final webp = File('${support.path}/sticker.webp')
+      ..writeAsBytesSync(ascii.encode('RIFF....WEBP'));
+    final id = await documents.create(
+      title: 'Nebenkosten',
+      source: 'photo',
+      body: 'Die Abrechnung.',
+      pageCount: 2,
+    );
+    await documents.saveImages(id, <String>[
+      ...shots,
+      webp.path,
+    ], support: support);
+
+    final saved = jsonDecode((await documents.document(id))!.imagePaths!);
+    expect(saved, <String>[
+      'documents/$id/page-1.jpg',
+      'documents/$id/page-2.jpg',
+    ], reason: "a WebP can't be cleaned, so it isn't kept");
+    final page1 = File('${support.path}/documents/$id/page-1.jpg')
+        .readAsBytesSync();
+    expect(holds(page1, 'SQA'), isFalse, reason: 'the camera make');
+    expect(orientationOf(page1), 6);
+    expect(holds(page1, 'PIXELS'), isTrue);
+
+    // FR-M7-02 and a Replace: every document's photos go.
+    await documents.deleteAllImages(support: support);
+    expect(Directory('${support.path}/documents').existsSync(), isFalse);
+    expect(
+      File(shots.first).existsSync(),
+      isTrue,
+      reason: 'the originals stay',
+    );
+    // And with none, there's nothing to fail on.
+    await documents.deleteAllImages(support: support);
+  });
+}

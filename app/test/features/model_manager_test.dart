@@ -119,8 +119,8 @@ void main() {
       );
       expect(
         cardStatusOf(cardOf(translationEntry, shortfall: 1)),
-        ModelCardStatus.notDownloaded,
-        reason: 'FR-M4-04 first: a download not offered lacks no space',
+        ModelCardStatus.notEnoughSpace,
+        reason: '#154 ADR 30: Hy-MT2 is offered, so its space counts',
       );
       expect(
         cardStatusOf(
@@ -210,8 +210,6 @@ void main() {
         tester,
         modelManagerStub(
           downloads: downloads,
-          // The voice: Hy-MT is gated in this build, and has no Resume
-          // (#692 ME-3).
           voice: cardOf(
             voiceEntry,
             installed: ModelStatus.downloading,
@@ -323,7 +321,32 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 3));
   });
 
+  testWidgets('#1261 a download started reads the other card again: its '
+      'space counts this one now', (tester) async {
+    final read = <String>[];
+    await pump(
+      tester,
+      modelManagerStub(voice: cardOf(voiceEntry), read: read.add),
+    );
+    read.clear();
+    await tester.tap(find.text(l10n.modelsDownload('399 MB')));
+    await tester.pumpAndSettle();
+    expect(read, contains(ModelRepository.translationModel));
+  });
+
   group('FR-M4-03 Delete', () {
+    testWidgets('#1261 a delete reads the other card again: the bytes freed '
+        'may let it fit', (tester) async {
+      final read = <String>[];
+      await pump(tester, modelManagerStub(read: read.add));
+      read.clear();
+      await tester.tap(find.text(l10n.modelsDelete('399 MB')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.modelsDeleteConfirm));
+      await tester.pumpAndSettle();
+      expect(read, contains(ModelRepository.translationModel));
+    });
+
     testWidgets('asks first, and Keep keeps it', (tester) async {
       final models = FakeModels();
       await pump(tester, modelManagerStub(models: models));
@@ -448,8 +471,9 @@ void main() {
       expect(settings.read(SettingKeys.ttsEngine), TtsEngineSetting.supertonic);
     });
 
-    testWidgets('#692 ME-3 Hy-MT, gated, with an update available: Delete, '
-        'and no Update', (tester) async {
+    testWidgets('#154 Hy-MT2 with an update available: Delete and Update', (
+      tester,
+    ) async {
       await pump(
         tester,
         modelManagerStub(
@@ -459,9 +483,30 @@ void main() {
           ),
         ),
       );
-      expect(find.text(l10n.modelsUpdate('1.1 GB')), findsNothing);
+      expect(find.text(l10n.modelsUpdate('1.1 GB')), findsOneWidget);
       expect(find.textContaining(l10n.modelsDelete('')), findsWidgets);
     });
+
+    for (final busy in <bool>[true, false]) {
+      testWidgets('#154 Delete keeps models/.partial only while another '
+          'model downloads (downloading: $busy)', (tester) async {
+        final models = FakeModels();
+        await pump(
+          tester,
+          modelManagerStub(
+            models: models,
+            downloads: FakeDownloads()..downloading = busy,
+            translation: cardOf(translationEntry, installed: ModelStatus.ready),
+          ),
+        );
+        await tester.tap(find.text(l10n.modelsDelete('1.1 GB')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(l10n.modelsDeleteConfirm));
+        await tester.pumpAndSettle();
+        expect(models.deleted, <String>['hymt']);
+        expect(models.keptPartial, <bool>[busy]);
+      });
+    }
 
     testWidgets('a download the manager refuses leaves the engine as it was', (
       tester,
@@ -484,18 +529,14 @@ void main() {
     });
   });
 
-  group('FR-M4-04 Hy-MT behind its licence', () {
+  group('FR-M4-04 Hy-MT2 in every build (ADR 30)', () {
     test("each model's licence is the one M8 bundles for it, by name", () {
       expect(licenceFor(ModelRepository.voiceModel)?.kind, 'OpenRAIL-M');
-      expect(
-        licenceFor(ModelRepository.translationModel)?.kind,
-        'Tencent HY Community License',
-      );
+      expect(licenceFor(ModelRepository.translationModel)?.kind, 'Apache-2.0');
       expect(licenceFor('nothing'), isNull);
     });
 
-    testWidgets('without ENABLE_HYMT_DOWNLOAD its download is off, and says '
-        'why; the voice\'s is on', (tester) async {
+    testWidgets('#154 its download is on, as the voice\'s', (tester) async {
       final downloads = FakeDownloads();
       await pump(
         tester,
@@ -505,12 +546,11 @@ void main() {
           translation: cardOf(translationEntry),
         ),
       );
-      expect(enableHymtDownload, isFalse, reason: 'off by default');
-      // No card offers it at all (#1070).
-      expect(find.text(l10n.modelsDownload('1.1 GB')), findsNothing);
+      await tester.tap(find.text(l10n.modelsDownload('1.1 GB')));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(l10n.modelsDownload('399 MB')));
       await tester.pumpAndSettle();
-      expect(downloads.calls, <String>['start supertonic3']);
+      expect(downloads.calls, <String>['start hymt', 'start supertonic3']);
     });
 
     testWidgets('its licence link opens the licence\'s full text', (
@@ -518,18 +558,15 @@ void main() {
     ) async {
       await pump(tester, modelManagerStub());
       await tester.tap(
-        find.bySemanticsLabel(
-          l10n.modelsLicenceRead('Tencent HY Community License'),
-        ),
+        find.bySemanticsLabel(l10n.modelsLicenceRead('Apache-2.0')),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Tencent HY Community License'), findsOneWidget);
+      expect(find.text('Apache-2.0'), findsOneWidget);
     });
   });
 
-  testWidgets('#1070 FR-M4-04 without the flag and with no Hy-MT on the '
-      "phone, M4 is the voice's alone: no Hy-MT card, its title and footer "
-      "the voice's", (tester) async {
+  testWidgets('#154 ADR 30 both models, always: the Hy-MT2 card, M4\'s '
+      'title and footer', (tester) async {
     await pump(
       tester,
       modelManagerStub(
@@ -537,15 +574,13 @@ void main() {
         translation: cardOf(translationEntry),
       ),
     );
-    expect(find.text(l10n.modelsTranslationTitle), findsNothing);
-    expect(find.text(l10n.modelsHymtGated), findsNothing);
-    expect(find.text(l10n.modelsTitleVoice), findsOneWidget);
-    expect(find.text(l10n.modelsFooterVoice), findsOneWidget);
+    expect(find.text(l10n.modelsTranslationTitle), findsOneWidget);
+    expect(find.text(l10n.modelsTitle), findsOneWidget);
+    expect(find.text(l10n.modelsFooter), findsOneWidget);
     expect(find.text(l10n.modelsVoiceTitle), findsOneWidget);
   });
 
-  testWidgets('FR-M4-04 without the flag, a full phone still says the '
-      "translation model isn't offered, not that it lacks space", (
+  testWidgets('#154 a full phone says Hy-MT2 lacks space, by how much', (
     tester,
   ) async {
     await pump(
@@ -554,8 +589,8 @@ void main() {
         translation: cardOf(translationEntry, shortfall: 1400000000),
       ),
     );
-    expect(find.text(l10n.modelsStatusNoSpace), findsNothing);
-    expect(find.text(l10n.modelsNoSpaceNote('1.4 GB')), findsNothing);
+    expect(find.text(l10n.modelsStatusNoSpace), findsOneWidget);
+    expect(find.text(l10n.modelsNoSpaceNote('1.4 GB')), findsOneWidget);
   });
 
   testWidgets('FR-M4 an update the phone has no room for is disabled, and '
@@ -572,6 +607,23 @@ void main() {
     );
     expect(find.text(l10n.modelsNoSpaceNote('250 MB')), findsOneWidget);
     expect(button(tester, l10n.modelsUpdate('399 MB')).onPressed, isNull);
+  });
+
+  testWidgets('#1261 a failed download that would not fit again says how '
+      'much to free, under Retry', (tester) async {
+    await pump(
+      tester,
+      modelManagerStub(
+        voice: cardOf(
+          voiceEntry,
+          live: (phase: DownloadPhase.failed, progress: 0.4),
+          shortfall: 120000000,
+        ),
+      ),
+    );
+    expect(find.text(l10n.modelsFailedNote), findsOneWidget);
+    expect(find.text(l10n.modelsNoSpaceNote('120 MB')), findsOneWidget);
+    expect(find.text(l10n.retry), findsOneWidget);
   });
 
   testWidgets("#428 a start the manager refuses for space says how much", (
@@ -621,7 +673,7 @@ void main() {
     DownloadPhase.failed,
     DownloadPhase.paused,
   ]) {
-    testWidgets('#692 ME-3 Hy-MT, gated, ${phase.name}: no Retry, no Resume', (
+    testWidgets('#154 Hy-MT2 ${phase.name}: Retry or Resume, as any model', (
       tester,
     ) async {
       await pump(
@@ -634,8 +686,12 @@ void main() {
           ),
         ),
       );
-      expect(find.text(l10n.retry), findsNothing);
-      expect(find.text(l10n.modelsResume), findsNothing);
+      expect(
+        find.text(
+          phase == DownloadPhase.failed ? l10n.retry : l10n.modelsResume,
+        ),
+        findsOneWidget,
+      );
     });
   }
 
@@ -812,6 +868,31 @@ void main() {
       expect(asked, greaterThan(1), reason: 'bytes came or went');
     });
 
+    test('#1261 a failed download asks the space for its Retry', () async {
+      downloads.shortfall = 120000000;
+      final seen = await cards(() async {
+        downloads.live[ModelRepository.voiceModel]!.add((
+          phase: DownloadPhase.failed,
+          progress: 0.4,
+        ));
+      });
+      expect(cardStatusOf(seen.last), ModelCardStatus.failed);
+      expect(seen.last.shortfall, 120000000);
+    });
+
+    test('#1261 another model landing or failing reads the card again: the '
+        'space its download held is free', () async {
+      downloads.shortfall = 120000000;
+      final seen = await cards(() async {
+        downloads.shortfall = 0;
+        downloads.live['hymt']!.add((phase: DownloadPhase.ready, progress: 1));
+      });
+      expect(seen.map(cardStatusOf), <ModelCardStatus>[
+        ModelCardStatus.notEnoughSpace,
+        ModelCardStatus.notDownloaded,
+      ]);
+    });
+
     test(
       'its download as it moves, and once done, what it installed',
       () async {
@@ -852,8 +933,10 @@ class _Models extends FakeModels {
   ModelStatus status = ModelStatus.notDownloaded;
 
   @override
-  Future<ModelManifest> manifest() async =>
-      ModelManifest(version: 1, models: <ModelEntry>[voiceEntry]);
+  Future<ModelManifest> manifest() async => ModelManifest(
+    version: 1,
+    models: <ModelEntry>[voiceEntry, translationEntry],
+  );
 
   @override
   Future<ModelState> stateOf(
