@@ -48,6 +48,15 @@ Future<MyWordDraft?> myWord(Ref ref, int id) =>
 Future<bool> myWordInRevision(Ref ref, int id) =>
     ref.watch(wordRepositoryProvider).isMyWordInRevision(id);
 
+/// R2's fields as compared for #1263: trimmed, as *Save* stores them.
+typedef _Fields = ({
+  String? article,
+  String german,
+  String meaning,
+  String where,
+  String example,
+});
+
 /// R2 · Add / edit my word (`add-word.md`, the AddWord artboards). [german]
 /// comes filled in from R1's no-results page; [id] is edit mode, from R1's
 /// *My words*.
@@ -83,13 +92,22 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
   /// One write at a time: a double tap on *Save* saves once.
   bool _busy = false;
 
+  /// What the fields held when R2 opened: the search's German, or the word
+  /// being edited once it has loaded. Leaving with anything else asks first
+  /// (#1263).
+  _Fields? _baseline;
+
   @override
   void initState() {
     super.initState();
     _german.text = widget.german?.trim() ?? '';
     _checked = _german.text.trim();
+    _baseline = _fields;
     _german.addListener(_changed);
     _meaning.addListener(_refresh);
+    // Every field, so Back knows at once whether it would lose text (#1263).
+    _where.addListener(_refresh);
+    _example.addListener(_refresh);
     // The umlaut row shows while the German field is the one typed in.
     _germanFocus.addListener(_refresh);
     if (widget.id case final id?) unawaited(_load(id));
@@ -128,7 +146,33 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     setState(() {
       _article = word.article;
       _checked = word.german;
+      _baseline = _fields;
     });
+  }
+
+  _Fields get _fields => (
+    article: _article,
+    german: _german.text.trim(),
+    meaning: _meaning.text.trim(),
+    where: _where.text.trim(),
+    example: _example.text.trim(),
+  );
+
+  /// Typed or changed since R2 opened (#1263).
+  bool get _dirty => _fields != _baseline;
+
+  /// #1263: Back with text that isn't saved asks first; *Leave* drops it.
+  Future<void> _confirmLeave() async {
+    final l10n = AppLocalizations.of(context);
+    final leave = await Adaptive.showConfirm(
+      context: context,
+      title: l10n.addWordDiscardTitle,
+      message: l10n.addWordDiscardBody,
+      confirmLabel: l10n.addWordDiscard,
+      cancelLabel: l10n.addWordDiscardKeep,
+      destructive: true,
+    );
+    if (leave == true && mounted) Navigator.of(context).pop();
   }
 
   String get _name {
@@ -390,9 +434,16 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
         ],
       ),
     );
-    return tokens.isGlass
-        ? AuroraBackdrop(leading: tokens.color.die, child: scaffold)
-        : scaffold;
+    return PopScope(
+      // A save under way leaves as it always did: its own pop follows.
+      canPop: _busy || !_dirty,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) unawaited(_confirmLeave());
+      },
+      child: tokens.isGlass
+          ? AuroraBackdrop(leading: tokens.color.die, child: scaffold)
+          : scaffold,
+    );
   }
 }
 
