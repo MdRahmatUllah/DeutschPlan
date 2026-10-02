@@ -27,12 +27,14 @@ void main() {
     int catchup = 30,
     bool autoAdvance = true,
     bool pauseNewWhenBacklog = false,
+    int docDailyCap = 0,
   }) => PlanEngine(
     store: store,
     reviseCount: revise,
     backlogCatchupDays: catchup,
     autoAdvance: autoAdvance,
     pauseNewWhenBacklog: pauseNewWhenBacklog,
+    docDailyCap: docDailyCap,
   );
 
   setUp(() {
@@ -693,6 +695,171 @@ void main() {
           reason: 'clearing bit $day should disable $date',
         );
       }
+    });
+  });
+
+  group('BR-PLAN-11 — words from documents', () {
+    const at = '2026-03-02T09:00:00Z';
+    final tuesday = addDays(monday, 1);
+
+    setUp(() {
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 3,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      store.queue.addAll(<String>['d1', 'd2', 'd3', 'd4', 'd5']);
+    });
+
+    test("a study day takes up to doc_daily_cap of them after the course's, "
+        'outside daily_new, and the time estimate counts them', () async {
+      final engine = engineWith(docDailyCap: 2);
+      final plan = await engine.openDay(monday);
+      expect(plan.newToday, <String>['w1', 'w2', 'w3', 'd1', 'd2']);
+      expect(await store.docPlannedOn(monday), <String>['d1', 'd2']);
+      final withDocs = await engine.estimate(plan);
+      final without = await engineWith().estimate(
+        await engineWith().openDay(monday),
+      );
+      expect(withDocs, without, reason: 'the same day, its plan as it is');
+      expect(
+        withDocs.inSeconds,
+        greaterThanOrEqualTo(5 * 45),
+        reason: 'five new words',
+      );
+    });
+
+    test('the rest wait in the queue, in order, and are never backlog; '
+        'the next study day takes the next ones', () async {
+      final engine = engineWith(docDailyCap: 2);
+      await engine.openDay(monday);
+      final tomorrow = await engine.openDay(tuesday);
+      expect(tomorrow.newToday, <String>['w4', 'w5', 'w6', 'd3', 'd4']);
+      // What waits isn't backlog: only Monday's planned, unstudied rows are.
+      expect(tomorrow.backlog, isNot(contains('d5')));
+      expect(await store.docWaiting(limit: 10), <String>['d5']);
+    });
+
+    test('only today: a missed day takes none, so the queue never turns '
+        'into backlog', () async {
+      final engine = engineWith(docDailyCap: 2);
+      await engine.openDay(monday);
+      final thursday = addDays(monday, 3);
+      final plan = await engine.openDay(thursday);
+      // Tuesday and Wednesday got their course words, but no queue words.
+      expect(await store.docPlannedOn(tuesday), isEmpty);
+      expect(await store.docPlannedOn(addDays(monday, 2)), isEmpty);
+      expect(await store.docPlannedOn(thursday), <String>['d3', 'd4']);
+      expect(plan.newToday, containsAllInOrder(<String>['d3', 'd4']));
+    });
+
+    test('a rest day takes none (BR-PLAN-01), and a cap of 0 holds them '
+        'all', () async {
+      store.enrollment = ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: addDays(monday, -7),
+        dailyNew: 3,
+        studyDaysMask: PlanEngine.allDays & ~(1 << 0), // Monday off
+      );
+      store.lastPlanned = addDays(monday, -1);
+      await engineWith(docDailyCap: 2).openDay(monday);
+      expect(await store.docPlannedOn(monday), isEmpty, reason: 'rest day');
+
+      await engineWith().openDay(tuesday);
+      expect(await store.docPlannedOn(tuesday), isEmpty, reason: 'cap 0');
+      expect(await store.docWaiting(limit: 10), hasLength(5));
+    });
+
+    test('BR-PLAN-07 the backlog pause holds them too', () async {
+      await store.addToPlan(addDays(monday, -1), PlanKind.newWord, <String>[
+        'w0',
+      ]);
+      final plan = await engineWith(
+        docDailyCap: 2,
+        pauseNewWhenBacklog: true,
+      ).openDay(monday);
+      expect(plan.newToday, isEmpty);
+      expect(await store.docPlannedOn(monday), isEmpty);
+    });
+
+    test('a word another route planned, or no longer To-do, leaves the '
+        'queue', () async {
+      store.queue
+        ..clear()
+        ..addAll(<String>['w2', 'd1', 'd2']);
+      store.known.add('d1');
+      await engineWith(docDailyCap: 2).openDay(monday);
+      // w2 came with the course's own New today, and d1 is known.
+      expect(await store.docPlannedOn(monday), <String>['d2']);
+      expect(store.plan['$monday/new'], <String>['w1', 'w2', 'w3', 'd2']);
+    });
+
+    test("FR-D2-02 Add before Today opens: today's share is kept, and the "
+        "course's words aren't cut by it", () async {
+      store.queue.clear();
+      store.lastPlanned = addDays(monday, -1);
+      final engine = engineWith(docDailyCap: 2);
+      final starts = await engine.addDocWords(
+        <String>['d1', 'd2', 'd3'],
+        monday,
+        at: at,
+      );
+      expect(starts, <String, PlanDate?>{
+        'd1': monday,
+        'd2': monday,
+        'd3': tuesday,
+      });
+      final plan = await engine.openDay(monday);
+      expect(plan.newToday, <String>['w1', 'w2', 'w3', 'd1', 'd2']);
+    });
+
+    test('FR-D2-02 Add after Today opened: it joins today while there is '
+        'room, then says the study day it starts', () async {
+      store.queue.clear();
+      final engine = engineWith(docDailyCap: 2);
+      await engine.openDay(monday);
+      expect(
+        await engine.addDocWords(<String>['d1'], monday, at: at),
+        <String, PlanDate?>{'d1': monday},
+      );
+      expect(store.plan['$monday/new'], contains('d1'));
+      expect(
+        await engine.addDocWords(<String>['d2', 'd3', 'd4'], monday, at: at),
+        <String, PlanDate?>{'d2': monday, 'd3': tuesday, 'd4': tuesday},
+      );
+      // With a cap of 0 a word has no start day.
+      expect(
+        await engineWith().addDocWords(<String>['d9'], monday, at: at),
+        <String, PlanDate?>{'d9': null},
+      );
+    });
+
+    test('#622 after an import, replanToday tops today up from the queue '
+        'too', () async {
+      store.queue.clear();
+      final engine = engineWith(docDailyCap: 2);
+      await engine.openDay(monday);
+      // The file brought queued words in.
+      await store.queueDocWords(<String>['d1', 'd2', 'd3'], at);
+      await engine.replanToday(monday);
+      expect(await store.docPlannedOn(monday), <String>['d1', 'd2']);
+    });
+
+    test('the start day skips rest days', () async {
+      store.queue.clear();
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 3,
+        studyDaysMask: PlanEngine.allDays & ~(1 << 1), // Tuesday off
+      );
+      final engine = engineWith(docDailyCap: 1);
+      await engine.openDay(monday);
+      expect(
+        await engine.addDocWords(<String>['d1', 'd2'], monday, at: at),
+        <String, PlanDate?>{'d1': monday, 'd2': addDays(monday, 2)},
+      );
     });
   });
 
@@ -1818,6 +1985,41 @@ class FakeStore implements PlanStore {
       if (existing.contains(uid)) continue;
       existing.add(uid);
       if (kind == PlanKind.newWord) _everPlannedNew.add(uid);
+    }
+  }
+
+  /// BR-PLAN-11's document queue: in order, each with the day it was
+  /// planned on, if it was. [known] are no longer To-do.
+  final List<String> queue = <String>[];
+  final Map<String, PlanDate> queuePlannedOn = <String, PlanDate>{};
+  final Set<String> known = <String>{};
+
+  @override
+  Future<List<String>> docWaiting({required int limit}) async => <String>[
+    for (final uid in queue)
+      if (!queuePlannedOn.containsKey(uid) &&
+          !_everPlannedNew.contains(uid) &&
+          !known.contains(uid))
+        uid,
+  ].take(limit).toList();
+
+  @override
+  Future<List<String>> docPlannedOn(PlanDate date) async => <String>[
+    for (final uid in queue)
+      if (queuePlannedOn[uid] == date) uid,
+  ];
+
+  @override
+  Future<void> markDocPlanned(PlanDate date, List<String> uids) async {
+    for (final uid in uids) {
+      queuePlannedOn[uid] = date;
+    }
+  }
+
+  @override
+  Future<void> queueDocWords(List<String> uids, String at) async {
+    for (final uid in uids) {
+      if (!queue.contains(uid)) queue.add(uid);
     }
   }
 

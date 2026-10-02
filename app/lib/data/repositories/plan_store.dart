@@ -320,6 +320,79 @@ ORDER BY ord
     );
   }
 
+  /// BR-PLAN-11: waiting means not planned by any route, still To-do (or
+  /// never seen), and still a word of the course (BR-CONTENT-02: a removed
+  /// word's row stays, unread, as its history does).
+  @override
+  Future<List<String>> docWaiting({required int limit}) async {
+    if (limit <= 0) return const <String>[];
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT q.word_key AS uid
+FROM doc_queue q
+JOIN words w ON w.uid = q.word_key AND w.kind = 'vocab'
+LEFT JOIN word_state s ON s.word_uid = q.word_key
+WHERE q.planned_on IS NULL
+  AND COALESCE(s.status, 'todo') = 'todo'
+  AND q.word_key NOT IN (SELECT word_uid FROM plan_items WHERE kind = 'new')
+ORDER BY q.added_at, q.rowid
+LIMIT ?1
+''',
+          variables: <Variable<Object>>[Variable<int>(limit)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.docQueue,
+            _db.words,
+            _db.wordState,
+            _db.planItems,
+          },
+        )
+        .get();
+    return <String>[for (final row in rows) row.read<String>('uid')];
+  }
+
+  @override
+  Future<List<String>> docPlannedOn(PlanDate date) async {
+    final rows = await _db
+        .customSelect(
+          'SELECT word_key FROM doc_queue WHERE planned_on = ?1 '
+          'ORDER BY added_at, rowid',
+          variables: <Variable<Object>>[Variable<String>(date)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{_db.docQueue},
+        )
+        .get();
+    return <String>[for (final row in rows) row.read<String>('word_key')];
+  }
+
+  @override
+  Future<void> markDocPlanned(PlanDate date, List<String> uids) async {
+    if (uids.isEmpty) return;
+    await _db.customUpdate(
+      'UPDATE doc_queue SET planned_on = ?1 '
+      'WHERE word_key IN (SELECT value FROM json_each(?2))',
+      variables: <Variable<Object>>[
+        Variable<String>(date),
+        Variable<String>(jsonEncode(uids)),
+      ],
+      updates: <TableInfo<Table, Object>>{_db.docQueue},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  @override
+  Future<void> queueDocWords(List<String> uids, String at) async {
+    if (uids.isEmpty) return;
+    await _db.customInsert(
+      'INSERT OR IGNORE INTO doc_queue (word_key, added_at) '
+      'SELECT value, ?2 FROM json_each(?1) ORDER BY key',
+      variables: <Variable<Object>>[
+        Variable<String>(jsonEncode(uids)),
+        Variable<String>(at),
+      ],
+      updates: <TableInfo<Table, Object>>{_db.docQueue},
+    );
+  }
+
   /// The backlog (BR-PLAN-05): open `new` rows from before [today].
   ///
   /// Newest day first, because Today shows the most recent missed day at the

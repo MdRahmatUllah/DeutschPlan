@@ -585,6 +585,7 @@ PlanEngine planEngine(Ref ref) {
     SettingKeys.backlogCatchupDays,
     SettingKeys.autoAdvance,
     SettingKeys.pauseNewWhenBacklog,
+    SettingKeys.docDailyCap,
   });
   return PlanEngine(
     store: DriftPlanStore(ref.watch(appDatabaseProvider), settings),
@@ -592,6 +593,7 @@ PlanEngine planEngine(Ref ref) {
     backlogCatchupDays: settings.read(SettingKeys.backlogCatchupDays),
     autoAdvance: settings.read(SettingKeys.autoAdvance),
     pauseNewWhenBacklog: settings.read(SettingKeys.pauseNewWhenBacklog),
+    docDailyCap: settings.read(SettingKeys.docDailyCap),
   );
 }
 

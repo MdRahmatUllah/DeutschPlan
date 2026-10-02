@@ -24,7 +24,7 @@ day = last_planned_date + 1  (or enrollment.started_on)
 day = max(day, today - backlog_catchup_days)
 for each day ≤ today:
   if !isStudyDay(day) or pause_new_when_backlog && backlogNotEmpty: continue
-  need = daily_new(enrollment) - new words planned on day already  // #687
+  need = daily_new(enrollment) - the course's new words planned on day already  // #687; the document queue's don't count (BR-PLAN-11)
   if need <= 0: continue   // reopening a day never doubles it
   while need > 0:
     picked = next To-do words of active step in seq order not yet planned, limit need
@@ -34,10 +34,20 @@ for each day ≤ today:
       mark enrollment completed_on = day
       if !auto_advance or no next step: break
       enroll(next step, started_on = day, daily_new same)
+if today was walked, is a study day and not paused:   // BR-PLAN-11, today only
+  picked = the document queue's oldest waiting words, limit doc_daily_cap - today's already
+  insert plan_items(today, uid, 'new'); doc_queue.planned_on = today
 last_planned_date = max(last_planned_date, today)
 ```
 
 `last_planned_date` never moves back (#346): a clock or time zone that goes back reopens a past day as it was planned. Recording it would plan the days after it again, and give a finished day a Revise block. A day with no active step, after the course or after a step with auto-advance off, is recorded too, with no new words and as a study day (the finished step's rest days no longer apply, as `streak` counts them), so it picks its Revise block once like any other (BR-PLAN-08, #457). A step started on such a day (L2's *Start*, restart setup) begins tomorrow, as it does over an active step; *Start next step* moves the date back and plans today again at once: a day the last step ran out on part-way through is topped up to the new pace from the new step, and today stays opened, so it keeps the Revise block it picked (#342, #687). An *Import and merge* doesn't move it: it plans today again in place (`replanToday`, #622, #937). The import has dropped the open `new` rows of words that now have a schedule, on every day, and today's open revisions. `replanToday` then tops today's new words up to the pace from words not met yet, under the mask today was planned with (BR-PLAN-08, so a setup day stays a study day, #606), and today's revisions up to `revise_count` from the merged schedule, leaving out what today already holds. What was done today stays (`export-import.md`). Before onboarding nothing is recorded: a first step enrolled today still plans today.
+
+### The document queue (BR-PLAN-11)
+
+Words a learner adds from a document (D2's *Add*, BR-DOC-04) wait in `doc_queue` in the order added. A study day takes up to `doc_daily_cap` of them, after the course's new words and outside `daily_new`, as ordinary `new` rows, so a session, the time estimate (BR-PLAN-09) and the day's completion treat them as new words. `planned_on` records the day each went into a plan, which is how a day counts the slots it has used.
+- **Today only.** A missed day walked by the catch-up gets the course's words and none of the queue's, which would be backlog. The queue's words wait instead, and are never backlog. Once planned, a word not studied is backlog like any new word.
+- **Waiting** means not planned by any route (its day, the course's own New today, W1's *Add to today*), still To-do, and still a word of the course. A removed word's row stays unread, as its history does (BR-CONTENT-02). A rest day, the backlog pause (BR-PLAN-07) and a cap of 0 take none.
+- **`addDocWords(uids, today)`** (FR-D2-02/03) queues the words, lets an opened study day take its share at once, and answers each word's first day: today, the study day the queue reaches it on under the cap (rest days skipped), or none with a cap of 0. A day not opened yet keeps its share for when it opens. `replanToday` (an import's merge) tops today up the same way.
 
 ### ensureRevise (BR-PLAN-03)
 
