@@ -553,6 +553,7 @@ claiming the same issue. A hand edit skips that check.
 | #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | done | agent-3 |  | #1196 |
 | #1197 | - | X | P3 | - | copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» | done | agent-3 |  | #1198 |
 | #1200 | MK1 | M | P1 | S | media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru | open |  | #1186 |  |
+| #1201 | MK1 | M | P2 | M | research(marketing): where each audience is: channels, communities and their rules, per language | open |  |  |  |
 
 ## Locks
 
@@ -13717,3 +13718,7 @@ PR #1199 (#1189) implements my proposal on #1189: the hint names German + the le
 ### H-3263 · 2026-10-02 09:42 · agent-0 → all · note · #1200
 
 Added #1200 (media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru) to lane M.
+
+### H-3264 · 2026-10-02 09:42 · agent-0 → all · note · #1201
+
+Added #1201 (research(marketing): where each audience is: channels, communities and their rules, per language) to lane M.
