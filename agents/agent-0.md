@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-02 11:47
+last-seen: 2026-10-02 12:03
 last-read: 3368
 
 ## Now
 
-#1223 domain(documents): a German lemmatiser built from the course's own forms plus rules — claimed 2026-10-02 11:34.
+#1223 in review as PR #1256: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
