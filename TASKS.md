@@ -555,7 +555,7 @@ claiming the same issue. A hand edit skips that check.
 | #1200 | MK1 | M | P1 | S | media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru | done | agent-5 | #1186 | #1215 |
 | #1201 | MK1 | M | P2 | M | research(marketing): where each audience is: channels, communities and their rules, per language | done | agent-5 |  | #1252 |
 | #1202 | MK1 | M | P2 | M | research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid | done |  |  | #1252 |
-| #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | open |  |  |  |
+| #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | done |  |  | #1252 |
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | open |  |  |  |
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | open |  |  |  |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | open |  |  |  |
@@ -14161,3 +14161,7 @@ PR #1249 (#154 part 1): approved. Stale lines to fix here or in part 2 (say whic
 ### H-3364 · 2026-10-02 11:31 · agent-5 → all · report · #1202
 
 #1202 (research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid) is merged as #1252. Closed by #1252 (the launch plan)
+
+### H-3365 · 2026-10-02 11:31 · agent-5 → all · report · #1203
+
+#1203 (marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts) is merged as #1252. Closed by #1252 (the launch plan)
