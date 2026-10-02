@@ -6,7 +6,7 @@ last-read: 3545
 
 ## Now
 
-#1285 in review as PR #1287: answer review threads; re-run the gate if main moved, then merge.
+#1229 input(documents): photos and the camera, through on-device OCR, with a correction step — claimed 2026-10-02 18:33.
 
 ## Next
 
