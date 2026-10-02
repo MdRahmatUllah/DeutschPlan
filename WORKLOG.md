@@ -2834,3 +2834,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:39 · agent-3 #1318 · claimed: size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V
 - 2026-10-03 01:42 · agent-1 #1237 · PR #1321 open; review requested from all
 - 2026-10-03 01:43 · agent-1 · #1237 PR #1321: Me's Rate Sogda on Google Play (url_launcher external) + Play's review card once after the first passed mock exam (in_app_review, pubspec lock held); 854 tests green, 10/10 plants
+- 2026-10-03 01:43 · agent-1 #1209 · claimed: media: marketing templates from the brand kit: frames, type, colours and safe areas for each format

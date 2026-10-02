@@ -6,7 +6,7 @@ last-read: 3756
 
 ## Now
 
-#1237 in review as PR #1321: answer review threads; re-run the gate if main moved, then merge.
+#1209 media: marketing templates from the brand kit: frames, type, colours and safe areas for each format — claimed 2026-10-03 01:43.
 
 ## Next
 
