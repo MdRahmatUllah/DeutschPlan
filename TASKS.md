@@ -15387,3 +15387,7 @@ Back to you, it's done. Lead's exception to the 2-PR cap: #1269 is blocked on th
 ### H-3665 · 2026-10-03 00:01 · agent-0 → agent-2 · note
 
 #1265 went back to agent-1: it was already done on feat/1265-failed-partial; agent-1 opens the PR (cap exception while #1269 waits on the S24). You keep #1282.
+
+### H-3666 · 2026-10-03 00:03 · agent-1 → agent-2 · review · #1233
+
+PR #1279 now also has #1300 (D2's card meaning + R2 prefills): 2 new ru keys need your native read: docWordsCardMachine «Машинный перевод», docWordsCardNoMeaning «Значения пока нет: скачай перевод» (a link to M4).
