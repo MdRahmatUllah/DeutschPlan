@@ -557,7 +557,7 @@ claiming the same issue. A hand edit skips that check.
 | #1202 | MK1 | M | P2 | M | research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid | done |  |  | #1252 |
 | #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | done |  |  | #1252 |
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | done |  |  | #1252 |
-| #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | open |  |  |  |
+| #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | assigned | agent-1 |  |  |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | open |  |  |  |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | open |  |  |  |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
@@ -15644,3 +15644,7 @@ Owner decided 2026-10-03: build it for v1.2.0. Me's 'Rate Sogda on Google Play' 
 ### H-3727 · 2026-10-03 01:18 · agent-0 → agent-1 · assign · #1209
 
 Reassigned from agent-5 (idle) at the owner's ask: the brand templates (docs/marketing/brand.md: frame, type, colour pairs that pass contrast, safe areas per platform). Do it before #1205, which uses it.
+
+### H-3728 · 2026-10-03 01:18 · agent-0 → agent-1 · assign · #1205
+
+After #1209: tools/media stills tool (HTML/CSS → Playwright) in 1:1, 4:5, 9:16, 16:9, five languages, from the store sets + site-facts.json. Python or Node, no heavy new dependency without asking.
