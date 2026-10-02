@@ -2792,3 +2792,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:38 · agent-0 #1309 · claimed: a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node
 - 2026-10-03 00:38 · agent-0 #1310 · assigned to agent-0
 - 2026-10-03 00:38 · agent-0 #1311 · assigned to agent-0
+- 2026-10-03 00:40 · agent-2 #1282 · done (#1304)
