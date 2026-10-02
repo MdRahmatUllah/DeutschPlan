@@ -396,6 +396,26 @@ void main() {
     expect(documents.runs, 2);
   });
 
+  testWidgets('back from R2, the cap note counts the adds of today once '
+      '(agent-3 on #1294)', (tester) async {
+    final plan = FakePlan(slots: 2);
+    final router = await pump(tester, docWordsStub(plan: plan));
+    final fresh = docMatch(artboardLetter).words
+        .where((w) => w.docClass == DocClass.newInCourse && !w.ambiguous)
+        .length;
+    await tapWord(tester, 'Nachzahlung');
+    await tester.tap(find.text(l10n.docWordsCardAdd));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.docWordsCapNote(5, fresh - 2)), findsOneWidget);
+    await tapWord(tester, 'Wasserzähler');
+    await tester.tap(find.text(l10n.docWordsCardAddMine));
+    await tester.pumpAndSettle();
+    router.pop();
+    await tester.pumpAndSettle();
+    // Read again: one slot left (the plan's), one fewer word.
+    expect(find.text(l10n.docWordsCapNote(5, fresh - 2)), findsOneWidget);
+  });
+
   testWidgets('the card bolds the word where it stands, not inside another '
       'word (agent-3 on #1294)', (tester) async {
     await pump(
