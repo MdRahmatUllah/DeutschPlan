@@ -1,6 +1,6 @@
 # Developer agents
 
-Sogda is built by a team of five Claude Code agents working for one
+Sogda is built by a team of six Claude Code agents working for one
 owner. This folder is how a new machine, or a new session, learns who the
 team is, how each agent works, and what each one remembers. **On a new
 device, read this page first**, then the folder of the identity you take.
@@ -13,6 +13,7 @@ device, read this page first**, then the folder of the identity you take.
 | **agent-2** | Developer | C: Me, settings, exam engine, platform, accessibility | [`agent-2/`](agent-2/) |
 | **agent-3** | The one and only SQA: tests closed issues on its own emulator, files bugs | SQA milestone | [`agent-3/`](agent-3/) |
 | **agent-4** | The website: sogda.de | the `sogda-website` repo (no lane here) | [`agent-4/`](agent-4/) |
+| **agent-5** | Marketing & Media: research, the marketing todo list, copy, images, videos, the posting plan, automation, and feature findings as issues | M: milestones MK1 and MK2, label `marketing` | [`agent-5/`](agent-5/) |
 
 *The app was named DeutschPlan up to v1.0.1, and the design-system prefix was Dp. The histories, the memory snapshots and `shared-memory/` keep those names as history: DeutschPlan is now Sogda, DpText is now SgText, and `package:deutschplan/` is now `package:sogda/` (ADR 28).*
 
@@ -51,6 +52,10 @@ flowchart LR
   owner -- the website --> a4[agent-4 · website]
   a4 -- dev, then main --> site[(sogda-website repo<br/>www.sogda.de)]
   a4 <-- reports, notes --> board
+  owner -- go to post --> a5[agent-5 · marketing & media]
+  a5 -- lane M issues, docs/marketing, tools/media --> gh
+  a5 -- renders --> media[(media branch)]
+  a5 <-- handoffs, claims --> board
 ```
 
 - **The board** is the `team` branch of this repo, never merged into `main`.
@@ -128,6 +133,8 @@ checkout, so any `<root>` works.
    agent edits only its own worktree, by absolute path). Tell each one who it is:
    > You are agent-N. Read `developer-agents/README.md` and `developer-agents/agent-N/`, then start your session as `CLAUDE.md` says.
 
+   **agent-5 takes one command:** type `/agent-5`. `.claude/commands/agent-5.md` is a thin wrapper: it prints `developer-agents/agent-5/ONBOARD.md` from `origin/main` and follows it. That creates the worktrees, joins the board, reads the folder and starts the session, and it's safe to run every day. The main checkout stays on an old commit, so on a new machine copy the wrapper once to `~/.claude/commands/agent-5.md`. It's the same file, so it doesn't matter which copy Claude Code picks.
+
    The agent then runs `python tools/team.py join agent-N` from its worktree.
    That clones the board to `<root>/dp-team/agent-N` and marks the identity active.
 7. **Check.** `python tools/team.py agents` shows who is active,
@@ -160,6 +167,7 @@ These are binding. Each links to the memory that records why.
 - **Machine care.** Never `taskkill /IM flutter_tester.exe` (it kills every agent's tests). Don't restart a process the system stopped for low memory without the owner's OK.
 - **Scope.** v1.x is Android-only; Hy-MT translation is off ([v1-scope](shared-memory/v1-scope.md), [v1-release](shared-memory/v1-release.md)).
 - **The website needs no review.** agent-4 merges its own `sogda-website` PRs into `dev` and reports them; only a dev-into-main PR changes the live site. PRs in this repo keep the review rule ([sogda-website](shared-memory/sogda-website.md)).
+- **Marketing never publishes.** agent-5 prepares every post, video and pitch; only the owner posts, sends, or holds accounts. Facts come from `site-facts.json`, with no price, "free", ratings or user counts ([`agent-5/`](agent-5/README.md)).
 
 ## Keeping this folder current
 
