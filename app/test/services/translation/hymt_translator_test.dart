@@ -94,6 +94,16 @@ void main() {
     ],
   );
 
+  /// Until [n] translations have reached the model: past the turn's reads of
+  /// the model's files, which are real IO, not microtasks.
+  Future<void> reached(int n) async {
+    final until = DateTime.now().add(const Duration(seconds: 5));
+    while (runner.asked.length < n) {
+      if (DateTime.now().isAfter(until)) fail('$n never reached the model');
+      await Future<void>.delayed(const Duration(milliseconds: 5));
+    }
+  }
+
   /// The model on the phone, whole.
   Future<void> install() async {
     final staging = await models.restartDownload(
@@ -225,7 +235,7 @@ void main() {
       runner.gate = Completer<void>();
       final first = translator.translate('eins', from: 'de', to: 'en');
       final second = translator.translate('zwei', from: 'de', to: 'en');
-      await pumpEventQueue();
+      await reached(1);
       expect(runner.asked, hasLength(1), reason: 'the second waits');
       runner.gate!.complete();
       await Future.wait(<Future<String?>>[first, second]);
@@ -239,7 +249,7 @@ void main() {
     runner.gate = Completer<void>();
     final running = translator.translate('eins', from: 'de', to: 'en');
     final waiting = translator.translate('zwei', from: 'de', to: 'en');
-    await pumpEventQueue();
+    await reached(1);
 
     final released = translator.release();
     const soon = Duration(seconds: 5);
@@ -277,7 +287,7 @@ void main() {
       to: 'en',
       abandoned: secondGone.future,
     );
-    await pumpEventQueue();
+    await reached(1);
 
     secondGone.complete();
     await pumpEventQueue();
