@@ -28,10 +28,17 @@ class _Runner implements TranslationRunner {
   int cancels = 0;
   bool _stopped = false;
 
+  /// A load that fails, or memory gone: [complete] throws.
+  bool fails = false;
+
+  /// A stop that doesn't land at once (a model still loading).
+  bool slowToStop = false;
+
   @override
   Future<String> complete(String modelPath, String prompt) async {
     asked.add((modelPath, prompt));
     _stopped = false;
+    if (fails) throw StateError('the model would not load');
     await gate?.future;
     return _stopped ? 'half a transl' : answer;
   }
@@ -41,6 +48,7 @@ class _Runner implements TranslationRunner {
   void cancel() {
     cancels++;
     _stopped = true;
+    if (slowToStop) return;
     if (gate case final gate? when !gate.isCompleted) gate.complete();
   }
 
@@ -306,6 +314,57 @@ void main() {
     unawaited(asked.abandoned.single!.then((_) => gone = true));
     line.close();
     return pumpEventQueue().then((_) => expect(gone, isTrue));
+  });
+
+  test('#154 the memory floor: 3.5 GiB, as a "4 GB" phone reports it; a '
+      'phone that won\'t say is offered', () {
+    const gib = 1 << 30;
+    expect(HyMtTranslator.fitsIn(2 * gib), isFalse);
+    expect(HyMtTranslator.fitsIn(HyMtTranslator.memoryFloor - 1), isFalse);
+    expect(HyMtTranslator.fitsIn(HyMtTranslator.memoryFloor), isTrue);
+    expect(HyMtTranslator.fitsIn(3686 << 20), isTrue, reason: '3.6 GiB');
+    expect(HyMtTranslator.fitsIn(null), isTrue);
+  });
+
+  test('#154 a model that fails answers null, lets the engine go and caches '
+      'nothing; the next one loads again', () async {
+    await install();
+    final repository = TranslationRepository(db, translator, DateTime.now);
+    runner.fails = true;
+    expect(await repository.translate('Danke.', from: 'de', to: 'en'), isNull);
+    expect(runner.releases, 1);
+
+    runner.fails = false;
+    expect(
+      await repository.translate('Danke.', from: 'de', to: 'en'),
+      'translated',
+    );
+    expect(runner.asked, hasLength(2));
+  });
+
+  test('#154 a translation past its limit is stopped, and the screen hears '
+      'null at once, even before the stop lands', () async {
+    await install();
+    final limited = HyMtTranslator(
+      models: models,
+      settings: settings,
+      runner: runner,
+      limit: const Duration(milliseconds: 50),
+    );
+    runner
+      ..gate = Completer<void>()
+      ..slowToStop = true;
+    final late = limited.translate('eins', from: 'de', to: 'en');
+    final next = limited.translate('zwei', from: 'de', to: 'en');
+    expect(await late.timeout(const Duration(seconds: 5)), isNull);
+    expect(runner.cancels, 1);
+    expect(runner.asked, hasLength(1), reason: 'the next waits for the stop');
+
+    runner
+      ..slowToStop = false
+      ..gate!.complete();
+    runner.gate = null;
+    expect(await next.timeout(const Duration(seconds: 5)), 'translated');
   });
 
   test(

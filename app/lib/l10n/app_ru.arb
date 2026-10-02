@@ -983,6 +983,8 @@
   "modelsVerifyingNote": "Проверка файлов перед первым запуском",
   "modelsFailedNote": "Скачивание прервалось или файл не прошёл проверку. «Повторить» докачает недостающее.",
   "modelsNoSpaceNote": "Освободи {size} на телефоне, чтобы скачать",
+  "modelsStatusNoMemory": "Недоступно",
+  "modelsNeedsMemory": "Нужен телефон с {size} оперативной памяти",
   "modelsNotifyWhy": "Запрашивается разрешение показывать ход скачивания в уведомлении",
   "modelsVoiceLabel": "Голос",
   "modelsVoicePlay": "Прослушать {voice}",

@@ -485,6 +485,12 @@ TranslationRepository translationRepository(Ref ref) => TranslationRepository(
   ref.watch(clockProvider),
 );
 
+/// Whether this phone has the memory Hy-MT2 needs (#154): M4 offers it, and
+/// M3 turns translation on, only then.
+@riverpod
+Future<bool> translationFits(Ref ref) async =>
+    HyMtTranslator.fitsIn(await ref.watch(deviceStorageProvider).memory());
+
 /// `mt_enabled`, followed (#154): the Search tab keeps R1's *No results*
 /// on screen while Settings turns translation on or off.
 @riverpod

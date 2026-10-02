@@ -1,5 +1,6 @@
 package de.sogda.app
 
+import android.app.ActivityManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -99,6 +100,13 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, STORAGE_CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
+                    // The phone's memory in all: Hy-MT2 needs 4 GB (#154).
+                    "memory" -> {
+                        val info = ActivityManager.MemoryInfo()
+                        (getSystemService(ACTIVITY_SERVICE) as ActivityManager)
+                            .getMemoryInfo(info)
+                        result.success(info.totalMem)
+                    }
                     "space" -> {
                         val stat = StatFs(filesDir.path)
                         result.success(

@@ -138,6 +138,7 @@ class SettingsScreen extends ConsumerWidget {
         .round();
     final stabilities = ref.watch(learnedStabilitiesProvider).value;
     final model = ref.watch(translationModelProvider).value;
+    final fits = ref.watch(translationFitsProvider).value ?? true;
     final meaning = meaningChoiceOf(settings);
     // #1081: the course's languages, each named in itself.
     final languages = ref.watch(courseLanguagesProvider).value ?? baseLanguages;
@@ -532,7 +533,11 @@ class SettingsScreen extends ConsumerWidget {
             rows: <Widget>[
               _Row(
                 title: l10n.settingsTranslation,
-                subtitle: model == null
+                // #154: below Hy-MT2's memory floor, translation can't be
+                // turned on, and the row says why.
+                subtitle: !fits
+                    ? l10n.modelsNeedsMemory(l10n.modelsSizeGb(l10n.digits(4)))
+                    : model == null
                     ? null
                     : l10n.settingsTranslationStatus(switch (model.status) {
                         ModelStatus.downloading => 'downloading',
@@ -544,14 +549,16 @@ class SettingsScreen extends ConsumerWidget {
                       }, (model.progress * 100).round()),
                 labelledByControl: true,
                 trailing: AdaptiveSwitch(
-                  value: settings.read(SettingKeys.mtEnabled),
+                  value: fits && settings.read(SettingKeys.mtEnabled),
                   semanticLabel: l10n.settingsTranslation,
-                  onChanged: (on) async {
-                    final done = await editor.translation(on: on);
-                    if (!done && context.mounted) {
-                      ModelsRoute.open(context);
-                    }
-                  },
+                  onChanged: !fits
+                      ? null
+                      : (on) async {
+                          final done = await editor.translation(on: on);
+                          if (!done && context.mounted) {
+                            ModelsRoute.open(context);
+                          }
+                        },
                 ),
               ),
             ],

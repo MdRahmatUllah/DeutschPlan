@@ -30,7 +30,7 @@ Grouped list (Material headers / Cupertino inset groups). Changes save instantly
 | Exams | Unlock mock exams at | stepper 50–100 % | `exam_unlock_percent` |
 | | Pass mark | stepper 50–90 % | `exam_pass_percent` |
 | | Timer on by default | switch | `exam_timer_default` |
-| Translation | On-device translation | switch, subtitle status ("Hy-MT2 · downloading 42%") → M4 when not downloaded. Shown in every build (ADR 30) | `mt_enabled` |
+| Translation | On-device translation | switch, subtitle status ("Hy-MT2 · downloading 42%") → M4 when not downloaded. Shown in every build (ADR 30). On a phone below Hy-MT2's memory floor the switch is off and disabled, and the subtitle says "Needs a phone with 4 GB of memory" (#154) | `mt_enabled` |
 | Data | Export / import | → M6 | |
 | | Reset | → M7, "One step, or everything" | |
 | | Restart setup | → S2 (restart mode) | |

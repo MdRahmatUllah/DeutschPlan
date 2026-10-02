@@ -59,6 +59,7 @@ ModelCard cardOf(
   ModelStatus installed = ModelStatus.notDownloaded,
   DownloadProgress? live,
   int shortfall = 0,
+  bool fits = true,
 }) {
   final variant = entry.variants.first;
   final onDisk = switch (installed) {
@@ -77,6 +78,7 @@ ModelCard cardOf(
     ),
     live: live,
     shortfall: shortfall,
+    fits: fits,
   );
 }
 

@@ -34,6 +34,7 @@ class HyMtTranslator implements Translator {
     required this._settings,
     TranslationRunner? runner,
     Stream<DownloadProgress>? downloads,
+    this.limit = const Duration(seconds: 60),
   }) : _runner = runner ?? LlamaRunner() {
     // A new download of the model landed: the next translation loads it.
     _landed = downloads?.listen((progress) {
@@ -65,6 +66,20 @@ class HyMtTranslator implements Translator {
 
   @override
   String get model => 'hymt2-1.8b-q4km';
+
+  /// The least memory Hy-MT2 is offered with (#154, the lead's call): a
+  /// "4 GB" phone, which reports 3.6 to 3.8 GiB, the kernel and the modem
+  /// keeping the rest. On a 2 GB phone a translation took minutes.
+  static const int memoryFloor = 3584 * 1024 * 1024;
+
+  /// Whether a phone with [totalMemory] bytes runs it. One that won't say is
+  /// offered, as the space check lets a phone that won't say download.
+  static bool fitsIn(int? totalMemory) =>
+      totalMemory == null || totalMemory >= memoryFloor;
+
+  /// How long one translation may run: past it, it's stopped and answers
+  /// null, so no screen waits forever (#154).
+  final Duration limit;
 
   /// One at a time: a second request, or a release, waits for the first.
   Future<void> _turn = Future<void>.value();
@@ -98,32 +113,64 @@ class HyMtTranslator implements Translator {
     // left must not hold the next translation behind its own.
     final epoch = _epoch;
     final request = Object();
+    final answer = Completer<String?>();
     var gone = false;
+    void stop() {
+      if (identical(_running, request)) _runner.cancel();
+    }
+
+    void say(String? line) {
+      if (!answer.isCompleted) answer.complete(line);
+    }
+
     unawaited(
       abandoned?.then((_) {
         gone = true;
-        if (identical(_running, request)) _runner.cancel();
+        stop();
       }),
     );
     bool dropped() => gone || epoch != _epoch;
-    return _inTurn(() async {
-      if (dropped()) return null;
-      if (!_settings.read(SettingKeys.mtEnabled)) return null;
-      final path = await _modelPath();
-      if (path == null || dropped()) return null;
-      _running = request;
-      try {
-        final out = (await _runner.complete(
-          path,
-          promptFor(text, to: to),
-        )).trim();
-        // Stopped part-way: half a translation is none, and isn't cached.
-        if (dropped()) return null;
-        return out.isEmpty ? null : out;
-      } finally {
-        _running = null;
-      }
-    });
+    unawaited(
+      _inTurn(() async {
+        Timer? late;
+        try {
+          if (dropped() || !_settings.read(SettingKeys.mtEnabled)) {
+            return say(null);
+          }
+          final path = await _modelPath();
+          if (path == null || dropped()) return say(null);
+          _running = request;
+          // Past the limit the screen hears null at once; the turn still
+          // waits for the stop, so the next one never runs beside it.
+          late = Timer(limit, () {
+            gone = true;
+            stop();
+            say(null);
+          });
+          final out = (await _runner.complete(
+            path,
+            promptFor(text, to: to),
+          )).trim();
+          // Stopped part-way: half a translation is none, and isn't cached.
+          say(dropped() || out.isEmpty ? null : out);
+        } on Object {
+          // A load that failed, memory gone, a broken file: no answer, and
+          // the engine let go, rather than an error W1's unawaited call
+          // would never catch.
+          say(null);
+          try {
+            await _runner.release();
+          } on Object {
+            // ponytail: a release that fails leaves nothing to undo; the
+            // next translation loads again.
+          }
+        } finally {
+          late?.cancel();
+          _running = null;
+        }
+      }),
+    );
+    return answer.future;
   }
 
   /// The model's file, while it is on the phone and whole; otherwise null,

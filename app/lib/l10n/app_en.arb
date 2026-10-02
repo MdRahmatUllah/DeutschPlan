@@ -6219,6 +6219,19 @@
       }
     }
   },
+  "modelsStatusNoMemory": "Not available",
+  "@modelsStatusNoMemory": {
+    "description": "M4 pill: this phone has too little memory (RAM) for the model, so it isn't offered (#154)."
+  },
+  "modelsNeedsMemory": "Needs a phone with {size} of memory",
+  "@modelsNeedsMemory": {
+    "description": "M4 note under Hy-MT2, and M3's translation row, on a phone below its memory floor (#154). size is '4 GB'.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "modelsNotifyWhy": "It asks to show the download's progress in a notification",
   "@modelsNotifyWhy": {
     "description": "Under S2 page 5's Download now and M4's Download: why the download asks for the notification permission (Android 13+, iOS; #501, the owner's decision). A refusal still downloads."

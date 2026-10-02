@@ -9,6 +9,11 @@
   - Architecture `hunyuan-dense`, stock tensor types only, so stock llama.cpp loads it. (The repository's 1.25-bit build needs an unmerged llama.cpp change and a fork, so it isn't used.)
 - **Manifest:** the entry keeps the id `hymt` (so its folder is `<appSupport>/models/hymt/`), named *Hy-MT2 translation*, licence Apache-2.0, `disables: mt_enabled`. It has no `region_excluded`.
 - **Offered in every build.** The licence is Apache-2.0: not gated, no regional exclusions, no NOTICE file. So the `ENABLE_HYMT_DOWNLOAD` build flag of ADR 9 and its EU/UK/KR reasoning are gone.
+- **Only on a phone with 4 GB of memory** (a spec gap filled on #154, the lead's call, H-3441).
+  - **The line:** `ActivityManager.MemoryInfo.totalMem` of at least 3.5 GiB (`HyMtTranslator.memoryFloor`), since a "4 GB" phone reports 3.6 to 3.8 GiB, the kernel and the modem keeping the rest. On iOS it's `ProcessInfo.physicalMemory`.
+  - **Asked once,** over `sogda/storage` (`DeviceStorage.memory`, `translationFitsProvider`). A phone that won't say is offered, as the space check lets it download.
+  - **Below the line:** M4's card is *Not available* and says it needs a phone with 4 GB of memory, with no *Download* (FR-M4-04). M3's switch can't be turned on, and its row says the same, so R1's, W1's and T5's entry points, which follow `mt_enabled`, never show.
+  - **Why:** on a 2 GB phone one translation took minutes (below).
 - **The download is the voice's** (`model-manager.md`): pinned URL and sha256, the space check, the *Wi-Fi only* switch, and the swap into place. Two models can now download side by side:
   - deleting one never touches the other's download in flight (its partial file, its records);
   - a new attempt while another model downloads joins that one's notification, so the shade keeps one for both.
@@ -46,11 +51,12 @@ German into each meaning language the app offers (en, bn, ru, pl), and each of t
 ## The engine's life
 
 - **`translatorProvider`** gives `HyMtTranslator` (`hymtTranslatorProvider`, kept alive). While `mt_enabled` is off or the model isn't ready on the phone, it answers null, as `UnavailableTranslator` does, so nothing is cached then; a test without a model can still use `UnavailableTranslator`.
-- **Loaded on the first translation,** not at launch. It stays loaded for the next one. **Measured** (#154's device check, emulator-5558, 2 GB of RAM): R1's two lines took 2 to 5 minutes, cold or warm, even right after a reboot. The 1.1 GB mapping can't stay resident beside Android in 2 GB, so each token reads weights from flash again (81,000 major page faults in 25 s). It's memory, not threads (llama.cpp picks the cores). A phone with room for the mapping is still to be timed; whether phones below a RAM floor are offered the model is open on #154.
+- **Loaded on the first translation,** not at launch. It stays loaded for the next one. **Measured** (#154's device check, emulator-5558, 2 GB of RAM): R1's two lines took 2 to 5 minutes, cold or warm, even right after a reboot. The 1.1 GB mapping can't stay resident beside Android in 2 GB, so each token reads weights from flash again (81,000 major page faults in 25 s). It's memory, not threads (llama.cpp picks the cores). That's why there's a memory floor (above). A phone with room for the mapping is timed in #154's PR.
 - **Released** under memory pressure and when the app goes to the background, as the voice is (`VoiceRelease`). Also when the model is deleted. A release doesn't wait: the translation under way is stopped (llamadart's `cancelGeneration`, or before it starts when the cancel came during the load), and those waiting are dropped. Each answers null, since a phone short of memory can't wait minutes for 1.1 GB to go.
 - **One at a time,** in the order asked. A translation nobody waits for any more is dropped while it waits, or stopped while it runs, and answers null, so nothing half-done is cached. That's a line off the screen (`translationOfProvider` disposed: R1's sheet closed, T5's sheet gone), or W1 left (`ExampleTranslations` disposed). So a learner's next *Translate* never waits behind translations they've walked away from.
 - **Reloaded** when a new download of it lands.
-- **One translation at a time.** A second request waits for the first.
+- **A failure answers null:** a load that fails, memory gone, a broken file. The engine is let go, so the next translation loads it again, and nothing is cached. It's never an error, which W1's unawaited call would never catch.
+- **A time limit of 60 s a translation** (`HyMtTranslator.limit`). Past it, the translation is stopped and the screen hears null at once. The next one still waits for the stop, so two never run side by side.
 
 ## The cache
 

@@ -983,6 +983,8 @@
   "modelsVerifyingNote": "প্রথম ব্যবহারের আগে ফাইলগুলো যাচাই হচ্ছে",
   "modelsFailedNote": "ডাউনলোড থেমে গেছে, বা একটি ফাইল যাচাইয়ে মেলেনি। আবার চেষ্টা করলে যা বাকি তা আনবে।",
   "modelsNoSpaceNote": "ডাউনলোড করতে ফোনে {size} খালি করুন",
+  "modelsStatusNoMemory": "উপলব্ধ নয়",
+  "modelsNeedsMemory": "এর জন্য অন্তত {size} র‍্যামের ফোন লাগবে",
   "modelsNotifyWhy": "ডাউনলোডের অগ্রগতি নোটিফিকেশনে দেখাতে অনুমতি চাইবে",
   "modelsVoiceLabel": "ভয়েস",
   "modelsVoicePlay": "{voice} শুনুন",

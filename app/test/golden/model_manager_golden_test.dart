@@ -40,6 +40,17 @@ void main() {
     ),
     devices: <GoldenDevice>[GoldenDevice.phone],
   );
+  // …a phone below Hy-MT2's memory floor (#154)…
+  goldenTest(
+    'model_manager_memory',
+    builder: (context) => ProviderScope(
+      overrides: modelManagerStub(
+        translation: cardOf(translationEntry, fits: false),
+      ),
+      child: const ModelManagerScreen(),
+    ),
+    devices: <GoldenDevice>[GoldenDevice.phone],
+  );
   // …and a voice the phone has no room for.
   goldenTest(
     'model_manager_space',
