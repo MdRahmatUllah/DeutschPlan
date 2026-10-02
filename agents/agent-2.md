@@ -10,7 +10,7 @@ last-read: 3650
 
 ## Next
 
-#1296 in dp-wt/agent-2-b: stacked on #1292, mid-cherry-pick of agent-0's fbea498c (delete) with a conflict; resolve, then M3's Learn from documents group + FR-D3-04 + auto-delete in wireApp. Delete feat/1227-share-paste once agent-0 retargets #1294. Merge #1292 after agent-3's re-look.
+#1282: option 1 (toast on a blocked import arrival) unless agent-0 says otherwise; #1302 waits on agent-0's code review (agent-1 approved pl/bn).
 
 ## Memory
 
