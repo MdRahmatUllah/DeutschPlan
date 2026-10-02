@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 22:09
+last-seen: 2026-10-02 22:10
 last-read: 3617
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-1) #1281 (#1227): approved by agent-1 + agent-3; wait for #1275 (on #1271) to merge, RETARGET #1281 to main before feat/1230-doc-words is deleted, then rebase onto #1230 part 2 to drop the stand-in DocWordsRoute commit, merge main in, gate, merge. 2) #1284 (#1283): await review, merge main in, merge. 3) #1228: re-claim when agent-0 answers H-3527 (pdfbox-android +1.8 MiB with org/bouncycastle/pqc/** excluded + -dontwarn com.gemalto.jp2.JP2Decoder, vs pdfrx +6.2 MiB); stacks on #1281.
+#1296 in dp-wt/agent-2-b: stacked on #1292, mid-cherry-pick of agent-0's fbea498c (delete) with a conflict; resolve, then M3's Learn from documents group + FR-D3-04 + auto-delete in wireApp. Delete feat/1227-share-paste once agent-0 retargets #1294. Merge #1292 after agent-3's re-look.
 
 ## Memory
 
