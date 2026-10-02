@@ -64,6 +64,12 @@ void main() {
       ),
       hasLength(1),
     );
+    for (final text in <String>[
+      'Liebe ist das Wichtigste,\nsagt sie.',
+      'Lieber spät als nie,\nsagt man.',
+    ]) {
+      expect(splitText(text), hasLength(1), reason: text);
+    }
     expect(splitText('Wir bitten Sie,\nuns anzurufen.'), hasLength(1));
   });
 

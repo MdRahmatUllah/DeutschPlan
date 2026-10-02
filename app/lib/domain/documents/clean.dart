@@ -124,8 +124,11 @@ final RegExp _letter = RegExp(r'\p{L}', unicode: true);
 /// Okafor,», «Guten Tag,». No part of the title, nor of the first sentence
 /// (`splitText`, #1297). At most five words after the greeting: a wrapped
 /// line that starts «Hallo und herzlich willkommen …,» is text (agent-1).
+/// «Liebe» greets only before a capital, as the lemmatiser's rule has it:
+/// «Liebe ist das Wichtigste,» and «Lieber spät als nie,» are text
+/// (agent-2).
 final RegExp salutationLine = RegExp(
-  r'^(liebe[rs]?|sehr geehrte[rs]?|hallo|guten (tag|morgen|abend))\b'
-  r'(\s+\S+){0,5},$',
-  caseSensitive: false,
+  r'^([Ll]iebe[rs]?(?=\s+\p{Lu})|[Ss]ehr geehrte[rs]?|[Hh]allo|'
+  r'[Gg]uten ([Tt]ag|[Mm]orgen|[Aa]bend))\b(\s+\S+){0,5},$',
+  unicode: true,
 );
