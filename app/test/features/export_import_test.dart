@@ -359,6 +359,34 @@ void main() {
       );
     });
 
+    testWidgets('#1283 BR-DOC-06 and its documents and sentences, which a '
+        "Replace would put in place of the phone's", (tester) async {
+      final other = await open();
+      addTearDown(other.close);
+      await other.customStatement(
+        'INSERT INTO documents (id, title, source, created_at, body) VALUES '
+        "(1, 'Nebenkosten', 'paste', '2026-09-19T09:00:00Z', 'Die Abrechnung.'), "
+        "(2, 'Elternbrief', 'share', '2026-09-20T09:00:00Z', 'Liebe Eltern.')",
+      );
+      await other.customStatement(
+        'INSERT INTO word_contexts (word_key, sentence, document_id, '
+        "created_at) VALUES ('${ContentFixture.haus}', 'Das Haus ist alt.', "
+        "1, '2026-09-19T09:05:00Z')",
+      );
+      final backup = jsonDecode(
+        await BackupRepository(other).exportJson(),
+      ) as Map<String, Object?>;
+      backup['exported_at'] = '2026-09-20T12:00:00Z';
+
+      await pump(tester);
+      await choose(tester, jsonEncode(backup));
+
+      expect(
+        find.text('Exported 20 Sep · 2 documents · 1 sentence of my own'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('a file from a newer build is refused', (tester) async {
       await pump(tester);
       final newer = jsonDecode(await otherPhone()) as Map<String, Object?>;
