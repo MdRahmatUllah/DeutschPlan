@@ -23,6 +23,7 @@ import 'package:sogda/features/learn/step_detail_screen.dart';
 import 'package:sogda/features/sentences/sentences_screen.dart';
 import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/app_router.dart';
@@ -532,9 +533,8 @@ void main() {
         expect(shared.taken, 2, reason: 'a second share onto D1 is read too');
       });
 
-      testWidgets('even mid-session, but never over a running exam', (
-        tester,
-      ) async {
+      testWidgets('even mid-session, but never over a running exam, which '
+          'says so (#1282)', (tester) async {
         await pumpApp(
           tester,
           extra: <Override>[
@@ -550,6 +550,13 @@ void main() {
 
         expect(find.byType(ExamRunnerScreen), findsOneWidget);
         expect(router.state.uri.path, '/exam/7');
+        // The learner shared from another app: nothing else would show.
+        expect(
+          find.text(
+            lookupAppLocalizations(const Locale('en')).docImportExamHeld,
+          ),
+          findsOneWidget,
+        );
       });
     });
 
@@ -574,6 +581,8 @@ void main() {
 
         expect(find.byType(ExamRunnerScreen), findsOneWidget);
         expect(router.state.uri.path, '/exam/7');
+        // #1282: only a share, from another app, says it was held.
+        expect(find.byType(SnackBar), findsNothing);
       });
 
       testWidgets("nor does a tapped reminder's, which goes to the router "
@@ -794,6 +803,51 @@ void main() {
       );
     });
 
+    test("#1228 FR-D1-01 a shared PDF, only as another app's content, is "
+        'copied while its grant lasts, and only its path reaches D1, once', () {
+      final manifest = File('android/app/src/main/AndroidManifest.xml')
+          .readAsStringSync();
+      final filter = RegExp(
+        r'android:name="\.ShareActivity"[\s\S]*?</activity>',
+      ).firstMatch(manifest)![0]!;
+      expect(filter, contains('android:mimeType="application/pdf"'));
+
+      final share = File(
+        'android/app/src/main/kotlin/de/sogda/app/ShareActivity.kt',
+      ).readAsStringSync();
+      // The sender's grant ends with ShareActivity: the copy comes first.
+      expect(share, contains('File(cacheDir, "shared")'));
+      const copied = 'pendingPdf = runCatching { copyPdf(pdf) }.getOrNull()';
+      expect(share, contains(copied));
+      expect(
+        share.indexOf(copied),
+        lessThan(share.indexOf('runOnUiThread { finish() }')),
+        reason: 'copied before the activity, and its grant, ends',
+      );
+      // Only another app's content: no file: path, and no provider of
+      // Sogda's own, read with Sogda's permissions (a confused deputy).
+      expect(share, contains('uri.scheme == ContentResolver.SCHEME_CONTENT'));
+      expect(
+        share,
+        contains('uri.authority?.startsWith(packageName) == false'),
+      );
+      expect(
+        share,
+        contains(
+          'fun takePdf(): String? = pendingPdf.also { pendingPdf = null }',
+        ),
+        reason: 'taken once',
+      );
+
+      final activity = File(
+        'android/app/src/main/kotlin/de/sogda/app/MainActivity.kt',
+      ).readAsStringSync();
+      expect(
+        activity,
+        contains('"takePdf" -> result.success(ShareActivity.takePdf())'),
+      );
+    });
+
     test('iOS declares the scheme', () {
       final plist = File('ios/Runner/Info.plist').readAsStringSync();
 
@@ -833,4 +887,7 @@ class _SharedTexts implements SharedText {
     taken++;
     return null;
   }
+
+  @override
+  Future<String?> takePdf() async => null;
 }

@@ -5279,6 +5279,10 @@
   "@docImportShared": {
     "description": "D1 while processing: text another app shared."
   },
+  "docImportExamHeld": "Finish the exam first, then share it again.",
+  "@docImportExamHeld": {
+    "description": "#1282: a toast over a running mock exam when the learner shares a text or a PDF to Sogda: the exam holds it (FR-L12-04), so D1 didn't open."
+  },
   "docImportReading": "Reading",
   "@docImportReading": {
     "description": "D1: the processing card's heading, in small capitals."
@@ -5335,6 +5339,28 @@
   "docImportChooseImagesDetail": "Photos already on this phone",
   "@docImportChooseImagesDetail": {
     "description": "D1: the line under Choose images."
+  },
+  "docImportChoosePdf": "Choose a PDF",
+  "@docImportChoosePdf": {
+    "description": "#1228: D1's choice: a PDF from the file picker; also the button of the locked PDF's panel."
+  },
+  "docImportChoosePdfDetail": "Its text, up to {count} pages",
+  "@docImportChoosePdfDetail": {
+    "description": "#1228: D1's PDF choice, the line under it (the artboard's): how many pages are read at most (BR-DOC-02).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPdfScan": "This PDF is a scan: take photos of it instead.",
+  "@docImportPdfScan": {
+    "description": "#1228: a PDF with no text layer (a scan): its pages are pictures; the panel's button is Choose images."
+  },
+  "docImportPdfLocked": "This PDF needs a password. Open it in another app and copy its text instead.",
+  "@docImportPdfLocked": {
+    "description": "#1228: a password-protected PDF, which Sogda doesn't ask a password for; the panel's button is Choose a PDF."
   },
   "docImportPhotos": "{count, plural, =1{1 photo} other{{count} photos}}",
   "@docImportPhotos": {

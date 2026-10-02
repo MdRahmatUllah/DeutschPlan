@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/services/pdf_text.dart';
+
+import '../db/content_fixture.dart';
 
 /// A PDF of [texts], one per page, as the platform would read it.
 class _FakePdf implements PdfText {
@@ -10,6 +14,9 @@ class _FakePdf implements PdfText {
   final int? failAt;
   final List<int> asked = <int>[];
   final List<int> closed = <int>[];
+
+  @override
+  Future<String?> choose() async => '/picked.pdf';
 
   @override
   Future<({int handle, int pages})> open(String source) async =>
@@ -24,6 +31,9 @@ class _FakePdf implements PdfText {
 
   @override
   Future<void> close(int handle) async => closed.add(handle);
+
+  @override
+  Future<void> discard(String path) async {}
 }
 
 const String _letter =
@@ -57,6 +67,23 @@ void main() {
       expect(read!.pages, hasLength(maxPdfPages));
       expect(read.pageCount, 45);
       expect(pdf.asked.last, 30);
+    });
+
+    test('says how many pages it has as soon as it is open, before a page is '
+        'read', () async {
+      final pdf = _FakePdf(List<String>.filled(45, _letter));
+      int? told;
+      int? readWhenTold;
+      await readPdf(
+        pdf,
+        '/x.pdf',
+        onOpen: (pages) {
+          told = pages;
+          readWhenTold = pdf.asked.length;
+        },
+      );
+      expect(told, 45);
+      expect(readWhenTold, 0);
     });
 
     test('a scan, no page with a text layer, says so; one page of text is '
@@ -138,6 +165,17 @@ void main() {
         expect(calls[1].arguments, <String, Object>{'handle': 3, 'page': 1});
       },
     );
+
+    test('BR-DOC-05 discard deletes the copy D1 read, and a second one is '
+        'nothing', () async {
+      final folder = tempDir('pdf_copy');
+      final copy = File('${folder.path}/Brief.pdf')..writeAsStringSync('%PDF');
+      const pdf = PlatformPdfText();
+
+      await pdf.discard(copy.path);
+      expect(copy.existsSync(), isFalse);
+      await pdf.discard(copy.path);
+    });
 
     test('a password is PdfLocked; anything else, PdfUnreadable', () async {
       const pdf = PlatformPdfText();
