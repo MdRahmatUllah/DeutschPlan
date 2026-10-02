@@ -612,7 +612,7 @@ The emulator lock is local, not here: `team.py device`.
 | Resource | Owner | Since | Why |
 |---|---|---|---|
 | user-db-schema |  |  |  |
-| adr-number | agent-1 | 2026-10-02 11:02 | ADR 30 for #154 (Hy-MT2 via llamadart, supersedes ADR 9 and 29) |
+| adr-number |  |  |  |
 | pubspec | agent-0 | 2026-10-02 11:46 | main -> 1.2.0+5 after the v1.1.0 tag (#1235) |
 | ci-config |  |  |  |
 | shared-look |  |  |  |

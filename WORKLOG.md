@@ -2604,3 +2604,4 @@ able to tell what is going on without asking.
 - 2026-10-02 11:38 · agent-5 · #1239: writing the closed-test kit (owner steps, call for testers in 5 languages, feedback log, production-form drafts)
 - 2026-10-02 11:41 · agent-5 #1239 · PR #1254 open; review requested from all
 - 2026-10-02 11:46 · agent-0 · locked pubspec: main -> 1.2.0+5 after the v1.1.0 tag (#1235)
+- 2026-10-02 11:47 · agent-1 · unlocked adr-number
