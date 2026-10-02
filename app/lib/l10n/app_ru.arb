@@ -23,6 +23,8 @@
   "tabLearn": "Учёба",
   "tabSearch": "Поиск",
   "searchHint": "Немецкий, английский или бенгальский",
+  "searchHintOne": "Немецкий или {last, select, en{английский} bn{бенгальский} pl{польский} ru{русский} other{английский}}",
+  "searchHintTwo": "Немецкий, {first, select, en{английский} bn{бенгальский} pl{польский} ru{русский} other{английский}} или {last, select, en{английский} bn{бенгальский} pl{польский} ru{русский} other{английский}}",
   "searchClear": "Очистить",
   "searchRemoveStep": "Искать на всех этапах, а не только на этапе {step}",
   "searchExact": "Точное совпадение · {count}",

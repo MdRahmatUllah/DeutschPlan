@@ -16,6 +16,7 @@ import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -429,6 +430,79 @@ void main() {
     );
   });
 
+  test("#1189 FR-R1-01 the hint names German and the learner's meaning "
+      'languages, in the UI language', () {
+    final cases = <(String, MeaningChoice, String)>[
+      ('en', MeaningChoice.fallback, 'Search German, English or Bangla'),
+      ('en', const MeaningChoice('pl'), 'Search German or Polish'),
+      (
+        'en',
+        const MeaningChoice('pl', 'en'),
+        'Search German, Polish or English',
+      ),
+      (
+        'en',
+        const MeaningChoice('ru', 'en'),
+        'Search German, Russian or English',
+      ),
+      ('pl', MeaningChoice.fallback, 'Niemiecki, angielski lub bengalski'),
+      ('pl', const MeaningChoice('pl'), 'Niemiecki lub polski'),
+      (
+        'pl',
+        const MeaningChoice('pl', 'en'),
+        'Niemiecki, polski lub angielski',
+      ),
+      ('ru', MeaningChoice.fallback, 'Немецкий, английский или бенгальский'),
+      ('ru', const MeaningChoice('ru'), 'Немецкий или русский'),
+      (
+        'ru',
+        const MeaningChoice('ru', 'en'),
+        'Немецкий, русский или английский',
+      ),
+      ('bn', MeaningChoice.fallback, 'জার্মান, ইংরেজি বা বাংলায় খুঁজুন'),
+      ('bn', const MeaningChoice('bn'), 'জার্মান বা বাংলায় খুঁজুন'),
+      (
+        'bn',
+        const MeaningChoice('pl', 'en'),
+        'জার্মান, পোলিশ বা ইংরেজিতে খুঁজুন',
+      ),
+    ];
+    for (final (ui, choice, hint) in cases) {
+      expect(
+        searchHintFor(lookupAppLocalizations(Locale(ui)), choice),
+        hint,
+        reason: '$ui UI, $choice',
+      );
+    }
+    for (final locale in supportedLocales) {
+      final l10n = lookupAppLocalizations(locale);
+      // An English and Bangla learner reads the hint as before.
+      expect(searchHintFor(l10n, MeaningChoice.fallback), l10n.searchHint);
+      // A language the copy has no name for keeps it too.
+      expect(searchHintFor(l10n, const MeaningChoice('uk')), l10n.searchHint);
+    }
+  });
+
+  testWidgets('#1189 FR-R1-01 the hint follows a change of meaning language, '
+      'whole at 200 %', (tester) async {
+    // At 200 %, where #565 once cut the hint: the longest is still whole.
+    textAt(tester, 2);
+    await pump(tester);
+    expect(find.text('Search German, English or Bangla'), findsOneWidget);
+    await tester.runAsync<void>(
+      () => writeMeaningChoice(settings, const MeaningChoice('pl', 'en')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Search German, Polish or English'), findsOneWidget);
+    await tester.runAsync<void>(
+      () => writeMeaningChoice(settings, const MeaningChoice('ru', 'en')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Search German, Russian or English'), findsOneWidget);
+    expectAllLinesShown(tester, within: find.byType(TextField));
+    expectNothingClipped(tester);
+  });
+
   testWidgets('FR-R1-01 a failed search says so, and Retry asks again', (
     tester,
   ) async {
@@ -538,6 +612,7 @@ void main() {
       ProviderScope(
         overrides: <Override>[
           ...todayStub(),
+          languagesProvider.overrideWith(StubLanguages.new),
           searchResultsProvider.overrideWith(
             (ref, query) => Stream.value(artboardSearch()),
           ),

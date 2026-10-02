@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/search/search_screen.dart';
@@ -14,6 +15,7 @@ void main() {
   goldenTest(
     'search',
     overrides: [
+      languagesProvider.overrideWith(StubLanguages.new),
       searchResultsProvider.overrideWith(
         (ref, query) => Stream.value(artboardSearch()),
       ),
@@ -34,6 +36,7 @@ void main() {
   goldenTest(
     'search_ru_meanings',
     overrides: [
+      languagesProvider.overrideWith(StubLanguages.new),
       searchResultsProvider.overrideWith(
         (ref, query) => Stream.value(
           SearchView(
@@ -76,6 +79,7 @@ void main() {
   goldenTest(
     'search_idle',
     overrides: [
+      languagesProvider.overrideWith(StubLanguages.new),
       recentSearchesProvider.overrideWith(
         () => StubRecentSearches(artboardRecent),
       ),
@@ -90,6 +94,7 @@ void main() {
   goldenTest(
     'search_sentence',
     overrides: [
+      languagesProvider.overrideWith(StubLanguages.new),
       searchResultsProvider.overrideWith(
         (ref, query) => Stream.value(
           const SearchView(
@@ -133,6 +138,7 @@ void main() {
   goldenTest(
     'search_none',
     overrides: [
+      languagesProvider.overrideWith(StubLanguages.new),
       searchResultsProvider.overrideWith(
         (ref, query) => Stream.value(
           const SearchView(words: <SearchRow>[], sentences: <SentenceHit>[]),
@@ -160,6 +166,7 @@ void main() {
   goldenTest(
     'search_none_mine',
     overrides: [
+      languagesProvider.overrideWith(StubLanguages.new),
       searchResultsProvider.overrideWith(
         (ref, query) => Stream.value(
           const SearchView(words: <SearchRow>[], sentences: <SentenceHit>[]),
@@ -198,6 +205,7 @@ void main() {
   goldenTest(
     'search_long_200',
     overrides: [
+      languagesProvider.overrideWith(StubLanguages.new),
       searchResultsProvider.overrideWith(
         (ref, query) => Stream.value(
           SearchView(
