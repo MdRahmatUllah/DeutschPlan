@@ -120,8 +120,12 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
   bool _busy = false;
 
   /// This visit's adds that start today: they took today's slots, which
-  /// [DocWordsView.slotsLeft] read when the screen opened (agent-3, #1294).
+  /// This visit's adds that start today, and the view they were counted
+  /// against: they took today's slots, which that view's slotsLeft read
+  /// before them. A view read again (back from R2, a Retry, a new day)
+  /// counts them itself (agent-3, #1294).
   int _startedToday = 0;
+  DocWordsView? _countedOn;
 
   @override
   void dispose() {
@@ -129,13 +133,6 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
       tap.dispose();
     }
     super.dispose();
-  }
-
-  /// The document read again: its slots then count today's adds already
-  /// (agent-3, #1294).
-  void _reread() {
-    _startedToday = 0;
-    ref.invalidate(docWordsProvider(widget.id));
   }
 
   bool _isAdded(DocWordsView view, DocWord word) =>
@@ -193,6 +190,10 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
       ];
       setState(() {
         _added.addAll(words.map((w) => w.key));
+        if (!identical(_countedOn, view)) {
+          _countedOn = view;
+          _startedToday = 0;
+        }
         _startedToday += days.where((d) => d == today).length;
       });
       final message = words.length == 1
@@ -263,7 +264,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
             Navigator.of(sheet).pop();
             await AddWordRoute.openAndWait(context, german: word.surface);
             // Saved there, it is mine here: its chip and Keep this sentence.
-            if (mounted) _reread();
+            if (mounted) ref.invalidate(docWordsProvider(widget.id));
           },
           onKeepSentence: () {
             Navigator.of(sheet).pop();
@@ -341,7 +342,11 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
           bar = _BulkBar(
             level: view.match.level,
             fresh: fresh,
-            slotsLeft: math.max(0, view.slotsLeft - _startedToday),
+            slotsLeft: math.max(
+              0,
+              view.slotsLeft -
+                  (identical(view, _countedOn) ? _startedToday : 0),
+            ),
             cap: ref
                 .watch(settingsSourceProvider)
                 .read(SettingKeys.docDailyCap),
@@ -355,7 +360,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
         body = SgErrorPanel(
           message: l10n.docWordsFailed,
           retryLabel: l10n.retry,
-          onRetry: _reread,
+          onRetry: () => ref.invalidate(docWordsProvider(widget.id)),
         );
       default:
         body = Center(
