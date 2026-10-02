@@ -240,6 +240,32 @@ void main() {
       expect(find.text(l10n.todayStepWords(184, 540, 'A2.1')), findsOneWidget);
     });
 
+    for (final (name, view, line) in <(String, TodayView, String)>[
+      (
+        'with the course\'s category',
+        artboardToday(newTotal: 12, newFromDocuments: 5),
+        '7 new · Wohnen & Haushalt · 5 from your documents',
+      ),
+      (
+        'with no category',
+        artboardToday(newTotal: 12, newFromDocuments: 5, newCategory: null),
+        '7 new · 5 from your documents',
+      ),
+      (
+        'all of them',
+        artboardToday(newTotal: 5, newFromDocuments: 5, newCategory: null),
+        '5 from your documents',
+      ),
+    ]) {
+      testWidgets('#1280 BR-PLAN-11 the New card names the words from '
+          'documents apart: $name', (tester) async {
+        await pump(tester, view: view);
+
+        expect(find.text(l10n.todayNew(view.newToday.total)), findsOneWidget);
+        expect(find.text(line), findsOneWidget);
+      });
+    }
+
     testWidgets(
       'FR-T1-02 #315 the ring is one node: its name and value, and the tap '
       'that starts the day',

@@ -563,6 +563,113 @@ ORDER BY w.seq_in_sublevel
     });
   });
 
+  group('BR-PLAN-11 the document queue', () {
+    test('waiting: oldest first, a word already queued keeps its place, and '
+        'one planned, known, removed or a note leaves', () async {
+      await store.queueDocWords(<String>[
+        's3',
+        's1',
+        's2',
+      ], '2026-03-01T09:00:00Z');
+      await store.queueDocWords(<String>['s4', 's1'], '2026-03-02T09:00:00Z');
+      expect(await store.docWaiting(limit: 10), <String>[
+        's3',
+        's1',
+        's2',
+        's4',
+      ]);
+      expect(await store.docWaiting(limit: 2), <String>['s3', 's1']);
+
+      // The course planned s1, s2 is learning, and s4 was removed.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1']);
+      await wordState('s2');
+      await db.customStatement(
+        "UPDATE c.words SET kind = 'note' WHERE uid = 's4'",
+      );
+      expect(await store.docWaiting(limit: 10), <String>['s3']);
+    });
+
+    test("a day's used slots are the words planned on it", () async {
+      await store.queueDocWords(<String>[
+        's1',
+        's2',
+        's3',
+      ], '2026-03-01T09:00:00Z');
+      // As the engine plans them: the rows, then the queue's day.
+      await store.addToPlan(monday, PlanKind.newWord, <String>['s1', 's2']);
+      await store.markDocPlanned(monday, <String>['s1', 's2']);
+      expect(await store.docPlannedOn(monday), <String>['s1', 's2']);
+      expect(await store.docPlannedOn(addDays(monday, 1)), isEmpty);
+      expect(await store.docWaiting(limit: 10), <String>['s3']);
+    });
+
+    test(
+      'through the engine: a study day takes the cap, after the course',
+      () async {
+        await enroll(dailyNew: 2);
+        await store.queueDocWords(<String>['s9', 's8'], '2026-03-01T09:00:00Z');
+        final engine = PlanEngine(
+          store: store,
+          reviseCount: 0,
+          backlogCatchupDays: 30,
+          docDailyCap: 1,
+        );
+        final plan = await engine.openDay(monday);
+        expect(plan.newToday.take(2), hasLength(2), reason: "the course's two");
+        expect(plan.newToday.last, 's9');
+        expect(await store.docPlannedOn(monday), <String>['s9']);
+        // BR-PLAN-08: the cap it opened with is stored, so a raised one
+        // waits for tomorrow.
+        expect(await store.plannedDocCap(), 1);
+        final raised = PlanEngine(
+          store: store,
+          reviseCount: 0,
+          backlogCatchupDays: 30,
+          docDailyCap: 3,
+        );
+        expect(await raised.docSlotsLeft(monday), 0);
+      },
+    );
+
+    test(
+      '#1285 a day whose rows went (a merge where the file wins) frees '
+      'its queue words: they wait again, and the course keeps daily_new',
+      () async {
+        await enroll(dailyNew: 2);
+        await store.queueDocWords(<String>['s9', 's8'], '2026-03-01T09:00:00Z');
+        final engine = PlanEngine(
+          store: store,
+          reviseCount: 0,
+          backlogCatchupDays: 30,
+          docDailyCap: 2,
+        );
+        await engine.openDay(monday);
+        final course = (await store.plannedOn(
+          monday,
+          PlanKind.newWord,
+        )).where((uid) => uid != 's9' && uid != 's8').toList();
+        expect(course, hasLength(2));
+        expect(await store.docPlannedOn(monday), <String>['s9', 's8']);
+
+        // #658: the file's plan replaces the phone's, without the queue's rows,
+        // and the queue still says Monday.
+        await db.customStatement(
+          "DELETE FROM plan_items WHERE word_uid IN ('s9', 's8')",
+        );
+        expect(await store.docPlannedOn(monday), isEmpty);
+        expect(await store.docWaiting(limit: 10), <String>['s9', 's8']);
+
+        await engine.replanToday(monday);
+        expect(await store.plannedOn(monday, PlanKind.newWord), <String>[
+          ...course,
+          's9',
+          's8',
+        ], reason: "daily_new's two, and the queue's back, not two more");
+        expect(await store.docPlannedOn(monday), <String>['s9', 's8']);
+      },
+    );
+  });
+
   group('the backlog', () {
     test('is the open new rows from before today', () async {
       await store.addToPlan(monday, PlanKind.newWord, <String>['s1']);

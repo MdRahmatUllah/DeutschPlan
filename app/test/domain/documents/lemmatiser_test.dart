@@ -132,13 +132,11 @@ void main() {
 
   // #1267: the held-out texts word for word. One broken rule barely moves the
   // corpus's floor, so each text's misses are pinned: a change here is a
-  // regression, or a fix, to name. The two known ones are written down.
-  test('#1267 BR-DOC-03: the held-out texts find their labels, but for two '
-      'known misses', () {
+  // regression, or a fix, to name. The known one is written down.
+  test('#1267 #1270 BR-DOC-03: the held-out texts find their labels, but for '
+      'one known miss', () {
     const known = <String, ({Set<String> extra, Set<String> missed})>{
-      // «…ab oder geben Sie ihm eine Erlaubnis mit,»: an imperative after
-      // «oder» isn't read as the particle verb (#1256's review).
-      'heldout_school': (extra: {'geben'}, missed: {}),
+      'heldout_school': (extra: {}, missed: {}),
       'heldout_doctor': (extra: {}, missed: {}),
       // «auf den Bänken»: the course's Bank has only «Banken» (content).
       'heldout_news': (extra: {}, missed: {'Bank'}),
@@ -261,6 +259,20 @@ void main() {
     expect(lemmas('Wo gehst du hin?')[1], 'gehen');
   });
 
+  test('#1270: «und» and «oder» join main clauses, each with its own '
+      'particle verb', () {
+    expect(byGerman, contains('abholen'));
+    final words = lemmas(
+      'Bitte holen Sie Ihr Kind ab oder geben Sie ihm eine Erlaubnis mit.',
+    );
+    expect(words[1], 'abholen');
+    expect(words[5], '', reason: 'ab belongs to holen');
+    expect(words[7], '', reason: 'geben … mit is mitgeben, not in the course');
+    expect(words.last, '');
+    // A verb both clauses share still takes its particle from the second.
+    expect(lemmas('Ich rufe dich heute oder morgen an.')[1], 'anrufen');
+  });
+
   test('#1223: adjective endings and comparison', () {
     expect(lemmas('Das ist eine kleine Wohnung.')[3], 'klein');
     expect(lemmas('Die Wohnung ist kleiner.')[3], 'klein');
@@ -288,5 +300,45 @@ void main() {
     expect(isStopWord('meinen', const <LemmaEntry>[]), isTrue);
     expect(isStopWord('wäre', lemmatiser.lookup('wäre')), isTrue);
     expect(isStopWord('Wohnung', lemmatiser.lookup('Wohnung')), isFalse);
+  });
+
+  test('#1274 BR-DOC-03: sein\'s and werden\'s irregular forms are their '
+      'verb, and stopped', () {
+    for (final (sentence, at, verb) in <(String, int, String)>[
+      ('Ich bin heute zu Hause.', 1, 'sein'),
+      ('Bist du morgen da?', 0, 'sein'),
+      ('Die Unterlagen sind vollständig.', 2, 'sein'),
+      ('Ihr seid herzlich eingeladen.', 1, 'sein'),
+      ('Du wirst es sehen.', 1, 'werden'),
+      ('Der Antrag ist geprüft worden.', 4, 'werden'),
+    ]) {
+      final tokens = sentencesOf(sentence).single;
+      final entries = lemmatiser.sentence(tokens)[at];
+      expect(entries.map((e) => e.german), <String>[verb], reason: sentence);
+      expect(isStopWord(tokens[at], entries), isTrue, reason: sentence);
+    }
+  });
+
+  test('#1274 BR-DOC-03: «mag» is mögen\'s, stopped, before the C1 headword '
+      '«mag»', () {
+    expect(byGerman.keys, containsAll(<String>['mag', 'mögen']));
+    for (final (sentence, at) in <(String, int)>[
+      ('Ich mag den Sommer.', 1),
+      ('Magst du Kaffee?', 0),
+    ]) {
+      final tokens = sentencesOf(sentence).single;
+      final entries = lemmatiser.sentence(tokens)[at];
+      expect(entries.map((e) => e.german), <String>['mögen'], reason: sentence);
+      expect(isStopWord(tokens[at], entries), isTrue, reason: sentence);
+    }
+    // The other headwords that are a form stay what they were.
+    expect(lemmas('Das dürfte teuer werden.')[1], 'dürfte');
+  });
+
+  test('#1274: «weiß» is wissen or the colour, and D2 asks which', () {
+    expect(lemmas('Ich weiß es nicht.')[1], 'weiß|wissen');
+    expect(lemmas('Die Wand ist weiß.')[3], 'weiß|wissen');
+    expect(lemmas('Das weiße Auto steht dort.')[1], 'weiß');
+    expect(lemmas('Weißt du das?')[0], 'wissen');
   });
 }
