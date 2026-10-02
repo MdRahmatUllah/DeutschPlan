@@ -21,6 +21,8 @@
 | `/search` | R1 | tab root (branch 2) |
 | `/search/add` · `/search/add/:id` | R2 | pushed |
 | `/search/import` (`?arrival=`: the share's number, #1227) | D1 | pushed from R1; a share's arrival replaces the stack |
+| `/search/document/:id` | D2 | D1's end, in D1's place (`DocWordsRoute.instead`, so back returns to R1); pushed from D3's row (`DocWordsRoute.open`, so back returns to D3) (#1230) |
+| `/search/documents` | D3 | pushed from R1's *Learn from a document* once a document is kept (D1 before); Me's *My documents* jumps here (#1295) |
 | `/me` | M1 | tab root (branch 3) |
 | `/me/progress` | M2 | pushed |
 | `/me/settings` | M3 | pushed |

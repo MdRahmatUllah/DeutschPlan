@@ -12,6 +12,9 @@ import 'package:sogda/domain/documents/photo_privacy.dart';
 import 'package:sogda/domain/documents/tokens.dart';
 import 'package:sogda/domain/text_norm.dart';
 
+/// D3's row (FR-D3-01): a document, and how many of its words were added.
+typedef DocumentEntry = ({Document document, int added});
+
 /// What a document's run reads of the course and the learner, once
 /// (`document-matcher.md`, *The matcher*).
 typedef MatcherInput = ({
@@ -165,6 +168,9 @@ class DocumentRepository {
         },
         mine: <String>{for (final row in custom) searchKey(row.german)},
         mineUids: <String>{for (final row in custom) ?row.matchedUid},
+        mineIds: <String, int>{
+          for (final row in custom) searchKey(row.german): row.id,
+        },
         activeStepOrder: step == null ? null : order[step.code],
         level: step?.levelCode,
       ),
@@ -240,6 +246,101 @@ class DocumentRepository {
           mode: InsertMode.insertOrIgnore,
         );
   });
+
+  /// D3's list (FR-D3-01), newest first, with each document's added words
+  /// counted once per lemma; it changes with either table.
+  Stream<List<DocumentEntry>> watchAll() => _db
+      .customSelect(
+        'SELECT d.*, (SELECT COUNT(DISTINCT w.lemma_key) FROM document_words w '
+        'WHERE w.document_id = d.id AND w.added = 1) AS added '
+        'FROM documents d ORDER BY d.created_at DESC, d.id DESC',
+        readsFrom: <ResultSetImplementation<dynamic, dynamic>>{
+          _db.documents,
+          _db.documentWords,
+        },
+      )
+      .watch()
+      .map(
+        (rows) => <DocumentEntry>[
+          for (final row in rows)
+            (
+              document: _db.documents.map(row.data),
+              added: row.read<int>('added'),
+            ),
+        ],
+      );
+
+  /// R1's *Learn from a document*: D3 once one is kept, else D1.
+  Future<int> count() async {
+    final n = countAll();
+    final row = await (_db.selectOnly(
+      _db.documents,
+    )..addColumns(<Expression<Object>>[n])).getSingle();
+    return row.read(n)!;
+  }
+
+  /// D3's *Rename*.
+  Future<void> rename(int id, String title) =>
+      (_db.update(_db.documents)..where((d) => d.id.equals(id))).write(
+        DocumentsCompanion(title: Value(title)),
+      );
+
+  /// FR-D3-02, BR-DOC-05: the document, what it found and its photos go;
+  /// the words added from it and their sentences stay (`document_words`
+  /// cascades, `word_contexts.document_id` turns NULL). The photos after the
+  /// data, best effort, as the recordings go.
+  Future<void> delete(int id, {Directory? support}) async {
+    await (_db.delete(_db.documents)..where((d) => d.id.equals(id))).go();
+    final root = support ?? await getApplicationSupportDirectory();
+    final folder = Directory('${root.path}/documents/$id');
+    try {
+      if (folder.existsSync()) await folder.delete(recursive: true);
+    } on FileSystemException {
+      // ponytail: a photo held open stays until the next delete or reset.
+    }
+  }
+
+  /// FR-D3-03, at launch: the documents older than [days] (M3's *Delete
+  /// documents after*) go as D3's *Delete* takes one, and their words and
+  /// sentences stay (BR-DOC-05). 0 is never. How many went.
+  Future<int> deleteOlderThan(int days, {Directory? support}) async {
+    if (days <= 0) return 0;
+    final cutoff = _now()
+        .toUtc()
+        .subtract(Duration(days: days))
+        .toIso8601String();
+    final old =
+        await (_db.selectOnly(_db.documents)
+              ..addColumns(<Expression<Object>>[_db.documents.id])
+              ..where(_db.documents.createdAt.isSmallerThanValue(cutoff)))
+            .map((row) => row.read(_db.documents.id)!)
+            .get();
+    for (final id in old) {
+      await delete(id, support: support);
+    }
+    return old.length;
+  }
+
+  /// FR-D3-04: *Save original images* turned off, and the learner chose to
+  /// delete the photos already kept. Every document keeps its text.
+  Future<void> dropImages({Directory? support}) async {
+    await _db
+        .update(_db.documents)
+        .write(const DocumentsCompanion(imagePaths: Value(null)));
+    await deleteAllImages(support: support);
+  }
+
+  /// D3's storage line: the bytes the kept photos take.
+  Future<int> imageBytes({Directory? support}) async {
+    final root = support ?? await getApplicationSupportDirectory();
+    final folder = Directory('${root.path}/documents');
+    if (!folder.existsSync()) return 0;
+    var bytes = 0;
+    await for (final entry in folder.list(recursive: true)) {
+      if (entry is File) bytes += await entry.length();
+    }
+    return bytes;
+  }
 
   /// The run, in its own isolate. Static, so the closure takes only [body]
   /// and [input] across: an instance method's closures share a context with

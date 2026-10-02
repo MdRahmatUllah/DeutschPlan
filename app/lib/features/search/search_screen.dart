@@ -1039,17 +1039,28 @@ class _Idle extends ConsumerWidget {
             onPressed: () => AddWordRoute.open(context),
           ),
         ),
-        // D1 (#1227): the words of a letter or an article, at once.
+        // D1 (#1227): the words of a letter or an article, at once; D3
+        // once one is kept, whose *New document* is D1 (#1295).
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
           child: SgButton(
             label: l10n.docImportTitle,
             kind: SgButtonKind.secondary,
-            onPressed: () => DocImportRoute.open(context),
+            onPressed: () => unawaited(_learnFrom(context, ref)),
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _learnFrom(BuildContext context, WidgetRef ref) async {
+    final kept = await ref.read(documentRepositoryProvider).count();
+    if (!context.mounted) return;
+    if (kept > 0) {
+      MyDocumentsRoute.open(context);
+    } else {
+      DocImportRoute.open(context);
+    }
   }
 }
 

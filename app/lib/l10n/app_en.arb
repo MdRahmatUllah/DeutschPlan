@@ -4041,6 +4041,64 @@
   "@settingsGroupData": {
     "description": "M3 group header."
   },
+  "settingsGroupDocuments": "Learn from documents",
+  "@settingsGroupDocuments": {
+    "description": "M3 group header (#1296): the settings of Learn from your documents."
+  },
+  "settingsDocDailyCap": "Words a day from documents",
+  "@settingsDocDailyCap": {
+    "description": "M3 row: doc_daily_cap, a stepper 0–20 (BR-PLAN-11): the new words a study day takes from the documents' queue, after the course's own."
+  },
+  "settingsDocDailyCapDecrease": "Decrease words a day from documents",
+  "@settingsDocDailyCapDecrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsDocDailyCapIncrease": "Increase words a day from documents",
+  "@settingsDocDailyCapIncrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsDocSaveImages": "Save original images",
+  "@settingsDocSaveImages": {
+    "description": "M3 switch: doc_save_images (BR-DOC-05): a photographed document keeps its pages' photos on this phone."
+  },
+  "settingsDocAutodelete": "Auto-delete documents",
+  "@settingsDocAutodelete": {
+    "description": "M3 row: doc_autodelete_days (FR-D3-03), its value beside it; opens the choice of Never or after 30, 90 or 365 days."
+  },
+  "settingsDocAutodeleteNote": "The words you added stay",
+  "@settingsDocAutodeleteNote": {
+    "description": "M3 subtitle under Auto-delete documents (BR-DOC-05): deleting a document never deletes the words added from it."
+  },
+  "settingsDocAutodeleteNever": "Never",
+  "@settingsDocAutodeleteNever": {
+    "description": "M3: Auto-delete documents is off (doc_autodelete_days 0)."
+  },
+  "settingsDocAutodeleteAfter": "{count, plural, =1{After 1 day} other{After {count} days}}",
+  "@settingsDocAutodeleteAfter": {
+    "description": "M3: a document is deleted this many days after it was added (30, 90 or 365).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "settingsDocImagesDropTitle": "Delete the images already saved?",
+  "@settingsDocImagesDropTitle": {
+    "description": "FR-D3-04: the question when Save original images is turned off while documents keep photos."
+  },
+  "settingsDocImagesDropMessage": "New documents won't keep their images. The documents you have keep their text, and the words you added stay.",
+  "@settingsDocImagesDropMessage": {
+    "description": "FR-D3-04's message: what deleting the kept photos does, and what stays (BR-DOC-05)."
+  },
+  "settingsDocImagesDrop": "Delete images",
+  "@settingsDocImagesDrop": {
+    "description": "FR-D3-04's button: delete the kept photos."
+  },
+  "settingsDocImagesKeep": "Keep them",
+  "@settingsDocImagesKeep": {
+    "description": "FR-D3-04's other button: keep the photos already saved."
+  },
   "settingsFromTomorrow": "Applies from tomorrow",
   "@settingsFromTomorrow": {
     "description": "M3 subtitle of a row whose change reaches the plan tomorrow (BR-PLAN-08): today's plan is fixed."
@@ -6535,5 +6593,398 @@
   "modelsDeleteFailed": "Couldn't delete all of the model's files. Try again.",
   "@modelsDeleteFailed": {
     "description": "M4 toast when deleting a model's files fails part-way (#721)."
+  },
+  "docWordsSummary": "{fresh} new · {probable} probably known · {outside} outside the course",
+  "@docWordsSummary": {
+    "description": "D2's header line (doc-words.md): the counts of new words, words probably known, and words outside the course.",
+    "placeholders": {
+      "fresh": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "probable": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "outside": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsShowProbablyKnown": "Show words I probably know",
+  "@docWordsShowProbablyKnown": {
+    "description": "D2's switch: also mark the words of steps the learner skipped (doc_show_probably_known)."
+  },
+  "docWordsLegendNew": "{level} new",
+  "@docWordsLegendNew": {
+    "description": "D2's legend: the mark of a new word of this level. level is A1 … C2.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsLegendMine": "My word",
+  "@docWordsLegendMine": {
+    "description": "D2's legend and mark: a word that is one of My words."
+  },
+  "docWordsLegendOutside": "outside the course",
+  "@docWordsLegendOutside": {
+    "description": "D2's legend: the mark of a word outside the course."
+  },
+  "docWordsAddLevel": "Add my level ({level}) · {count}",
+  "@docWordsAddLevel": {
+    "description": "D2's bulk button (FR-D2-03): add every new word of the learner's level. level is A1 … C2; count how many.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddLevels": "Add {level} and {next} · {count}",
+  "@docWordsAddLevels": {
+    "description": "D2's bulk button (FR-D2-03): add the new words of the learner's level and the one above.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "next": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddAll": "Add all new · {count}",
+  "@docWordsAddAll": {
+    "description": "D2's bulk button (FR-D2-03): add every new course word in the text. count is how many.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsCapNote": "{cap} a day: the other {later} start tomorrow or later",
+  "@docWordsCapNote": {
+    "description": "D2's note under the bulk bar (BR-PLAN-11): cap is doc_daily_cap, later how many would start on a later day.",
+    "placeholders": {
+      "cap": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "later": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedToday": "Added {word}: you'll learn it today",
+  "@docWordsAddedToday": {
+    "description": "D2's toast (FR-D2-02): the word joined today's plan. word is the word as it stands in the text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedFrom": "Added {word}: from {day}",
+  "@docWordsAddedFrom": {
+    "description": "D2's toast (FR-D2-02): the word starts on a later study day. day is that day's name, Thursday.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedWaiting": "Added {word}: it waits in your queue",
+  "@docWordsAddedWaiting": {
+    "description": "D2's toast: the word waits in the document queue (a cap of 0, or the backlog pause), BR-PLAN-11.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsAddedMany": "Added {count}: {today} today, the rest later",
+  "@docWordsAddedMany": {
+    "description": "D2's toast after a bulk add (FR-D2-03): count words added, today of them in today's plan.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "today": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsGone": "This document is no longer here.",
+  "@docWordsGone": {
+    "description": "D2 for a document that was deleted."
+  },
+  "docWordsFailed": "Couldn't read this document's words.",
+  "@docWordsFailed": {
+    "description": "D2 when the matcher's run fails."
+  },
+  "docWordsEmpty": "You know every word in this text",
+  "@docWordsEmpty": {
+    "description": "D2's empty state: no new word in the text (doc-words.md, States)."
+  },
+  "docWordsSemNew": "{word}, new, {level}",
+  "@docWordsSemNew": {
+    "description": "Screen reader: a new course word in D2's text. level is A1 … C2.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemProbable": "{word}, probably known",
+  "@docWordsSemProbable": {
+    "description": "Screen reader: a word D2 thinks the learner probably knows.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemOutside": "{word}, outside the course",
+  "@docWordsSemOutside": {
+    "description": "Screen reader: a word outside the course in D2's text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemMine": "{word}, my word",
+  "@docWordsSemMine": {
+    "description": "Screen reader: a word that is one of My words in D2's text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsSemAdded": "{word}, added",
+  "@docWordsSemAdded": {
+    "description": "Screen reader: a word already added from this document.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsCardInText": "In your text",
+  "@docWordsCardInText": {
+    "description": "D2's card: the heading over the sentence from the document."
+  },
+  "docWordsCardAdd": "Add",
+  "@docWordsCardAdd": {
+    "description": "D2's card button (FR-D2-02): add the word to learn."
+  },
+  "docWordsCardAdded": "Added",
+  "@docWordsCardAdded": {
+    "description": "D2's card button once the word is added."
+  },
+  "docWordsCardKnow": "I know this",
+  "@docWordsCardKnow": {
+    "description": "D2's card button (FR-D2-04): W1's Mark known."
+  },
+  "docWordsCardIgnore": "Ignore",
+  "@docWordsCardIgnore": {
+    "description": "D2's card button: no mark for this word in this document."
+  },
+  "docWordsCardOpen": "Open the word",
+  "@docWordsCardOpen": {
+    "description": "D2's card link: open the word's page (W1)."
+  },
+  "docWordsCardOutside": "Not in the course",
+  "@docWordsCardOutside": {
+    "description": "D2's card for a word outside the course."
+  },
+  "docWordsCardMine": "Already one of my words",
+  "@docWordsCardMine": {
+    "description": "D2's card for a word that is already one of My words."
+  },
+  "docWordsCardCompound": "Made of {parts}",
+  "@docWordsCardCompound": {
+    "description": "D2's card: a compound's parts, a hint only. parts is «Nebenkosten + Abrechnung».",
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "docWordsCardWhich": "Which word is it?",
+  "@docWordsCardWhich": {
+    "description": "D2's card for an ambiguous word: the learner chooses the reading first."
+  },
+  "docWordsCardAddMine": "Add as my word",
+  "@docWordsCardAddMine": {
+    "description": "D2's card button (FR-D2-05): open R2 to add the word as one of My words."
+  },
+  "docWordsCardKeepSentence": "Keep this sentence",
+  "@docWordsCardKeepSentence": {
+    "description": "D2's card for one of My words (FR-D2-06): keep this document's sentence with the word, no second word."
+  },
+  "docWordsSentenceKept": "Kept the sentence for {word}",
+  "@docWordsSentenceKept": {
+    "description": "D2's toast: the sentence is kept with the learner's own word (FR-D2-06). word as in the text.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "myDocumentsTitle": "My documents",
+  "@myDocumentsTitle": {
+    "description": "D3's title: the documents the learner has kept (#1295)."
+  },
+  "myDocumentsNew": "New document",
+  "@myDocumentsNew": {
+    "description": "D3's button: open D1 for a new document."
+  },
+  "myDocumentsPhotos": "{count, plural, one{1 photo} other{{count} photos}}",
+  "@myDocumentsPhotos": {
+    "description": "D3's row: a document read from photos. count is how many.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsPdf": "{pages, plural, one{PDF, 1 page} other{PDF, {pages} pages}}",
+  "@myDocumentsPdf": {
+    "description": "D3's row: a document read from a PDF. pages is how many.",
+    "placeholders": {
+      "pages": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsText": "text",
+  "@myDocumentsText": {
+    "description": "D3's row: a document that came as text, pasted or shared."
+  },
+  "myDocumentsAdded": "{count, plural, one{1 word added} other{{count} words added}}",
+  "@myDocumentsAdded": {
+    "description": "D3's row (FR-D3-01): how many of its words the learner added.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsNothingNew": "nothing new",
+  "@myDocumentsNothingNew": {
+    "description": "D3's row: none of its words added."
+  },
+  "myDocumentsStorage": "{count, plural, one{1 document} other{{count} documents}} · {megabytes} MB (images)",
+  "@myDocumentsStorage": {
+    "description": "D3's footer: how many documents, and the megabytes their photos take (rounded up).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "megabytes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsStorageNone": "{count, plural, one{1 document} other{{count} documents}}",
+  "@myDocumentsStorageNone": {
+    "description": "D3's footer when no photo is kept: how many documents.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsOptions": "Options for {title}",
+  "@myDocumentsOptions": {
+    "description": "Screen reader: a row's menu button. title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "myDocumentsRename": "Rename",
+  "@myDocumentsRename": {
+    "description": "D3's row menu: rename the document."
+  },
+  "myDocumentsDelete": "Delete",
+  "@myDocumentsDelete": {
+    "description": "D3's row menu and the confirm's button: delete the document."
+  },
+  "myDocumentsDeleteTitle": "Delete “{title}”?",
+  "@myDocumentsDeleteTitle": {
+    "description": "D3's delete confirm (FR-D3-02). title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "myDocumentsDeleteBody": "The words you added stay, with their sentences.",
+  "@myDocumentsDeleteBody": {
+    "description": "D3's delete confirm: what stays (BR-DOC-05)."
+  },
+  "myDocumentsDeleteKeep": "Keep",
+  "@myDocumentsDeleteKeep": {
+    "description": "D3's delete confirm: cancel."
+  },
+  "myDocumentsDeleted": "Deleted “{title}”",
+  "@myDocumentsDeleted": {
+    "description": "D3's toast after a delete. title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "meDocuments": "My documents",
+  "@meDocuments": {
+    "description": "Me's link to D3, with no document kept yet."
+  },
+  "meDocumentsCount": "My documents · {count}",
+  "@meDocumentsCount": {
+    "description": "Me's link to D3: count is how many documents are kept.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsEmptyTitle": "Bring the German you meet",
+  "@myDocumentsEmptyTitle": {
+    "description": "D3's empty state, its title."
+  },
+  "myDocumentsEmptyBody": "A letter, a page, an article: Sogda marks the words you don't know yet, by level, and adds the ones you choose.",
+  "@myDocumentsEmptyBody": {
+    "description": "D3's empty state, under its title."
   }
 }
