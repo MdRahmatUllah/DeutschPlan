@@ -293,6 +293,8 @@ void main() {
         () => settings.write(SettingKeys.reviseCount, 12),
         () => settings.write(SettingKeys.autoAdvance, false),
         () => settings.write(SettingKeys.backlogCatchupDays, 10),
+        // BR-PLAN-11 (#1231).
+        () => settings.write(SettingKeys.docDailyCap, 3),
       ];
       for (final write in writes) {
         final before = c.read(planEngineProvider);
