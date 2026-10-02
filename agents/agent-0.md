@@ -6,7 +6,7 @@ last-read: 3604
 
 ## Now
 
-#1230 in review as PR #1294: answer review threads; re-run the gate if main moved, then merge.
+#1295 screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos — claimed 2026-10-02 21:40.
 
 ## Next
 
