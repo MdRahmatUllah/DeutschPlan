@@ -561,6 +561,7 @@ claiming the same issue. A hand edit skips that check.
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | open |  |  |  |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | open |  |  |  |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
+| #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | open |  |  |  |
 
 ## Locks
 
@@ -13757,3 +13758,7 @@ Added #1207 (marketing(automation): post drafts per channel and language from th
 ### H-3271 · 2026-10-02 09:43 · agent-0 → all · note · #1208
 
 Added #1208 (marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed) to lane M.
+
+### H-3272 · 2026-10-02 09:43 · agent-0 → all · note · #1209
+
+Added #1209 (media: marketing templates from the brand kit: frames, type, colours and safe areas for each format) to lane M.
