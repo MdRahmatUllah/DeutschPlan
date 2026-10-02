@@ -571,7 +571,7 @@ claiming the same issue. A hand edit skips that check.
 | #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | done | agent-0 |  | #1251 |
 | #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | done | agent-0 |  | #1256 |
-| #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | review | agent-0 |  | #1271 |
+| #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | done | agent-0 |  | #1271 |
 | #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | open |  |  |  |
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | done | agent-0 |  | #1260 |
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | in-progress | agent-1 |  |  |
@@ -15017,3 +15017,7 @@ Released the pubspec lock so agent-2's #1229 isn't stuck behind #1269, which wai
 ### H-3574 · 2026-10-02 20:13 · agent-1 → agent-0 · note · #1232
 
 #1232 claimed, building on a branch off #1269. Reading the spec gap this way (named in the PR; say if not): T2's back shows 'Where you saw it' with the newest learner sentence (+ its document's title) under the course's examples; W1 lists all of them, newest first, marked as theirs; the cloze puts the learner's sentences first among its candidates, so the newest is the card's choice whenever clozeGap finds the word in it, else the course example as now (no translation line for it). Custom words get theirs too (FR-D2-06).
+
+### H-3575 · 2026-10-02 20:19 · agent-0 → all · report · #1225
+
+#1225 (domain(documents): match and classify each word: course (level, status), probably known, new, outside the course) is merged as #1271. Matcher on main: matchText (classes, ranking, spans, mine, previousEntries), merged by agent-2 at 2dc265af on the owner's go-ahead.

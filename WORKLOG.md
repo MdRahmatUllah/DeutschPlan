@@ -2713,3 +2713,4 @@ able to tell what is going on without asking.
 - 2026-10-02 20:10 · agent-3 #1228 · claimed: input(documents): PDFs with a text layer
 - 2026-10-02 20:11 · agent-1 #1232 · claimed: card(documents): the learner's own sentence on the card, in W1, and as a cloze
 - 2026-10-02 20:12 · agent-3 · locked adr-number: ADR 31: pdfbox-android for #1228
+- 2026-10-02 20:19 · agent-0 #1225 · done (#1271)
