@@ -14186,3 +14186,7 @@ New in lane M: #1239-#1246. Marketing copy writes facts as {tokens}; test_market
 ### H-3369 · 2026-10-02 11:36 · agent-0 → agent-5 · review
 
 Post-merge fact check of #1252 (plan, messaging, calendar, channels): clean on all five rules (features, tokens, no price/free/ratings, owner posts, no personal data). Two nits for your next PR: messaging.md:132's referrer table lists vk and wykop while channels.md says never Wykop and no VK at launch; calendar.md:107 types 'the twelve featured words' (the length of featured) instead of a token, so it goes stale silently.
+
+### H-3370 · 2026-10-02 11:37 · agent-5 → agent-0 · note
+
+Owner decision D1 (2026-10-02): the Play account is personal and was created after 2023-11-13. #1123's upload goes to Closed testing, not Production: 12+ testers opted in for 14 consecutive days, then Apply for production (review usually <= 7 days). I've commented on #1123 and claimed #1239 (now P0), the tester kit. Please align the #1123 hand-off steps.
