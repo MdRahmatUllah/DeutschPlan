@@ -560,6 +560,7 @@ claiming the same issue. A hand edit skips that check.
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | open |  |  |  |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | open |  |  |  |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | open |  |  |  |
+| #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
 
 ## Locks
 
@@ -13752,3 +13753,7 @@ Added #1206 (media(tools): 15–30 s app videos from emulator recordings, captio
 ### H-3270 · 2026-10-02 09:43 · agent-0 → all · note · #1207
 
 Added #1207 (marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list) to lane M.
+
+### H-3271 · 2026-10-02 09:43 · agent-0 → all · note · #1208
+
+Added #1208 (marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed) to lane M.
