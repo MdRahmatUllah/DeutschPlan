@@ -116,6 +116,157 @@ void main() {
         },
       );
 
+      group('#1193 FR-R1-01 a sentence is found by its translation into the '
+          'first meaning language', () {
+        // Every line before the first search: the lines are keyed once.
+        setUp(() async {
+          await choose(const MeaningChoice('pl'));
+          await db.customStatement('''
+            INSERT OR IGNORE INTO c.word_example_translations
+              (word_uid, ord, lang, translation) VALUES
+              ('${ContentFixture.haus}', 1, 'pl', 'Dom jest duży.'),
+              ('${ContentFixture.haus}', 2, 'pl', 'Widzę ten dom.'),
+              ('${ContentFixture.tuer}', 1, 'pl', 'Drzwi są otwarte (offen).'),
+              ('${ContentFixture.strasse}', 1, 'pl', 'Ulica jest długa.'),
+              ('${ContentFixture.haus}', 1, 'ru', 'Дом большой.'),
+              ('${ContentFixture.tuer}', 1, 'ru', 'Дверь всё ещё открыта.')
+          ''');
+        });
+
+        Future<List<SentenceHit>> sentences(
+          String query,
+          MeaningChoice choice, {
+          String? step,
+        }) async => (await search.search(
+          query,
+          step: step,
+          meanings: await choose(choice),
+        )).sentences;
+
+        test('a Polish word finds the lines whose translation has it, '
+            'the ones that start with it first, the word marked', () async {
+          final hits = await sentences('dom', const MeaningChoice('pl', 'en'));
+          expect(
+            <String>[for (final hit in hits) hit.german],
+            <String>['Das Haus ist groß.', 'Ich sehe das Haus.'],
+          );
+          expect(hits.first.translation, 'Dom jest duży.');
+          expect(hits.first.translationRuns, <(String, bool)>[
+            ('Dom', true),
+            (' jest duży.', false),
+          ]);
+          expect(hits.last.translationRuns, <(String, bool)>[
+            ('Widzę ten ', false),
+            ('dom', true),
+            ('.', false),
+          ]);
+          // Its German has nothing to mark.
+          expect(hits.first.runs, <(String, bool)>[
+            ('Das Haus ist groß.', false),
+          ]);
+        });
+
+        test('ł and ё may be typed as l and е', () async {
+          final pl = await sentences('dlug', const MeaningChoice('pl'));
+          expect(pl.single.german, 'Die Straße ist lang.');
+          expect(pl.single.translationRuns, <(String, bool)>[
+            ('Ulica jest ', false),
+            ('długa', true),
+            ('.', false),
+          ]);
+          final ru = await sentences('все еще', const MeaningChoice('ru'));
+          expect(ru.single.german, 'Die Tür ist offen.');
+          expect(ru.single.translationRuns, <(String, bool)>[
+            ('Дверь ', false),
+            ('всё ещё', true),
+            (' открыта.', false),
+          ]);
+        });
+
+        test("L2's step keeps to its own lines", () async {
+          expect(
+            await sentences('ulica', const MeaningChoice('pl'), step: 'A1.1'),
+            isEmpty,
+          );
+          expect(
+            await sentences('ulica', const MeaningChoice('pl'), step: 'A1.2'),
+            hasLength(1),
+          );
+        });
+
+        test('a line the German search found already comes once', () async {
+          final hits = await sentences('offen', const MeaningChoice('pl'));
+          expect(
+            <String>[for (final hit in hits) hit.german],
+            <String>['Die Tür ist offen.'],
+          );
+          // The German's mark, from FTS, not the translation's.
+          expect(hits.single.translationRuns, isEmpty);
+        });
+
+        test(
+          'a hit FTS found by its English only goes after those that '
+          'show the query, marked in its translation when it is there',
+          () async {
+            // Two lines whose English starts with "dom", one of them with
+            // Polish that has it too.
+            await db.customStatement('''
+            INSERT INTO c.word_examples (word_uid, ord, german, english) VALUES
+              ('${ContentFixture.tuer}', 2, 'Die Tür ist zu.',
+                'The dome door is closed.'),
+              ('${ContentFixture.strasse}', 2, 'Die Straße ist ruhig.',
+                'The domestic street is quiet.');
+            INSERT INTO c.examples_fts (examples_fts) VALUES ('rebuild');
+            INSERT INTO c.word_example_translations
+              (word_uid, ord, lang, translation) VALUES
+              ('${ContentFixture.tuer}', 2, 'pl', 'Drzwi są zamknięte.'),
+              ('${ContentFixture.strasse}', 2, 'pl', 'Domowa ulica jest cicha.')
+          ''');
+            final hits = await sentences('dom', const MeaningChoice('pl'));
+            expect(
+              <String>[for (final hit in hits) hit.german],
+              <String>[
+                // FTS's, its Polish marked; then the lines found by Polish;
+                // the one that shows no "dom" last.
+                'Die Straße ist ruhig.',
+                'Das Haus ist groß.',
+                'Ich sehe das Haus.',
+                'Die Tür ist zu.',
+              ],
+            );
+            expect(hits.first.translationRuns, <(String, bool)>[
+              ('Domowa', true),
+              (' ulica jest cicha.', false),
+            ]);
+            expect(hits.last.translationRuns, isEmpty);
+          },
+        );
+
+        test('only the first meaning language: an English-first learner '
+            'with Polish second finds none by Polish', () async {
+          expect(
+            await sentences('dom', const MeaningChoice('en', 'pl')),
+            isEmpty,
+          );
+        });
+
+        test('markedWords marks the words in a row, not their punctuation, '
+            'and nothing when they are not there', () {
+          expect(
+            markedWords('Do widzenia, pani Schmidt.', 'do widzenia'),
+            <(String, bool)>[('Do widzenia', true), (', pani Schmidt.', false)],
+          );
+          expect(markedWords('«Dom» stoi tam.', 'dom'), <(String, bool)>[
+            ('«', false),
+            ('Dom', true),
+            ('» stoi tam.', false),
+          ]);
+          expect(markedWords('Ulica jest długa.', 'dom'), <(String, bool)>[
+            ('Ulica jest długa.', false),
+          ]);
+        });
+      });
+
       test(
         'a Russian meaning finds its word, exactly or by its start',
         () async {

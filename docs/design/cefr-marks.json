@@ -1,0 +1,311 @@
+{
+  "_doc": "D2's word marks (#1222, doc-words.md): a new word is its level's colour at fill_alpha over the canvas's text surface, under a 2 px ink underline. fill is that blend; ink_on_fill its WCAG ratio with the ink, for #1230's goldens to pin. Glass surfaces are the panel over the page's base colour, an approximation of the blur.",
+  "fill_alpha": 0.3,
+  "minimum": 6.42,
+  "canvases": [
+    {
+      "set": "base",
+      "canvas": "android-light",
+      "ink": "#15121F",
+      "surface": "#FFFFFF",
+      "levels": {
+        "A1": {
+          "colour": "#00C2B2",
+          "fill": "#B2EDE8",
+          "ink_on_fill": 14.21
+        },
+        "A2": {
+          "colour": "#FFC61A",
+          "fill": "#FFEEBA",
+          "ink_on_fill": 15.98
+        },
+        "B1": {
+          "colour": "#FF3D7F",
+          "fill": "#FFC5D9",
+          "ink_on_fill": 12.51
+        },
+        "B2": {
+          "colour": "#3D5AFE",
+          "fill": "#C5CEFF",
+          "ink_on_fill": 11.99
+        },
+        "C1": {
+          "colour": "#A6E22E",
+          "fill": "#E4F6C0",
+          "ink_on_fill": 16.03
+        },
+        "C2": {
+          "colour": "#FF9F1C",
+          "fill": "#FFE2BB",
+          "ink_on_fill": 14.8
+        }
+      }
+    },
+    {
+      "set": "base",
+      "canvas": "android-dark",
+      "ink": "#F4F1FF",
+      "surface": "#1E1B2C",
+      "levels": {
+        "A1": {
+          "colour": "#2EE6D6",
+          "fill": "#23585F",
+          "ink_on_fill": 7.17
+        },
+        "A2": {
+          "colour": "#FFD54A",
+          "fill": "#625335",
+          "ink_on_fill": 6.72
+        },
+        "B1": {
+          "colour": "#FF8AB2",
+          "fill": "#623C54",
+          "ink_on_fill": 8.23
+        },
+        "B2": {
+          "colour": "#8C9DFF",
+          "fill": "#3F426B",
+          "ink_on_fill": 8.57
+        },
+        "C1": {
+          "colour": "#C4F266",
+          "fill": "#505C3D",
+          "ink_on_fill": 6.42
+        },
+        "C2": {
+          "colour": "#FFBE5C",
+          "fill": "#624C3A",
+          "ink_on_fill": 7.22
+        }
+      }
+    },
+    {
+      "set": "base",
+      "canvas": "ios-light",
+      "ink": "#15121F",
+      "surface": "#FFFFFF",
+      "levels": {
+        "A1": {
+          "colour": "#00C2B2",
+          "fill": "#B2EDE8",
+          "ink_on_fill": 14.21
+        },
+        "A2": {
+          "colour": "#FFC61A",
+          "fill": "#FFEEBA",
+          "ink_on_fill": 15.98
+        },
+        "B1": {
+          "colour": "#FF3D7F",
+          "fill": "#FFC5D9",
+          "ink_on_fill": 12.51
+        },
+        "B2": {
+          "colour": "#3D5AFE",
+          "fill": "#C5CEFF",
+          "ink_on_fill": 11.99
+        },
+        "C1": {
+          "colour": "#A6E22E",
+          "fill": "#E4F6C0",
+          "ink_on_fill": 16.03
+        },
+        "C2": {
+          "colour": "#FF9F1C",
+          "fill": "#FFE2BB",
+          "ink_on_fill": 14.8
+        }
+      }
+    },
+    {
+      "set": "base",
+      "canvas": "ios-dark",
+      "ink": "#F4F1FF",
+      "surface": "#1E1B2C",
+      "levels": {
+        "A1": {
+          "colour": "#2EE6D6",
+          "fill": "#23585F",
+          "ink_on_fill": 7.17
+        },
+        "A2": {
+          "colour": "#FFD54A",
+          "fill": "#625335",
+          "ink_on_fill": 6.72
+        },
+        "B1": {
+          "colour": "#FF8AB2",
+          "fill": "#623C54",
+          "ink_on_fill": 8.23
+        },
+        "B2": {
+          "colour": "#8C9DFF",
+          "fill": "#3F426B",
+          "ink_on_fill": 8.57
+        },
+        "C1": {
+          "colour": "#C4F266",
+          "fill": "#505C3D",
+          "ink_on_fill": 6.42
+        },
+        "C2": {
+          "colour": "#FFBE5C",
+          "fill": "#624C3A",
+          "ink_on_fill": 7.22
+        }
+      }
+    },
+    {
+      "set": "glass",
+      "canvas": "android-light",
+      "ink": "#15121F",
+      "surface": "#FBFAFF",
+      "levels": {
+        "A1": {
+          "colour": "#00C2B2",
+          "fill": "#B0E9E8",
+          "ink_on_fill": 13.76
+        },
+        "A2": {
+          "colour": "#FFC61A",
+          "fill": "#FCEABA",
+          "ink_on_fill": 15.48
+        },
+        "B1": {
+          "colour": "#FF3D7F",
+          "fill": "#FCC1D9",
+          "ink_on_fill": 12.1
+        },
+        "B2": {
+          "colour": "#3D5AFE",
+          "fill": "#C2CAFF",
+          "ink_on_fill": 11.59
+        },
+        "C1": {
+          "colour": "#A6E22E",
+          "fill": "#E2F3C0",
+          "ink_on_fill": 15.65
+        },
+        "C2": {
+          "colour": "#FF9F1C",
+          "fill": "#FCDFBB",
+          "ink_on_fill": 14.42
+        }
+      }
+    },
+    {
+      "set": "glass",
+      "canvas": "android-dark",
+      "ink": "#F4F1FF",
+      "surface": "#171422",
+      "levels": {
+        "A1": {
+          "colour": "#2EE6D6",
+          "fill": "#1E5358",
+          "ink_on_fill": 7.76
+        },
+        "A2": {
+          "colour": "#FFD54A",
+          "fill": "#5D4E2E",
+          "ink_on_fill": 7.27
+        },
+        "B1": {
+          "colour": "#FF8AB2",
+          "fill": "#5D374D",
+          "ink_on_fill": 8.91
+        },
+        "B2": {
+          "colour": "#8C9DFF",
+          "fill": "#3A3D64",
+          "ink_on_fill": 9.29
+        },
+        "C1": {
+          "colour": "#C4F266",
+          "fill": "#4B5736",
+          "ink_on_fill": 6.95
+        },
+        "C2": {
+          "colour": "#FFBE5C",
+          "fill": "#5D4733",
+          "ink_on_fill": 7.82
+        }
+      }
+    },
+    {
+      "set": "glass",
+      "canvas": "ios-light",
+      "ink": "#15121F",
+      "surface": "#FBFAFF",
+      "levels": {
+        "A1": {
+          "colour": "#00C2B2",
+          "fill": "#B0E9E8",
+          "ink_on_fill": 13.76
+        },
+        "A2": {
+          "colour": "#FFC61A",
+          "fill": "#FCEABA",
+          "ink_on_fill": 15.48
+        },
+        "B1": {
+          "colour": "#FF3D7F",
+          "fill": "#FCC1D9",
+          "ink_on_fill": 12.1
+        },
+        "B2": {
+          "colour": "#3D5AFE",
+          "fill": "#C2CAFF",
+          "ink_on_fill": 11.59
+        },
+        "C1": {
+          "colour": "#A6E22E",
+          "fill": "#E2F3C0",
+          "ink_on_fill": 15.65
+        },
+        "C2": {
+          "colour": "#FF9F1C",
+          "fill": "#FCDFBB",
+          "ink_on_fill": 14.42
+        }
+      }
+    },
+    {
+      "set": "glass",
+      "canvas": "ios-dark",
+      "ink": "#F4F1FF",
+      "surface": "#171422",
+      "levels": {
+        "A1": {
+          "colour": "#2EE6D6",
+          "fill": "#1E5358",
+          "ink_on_fill": 7.76
+        },
+        "A2": {
+          "colour": "#FFD54A",
+          "fill": "#5D4E2E",
+          "ink_on_fill": 7.27
+        },
+        "B1": {
+          "colour": "#FF8AB2",
+          "fill": "#5D374D",
+          "ink_on_fill": 8.91
+        },
+        "B2": {
+          "colour": "#8C9DFF",
+          "fill": "#3A3D64",
+          "ink_on_fill": 9.29
+        },
+        "C1": {
+          "colour": "#C4F266",
+          "fill": "#4B5736",
+          "ink_on_fill": 6.95
+        },
+        "C2": {
+          "colour": "#FFBE5C",
+          "fill": "#5D4733",
+          "ink_on_fill": 7.82
+        }
+      }
+    }
+  ]
+}

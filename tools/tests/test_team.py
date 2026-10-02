@@ -203,6 +203,25 @@ def test_an_active_identity_is_not_taken_twice(team_repo):
     assert "PR #5 waits on CI" in memory
 
 
+def test_1216_a_new_identity_sees_its_own_handoffs_not_the_old_all_backlog(team_repo, tmp_path, capsys):
+    a1, a2 = team_repo["agent-1"], team_repo["agent-2"]
+    team.cmd_msg(a1, "agent-1", "all", "note", "an old note to everyone", None)
+    team.cmd_msg(a1, "agent-1", "agent-3", "note", "welcome, agent-3", None)
+    a3 = tmp_path / "agent-3"
+    run("clone", "--quiet", "--branch", "team", str(tmp_path / "origin.git"), str(a3))
+    team.cmd_join(a3, "agent-3", force=False)
+    team.cmd_msg(a1, "agent-1", "all", "note", "a note after the join", None)
+    capsys.readouterr()
+    team.cmd_status(a3, "agent-3", closed=lambda n: False)
+    out = capsys.readouterr().out
+    assert "agent-3: 2 unread" in out and "welcome, agent-3" in out and "a note after the join" in out
+    assert "an old note to everyone" not in out
+    # An identity that joined before the notes sees every one of them, as before.
+    team.cmd_status(a2, "agent-2", closed=lambda n: False)
+    out = capsys.readouterr().out
+    assert "agent-2: 2 unread" in out and "an old note to everyone" in out and "a note after the join" in out
+
+
 def test_memory_and_notes_are_appended(team_repo):
     a1 = team_repo["agent-1"]
     team.transact(a1, "agent-1", "remember", lambda r: team.remember(r, "agent-1", "drift", "customStatement does not notify watchers"))

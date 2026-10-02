@@ -71,24 +71,19 @@
     },
     {
       "id": "hymt",
-      "name": "Hy-MT 1.5 translation",
-      "licence": "Tencent HY",
+      "name": "Hy-MT2 translation",
+      "licence": "Apache-2.0",
       "disables": "mt_enabled",
-      "region_excluded": [
-        "EU",
-        "GB",
-        "KR"
-      ],
       "variants": [
         {
           "id": "q4_k_m",
           "name": "4-bit build",
           "files": [
             {
-              "name": "HY-MT1.5-1.8B-Q4_K_M.gguf",
-              "url": "https://huggingface.co/tencent/HY-MT1.5-1.8B-GGUF/resolve/265b2e615a7dc9b06c435dc878829ad99a512ba2/HY-MT1.5-1.8B-Q4_K_M.gguf",
-              "bytes": 1133080512,
-              "sha256": "4383ac0c3c8e476de98ff979c2a3f069f8c4fb385e7860cf2d28da896cc477c7"
+              "name": "Hy-MT2-1.8B-Q4_K_M.gguf",
+              "url": "https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF/resolve/a0c709d9fac510f2c807aa3af52872340dc37a4a/Hy-MT2-1.8B-Q4_K_M.gguf",
+              "bytes": 1133080448,
+              "sha256": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
             }
           ]
         }

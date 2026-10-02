@@ -512,7 +512,7 @@ void main() {
   group('the list', () {
     for (final (label, path) in <(String Function(), String)>[
       (() => l10n.meSettings, '/me/settings'),
-      (() => l10n.modelsTitleVoice, '/me/models'),
+      (() => l10n.modelsTitle, '/me/models'),
       (() => l10n.meAbout, '/me/about'),
     ]) {
       testWidgets('opens $path', (tester) async {

@@ -4280,9 +4280,9 @@
   "@settingsTranslation": {
     "description": "M3 switch: mt_enabled (FR-M3-03)."
   },
-  "settingsTranslationStatus": "Hy-MT 1.5 · {status, select, downloading{downloading {percent}%} verifying{checking the download} ready{ready} update{update available} failed{download failed} other{not downloaded}}",
+  "settingsTranslationStatus": "Hy-MT2 · {status, select, downloading{downloading {percent}%} verifying{checking the download} ready{ready} update{update available} failed{download failed} other{not downloaded}}",
   "@settingsTranslationStatus": {
-    "description": "M3 translation subtitle: the model's state (model-manager.md). Hy-MT 1.5 is the model's name.",
+    "description": "M3 translation subtitle: the model's state (model-manager.md). Hy-MT2 is the model's name.",
     "placeholders": {
       "status": {
         "type": "String"
@@ -5804,7 +5804,7 @@
   "@aboutLicences": {
     "description": "M9: the row to M8."
   },
-  "aboutLicencesNote": "Flutter packages · Supertonic OpenRAIL-M · Hy-MT · fonts (OFL)",
+  "aboutLicencesNote": "Flutter packages · Supertonic OpenRAIL-M · Hy-MT2 Apache-2.0 · fonts (OFL)",
   "@aboutLicencesNote": {
     "description": "M9: under the licences row, what M8 lists."
   },
@@ -5876,7 +5876,7 @@
   },
   "modelNotifyPausedNote": "Resumes on Wi-Fi, or from {screen}",
   "@modelNotifyPausedNote": {
-    "description": "Under the paused notification. screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "description": "Under the paused notification. screen is M4's title, modelsTitle (#1164).",
     "placeholders": {
       "screen": {
         "type": "String"
@@ -5889,7 +5889,7 @@
   },
   "modelNotifyCompleteNote": "{screen} says when it is ready",
   "@modelNotifyCompleteNote": {
-    "description": "Under the finished notification: M4 shows Ready, or Failed if a checksum fails (#438). screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "description": "Under the finished notification: M4 shows Ready, or Failed if a checksum fails (#438). screen is M4's title, modelsTitle (#1164).",
     "placeholders": {
       "screen": {
         "type": "String"
@@ -5902,7 +5902,7 @@
   },
   "modelNotifyFailedNote": "Retry it from {screen}",
   "@modelNotifyFailedNote": {
-    "description": "Under the failed notification. screen is M4's title, modelsTitle or modelsTitleVoice (#1164).",
+    "description": "Under the failed notification. screen is M4's title, modelsTitle (#1164).",
     "placeholders": {
       "screen": {
         "type": "String"
@@ -5940,14 +5940,6 @@
         "format": "decimalPattern"
       }
     }
-  },
-  "modelsTitleVoice": "Voice",
-  "@modelsTitleVoice": {
-    "description": "M4's title in a build without translation (#1070, ADR 9), and Me's row that opens it (#1164)."
-  },
-  "modelsFooterVoice": "The voice runs entirely on the phone. Deleting it falls back to the phone's German voice.",
-  "@modelsFooterVoice": {
-    "description": "M4's footer in a build without translation (#1070)."
   },
   "modelsTitle": "Voice & translation",
   "@modelsTitle": {
@@ -6012,9 +6004,9 @@
   "@modelsVoiceTitle": {
     "description": "M4's voice card: its title. Supertonic 3 is the model's name."
   },
-  "modelsTranslationTitle": "Hy-MT 1.5 translation",
+  "modelsTranslationTitle": "Hy-MT2 translation",
   "@modelsTranslationTitle": {
-    "description": "M4's translation card: its title. Hy-MT 1.5 is the model's name."
+    "description": "M4's translation card: its title. Hy-MT2 is the model's name."
   },
   "modelsVoiceSubtitle": "{size} · {licence} licence",
   "@modelsVoiceSubtitle": {
@@ -6201,10 +6193,6 @@
         "type": "String"
       }
     }
-  },
-  "modelsHymtGated": "Not offered in this version of the app",
-  "@modelsHymtGated": {
-    "description": "Under Hy-MT's download when the build's licence flag is off (FR-M4-04)."
   },
   "modelsNotifyWhy": "It asks to show the download's progress in a notification",
   "@modelsNotifyWhy": {

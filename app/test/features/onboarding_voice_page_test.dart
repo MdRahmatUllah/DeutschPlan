@@ -706,7 +706,6 @@ class _FakeModels implements ModelRepository {
     name: 'Supertonic 3',
     licence: 'test',
     disables: 'tts_engine',
-    regionExcluded: const <String>[],
     variants: <ModelVariant>[
       ModelVariant(
         id: 'f1',

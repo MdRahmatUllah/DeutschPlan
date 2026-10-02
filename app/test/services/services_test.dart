@@ -47,7 +47,6 @@ void main() {
               name: voice.name,
               licence: voice.licence,
               disables: voice.disables,
-              regionExcluded: voice.regionExcluded,
               variants: <ModelVariant>[
                 for (final variant in voice.variants)
                   ModelVariant(

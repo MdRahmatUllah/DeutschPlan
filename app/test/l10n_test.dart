@@ -517,12 +517,13 @@ void main() {
     ) as Map<String, dynamic>;
     // What a Bangla message writes itself: not its placeholders, the case
     // names of a plural or select ("=1{", "A1{", "60{"), a step's code
-    // ("A1.1", "B2+"), nor a product's name.
+    // ("A1.1", "B2+"), nor a product's or a licence's name.
     String written(String message) => message
         .replaceAll(RegExp(r'\{\w+(,\s*\w+,)?\}?'), '')
         .replaceAll(RegExp(r'=?\w+\{'), '')
         .replaceAll(RegExp(r'\b[ABC][12](\.[12])?\+?'), '')
-        .replaceAll('Hy-MT 1.5', '')
+        .replaceAll('Hy-MT2', '')
+        .replaceAll('Apache-2.0', '')
         .replaceAll('Supertonic 3', '');
     final latin = <String>[
       for (final MapEntry(:key, :value) in bn.entries)
