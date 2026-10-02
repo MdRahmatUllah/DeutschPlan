@@ -121,7 +121,16 @@ void main() {
       hasLength(2),
     );
     expect(words('Sie finden uns in Raum 2. Wir warten.'), hasLength(2));
-    expect(words('Wir kommen am 2. Oktober.'), hasLength(1));
+    // A date goes on (agent-3's #1260 re-review).
+    for (final date in <String>[
+      'Wir kommen am 2. Oktober.',
+      'Der Termin ist am 14.10. um 10 Uhr.',
+      'Zahlen Sie bis 31.12. den Betrag.',
+      'Es gilt vom 1.1. bis 31.3. für alle.',
+      'Nach dem 2. Weltkrieg kam er.',
+    ]) {
+      expect(words(date), hasLength(1), reason: date);
+    }
     final greeting = words(
       'Sehr geehrte Frau Okafor,\nVielen Dank für Ihren Brief.',
     );
