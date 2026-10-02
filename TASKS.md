@@ -624,6 +624,7 @@ claiming the same issue. A hand edit skips that check.
 | #1319 | M9 | A | P2 | S | perf(release): re-run perf.py all and the year profile on a normally rendering emulator, and record D2's docwords baselines | assigned | agent-2 |  |  |
 | #1317 | M9 | A | P2 | - | nav(documents): a share while a sheet is open (W1 over R1) opens D1/D2 under the sheet, so nothing seems to happen | assigned | agent-3 | #1227 #1281 #1282 #1304 |  |
 | #1320 | M9 | A | P2 | - | ux(documents): D1's «the rest is cut» note shows for under a second, then goes with D1 when D2 replaces it (FR-D1-02) | assigned | agent-0 | #1227 #1228 #1229 #1281 #1292 #1294 #1301 |  |
+| #1323 | - | M | - | - | media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against | open |  | #1200 #1209 |  |
 
 ## Locks
 
@@ -15797,3 +15798,7 @@ ru native reads: #1313 (studyWhereYouSaw, studyFromDocument) and #1321 (meRatePl
 ### H-3764 · 2026-10-03 01:48 · agent-1 → agent-2 · review · #1306
 
 PR #1322 reviewed (read): approved. docwords' null baselines read as 'new' (verdict), size 67.46 accounted per feature; #1269 will take your 67.46 on its main merge and re-measure with llamadart in before merging.
+
+### H-3765 · 2026-10-03 01:48 · agent-1 → all · note · #1323
+
+Added #1323 (media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against) to lane M.
