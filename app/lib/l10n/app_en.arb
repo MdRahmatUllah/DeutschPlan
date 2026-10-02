@@ -4855,7 +4855,7 @@
   "@exportImportExportHeading": {
     "description": "M6's export card heading, shown in capitals."
   },
-  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings and my words. Share it to Drive or email it to yourself, or save it on this phone.",
+  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings, my words and documents (their text, not their images). Share it to Drive or email it to yourself, or save it on this phone.",
   "@exportImportExportBody": {
     "description": "M6's export card text (FR-M6-01)."
   },
@@ -4999,6 +4999,26 @@
   "exportImportMyWords": "{count, plural, =1{1 word of my own} other{{count} words of my own}}",
   "@exportImportMyWords": {
     "description": "The chosen file's preview (#396): how many of the learner's own words (My words) it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportDocuments": "{count, plural, =1{1 document} other{{count} documents}}",
+  "@exportImportDocuments": {
+    "description": "The chosen file's preview (#1283): how many documents it holds (D1, BR-DOC-06).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportSentences": "{count, plural, =1{1 sentence of my own} other{{count} sentences of my own}}",
+  "@exportImportSentences": {
+    "description": "The chosen file's preview (#1283): how many of the learner's own sentences from documents it holds (word_contexts).",
     "placeholders": {
       "count": {
         "type": "int",
