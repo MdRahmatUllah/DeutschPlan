@@ -167,7 +167,8 @@ DocumentMatch matchText(
   final byKey = <String, DocWord>{};
   for (final (s, sentence) in sentences.indexed) {
     final tokens = sentence.words;
-    final lemmas = lemmatiser.sentence(tokens);
+    final takenUp = <int>{};
+    final lemmas = lemmatiser.sentence(tokens, takenUp: takenUp);
     final first = sentence.tokens.indexWhere((t) => t.isWord);
     // The word before, by its index: its text and its course readings, for
     // likelyName's adjective sign (#1270), as germanShare passes them.
@@ -195,10 +196,12 @@ DocumentMatch matchText(
         );
       } else {
         // A word the sentence took up (a split particle, «findet … statt», a
-        // salutation) has a reading of its own: it's no word outside the
-        // course.
+        // salutation) is no word outside the course, though «zurück» has
+        // no entry of its own (#1297); nor is one with a reading of its own
+        // at a sentence's start.
         final start = i == first;
-        if (lemmatiser.lookup(token.text, sentenceStart: true).isNotEmpty) {
+        if (takenUp.contains(i) ||
+            lemmatiser.lookup(token.text, sentenceStart: true).isNotEmpty) {
           continue;
         }
         final parts = lemmatiser.compoundParts(token.text);
