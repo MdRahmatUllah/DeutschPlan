@@ -2771,3 +2771,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:09 · agent-2 #1305 · claimed: fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque
 - 2026-10-03 00:09 · agent-2 #1305 · released: Closed: already done in #1299's merge (my misread of the timestamps).
 - 2026-10-03 00:14 · agent-0 #1297 · done (#1303)
+- 2026-10-03 00:15 · agent-0 #1306 · added to the board, lane A
