@@ -322,6 +322,10 @@ abstract final class SettingKeys {
   /// is tomorrow's, not today's. 0 until the engine records one.
   static const plannedStudyDays = IntSetting('planned_study_days', 0);
 
+  /// The `doc_daily_cap` today was planned with (BR-PLAN-11, -08): M3's
+  /// change is tomorrow's, not today's. -1 until the engine records one.
+  static const plannedDocCap = IntSetting('planned_doc_cap', -1);
+
   /// M6's "Last export: 20 Sep" (#148): the day of the last export the
   /// share sheet took. Unset until the first.
   static const lastExport = DateSetting('last_export');
@@ -406,6 +410,7 @@ abstract final class SettingKeys {
     examTimer,
     lastExport,
     plannedStudyDays,
+    plannedDocCap,
     docDailyCap,
     docSaveImages,
     docAutodeleteDays,

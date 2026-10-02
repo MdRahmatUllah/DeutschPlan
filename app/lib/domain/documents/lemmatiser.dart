@@ -34,6 +34,12 @@ class LemmaEntry {
   String toString() => german;
 }
 
+/// A gender form's ending after its stem, one word with it (#1270): «:in»,
+/// «*innen», «_innen», «/innen», «/-innen», and with a capital I («:Innen»).
+const String genderSuffix = r'[:*_/]-?[Ii]n(?:nen)?(?!\p{L})';
+
+final RegExp _genderForm = RegExp('^(.+)$genderSuffix\$', unicode: true);
+
 /// Where a form came from. A token several entries share keeps only its
 /// best-founded readings: «gefallen» is the headword gefallen before it is
 /// fallen's participle, «wegen» the preposition before Weg + -en.
@@ -390,6 +396,8 @@ class Lemmatiser {
   static bool _punctuation(String token) =>
       RegExp(r'^[,;:.!?]+$').hasMatch(token);
 
+  static const Set<String> _coordinators = <String>{'und', 'oder'};
+
   /// Each token of one sentence, with its commas and semicolons as tokens of
   /// their own (they end a clause): its course entries, best first. Empty
   /// when none; several when the learner has to choose («Bitte» at the start
@@ -403,7 +411,13 @@ class Lemmatiser {
     final done = <int>{};
     var start = 0;
     for (var i = 0; i <= tokens.length; i++) {
-      if (i < tokens.length && !_punctuation(tokens[i])) continue;
+      // «und» and «oder» join main clauses without a comma, each with its own
+      // particle: «Holen Sie Ihr Kind ab oder geben Sie ihm … mit» (#1270).
+      if (i < tokens.length &&
+          !_punctuation(tokens[i]) &&
+          !_coordinators.contains(tokens[i].toLowerCase())) {
+        continue;
+      }
       _splitVerb(tokens, start, i, result, done);
       start = i + 1;
     }
@@ -505,6 +519,24 @@ class Lemmatiser {
     bool sentenceStart = false,
     bool afterArticle = false,
   }) {
+    // A gender form («Mitarbeiter*innen», «Kund:innen», «Ärzt_innen») is
+    // its stem's word, or the stem's with -e (Kunde, Ärzte), or the -in one.
+    final gender = _genderForm.firstMatch(token);
+    if (gender != null) {
+      for (final stem in <String>[
+        gender[1]!,
+        '${gender[1]}e',
+        '${gender[1]}in',
+      ]) {
+        final found = lookup(
+          stem,
+          sentenceStart: sentenceStart,
+          afterArticle: afterArticle,
+        );
+        if (found.isNotEmpty) return found;
+      }
+      return const <LemmaEntry>[];
+    }
     final readings = _index[fold(token)];
     if (readings == null) return const <LemmaEntry>[];
     var candidates = readings.keys.toList();
