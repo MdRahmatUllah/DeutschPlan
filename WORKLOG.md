@@ -2635,3 +2635,4 @@ able to tell what is going on without asking.
 - 2026-10-02 14:18 · agent-3 #1263 · PR #1264 open; review requested from all
 - 2026-10-02 14:35 · agent-1 #1261 · PR #1266 open; review requested from all
 - 2026-10-02 14:41 · agent-2 #1226 · done (#1262)
+- 2026-10-02 14:41 · agent-2 · unlocked user-db-schema

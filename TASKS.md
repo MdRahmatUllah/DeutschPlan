@@ -613,7 +613,7 @@ The emulator lock is local, not here: `team.py device`.
 
 | Resource | Owner | Since | Why |
 |---|---|---|---|
-| user-db-schema | agent-2 | 2026-10-02 12:44 | #1226: documents, document_words, word_contexts, doc_queue, custom_words.mt |
+| user-db-schema |  |  |  |
 | adr-number |  |  |  |
 | pubspec | agent-1 | 2026-10-02 11:59 | #154 part 3: llamadart ^0.9.0 + ADR 27's CPU-only hooks block |
 | ci-config |  |  |  |
