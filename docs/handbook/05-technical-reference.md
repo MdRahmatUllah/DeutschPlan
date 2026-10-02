@@ -299,11 +299,12 @@ nothing is due; `plan_pregenerate` opens the day at 00:05 and keeps the week
 rolling; the widget snapshot is written at midnight, hourly and whenever it
 changes.
 
-**Translation** (off; [`translation.md`](../03-domain/translation.md)).
+**Translation** ([`translation.md`](../03-domain/translation.md)).
 The `Translator` interface exists (`services/translation/translator.dart`),
-with `UnavailableTranslator` as its only implementation. Hy-MT is off in every
-v1.0 build (ADR 9, `ENABLE_HYMT_DOWNLOAD` unset); a licence-clean replacement
-is the owner's question #533.
+with `UnavailableTranslator` as its only implementation until #154 adds the
+llamadart-backed one for Hy-MT2-1.8B (ADR 30, v1.2.0). Hy-MT2 is
+Apache-2.0, so its download is offered in every build; ADR 9's
+`ENABLE_HYMT_DOWNLOAD` is gone.
 
 ## Shared components
 
@@ -450,7 +451,7 @@ The full table, with each decision's reason and when to revisit it, is
 | 6 | Start on `material_ui` / `cupertino_ui` (Flutter 3.47) |
 | 7 | FSRS-4.5 with default weights; optimisation after 1,000 reviews |
 | 8 | Supertonic 3 via flutter_onnxruntime, with the system voice as fallback |
-| 9 | Hy-MT1.5-1.8B via llamadart behind `ENABLE_HYMT_DOWNLOAD`, off in every v1.0 build |
+| 9 | Hy-MT1.5-1.8B via llamadart behind `ENABLE_HYMT_DOWNLOAD`, off in every v1.0 build; superseded by 30 |
 | 10 | One seeded exam generator, seeds 1–3 |
 | 11 | Three theme modes; glass through one `SgSurface` renderer |
 | 12 | No dynamic (Material You) colour |
@@ -470,6 +471,7 @@ The full table, with each decision's reason and when to revisit it, is
 | 26 | content.db attached by plain path, read-only by construction |
 | 27 | llamadart ships llama.cpp's CPU backend only (159.5 → 72.3 MB); superseded by 29 |
 | 28 | The app is Sogda, `de.sogda.app`; the internals follow (package `sogda`, prefix `Sg`, `sogda://`) |
-| 29 | llamadart removed while Hy-MT is off (72.3 → 51.2 MB) |
+| 29 | llamadart removed while Hy-MT is off (72.3 → 51.2 MB); superseded by 30 |
+| 30 | Hy-MT2-1.8B Q4_K_M through llamadart 0.9, offered in every build (Apache-2.0); 27's CPU-only hook back |
 
 The next free number is 30 (read the last row of `decisions.md` first); take the `adr-number` lock before writing it.

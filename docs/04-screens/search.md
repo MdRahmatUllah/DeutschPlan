@@ -10,7 +10,7 @@
 
 **Idle.** "Recent" chips (Clear), "My words · 3" list ("das Pfandflasche — deposit bottle · Rewe receipt · seen 3× · My word"), *Add a word I found*.
 
-**No results.** "Not in the course — 5,433 words, none spelled like this. Typos are tolerated, so it is probably a compound or a rare word."; enlarged web chips; *Add "…" as my word*; footnote "Opens the web in an in-app browser — the only time Sogda goes online."
+**No results.** "Not in the course — 5,433 words, none spelled like this. Typos are tolerated, so it is probably a compound or a rare word."; enlarged web chips; *Add "…" as my word*; with `mt_enabled`, *Translate «…»*, which opens a sheet with the query from German into the first meaning language and from it into German, since a query can be either (#154, `translation.md`); footnote "Opens the web in an in-app browser — the only time Sogda goes online."
 
 **Filled in by #137:**
 - **Filters (FR-R1-07).** The status chips (To do · Learning · Done) and one chip per step in the results each narrow the words. Step chips show only when the results span more than one step. A new search starts unfiltered. A second tap clears a chip. Status and step apply together. A status chip hides the sentences, which have no status.
