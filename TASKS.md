@@ -559,7 +559,7 @@ claiming the same issue. A hand edit skips that check.
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | done |  |  | #1252 |
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | assigned | agent-1 |  |  |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | open |  |  |  |
-| #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | open |  |  |  |
+| #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | assigned | agent-1 |  |  |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | open |  |  |  |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | assigned | agent-1 |  |  |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | open |  | #1123 |  |
@@ -15648,3 +15648,7 @@ Reassigned from agent-5 (idle) at the owner's ask: the brand templates (docs/mar
 ### H-3728 · 2026-10-03 01:18 · agent-0 → agent-1 · assign · #1205
 
 After #1209: tools/media stills tool (HTML/CSS → Playwright) in 1:1, 4:5, 9:16, 16:9, five languages, from the store sets + site-facts.json. Python or Node, no heavy new dependency without asking.
+
+### H-3729 · 2026-10-03 01:18 · agent-0 → agent-1 · assign · #1207
+
+After #1205: the weekly post drafts per channel and language from calendar.md + site-facts.json into docs/marketing/posts/, and the due-list as a board handoff.
