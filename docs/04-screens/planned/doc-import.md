@@ -39,11 +39,19 @@
 - **Camera permission denied:** an explanation, with *Open settings*.
 - **OCR or PDF failure:** an error panel (`SgErrorPanel`) with *Try again*.
 
-**Data.** It writes `documents` (and the images under `<appSupport>/documents/<id>/`), then hands the text to the matcher (`03-domain/document-matcher.md`).
+**Data.** It writes `documents` (and the images under `<appSupport>/documents/<id>/`), then opens D2 on its id, and D2 runs the matcher (`03-domain/document-matcher.md`).
+- **The text saved** is the clean one (`cleanPages`), cut to the limit (`limitText`: the last sentence end before 20,000 characters, else the last word end), since `match` reads `body` as it is. The note is a toast, and under the pasted text's box while it's over the limit.
+- **The German check** (FR-D1-04) runs before anything is saved: `DocumentRepository.germanShareOf(body)`, the lemmatiser in an isolate. *Continue anyway* saves; *Cancel* saves nothing.
+- **The title** is the text's first line with a letter in it, cut at a word end to 60 characters, or "Text of 2 Oct" when it has none (#1227). D2 lets the learner change it.
+- **`source`:** `paste` or `share` (#1227), `pdf` (#1228), `photo` (#1229).
 
 **Developer notes.**
 - **ML Kit text recognition, Latin script, bundled model** (no download from Google Play services). Its licence and terms go in `licences.py` and M8.
-- **The share target:** an `ACTION_SEND` / `ACTION_SEND_MULTIPLE` intent filter for `text/plain`, `application/pdf` and `image/*`.
+- **The share target:** an `ACTION_SEND` / `ACTION_SEND_MULTIPLE` intent filter for `text/plain`, `application/pdf` and `image/*`. Text is #1227's; the PDF and the images join it in #1228 and #1229.
+  - **`ShareActivity`**, with no window of its own, holds the filter. It opens `MainActivity` as the widget does (`NEW_TASK | CLEAR_TOP`), with the link `sogda://import` and the text as an extra, never as data (#613). So the share lands in the app's own task and its one Flutter engine, never in the sender's task as a second copy of the app with `user.db` open twice.
+  - **`MainActivity`** keeps the text until D1 takes it once (`sogda/share`, `SharedText.take`). A launch restored from recents keeps none, so the same document isn't saved twice.
+  - **The link** is an arrival like any other (`navigation.md`): a running exam holds it, a study session doesn't, and each share is numbered (`?arrival=`), so a second one onto D1 is read too.
+- **R1 idle's** *Learn from a document*, under *Add a word I found*, pushes D1 (`/search/import`); back returns to R1. Back from the pasted text's box, or from processing, returns to the choices.
 - The APK's growth is measured in `perf.py size`.
 
 **Tests.**

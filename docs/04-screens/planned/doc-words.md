@@ -19,7 +19,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 
 **Layout, top to bottom.**
 1. **The header:**
-   - the document's title (editable; by default the first line, or "Letter of 2 Oct");
+   - the document's title (editable; by default its first line with a letter, or "Text of 2 Oct": D1 names it, #1227);
    - the summary: "12 new · 4 probably known · 3 outside the course";
    - a *Show words I probably know* switch (`doc_show_probably_known`).
 2. **The text,** as extracted, scrollable, in reading size:

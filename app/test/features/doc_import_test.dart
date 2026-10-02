@@ -126,6 +126,16 @@ void main() {
     await pump(tester, docs: docs, clipboard: null);
 
     expect(find.text(l10n.docImportPasteEmpty), findsOneWidget);
+    final semantics = tester.ensureSemantics();
+    expect(
+      tester.getSemantics(find.text(l10n.docImportPaste)),
+      containsSemantics(
+        isButton: true,
+        hasEnabledState: true,
+        isEnabled: false,
+      ),
+    );
+    semantics.dispose();
     await tester.tap(find.text(l10n.docImportPaste));
     await tester.pumpAndSettle();
     expect(find.byType(TextField), findsNothing);
