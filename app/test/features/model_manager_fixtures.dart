@@ -186,7 +186,7 @@ class FakeModels extends Fake implements ModelRepository {
 }
 
 /// M4 without a disk, a downloader or a voice: the artboard's cards, or what
-/// the test gives.
+/// the test gives. [read] hears each card's id as it is read.
 List<Override> modelManagerStub({
   ModelCard? voice,
   ModelCard? translation,
@@ -196,11 +196,16 @@ List<Override> modelManagerStub({
   TtsEngine? supertonic,
   SettingsRepository? settings,
   NotificationPermission? permission,
+  void Function(String id)? read,
 }) => <Override>[
-  modelCardProvider(ModelRepository.voiceModel)
-      .overrideWith((ref) => Stream.value(voice ?? artboardVoice)),
-  modelCardProvider(ModelRepository.translationModel)
-      .overrideWith((ref) => Stream.value(translation ?? artboardTranslation)),
+  modelCardProvider(ModelRepository.voiceModel).overrideWith((ref) {
+    read?.call(ModelRepository.voiceModel);
+    return Stream.value(voice ?? artboardVoice);
+  }),
+  modelCardProvider(ModelRepository.translationModel).overrideWith((ref) {
+    read?.call(ModelRepository.translationModel);
+    return Stream.value(translation ?? artboardTranslation);
+  }),
   phoneSpaceProvider.overrideWith((ref) async => space),
   modelDownloadsProvider.overrideWithValue(downloads ?? FakeDownloads()),
   modelRepositoryProvider.overrideWithValue(models ?? FakeModels()),
