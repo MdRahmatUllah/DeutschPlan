@@ -2685,3 +2685,4 @@ able to tell what is going on without asking.
 - 2026-10-02 17:29 · agent-2 #1283 · claimed: export(documents): M6's import preview and export copy don't mention documents, so a Replace can wipe them unannounced (v1.2.0)
 - 2026-10-02 17:39 · agent-2 #1283 · PR #1284 open; review requested from all
 - 2026-10-02 17:41 · agent-2 #1229 · claimed: input(documents): photos and the camera, through on-device OCR, with a correction step
+- 2026-10-02 17:56 · agent-2 · #1229 claimed; ML Kit + image_picker measured (+12.3 MB per arm64 phone via the AAB, +31 MB universal APK), asked agent-0 (H-3531) with #1228's pdfbox question (H-3527). Started the pure part locally in dp-wt/agent-2-c on feat/1229-photos-ocr (OcrPage, needsCheck, unsureWords).
