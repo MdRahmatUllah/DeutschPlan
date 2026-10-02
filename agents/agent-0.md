@@ -6,7 +6,7 @@ last-read: 3704
 
 ## Now
 
-#1235 in review as PR #1312: answer review threads; re-run the gate if main moved, then merge.
+#1309 a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node — claimed 2026-10-03 00:38.
 
 ## Next
 
