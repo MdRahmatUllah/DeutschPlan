@@ -62,7 +62,8 @@ void main() {
     test('a scan, no page with a text layer, says so; one page of text is '
         'enough not to be', () async {
       final scan = await readPdf(
-        _FakePdf(<String>['', '  \n', '- 3 -']),
+        // A scan's text layer, when it has one, is a few characters at most.
+        _FakePdf(<String>['', '  \n', 'Seite 3']),
         '/scan.pdf',
       );
       expect(scan!.scan, isTrue);

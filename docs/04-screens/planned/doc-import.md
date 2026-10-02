@@ -43,6 +43,12 @@
 
 **Developer notes.**
 - **ML Kit text recognition, Latin script, bundled model** (no download from Google Play services). Its licence and terms go in `licences.py` and M8.
+- **A PDF's text layer** (#1228, ADR 31): pdfbox-android, from Kotlin over `sogda/pdf` (`PdfText.kt`), and `services/pdf_text.dart`'s `readPdf`, page by page:
+  - *Cancel* stops between two pages, and the document is closed however reading ends;
+  - at most 30 pages are read (BR-DOC-02), and `pageCount` says how many the file has, for the cut's note;
+  - **a scan** is a PDF with no page of 25 letters or more in its text layer: D1 then shows "This PDF is a scan…" with *Choose images*;
+  - a password-protected file is `PdfLocked`, anything unreadable `PdfUnreadable`: D1's error panel.
+  - `integration_test/pdf_probe.dart` runs it on a release build, where R8 runs, for a device check.
 - **The share target:** an `ACTION_SEND` / `ACTION_SEND_MULTIPLE` intent filter for `text/plain`, `application/pdf` and `image/*`.
 - The APK's growth is measured in `perf.py size`.
 
