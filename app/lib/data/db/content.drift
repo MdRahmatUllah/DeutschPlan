@@ -195,11 +195,10 @@ contentCounts:
     (SELECT COUNT(*) FROM word_examples) AS sentence_total;
 
 -- Documents (#1230): every word to learn, as the lemmatiser
--- and the matcher read it (`document-matcher.md`): its forms, and its step's
--- place, level and frequency. Notes and comparisons are never studied
--- (BR-CONTENT-04), so never offered.
+-- and the matcher read it (`document-matcher.md`): its forms, step, level
+-- and frequency. Notes and comparisons are never studied (BR-CONTENT-04), so
+-- never offered. The step's place in the course is `allSublevels`' order.
 lemmaWords:
-  SELECT w.uid, w.german, w.pos, w.article, w.forms, w.level_code, w.freq,
-         s.ord AS step_order
-  FROM words w JOIN sublevels s ON s.code = w.sublevel_code
-  WHERE w.kind = 'vocab';
+  SELECT uid, german, pos, article, forms, sublevel_code, level_code, freq
+  FROM words
+  WHERE kind = 'vocab';

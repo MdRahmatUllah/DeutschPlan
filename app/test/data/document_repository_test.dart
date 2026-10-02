@@ -43,6 +43,11 @@ void main() {
       "INSERT INTO custom_words (created_at, german, meaning) VALUES "
       "('2026-09-03', 'Wasserzähler', 'water meter')",
     );
+    // «Miete», a course word of an earlier step, also kept as their own.
+    await db.customStatement(
+      "INSERT INTO custom_words (created_at, german, meaning, matched_uid) "
+      "VALUES ('2026-09-04', 'Miete', 'rent', '${uid['Miete']}')",
+    );
   });
 
   tearDown(() => db.close());
@@ -57,6 +62,7 @@ void main() {
     expect(input.learner.status[uid['überweisen']], 'done');
     expect(input.learner.everPlanned, contains(uid['pünktlich']));
     expect(input.learner.mine, contains('wasserzaehler'));
+    expect(input.learner.mineUids, <String>{uid['Miete']!});
   });
 
   test('#1230 BR-DOC-03 FR-D2-07: a document\'s words are matched in an '
@@ -71,8 +77,20 @@ void main() {
         match.words.singleWhere((w) => w.surface == surface).docClass.name;
     expect(classOf('Vermieter'), DocClass.probablyKnown.name);
     expect(classOf('pünktlich'), DocClass.newInCourse.name);
+    expect(
+      classOf('Kündigung'),
+      DocClass.newInCourse.name,
+      reason: 'A2.1, the active step',
+    );
     expect(classOf('überweisen'), DocClass.known.name);
     expect(classOf('Taxifahrer'), DocClass.outside.name);
+    final miete = match.words.singleWhere((w) => w.surface == 'Miete');
+    expect(miete.mine, isTrue);
+    expect(
+      miete.docClass,
+      DocClass.newInCourse,
+      reason: 'mine: never probably known',
+    );
 
     final rows = await db.select(db.documentWords).get();
     final kuendigung = rows.where((r) => r.lemmaKey == uid['Kündigung']);

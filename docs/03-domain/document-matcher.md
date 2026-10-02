@@ -66,8 +66,9 @@ outside: the course's own data, plus rules, plus one small table we write.
 
 **One class per lemma, in this order:** stop word, known, probably known, new in the course, mine, outside the course. A course word wins over *Mine*: a word of my own that the course also has (`custom_words.matched_uid`) is offered as the course word, and D2 shows its "My word" mark too.
 
-**The matcher** (`domain/documents/matcher.dart`, `matchText`) runs in an isolate (`DocumentRepository.match`, #1230) on a snapshot the data layer reads once (`matcherInput`): each course word's step, level and `freq`, and the learner's statuses, the uids any day's plan has held, *My words*' search keys and the active step. In it:
+**The matcher** (`domain/documents/matcher.dart`, `matchText`) runs in an isolate (`DocumentRepository.match`, #1230) on a snapshot the data layer reads once (`matcherInput`): each course word's step (its place in the course's order of steps), level and `freq`, and the learner's statuses, the uids any day's plan has held, *My words*' search keys and the active step. In it:
 - **An ambiguous lemma** takes the class of its reading most worth offering (new, then probably known, then known), and D2 asks which before *Add*.
+- **A course word that is also one of *My words*** (`custom_words.matched_uid`) is offered as the course word with D2's "My word" mark, and it's never *probably known*: the learner added it, so they don't know it.
 - **No step under way:** nothing is probably known.
 - **A word the sentence took up** (a split particle, «findet … statt», a salutation) has a reading of its own, so it is never *outside the course*.
 - **Mine and outside the course** are keyed by the form's search key, so an inflected form of a word outside the course is an entry of its own.

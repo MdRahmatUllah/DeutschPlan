@@ -19,7 +19,8 @@ class CourseWordInfo {
     required this.freq,
   });
 
-  /// Its step's place in the course (`sublevels.ord`, A1.1 is 1).
+  /// Its step's place in the course's order of steps (A1.1 is 1, C2.2 is
+  /// 12): `allSublevels`' order, not a column read raw.
   final int stepOrder;
 
   /// A1 … C2.
@@ -35,6 +36,7 @@ class LearnerSnapshot {
     required this.status,
     required this.everPlanned,
     required this.mine,
+    this.mineUids = const <String>{},
     this.activeStepOrder,
     this.level,
   });
@@ -48,6 +50,10 @@ class LearnerSnapshot {
   /// *My words*, by `searchKey` of their German.
   final Set<String> mine;
 
+  /// The course words that are also *My words* (`custom_words.matched_uid`):
+  /// offered as the course word, with D2's "My word" mark.
+  final Set<String> mineUids;
+
   /// The active step's `sublevels.ord`; null with no step under way.
   final int? activeStepOrder;
 
@@ -57,7 +63,14 @@ class LearnerSnapshot {
 
 /// A lemma of the document, once, with every place it stands.
 class DocWord {
-  DocWord._(this.key, this.entries, this.surface, this.docClass, this.compound);
+  DocWord._(
+    this.key,
+    this.entries,
+    this.surface,
+    this.docClass,
+    this.compound, {
+    required this.mine,
+  });
 
   /// Its lemma, as `document_words.lemma_key` stores it: the course uids
   /// (`|`-joined when ambiguous), or `outside:` and the search key.
@@ -75,6 +88,10 @@ class DocWord {
   /// A word outside the course that is a compound of course words: the
   /// hint «Nebenkosten + Abrechnung».
   final List<String>? compound;
+
+  /// One of *My words*: the class [DocClass.mine], or a course word the
+  /// learner also keeps as their own, which D2 marks "My word".
+  final bool mine;
 
   /// Where it stands in the text: [start, end) of each occurrence.
   final List<(int, int)> spans = <(int, int)>[];
@@ -131,6 +148,7 @@ DocumentMatch matchText(
           token.text,
           _courseClass(entries, course, learner),
           null,
+          mine: entries.any((e) => learner.mineUids.contains(e.uid)),
         );
       } else {
         // A word the sentence took up (a split particle, «findet … statt», a
@@ -157,6 +175,7 @@ DocumentMatch matchText(
           token.text,
           learner.mine.contains(search) ? DocClass.mine : DocClass.outside,
           parts,
+          mine: learner.mine.contains(search),
         );
       }
       final word = byKey.putIfAbsent(key, create);
@@ -185,6 +204,8 @@ DocClass _courseClass(
     // BR-STATUS-01: a word in learning, done or suspended (which no plan
     // takes, BR-STATUS-03) is never offered.
     if (status != 'todo') return DocClass.known;
+    // A word of my own I added, so I don't know it: never probably known.
+    if (learner.mineUids.contains(entry.uid)) return DocClass.newInCourse;
     final step = course[entry.uid]?.stepOrder;
     final active = learner.activeStepOrder;
     // A step placement or *Choose myself* skipped: before the active one,

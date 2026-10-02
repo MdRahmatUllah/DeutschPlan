@@ -51,6 +51,11 @@ class DocumentRepository {
   /// day's plan has held; *My words*; and the active step.
   Future<MatcherInput> matcherInput() async {
     final content = ContentDao(_db);
+    final steps = await content.allSublevels().get();
+    // The course's order of steps, A1.1 first: not a column read raw.
+    final order = <String, int>{
+      for (final (i, step) in steps.indexed) step.code: i + 1,
+    };
     final entries = <LemmaEntry>[];
     final course = <String, CourseWordInfo>{};
     for (final row in await content.lemmaWords().get()) {
@@ -64,7 +69,7 @@ class DocumentRepository {
         ),
       );
       course[row.uid] = CourseWordInfo(
-        stepOrder: row.stepOrder,
+        stepOrder: order[row.sublevelCode] ?? 0,
         level: row.levelCode,
         freq: row.freq ?? 0,
       );
@@ -76,9 +81,8 @@ class DocumentRepository {
     )..where((e) => e.completedOn.isNull())).getSingleOrNull();
     final step = active == null
         ? null
-        : (await content.allSublevels().get())
-              .where((s) => s.code == active.sublevelCode)
-              .firstOrNull;
+        : steps.where((s) => s.code == active.sublevelCode).firstOrNull;
+    final custom = await _db.select(_db.customWords).get();
     return (
       entries: entries,
       course: course,
@@ -91,11 +95,9 @@ class DocumentRepository {
           for (final row in await planned.get())
             row.read(_db.planItems.wordUid)!,
         },
-        mine: <String>{
-          for (final row in await _db.select(_db.customWords).get())
-            searchKey(row.german),
-        },
-        activeStepOrder: step?.ord,
+        mine: <String>{for (final row in custom) searchKey(row.german)},
+        mineUids: <String>{for (final row in custom) ?row.matchedUid},
+        activeStepOrder: step == null ? null : order[step.code],
         level: step?.levelCode,
       ),
     );
