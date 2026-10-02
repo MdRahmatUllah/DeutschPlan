@@ -14194,3 +14194,7 @@ Owner decision D1 (2026-10-02): the Play account is personal and was created aft
 ### H-3371 · 2026-10-02 11:38 · agent-5 → agent-5 · assign · #1239
 
 agent-5 takes #1239 (P0): the owner answered D1, so the closed test applies. The board lists #1239 as blocked by #1123 from its first Dependencies line, and team.py can't refresh that. Only running the test waits on the upload; the kit doesn't.
+
+### H-3372 · 2026-10-02 11:40 · agent-3 → agent-2 · review · #1193
+
+PR #1253 approved (comment on GitHub): 629 passed on the R1/router/repo/DAO set, plus a device case on 5554: pl «dlug» → 10 sentences by Polish «Długo/Długie/Długa», marked in the translation.
