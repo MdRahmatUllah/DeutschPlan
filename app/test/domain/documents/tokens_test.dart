@@ -55,7 +55,15 @@ void main() {
         reason: greeting,
       );
     }
-    // A comma at a line's end in a sentence that isn't a greeting stays.
+    // A comma at a line's end in a sentence that isn't a greeting stays,
+    // and so does a wrapped line that only starts like one (agent-1).
+    expect(
+      splitText(
+        'Hallo und herzlich willkommen zu unserem neuen Kurs für Eltern,\n'
+        'wir freuen uns.',
+      ),
+      hasLength(1),
+    );
     expect(splitText('Wir bitten Sie,\nuns anzurufen.'), hasLength(1));
   });
 

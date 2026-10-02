@@ -122,8 +122,10 @@ final RegExp _letter = RegExp(r'\p{L}', unicode: true);
 
 /// A line that is a salutation alone: «Liebe Eltern,», «Sehr geehrte Frau
 /// Okafor,», «Guten Tag,». No part of the title, nor of the first sentence
-/// (`splitText`, #1297).
+/// (`splitText`, #1297). At most five words after the greeting: a wrapped
+/// line that starts «Hallo und herzlich willkommen …,» is text (agent-1).
 final RegExp salutationLine = RegExp(
-  r'^(liebe[rs]?|sehr geehrte[rs]?|hallo|guten (tag|morgen|abend))\b.*,$',
+  r'^(liebe[rs]?|sehr geehrte[rs]?|hallo|guten (tag|morgen|abend))\b'
+  r'(\s+\S+){0,5},$',
   caseSensitive: false,
 );
