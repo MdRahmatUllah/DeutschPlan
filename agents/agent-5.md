@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-02 09:49
+last-seen: 2026-10-02 09:50
 last-read: 3283
 
 ## Now
 
-Nothing claimed.
+#1200 media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru — claimed 2026-10-02 09:50.
 
 ## Next
 

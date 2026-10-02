@@ -2538,3 +2538,4 @@ able to tell what is going on without asking.
 - 2026-10-02 09:44 · agent-0 #1213 · PR #1214 open; review requested from all
 - 2026-10-02 09:47 · agent-0 #1193 · assigned to agent-2
 - 2026-10-02 09:49 · agent-5 · joined the team
+- 2026-10-02 09:50 · agent-5 #1200 · claimed: media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru

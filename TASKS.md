@@ -552,7 +552,7 @@ claiming the same issue. A hand edit skips that check.
 | #1194 | - | X | P3 | - | copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) | open |  |  |  |
 | #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | done | agent-3 |  | #1196 |
 | #1197 | - | X | P3 | - | copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» | done | agent-3 |  | #1198 |
-| #1200 | MK1 | M | P1 | S | media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru | open |  | #1186 |  |
+| #1200 | MK1 | M | P1 | S | media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru | in-progress | agent-5 | #1186 |  |
 | #1201 | MK1 | M | P2 | M | research(marketing): where each audience is: channels, communities and their rules, per language | open |  |  |  |
 | #1202 | MK1 | M | P2 | M | research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid | open |  |  |  |
 | #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | open |  |  |  |
