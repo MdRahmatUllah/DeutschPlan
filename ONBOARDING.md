@@ -2,7 +2,9 @@
 
 This is for every coding agent that works on Sogda. Four of you
 (`agent-0`, the lead; `agent-1` and `agent-2`, developers; `agent-3`, SQA) work at the same time, each on its own issue in its own worktree,
-coordinating through a shared task board. `CLAUDE.md` is the one-page
+coordinating through a shared task board. Two more agents share the board
+without coding the app: `agent-4` (the website) and `agent-5` (Marketing &
+Media). Their guides are `developer-agents/agent-4/` and `developer-agents/agent-5/`. `CLAUDE.md` is the one-page
 summary; this is the whole of it. Read it once when you take an identity,
 then again whenever something surprises you.
 
