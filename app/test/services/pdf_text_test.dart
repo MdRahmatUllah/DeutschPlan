@@ -188,4 +188,29 @@ void main() {
       await expectLater(pdf.open('/x.txt'), throwsA(isA<PdfUnreadable>()));
     });
   });
+
+  test("#1318 a release build drops pdfbox's CJK CMaps, and keeps "
+      'Identity-H/V and the fallback font', () {
+    final gradle = File('android/app/build.gradle.kts').readAsStringSync();
+    // From the merged assets, after AGP merges them: the CMap folder alone.
+    expect(
+      gradle,
+      contains(
+        'tasks.withType<com.android.build.gradle.tasks.MergeSourceSetFolders>()',
+      ),
+    );
+    expect(gradle, contains('resolve("com/tom_roush/fontbox/resources/cmap")'));
+    // CID fonts name Identity-H (Word's PDFs), and Identity-V uses it.
+    expect(gradle, contains('setOf("Identity-H", "Identity-V")'));
+    // Every non-embedded font, standard Helvetica too, maps to the fallback
+    // font (`resources/ttf`), and the standard fonts' widths are the AFMs.
+    expect(
+      RegExp(r'resolve\("com/tom_roush/pdfbox/resources/(ttf|afm)')
+          .hasMatch(gradle),
+      isFalse,
+    );
+    // #1228: BouncyCastle's post-quantum tables, which PDF encryption never
+    // uses.
+    expect(gradle, contains('excludes += "org/bouncycastle/pqc/**"'));
+  });
 }
