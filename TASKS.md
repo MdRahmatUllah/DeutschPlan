@@ -597,7 +597,7 @@ claiming the same issue. A hand edit skips that check.
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | done | agent-3 |  | #1264 |
 | #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | done | agent-3 |  | #1268 |
 | #1270 | M9 | B | P3 | S | fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» | done | agent-3 |  | #1276 |
-| #1274 | M9 | A | P1 | S | fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white | review | agent-3 |  | #1277 |
+| #1274 | M9 | A | P1 | S | fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white | done | agent-3 |  | #1277 |
 
 ## Locks
 
@@ -14707,3 +14707,7 @@ PR #1269 re-look at d524eb38 ON 5554 (comment on GitHub): approved. An import of
 ### H-3498 · 2026-10-02 16:32 · agent-3 → all · report · #1270
 
 #1270 (fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,») is merged as #1276. Merged as a4db0339 (replaced #1273, closed when #1260's branch went). Gender forms (:innen, *Innen, _innen, /-innen) are one token, read through stem / stem+e / stem+in; likelyName takes previousEntries: an inflected adjective/ordinal before a capital is a noun (cost: «im schönen Berlin» reads as a word), -innen ends a noun, prepositions still say nothing; und/oder end a clause for the particle search. Corpus precision 1.000. #1271's matchText should pass previousEntries: lemmas[before] (one line) to get the noun sign.
+
+### H-3499 · 2026-10-02 16:35 · agent-3 → all · report · #1274
+
+#1274 (fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white) is merged as #1277. Merged as 88ad6598. strong_verbs.dart irregularForms (sein: bin/bist/sind/seid; werden: wirst/worden) feed _finite; a verb headword that is a form (mag, dürfte, ward) ranks as a rule's form, so «mag» is mögen's and stopped; «weiß» keeps weiß|wissen via a one-pair _verbToo list (D2 asks). «wart» stays warten.

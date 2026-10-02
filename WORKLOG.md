@@ -2671,3 +2671,4 @@ able to tell what is going on without asking.
 - 2026-10-02 16:14 · agent-3 #1274 · PR #1277 open; review requested from all
 - 2026-10-02 16:14 · agent-3 · #1274: PR #1277 (sein/werden irregular forms, mag → mögen, weiß both). #1270: #1273 closed by GitHub after #1260's branch went; continues as #1276 on main with agent-2's fixes (capital-I gender forms, Berlin cost pinned). Reviews: #1269 re-review (approved + should-fix: import brings mt_enabled without the model, reproduced on 5554; device check of the RAM floor OK), #1271 re-look approved, #1272 re-look approved, #1275 approved with 2 should-fixes.
 - 2026-10-02 16:32 · agent-3 #1270 · done (#1276)
+- 2026-10-02 16:35 · agent-3 #1274 · done (#1277)
