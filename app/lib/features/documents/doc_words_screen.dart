@@ -131,6 +131,13 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
     super.dispose();
   }
 
+  /// The document read again: its slots then count today's adds already
+  /// (agent-3, #1294).
+  void _reread() {
+    _startedToday = 0;
+    ref.invalidate(docWordsProvider(widget.id));
+  }
+
   bool _isAdded(DocWordsView view, DocWord word) =>
       _added.contains(word.key) || view.added.contains(word.key);
 
@@ -256,7 +263,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
             Navigator.of(sheet).pop();
             await AddWordRoute.openAndWait(context, german: word.surface);
             // Saved there, it is mine here: its chip and Keep this sentence.
-            if (mounted) ref.invalidate(docWordsProvider(widget.id));
+            if (mounted) _reread();
           },
           onKeepSentence: () {
             Navigator.of(sheet).pop();
@@ -348,7 +355,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
         body = SgErrorPanel(
           message: l10n.docWordsFailed,
           retryLabel: l10n.retry,
-          onRetry: () => ref.invalidate(docWordsProvider(widget.id)),
+          onRetry: _reread,
         );
       default:
         body = Center(
