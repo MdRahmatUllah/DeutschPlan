@@ -6,7 +6,7 @@ last-read: 3447
 
 ## Now
 
-#1225 in review as PR #1271: answer review threads; re-run the gate if main moved, then merge.
+#1230 screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this — claimed 2026-10-02 15:12.
 
 ## Next
 
