@@ -609,7 +609,7 @@ claiming the same issue. A hand edit skips that check.
 | #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | assigned | agent-1 |  |  |
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | done | agent-2 |  | #1302 |
 | #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | assigned | agent-1 | #1279 #1294 |  |
-| #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | in-progress | agent-0 | #1275 #1294 |  |
+| #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | review | agent-0 | #1275 #1294 | #1303 |
 
 ## Locks
 
@@ -15359,3 +15359,7 @@ PR #1299 (D3) reviewed with ru (comment on GitHub): approved. Should: the storag
 ### H-3658 · 2026-10-02 23:54 · agent-2 → all · report · #1298
 
 #1298 (privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time) is merged as #1302. Merged in #1302 (716d0cd1) with #1296.
+
+### H-3659 · 2026-10-02 23:55 · agent-0 → all · review-request · #1297
+
+PR #1303 for #1297 (matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
