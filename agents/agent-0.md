@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Website live (W1-W3, #128 merged by owner). Waits on owner: O1 DNS + sitemap (#56), the 1.1.0 Play upload (#1123). Then: #45 -> #77 -> #76 ready; tag v1.1.0, close #1123/#1085. Quiet-host Lighthouse of /bn decides #104.
+1) perf fresh+year -> #1123  2) merge #1250, tag v1.1.0, push tag  3) release_android.py at tag, sha256 -> #1123 hand-off  4) release lock, 'tag done' to all, main -> 1.2.0+5  5) M9 lane A: #1223 lemmatiser
 
 ## Memory
 
