@@ -82,6 +82,23 @@ const List<Licence> nativeLicences = <Licence>[
     asset: 'assets/licences/AndroidX-Apache-2.0.txt',
     text: null,
   ),
+  // #1229: Google's SDK and its bundled Latin model are no open-source
+  // licence, but terms, published as web pages: named here with their
+  // links, not fetched (`tools/licences.py` checks texts it can compare).
+  (
+    name: 'ML Kit text recognition (Latin, bundled)',
+    kind: 'ML Kit Terms of Service',
+    asset: null,
+    text:
+        'Sogda reads photographed pages with Google ML Kit text recognition, '
+        'its Latin model bundled in the app. It is used under the ML Kit '
+        'Terms of Service (https://developers.google.com/ml-kit/terms) and '
+        'the Google APIs Terms of Service '
+        '(https://developers.google.com/terms).\n\n'
+        'The pages are read on this phone. ML Kit\'s usage metrics are '
+        'never uploaded: Sogda leaves out the component that would send '
+        'them.',
+  ),
   (
     name: 'desugar_jdk_libs',
     kind: 'GPL-2.0 with the Classpath Exception',

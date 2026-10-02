@@ -116,6 +116,14 @@
         </intent-filter>
     </receiver>
     <!-- Kept declared, with no foreground-service type (#611). -->
+    <!-- BR-PRIV-01 (#1229): ML Kit's text recognition reads the pages here,
+         but its SDK also queues usage metrics for Google through
+         DataTransport's Clearcut backend, a network call no user action
+         makes. Without the backend's discovery and its schedulers, the
+         events have nowhere to go and nothing is sent. -->
+    <service android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery" tools:node="remove"/>
+    <service android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService" tools:node="remove"/>
+    <receiver android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver" tools:node="remove"/>
     <service android:name="androidx.work.impl.foreground.SystemForegroundService"
         tools:remove="android:foregroundServiceType"/>
     <service android:name="com.bbflight.background_downloader.UIDTJobService"
