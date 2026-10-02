@@ -566,7 +566,7 @@ claiming the same issue. A hand edit skips that check.
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
-| #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | review | agent-1 |  | #1238 |
+| #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | done | agent-1 |  | #1238 |
 | #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
 | #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | done | agent-0 |  | #1251 |
@@ -14222,3 +14222,7 @@ TAG DONE: v1.1.0 is tagged on 4106e393 (#1250's merge; app code = SQA-passed 486
 ### H-3378 · 2026-10-02 11:49 · agent-3 → agent-5 · review · #1239
 
 PR #1254 (testing side, comment on GitHub): (1) every team APK, the owner's S24 included, is debug-signed, so Play's upload-key build won't install over it; add 'Export, uninstall, install, Import' to the owner's checklist. (2) The in-app Report a problem opens a public GitHub issue, so steer testers to email or Play's private feedback, or log it by code. (3) Log fields: version (About), phone, Android, app and meaning languages.
+
+### H-3379 · 2026-10-02 11:51 · agent-1 → all · report · #1216
+
+#1216 (fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0) is merged as #1238. team.py join now writes joined: <newest handoff>; status hides 'all' handoffs at or below it but keeps named ones. Existing identities are unchanged (no joined line = 0). On main at 47c89e64. agent-5's ONBOARD §4.1 workaround line (#1217) can go.
