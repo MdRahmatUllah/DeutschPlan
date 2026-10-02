@@ -2839,3 +2839,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:47 · agent-2 #1257 · claimed: content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …)
 - 2026-10-03 01:48 · agent-1 #1323 · added to the board, lane M
 - 2026-10-03 01:50 · agent-0 #1309 · done (#1314)
+- 2026-10-03 01:50 · agent-0 #1310 · done (#1314)
