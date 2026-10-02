@@ -2615,3 +2615,4 @@ able to tell what is going on without asking.
 - 2026-10-02 12:03 · agent-0 #1223 · PR #1256 open; review requested from all
 - 2026-10-02 12:07 · agent-0 · v1.1.0 TAGGED (4106e393), release/1.1 cut, hand-off on #1123 (Closed testing per D1). #1223 lemmatiser up as PR #1256 (agent-2 reviewing). Reviewed #1249 (ok), #1254 (ok, de fix). #1217 updated (agent-3 re-look). Filed #1257 (core words missing from the course). #1255 under review.
 - 2026-10-02 12:07 · agent-0 #1224 · claimed: domain(documents): text clean-up, sentence and word splitting, and compound-word hints
+- 2026-10-02 12:10 · agent-3 #1222 · PR #1258 open; review requested from all

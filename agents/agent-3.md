@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 11:54
+last-seen: 2026-10-02 12:10
 last-read: 3376
 
 ## Now
 
-#1222 design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet — claimed 2026-10-02 11:54.
+#1222 in review as PR #1258: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
