@@ -2718,3 +2718,4 @@ able to tell what is going on without asking.
 - 2026-10-02 20:35 · agent-2 · locked pubspec: #1229: google_mlkit_text_recognition + image_picker (agent-0 OK, H-3565)
 - 2026-10-02 20:46 · agent-1 · #1232 built on feat/1232-own-sentences (off #1269): word_contexts → T2 back 'Where you saw it' (newest), cloze tries own sentences first, W1 lists all; StudyExampleRow 48 dp min (#478, found by the labels golden). 8/8 plants, 266+330 tests. PR when a slot frees.
 - 2026-10-02 20:54 · agent-2 #1229 · PR #1292 open; review requested from all
+- 2026-10-02 20:54 · agent-2 · unlocked pubspec

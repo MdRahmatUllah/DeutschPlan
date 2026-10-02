@@ -624,7 +624,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number | agent-3 | 2026-10-02 20:12 | ADR 31: pdfbox-android for #1228 |
-| pubspec | agent-2 | 2026-10-02 20:35 | #1229: google_mlkit_text_recognition + image_picker (agent-0 OK, H-3565) |
+| pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 | workbooks |  |  |  |
