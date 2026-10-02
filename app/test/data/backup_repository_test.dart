@@ -83,6 +83,26 @@ void main() {
       'INSERT INTO custom_words (created_at, german, meaning) '
       "VALUES ('2026-03-01T11:00:00Z', 'Pfandflasche', 'deposit bottle')",
     );
+    // Learn from your documents (#1226): a document with its D2 row, a
+    // sentence from it and a queued word. No images, so the round trip is
+    // exact (they never travel, below).
+    await sql(
+      'INSERT INTO documents (title, source, created_at, body) '
+      "VALUES ('Brief', 'paste', '2026-03-01T12:00:00Z', 'Das Haus ist groß.')",
+    );
+    await sql(
+      'INSERT INTO document_words '
+      '(document_id, lemma_key, surface, sentence, class) '
+      "VALUES (1, 'uid-haus', 'Haus', 'Das Haus ist groß.', 'course')",
+    );
+    await sql(
+      'INSERT INTO word_contexts (word_key, sentence, document_id, created_at) '
+      "VALUES ('uid-haus', 'Das Haus ist groß.', 1, '2026-03-01T12:00:00Z')",
+    );
+    await sql(
+      'INSERT INTO doc_queue (word_key, added_at) '
+      "VALUES ('uid-haus', '2026-03-01T12:00:00Z')",
+    );
     await sql(
       "INSERT INTO daily_stats (day, new_done) VALUES ('2026-03-01', 7)",
     );
@@ -1415,6 +1435,13 @@ void main() {
         'done_stability_days': (3, 60),
         'exam_unlock_percent': (50, 100),
         'exam_pass_percent': (50, 90),
+        'doc_daily_cap': (0, 20),
+        'doc_autodelete_days': (0, 365),
+        'doc_save_images': (0, 1),
+        'doc_show_probably_known': (0, 1),
+      });
+      expect(BackupRepository.choices, <String, Set<int>>{
+        'doc_autodelete_days': <int>{0, 30, 90, 365},
       });
     });
 
@@ -1472,6 +1499,244 @@ void main() {
       });
 
       expect((await backup.preview(file)).lastActive, '2026-03-01T09:00:00Z');
+    });
+  });
+
+  group('#1226 BR-DOC-06 the documents', () {
+    String fileWith(Map<String, Object?> tables) =>
+        jsonEncode(<String, Object?>{
+          'schema_version': AppDatabase.latestSchemaVersion,
+          'content_version': null,
+          'exported_at': '2026-03-09T00:00:00Z',
+          'tables': tables,
+        });
+
+    Map<String, Object?> document(int id, String title, {String? images}) =>
+        <String, Object?>{
+          'id': id,
+          'title': title,
+          'source': 'photo',
+          'created_at': '2026-03-0${id}T12:00:00Z',
+          'body': 'Das Haus ist groß.',
+          'image_paths': images,
+          'page_count': 1,
+          'word_count': 4,
+        };
+
+    test('an export carries a document\'s text, never its images', () async {
+      await sql(
+        'INSERT INTO documents (title, source, created_at, body, image_paths) '
+        "VALUES ('Brief', 'photo', '2026-03-01T12:00:00Z', 'Text', "
+        "'[\"1.jpg\"]')",
+      );
+      final tables = (await backup.export())['tables']! as Map<String, Object?>;
+      final row = (tables['documents']! as List<Object?>).single! as Map;
+      expect(row['body'], 'Text');
+      expect(row['image_paths'], isNull);
+      // Still on the phone itself.
+      expect((await rowsOf('documents')).single['image_paths'], '["1.jpg"]');
+    });
+
+    test('a file naming images brings none in', () async {
+      await backup.import(
+        fileWith(<String, Object?>{
+          'documents': <Object?>[document(1, 'Brief', images: '["x.jpg"]')],
+        }),
+        mode: ImportMode.replace,
+      );
+      expect((await rowsOf('documents')).single['image_paths'], isNull);
+    });
+
+    test('a merge keeps a document both phones have once, gives a new one '
+        'a fresh id, and its rows follow it', () async {
+      // This phone has the first document, at id 1.
+      await sql(
+        'INSERT INTO documents (title, source, created_at, body) '
+        "VALUES ('Brief', 'photo', '2026-03-01T12:00:00Z', 'Das Haus ist groß.')",
+      );
+      await backup.import(
+        fileWith(<String, Object?>{
+          // The other phone had them at 7 and 1: the same Brief, a new Mail.
+          'documents': <Object?>[
+            <String, Object?>{
+              ...document(1, 'Mail'),
+              'created_at': '2026-03-05T12:00:00Z',
+            },
+            <String, Object?>{
+              ...document(7, 'Brief'),
+              'created_at': '2026-03-01T12:00:00Z',
+            },
+          ],
+          'document_words': <Object?>[
+            <String, Object?>{
+              'document_id': 1,
+              'lemma_key': 'uid-haus',
+              'surface': 'Haus',
+              'sentence': 'Das Haus ist groß.',
+              'class': 'course',
+              'added': 1,
+            },
+          ],
+          'word_contexts': <Object?>[
+            <String, Object?>{
+              'id': 3,
+              'word_key': 'uid-haus',
+              'sentence': 'Das Haus ist groß.',
+              'document_id': 1,
+              'created_at': '2026-03-05T12:00:00Z',
+            },
+            // Its document isn't in the file: it comes in with none.
+            <String, Object?>{
+              'id': 4,
+              'word_key': 'uid-tuer',
+              'sentence': 'Die Tür ist offen.',
+              'document_id': 9,
+              'created_at': '2026-03-05T12:00:00Z',
+            },
+          ],
+        }),
+        mode: ImportMode.merge,
+      );
+
+      final documents = await rowsOf('documents');
+      expect(
+        <Object?>[for (final d in documents) d['title']],
+        <Object?>['Brief', 'Mail'],
+      );
+      final mail = documents.firstWhere((d) => d['title'] == 'Mail')['id'];
+      expect(mail, isNot(1), reason: "a fresh id, not the other phone's 1");
+      expect((await rowsOf('document_words')).single['document_id'], mail);
+      final contexts = await rowsOf('word_contexts');
+      expect(
+        contexts.firstWhere((c) => c['word_key'] == 'uid-haus')['document_id'],
+        mail,
+      );
+      expect(
+        contexts.firstWhere((c) => c['word_key'] == 'uid-tuer')['document_id'],
+        isNull,
+      );
+    });
+
+    test("a sentence for a word of the learner's own follows the word's id, "
+        'and a sentence both phones have comes once', () async {
+      // Here: one word of my own already at id 1, and a sentence.
+      await sql(
+        'INSERT INTO custom_words (created_at, german, meaning) '
+        "VALUES ('2026-03-01T11:00:00Z', 'Kaution', 'deposit')",
+      );
+      await sql(
+        'INSERT INTO word_contexts (word_key, sentence, created_at) '
+        "VALUES ('uid-haus', 'Das Haus ist groß.', '2026-03-01T12:00:00Z')",
+      );
+      await backup.import(
+        fileWith(<String, Object?>{
+          'custom_words': <Object?>[
+            <String, Object?>{
+              'id': 1,
+              'created_at': '2026-03-02T11:00:00Z',
+              'german': 'Pfandflasche',
+              'meaning': 'deposit bottle',
+            },
+          ],
+          'word_contexts': <Object?>[
+            <String, Object?>{
+              'id': 1,
+              'word_key': 'custom:1',
+              'sentence': 'Die Pfandflasche ist leer.',
+              'created_at': '2026-03-02T12:00:00Z',
+            },
+            <String, Object?>{
+              'id': 2,
+              'word_key': 'uid-haus',
+              'sentence': 'Das Haus ist groß.',
+              'created_at': '2026-03-03T12:00:00Z',
+            },
+          ],
+        }),
+        mode: ImportMode.merge,
+      );
+      final pfand = (await rowsOf('custom_words'))
+          .firstWhere((w) => w['german'] == 'Pfandflasche')['id'];
+      final contexts = await rowsOf('word_contexts');
+      expect(contexts, hasLength(2));
+      expect(
+        contexts.firstWhere(
+          (c) => c['sentence'] == 'Die Pfandflasche ist leer.',
+        )['word_key'],
+        'custom:$pfand',
+      );
+    });
+
+    test('a word queued on both phones keeps the earlier day', () async {
+      await sql(
+        'INSERT INTO doc_queue (word_key, added_at) VALUES '
+        "('uid-haus', '2026-03-05T12:00:00Z'), "
+        "('uid-tuer', '2026-03-01T12:00:00Z')",
+      );
+      await backup.import(
+        fileWith(<String, Object?>{
+          'doc_queue': <Object?>[
+            <String, Object?>{
+              'word_key': 'uid-haus',
+              'added_at': '2026-03-02T12:00:00Z',
+            },
+            <String, Object?>{
+              'word_key': 'uid-tuer',
+              'added_at': '2026-03-04T12:00:00Z',
+            },
+          ],
+        }),
+        mode: ImportMode.merge,
+      );
+      expect(
+        <String, Object?>{
+          for (final row in await rowsOf('doc_queue'))
+            row['word_key']! as String: row['added_at'],
+        },
+        <String, Object?>{
+          'uid-haus': '2026-03-02T12:00:00Z',
+          'uid-tuer': '2026-03-01T12:00:00Z',
+        },
+      );
+    });
+
+    test('#820 a file setting the documents out of range is refused', () {
+      for (final (key, value) in <(String, String)>[
+        ('doc_daily_cap', '21'),
+        ('doc_autodelete_days', '45'),
+        ('doc_save_images', '2'),
+        ('doc_show_probably_known', '-1'),
+      ]) {
+        expect(
+          () => backup.preview(
+            fileWith(<String, Object?>{
+              'settings': <Object?>[
+                <String, Object?>{'key': key, 'value': value},
+              ],
+            }),
+          ),
+          throwsA(
+            isA<ImportException>().having(
+              (e) => e.message,
+              'message',
+              contains(key),
+            ),
+          ),
+          reason: key,
+        );
+      }
+      // The values M3 offers pass.
+      expect(
+        backup.preview(
+          fileWith(<String, Object?>{
+            'settings': <Object?>[
+              <String, Object?>{'key': 'doc_autodelete_days', 'value': '90'},
+              <String, Object?>{'key': 'doc_daily_cap', 'value': '20'},
+            ],
+          }),
+        ),
+        completes,
+      );
     });
   });
 

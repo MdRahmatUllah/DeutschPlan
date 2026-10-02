@@ -379,6 +379,72 @@ void main() {
       expect((await models.stagingFor('hymt')).existsSync(), isFalse);
     });
 
+    test('#1261 another model still downloading counts what it has yet '
+        'to write: the second of two that each fit alone is refused', () async {
+      models.useManifest(
+        ModelManifest(
+          version: 1,
+          models: <ModelEntry>[
+            ...manifest.models,
+            ModelEntry(
+              id: 'voice',
+              name: 'Voice',
+              licence: 'test',
+              disables: 'tts_engine',
+              variants: <ModelVariant>[
+                ModelVariant(
+                  id: 'default',
+                  name: 'test build',
+                  files: <ModelFile>[file('voice.onnx', 'c' * 50)],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      final held = Completer<void>();
+      final storage = _Storage(
+        free: 449 + ModelDownloads.spaceMargin,
+        hold: held.future,
+      );
+      downloads = BackgroundModelDownloads(
+        models,
+        settings,
+        downloader,
+        storage,
+        const Duration(seconds: 2),
+        null,
+      );
+      await downloads.attach();
+      // Still checking its space, nothing queued: all of hymt's 400 count.
+      final started = downloads.start('hymt');
+      final whileStarting = downloads.shortfallFor('voice');
+      held.complete();
+      await started;
+      expect(await whileStarting, 1, reason: '50 + 400 over 449 free');
+
+      // A quarter of one.gguf arrived: 225 of it and two.gguf's 100 to come,
+      // and the phone 75 bytes fuller.
+      await report((t) => TaskProgressUpdate(t, 0.25), 'one.gguf');
+      storage.free -= 75;
+      expect(await downloads.shortfallFor('voice'), 1);
+      await expectLater(
+        downloads.start('voice'),
+        throwsA(isA<NotEnoughSpace>().having((e) => e.bytes, 'bytes', 1)),
+      );
+
+      // Failed: it writes nothing more, so the voice fits.
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'one.gguf',
+      );
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
+      expect(await downloads.shortfallFor('voice'), 0);
+    });
+
     test('and one that fits, margin and all, is queued', () async {
       downloads = BackgroundModelDownloads(
         models,
