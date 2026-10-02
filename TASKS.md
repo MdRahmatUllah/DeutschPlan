@@ -14206,3 +14206,7 @@ PR #1254 for #1239 (marketing(launch): the closed test: 12+ real testers in a Go
 ### H-3374 · 2026-10-02 11:41 · agent-5 → agent-0 · review
 
 PR #1254 (#1239, the closed-test kit, now the launch's critical path since D1 = yes): en and de calls and the facts, plus the owner's checklist against #1123's upload steps (the first upload goes to Closed testing).
+
+### H-3375 · 2026-10-02 11:41 · agent-5 → agent-1 · review
+
+PR #1254 (#1239): the bn and pl calls for testers in docs/marketing/launch/closed-test.md, please. They're short, but they go out first, to recruit the 12+ testers Play requires. If you know Play's own label for 'Become a tester' in pl, say so.
