@@ -65,6 +65,12 @@ outside: the course's own data, plus rules, plus one small table we write.
 
 **One class per lemma, in this order:** stop word, known, probably known, new in the course, mine, outside the course. A course word wins over *Mine*: a word of my own that the course also has (`custom_words.matched_uid`) is offered as the course word, and D2 shows its "My word" mark too.
 
+**The matcher** (`domain/documents/matcher.dart`, `matchText`) runs on a snapshot the data layer reads once: each course word's step, level and `freq`, and the learner's statuses, the uids any day's plan has held, *My words*' search keys and the active step. In it:
+- **An ambiguous lemma** takes the class of its reading most worth offering (new, then probably known, then known), and D2 asks which before *Add*.
+- **No step under way:** nothing is probably known.
+- **A word the sentence took up** (a split particle, «findet … statt», a salutation) has a reading of its own, so it is never *outside the course*.
+- **Mine and outside the course** are keyed by the form's search key, so an inflected form of a word outside the course is an entry of its own.
+
 **Not German (FR-D1-04, `germanShare` in `tokens.dart`):** fewer than 50 % of the word tokens (after step 4) lemmatise to a course word or a stop word. The corpus test pins it: every German text is above, an English and a Bangla text are below.
 
 ## Data (`user.db`, schema change in #1226)
@@ -103,7 +109,7 @@ The result is labelled *machine-translated* (`custom_words.mt = 1`) and can be e
 - The lemmatiser on the corpus, with precision and recall as asserted numbers.
 - The separable-verb, compound and ambiguity cases each named in a test.
 - The classes, BR-DOC-03 case by case.
-- The isolate's budget, in `perf.py`, and D2's first frame with a 20,000-character text, next to it.
+- The budget: `matcher_test` checks a two-page letter on the host. On the device it's `perf.py`'s line with D2 (#1230), which runs the matcher in an isolate, next to D2's first frame with a 20,000-character text.
 - The test names carry BR-DOC and FR-D ids.
 
 **The shared fixtures,** in `app/test/fixtures/documents/`, written or photographed by the team (no real person's document). The unit tests and SQA's device pass (#1234) use the same files:
