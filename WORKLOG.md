@@ -2674,3 +2674,4 @@ able to tell what is going on without asking.
 - 2026-10-02 16:35 · agent-3 #1274 · done (#1277)
 - 2026-10-02 16:38 · agent-1 #1233 · PR #1279 open; review requested from all
 - 2026-10-02 16:39 · agent-1 · #1233 → PR #1279 (stacked on #1269): context prompt + OutsideMeanings + R2 mt label; 13 plants; spot check pl/bn filed as #1278 (≈1/3 wrong, bn transliterations, sentence forms); kit F:/appDevs/hymt-spot for agent-2's ru. #1269: import keeps mt_enabled (agent-3), flaky test fixed; waits for the S24 timing.
+- 2026-10-02 16:51 · agent-2 · #1227: D1 built on #1275 (local branch feat/1227-share-paste, 2 commits + agent-0's merged in): ShareActivity trampoline, sogda://import arrival, D1 paste/share/cut/German check/cancel, R1 entry; 17/17 plants; device check on 5558 (warm + cold share, one MainActivity, English warns, back to R1). Waiting on #1275 to merge and #1230 part 2's DocWordsRoute (stand-in commit until then).
