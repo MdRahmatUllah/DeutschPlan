@@ -146,6 +146,55 @@ void main() {
     expect(row.meaningLang, null);
   });
 
+  test('v5 -> v6: a word of the learner\'s own keeps everything, with no '
+      'machine translation, and the document tables come in empty (#1226)', () async {
+    final schema = await verifier.schemaAt(5);
+    schema.rawDatabase.execute(
+      'INSERT INTO custom_words (created_at, german, meaning) '
+      "VALUES ('2026-09-01T10:00:00Z', 'Pfandflasche', 'deposit bottle')",
+    );
+    final db = AppDatabase(schema.newConnection());
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 6, options: _strict);
+
+    final word = await db.select(db.customWords).getSingle();
+    expect(
+      (word.german, word.meaning, word.mt),
+      ('Pfandflasche', 'deposit bottle', 0),
+    );
+    for (final table in <String>[
+      'documents',
+      'document_words',
+      'word_contexts',
+      'doc_queue',
+    ]) {
+      final rows = await db.customSelect('SELECT * FROM $table').get();
+      expect(rows, isEmpty, reason: table);
+    }
+
+    // A document's words go with it; its sentences stay, with no document.
+    await db.customStatement(
+      'INSERT INTO documents (id, title, source, created_at, body) '
+      "VALUES (1, 'Brief', 'paste', '2026-10-02T10:00:00Z', 'Text')",
+    );
+    await db.customStatement(
+      'INSERT INTO document_words '
+      '(document_id, lemma_key, surface, sentence, class) '
+      "VALUES (1, 'uid-haus', 'Haus', 'Das Haus.', 'course')",
+    );
+    await db.customStatement(
+      'INSERT INTO word_contexts (word_key, sentence, document_id, created_at) '
+      "VALUES ('uid-haus', 'Das Haus.', 1, '2026-10-02T10:00:00Z')",
+    );
+    await db.customStatement('DELETE FROM documents');
+    expect(
+      await db.customSelect('SELECT * FROM document_words').get(),
+      isEmpty,
+    );
+    final context = await db.select(db.wordContexts).getSingle();
+    expect((context.sentence, context.documentId), ('Das Haus.', null));
+  });
+
   test('the live DDL still matches the fixture for its own version', () async {
     // The one that bites day to day: editing user_schema.drift without
     // bumping the version and re-dumping leaves the fixture describing a

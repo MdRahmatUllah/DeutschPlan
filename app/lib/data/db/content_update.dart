@@ -224,6 +224,12 @@ class ContentUpdater {
     // refs carry `#` or a prefix and never match one.
     ('exam_answers', 'item_ref'),
     ('custom_words', 'matched_uid'),
+    // Learn from your documents (#1226): a merged word's sentences, queue
+    // row and D2 rows follow it, as `word_state` does. `custom:<id>` and a
+    // lemma outside the course never match a course uid.
+    ('word_contexts', 'word_key'),
+    ('doc_queue', 'word_key'),
+    ('document_words', 'lemma_key'),
   ];
 
   /// Every user.db column holding a grammar topic's uid (#808). An exam's

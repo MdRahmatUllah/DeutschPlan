@@ -115,6 +115,12 @@ class BackupRepository {
     // Before the tables that name its words as `custom:<id>`: a merge gives
     // them fresh ids, and those tables are rewritten to match (#369).
     'custom_words',
+    // Learn from your documents (v6, #1226, BR-DOC-06): a document before
+    // the rows that point at it, which follow its fresh id on a merge.
+    'documents',
+    'document_words',
+    'word_contexts',
+    'doc_queue',
     'word_state',
     'review_log',
     'plan_items',
@@ -148,25 +154,41 @@ class BackupRepository {
     'exam_attempts': <String>['sublevel_code', 'seed', 'started_at'],
     'exam_answers': <String>['attempt_id', 'ord'],
     'custom_words': <String>['created_at', 'german'],
+    'documents': <String>['created_at', 'title'],
+    'document_words': <String>['document_id', 'lemma_key', 'sentence'],
+    'word_contexts': <String>['word_key', 'sentence'],
+    'doc_queue': <String>['word_key'],
     'daily_stats': <String>['day'],
   };
 
-  /// Tables whose `id` is meaningless off this device, and the child table
-  /// that points at it.
-  static const Map<String, String> _childOf = <String, String>{
-    'quiz_attempts': 'quiz_answers',
-    'exam_attempts': 'exam_answers',
+  /// Tables whose `id` is meaningless off this device, and the child tables
+  /// that point at it, by the column that does.
+  static const Map<String, List<(String, String)>> _childrenOf =
+      <String, List<(String, String)>>{
+        'quiz_attempts': <(String, String)>[('quiz_answers', 'attempt_id')],
+        'exam_attempts': <(String, String)>[('exam_answers', 'attempt_id')],
+        'documents': <(String, String)>[
+          ('document_words', 'document_id'),
+          ('word_contexts', 'document_id'),
+        ],
+      };
+
+  /// Each child table's column naming its parent's id ([_childrenOf]).
+  static final Map<String, String> _parentColumn = <String, String>{
+    for (final children in _childrenOf.values)
+      for (final (child, column) in children) child: column,
   };
 
   /// The learner's own words (#363). On a merge their ids are this phone's
   /// to assign, like an attempt's. The rows that name one as `custom:<id>`
   /// follow the id it ends up with (#369).
   static const String _customWords = 'custom_words';
-  static const Set<String> _namesCustomWords = <String>{
-    'word_state',
-    'review_log',
-    'plan_items',
-    'quiz_answers',
+  static const Map<String, String> _namesCustomWords = <String, String>{
+    'word_state': 'word_uid',
+    'review_log': 'word_uid',
+    'plan_items': 'word_uid',
+    'quiz_answers': 'word_uid',
+    'word_contexts': 'word_key',
   };
 
   /// The column on the row that says when it was last touched, where there is
@@ -191,6 +213,11 @@ class BackupRepository {
       for (final table in tables) {
         data[table] = await _rowsOf(table);
       }
+      // BR-DOC-06: a document's text, never its images.
+      data['documents'] = <Map<String, Object?>>[
+        for (final row in data['documents']!)
+          <String, Object?>{...row, 'image_paths': null},
+      ];
     });
 
     return <String, Object?>{
@@ -374,7 +401,7 @@ WHERE kind = 'new' AND completed_at IS NULL
     if (rows.isEmpty) return;
 
     final columns = await _columnsOf(table);
-    final child = _childOf[table];
+    final children = _childrenOf[table];
     // #809: the column naming a course word, or a grammar topic (#808), and
     // the file's keys, which a row moved to its uid now must not take (below).
     final aliased = <String, String>{
@@ -402,7 +429,7 @@ WHERE kind = 'new' AND completed_at IS NULL
     // `review_log` is thousands). An attempt's and a word of the learner's
     // own's ids are read back for the rows naming them, and `enrollments`
     // reads its own rows as it goes (one open step): those go one by one.
-    final queued = child == null && !ownIds && table != 'enrollments'
+    final queued = children == null && !ownIds && table != 'enrollments'
         ? <(String, List<Object?>)>[]
         : null;
 
@@ -461,13 +488,17 @@ WHERE kind = 'new' AND completed_at IS NULL
       // resumes above the highest one, so a deleted word's id is the next
       // one given out, and the next word the learner adds would inherit its
       // history.
-      if (_namesCustomWords.contains(table)) {
-        if (customId('${mapped['word_uid']}') case final id?) {
+      if (_namesCustomWords[table] case final column?) {
+        if (customId('${mapped[column]}') case final id?) {
           final here = remap[_customWords]?[id];
           if (here == null) continue;
-          mapped['word_uid'] = customUid(here);
+          mapped[column] = customUid(here);
         }
       }
+
+      // BR-DOC-06: a document's images stay on the phone that saved them, so
+      // a file names none here, whatever it says.
+      if (table == 'documents') mapped['image_paths'] = null;
 
       // #809: a file exported under an older course names a word whose uid
       // has changed since by the old uid, which nothing here reads. It comes
@@ -507,7 +538,7 @@ WHERE kind = 'new' AND completed_at IS NULL
       if (mode == ImportMode.merge) {
         final local = existing[_keyOf(table, mapped)];
         if (local != null) {
-          if ((child != null || ownIds) && row['id'] is int) {
+          if ((children != null || ownIds) && row['id'] is int) {
             remapped[row['id']! as int] = local['id']! as int;
           }
           // #622: a step begun on both phones began on the earlier day.
@@ -534,7 +565,7 @@ WHERE kind = 'new' AND completed_at IS NULL
         continue;
       }
       final id = await _insertRow(table, mapped);
-      if ((child != null || ownIds) && row['id'] != null) {
+      if ((children != null || ownIds) && row['id'] != null) {
         remapped[row['id']! as int] = id;
       }
     }
@@ -546,7 +577,9 @@ WHERE kind = 'new' AND completed_at IS NULL
         }
       });
     }
-    if (child != null) remap[child] = remapped;
+    for (final (child, _) in children ?? const <(String, String)>[]) {
+      remap[child] = remapped;
+    }
     if (ownIds) remap[_customWords] = remapped;
   }
 
@@ -592,11 +625,17 @@ WHERE kind = 'new' AND completed_at IS NULL
     Map<String, Map<int, int>> remap,
   ) {
     final mapping = remap[table];
-    if (mapping == null || !row.containsKey('attempt_id')) return row;
-    final old = row['attempt_id'];
+    final column = _parentColumn[table];
+    if (mapping == null || column == null || !row.containsKey(column)) {
+      return row;
+    }
+    final old = row[column];
     return <String, Object?>{
       ...row,
-      if (old is int) 'attempt_id': mapping[old] ?? old,
+      // A sentence whose document isn't in the file outlives it, as it does
+      // a delete: no document, rather than whichever one has that id here.
+      if (old is int)
+        column: mapping[old] ?? (table == 'word_contexts' ? null : old),
     };
   }
 
@@ -609,6 +648,13 @@ WHERE kind = 'new' AND completed_at IS NULL
     Map<String, Object?> incoming,
     Map<String, Object?> local,
   ) {
+    // A word queued on both phones was queued on the earlier day (#1226):
+    // BR-PLAN-11 plans the queue in order.
+    if (table == 'doc_queue') {
+      final theirs = incoming['added_at'] as String?;
+      final ours = local['added_at'] as String?;
+      return theirs != null && ours != null && theirs.compareTo(ours) < 0;
+    }
     final column = _recencyColumn[table];
     if (column == null) return false;
 
@@ -720,7 +766,17 @@ WHERE kind = 'new' AND completed_at IS NULL
     for (final key in SettingKeys.all)
       if (key case IntSetting(range: (:final min, :final max)))
         key.name: (min, max),
+    // The documents' two switches are 0 or 1 (#1226).
+    SettingKeys.docSaveImages.name: (0, 1),
+    SettingKeys.docShowProbablyKnown.name: (0, 1),
     SettingKeys.desiredRetention.name: (Fsrs.minRetention, Fsrs.maxRetention),
+  };
+
+  /// The settings only some values of whose range are offered, and those
+  /// (`doc_autodelete_days`, #1226).
+  static final Map<String, Set<int>> choices = <String, Set<int>>{
+    for (final key in SettingKeys.all)
+      if (key case IntSetting(choices: final allowed?)) key.name: allowed,
   };
 
   /// Each table's columns by name: its type and whether it takes null.
@@ -845,6 +901,9 @@ WHERE kind = 'new' AND completed_at IS NULL
         if (range == null || value is! num) continue;
         if (value < range.$1 || value > range.$2) {
           _refuse('$table[$index].$name: $value is outside $range');
+        }
+        if (choices[name] case final allowed? when !allowed.contains(value)) {
+          _refuse('$table[$index].$name: $value is not one of $allowed');
         }
       }
     }
