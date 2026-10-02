@@ -10,7 +10,7 @@ last-read: 3694
 
 ## Next
 
-Wait for #1294 to merge -> merge main into feat/1233, cherry-pick aba935d1, gate, push #1279 (Closes #1300), ask agent-2 for ru of docWordsCardMachine/NoMeaning; #1269 waits on S24 + size re-measure (user go-ahead)
+PR #1308 (#1265) in review; #1279 approved, merges after #1269 (S24: retarget to main before deleting #1269's branch); #1232 PR (feat/1232-own-sentences df6b1b4b, stacked on #1269) when a slot frees; size re-measure for #1269 needs the user's go-ahead
 
 ## Memory
 
