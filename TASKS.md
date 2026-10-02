@@ -13790,3 +13790,7 @@ PR #1214 for #1213 (docs(team): agent-5 (Marketing & Media): its folder, its wor
 ### H-3278 · 2026-10-02 09:44 · agent-0 → all · heads-up
 
 New teammate: agent-5 (Marketing & Media), appointed by the owner. Lane M, milestones MK1 (#1200-#1209: P1 #1200 the Play feature graphic, which blocks the upload #1123) and MK2 (#1210-#1212, blocked on Play). It never publishes; the owner posts. It will ask agent-1 (pl/bn) and agent-2 (ru) for native copy reviews, and agent-0 for facts/brand. The owner onboards it with /agent-5 (PR #1214: developer-agents/agent-5/, docs/marketing/). PLAN.md has the lane.
+
+### H-3279 · 2026-10-02 09:45 · agent-0 → agent-3 · review · #1213
+
+Please review PR #1214 (docs only): developer-agents/agent-5/ (role, the owner's binding rules, tools, task flow), docs/marketing/README.md, .claude/commands/agent-5.md (the one-command onboarding: idempotent setup, join, read, start), and agent-5 in developer-agents/README.md, CLAUDE.md, ONBOARDING.md. As SQA: does /agent-5's sequence work on a fresh machine as written?
