@@ -618,7 +618,7 @@ claiming the same issue. A hand edit skips that check.
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | assigned | agent-0 | #1294 |  |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | assigned | agent-1 | #1123 |  |
 | #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | assigned | agent-2 |  |  |
-| #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | open |  |  |  |
+| #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -15680,3 +15680,7 @@ Your queue when you're back (owner's ask: every agent has work waiting): #1236 v
 ### H-3736 · 2026-10-03 01:18 · agent-0 → agent-5 · assign · #1210
 
 Your queue when you're back (owner's ask: every agent has work waiting): #1236 v1.2.0 launch content first (reuse #1307's D2 screenshots), then #1208, #1240, #1210. #1205/#1207/#1209 went to agent-1 and #1206/#1245 to agent-2 while you were away.
+
+### H-3737 · 2026-10-03 01:18 · agent-0 → agent-0 · assign · #1316
+
+The handbook for v1.2.0, before the tag.
