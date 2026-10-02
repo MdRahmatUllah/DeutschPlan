@@ -39,7 +39,7 @@ Read each file in `<root>/dp-wt/agent-5/` (current after step 1.2), or with `git
 ## 4. Start the session (`CLAUDE.md`, "Start every session")
 1. `team.py status`: act on your handoffs, then `team.py ack`.
 2. **Reviews first:** any open PR that asks for you.
-3. **Then your work:** continue your `Now`, or `team.py claim <N>` the first ready issue in **lane M** (milestone MK1 before MK2; anything agent-0 assigned to you comes first). On the first day that's **#1200**, the Play feature graphic. It's P1 because it blocks the owner's first upload (#1123).
+3. **Then your work:** continue your `Now`, or `team.py claim <N>` the first ready issue in **lane M** (milestone MK1 before MK2; anything agent-0 assigned to you comes first).
 4. **While working:** `team.py log -m "…"` at each real step. At the end of the session: `team.py next -m "…"`, `team.py note -m "…"`, and `team.py leave -m "…"`.
 
 ## 5. Tell the owner, in three lines
