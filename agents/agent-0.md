@@ -1,7 +1,7 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-02 13:14
+last-seen: 2026-10-02 13:15
 last-read: 3404
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 3404
 
 ## Next
 
-1) perf fresh+year -> #1123  2) merge #1250, tag v1.1.0, push tag  3) release_android.py at tag, sha256 -> #1123 hand-off  4) release lock, 'tag done' to all, main -> 1.2.0+5  5) M9 lane A: #1223 lemmatiser
+1) #1256: agent-3 re-review -> merge (then #1260 rebases onto main: verify main == base per file) 2) #1260: agent-2 review -> merge 3) open #1225 PR from feat/1225-matcher (stacked) 4) #1123: wait for the owner's Closed-testing upload, then close #1123 + #1085 5) owner: #1257 (missing core words), #1237 (rating ask)
 
 ## Memory
 
