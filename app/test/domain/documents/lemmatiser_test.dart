@@ -96,8 +96,9 @@ void main() {
       entries.map((e) => e.german).join('|'),
   ];
 
-  test('#1223 BR-DOC-03: the course words of the corpus (six texts and a '
-      'held-out seventh), at least 95 % precision and 90 % recall', () {
+  test('#1223 #1267 BR-DOC-03: the course words of the corpus (six texts, a '
+      'held-out seventh and three held-out more), at least 95 % precision and '
+      '90 % recall', () {
     final corpus = Directory('test/fixtures/documents/corpus');
     var predicted = 0;
     var correct = 0;
@@ -130,6 +131,35 @@ void main() {
     );
     expect(precision, greaterThanOrEqualTo(0.95), reason: '$report');
     expect(recall, greaterThanOrEqualTo(0.90), reason: '$report');
+  });
+
+  // #1267: the held-out texts word for word. One broken rule barely moves the
+  // corpus's floor, so each text's misses are pinned: a change here is a
+  // regression, or a fix, to name. The two known ones are written down.
+  test('#1267 BR-DOC-03: the held-out texts find their labels, but for two '
+      'known misses', () {
+    const known = <String, ({Set<String> extra, Set<String> missed})>{
+      // «…ab oder geben Sie ihm eine Erlaubnis mit,»: an imperative after
+      // «oder» isn't read as the particle verb (#1256's review).
+      'heldout_school': (extra: {'geben'}, missed: {}),
+      'heldout_doctor': (extra: {}, missed: {}),
+      // «auf den Bänken»: the course's Bank has only «Banken» (content).
+      'heldout_news': (extra: {}, missed: {'Bank'}),
+    };
+    for (final MapEntry(key: name, value: misses) in known.entries) {
+      final text = File('test/fixtures/documents/corpus/$name.txt')
+          .readAsStringSync();
+      final read =
+          (jsonDecode(
+                File('test/fixtures/documents/corpus/$name.labels.json')
+                    .readAsStringSync(),
+              ) as Map<String, dynamic>)['read']
+              as List;
+      final gold = goldOf(read.cast<String>(), course);
+      final hits = found(lemmatiser, text);
+      expect(hits.difference(gold), misses.extra, reason: '$name: not in it');
+      expect(gold.difference(hits), misses.missed, reason: '$name: missed');
+    }
   });
 
   test('#1223: a noun from its plural, dative plural and genitive', () {

@@ -51,6 +51,7 @@ outside: the course's own data, plus rules, plus one small table we write.
 **Accuracy, measured on the test corpus (#1223):** precision of at least 95 % and recall of at least 90 % on course words, stop words left out.
 - **The corpus:** three official letters (a landlord's, a Jobcenter's, a health insurer's) and three articles, written by the team for the test, with every course word labelled. **No real person's document is used.**
 - **A seventh text, a bank's letter, is held out:** it was written and labelled after the rules were tuned on the six, and is never tuned on. A new rule has to keep it passing, and new cases go into a new held-out text.
+- **Three more are held out, by SQA (#1267):** a school letter, a doctor's letter and a news item (`heldout_*.txt`). They're in the corpus figure, and each text's misses are pinned in their own test. Two misses are known: an imperative after «oder» («oder geben Sie … mit»), and «Bänken», whose bench plural the course's *Bank* doesn't have. So any change in what these texts find is a regression or a fix to name.
 - **Labels are a reader's, not the lemmatiser's:** each text's `.labels.json` lists (`read`) the lemma of every word a reader sees in it, stop words aside. The test keeps those that are course headwords today, so a content update never leaves the labels stale. Homonyms all count, and a verb with a preposition («abhängen von») counts where the course has no bare verb.
 
 ## The classes (BR-DOC-03)
@@ -107,6 +108,6 @@ The result is labelled *machine-translated* (`custom_words.mt = 1`) and can be e
 - The test names carry BR-DOC and FR-D ids.
 
 **The shared fixtures,** in `app/test/fixtures/documents/`, written or photographed by the team (no real person's document). The unit tests and SQA's device pass (#1234) use the same files:
-- `corpus/`: the six texts and the held-out seventh, each with a `.labels.json` of its course words, plus `english.txt` and `bangla.txt` (the not-German check, #1225);
+- `corpus/`: the six texts, the held-out seventh and SQA's three held-out ones (#1267), each with a `.labels.json` of its course words, plus `english.txt` and `bangla.txt` (the not-German check, #1225);
 - `text_layer.pdf` and `scanned.pdf` (the same letter, with and without a text layer);
 - `photo_1.jpg`, `photo_2.jpg` and `photo_blurred.jpg`: a printed team letter, the last one deliberately blurred (FR-D1-03).
