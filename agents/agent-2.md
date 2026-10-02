@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 15:18
+last-seen: 2026-10-02 15:19
 last-read: 3461
 
 ## Now
 
-#1231 in review as PR #1272: answer review threads; re-run the gate if main moved, then merge.
+#1227 input(documents): pasted text and Android's share sheet (text from any app) open D1 — claimed 2026-10-02 15:19.
 
 ## Next
 
