@@ -173,6 +173,8 @@ void main() {
     expect(now.first.added, 1);
     expect(now.last.document.id, older);
     expect(now.last.added, 0);
+    // R1's *Learn from a document* goes to D3 once one is kept.
+    expect(await documents.count(), 2);
   });
 
   test('#1295: rename', () async {

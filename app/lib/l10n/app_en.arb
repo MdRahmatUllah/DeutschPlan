@@ -6677,5 +6677,130 @@
         "type": "String"
       }
     }
+  },
+  "myDocumentsTitle": "My documents",
+  "@myDocumentsTitle": {
+    "description": "D3's title: the documents the learner has kept (#1295)."
+  },
+  "myDocumentsNew": "New document",
+  "@myDocumentsNew": {
+    "description": "D3's button: open D1 for a new document."
+  },
+  "myDocumentsPhotos": "{count, plural, one{1 photo} other{{count} photos}}",
+  "@myDocumentsPhotos": {
+    "description": "D3's row: a document read from photos. count is how many.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsPdf": "{pages, plural, one{PDF, 1 page} other{PDF, {pages} pages}}",
+  "@myDocumentsPdf": {
+    "description": "D3's row: a document read from a PDF. pages is how many.",
+    "placeholders": {
+      "pages": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsText": "text",
+  "@myDocumentsText": {
+    "description": "D3's row: a document that came as text, pasted or shared."
+  },
+  "myDocumentsAdded": "{count, plural, one{1 word added} other{{count} words added}}",
+  "@myDocumentsAdded": {
+    "description": "D3's row (FR-D3-01): how many of its words the learner added.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsNothingNew": "nothing new",
+  "@myDocumentsNothingNew": {
+    "description": "D3's row: none of its words added."
+  },
+  "myDocumentsStorage": "{count, plural, one{1 document} other{{count} documents}} · {megabytes} MB (images)",
+  "@myDocumentsStorage": {
+    "description": "D3's footer: how many documents, and the megabytes their photos take (rounded up).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "megabytes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsOptions": "Options for {title}",
+  "@myDocumentsOptions": {
+    "description": "Screen reader: a row's menu button. title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "myDocumentsRename": "Rename",
+  "@myDocumentsRename": {
+    "description": "D3's row menu: rename the document."
+  },
+  "myDocumentsDelete": "Delete",
+  "@myDocumentsDelete": {
+    "description": "D3's row menu and the confirm's button: delete the document."
+  },
+  "myDocumentsDeleteTitle": "Delete “{title}”?",
+  "@myDocumentsDeleteTitle": {
+    "description": "D3's delete confirm (FR-D3-02). title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "myDocumentsDeleteBody": "The words you added stay, with their sentences.",
+  "@myDocumentsDeleteBody": {
+    "description": "D3's delete confirm: what stays (BR-DOC-05)."
+  },
+  "myDocumentsDeleteKeep": "Keep",
+  "@myDocumentsDeleteKeep": {
+    "description": "D3's delete confirm: cancel."
+  },
+  "myDocumentsDeleted": "Deleted “{title}”",
+  "@myDocumentsDeleted": {
+    "description": "D3's toast after a delete. title is the document's.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "meDocuments": "My documents",
+  "@meDocuments": {
+    "description": "Me's link to D3, with no document kept yet."
+  },
+  "meDocumentsCount": "My documents · {count}",
+  "@meDocumentsCount": {
+    "description": "Me's link to D3: count is how many documents are kept.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "myDocumentsEmptyTitle": "Bring the German you meet",
+  "@myDocumentsEmptyTitle": {
+    "description": "D3's empty state, its title."
+  },
+  "myDocumentsEmptyBody": "A letter, a page, an article: Sogda marks the words you don't know yet, by level, and adds the ones you choose.",
+  "@myDocumentsEmptyBody": {
+    "description": "D3's empty state, under its title."
   }
 }

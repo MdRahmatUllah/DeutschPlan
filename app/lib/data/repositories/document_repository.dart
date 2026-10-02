@@ -225,6 +225,15 @@ class DocumentRepository {
         ],
       );
 
+  /// R1's *Learn from a document*: D3 once one is kept, else D1.
+  Future<int> count() async {
+    final n = countAll();
+    final row = await (_db.selectOnly(
+      _db.documents,
+    )..addColumns(<Expression<Object>>[n])).getSingle();
+    return row.read(n)!;
+  }
+
   /// D3's *Rename*.
   Future<void> rename(int id, String title) =>
       (_db.update(_db.documents)..where((d) => d.id.equals(id))).write(
