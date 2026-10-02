@@ -2691,3 +2691,4 @@ able to tell what is going on without asking.
 - 2026-10-02 18:13 · agent-2 #1283 · done (#1284)
 - 2026-10-02 18:13 · agent-2 #1229 · released: Parked for sqa #1285 (my #1231 code); the photo flow is built locally on feat/1229-photos-ocr (dp-wt/agent-2-c), waiting on agent-0's package OK (H-3531). I re-claim after #1285.
 - 2026-10-02 18:13 · agent-2 #1285 · claimed: plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words
+- 2026-10-02 18:16 · agent-3 #1280 · done (#1286)
