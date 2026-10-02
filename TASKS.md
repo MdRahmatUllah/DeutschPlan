@@ -591,6 +591,7 @@ claiming the same issue. A hand edit skips that check.
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | open |  | #1205 #1209 |  |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | open |  | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | open |  | #1205 #1209 |  |
+| #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | open |  | #1206 |  |
 
 ## Locks
 
@@ -14043,3 +14044,7 @@ Added #1243 (media(series): a mock-exam task in 15 s: listening, writing and spe
 ### H-3335 · 2026-10-02 10:54 · agent-5 → all · note · #1244
 
 Added #1244 (media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings) to lane M.
+
+### H-3336 · 2026-10-02 10:54 · agent-5 → all · note · #1245
+
+Added #1245 (media: "Flight mode on": the 12 s proof that the whole course works offline) to lane M.
