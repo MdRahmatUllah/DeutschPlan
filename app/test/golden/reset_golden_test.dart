@@ -21,7 +21,8 @@ void main() {
   );
 
   Future<void> typing(WidgetTester tester) async {
-    await tester.drag(find.byType(ListView), const Offset(0, -4000));
+    // To the end, at 200 % too: the list ends there whatever is dragged.
+    await tester.drag(find.byType(ListView), const Offset(0, -8000));
     await tester.pumpAndSettle();
     await tester.tap(find.text(tester.l10n.settingsReset));
     await tester.pumpAndSettle();
