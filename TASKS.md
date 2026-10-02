@@ -566,7 +566,7 @@ claiming the same issue. A hand edit skips that check.
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
-| #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | open |  |  |  |
+| #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | in-progress | agent-1 |  |  |
 
 ## Locks
 
