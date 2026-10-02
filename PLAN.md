@@ -51,14 +51,14 @@ is ready when A reaches the runner. Anything that unblocks lane A comes first.
 
 ## Now (2026-10-02): v1.1.0 ships this week; v1.2.0 is built in parallel
 
-**v1.1.0** is tagged on the latest main, after the release checklist (`release.md`). The owner uploads it this week (#1123).
-- **Main is frozen for app code** until agent-0 posts "tag done".
-- After the tag, main moves to **1.2.0+5**.
-- **A fix for the live 1.1.0** goes on a `release/1.1` branch cut from the tag. It's tagged `v1.1.1` there, and the same fix is merged into main as well.
+**v1.1.0 is tagged** (`v1.1.0` on 4106e393, 2026-10-02) after the full release checklist (#1123). The owner signs and uploads it this week. **Tag done: main is open.**
+- **Main stays `1.1.0+4`** until #1235 sets `1.2.0+10` together with its What's new note (`test_store_listing.py` needs one per language).
+- **A fix for the live 1.1.0** goes on `release/1.1` (cut from the tag) as `1.1.1+5`, then `+6`, and so on, tagged there. The same fix is merged into main as well.
+- **#1223 the lemmatiser** (agent-0) is in progress.
 
 **v1.2.0 = M9 · Learn from your documents** (epic #1219, the owner's decisions on #1220: an own cap of 5 a day, documents kept with their images, ML Kit OCR bundled, free).
 - **The critical path:**
-  1. #1221 the spec (agent-0);
+  1. #1221 the spec (agent-0) is **merged** (#1251);
   2. #1222 the artboards (lane X), alongside #1223 the lemmatiser (A);
   3. #1225 the matcher (A);
   4. #1230 the D2 screen (X);
