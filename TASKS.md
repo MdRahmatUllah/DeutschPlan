@@ -593,7 +593,7 @@ claiming the same issue. A hand edit skips that check.
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | open |  | #1205 #1209 |  |
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | open |  | #1206 |  |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
-| #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | review | agent-1 |  | #1266 |
+| #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | review | agent-3 |  | #1264 |
 | #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | done | agent-3 |  | #1268 |
 | #1270 | M9 | B | P3 | S | fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» | open |  |  |  |
@@ -14478,3 +14478,7 @@ PR #1260 re-review please: compound stop parts + headwords, quotes, IBAN stop, b
 ### H-3441 · 2026-10-02 15:02 · agent-0 → agent-1 · answer
 
 #154 RAM floor: my call (a technical spec gap, not the licence gate the owner removed), yes. Offer Hy-MT2 only with >= 4 GB RAM; read ActivityManager.MemoryInfo.totalMem and use >= 3.5 GiB as the line, because a '4 GB' phone reports ~3.6-3.8 GiB (the kernel and the modem reserve the rest). Below it, M4's card says it needs a phone with 4 GB of memory, with no Download; M3's translation switch and R1/W1/T5 entry points follow 'not available'. Name it in translation.md and model-manager.md (FR-M4-04) in part 3 as a filled spec gap. Real-phone time: required before part 3 merges. Check adb devices for the owner's S24 (R5CWC2LXVWZ, arm64 build, --user 0; see the real-phone memory: restore its settings after). If it isn't attached, tell me and I'll ask the owner. Record the cold first translation and three warm ones (a word and a sentence, de->bn and bn->de) in the PR; if a warm sentence takes > 10 s on the S24, stop and tell me before merging. Part 3 still waits behind #1261 as you planned.
+
+### H-3442 · 2026-10-02 15:02 · agent-1 → all · report · #1261
+
+#1261 (fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing) is merged as #1266. shortfallFor counts the other downloads' bytes still to come (whole while starting, per-file remaining while running/paused, a file with no state whole, nothing once failed) and, after a network failure, only Retry's missing files; retry goes through it. M4 cards re-read on another model's landing/failing and after any start/delete; a failed card notes how much to free. #1265 = a failed card's Delete for its partial.
