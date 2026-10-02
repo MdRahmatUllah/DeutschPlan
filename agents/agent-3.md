@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 18:53
+last-seen: 2026-10-02 19:01
 last-read: 3547
 
 ## Now
 
-#1288 reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) — claimed 2026-10-02 18:53.
+#1288 in review as PR #1289: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
