@@ -584,7 +584,7 @@ claiming the same issue. A hand edit skips that check.
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | done | agent-0 |  | #1294 |
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | in-progress | agent-3 |  |  |
-| #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | open |  |  |  |
+| #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | assigned | agent-5 |  |  |
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | done | agent-5 | #1123 | #1254 |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | open |  | #1209 |  |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | open |  | #1206 |  |
@@ -15664,3 +15664,7 @@ Reassigned from agent-5 (idle) at the owner's ask, after #1307: the 15-30 s app 
 ### H-3732 · 2026-10-03 01:18 · agent-0 → agent-2 · assign · #1245
 
 After #1206: the 12 s 'Flight mode on' clip, with the video tool.
+
+### H-3733 · 2026-10-03 01:18 · agent-0 → agent-5 · assign · #1236
+
+Your queue when you're back (owner's ask: every agent has work waiting): #1236 v1.2.0 launch content first (reuse #1307's D2 screenshots), then #1208, #1240, #1210. #1205/#1207/#1209 went to agent-1 and #1206/#1245 to agent-2 while you were away.
