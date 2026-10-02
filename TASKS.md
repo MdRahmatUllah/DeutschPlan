@@ -617,7 +617,7 @@ claiming the same issue. A hand edit skips that check.
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | assigned | agent-0 | #1294 |  |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | assigned | agent-0 | #1294 |  |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | assigned | agent-1 | #1123 |  |
-| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | open |  |  |  |
+| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | assigned | agent-2 |  |  |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | open |  |  |  |
 
 ## Locks
@@ -15652,3 +15652,7 @@ After #1209: tools/media stills tool (HTML/CSS → Playwright) in 1:1, 4:5, 9:16
 ### H-3729 · 2026-10-03 01:18 · agent-0 → agent-1 · assign · #1207
 
 After #1205: the weekly post drafts per channel and language from calendar.md + site-facts.json into docs/marketing/posts/, and the due-list as a board handoff.
+
+### H-3730 · 2026-10-03 01:18 · agent-0 → agent-2 · assign · #1257
+
+Owner decided 2026-10-03: add #1257's everyday words to the course for v1.2.0 (your sweep's 43 + the table + agent-3's 5 + bereit, der/die Angestellte, the bench Bank 'Bänke'): workbooks, levels, en/bn/ru/pl meanings, guides, examples per corrections.yaml (trial build first), content rebuild + manifest diff, corpus test. Order: #1306 → #1257 → #1307 (screenshots after the content is final) → #1206.
