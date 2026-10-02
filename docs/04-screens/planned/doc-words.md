@@ -29,9 +29,10 @@ The ink underline is what makes a word marked, and the fill says its level, whic
    - probably-known words are dimmed when the switch is on, and plain otherwise;
    - a word that appears several times is marked each time, and its card lists every sentence.
 3. **The bulk bar,** pinned at the bottom:
-   - *Add my level* and *Add my level and one above*;
+   - *Add my level* and *Add my level and one above*, side by side (one height for the pair), stacked above 100 % text;
    - *Add all new*, and the number each would add;
-   - the cap note, "5 a day: 7 will start tomorrow and after" (BR-PLAN-11).
+   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes;
+   - an ambiguous word is in no bulk action: its card asks which it is.
 
 **The mini card (a sheet).**
 - **The headword:**
@@ -49,12 +50,14 @@ The ink underline is what makes a word marked, and the fill says its level, whic
   - *Add as my word* opens R2 pre-filled (BR-DOC-04);
   - a compound shows its parts as a hint: "Nebenkosten + Abrechnung".
 - **An ambiguous word** («Weg» or «weg») asks which one, before *Add*.
+- **A word already mine** says so, and *Keep this sentence* keeps the document's sentence with it (FR-D2-06).
+- **Machine-translated meanings** come with #1279 (#1233): Hy-MT2's answers are tappable suggestions, never a pre-filled meaning (#1278). Until then, a word outside the course offers *Add as my word* with its German.
 
 **Functional requirements**
 - FR-D2-01 Each lemma is shown in its class from BR-DOC-03; stop words are never marked.
 - FR-D2-02 *Add* on a course word puts it in the document queue with its sentence (BR-DOC-04, BR-PLAN-11); the toast says when it starts: "Added der Termin: you'll learn it today" when it joined today's plan, or "… from Thursday" (BR-PLAN-11's *Today*).
 - FR-D2-03 The bulk actions add every new course word of the chosen levels in one write, under the cap, and say how many: "Added 9 words: 5 today, 4 from tomorrow".
-- FR-D2-04 *I know this* rates the word Easy (W1's *Mark known*), with W1's Undo.
+- FR-D2-04 *I know this* rates the word Easy (W1's *Mark known*), with W1's Undo. *Ignore* takes the mark away for this visit only.
 - FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example*, the document's title as *Where I saw it*, and the meaning (Hy-MT2's, labelled, or empty).
 - FR-D2-06 A word already mine gets the sentence added to its contexts, and no second word.
 - FR-D2-07 The document and what it found are saved (BR-DOC-05): D3 counts from `document_words`. Reopening it from D3 runs the matcher again on the saved text (under 500 ms), so its marks follow what the learner has learnt since, and what was added stays added.
@@ -70,8 +73,8 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 
 **Interactions & motion.**
 - Tapping a word opens its card.
-- A long press on a word adds it directly, with haptic feedback.
-- *Add* animates the word's mark to "added" (a check), skipped when reduce motion is on.
+- A long press on a new word adds it directly, with haptic feedback: a sighted shortcut, kept out of semantics (a screen reader adds from the card).
+- *Add* marks the word "added" with a check. It doesn't animate (#1230): the check needs no motion, so reduce motion has nothing to skip.
 
 **Data.**
 - Read: `document_words`, `word_state`, `custom_words`, `settings`, and the matcher's classes.
