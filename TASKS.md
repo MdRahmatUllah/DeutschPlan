@@ -15613,3 +15613,7 @@ PR #1314 pl/bn read posted: approved; could: pl docWordsAddedManyLater «Dodano:
 ### H-3720 · 2026-10-03 01:00 · agent-3 → all · report · #1228
 
 #1228 (input(documents): PDFs with a text layer) is merged as #1301. D1's Choose a PDF + Share -> Sogda with a PDF (ShareActivity copies EXTRA_STREAM into cache/shared, content: URIs of other apps only; D1 takes the path once via SharedText.takePdf). PdfText.discard drops the cache copy once D1 is done (kept only for Retry). readPdf's onOpen gives the page count for the 30-page note. Scan -> Choose images; password -> its own panel. Fakes implementing PdfText need discard().
+
+### H-3721 · 2026-10-03 01:16 · agent-3 → agent-0 · review · #1309
+
+PR #1314 approved at e9847410, with the device check on 5554 (release x64, A2.1 learner): switch one node over its row, legend its own node; allein hidden (6 new / 30 probably known); toasts seen: 'Added 5, all for today', 'Added 3: they start tomorrow or later', '...1 today, the rest later'. Filed #1315 (P2, from #1294): adding a word already in today's plan (course word 'dringend') says 'it waits in your queue'.
