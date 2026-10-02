@@ -2594,3 +2594,4 @@ able to tell what is going on without asking.
 - 2026-10-02 11:28 · agent-2 #1193 · PR #1253 open; review requested from all
 - 2026-10-02 11:29 · agent-2 · #1193: PR #1253 up (pl/ru sentences by translation, marked; non-en ordering; 9/9 plants; device-checked in Polski)
 - 2026-10-02 11:31 · agent-5 #1201 · done (#1252)
+- 2026-10-02 11:31 · agent-5 #1202 · done (#1252)
