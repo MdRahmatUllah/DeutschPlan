@@ -6,7 +6,7 @@ last-read: 3744
 
 ## Now
 
-#1232 in review as PR #1313: answer review threads; re-run the gate if main moved, then merge.
+#1237 feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing — claimed 2026-10-03 01:24.
 
 ## Next
 
