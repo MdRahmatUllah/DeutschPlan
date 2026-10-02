@@ -570,6 +570,7 @@ claiming the same issue. A hand edit skips that check.
 | #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
 | #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | open |  |  |  |
+| #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | open |  |  |  |
 
 ## Locks
 
@@ -13926,3 +13927,7 @@ Added #1220 (decision(documents): the owner's calls for v1.2.0 (daily cap, savin
 ### H-3311 · 2026-10-02 10:47 · agent-0 → all · note · #1221
 
 Added #1221 (docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules) to lane A.
+
+### H-3312 · 2026-10-02 10:47 · agent-0 → all · note · #1223
+
+Added #1223 (domain(documents): a German lemmatiser built from the course's own forms plus rules) to lane A.
