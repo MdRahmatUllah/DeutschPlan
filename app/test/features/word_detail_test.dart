@@ -1178,6 +1178,64 @@ void main() {
     expect((await read())!.pron?.text, 'হাউস');
   });
 
+  test('#154 FR-W1-05 Translate goes into the first chosen meaning language '
+      'the course lacks lines in, for the lines it lacks', () async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final content = ContentFixture.write(
+      '${tempDir('sg_w1_translate').path}/content.db',
+      russian: true,
+    );
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+    );
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+        contentUpdaterProvider.overrideWithValue(
+          _Aliased(db, const <String, String>{}),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    final hold = container.listen(
+      wordDetailProvider(ContentFixture.haus),
+      (_, _) {},
+    );
+    addTearDown(hold.close);
+    Future<WordDetail> read() async {
+      final WordDetail? detail = await container.read(
+        wordDetailProvider(ContentFixture.haus).future,
+      );
+      return detail!;
+    }
+
+    Future<void> choose(MeaningChoice choice) =>
+        container.read(languagesProvider.notifier).setMeaning(choice);
+
+    // English then Bangla, the default: English has every line, Bangla none.
+    var detail = await read();
+    expect(detail.translateTo, 'bn');
+    expect(detail.untranslated, <String>[
+      'Das Haus ist groß.',
+      'Ich sehe das Haus.',
+    ]);
+
+    await choose(const MeaningChoice('ru'));
+    detail = await read();
+    expect(detail.translateTo, 'ru', reason: 'one Russian line is missing');
+    expect(detail.untranslated, <String>['Ich sehe das Haus.']);
+
+    await choose(const MeaningChoice('en'));
+    detail = await read();
+    expect(detail.translateTo, isNull, reason: 'English lacks no line');
+    expect(detail.untranslated, isEmpty);
+  });
+
   test('#854 PIPE-09 an old uid, from a link written before an update '
       're-keyed its word, opens the word it became', () async {
     final db = AppDatabase.memory();

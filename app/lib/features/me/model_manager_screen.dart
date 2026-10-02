@@ -599,6 +599,10 @@ class _ModelCardView extends ConsumerWidget {
     );
     if (confirmed != true) return;
     try {
+      // Hy-MT2 lets go of its mapped file first (#154).
+      if (!_isVoice && container.exists(hymtTranslatorProvider)) {
+        await container.read(hymtTranslatorProvider).release();
+      }
       // Another model's download keeps `models/.partial`, which it shares
       // (#154).
       await container

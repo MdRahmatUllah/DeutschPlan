@@ -53,6 +53,8 @@ class WordDetail {
     this.pronKeySeen = false,
     this.tip,
     this.translate = false,
+    this.untranslated = const <String>[],
+    this.translateTo,
   });
 
   final WordWithState word;
@@ -70,6 +72,14 @@ class WordDetail {
 
   /// `mt_enabled`: whether *Translate* is offered (FR-W1-05).
   final bool translate;
+
+  /// The examples' German the course has no line for in [translateTo]:
+  /// what *Translate* fills (#154).
+  final List<String> untranslated;
+
+  /// The first chosen meaning language the course lacks example lines in
+  /// (Bangla, first or second, #598); null when every line is there.
+  final String? translateTo;
 }
 
 @riverpod
@@ -93,11 +103,29 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
   }
   // The course is read-only, so its part is read once; the state is watched.
   // #1081: the primary language's translations, English where it has none.
+  final lines = await dao.examplesForWordIn(id, meanings.choice.primary).get();
   final examples = <StudyExample>[
-    for (final e
-        in await dao.examplesForWordIn(id, meanings.choice.primary).get())
-      (german: e.german, translation: e.translation),
+    for (final e in lines) (german: e.german, translation: e.translation),
   ];
+  // #154: *Translate*'s language and lines. English's are each line's own
+  // column, never missing.
+  String? translateTo;
+  var untranslated = const <String>[];
+  for (final lang in meanings.choice.languages) {
+    if (lang == 'en') continue;
+    final own = lang == meanings.choice.primary
+        ? lines
+        : await dao.examplesForWordIn(id, lang).get();
+    final missing = <String>[
+      for (final e in own)
+        if (!e.inLang) e.german,
+    ];
+    if (missing.isNotEmpty) {
+      translateTo = lang;
+      untranslated = missing;
+      break;
+    }
+  }
   final tips = await dao.wordTipsFor(id).get();
   final StudyTip? tip = tips.isEmpty
       ? null
@@ -119,6 +147,8 @@ Stream<WordDetail?> wordDetail(Ref ref, String uid) async* {
                 ),
                 pronKeySeen: settings.read(SettingKeys.pronKeySeen),
                 translate: settings.read(SettingKeys.mtEnabled),
+                untranslated: untranslated,
+                translateTo: translateTo,
               ),
       );
 }
@@ -759,12 +789,13 @@ class _ActionsState extends ConsumerState<_Actions> {
   void _translate() {
     final detail = widget.detail;
     unawaited(
-      ref.read(exampleTranslationsProvider(_word.uid).notifier).translate(
-        <String>[for (final example in detail.examples) example.german],
-        // Into the meaning language (`translation.md`): Bangla, since an
-        // English learner is not offered it.
-        to: 'bn',
-      ),
+      ref
+          .read(exampleTranslationsProvider(_word.uid).notifier)
+          .translate(
+            detail.untranslated,
+            // Into the first chosen language that lacks them (#154).
+            to: detail.translateTo!,
+          ),
     );
   }
 
@@ -857,10 +888,9 @@ class _ActionsState extends ConsumerState<_Actions> {
               unawaited(Clipboard.setData(ClipboardData(text: name)));
               SgToast.show(context, l10n.wordCopied(name));
             }),
-            // An English-only learner's examples come translated already.
-            if (detail.translate &&
-                detail.meanings.choice.languages.any((String l) => l != 'en') &&
-                detail.examples.isNotEmpty)
+            // Only lines a chosen language lacks (#154): an English, Polish
+            // or Russian learner's come translated already.
+            if (detail.translate && detail.translateTo != null)
               button(Icons.translate, l10n.wordTranslate, _translate),
           ],
         ),

@@ -107,11 +107,13 @@ allWordMeanings:
 
 -- #1081: a word's example lines, each translated into :lang, or into
 -- English where :lang has no examples of its own (Bangla, #598). English's
--- are the lines' own column (#1096).
+-- are the lines' own column (#1096). `inLang`: :lang has the line itself
+-- (W1's *Translate* fills the rest, #154).
 -- The word's lines first, so drift's parameters read (uid, lang).
 examplesForWordIn(:uid AS TEXT, :lang AS TEXT):
   SELECT l.ord AS ord, l.german AS german,
-         coalesce(t.translation, l.english) AS translation
+         coalesce(t.translation, l.english) AS translation,
+         t.translation IS NOT NULL AS inLang
   FROM (SELECT ord, german, english FROM word_examples WHERE word_uid = :uid) l
   LEFT JOIN word_example_translations t
     ON t.word_uid = :uid AND t.ord = l.ord AND t.lang = :lang

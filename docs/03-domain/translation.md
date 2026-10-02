@@ -63,9 +63,9 @@ German into each meaning language the app offers (en, bn, ru, pl), and each of t
 ## Where it appears
 
 - **W1 *Translate*** (FR-W1-05):
-  - it's offered when translation is on and at least one example has no translation in the learner's **first meaning language**, and it fills those into it;
-  - today that means a Bangla learner, since the course has no Bangla example lines;
-  - an English, Polish or Russian learner already sees every example in their language, so isn't offered it.
+  - it's offered when translation is on and the course lacks example lines in one of the learner's **chosen meaning languages**: the first such language, first or second, and it fills the lines missing there into it;
+  - today that means Bangla, since the course has no Bangla example lines. So an English-then-Bangla learner gets Bangla, as before;
+  - an English, Polish or Russian learner with no Bangla chosen already sees every example in their language, so isn't offered it.
 - **T5's word tap** (FR-T5-03): a word that isn't in the course shows its translation into the first meaning language, above the Duden link.
 - **R1's *No results*:**
   - an extra action, *Translate «…»*;

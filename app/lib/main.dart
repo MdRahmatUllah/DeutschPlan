@@ -347,6 +347,10 @@ VoiceRelease watchVoiceMemory(ProviderContainer container) {
     } else if (container.exists(supertonicTtsProvider)) {
       await TtsService.releaseEngine(container.read(supertonicTtsProvider));
     }
+    // And Hy-MT2's mapped model (#154), once a translation has loaded it.
+    if (container.exists(hymtTranslatorProvider)) {
+      await container.read(hymtTranslatorProvider).release();
+    }
   });
   WidgetsBinding.instance.addObserver(observer);
   return observer;

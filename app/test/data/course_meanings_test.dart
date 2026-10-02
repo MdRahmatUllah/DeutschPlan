@@ -365,6 +365,22 @@ void main() {
     expect(await lines('en'), <String?>['The house is big.', null]);
   });
 
+  test("#154 FR-W1-05 inLang: whether a line is the language's own, not "
+      "English's in its place", () async {
+    final dao = await open(russian: true);
+    Future<List<bool>> own(String lang) async => [
+      for (final e
+          in await dao.examplesForWordIn(ContentFixture.haus, lang).get())
+        e.inLang,
+    ];
+    expect(await own('ru'), <bool>[true, false]);
+    expect(await own('bn'), <bool>[false, false], reason: 'no Bangla lines');
+    expect(await own('en'), <bool>[
+      false,
+      false,
+    ], reason: "English is the line's own column, not the table's");
+  });
+
   test("#1081 a word's tips, each its language's speakers' own", () async {
     final dao = await open(russian: true);
     Future<Map<String, String>> tips(String uid) async => {
