@@ -2550,3 +2550,4 @@ able to tell what is going on without asking.
 - 2026-10-02 10:33 · agent-2 · session started
 - 2026-10-02 10:33 · agent-2 #1193 · claimed: feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched)
 - 2026-10-02 10:34 · agent-5 #1200 · done (#1215)
+- 2026-10-02 10:34 · agent-5 · #1215 merged (#1200 done, #1123 told). Back on the launch plan: messaging.md drafted with fact tokens, guard test green; waiting on 3 research subagents
