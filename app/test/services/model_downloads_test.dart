@@ -332,6 +332,27 @@ void main() {
     expect(downloads.downloading, isTrue);
   });
 
+  test('#154 downloading from the tap, before a file is queued: a Delete '
+      'while the space is checked keeps the partial file', () async {
+    final held = Completer<void>();
+    downloads = BackgroundModelDownloads(
+      models,
+      settings,
+      downloader,
+      _Storage(free: 400 + ModelDownloads.spaceMargin, hold: held.future),
+      const Duration(seconds: 2),
+      null,
+    );
+    final started = downloads.start('hymt');
+    await pumpEventQueue();
+    expect(downloader.queued, isEmpty, reason: 'still checking the space');
+    expect(downloads.downloading, isTrue);
+
+    held.complete();
+    await started;
+    expect(downloader.queued, hasLength(2));
+  });
+
   group('#428 FR-M4-01 not enough space', () {
     test('start refuses a model that would not fit, saying by how much with '
         'the margin, and queues nothing', () async {
@@ -1335,12 +1356,18 @@ final TaskHttpException _serverError = TaskHttpException('Server Error', 500);
 
 /// A phone with [free] bytes to spare.
 class _Storage implements DeviceStorage {
-  _Storage({required this.free});
+  _Storage({required this.free, this.hold});
 
   int free;
 
+  /// Until it completes, the space is still being checked.
+  final Future<void>? hold;
+
   @override
-  Future<StorageSpace?> space() async => (free: free, total: free * 10);
+  Future<StorageSpace?> space() async {
+    await hold;
+    return (free: free, total: free * 10);
+  }
 }
 
 /// A repository whose rename into place fails, as on a full disk.

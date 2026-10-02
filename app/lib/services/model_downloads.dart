@@ -343,6 +343,9 @@ class BackgroundModelDownloads implements ModelDownloads {
     // instead: a new group would take over the platform's one configuration
     // and leave the other's files counted under the old (#154). A file
     // queued again after a network drop stays in its attempt's.
+    // ponytail: a model that failed keeps its files here for Retry, so until
+    // it is retried a second model joins its stale group too: harmless with
+    // two models, a per-model check if a third comes.
     if (attempt && _files.keys.every((id) => id == modelId)) {
       _group = '$notificationGroup-${++_attempts}';
       await _notice.clear();
