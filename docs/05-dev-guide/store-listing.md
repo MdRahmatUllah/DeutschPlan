@@ -39,7 +39,7 @@ PRACTISE AND TEST YOURSELF
 • Three mock exams for every step: vocabulary, grammar, listening, writing and speaking, with a result by section
 • Compare near-synonyms side by side, and add the words you meet in daily life
 
-FROM YOUR OWN GERMAN
+THE GERMAN YOU MEET
 • Paste or share a text, photograph a letter, or choose a PDF: Sogda reads it on the phone and marks the words you don't know yet, by level
 • Add the ones you pick to your plan, with the sentence you met them in; My documents keeps your texts to reopen
 • Optional: Hy-MT2 translates on the phone, for example sentences and words outside the course, where the phone has the memory
@@ -54,7 +54,7 @@ MADE FOR YOU
 • The app in English, Bangla, Polish or Russian
 
 ### What's new (1.2.0)
-New: learn from your own German. Paste or share a text, photograph a letter, or choose a PDF: Sogda reads it on your phone, marks the words you don't know yet by level, and adds the ones you pick to your plan with the sentence you met them in. My documents keeps them to reopen. And translation on the phone with Hy-MT2, an optional download: example sentences, and meanings for words outside the course. Nothing leaves your phone.
+New: learn from the German you meet. Paste or share a text, photograph a letter, or choose a PDF: Sogda reads it on your phone, marks the words you don't know yet by level, and adds the ones you pick to your plan with the sentence you met them in. My documents keeps them to reopen. And translation on the phone with Hy-MT2, an optional download: example sentences, and meanings for words outside the course. Nothing leaves your phone.
 
 ## Bangla (bn-BD)
 
@@ -86,7 +86,7 @@ Sogda একটি অফলাইন জার্মান কোর্স অ�
 • প্রতিটি ধাপের জন্য তিনটি মক পরীক্ষা: শব্দভান্ডার, ব্যাকরণ, শোনা, লেখা আর বলা, প্রতিটি অংশের ফলসহ
 • কাছাকাছি অর্থের শব্দ পাশাপাশি তুলনা করুন, আর দৈনন্দিন জীবনে পাওয়া শব্দ নিজে যোগ করুন
 
-নিজের জার্মান থেকে
+চারপাশের জার্মান থেকে
 • একটি লেখা পেস্ট বা শেয়ার করুন, চিঠির ছবি তুলুন, বা একটি PDF বেছে নিন: Sogda ফোনেই সেটি পড়ে আর যে শব্দগুলো এখনো জানেন না সেগুলো লেভেল অনুযায়ী চিহ্নিত করে
 • বাছাই করা শব্দগুলো যে বাক্যে পেয়েছেন সেটিসহ প্ল্যানে যোগ করুন; "আমার ডকুমেন্ট"-এ লেখাগুলো থাকে, আবার খোলার জন্য
 • ঐচ্ছিক: Hy-MT2 ফোনেই অনুবাদ করে, উদাহরণ বাক্য আর কোর্সের বাইরের শব্দ, যদি ফোনে যথেষ্ট মেমরি থাকে
@@ -101,7 +101,7 @@ Sogda একটি অফলাইন জার্মান কোর্স অ�
 • অ্যাপ ইংরেজি, বাংলা, পোলিশ বা রুশ ভাষায়
 
 ### What's new (1.2.0)
-নতুন: নিজের জার্মান থেকে শিখুন। একটি লেখা পেস্ট বা শেয়ার করুন, চিঠির ছবি তুলুন, বা একটি PDF বেছে নিন: Sogda আপনার ফোনেই সেটি পড়ে, যে শব্দগুলো এখনো জানেন না সেগুলো লেভেল অনুযায়ী চিহ্নিত করে, আর আপনি যেগুলো বাছেন সেগুলো যে বাক্যে পেয়েছেন সেটিসহ আপনার প্ল্যানে যোগ করে। "আমার ডকুমেন্ট"-এ সেগুলো থাকে, আবার খোলার জন্য। সঙ্গে ফোনেই অনুবাদ, Hy-MT2 দিয়ে (ঐচ্ছিক ডাউনলোড): উদাহরণ বাক্য, আর কোর্সের বাইরের শব্দের অর্থ। কিছুই আপনার ফোনের বাইরে যায় না।
+নতুন: চারপাশের জার্মান থেকে শিখুন। একটি লেখা পেস্ট বা শেয়ার করুন, চিঠির ছবি তুলুন, বা একটি PDF বেছে নিন: Sogda আপনার ফোনেই সেটি পড়ে, যে শব্দগুলো এখনো জানেন না সেগুলো লেভেল অনুযায়ী চিহ্নিত করে, আর আপনি যেগুলো বাছেন সেগুলো যে বাক্যে পেয়েছেন সেটিসহ আপনার প্ল্যানে যোগ করে। "আমার ডকুমেন্ট"-এ সেগুলো থাকে, আবার খোলার জন্য। সঙ্গে ফোনেই অনুবাদ, Hy-MT2 দিয়ে (ঐচ্ছিক ডাউনলোড): উদাহরণ বাক্য, আর কোর্সের বাইরের শব্দের অর্থ। কিছুই আপনার ফোনের বাইরে যায় না।
 
 ## Polish (pl-PL)
 
@@ -133,10 +133,10 @@ CODZIENNIE
 • Trzy egzaminy próbne dla każdego etapu: słownictwo, gramatyka, słuchanie, pisanie i mówienie, z wynikiem dla każdej części
 • Porównuj bliskie synonimy obok siebie i dodawaj słowa, które spotykasz na co dzień
 
-Z TWOJEGO NIEMIECKIEGO
+NIEMIECKI Z CODZIENNOŚCI
 • Wklej lub udostępnij tekst, zrób zdjęcie listu albo wybierz PDF: Sogda czyta go na telefonie i zaznacza według poziomu słowa, których jeszcze nie znasz
 • Dodaj wybrane do planu razem ze zdaniem, z którego pochodzą; „Moje dokumenty” przechowują Twoje teksty
-• Opcjonalnie: Hy-MT2 tłumaczy na telefonie zdania przykładowe i słowa spoza kursu, jeśli telefon ma dość pamięci
+• Opcjonalnie: Hy-MT2 tłumaczy na telefonie przykładowe zdania i słowa spoza kursu, jeśli telefon ma dość pamięci
 
 POSŁUCHAJ
 • Każde słowo i każdy przykład czyta niemiecki głos Twojego telefonu
@@ -148,7 +148,7 @@ DLA CIEBIE
 • Aplikacja po polsku, angielsku, bengalsku lub rosyjsku
 
 ### What's new (1.2.0)
-Nowość: ucz się z własnego niemieckiego. Wklej lub udostępnij tekst, zrób zdjęcie listu albo wybierz PDF: Sogda czyta go na Twoim telefonie, zaznacza według poziomu słowa, których jeszcze nie znasz, i dodaje wybrane do planu razem ze zdaniem, z którego pochodzą. „Moje dokumenty” przechowują je, by wrócić do nich później. Do tego tłumaczenie na telefonie z Hy-MT2 (opcjonalne pobranie): zdania przykładowe i znaczenia słów spoza kursu. Nic nie opuszcza Twojego telefonu.
+Nowość: ucz się z własnych tekstów. Wklej lub udostępnij tekst, zrób zdjęcie listu albo wybierz PDF: Sogda czyta go na Twoim telefonie, zaznacza według poziomu słowa, których jeszcze nie znasz, i dodaje wybrane do planu razem ze zdaniem, z którego pochodzą. „Moje dokumenty” przechowują je na później. Do tego tłumaczenie na telefonie z Hy-MT2 (opcjonalne pobranie): przykładowe zdania i znaczenia słów spoza kursu. Nic nie opuszcza Twojego telefonu.
 
 ## Russian (ru-RU)
 
@@ -180,8 +180,8 @@ Sogda — приложение с офлайн-курсом немецкого: 
 • Три пробных экзамена на каждый этап: лексика, грамматика, аудирование, письмо и говорение, с результатом по каждой части
 • Сравнивай близкие синонимы рядом и добавляй слова, которые встречаешь в жизни
 
-НА СВОЁМ НЕМЕЦКОМ
-• Вставь или отправь текст, сфотографируй письмо или выбери PDF: Sogda прочитает его на телефоне и отметит по уровням слова, которых ты ещё не знаешь
+НЕМЕЦКИЙ, КОТОРЫЙ ТЫ ВСТРЕЧАЕШЬ
+• Вставь текст или поделись им, сфотографируй письмо или выбери PDF: Sogda прочитает его на телефоне и отметит по уровням слова, которых ты ещё не знаешь
 • Добавляй выбранные в план вместе с предложением, из которого они взяты; «Мои документы» хранят твои тексты
 • По желанию: Hy-MT2 переводит на телефоне примеры предложений и слова вне курса, если у телефона хватает памяти
 
@@ -195,7 +195,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 • Приложение на русском, английском, бенгальском или польском
 
 ### What's new (1.2.0)
-Новое: учись на своём немецком. Вставь или отправь текст, сфотографируй письмо или выбери PDF: Sogda прочитает его на телефоне, отметит по уровням слова, которых ты ещё не знаешь, и добавит выбранные в план вместе с предложением, из которого они взяты. «Мои документы» хранят их, чтобы открыть снова. А ещё перевод на телефоне с Hy-MT2 (по желанию, отдельная загрузка): примеры предложений и значения слов вне курса. Ничего не покидает твой телефон.
+Новое: учись на немецком, который встречаешь. Вставь текст или поделись им, сфотографируй письмо или выбери PDF: Sogda прочитает его на телефоне, отметит по уровням слова, которых ты ещё не знаешь, и добавит выбранные в план вместе с предложением, из которого они взяты. «Мои документы» хранят их, чтобы открыть снова. А ещё перевод на телефоне с Hy-MT2 (по желанию, отдельная загрузка): примеры предложений и значения слов вне курса. Ничего не покидает твой телефон.
 
 ## Screenshots
 
