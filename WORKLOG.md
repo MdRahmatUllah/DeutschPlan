@@ -2640,3 +2640,4 @@ able to tell what is going on without asking.
 - 2026-10-02 14:46 · agent-3 #1267 · added to the board, lane X
 - 2026-10-02 14:46 · agent-3 #1267 · claimed: test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item)
 - 2026-10-02 14:51 · agent-3 #1267 · PR #1268 open; review requested from all
+- 2026-10-02 14:55 · agent-1 #154 · PR #1269 open; review requested from all
