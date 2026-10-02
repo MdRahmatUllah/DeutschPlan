@@ -161,6 +161,9 @@ void goldenTest(
   bool textAudit = true,
   double? textScale,
   Locale? locale,
+  // False for a case whose act opens a sheet over the screen's field: the
+  // field is under the scrim, where no learner can focus it (#154).
+  bool keyboard = true,
   // Why a case sits out the audit's translated passes (#581, #1078): only an
   // iOS case, iOS being Later (the owner, 2026-09-26), with its issue.
   String? noLocaleAudit,
@@ -219,7 +222,9 @@ void goldenTest(
             // The keyboard up at 200 % on a screen with a field: the #554
             // family's layouts, where only six screens (L8, L12, L15, T2, R2,
             // Reset) had tests of their own.
-            if (scale == textAuditScales.last) await expectKeyboardFits(tester);
+            if (keyboard && scale == textAuditScales.last) {
+              await expectKeyboardFits(tester);
+            }
             expectWrapsReadAsDrawn(tester);
             semantics.dispose();
           },

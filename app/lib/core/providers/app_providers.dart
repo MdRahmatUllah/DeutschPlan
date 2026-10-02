@@ -485,6 +485,15 @@ TranslationRepository translationRepository(Ref ref) => TranslationRepository(
   ref.watch(clockProvider),
 );
 
+/// [text] from [from] into [to], through [translationRepository] (cached):
+/// T5's word sheet and R1's *Translate* (#154). Null with translation off or
+/// no model on the phone.
+@riverpod
+Future<String?> translationOf(Ref ref, String text, String from, String to) =>
+    ref
+        .watch(translationRepositoryProvider)
+        .translate(text, from: from, to: to);
+
 /// Opens a web page in an in-app browser tab: R1's Duden · DWDS · Wiktionary
 /// · Linguee · Google chips (FR-R1-06). The app makes no request of its own
 /// (BR-PRIV-01); the browser does, because the learner tapped. False when

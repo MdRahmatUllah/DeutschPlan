@@ -45,9 +45,7 @@ German into each meaning language the app offers (en, bn, ru, pl), and each of t
 
 ## The engine's life
 
-- **`translatorProvider`:**
-  - with the model ready on the phone and `mt_enabled` on, it gives the llama-backed `Translator`;
-  - otherwise it gives `UnavailableTranslator`, which answers null and caches nothing.
+- **`translatorProvider`** gives `HyMtTranslator` (`hymtTranslatorProvider`, kept alive). While `mt_enabled` is off or the model isn't ready on the phone, it answers null, as `UnavailableTranslator` does, so nothing is cached then; a test without a model can still use `UnavailableTranslator`.
 - **Loaded on the first translation,** not at launch. That takes a few seconds; the device check records how long the first one takes. It stays loaded for the next one.
 - **Released** under memory pressure and when the app goes to the background, as the voice is (`VoiceRelease`). Also when the model is deleted.
 - **Reloaded** when a new download of it lands.

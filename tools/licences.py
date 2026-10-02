@@ -54,6 +54,10 @@ SOURCES = {
         "https://raw.githubusercontent.com/microsoft/onnxruntime/be835efc56aca19b8e810538ec93c8e150e0fc61/LICENSE",
     "ONNXRuntime-ThirdPartyNotices.txt":
         "https://raw.githubusercontent.com/microsoft/onnxruntime/be835efc56aca19b8e810538ec93c8e150e0fc61/ThirdPartyNotices.txt",
+    # llama.cpp (ADR 30, #154): llamadart 0.9.0 bundles llamadart-native v0.5.0,
+    # built from llama.cpp at this commit (its CPU backend, ADR 27).
+    "llama.cpp-MIT.txt":
+        "https://raw.githubusercontent.com/ggml-org/llama.cpp/7fe450e19305b828c199d602c23a8337aaa1f03b/LICENSE",
     "AndroidX-Apache-2.0.txt":
         "https://raw.githubusercontent.com/androidx/androidx/4e64160870c4c38395c2bd8997088991e94295f6/LICENSE.txt",
     # desugar_jdk_libs 2.1.5 (build.gradle.kts' coreLibraryDesugaring, #848):

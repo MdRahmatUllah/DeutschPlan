@@ -300,11 +300,12 @@ rolling; the widget snapshot is written at midnight, hourly and whenever it
 changes.
 
 **Translation** ([`translation.md`](../03-domain/translation.md)).
-The `Translator` interface exists (`services/translation/translator.dart`),
-with `UnavailableTranslator` as its only implementation until #154 adds the
-llamadart-backed one for Hy-MT2-1.8B (ADR 30, v1.2.0). Hy-MT2 is
-Apache-2.0, so its download is offered in every build; ADR 9's
-`ENABLE_HYMT_DOWNLOAD` is gone.
+The `Translator` interface (`services/translation/translator.dart`) is
+filled by `HyMtTranslator` (`services/translation/hymt_translator.dart`):
+Hy-MT2-1.8B through llamadart (ADR 30, #154, v1.2.0), which answers nothing
+while translation is off or the model isn't on the phone. Hy-MT2 is
+Apache-2.0, so its download is offered in every build. W1's *Translate*,
+T5's word sheet and R1's *No results* use it, cached in `translation_cache`.
 
 ## Shared components
 
