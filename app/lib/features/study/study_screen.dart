@@ -51,7 +51,13 @@ Future<StudyCloze?> studyCloze(Ref ref, String uid) async {
     return null;
   }
   final back = await ref.watch(studyBackProvider(uid).future);
-  return clozeOf(found.word, back.examples);
+  // #1232: the learner's own sentences first, so the newest is the card's
+  // choice whenever the word can be gapped there; the course's otherwise.
+  final mine = await ref.watch(wordContextsProvider(uid).future);
+  return clozeOf(found.word, <StudyExample>[
+    for (final sentence in mine) (german: sentence.sentence, translation: null),
+    ...back.examples,
+  ]);
 }
 
 /// #430: what the session's cards will say, in their order: each word with

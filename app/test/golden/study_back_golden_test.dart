@@ -74,6 +74,7 @@ void main() {
 
   ProviderScope screen({
     bool russian = false,
+    List<OwnSentence> mine = const <OwnSentence>[],
     Set<String> updated = const <String>{},
     Map<Rating, int> intervals = const <Rating, int>{
       Rating.again: 1,
@@ -123,6 +124,7 @@ void main() {
               : null,
         ),
       ),
+      wordContextsProvider('r3').overrideWith((ref) async => mine),
       studyWordProvider('r3').overrideWith(
         (ref) async => const WordWithState(
           word: rechnung,
@@ -135,6 +137,19 @@ void main() {
   );
 
   goldenTest('study_back', builder: (_) => screen());
+  // #1232: where the learner saw it, under the course's examples.
+  goldenTest(
+    'study_back_own',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (_) => screen(
+      mine: const <OwnSentence>[
+        (
+          sentence: 'Die Rechnung kam gestern mit der Post.',
+          document: 'Brief der Stadtwerke',
+        ),
+      ],
+    ),
+  );
   goldenTest('study_back_ru_meanings', builder: (_) => screen(russian: true));
   // #1078: in Polish, as a Polish phone's first run shows it.
   goldenTest(

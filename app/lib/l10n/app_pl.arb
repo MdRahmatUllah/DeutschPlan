@@ -256,6 +256,8 @@
   "speakerNoVoice": "Brak niemieckiego głosu na tym telefonie. Zainstaluj go w ustawieniach zamiany tekstu na mowę.",
   "speakerFallback": "Supertonic nie jest gotowy, więc mówi głos telefonu.",
   "speakerFallbackSettings": "Ustawienia",
+  "studyWhereYouSaw": "Z twoich dokumentów",
+  "studyFromDocument": "Źródło: {title}",
   "studyTip": "⚠ {tip}",
   "studyCollocations": "⟶ {collocations}",
   "studyRegister": "≈ {register}",

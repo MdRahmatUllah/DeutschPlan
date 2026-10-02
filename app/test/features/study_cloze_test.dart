@@ -49,6 +49,7 @@ void main() {
     String mode = 'cloze',
     String? example,
     bool chosen = false,
+    List<String> mine = const <String>[],
   }) async {
     db = AppDatabase.memory();
     final directory = tempDir('sg_cloze');
@@ -74,6 +75,21 @@ INSERT INTO word_state (word_uid, status, introduced_on, due, stability,
 VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
   2, '2026-09-15T08:00:00.000Z', '$mode', ${chosen ? 1 : 0})
 ''');
+    // #1232: the learner's own sentences for Straße, from a document, the
+    // last the newest.
+    if (mine.isNotEmpty) {
+      await db.customStatement(
+        "INSERT INTO documents (id, title, source, created_at, body) VALUES "
+        "(1, 'Stadtnachrichten', 'paste', '2026-09-20T08:00:00Z', 'x')",
+      );
+      for (final (i, sentence) in mine.indexed) {
+        await db.customStatement(
+          'INSERT INTO word_contexts (word_key, sentence, document_id, '
+          "created_at) VALUES ('$strasse', ?, 1, '2026-09-20T08:0$i:00Z')",
+          <Object?>[sentence],
+        );
+      }
+    }
     settings = SettingsRepository(db);
     await settings.load();
     await settings.write(SettingKeys.autoplayHeadword, false);
@@ -93,13 +109,14 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     String? example,
     bool voice = true,
     bool chosen = false,
+    List<String> mine = const <String>[],
     TextScaler? textScaler,
     Locale? locale,
     Object? clipError,
   }) async {
     spoken = <String>[];
     await tester.runAsync(
-      () => open(mode: mode, example: example, chosen: chosen),
+      () => open(mode: mode, example: example, chosen: chosen, mine: mine),
     );
     addTearDown(
       () => tester.runAsync(() async {
@@ -207,6 +224,59 @@ VALUES ('$strasse', 'learning', '2026-09-10', '2026-09-21', 4.5, 5.2, 2, 0,
     // No Show meaning, and no rating bar yet.
     expect(find.text(l10n.studyShowMeaning), findsNothing);
     expect(find.byType(SgRatingBar), findsNothing);
+  });
+
+  testWidgets("#1232 the learner's own sentence is the cloze's choice when "
+      'the word can be gapped there: the newest, with no translation', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      mine: <String>[
+        'Die Straße war gesperrt.',
+        'Wir wohnen in einer ruhigen Straße.',
+      ],
+    );
+    expect(find.byType(StudyClozeCard), findsOneWidget);
+    expect(find.textContaining('ruhigen'), findsOneWidget, reason: 'newest');
+    expect(find.textContaining('gesperrt'), findsNothing);
+    expect(find.text('The street is long.'), findsNothing);
+    await answer(tester, 'Straße');
+    expect(find.text(l10n.studyClozeCorrect), findsOneWidget);
+  });
+
+  testWidgets("#1232 one the word can't be gapped in: the course's example, "
+      'as before', (tester) async {
+    await pump(tester, mine: <String>['Sie ist sehr lang.']);
+    expect(find.byType(StudyClozeCard), findsOneWidget);
+    expect(find.text('The street is long.'), findsOneWidget);
+  });
+
+  testWidgets("#1232 T2's back shows where the learner saw the word: the "
+      "newest of their sentences, under the course's, with its document", (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      mode: 'plain',
+      mine: <String>['Die Straße war gesperrt.', 'Wir wohnen hier.'],
+    );
+    await tester.tap(find.text(l10n.studyShowMeaning));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.studyWhereYouSaw.toUpperCase()), findsOneWidget);
+    expect(find.text('Wir wohnen hier.'), findsOneWidget);
+    expect(find.text('Die Straße war gesperrt.'), findsNothing);
+    expect(
+      find.text(l10n.studyFromDocument('Stadtnachrichten')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('#1232 with none of their own, no such heading', (tester) async {
+    await pump(tester, mode: 'plain');
+    await tester.tap(find.text(l10n.studyShowMeaning));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.studyWhereYouSaw.toUpperCase()), findsNothing);
   });
 
   testWidgets('a plain word keeps the plain front', (tester) async {

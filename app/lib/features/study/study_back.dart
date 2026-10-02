@@ -14,7 +14,8 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/word_repository.dart' show customId;
+import 'package:sogda/data/repositories/word_repository.dart'
+    show OwnSentence, customId;
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 
@@ -62,6 +63,23 @@ Future<StudyBackExtras> studyBack(Ref ref, String uid) async {
   );
 }
 
+/// The learner's own sentences for [uid] (`word_contexts`, #1232), from the
+/// documents they read, newest first: T2's back shows the newest, its cloze
+/// may blank the word there, and W1 lists them all.
+@riverpod
+Future<List<OwnSentence>> wordContexts(Ref ref, String uid) =>
+    ref.watch(wordRepositoryProvider).contextsFor(uid);
+
+/// One of the learner's sentences as an example row (#1232): no
+/// translation, and the document it came from under it instead, while kept.
+StudyExample ownExample(AppLocalizations l10n, OwnSentence mine) => (
+  german: mine.sentence,
+  translation: switch (mine.document) {
+    final title? => l10n.studyFromDocument(title),
+    null => null,
+  },
+);
+
 /// The card turned over (`StudyBack`): the meanings in the learner's
 /// languages, the interference tip, two examples with play and translation,
 /// the collocations (⟶) and the register (≈).
@@ -75,6 +93,7 @@ class StudyBack extends StatelessWidget {
     this.pronKeySeen = false,
     this.extras,
     this.updated = false,
+    this.mine = const <OwnSentence>[],
   });
 
   final Word word;
@@ -96,6 +115,10 @@ class StudyBack extends StatelessWidget {
   /// BR-CONTENT-02: a course update changed the meaning in the last 7 days,
   /// so the [UpdatedChip] sits over it.
   final bool updated;
+
+  /// The learner's own sentences, newest first (#1232): the newest shows,
+  /// under the course's examples.
+  final List<OwnSentence> mine;
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +163,16 @@ class StudyBack extends StatelessWidget {
               onPlay: () => onPlay(example.german),
             ),
           ),
+        // #1232: where the learner met the word, in their own sentence.
+        if (mine.isNotEmpty) ...<Widget>[
+          const SizedBox(height: 14),
+          OwnSentencesHeading(l10n.studyWhereYouSaw),
+          const SizedBox(height: 6),
+          StudyExampleRow(
+            ownExample(l10n, mine.first),
+            onPlay: () => onPlay(mine.first.sentence),
+          ),
+        ],
         if (collocations != null && collocations.isNotEmpty) ...<Widget>[
           const SizedBox(height: 14),
           SgText(
@@ -386,6 +419,23 @@ class StudyPlayButton extends ConsumerWidget {
 /// One example: the mini play button, the German in italics, its
 /// translation. The whole row plays it, so the target is not just 32 dp.
 /// T2's back and W1 both draw it.
+/// The caption over the learner's own sentences (#1232), as W1's *Examples*
+/// heading is drawn.
+class OwnSentencesHeading extends StatelessWidget {
+  const OwnSentencesHeading(this.label, {super.key});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => SgText(
+    label.toUpperCase(),
+    role: SgTextRole.caption,
+    weight: 700,
+    letterSpacing: 0.6,
+    color: context.tokens.color.textSecondary,
+  );
+}
+
 class StudyExampleRow extends StatelessWidget {
   const StudyExampleRow(this.example, {required this.onPlay, super.key});
 
@@ -402,34 +452,40 @@ class StudyExampleRow extends StatelessWidget {
       label: AppLocalizations.of(context).studyPlaySentence,
       child: SgTappable(
         onTap: onPlay,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // The row is the target, so the dot draws only.
-            const StudyPlayButton(),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SgText(
-                    example.german,
-                    role: SgTextRole.bodyLarge,
-                    italic: true,
-                    german: true,
-                  ),
-                  if (translation != null) ...<Widget>[
-                    const SizedBox(height: 2),
+        // The row is the target, 48 dp at least (#478): a sentence with no
+        // line under it (a word of the learner's own, their own sentence
+        // from a document now gone, #1232) is one line, 32 dp.
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // The row is the target, so the dot draws only.
+              const StudyPlayButton(),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
                     SgText(
-                      translation,
-                      role: SgTextRole.body,
-                      color: tokens.color.textSecondary,
+                      example.german,
+                      role: SgTextRole.bodyLarge,
+                      italic: true,
+                      german: true,
                     ),
+                    if (translation != null) ...<Widget>[
+                      const SizedBox(height: 2),
+                      SgText(
+                        translation,
+                        role: SgTextRole.body,
+                        color: tokens.color.textSecondary,
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

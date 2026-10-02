@@ -256,6 +256,8 @@
   "speakerNoVoice": "এই ফোনে কোনো জার্মান ভয়েস নেই। ফোনের টেক্সট-টু-স্পিচ সেটিংসে একটি ইনস্টল করুন।",
   "speakerFallback": "Supertonic প্রস্তুত নয়, তাই ফোনের ভয়েস বলছে।",
   "speakerFallbackSettings": "সেটিংস",
+  "studyWhereYouSaw": "যেখানে দেখেছেন",
+  "studyFromDocument": "{title} থেকে",
   "studyTip": "⚠ {tip}",
   "studyCollocations": "⟶ {collocations}",
   "studyRegister": "≈ {register}",
