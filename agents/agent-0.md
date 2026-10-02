@@ -6,7 +6,7 @@ last-read: 3634
 
 ## Now
 
-#1295 in review as PR #1299: answer review threads; re-run the gate if main moved, then merge.
+#1297 matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence — claimed 2026-10-02 23:18.
 
 ## Next
 

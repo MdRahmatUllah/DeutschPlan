@@ -609,7 +609,7 @@ claiming the same issue. A hand edit skips that check.
 | #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | assigned | agent-1 |  |  |
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | assigned | agent-2 |  |  |
 | #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | assigned | agent-1 | #1279 #1294 |  |
-| #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | open |  | #1275 #1294 |  |
+| #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | in-progress | agent-0 | #1275 #1294 |  |
 
 ## Locks
 
