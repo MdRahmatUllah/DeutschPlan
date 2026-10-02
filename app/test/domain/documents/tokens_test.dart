@@ -110,6 +110,66 @@ void main() {
     expect(name('Petrović', start: true), isFalse, reason: 'case says nothing');
   });
 
+  test('#1224: a sentence ends inside quotes, after an IBAN, and before a '
+      'pronoun after a number; a greeting line ends at its comma', () {
+    expect(
+      words('Sie sagte: „Ich hole es ab.“ Danach ging sie.'),
+      hasLength(2),
+    );
+    expect(
+      words('IBAN DE89 3704 0044 0532 0130 00. Danke für alles!'),
+      hasLength(2),
+    );
+    expect(words('Sie finden uns in Raum 2. Wir warten.'), hasLength(2));
+    expect(words('Wir kommen am 2. Oktober.'), hasLength(1));
+    final greeting = words(
+      'Sehr geehrte Frau Okafor,\nVielen Dank für Ihren Brief.',
+    );
+    expect(greeting, hasLength(2));
+    expect(greeting.last.first, 'Vielen');
+  });
+
+  test('#1224: the abbreviations of letters end no sentence', () {
+    for (final text in <String>[
+      'Der Verein e. V. lädt ein.',
+      'Bitte z. Hd. Frau Okafor schreiben.',
+      'Die Std. kostet fünf Euro.',
+      'Gezahlt i. A. der Firma.',
+      'Im Jan. kommt er.',
+      'Der Preis inkl. MwSt. steht hier.',
+    ]) {
+      expect(words(text), hasLength(1), reason: text);
+    }
+  });
+
+  test('#1224: a compound\'s parts are words to learn, as their headwords', () {
+    expect(lemmatiser.compoundParts('Wasserzähler')?.first, isNot('was'));
+    expect(lemmatiser.compoundParts('Mietvertrags')?.last, 'Vertrag');
+  });
+
+  test('#1224 FR-D1-04: capitals and names say nothing either way; a '
+      'compound of course words is German', () {
+    double share(String text) => germanShare(splitText(text), lemmatiser);
+    // Every other word here is German, so each line is 1.0 only by its rule.
+    expect(share('Die Miete steigt, sagt REWE.'), 1.0);
+    expect(share('Wir sehen Frau Okafor morgen.'), 1.0);
+    expect(share('Der Taxifahrer kommt morgen.'), 1.0);
+  });
+
+  test('#1224 FR-D1-04: a bank statement of names and capitals is German', () {
+    const statement =
+        'Kontoauszug Nr. 9\n\n'
+        'Buchungstag Verwendungszweck Betrag\n\n'
+        '01.10. REWE SAGT DANKE Kartenzahlung -23,45\n\n'
+        '02.10. Gutschrift Gehalt Hansen GmbH 2.100,00\n\n'
+        '03.10. SEPA-Lastschrift Stadtwerke Strom -54,00\n\n'
+        'Alter Kontostand 1.234,56 Neuer Kontostand 3.256,11';
+    expect(
+      germanShare(splitText(statement), lemmatiser),
+      greaterThanOrEqualTo(germanThreshold),
+    );
+  });
+
   test('#1224: a compound of course words is split into them, the head '
       'last', () {
     expect(lemmatiser.compoundParts('Nebenkostenabrechnung'), <String>[

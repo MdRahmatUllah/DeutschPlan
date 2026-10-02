@@ -109,13 +109,31 @@ const Set<String> _abbreviations = <String>{
   'tsd',
   'mio',
   'mrd',
+  // From letters (#1260's review): Jan., e. V., z. Hd., Std., MwSt., i. A.,
+  // Az.
+  'jan',
+  'e',
+  'i',
+  'hd',
+  'std',
+  'mwst',
+  'ust',
+  'az',
+  'ziff',
+  'kap',
+  'gez',
 };
 
 /// [text] (from `cleanPages`) as sentences of tokens.
 ///
-/// A sentence ends at «.», «!» or «?» before a space, or at a blank line,
-/// but not after an abbreviation («z. B.», «Nr.») or a day or month as
-/// digits («am 14. Oktober», «15.11.»). A year ends one («im Jahr 2025.»).
+/// A sentence ends at «.», «!» or «?» before a space (a closing quote or
+/// bracket may come between: «…ab.“ Danach»), at a blank line, and at a
+/// line that ends in a comma when the next one starts with a capital (a
+/// letter's greeting: «Sehr geehrte Frau Okafor,↵Vielen Dank …»). Not
+/// after an abbreviation («z. B.», «Nr.») or a day or month as digits («am
+/// 14. Oktober», «15.11.»), unless a pronoun or an article follows («Raum
+/// 2. Wir …»). A year ends one («im Jahr 2025.»), and so does the stop
+/// after an IBAN or an address.
 List<DocSentence> splitText(String text) {
   final skipped = <(int, int)>[
     for (final pattern in _skipped)
@@ -124,9 +142,13 @@ List<DocSentence> splitText(String text) {
   bool inSkipped(int i) => skipped.any((s) => i >= s.$1 && i < s.$2);
 
   final ends = <int>[];
-  for (final m in RegExp(r'[.!?]+(?=\s)|\n[ \t]*\n').allMatches(text)) {
+  for (final m in _end.allMatches(text)) {
     if (inSkipped(m.start)) continue;
-    if (text[m.start] == '.' && !_endsSentence(text, m.start)) continue;
+    if (text[m.start] == '.' &&
+        !skipped.any((s) => s.$2 == m.start) &&
+        !_endsSentence(text, m.start)) {
+      continue;
+    }
     ends.add(m.end);
   }
   ends.add(text.length);
@@ -147,6 +169,11 @@ List<DocSentence> splitText(String text) {
   return sentences;
 }
 
+final RegExp _end = RegExp(
+  r'[.!?]+["“”»«’)]*(?=\s)|\n[ \t]*\n|,[ \t]*\n(?=[ \t]*\p{Lu})',
+  unicode: true,
+);
+
 /// Whether the full stop at [dot] ends a sentence.
 bool _endsSentence(String text, int dot) {
   var i = dot;
@@ -155,8 +182,16 @@ bool _endsSentence(String text, int dot) {
   }
   final before = text.substring(i, dot);
   if (before.isEmpty) return true;
-  // A day or a month (1–2 digits) is an ordinal; a year or an amount isn't.
-  if (RegExp(r'^\d+$').hasMatch(before)) return before.length > 2;
+  // A day or a month (1–2 digits) is an ordinal, before a noun or a month;
+  // a year or an amount isn't.
+  if (RegExp(r'^\d+$').hasMatch(before)) {
+    if (before.length > 2) return true;
+    final next = RegExp(
+      r'^\s+(\p{L}+)',
+      unicode: true,
+    ).firstMatch(text.substring(dot + 1))?[1];
+    return next != null && stopForms.contains(next.toLowerCase());
+  }
   return !_abbreviations.contains(before.toLowerCase());
 }
 
@@ -197,20 +232,43 @@ final RegExp _nounEnding = RegExp(
 );
 
 /// The share of [sentences]' words that are German to the lemmatiser: a
-/// course word or a stop word. Below a half, D1 warns that the text doesn't
-/// look German (FR-D1-04).
+/// course word, a stop word or a compound of course words. Names and
+/// all-capital words (REWE, SEPA) say nothing either way, so a bank
+/// statement full of them still counts as German. Below a half, D1 warns
+/// that the text doesn't look German (FR-D1-04).
 double germanShare(List<DocSentence> sentences, Lemmatiser lemmatiser) {
   var words = 0;
   var german = 0;
   for (final sentence in sentences) {
     final lemmas = lemmatiser.sentence(sentence.words);
+    final first = sentence.tokens.indexWhere((t) => t.isWord);
+    String? previous;
     for (final (i, token) in sentence.tokens.indexed) {
       if (!token.isWord) continue;
-      words++;
+      final before = previous;
+      previous = token.text;
       if (lemmas[i].isNotEmpty ||
           stopForms.contains(token.text.toLowerCase())) {
+        words++;
         german++;
+        continue;
       }
+      // Capitals only (Bangla has no case, so it isn't).
+      if (token.text != token.text.toLowerCase() &&
+          token.text == token.text.toUpperCase()) {
+        continue;
+      }
+      final compound = lemmatiser.compoundParts(token.text) != null;
+      if (likelyName(
+        token.text,
+        sentenceStart: i == first,
+        compound: compound,
+        previous: before,
+      )) {
+        continue;
+      }
+      words++;
+      if (compound) german++;
     }
   }
   return words == 0 ? 0 : german / words;
