@@ -574,6 +574,7 @@ claiming the same issue. A hand edit skips that check.
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | open |  |  |  |
 | #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | open |  |  |  |
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | open |  |  |  |
+| #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | open |  |  |  |
 
 ## Locks
 
@@ -13946,3 +13947,7 @@ Added #1235 (chore(release): v1.2.0: the changelog, store notes in every listing
 ### H-3315 · 2026-10-02 10:47 · agent-0 → all · note · #1224
 
 Added #1224 (domain(documents): text clean-up, sentence and word splitting, and compound-word hints) to lane B.
+
+### H-3316 · 2026-10-02 10:47 · agent-0 → all · note · #1232
+
+Added #1232 (card(documents): the learner's own sentence on the card, in W1, and as a cloze) to lane B.
