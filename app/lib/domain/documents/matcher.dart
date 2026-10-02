@@ -37,6 +37,7 @@ class LearnerSnapshot {
     required this.everPlanned,
     required this.mine,
     this.mineUids = const <String>{},
+    this.mineIds = const <String, int>{},
     this.activeStepOrder,
     this.level,
   });
@@ -54,6 +55,10 @@ class LearnerSnapshot {
   /// offered as the course word, with D2's "My word" mark.
   final Set<String> mineUids;
 
+  /// *My words*' ids by the same search keys as [mine], so D2 can keep a
+  /// sentence for one (FR-D2-06): `custom:<id>` in `word_contexts`.
+  final Map<String, int> mineIds;
+
   /// The active step's `sublevels.ord`; null with no step under way.
   final int? activeStepOrder;
 
@@ -70,6 +75,8 @@ class DocWord {
     this.docClass,
     this.compound, {
     required this.mine,
+    this.level,
+    this.customId,
   });
 
   /// Its lemma, as `document_words.lemma_key` stores it: the course uids
@@ -93,6 +100,12 @@ class DocWord {
   /// learner also keeps as their own, which D2 marks "My word".
   final bool mine;
 
+  /// A course word's level (A1 … C2), for D2's mark; null outside the course.
+  final String? level;
+
+  /// A word of my own outside the course: its `custom_words` id.
+  final int? customId;
+
   /// Where it stands in the text: [start, end) of each occurrence.
   final List<(int, int)> spans = <(int, int)>[];
 
@@ -100,10 +113,35 @@ class DocWord {
   final List<int> sentences = <int>[];
 
   bool get ambiguous => entries.length > 1;
+
+  /// This word as the one reading the learner chose ([uid] among
+  /// [entries]), for D2's *Add*: the same [key], so the document's row is
+  /// the one marked added, and the same places.
+  DocWord only(String uid) =>
+      DocWord._(
+          key,
+          <LemmaEntry>[entries.firstWhere((e) => e.uid == uid)],
+          surface,
+          docClass,
+          compound,
+          mine: mine,
+          level: level,
+          customId: customId,
+        )
+        ..spans.addAll(spans)
+        ..sentences.addAll(sentences);
 }
 
 class DocumentMatch {
-  const DocumentMatch(this.sentences, this.words, this.germanShare);
+  const DocumentMatch(
+    this.sentences,
+    this.words,
+    this.germanShare, {
+    this.level,
+  });
+
+  /// The learner's level, which D2's *Add my level* adds (null with no step).
+  final String? level;
 
   final List<DocSentence> sentences;
 
@@ -151,6 +189,9 @@ DocumentMatch matchText(
           _courseClass(entries, course, learner),
           null,
           mine: entries.any((e) => learner.mineUids.contains(e.uid)),
+          // An ambiguous word's lowest: the reading a learner meets first
+          // («ausfallen» A2.2 before C1.1, agent-3 on #1294).
+          level: _lowest(entries, course)?.level,
         );
       } else {
         // A word the sentence took up (a split particle, «findet … statt», a
@@ -179,6 +220,7 @@ DocumentMatch matchText(
           learner.mine.contains(search) ? DocClass.mine : DocClass.outside,
           parts,
           mine: learner.mine.contains(search),
+          customId: learner.mineIds[search],
         );
       }
       final word = byKey.putIfAbsent(key, create);
@@ -192,6 +234,7 @@ DocumentMatch matchText(
     sentences,
     _ranked(byKey.values.toList(), course, learner.level),
     germanShare(sentences, lemmatiser),
+    level: learner.level,
   );
 }
 
@@ -252,4 +295,19 @@ List<DocWord> _ranked(
     return appearance[a]!.compareTo(appearance[b]!);
   });
   return <DocWord>[...inCourse, ...words.where((w) => w.entries.isEmpty)];
+}
+
+/// The earliest in the course of [entries]' words, or null when none is.
+CourseWordInfo? _lowest(
+  List<LemmaEntry> entries,
+  Map<String, CourseWordInfo> course,
+) {
+  CourseWordInfo? low;
+  for (final entry in entries) {
+    final info = course[entry.uid];
+    if (info != null && (low == null || info.stepOrder < low.stepOrder)) {
+      low = info;
+    }
+  }
+  return low;
 }
