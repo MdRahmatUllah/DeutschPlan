@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 01:34
+last-seen: 2026-10-03 01:46
 last-read: 3710
 
 ## Now
 
-#1306 perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text — claimed 2026-10-03 00:41.
+#1306 in review as PR #1322: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
