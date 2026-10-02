@@ -22,7 +22,7 @@
    - probably-known words are dimmed when the switch is on, and plain otherwise;
    - a word that appears several times is marked each time, and its card lists every sentence.
 3. **The bulk bar,** pinned at the bottom:
-   - *Add my level* and *Add my level and one above* (the default from Settings);
+   - *Add my level* and *Add my level and one above*;
    - *Add all new*, and the number each would add;
    - the cap note, "5 a day: 7 will start tomorrow and after" (BR-PLAN-11).
 
@@ -45,7 +45,7 @@
 
 **Functional requirements**
 - FR-D2-01 Each lemma is shown in its class from BR-DOC-03; stop words are never marked.
-- FR-D2-02 *Add* on a course word puts it in the document queue with its sentence (BR-DOC-04, BR-PLAN-11); the toast says when it starts: "Added der Termin: you'll learn it today" or "… from Thursday".
+- FR-D2-02 *Add* on a course word puts it in the document queue with its sentence (BR-DOC-04, BR-PLAN-11); the toast says when it starts: "Added der Termin: you'll learn it today" when it joined today's plan, or "… from Thursday" (BR-PLAN-11's *Today*).
 - FR-D2-03 The bulk actions add every new course word of the chosen levels in one write, under the cap, and say how many: "Added 9 words: 5 today, 4 from tomorrow".
 - FR-D2-04 *I know this* rates the word Easy (W1's *Mark known*), with W1's Undo.
 - FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example*, the document's title as *Where I saw it*, and the meaning (Hy-MT2's, labelled, or empty).
@@ -71,7 +71,7 @@
 - Write: `doc_queue`, `word_contexts`, `word_state` (*Mark known*), and `custom_words` through R2.
 
 **Developer notes.**
-- The text is one `SelectableText.rich`-like custom painter with tappable spans. Each marked word is its own semantics node, read as "Termin, new, A1.1, double tap for its card".
+- The text is built lazily, a paragraph per item of a list, so a 20,000-character text (about 3,000 words) never builds at once. Each marked word is its own semantics node, read as "Termin, new, A1.1, double tap for its card". `perf.py` measures the long text's first frame (`03-domain/document-matcher.md`, *Tests*).
 - The bulk bar keeps its height at 200 %, with its counts on a second line.
 - Routes and providers are added to `navigation.md` and `state-management.md` with the code.
 
