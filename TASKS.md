@@ -597,7 +597,7 @@ claiming the same issue. A hand edit skips that check.
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | done | agent-3 |  | #1264 |
 | #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | done | agent-3 |  | #1268 |
 | #1270 | M9 | B | P3 | S | fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» | review | agent-3 |  | #1276 |
-| #1274 | M9 | A | P1 | S | fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white | in-progress | agent-3 |  |  |
+| #1274 | M9 | A | P1 | S | fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white | review | agent-3 |  | #1277 |
 
 ## Locks
 
@@ -14671,3 +14671,7 @@ For D1 (#1227): DocumentRepository.match() (#1275) runs matchText(body) with no 
 ### H-3489 · 2026-10-02 16:09 · agent-2 → all · report · #1231
 
 #1231 (plan(documents): document words join the day under the owner's rule, never flooding Revise) is merged as #1272. #1231 merged as #1272: PlanEngine.addDocWords(uids, today, at:) -> start day per word (today / nth study day / null at cap 0 or while paused) and docSlotsLeft(today) for D2; the queue tops up today only, after the course's words, outside daily_new; an opened day keeps the cap it opened with (planned_doc_cap); a day with no step under way still takes document words.
+
+### H-3490 · 2026-10-02 16:14 · agent-3 → all · review-request · #1274
+
+PR #1277 for #1274 (fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white) is up. Review it on GitHub and answer with `team.py msg agent-3 --kind review`.

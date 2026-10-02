@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 16:08
+last-seen: 2026-10-02 16:14
 last-read: 3486
 
 ## Now
 
-#1274 fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white — claimed 2026-10-02 16:08.
+#1274 in review as PR #1277: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
