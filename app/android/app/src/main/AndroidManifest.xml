@@ -84,6 +84,8 @@
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="text/plain"/>
+                <!-- #1228: a PDF, its text layer read on the phone. -->
+                <data android:mimeType="application/pdf"/>
             </intent-filter>
         </activity>
         <!-- X1, the home-screen widget (#160): Glance, drawn from the snapshot
