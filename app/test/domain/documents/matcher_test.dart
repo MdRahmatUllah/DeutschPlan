@@ -67,6 +67,19 @@ void main() {
   DocWord word(DocumentMatch m, String surface) =>
       m.words.singleWhere((w) => w.surface == surface);
 
+  test('#1230 an ambiguous word is marked at its lowest reading level '
+      '(agent-3 on #1294: «ausfallen» A2.2 and C1.1)', () {
+    final m = matchText(
+      'Am Montag fällt der Unterricht aus.',
+      lemmatiser,
+      course,
+      learner(),
+    );
+    final fallt = m.words.singleWhere((w) => w.ambiguous);
+    expect(fallt.entries.map((e) => e.german).toSet(), <String>{'ausfallen'});
+    expect(fallt.level, 'A2');
+  });
+
   test('#1297 a split verb\'s particle with no entry of its own is no word '
       'outside the course: «rufen … zurück» is zurückrufen', () {
     final m = matchText(

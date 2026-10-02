@@ -69,7 +69,7 @@
   - **`ShareActivity`**, with no window of its own, holds the filter. It opens `MainActivity` as the widget does (`NEW_TASK | CLEAR_TOP`), with the link `sogda://import` alone. So the share lands in the app's own task and its one Flutter engine, never in the sender's task as a second copy of the app with `user.db` open twice.
   - **The text stays in the process** (`ShareActivity.take`), never on an intent and never as data (#613). `MainActivity` is exported and BROWSABLE, so an extra on its intent could come from any app, or from a web page's `intent://` link, and D1 would save it with no share sheet chosen. It reads none. D1 takes the text once (`sogda/share`, `SharedText.take`); a launch restored after the process died finds none, so the same document isn't saved twice.
   - **The link** is an arrival like any other (`navigation.md`): a running exam holds it, a study session doesn't, and each share is numbered (`?arrival=`), so a second one onto D1 is read too.
-- **R1 idle's** *Learn from a document*, under *Add a word I found*, pushes D1 (`/search/import`); back returns to R1. Back from the pasted text's box, or from processing, returns to the choices.
+- **R1 idle's** *Learn from a document*, under *Add a word I found*, pushes D1 (`/search/import`); back returns to R1. Once a document is kept it pushes D3 instead, whose *New document* is D1 (#1295). Back from the pasted text's box, or from processing, returns to the choices.
 - The APK's growth is measured in `perf.py size`.
 
 **Tests.**

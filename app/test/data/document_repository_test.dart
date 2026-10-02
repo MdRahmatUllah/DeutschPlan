@@ -141,6 +141,87 @@ void main() {
     expect(rows.every((r) => r.added == 1), isTrue);
   });
 
+  test('#1295 FR-D3-01: the list, newest first, counts each added lemma '
+      'once, and follows an add', () async {
+    final older = await documents.create(
+      title: 'Old',
+      source: 'pdf',
+      body: letter,
+    );
+    final newer = await documents.create(
+      title: 'New',
+      source: 'paste',
+      body: letter,
+    );
+    await documents.match(newer);
+    final lists = documents.watchAll();
+    expect((await lists.first).map((e) => e.document.title), <String>[
+      'New',
+      'Old',
+    ]);
+    final key = uid['Kündigung']!;
+    // Twice, two sentences: one lemma added.
+    for (final sentence in <String>[
+      'Der Vermieter schickt die Kündigung.',
+      'Die Kündigung kommt pünktlich.',
+    ]) {
+      await documents.recordAdd(
+        documentId: newer,
+        lemmaKey: key,
+        wordKey: key,
+        sentence: sentence,
+      );
+    }
+    final now = await documents.watchAll().first;
+    expect(now.first.added, 1);
+    expect(now.last.document.id, older);
+    expect(now.last.added, 0);
+    // R1's *Learn from a document* goes to D3 once one is kept.
+    expect(await documents.count(), 2);
+  });
+
+  test('#1295: rename', () async {
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'paste',
+      body: letter,
+    );
+    await documents.rename(id, 'Kündigung');
+    expect((await documents.document(id))!.title, 'Kündigung');
+  });
+
+  test('#1295 FR-D3-02 BR-DOC-05: delete takes the document, what it found '
+      'and its photos; the words and their sentences stay', () async {
+    final support = tempDir('sogda_docs');
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'photo',
+      body: letter,
+    );
+    await documents.match(id);
+    final key = uid['Kündigung']!;
+    await documents.recordAdd(
+      documentId: id,
+      lemmaKey: key,
+      wordKey: key,
+      sentence: 'Die Kündigung kommt pünktlich.',
+    );
+    final photos = Directory('${support.path}/documents/$id')
+      ..createSync(recursive: true);
+    File('${photos.path}/page-1.jpg')
+        .writeAsBytesSync(List<int>.filled(1000, 1));
+    expect(await documents.imageBytes(support: support), 1000);
+
+    await documents.delete(id, support: support);
+    expect(await documents.document(id), isNull);
+    expect(await db.select(db.documentWords).get(), isEmpty);
+    final context = (await db.select(db.wordContexts).get()).single;
+    expect(context.wordKey, key, reason: 'the sentence stays with its word');
+    expect(context.documentId, isNull);
+    expect(photos.existsSync(), isFalse);
+    expect(await documents.imageBytes(support: support), 0);
+  });
+
   test('#1230: a document that is gone has nothing to match', () async {
     expect(await documents.match(404), isNull);
   });

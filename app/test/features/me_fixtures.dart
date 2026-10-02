@@ -1,8 +1,11 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:sogda/core/providers/app_providers.dart';
+import 'package:sogda/data/repositories/document_repository.dart'
+    show DocumentEntry;
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/plan_engine.dart';
 import 'package:sogda/domain/plan_stats.dart';
+import 'package:sogda/features/documents/my_documents_screen.dart';
 import 'package:sogda/features/me/me_screen.dart';
 
 import 'today_fixtures.dart';
@@ -94,9 +97,14 @@ MeView artboardMe({
 );
 
 /// M1 without a database: the Me artboard, and Maruf.
-List<Override> meStub([MeView? view]) => <Override>[
+/// [documents] are D3's, for Me's *My documents · N*.
+List<Override> meStub([
+  MeView? view,
+  List<DocumentEntry> documents = const <DocumentEntry>[],
+]) => <Override>[
   meViewProvider.overrideWith((ref) async => view ?? artboardMe()),
   learnerNameProvider.overrideWith(StubLearnerName.new),
+  myDocumentsProvider.overrideWith((ref) => Stream.value(documents)),
 ];
 
 /// The artboard's name, renamed in memory.
