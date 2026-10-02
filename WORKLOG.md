@@ -2780,3 +2780,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:22 · agent-0 #1307 · added to the board, lane A
 - 2026-10-03 00:23 · agent-0 #1307 · assigned to agent-2
 - 2026-10-03 00:23 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
+- 2026-10-03 00:23 · agent-0 #1235 · claimed: chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag

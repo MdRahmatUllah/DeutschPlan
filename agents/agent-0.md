@@ -6,7 +6,7 @@ last-read: 3684
 
 ## Now
 
-Nothing claimed.
+#1235 chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag — claimed 2026-10-03 00:23.
 
 ## Next
 
