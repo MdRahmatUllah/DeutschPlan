@@ -548,7 +548,7 @@ claiming the same issue. A hand edit skips that check.
 | #1188 | - | X | P3 | - | fix(search): «In sentences» shows the English translation for a Polish or Russian learner; it should be the first meaning language's | done | agent-3 |  | #1191 |
 | #1189 | - | X | P3 | - | copy(search): the search hint names German, English and Bangla, never the learner's own Polish or Russian | done | agent-3 |  | #1199 |
 | #1190 | - | X | P3 | - | a11y(settings): the retention and speech-rate rows read their value twice («90%, 90% · …») | done | agent-2 |  | #1192 |
-| #1193 | - | X | P3 | - | feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) | assigned | agent-2 |  |  |
+| #1193 | - | X | P3 | - | feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) | in-progress | agent-2 |  |  |
 | #1194 | - | X | P3 | - | copy(l10n): a four-digit count is written three ways, app «5 069», sogda.de «5069» (pl) / «5 069» (ru), Play listing «5069» (pl, ru) | in-progress | agent-3 |  |  |
 | #1195 | - | X | P3 | - | docs(widget): notifications-widget.md says the widget's Android strings are English and Bangla only; pl and ru ship too (#1078) | done | agent-3 |  | #1196 |
 | #1197 | - | X | P3 | - | copy(l10n): Polish and Russian decimals use a full stop («1.0×», «15.5», «2.3 MB»), so the speech-rate row reads «1.0× … 0,75×» | done | agent-3 |  | #1198 |

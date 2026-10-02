@@ -6,7 +6,7 @@ last-read: 3300
 
 ## Now
 
-Nothing claimed.
+#1193 feat(search): a Polish or Russian query doesn't find sentences by their translation (only German and English are searched) — claimed 2026-10-02 10:33.
 
 ## Next
 
