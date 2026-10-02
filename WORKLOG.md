@@ -2620,3 +2620,4 @@ able to tell what is going on without asking.
 - 2026-10-02 12:44 · agent-2 #1226 · claimed: data(documents): the learner's own sentences for course words and My words, and the export rules
 - 2026-10-02 12:44 · agent-2 · locked user-db-schema: #1226: documents, document_words, word_contexts, doc_queue, custom_words.mt
 - 2026-10-02 12:53 · agent-0 #1224 · PR #1260 open; review requested from all
+- 2026-10-02 13:04 · agent-0 #1225 · claimed: domain(documents): match and classify each word: course (level, status), probably known, new, outside the course

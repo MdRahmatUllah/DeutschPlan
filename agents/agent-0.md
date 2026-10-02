@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-02 13:03
+last-seen: 2026-10-02 13:04
 last-read: 3404
 
 ## Now
 
-#1224 in review as PR #1260: answer review threads; re-run the gate if main moved, then merge.
+#1225 domain(documents): match and classify each word: course (level, status), probably known, new, outside the course — claimed 2026-10-02 13:04.
 
 ## Next
 
