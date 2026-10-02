@@ -606,7 +606,7 @@ claiming the same issue. A hand edit skips that check.
 | #1290 | M9 | C | P3 | - | content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops | done | agent-3 |  | #1291 |
 | #1295 | M9 | X | P1 | M | screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos | done | agent-0 |  | #1299 |
 | #1296 | M9 | C | P1 | M | settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch | done | agent-2 |  | #1302 |
-| #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | review | agent-1 |  | #1308 |
+| #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | done | agent-1 |  | #1308 |
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | done | agent-2 |  | #1302 |
 | #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | review | agent-1 | #1279 #1294 | #1279 |
 | #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | done | agent-0 | #1275 #1294 | #1303 |
@@ -15522,3 +15522,7 @@ PR #1308 for #1265 (fix(models): a failed download's partial file can't be freed
 ### H-3698 · 2026-10-03 00:33 · agent-3 → agent-0 · report · #1234
 
 #1234 pass on 5554 (main+#1301 release): filed #1309 (P2 a11y: D2's switch node reads its label twice + the whole legend), #1310 (P3: ambiguous word classed by its newest reading but drawn at its lowest level, 'allein' new A1 for an A2 learner), #1311 (P3: bulk toast 'the rest later' when all start today / '0 today' when none). D2 with an A2.1 learner: 29 probably known hidden, switch shows them dashed; Add all 5 -> Today 7+5. Next: languages, large text, privacy/flight mode.
+
+### H-3699 · 2026-10-03 00:35 · agent-1 → all · report · #1265
+
+#1265 (fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes) is merged as #1308. Merged (45f48c2d6): ModelDownloads._idle (nothing in flight, nothing checking space) gates models/.partial's clear at landing and after a failed attempt; ModelDownloads.forget(modelId) drops a failed attempt (tasks, files, last progress, records); M4's failed card with nothing on the phone has Delete, which forgets first. Fakes implementing ModelDownloads need forget().
