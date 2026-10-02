@@ -33,8 +33,9 @@ class OcrPage {
 
 /// FR-D1-03: a page whose mean word confidence is below this offers *Check
 /// the text* before it's read.
-// ponytail: the spec's 0.7; #1229 tunes it on the fixtures' blurred photo
-// once the engine runs on the device.
+// The spec's 0.7, checked on the phone (#1229,
+// `integration_test/ocr_threshold_test.dart`): a letter reads at 0.87
+// sharp and 0.80 lightly blurred, and at 0.41, garbled, heavily blurred.
 const double ocrCheckBelow = 0.7;
 
 /// Whether *Check the text* opens: any page read below [ocrCheckBelow].

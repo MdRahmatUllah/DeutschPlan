@@ -7,7 +7,7 @@ import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/data/repositories/document_repository.dart';
 import 'package:sogda/domain/documents/matcher.dart';
 
-import '../db/content_fixture.dart' show realContent;
+import '../db/content_fixture.dart' show realContent, tempDir;
 
 const String letter =
     'Der Vermieter schickt die Kündigung. Die Kündigung kommt pünktlich. '
@@ -136,8 +136,7 @@ void main() {
 
   test('#1229 BR-DOC-05: a document keeps its photos under '
       '<appSupport>/documents/<id>/, in page order, listed relative', () async {
-    final support = Directory.systemTemp.createTempSync('sg_docs');
-    addTearDown(() => support.deleteSync(recursive: true));
+    final support = tempDir('sg_docs');
     final shots = <String>[
       for (final (i, name) in <String>['IMG_0042.JPG', 'scan'].indexed)
         (File('${support.path}/$name')..writeAsBytesSync(<int>[i, 1, 2])).path,
