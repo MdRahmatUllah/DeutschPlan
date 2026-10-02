@@ -16,6 +16,7 @@ import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/translation/hymt_translator.dart';
 
 import '../../db/content_fixture.dart' show tempDir;
+import '../../timing.dart';
 
 /// The model, faked: what it was asked, and what it answers.
 class _Runner implements TranslationRunner {
@@ -95,14 +96,8 @@ void main() {
   );
 
   /// Until [n] translations have reached the model: past the turn's reads of
-  /// the model's files, which are real IO, not microtasks.
-  Future<void> reached(int n) async {
-    final until = DateTime.now().add(const Duration(seconds: 5));
-    while (runner.asked.length < n) {
-      if (DateTime.now().isAfter(until)) fail('$n never reached the model');
-      await Future<void>.delayed(const Duration(milliseconds: 5));
-    }
-  }
+  /// the model's files, which are real IO, not microtasks (#683).
+  Future<void> reached(int n) => until(() => runner.asked.length >= n);
 
   /// The model on the phone, whole.
   Future<void> install() async {
