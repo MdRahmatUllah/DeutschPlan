@@ -6,7 +6,7 @@ last-read: 3427
 
 ## Now
 
-#1263 in review as PR #1264: answer review threads; re-run the gate if main moved, then merge.
+#1267 test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) — claimed 2026-10-02 14:46.
 
 ## Next
 
