@@ -60,7 +60,7 @@ Everything except web-search links and model downloads works in airplane mode. T
 | First open after a long gap (BR-PLAN-05) | The catch-up plans on drift's isolate: no UI-isolate slice over 16 ms for 30 missed days at 50 new words a day (`catch_up_test.dart`, #994; ~0.9 s in all on the host, waiting, not blocking) |
 | Glass list scroll | 60 fps with one `BackdropFilter` per list panel |
 | Search | < 50 ms per keystroke after 120 ms debounce |
-| App size | Play's one-CPU-type download, ONNX Runtime included, at most 3 % over its baseline, measured by its stand-in, the arm64-v8a split APK (51.2 MB on 2026-09-27, after llamadart's removal: ADR 29; 72.3 MB before), until `bundletool get-size`; models downloaded separately |
+| App size | Play's one-CPU-type download, ONNX Runtime included, at most 3 % over its baseline, measured by its stand-in, the arm64-v8a split APK (75.1 MB on 2026-10-02, with llamadart back for Hy-MT2: ADR 30, 21.6 MB of it llama.cpp's CPU libraries; 51.2 MB on 2026-09-27 without them, ADR 29), until `bundletool get-size`; models downloaded separately |
 | Supertonic first audio | < 300 ms for one word |
 | Memory with Supertonic | No budget yet (the owner's call). Measured: ~520 MB PSS, 435 MB of it native heap, with its sessions open, on the emulator; with the phone's voice they never open. Since #638 the sessions open with the first clip a screen needs, not at the app's start, and close in the background and under memory pressure (`VoiceRelease`), so a backgrounded app holds none of it (#758 asks for the budget) |
 

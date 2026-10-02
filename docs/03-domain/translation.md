@@ -18,7 +18,7 @@
 
 - **`llamadart` ^0.9.0.** It pins `llamadart-native` v0.5.0, which is llama.cpp `7fe450e1` and has `LLM_ARCH_HUNYUAN_DENSE`.
 - **CPU backend only** (ADR 27's `hooks: user_defines: llamadart:` block, back): `llamadart_native_runtimes: llama_cpp` and, on Android, `llamadart_native_backends: [cpu]`. Without it the hook also bundles Vulkan and LiteRT-LM.
-- **The cost** is llama.cpp's CPU libraries in every APK: about 21 MB of the arm64 APK when ADR 29 took them out (72.3 → 51.2 MB). The PR that adds it measures the size again and moves the perf baseline with it.
+- **The cost** is llama.cpp's CPU libraries in every APK: 21.6 MB of the arm64 APK (13 libraries, `libmtmd` among them), which measured 75.1 MB with them on 2026-10-02 (#154; 51.2 MB without them at ADR 29), and the perf baseline moved with it.
 - **No isolate of our own:** llamadart's llama.cpp backend runs the model in its own worker isolate, so a translation never blocks the UI.
 - **`ModelParams`:**
   - `contextSize: 1024`. A sentence and its translation fit, and the default 4096 would hold four times the cache in memory.

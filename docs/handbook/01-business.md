@@ -240,7 +240,7 @@ Design targets the build is held to:
 | Cold start to Today | < 1.5 s on a mid-range 2022 Android phone | `accessibility-performance.md` |
 | Warm start | < 500 ms | same |
 | Search | < 50 ms a keystroke | same |
-| App size | at most 3 % over the baseline (arm64 APK 72.3 MB) | same, ADR 27 |
+| App size | at most 3 % over the baseline (arm64 APK 75.1 MB, with Hy-MT2's llama.cpp) | same, ADR 30 |
 | Release quality | no P1 from the SQA pass (v1.0.0's pass 4 found none, and its three P2s were fixed and rechecked) | the team board |
 
 **Questions for the owner:** Google Play Console gives aggregate installs,

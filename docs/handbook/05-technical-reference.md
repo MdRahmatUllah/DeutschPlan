@@ -55,7 +55,8 @@ Ten packages that were declared but never imported (`flutter_custom_tabs`,
 `json_annotation`, `json_serializable`, `logging`, `mocktail`, `alchemist`) were
 removed (#697 TL-10). llamadart, and the native-assets
 `user_defines` that trimmed it to llama.cpp's CPU backend (ADR 27), were
-removed (ADR 29): the arm64 APK went from 159.5 MB to 72.3 MB, then to 51.2 MB. The rationale for each
+removed (ADR 29): the arm64 APK went from 159.5 MB to 72.3 MB, then to 51.2 MB. Hy-MT2 brought them
+back (ADR 30): 75.1 MB. The rationale for each
 choice, and the rejected alternatives, are in
 [`tech-stack.md`](../01-architecture/tech-stack.md).
 

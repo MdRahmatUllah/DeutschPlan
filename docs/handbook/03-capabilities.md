@@ -251,7 +251,7 @@ owner checks cold and warm start on a real phone before each release.
   v1.0.0 passed: size 72.44 MB, cold 3,268 ms, warm 807 ms, frames and search
   within their margins.
 - **Size.** The arm64 APK went from 159.5 MB to 72.3 MB when llama.cpp was cut
-  to its CPU backend (ADR 27), then to 51.2 MB when llamadart was removed (ADR 29). Hy-MT2 brings llamadart's CPU libraries back (ADR 30, #154), and its PR measures the size again. The APK stands in for the one-ABI download
+  to its CPU backend (ADR 27), then to 51.2 MB when llamadart was removed (ADR 29). Hy-MT2 brings llamadart's CPU libraries back (ADR 30, #154): 75.1 MB, 21.6 MB of it llama.cpp. The APK stands in for the one-ABI download
   Play serves, which is compressed and so smaller. The voice model is
   downloaded separately.
 - **Cold start** is measured to Android's "Fully drawn", which the app
