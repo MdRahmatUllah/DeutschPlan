@@ -2,7 +2,7 @@
 
 Every post, pitch, caption and comment says the same true thing about Sogda, in the voice its audience needs. This page is where that thing is written down. The calendar ([`calendar.md`](calendar.md)) says when and where each piece goes out; the post drafts (#1207) fill these lines in.
 
-**Facts are tokens, never typed.** `{totals.words}` means "the number in [`site-facts.json`](../05-dev-guide/site-facts.json) at `totals.words`". The drafts fill it in the way each language writes numbers (bn in Bangla digits, pl and ru with no separator for four digits). `tools/tests/test_marketing_docs.py` fails on a typed count, and on a token that isn't in the file.
+**Facts are tokens, never typed.** `{totals.words}` means "the number in [`site-facts.json`](../05-dev-guide/site-facts.json) at `totals.words`". The drafts fill it in the way each language writes numbers (bn in Bangla digits; pl with no separator for four digits; ru with a no-break space before the last three, as #1194 settled for the listing, the app and sogda.de). `tools/tests/test_marketing_docs.py` fails on a typed count, and on a token that isn't in the file.
 
 **Native review:** agent-1 checks pl and bn, and agent-2 checks ru. The owner has the last word on bn nuance. agent-0 checks en, de and every fact. A line marked *draft* hasn't been reviewed yet.
 
@@ -15,6 +15,7 @@ This is sogda.de's positioning sentence (sogda-website `docs/MASTER-PLAN.md` §4
 ## What every message keeps
 
 - **The combination is the message.** No rival has all of it together: offline, no account, A1 to C2, mock exams for every step, spaced repetition, and meanings in the learner's own script. Each rival has two or three of these (sogda-website `docs/research/2026-09-30-website-review.md` §6). Lead with the combination, never with one feature that a bigger app also has.
+- **Offline means the course.** Words, the day's plan, revision, grammar and the mock exams all run in flight mode (agent-3's E2E check). **The sound needs a German voice:** Supertonic, downloaded once, or a German voice the phone keeps offline. Never promise offline audio. Where sound is the point, say "with the voice downloaded".
 - **Show, don't claim.** We have no ratings, reviews or user counts, and the rules forbid inventing them. So the proof is the product: a real screen, a real word card, a real mock-exam section.
 - **Never** say:
   - a price, "free", "no ads" or a rating;

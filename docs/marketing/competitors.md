@@ -53,7 +53,7 @@ The pronunciation guide in the viewer's own script.
 - **Format:** 6–10 s, vertical. The word card, the guide line in the viewer's script, a tap on the speaker, the sound.
 - **Example (bn):**
   - **Video:** {featured.0.article} {featured.0.german}, with its guide «{featured.0.guide.bn}» and its sound.
-  - **Caption** (*draft*): «Anmeldung কীভাবে বলবেন? বাংলা অক্ষরে লেখা উচ্চারণ, ইন্টারনেট ছাড়াই।»
+  - **Caption** (*draft*): «Anmeldung কীভাবে বলবেন? বাংলা অক্ষরে লেখা উচ্চারণ।» No "offline" in this caption: the clip plays sound, and offline sound needs a voice installed. Shoot it with Supertonic installed.
 - **The same clip in ru and pl:** the same video re-cut with «{featured.0.guide.ru}» and «{featured.0.guide.pl}».
 - **Series:** the twelve words of `featured` in `site-facts.json`, from *Anmeldung* to *Einbürgerung*. That's one a week for twelve weeks, with no word to invent.
 
@@ -87,6 +87,8 @@ The pronunciation guide in the viewer's own script.
 
 - **Why:** offline is the real difference, and it's provable on screen. OffChess, an offline Android app with no account, reached 369 points on Show HN with that pitch.
 - **Format:** 10–12 s. The status bar shows flight mode, then Sogda opens, three cards are reviewed, and the day's plan shows done. Captions only.
+  - **Shoot it with Supertonic installed,** so any sound in the clip also works in flight mode.
+  - **The caption claims the course offline, not the audio** (see *Offline means the course* in [`messaging.md`](messaging.md)).
 - **Example:** "Underground. Flight mode. Still learning German: no account, no signal, and your progress stays on this phone."
 
 ### Which format goes where
