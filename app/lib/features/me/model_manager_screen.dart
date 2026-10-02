@@ -344,25 +344,30 @@ class _ModelCardView extends ConsumerWidget {
         if (_isVoice || licence == null)
           subtitle
         else
-          // FR-M4-04: the licence link opens the full text.
-          AdaptiveTapTarget(
-            child: Semantics(
-              button: true,
-              label: l10n.modelsLicenceRead(licence.kind),
-              excludeSemantics: true,
-              onTap: () => unawaited(showLicence(context, licence)),
-              child: SgTappable(
+          // FR-M4-04: the licence link opens the full text. Its grown target
+          // reaches about 15 dp under the line, into a *Download* right below
+          // it (#478, #154): the padding keeps that out of its taps.
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: AdaptiveTapTarget(
+              child: Semantics(
+                button: true,
+                label: l10n.modelsLicenceRead(licence.kind),
+                excludeSemantics: true,
                 onTap: () => unawaited(showLicence(context, licence)),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Flexible(child: subtitle),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 14,
-                      color: tokens.color.textSecondary,
-                    ),
-                  ],
+                child: SgTappable(
+                  onTap: () => unawaited(showLicence(context, licence)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Flexible(child: subtitle),
+                      Icon(
+                        Icons.arrow_forward,
+                        size: 14,
+                        color: tokens.color.textSecondary,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

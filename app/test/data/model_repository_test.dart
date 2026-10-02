@@ -678,6 +678,22 @@ void main() {
       },
     );
 
+    test('#154 while another model downloads, deleting keeps models/.partial, '
+        "that download's copy", () async {
+      final partial = await models.partialDirectory();
+      final copy = File('${partial.path}/com.bbflight.background_downloader9')
+        ..createSync(recursive: true)
+        ..writeAsStringSync("the voice's half");
+
+      await models.delete(
+        entryOf(<ModelVariant>[variantOf('bytes')]),
+        keepPartial: true,
+      );
+
+      expect(copy.existsSync(), isTrue);
+      expect(settings.read(SettingKeys.mtEnabled), isFalse);
+    });
+
     test('deleting one model leaves the other', () async {
       final variant = variantOf('bytes');
       await stage('hymt', variant, 'bytes');
