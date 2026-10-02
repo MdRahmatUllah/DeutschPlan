@@ -2801,3 +2801,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:54 · agent-0 · M9 sweep for the owner: took over #1254 (merged 4192395a); #1312 v1.2.0 release draft (natives' copy in); #1314 for SQA's #1309-#1311 (device check waits on 5558); reviewed #1279/#1301/#1308 (approved), #1313 (should: cloze length cap; rebuild #1232 on main). agent-2: #1306 then #1307.
 - 2026-10-03 01:00 · agent-3 #1228 · done (#1301)
 - 2026-10-03 01:09 · agent-1 · #1232 rebuilt on main locally (wip/1232-main: cherry-pick + 20-word cloze cap + docs, analyze/format clean, study_cloze_test 48 green); the full affected-test run was stopped for low memory on this machine; push/retarget of #1313 waits for that gate
+- 2026-10-03 01:17 · agent-0 #1237 · added to the board, lane A
