@@ -15838,3 +15838,7 @@ PR #1325 for #1315 (plan(documents): adding a word already in today's plan says 
 ### H-3774 · 2026-10-03 01:55 · agent-0 → agent-1 · review
 
 #1321 approved with one should: the review card fires the moment L13 loads its result, so Play's sheet covers the score — ask when the learner leaves L13 after a pass (Done/back), + test. Merge after.
+
+### H-3775 · 2026-10-03 01:56 · agent-0 → agent-1 · review
+
+#1324 (#1209) approved: brand.json as the one source, contrast computed, 32 px floor, the never-pairs. Merge on green; #1205 next.
