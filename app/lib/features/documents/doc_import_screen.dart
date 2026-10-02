@@ -569,8 +569,11 @@ class _PasteBox extends StatelessWidget {
           label: l10n.docImportTextLabel,
           child: TextField(
             controller: controller,
-            minLines: 8,
-            maxLines: 14,
+            // Six lines that scroll: at 200 % text the whole box still fits
+            // between the status bar and the keyboard.
+            minLines: 6,
+            maxLines: 6,
+            scrollPadding: _belowStatusBar(context),
             // German: the keyboard mustn't correct it into English.
             autocorrect: false,
             enableSuggestions: false,
@@ -821,17 +824,20 @@ class _Check extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Row(
+        // The pill goes under the heading when both don't fit (200 %).
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          runSpacing: 6,
           children: <Widget>[
-            Expanded(
-              child: ExcludeSemantics(
-                child: SgText(
-                  l10n.docImportTheText.toUpperCase(),
-                  role: SgTextRole.caption,
-                  weight: 700,
-                  letterSpacing: 0.6,
-                  color: tokens.color.textSecondary,
-                ),
+            ExcludeSemantics(
+              child: SgText(
+                l10n.docImportTheText.toUpperCase(),
+                role: SgTextRole.caption,
+                weight: 700,
+                letterSpacing: 0.6,
+                color: tokens.color.textSecondary,
               ),
             ),
             // As the learner fixes them.
@@ -852,8 +858,9 @@ class _Check extends StatelessWidget {
           label: l10n.docImportTextLabel,
           child: TextField(
             controller: controller,
-            minLines: 6,
-            maxLines: 14,
+            minLines: 4,
+            maxLines: 6,
+            scrollPadding: _belowStatusBar(context),
             autocorrect: false,
             enableSuggestions: false,
             keyboardType: TextInputType.multiline,
@@ -948,3 +955,8 @@ class _MarkedText extends TextEditingController {
     return TextSpan(style: style, children: spans);
   }
 }
+
+/// A box revealed for the keyboard comes to rest below the status bar: D1's
+/// list runs under it (`SearchHeader`), as R2's does (#590).
+EdgeInsets _belowStatusBar(BuildContext context) =>
+    EdgeInsets.fromLTRB(20, 20 + MediaQuery.paddingOf(context).top, 20, 20);

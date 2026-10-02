@@ -13,7 +13,7 @@
 
 **Layout.**
 - Four large choices:
-  - *Take photos*: the camera, several pages, with "Page 2 of 3 · Add a page · Done";
+  - *Take photos*: the camera, a page at a time. The pages taken are listed («Page 1», «Page 2»), with *Done* and *Add a page* (#1229); at 30, *Add a page* is off and says why;
   - *Choose images*: the gallery;
   - *Choose a PDF*: the file picker;
   - *Paste text*: the clipboard, shown in an editable box first.
@@ -21,7 +21,13 @@
 
 **Processing.**
 - "Reading page 2 of 4…", then "Finding your words…", with a progress bar and *Cancel*.
+- **Photos** are read in turn on the phone: «Reading page 2 of 4…», with the bar at the pages done.
 - **A photo with low OCR confidence** opens *Check the text*: the extracted text, editable, the low-confidence words marked, and *Take again* or *Continue*.
+  - It opens for each such page in turn («Photo 2 was hard to read»), after all of them are read.
+  - The pill counts the marked words the text still holds, so it falls as the learner fixes them.
+  - *Take again* photographs that page again and reads it, and the new photo takes the old one's place.
+  - What the learner leaves is the page's text. Then the pages go through the same clean-up, limit, German check and save as text, as `photo`, with the page count.
+- **No text on any photo:** «No text found on the photos. Take them again in good light.», back to the choices.
 - **A PDF without a text layer:** "This PDF is a scan: take photos of it instead", with *Choose images*.
 
 **Functional requirements**
@@ -36,7 +42,7 @@
 
 **States.**
 - **Empty clipboard:** *Paste text* is off, and says why.
-- **Camera permission denied:** an explanation, with *Open settings*.
+- **Camera permission:** none is asked (#1229, a spec gap named). *Take photos* opens the phone's own camera app through `image_picker` (`ACTION_IMAGE_CAPTURE`), and *Choose images* the system photo picker, so Sogda holds neither the camera nor the gallery and there is nothing to deny. Backing out of the camera before a photo leaves D1 on its choices.
 - **OCR or PDF failure:** an error panel (`SgErrorPanel`) with *Try again*.
 
 **Data.** It writes `documents` (and the images under `<appSupport>/documents/<id>/`), then opens D2 on its id, and D2 runs the matcher (`03-domain/document-matcher.md`).
@@ -44,9 +50,13 @@
 - **The German check** (FR-D1-04) runs before anything is saved: `DocumentRepository.germanShareOf(body)`, the lemmatiser in an isolate. *Continue anyway* saves; *Cancel* saves nothing.
 - **The title** is the text's first line with a letter in it, cut at a word end to 60 characters, or "Text of 2 Oct" when it has none (#1227). A letter's salutation alone on its line («Sehr geehrte Damen und Herren,», «Liebe Eltern,») is passed over, since it says who the letter is to, not what it's about, and a trailing comma or colon goes. D2 lets the learner change it.
 - **`source`:** `paste` or `share` (#1227), `pdf` (#1228), `photo` (#1229).
+- **The photos** (BR-DOC-05), while *Save original images* is on, are copied to `<appSupport>/documents/<id>/page-1.jpg`, `page-2.jpg`… in page order. `image_paths` lists them relative to `<appSupport>`, so a moved app folder keeps them. Taken at most 2,400 px wide at JPEG quality 90, about 1 MB a page. *Reset everything* and an import's *Replace*, whose documents come without photos (BR-DOC-06), delete the folder, after the data and best effort, as the recordings go.
 
 **Developer notes.**
-- **ML Kit text recognition, Latin script, bundled model** (no download from Google Play services). Its licence and terms go in `licences.py` and M8.
+- **ML Kit text recognition, Latin script, bundled model** (no download from Google Play services; `google_mlkit_text_recognition`). Its licence and terms go in `licences.py` and M8.
+  - **About 12 MB per phone** through the App Bundle's per-ABI split: `libmlkit_google_ocr_pipeline.so`, 11 MB on arm64, and the 1.3 MB Latin models. A universal APK carries all three ABIs (+31 MB). Measured on #1229.
+  - **Release builds need R8 rules** (`proguard-rules.pro`): keep `com.google.mlkit.**` and `com.google.android.gms.internal.mlkit_**`, and `-dontwarn` the scripts not bundled. Without them, a release build crashed at launch or failed its first read; a debug run shows neither.
+  - **FR-D1-03's 0.7 is checked on the phone** by `integration_test/ocr_threshold_test.dart`, on a letter it draws: 0.87 sharp, 0.80 lightly blurred (two slips), 0.41 heavily blurred (garbled). A word's confidence marks where to look on a bad page, not which word is wrong: on the light blur, the words below 0.7 were read right.
 - **The share target:** an `ACTION_SEND` / `ACTION_SEND_MULTIPLE` intent filter for `text/plain`, `application/pdf` and `image/*`. Text is #1227's; the PDF and the images join it in #1228 and #1229.
   - **`ShareActivity`**, with no window of its own, holds the filter. It opens `MainActivity` as the widget does (`NEW_TASK | CLEAR_TOP`), with the link `sogda://import` alone. So the share lands in the app's own task and its one Flutter engine, never in the sender's task as a second copy of the app with `user.db` open twice.
   - **The text stays in the process** (`ShareActivity.take`), never on an intent and never as data (#613). `MainActivity` is exported and BROWSABLE, so an extra on its intent could come from any app, or from a web page's `intent://` link, and D1 would save it with no share sheet chosen. It reads none. D1 takes the text once (`sogda/share`, `SharedText.take`); a launch restored after the process died finds none, so the same document isn't saved twice.

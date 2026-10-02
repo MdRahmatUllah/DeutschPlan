@@ -453,6 +453,27 @@ void main() {
       expect(find.text(l10n.docImportTakePhotos), findsOneWidget);
     });
 
+    testWidgets('a photo that fails to read says so, and Retry reads the '
+        'photos again', (tester) async {
+      final docs = FakeDocuments();
+      final photos = FakePhotos(
+        chosen: <String>['g1.jpg'],
+        pages: <String, OcrPage>{'g1.jpg': page('Die Miete ist da.')},
+        failures: 1,
+      );
+      await pump(tester, docs: docs, photos: photos);
+      await tester.tap(find.text(l10n.docImportChooseImages));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+      expect(find.text(l10n.docImportPhotos(1)), findsOneWidget);
+
+      await tester.tap(find.text(l10n.retry));
+      await tester.pumpAndSettle();
+      expect(photos.readPaths, <String>['g1.jpg', 'g1.jpg']);
+      expect(docs.saved.single.source, 'photo');
+      expect(docs.saved.single.body, 'Die Miete ist da.');
+    });
+
     testWidgets('backing out of the camera before a photo stays on the '
         'choices', (tester) async {
       await pump(tester, docs: FakeDocuments(), photos: FakePhotos());
@@ -543,12 +564,16 @@ class FakePhotos implements PagePhotos {
     this.chosen = const <String>[],
     this.pages = const <String, OcrPage>{},
     this.pending,
+    this.failures = 0,
   }) : _taken = <String>[...taken];
 
   final List<String> _taken;
   final List<String> chosen;
   final Map<String, OcrPage> pages;
   final Completer<OcrPage>? pending;
+
+  /// How many reads fail before they answer.
+  int failures;
 
   /// The photos read, in order.
   final List<String> readPaths = <String>[];
@@ -562,6 +587,10 @@ class FakePhotos implements PagePhotos {
   @override
   Future<OcrPage> read(String path) async {
     readPaths.add(path);
+    if (failures > 0) {
+      failures--;
+      throw StateError('ML Kit stopped');
+    }
     return pending?.future ?? pages[path] ?? const OcrPage(<List<OcrWord>>[]);
   }
 }
