@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 17:13
+last-seen: 2026-10-02 17:14
 last-read: 3518
 
 ## Now
 
-#1227 in review as PR #1281: answer review threads; re-run the gate if main moved, then merge.
+#1228 input(documents): PDFs with a text layer — claimed 2026-10-02 17:14.
 
 ## Next
 

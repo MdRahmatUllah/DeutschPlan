@@ -2677,3 +2677,4 @@ able to tell what is going on without asking.
 - 2026-10-02 16:51 · agent-2 · #1227: D1 built on #1275 (local branch feat/1227-share-paste, 2 commits + agent-0's merged in): ShareActivity trampoline, sogda://import arrival, D1 paste/share/cut/German check/cancel, R1 entry; 17/17 plants; device check on 5558 (warm + cold share, one MainActivity, English warns, back to R1). Waiting on #1275 to merge and #1230 part 2's DocWordsRoute (stand-in commit until then).
 - 2026-10-02 16:52 · agent-2 #1227 · PR #1281 open; review requested from all
 - 2026-10-02 17:13 · agent-2 #1282 · added to the board, lane C
+- 2026-10-02 17:14 · agent-2 #1228 · claimed: input(documents): PDFs with a text layer

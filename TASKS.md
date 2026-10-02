@@ -578,7 +578,7 @@ claiming the same issue. A hand edit skips that check.
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | review | agent-1 |  | #1279 |
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | review | agent-2 |  | #1281 |
-| #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
+| #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | in-progress | agent-2 |  |  |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
