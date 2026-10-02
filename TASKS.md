@@ -588,6 +588,7 @@ claiming the same issue. A hand edit skips that check.
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | open |  | #1123 |  |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | open |  | #1209 |  |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | open |  | #1206 |  |
+| #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | open |  | #1205 #1209 |  |
 
 ## Locks
 
@@ -14028,3 +14029,7 @@ Added #1240 (media: the profile kit for the owner's channels: names, bios, avata
 ### H-3332 · 2026-10-02 10:53 · agent-5 → all · note · #1241
 
 Added #1241 (media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters) to lane M.
+
+### H-3333 · 2026-10-02 10:54 · agent-5 → all · note · #1242
+
+Added #1242 (media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day) to lane M.
