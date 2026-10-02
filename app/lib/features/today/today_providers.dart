@@ -142,6 +142,7 @@ Future<TodayView> todayView(Ref ref) async {
   final grammarChanges = ref.watch(todayGrammarDueProvider.future);
   final practising = ref.watch(todayGrammarPractisedProvider.future);
   final studying = ref.watch(todayWordsStudiedProvider.future);
+  final queue = DriftPlanStore(ref.watch(appDatabaseProvider), settings);
 
   final plan = await planning;
   final open = await changes;
@@ -193,8 +194,17 @@ Future<TodayView> todayView(Ref ref) async {
     ),
     sentences: openSentences,
   );
+  // #1280: the document queue's words (BR-PLAN-11) are no step's. Today's
+  // are counted apart, and a category is the course's words' alone.
+  final fromDocuments = (await queue.docPlannedOn(date)).toSet();
+  List<String> course(List<String> uids, Set<String> documents) => <String>[
+    for (final uid in uids)
+      if (!documents.contains(uid)) uid,
+  ];
   final names = await categoryNames;
-  final category = switch (await content.mainCategory(plan.newToday)) {
+  final category = switch (await content.mainCategory(
+    course(plan.newToday, fromDocuments),
+  )) {
     final String english => names.of(english),
     null => null,
   };
@@ -270,6 +280,7 @@ Future<TodayView> todayView(Ref ref) async {
     step: step,
     learnerName: name,
     newCategory: category,
+    newFromDocuments: plan.newToday.where(fromDocuments.contains).length,
     grammar: next == null
         ? null
         : GrammarPreview(
@@ -289,13 +300,17 @@ Future<TodayView> todayView(Ref ref) async {
 
   // #96: tomorrow as opening it will make it, without making it.
   final ahead = await engine.previewDay(addDays(date, 1));
+  // Tomorrow's document words are among those still waiting.
+  final waitingDocuments = (await queue.docWaiting(limit: 1 << 20)).toSet();
   return build(
     tomorrow: TomorrowPreview(
       revise: ahead.revise.length,
       newWords: ahead.newToday.length,
       grammar: ahead.grammarDue.length,
       estimate: await engine.estimate(ahead, remember: false),
-      category: switch (await content.mainCategory(ahead.newToday)) {
+      category: switch (await content.mainCategory(
+        course(ahead.newToday, waitingDocuments),
+      )) {
         final String english => names.of(english),
         null => null,
       },

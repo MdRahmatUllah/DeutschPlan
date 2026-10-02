@@ -17,7 +17,8 @@ import '../features/settings_fixtures.dart';
 import 'golden_harness.dart';
 
 /// The ExportImport artboard's file: 2,104 word states, last active on
-/// 20 September, in A2.1; and what else it holds (#396).
+/// 20 September, in A2.1; and what else it holds (#396), documents and
+/// their sentences included (#1283).
 class _ArtboardBackups extends Fake implements BackupRepository {
   @override
   Future<BackupPreview> preview(String json) async => const BackupPreview(
@@ -28,6 +29,9 @@ class _ArtboardBackups extends Fake implements BackupRepository {
       'word_state': 2104,
       'review_log': 5321,
       'custom_words': 3,
+      // #1283: what a Replace would bring back, drawn and text-audited.
+      'documents': 4,
+      'word_contexts': 12,
     },
     wordStates: 2104,
     lastActive: '2026-09-20T09:00:00Z',

@@ -26,6 +26,8 @@ class DocumentRepository {
   final DateTime Function() _now;
 
   /// D1 saves the text (BR-DOC-05), and D2 opens it by the id this returns.
+  /// [body] is the text after clean-up (`cleanPages`, pipeline step 2), and
+  /// cut to the limit: [match] reads it as it is.
   Future<int> create({
     required String title,
     required String source,
@@ -93,9 +95,11 @@ class DocumentRepository {
     }
     final planned = _db.selectOnly(_db.planItems, distinct: true)
       ..addColumns(<Expression<Object>>[_db.planItems.wordUid]);
-    final active = await (_db.select(
-      _db.enrollments,
-    )..where((e) => e.completedOn.isNull())).getSingleOrNull();
+    final active =
+        await (_db.select(_db.enrollments)
+              ..where((e) => e.completedOn.isNull())
+              ..limit(1))
+            .getSingleOrNull();
     final step = active == null
         ? null
         : steps.where((s) => s.code == active.sublevelCode).firstOrNull;
@@ -131,17 +135,23 @@ class DocumentRepository {
     final match = await _matchApart(body, await matcherInput());
     await _db.transaction(() async {
       await _db.batch((batch) {
-        batch.insertAll(_db.documentWords, <DocumentWordsCompanion>[
-          for (final word in match.words)
-            for (final s in word.sentences)
-              DocumentWordsCompanion.insert(
-                documentId: id,
-                lemmaKey: word.key,
-                surface: word.surface,
-                sentence: _sentence(body, match, s),
-                class$: word.docClass.name,
-              ),
-        ], mode: InsertMode.insertOrIgnore);
+        // A row from an earlier run takes this run's class and surface (what
+        // the learner has learnt since), and keeps its `added`, which the
+        // companions don't carry (agent-3's review of #1275).
+        batch.insertAllOnConflictUpdate(
+          _db.documentWords,
+          <DocumentWordsCompanion>[
+            for (final word in match.words)
+              for (final s in word.sentences)
+                DocumentWordsCompanion.insert(
+                  documentId: id,
+                  lemmaKey: word.key,
+                  surface: word.surface,
+                  sentence: _sentence(body, match, s),
+                  class$: word.docClass.name,
+                ),
+          ],
+        );
       });
       await (_db.update(_db.documents)..where((d) => d.id.equals(id))).write(
         DocumentsCompanion(wordCount: Value(match.words.length)),

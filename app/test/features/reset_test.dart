@@ -244,6 +244,11 @@ void main() {
     await tap(tester, l10n.settingsReset);
     await tap(tester, l10n.resetEverything);
     expect(find.text(l10n.resetEverythingMessage), findsOneWidget);
+    // #1288: it names the documents, whose photos no export holds.
+    expect(
+      l10n.resetEverythingMessage,
+      allOf(contains('documents'), contains("photos aren't in the file")),
+    );
 
     bool on() => tester.widget<TextButton>(confirm()).onPressed != null;
     expect(on(), isFalse);

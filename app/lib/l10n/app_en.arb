@@ -1044,6 +1044,47 @@
       }
     }
   },
+  "todayNewCategoryDocuments": "{count} new · {category} · {documents} from your documents",
+  "@todayNewCategoryDocuments": {
+    "description": "#1280: T1 New card subtitle when some of today's new words came from documents (BR-PLAN-11): the course's count with its category, then the documents' count. The category is course content.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "category": {
+        "type": "String"
+      },
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "todayNewPlainDocuments": "{count} new · {documents} from your documents",
+  "@todayNewPlainDocuments": {
+    "description": "#1280: T1 New card subtitle when some of today's new words came from documents and the course's have no category.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "todayNewFromDocuments": "{documents} from your documents",
+  "@todayNewFromDocuments": {
+    "description": "#1280: T1 New card subtitle when all of today's new words came from documents.",
+    "placeholders": {
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "todayBacklog": "Backlog · {count}",
   "@todayBacklog": {
     "description": "T1 section card title; opens T4.",
@@ -4855,7 +4896,7 @@
   "@exportImportExportHeading": {
     "description": "M6's export card heading, shown in capitals."
   },
-  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings and my words. Share it to Drive or email it to yourself, or save it on this phone.",
+  "exportImportExportBody": "One JSON file with word states, review log, plans, quiz and exam history, settings, my words and documents (their text, not their images). Share it to Drive or email it to yourself, or save it on this phone.",
   "@exportImportExportBody": {
     "description": "M6's export card text (FR-M6-01)."
   },
@@ -4999,6 +5040,26 @@
   "exportImportMyWords": "{count, plural, =1{1 word of my own} other{{count} words of my own}}",
   "@exportImportMyWords": {
     "description": "The chosen file's preview (#396): how many of the learner's own words (My words) it holds.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportDocuments": "{count, plural, =1{1 document} other{{count} documents}}",
+  "@exportImportDocuments": {
+    "description": "The chosen file's preview (#1283): how many documents it holds (D1, BR-DOC-06).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportImportSentences": "{count, plural, =1{1 sentence of my own} other{{count} sentences of my own}}",
+  "@exportImportSentences": {
+    "description": "The chosen file's preview (#1283): how many of the learner's own sentences from documents it holds (word_contexts).",
     "placeholders": {
       "count": {
         "type": "int",
@@ -5829,9 +5890,9 @@
   "@resetEverythingTitle": {
     "description": "The ResetDialog artboard: the title."
   },
-  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history and my words on this phone. Export first if you might want it back. Type RESET to confirm.",
+  "resetEverythingMessage": "Deletes all progress, plans, quiz and exam history, my words and documents on this phone. Export first if you might want it back, but a document's photos aren't in the file. Type RESET to confirm.",
   "@resetEverythingMessage": {
-    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language."
+    "description": "The ResetDialog artboard's text. RESET is typed as it is, in every language. #1288: it names the documents, whose photos an export never holds (BR-DOC-06)."
   },
   "resetEverythingConfirm": "Reset",
   "@resetEverythingConfirm": {
