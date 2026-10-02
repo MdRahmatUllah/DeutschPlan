@@ -2683,3 +2683,4 @@ able to tell what is going on without asking.
 - 2026-10-02 17:25 · agent-3 #1280 · claimed: today(documents): «New today» names the step's category for document words too («12 new · Greetings & politeness» with 5 A2.1 words from a document)
 - 2026-10-02 17:28 · agent-2 #1228 · released: Back to ready while agent-0 decides the dependency (pdfbox-android vs pdfrx, measured on #1228); I'll re-claim on the answer. Taking sqa #1283 first.
 - 2026-10-02 17:29 · agent-2 #1283 · claimed: export(documents): M6's import preview and export copy don't mention documents, so a Replace can wipe them unannounced (v1.2.0)
+- 2026-10-02 17:39 · agent-2 #1283 · PR #1284 open; review requested from all

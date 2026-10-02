@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 17:29
+last-seen: 2026-10-02 17:39
 last-read: 3518
 
 ## Now
 
-#1283 export(documents): M6's import preview and export copy don't mention documents, so a Replace can wipe them unannounced (v1.2.0) — claimed 2026-10-02 17:29.
+#1283 in review as PR #1284: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
