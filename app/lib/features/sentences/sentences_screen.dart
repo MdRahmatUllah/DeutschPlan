@@ -667,7 +667,7 @@ class _TokenSheet extends ConsumerWidget {
               role: SgTextRole.body,
               color: tokens.color.textSecondary,
             ),
-            if (ref.watch(settingsProvider).read(SettingKeys.mtEnabled)) ...[
+            if (ref.watch(mtEnabledProvider)) ...[
               const SizedBox(height: 8),
               TranslationLine(token, from: 'de', to: meanings.choice.primary),
             ],

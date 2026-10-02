@@ -1121,10 +1121,15 @@ void main() {
       expect(settings.read(SettingKeys.recentSearches), contains('Fahrrad'));
     });
 
-    testWidgets('#154 with translation off, no Translate', (tester) async {
+    testWidgets('#154 with translation off, no Translate; turned on in '
+        'Settings while the search shows, it appears', (tester) async {
       await pump(tester);
       await type(tester, 'Fahrrad');
       expect(find.text(l10n.searchTranslate('Fahrrad')), findsNothing);
+
+      await settings.write(SettingKeys.mtEnabled, true);
+      await settle(tester);
+      expect(find.text(l10n.searchTranslate('Fahrrad')), findsOneWidget);
     });
 
     testWidgets('Add "…" as my word opens R2 with the word filled in, and '

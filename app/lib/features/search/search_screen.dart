@@ -1251,7 +1251,7 @@ class _NoResults extends ConsumerWidget {
           ),
         ],
         // #154: with translation on, the query both ways, on the phone.
-        if (ref.watch(settingsProvider).read(SettingKeys.mtEnabled)) ...[
+        if (ref.watch(mtEnabledProvider)) ...[
           const SizedBox(height: 10),
           SgButton(
             label: l10n.searchTranslate(breakable(query)),

@@ -485,6 +485,18 @@ TranslationRepository translationRepository(Ref ref) => TranslationRepository(
   ref.watch(clockProvider),
 );
 
+/// `mt_enabled`, followed (#154): the Search tab keeps R1's *No results*
+/// on screen while Settings turns translation on or off.
+@riverpod
+bool mtEnabled(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  final changes = settings.changes
+      .where((key) => key == SettingKeys.mtEnabled)
+      .listen((_) => ref.invalidateSelf());
+  ref.onDispose(changes.cancel);
+  return settings.read(SettingKeys.mtEnabled);
+}
+
 /// [text] from [from] into [to], through [translationRepository] (cached):
 /// T5's word sheet and R1's *Translate* (#154). Null with translation off or
 /// no model on the phone.
