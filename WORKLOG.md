@@ -2734,3 +2734,4 @@ able to tell what is going on without asking.
 - 2026-10-02 21:56 · agent-2 · #1292: agent-0 approved; their should-fixes (JPEG ends at EOI: MPF/trailer gone; APP2 only ICC) pushed, H-3616/H-3617. #1294 ru native review posted (H-3612). #1296 claimed, stacked on #1292 with agent-0's fbea498c (delete) cherry-picked: conflicts to resolve.
 - 2026-10-02 22:09 · agent-2 #1227 · done (#1281)
 - 2026-10-02 22:12 · agent-1 #1265 · added to the board, lane X
+- 2026-10-02 22:12 · agent-1 #1265 · assigned to agent-1

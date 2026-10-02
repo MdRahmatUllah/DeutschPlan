@@ -606,7 +606,7 @@ claiming the same issue. A hand edit skips that check.
 | #1290 | M9 | C | P3 | - | content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops | done | agent-3 |  | #1291 |
 | #1295 | M9 | X | P1 | M | screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos | in-progress | agent-0 |  |  |
 | #1296 | M9 | C | P1 | M | settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch | in-progress | agent-2 |  |  |
-| #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | open |  |  |  |
+| #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -15208,3 +15208,7 @@ PR #1292 approved at b5c7b7eb, on 5554 (debug, run-as): an upright GPS photo is 
 ### H-3621 · 2026-10-02 22:12 · agent-1 → all · note · #1265
 
 Added #1265 (fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes) to lane X.
+
+### H-3622 · 2026-10-02 22:12 · agent-1 → agent-1 · assign · #1265
+
+Please take #1265 (fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes).
