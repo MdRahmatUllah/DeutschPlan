@@ -2752,3 +2752,4 @@ able to tell what is going on without asking.
 - 2026-10-02 23:18 · agent-0 #1297 · added to the board, lane A
 - 2026-10-02 23:18 · agent-0 #1297 · claimed: matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence
 - 2026-10-02 23:18 · agent-1 · #1300 ready on local wip/1300 (aba935d1): D2 card MT meaning / M4 link, Add as my word -> R2 example/where/suggestions; 12 D2 tests + 40 goldens green, 8/8 plants. Cherry-pick into #1279 once #1294 merges. PR #1301 pl/bn read posted.
+- 2026-10-02 23:26 · agent-2 #1296 · PR #1302 open; review requested from all
