@@ -24,6 +24,7 @@ import 'package:sogda/features/backlog/backlog_screen.dart';
 import 'package:sogda/features/day_complete/day_complete_screen.dart';
 import 'package:sogda/features/documents/doc_import_screen.dart';
 import 'package:sogda/features/documents/doc_words_screen.dart';
+import 'package:sogda/features/documents/my_documents_screen.dart';
 import 'package:sogda/features/exam/exam_results_screen.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/learn/categories_screen.dart';
@@ -231,6 +232,7 @@ enum StepTab { words, grammar, quiz, exams }
             TypedGoRoute<EditCustomWordRoute>(path: 'add/:id'),
             TypedGoRoute<DocImportRoute>(path: 'import'),
             TypedGoRoute<DocWordsRoute>(path: 'document/:id'),
+            TypedGoRoute<MyDocumentsRoute>(path: 'documents'),
           ],
         ),
       ],
@@ -471,9 +473,27 @@ class DocWordsRoute extends GoRouteData with $DocWordsRoute {
   static void instead(BuildContext context, int id) =>
       context.pushReplacement(DocWordsRoute(id: id).location);
 
+  /// D3's row: pushed over D3, so back returns to the list.
+  static void open(BuildContext context, int id) =>
+      unawaited(context.push<void>(DocWordsRoute(id: id).location));
+
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       DocWordsScreen(id: id);
+}
+
+/// D3 · My documents (#1295): in the search's stack with D1 and D2, so a
+/// row's D2 and *New document*'s D1 come back to it. Me's link jumps here.
+class MyDocumentsRoute extends GoRouteData with $MyDocumentsRoute {
+  const MyDocumentsRoute();
+
+  /// R1 idle's *Learn from a document* once a document is kept.
+  static void open(BuildContext context) =>
+      unawaited(context.push<void>(const MyDocumentsRoute().location));
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const MyDocumentsScreen();
 }
 
 class MeRoute extends GoRouteData with $MeRoute {
