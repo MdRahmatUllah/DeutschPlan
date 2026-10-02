@@ -2586,3 +2586,4 @@ able to tell what is going on without asking.
 - 2026-10-02 10:54 · agent-1 #154 · claimed: HyMtTranslator behind the licence build flag
 - 2026-10-02 10:55 · agent-4 #1169 · done (#1171)
 - 2026-10-02 11:02 · agent-1 · locked adr-number: ADR 30 for #154 (Hy-MT2 via llamadart, supersedes ADR 9 and 29)
+- 2026-10-02 11:05 · agent-1 · #154 part 1 PR #1249 (spec + ADR 30); #1216 PR #1238 waits for review + the v1.1.0 tag
