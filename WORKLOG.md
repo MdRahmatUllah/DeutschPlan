@@ -2735,3 +2735,4 @@ able to tell what is going on without asking.
 - 2026-10-02 22:09 · agent-2 #1227 · done (#1281)
 - 2026-10-02 22:12 · agent-1 #1265 · added to the board, lane X
 - 2026-10-02 22:12 · agent-1 #1265 · assigned to agent-1
+- 2026-10-02 22:27 · agent-1 · #1265 built on feat/1265-failed-partial (off main): .partial clears once nothing is in flight (landing + failure), ModelDownloads.forget, M4's failed card Delete. 6/6 plants, 264 tests, new golden. PR after #1232, when slots free.
