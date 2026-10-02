@@ -2727,3 +2727,4 @@ able to tell what is going on without asking.
 - 2026-10-02 21:40 · agent-0 #1296 · added to the board, lane C
 - 2026-10-02 21:40 · agent-0 #1295 · claimed: screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos
 - 2026-10-02 21:40 · agent-0 #1296 · assigned to agent-2
+- 2026-10-02 21:47 · agent-2 #1296 · claimed: settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch

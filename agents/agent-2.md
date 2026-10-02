@@ -6,7 +6,7 @@ last-read: 3612
 
 ## Now
 
-#1229 in review as PR #1292: answer review threads; re-run the gate if main moved, then merge.
+#1296 settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch — claimed 2026-10-02 21:47.
 
 ## Next
 
