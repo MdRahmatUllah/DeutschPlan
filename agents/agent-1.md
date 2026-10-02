@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 01:53
+last-seen: 2026-10-03 01:54
 last-read: 3769
 
 ## Now
 
-#1209 in review as PR #1324: answer review threads; re-run the gate if main moved, then merge.
+#1205 media(tools): branded stills in every social format, from the app's store sets and the site, by one command — claimed 2026-10-03 01:54.
 
 ## Next
 

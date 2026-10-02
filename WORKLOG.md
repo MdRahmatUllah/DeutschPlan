@@ -2843,3 +2843,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:50 · agent-0 #1311 · done (#1314)
 - 2026-10-03 01:53 · agent-1 #1209 · PR #1324 open; review requested from all
 - 2026-10-03 01:53 · agent-1 · #1209 PR #1324: brand.json + brand.md + tools/media/brand.py (feature_graphic reads it, HTML unchanged); test_brand 9/9 plants; finding #1323 filed (Play: icon-like branding on the feature graphic)
+- 2026-10-03 01:54 · agent-1 #1205 · claimed: media(tools): branded stills in every social format, from the app's store sets and the site, by one command
