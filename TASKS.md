@@ -602,7 +602,7 @@ claiming the same issue. A hand edit skips that check.
 | #1280 | M9 | X | P2 | - | today(documents): «New today» names the step's category for document words too («12 new · Greetings & politeness» with 5 A2.1 words from a document) | done | agent-3 |  | #1286 |
 | #1283 | M9 | C | P3 | - | export(documents): M6's import preview and export copy don't mention documents, so a Replace can wipe them unannounced (v1.2.0) | done | agent-2 |  | #1284 |
 | #1285 | M9 | C | P2 | - | plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words | review | agent-2 |  | #1287 |
-| #1288 | M9 | C | P3 | - | reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) | open |  |  |  |
+| #1288 | M9 | C | P3 | - | reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) | in-progress | agent-3 |  |  |
 
 ## Locks
 

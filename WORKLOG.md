@@ -2697,3 +2697,4 @@ able to tell what is going on without asking.
 - 2026-10-02 18:33 · agent-2 #1229 · claimed: input(documents): photos and the camera, through on-device OCR, with a correction step
 - 2026-10-02 18:33 · agent-2 · #1284 (#1283) merged; #1285 fixed at the root (docPlannedOn/docWaiting follow plan_items), PR #1287, device repro on 5558 ok. Re-claimed #1229 (local branch in dp-wt/agent-2-c), still waiting on agent-0's package OK (H-3527 pdfbox for #1228, H-3531 ML Kit + image_picker for #1229).
 - 2026-10-02 18:53 · agent-3 #1288 · added to the board, lane C
+- 2026-10-02 18:53 · agent-3 #1288 · claimed: reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0)

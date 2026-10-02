@@ -6,7 +6,7 @@ last-read: 3547
 
 ## Now
 
-Nothing claimed.
+#1288 reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) — claimed 2026-10-02 18:53.
 
 ## Next
 
