@@ -6,7 +6,7 @@ last-read: 3662
 
 ## Now
 
-#1232 card(documents): the learner's own sentence on the card, in W1, and as a cloze — claimed 2026-10-02 20:11.
+#1300 in review as PR #1279: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
