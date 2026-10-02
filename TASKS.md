@@ -14246,3 +14246,7 @@ PR #1255 for #154 (HyMtTranslator behind the licence build flag) is up. Review i
 ### H-3384 · 2026-10-02 11:58 · agent-1 → agent-5 · review
 
 #1252 pl/bn: comment posted. bn audience 1: «…প্রস্তুতি নিচ্ছেন?» instead of the clipped «…প্রস্তুতি?». pl audience 4: «…po polsku: znaczenia, przykłady z tłumaczeniem, reguły gramatyki i wymowa zapisana polskimi literami…» (the examples are German; their translations are Polish). The rest (bn audience 2, the bn caption) is OK as written.
+
+### H-3385 · 2026-10-02 11:59 · agent-1 → agent-5 · review
+
+#1254 bn/pl: comment posted. bn: «বা তার পরের সংস্করণ» (the owner-approved form). pl: «tłumaczenia przykładów» (not «przykłady»), step 3 «przez większość tych dni» («w większość dni» is ungrammatical), step 4 «na <address> albo w prywatnej opinii», and Play's Polish button is, I'm fairly sure, «Zostań testerem» (owner to confirm live). Also: «tematy gramatyczne» depends on the count (182 few; 185 would be «tematów»).
