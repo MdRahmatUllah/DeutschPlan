@@ -1,6 +1,7 @@
 package de.sogda.app
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -42,12 +43,11 @@ class ShareActivity : Activity() {
             // The copy, off the main thread: the sender's grant to read the
             // URI lasts while this activity does, so it finishes after.
             Thread {
-                val copy = runCatching { copyPdf(pdf) }.getOrNull()
-                if (copy != null) {
-                    pending = null
-                    pendingPdf = copy
-                    open()
-                }
+                // A copy that fails (the grant revoked, the disk full) still
+                // opens D1, on its choices: the share wasn't lost unseen.
+                pending = null
+                pendingPdf = runCatching { copyPdf(pdf) }.getOrNull()
+                open()
                 runOnUiThread { finish() }
             }.start()
             return
@@ -69,12 +69,23 @@ class ShareActivity : Activity() {
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
     )
 
+    /**
+     * The shared file, only as another app's `content:` URI. A `file:` path,
+     * or a provider of Sogda's own (a plugin's, under its package), would be
+     * opened with Sogda's permissions: a crafted share could have it copy
+     * its own private files (a confused deputy).
+     */
     @Suppress("DEPRECATION")
     private fun stream(intent: Intent): Uri? =
-        if (Build.VERSION.SDK_INT >= 33) {
-            intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
-        } else {
-            intent.getParcelableExtra(Intent.EXTRA_STREAM)
+        (
+            if (Build.VERSION.SDK_INT >= 33) {
+                intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+            } else {
+                intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            }
+        )?.takeIf { uri ->
+            uri.scheme == ContentResolver.SCHEME_CONTENT &&
+                uri.authority?.startsWith(packageName) == false
         }
 
     /**
@@ -82,7 +93,9 @@ class ShareActivity : Activity() {
      * share before it deleted. pdfbox reads the copy page by page.
      */
     // ponytail: no size cap; a huge PDF is copied whole into the cache, and
-    // D1 reads its first 30 pages. Cap it if a share ever fills a phone.
+    // D1 reads its first 30 pages. Cap it if a share ever fills a phone. A
+    // cloud file (Drive) downloads here, behind the invisible window, for as
+    // long as that takes: a progress note if that's ever seconds too long.
     private fun copyPdf(uri: Uri): String {
         val folder = File(cacheDir, "shared")
         folder.deleteRecursively()

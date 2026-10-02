@@ -794,8 +794,8 @@ void main() {
       );
     });
 
-    test('#1228 FR-D1-01 a shared PDF is copied while its grant lasts, and '
-        'only its path reaches D1, once', () {
+    test("#1228 FR-D1-01 a shared PDF, only as another app's content, is "
+        'copied while its grant lasts, and only its path reaches D1, once', () {
       final manifest = File('android/app/src/main/AndroidManifest.xml')
           .readAsStringSync();
       final filter = RegExp(
@@ -808,11 +808,19 @@ void main() {
       ).readAsStringSync();
       // The sender's grant ends with ShareActivity: the copy comes first.
       expect(share, contains('File(cacheDir, "shared")'));
-      expect(share, contains('pendingPdf = copy'));
+      const copied = 'pendingPdf = runCatching { copyPdf(pdf) }.getOrNull()';
+      expect(share, contains(copied));
       expect(
-        share.indexOf('pendingPdf = copy'),
+        share.indexOf(copied),
         lessThan(share.indexOf('runOnUiThread { finish() }')),
         reason: 'copied before the activity, and its grant, ends',
+      );
+      // Only another app's content: no file: path, and no provider of
+      // Sogda's own, read with Sogda's permissions (a confused deputy).
+      expect(share, contains('uri.scheme == ContentResolver.SCHEME_CONTENT'));
+      expect(
+        share,
+        contains('uri.authority?.startsWith(packageName) == false'),
       );
       expect(
         share,

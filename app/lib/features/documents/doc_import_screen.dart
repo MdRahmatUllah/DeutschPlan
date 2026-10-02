@@ -80,6 +80,9 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   int _readingOf = 0;
   int _pdfPages = 0;
 
+  /// The PDF reader, kept for [dispose], where `ref` can't be read.
+  late final PdfText _pdf;
+
   /// The photos, in page order, as they were taken or chosen (#1229).
   List<String> _photos = const <String>[];
 
@@ -99,6 +102,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   @override
   void initState() {
     super.initState();
+    _pdf = ref.read(pdfTextProvider);
     _lifecycle;
     _paste.addListener(_onPasteChanged);
     unawaited(_checkClipboard());
@@ -115,6 +119,8 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
 
   @override
   void dispose() {
+    // Left from an error panel: the copy a Retry would have read goes too.
+    _dropPdf();
     _lifecycle.dispose();
     _paste.dispose();
     _check.dispose();
@@ -141,6 +147,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     final pdf = await ref.read(sharedTextProvider).takePdf();
     if (!mounted) return;
     if (pdf != null) {
+      _dropPdf();
       _pdfPath = pdf;
       _pdfName = pdf.split(RegExp(r'[/\\]')).last;
       unawaited(_readPdf());
@@ -194,7 +201,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
 
   /// *Choose a PDF*: the file picker, then its text layer.
   Future<void> _choosePdf() async {
-    final path = await ref.read(pdfTextProvider).choose();
+    final path = await _pdf.choose();
     if (!mounted || path == null) return;
     _pdfPath = path;
     _pdfName = path.split(RegExp(r'[/\\]')).last;
@@ -215,7 +222,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     });
     try {
       final read = await readPdf(
-        ref.read(pdfTextProvider),
+        _pdf,
         _pdfPath,
         onOpen: (pages) {
           if (pages > maxPdfPages && mounted && run == _run) {
@@ -236,6 +243,8 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
         cancelled: () => !mounted || run != _run,
       );
       if (read == null || !mounted || run != _run) return;
+      // Its text is out (or there's none): the copy isn't needed again.
+      _dropPdf();
       if (read.scan) {
         setState(() => _stage = _Stage.scan);
         return;
@@ -243,7 +252,9 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
       _pdfPages = read.pages.length;
       unawaited(_read(read.pages, source: 'pdf'));
     } on PdfLocked {
-      if (mounted && run == _run) setState(() => _stage = _Stage.locked);
+      if (!mounted || run != _run) return;
+      _dropPdf();
+      setState(() => _stage = _Stage.locked);
     } on Object {
       if (mounted && run == _run) setState(() => _stage = _Stage.failed);
     }
@@ -387,11 +398,21 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     DocWordsRoute.instead(context, id);
   }
 
+  /// BR-DOC-05: the PDF's copy (the picker's, or a share's in
+  /// `cache/shared`) goes once D1 is done with it. A failed read keeps it
+  /// for *Retry*, until another file, *Cancel* or leaving D1.
+  void _dropPdf() {
+    if (_pdfPath.isEmpty) return;
+    unawaited(_pdf.discard(_pdfPath));
+    _pdfPath = '';
+  }
+
   /// FR-D1-05: back to the choices, with nothing saved.
   void _cancel() {
     if (_photos.isNotEmpty) {
       unawaited(ref.read(pagePhotosProvider).discard(_photos));
     }
+    _dropPdf();
     setState(() {
       _run++;
       _photos = const <String>[];

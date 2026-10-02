@@ -517,6 +517,9 @@ void main() {
         reason: 'cleaned, a page a paragraph',
       );
       expect(router.state.uri.path, '/search/document/7');
+      expect(pdf.discarded, <String>[
+        '/picked/Brief.pdf',
+      ], reason: 'BR-DOC-05: the copy goes once its text is out');
     });
 
     testWidgets("«Reading page 1 of 2…» while it reads, under the file's "
@@ -537,6 +540,7 @@ void main() {
       expect(pdf.read, <int>[1], reason: 'no page after Cancel');
       expect(docs.saved, isEmpty);
       expect(find.text(l10n.docImportChoosePdf), findsOneWidget);
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
     });
 
     testWidgets('FR-D1-02 a PDF over 30 pages: the first 30 are read, and the '
@@ -568,16 +572,13 @@ void main() {
     ) async {
       final docs = FakeDocuments();
       final photos = FakePhotos();
-      await pump(
-        tester,
-        docs: docs,
-        photos: photos,
-        pdf: FakePdf(pages: <String>['', 'Seite 2']),
-      );
+      final pdf = FakePdf(pages: <String>['', 'Seite 2']);
+      await pump(tester, docs: docs, photos: photos, pdf: pdf);
       await tester.tap(find.text(l10n.docImportChoosePdf));
       await tester.pumpAndSettle();
       expect(find.text(l10n.docImportPdfScan), findsOneWidget);
       expect(docs.saved, isEmpty);
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
 
       await tester.tap(find.text(l10n.docImportChooseImages));
       await tester.pumpAndSettle();
@@ -591,10 +592,12 @@ void main() {
       await tester.tap(find.text(l10n.docImportChoosePdf));
       await tester.pumpAndSettle();
       expect(find.text(l10n.docImportPdfLocked), findsOneWidget);
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
 
       await tester.tap(find.text(l10n.docImportChoosePdf));
       await tester.pumpAndSettle();
       expect(pdf.chosen, 2);
+      expect(pdf.discarded, hasLength(2), reason: 'each copy, once');
     });
 
     testWidgets('a PDF that fails to read says so, and Retry reads it again', (
@@ -606,6 +609,7 @@ void main() {
       await tester.tap(find.text(l10n.docImportChoosePdf));
       await tester.pumpAndSettle();
       expect(find.text(l10n.docImportFailed), findsOneWidget);
+      expect(pdf.discarded, isEmpty, reason: 'kept for Retry');
 
       await tester.tap(find.text(l10n.retry));
       await tester.pumpAndSettle();
@@ -613,6 +617,21 @@ void main() {
       expect(pdf.read, <int>[1, 2], reason: 'its pages read this time');
       expect(docs.saved.single.source, 'pdf');
       expect(docs.saved.single.body, contains('Abrechnung'));
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
+    });
+
+    testWidgets('BR-DOC-05 leaving D1 from the failure, the copy kept for '
+        'Retry goes too', (tester) async {
+      final pdf = FakePdf(pages: brief, failures: 1);
+      final router = await pump(tester, docs: FakeDocuments(), pdf: pdf);
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+
+      router.go('/search');
+      await tester.pumpAndSettle();
+      expect(find.text('R1'), findsOneWidget);
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
     });
 
     testWidgets('FR-D1-01 "Share → Sogda" with a PDF: its copy read at once '
@@ -631,6 +650,32 @@ void main() {
       expect(pdf.read, <int>[1, 2]);
       expect(docs.saved.single.source, 'pdf');
       expect(docs.saved.single.pageCount, 2);
+      expect(pdf.discarded, <String>['/cache/shared/Nebenkosten 2025.pdf']);
+    });
+
+    testWidgets('BR-DOC-05 a second share over a failed one: the first copy '
+        'goes, the second is read', (tester) async {
+      final docs = FakeDocuments();
+      final pdf = FakePdf(path: null, pages: brief, failures: 1);
+      final shared = FakeShared(null, pdf: '/cache/shared/A.pdf');
+      final router = await pump(
+        tester,
+        docs: docs,
+        pdf: pdf,
+        arrival: '1',
+        shared: shared,
+      );
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+      expect(pdf.discarded, isEmpty, reason: 'kept for Retry');
+
+      shared.pdf = '/cache/shared/B.pdf';
+      router.go('/search/import?arrival=2');
+      await tester.pumpAndSettle();
+      expect(docs.saved.single.source, 'pdf');
+      expect(pdf.discarded, <String>[
+        '/cache/shared/A.pdf',
+        '/cache/shared/B.pdf',
+      ]);
     });
 
     testWidgets('backing out of the picker stays on the choices', (
@@ -800,6 +845,7 @@ class FakePdf implements PdfText {
   int chosen = 0;
   int closed = 0;
   final List<int> read = <int>[];
+  final List<String> discarded = <String>[];
 
   @override
   Future<String?> choose() async {
@@ -826,4 +872,7 @@ class FakePdf implements PdfText {
 
   @override
   Future<void> close(int handle) async => closed++;
+
+  @override
+  Future<void> discard(String path) async => discarded.add(path);
 }

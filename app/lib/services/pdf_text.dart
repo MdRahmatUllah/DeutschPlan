@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:file_picker/file_picker.dart';
@@ -20,6 +21,10 @@ abstract interface class PdfText {
   Future<String> page(int handle, int page);
 
   Future<void> close(int handle);
+
+  /// The copy D1 read, the picker's or a share's, gone once D1 is done with
+  /// it (BR-DOC-05): it's the whole document, a bank statement or a letter.
+  Future<void> discard(String path);
 }
 
 /// A PDF that needs a password to open.
@@ -67,6 +72,17 @@ class PlatformPdfText implements PdfText {
   @override
   Future<void> close(int handle) =>
       _call<void>('close', <String, Object>{'handle': handle});
+
+  /// Both copies are the app's own, in its cache (`file_picker/…`,
+  /// `shared/…`), never the learner's original.
+  @override
+  Future<void> discard(String path) async {
+    try {
+      await File(path).delete();
+    } on FileSystemException {
+      // Gone already: nothing left to drop.
+    }
+  }
 
   static Future<T?> _call<T>(String method, Map<String, Object> args) async {
     try {

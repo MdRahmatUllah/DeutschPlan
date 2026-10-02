@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sogda/services/pdf_text.dart';
@@ -27,6 +29,9 @@ class _FakePdf implements PdfText {
 
   @override
   Future<void> close(int handle) async => closed.add(handle);
+
+  @override
+  Future<void> discard(String path) async {}
 }
 
 const String _letter =
@@ -158,6 +163,18 @@ void main() {
         expect(calls[1].arguments, <String, Object>{'handle': 3, 'page': 1});
       },
     );
+
+    test('BR-DOC-05 discard deletes the copy D1 read, and a second one is '
+        'nothing', () async {
+      final folder = Directory.systemTemp.createTempSync('pdf_copy');
+      addTearDown(() => folder.deleteSync(recursive: true));
+      final copy = File('${folder.path}/Brief.pdf')..writeAsStringSync('%PDF');
+      const pdf = PlatformPdfText();
+
+      await pdf.discard(copy.path);
+      expect(copy.existsSync(), isFalse);
+      await pdf.discard(copy.path);
+    });
 
     test('a password is PdfLocked; anything else, PdfUnreadable', () async {
       const pdf = PlatformPdfText();
