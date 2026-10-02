@@ -2695,3 +2695,4 @@ able to tell what is going on without asking.
 - 2026-10-02 18:32 · agent-2 #1285 · PR #1287 open; review requested from all
 - 2026-10-02 18:33 · agent-1 · Kept #1269 and #1279 merge-ready: main (to 3d6d00dc) merged into both, main's areas + own tests green (539+571, 358); the timing guard caught my flaky-test fix's fixed sleep → replaced with test/timing.dart's until.
 - 2026-10-02 18:33 · agent-2 #1229 · claimed: input(documents): photos and the camera, through on-device OCR, with a correction step
+- 2026-10-02 18:33 · agent-2 · #1284 (#1283) merged; #1285 fixed at the root (docPlannedOn/docWaiting follow plan_items), PR #1287, device repro on 5558 ok. Re-claimed #1229 (local branch in dp-wt/agent-2-c), still waiting on agent-0's package OK (H-3527 pdfbox for #1228, H-3531 ML Kit + image_picker for #1229).
