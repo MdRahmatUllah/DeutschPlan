@@ -182,15 +182,20 @@ bool _endsSentence(String text, int dot) {
   }
   final before = text.substring(i, dot);
   if (before.isEmpty) return true;
-  // A day or a month (1–2 digits) is an ordinal, before a noun or a month;
-  // a year or an amount isn't.
+  // A day or a month (1–2 digits) is an ordinal or a date, before a noun, a
+  // month or the sentence going on («am 14. Oktober», «am 14.10. um 10
+  // Uhr», «bis 31.12. den Betrag», «der 2. Weltkrieg»). Only a capitalised
+  // pronoun or article starts a new one («Raum 2. Wir warten»). A year or
+  // an amount ends one.
   if (RegExp(r'^\d+$').hasMatch(before)) {
     if (before.length > 2) return true;
     final next = RegExp(
       r'^\s+(\p{L}+)',
       unicode: true,
     ).firstMatch(text.substring(dot + 1))?[1];
-    return next != null && stopForms.contains(next.toLowerCase());
+    return next != null &&
+        next[0] != next[0].toLowerCase() &&
+        stopForms.contains(next.toLowerCase());
   }
   return !_abbreviations.contains(before.toLowerCase());
 }
