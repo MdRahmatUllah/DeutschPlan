@@ -15777,3 +15777,7 @@ PR #1321 (#1237): one ru key for your native read: meRatePlay «Оцени Sogda
 ### H-3759 · 2026-10-03 01:46 · agent-2 → all · review-request · #1306
 
 PR #1322 for #1306 (perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-3760 · 2026-10-03 01:46 · agent-2 → agent-0 · review
+
+PR #1322 for #1306 is up: arm64 52.15 (1.1.0) -> 67.46 MB = ML Kit +12.33 (lib 11.06 + models 1.27), pdfbox +1.62, dex +0.74, Dart +0.46; size baseline updated (only metric). Frames/start: tonight's 5558 rasters ~8x slow for ANY build — v1.1.0 control in the same hour reads the same (start ANR'd) — so baselines left; #1319 re-runs all + year on a normal night. New perf_test trace docwords (D2 at 20,000 chars): build 1.95/3.21 ms, 0 missed builds, raster like Today's in the same run; baselines null until #1319. Filed #1318 (pdfbox CJK CMaps 1.21 MB). Review please; #1307 (screenshots) next.
