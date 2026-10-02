@@ -2658,3 +2658,4 @@ able to tell what is going on without asking.
 - 2026-10-02 15:35 · agent-1 · locked shared-look: #154: AdaptiveSwitch dims when disabled (M3's translation row below the RAM floor)
 - 2026-10-02 15:35 · agent-3 #1270 · PR #1273 open; review requested from all
 - 2026-10-02 15:36 · agent-3 · #1270: PR #1273 (stacked on #1260): gender forms, adjective-before-capital noun sign + -innen, und/oder end a clause; precision 0.998->1.000; 8/8 plants. #1257 commented: Raum, Deutsch, Besuch, Chance, Schritt have no headword
+- 2026-10-02 15:37 · agent-2 · #1272: agent-3's should-fix in (planned_doc_cap: an opened day keeps its doc cap), main merged, gate green, 4/4 plants; awaiting agent-0's review
