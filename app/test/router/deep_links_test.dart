@@ -23,6 +23,7 @@ import 'package:sogda/features/learn/step_detail_screen.dart';
 import 'package:sogda/features/sentences/sentences_screen.dart';
 import 'package:sogda/features/today/today_screen.dart';
 import 'package:sogda/features/words/word_detail_screen.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/router/app_router.dart';
@@ -532,9 +533,8 @@ void main() {
         expect(shared.taken, 2, reason: 'a second share onto D1 is read too');
       });
 
-      testWidgets('even mid-session, but never over a running exam', (
-        tester,
-      ) async {
+      testWidgets('even mid-session, but never over a running exam, which '
+          'says so (#1282)', (tester) async {
         await pumpApp(
           tester,
           extra: <Override>[
@@ -550,6 +550,13 @@ void main() {
 
         expect(find.byType(ExamRunnerScreen), findsOneWidget);
         expect(router.state.uri.path, '/exam/7');
+        // The learner shared from another app: nothing else would show.
+        expect(
+          find.text(
+            lookupAppLocalizations(const Locale('en')).docImportExamHeld,
+          ),
+          findsOneWidget,
+        );
       });
     });
 
@@ -574,6 +581,8 @@ void main() {
 
         expect(find.byType(ExamRunnerScreen), findsOneWidget);
         expect(router.state.uri.path, '/exam/7');
+        // #1282: only a share, from another app, says it was held.
+        expect(find.byType(SnackBar), findsNothing);
       });
 
       testWidgets("nor does a tapped reminder's, which goes to the router "

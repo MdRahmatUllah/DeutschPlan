@@ -6,7 +6,7 @@
 
 **Reached from.**
 - R1 idle: *Learn from a document*, under *Add a word I found*;
-- **Android's share sheet:** "Share → Sogda" with text, a PDF or images. It opens D1 straight into processing, even mid-session, but never over a running exam (the deep-link rules);
+- **Android's share sheet:** "Share → Sogda" with text, a PDF or images. It opens D1 straight into processing, even mid-session, but never over a running exam (the deep-link rules). There, a toast says «Finish the exam first, then share it again.» (#1282): the learner shared from another app and would see nothing happen. What was shared isn't kept for later; the next share replaces it;
 - D3's *New document*.
 
 **Leads to.** D2 when processing ends.
@@ -75,7 +75,7 @@
   - **A shared PDF** (#1228): the sender's `content://` grant belongs to `ShareActivity`, which finishes at once. So `ShareActivity` copies `EXTRA_STREAM` to `cache/shared/<name>.pdf` on a thread of its own, then opens `MainActivity` as above. D1 takes the path once (`SharedText.takePdf`), before any text, and reads it as a chosen PDF, saved as `pdf`.
     - **Only another app's `content:` URI** is taken. A `file:` path, or a provider under Sogda's own package (a plugin's), would be opened with Sogda's permissions, so a crafted share could have it copy its own private files.
     - **A copy that fails** (the grant revoked, the disk full) still opens D1, on its choices, so the share isn't lost unseen.
-  - **The link** is an arrival like any other (`navigation.md`): a running exam holds it, a study session doesn't, and each share is numbered (`?arrival=`), so a second one onto D1 is read too.
+  - **The link** is an arrival like any other (`navigation.md`): a running exam holds it, and says so (#1282), a study session doesn't, and each share is numbered (`?arrival=`), so a second one onto D1 is read too.
 - **R1 idle's** *Learn from a document*, under *Add a word I found*, pushes D1 (`/search/import`); back returns to R1. Once a document is kept it pushes D3 instead, whose *New document* is D1 (#1295). Back from the pasted text's box, or from processing, returns to the choices.
 - The APK's growth is measured in `perf.py size`.
 
