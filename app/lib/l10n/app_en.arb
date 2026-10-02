@@ -1044,6 +1044,47 @@
       }
     }
   },
+  "todayNewCategoryDocuments": "{count} new · {category} · {documents} from your documents",
+  "@todayNewCategoryDocuments": {
+    "description": "#1280: T1 New card subtitle when some of today's new words came from documents (BR-PLAN-11): the course's count with its category, then the documents' count. The category is course content.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "category": {
+        "type": "String"
+      },
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "todayNewPlainDocuments": "{count} new · {documents} from your documents",
+  "@todayNewPlainDocuments": {
+    "description": "#1280: T1 New card subtitle when some of today's new words came from documents and the course's have no category.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "todayNewFromDocuments": "{documents} from your documents",
+  "@todayNewFromDocuments": {
+    "description": "#1280: T1 New card subtitle when all of today's new words came from documents.",
+    "placeholders": {
+      "documents": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "todayBacklog": "Backlog · {count}",
   "@todayBacklog": {
     "description": "T1 section card title; opens T4.",

@@ -40,6 +40,18 @@ void main() {
     builder: (context) =>
         ProviderScope(overrides: todayStub(), child: const TodayScreen()),
   );
+  // #1280: 5 of the 12 new words from documents, named apart from the
+  // course's category; the audit's 150/200 % passes in every language take
+  // the longer line.
+  goldenTest(
+    'today_documents',
+    modes: const <GoldenMode>[GoldenMode.light],
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (context) => ProviderScope(
+      overrides: todayStub(artboardToday(newTotal: 12, newFromDocuments: 5)),
+      child: const TodayScreen(),
+    ),
+  );
   // #165: at 200 % text.
   goldenTest(
     'today_200',
