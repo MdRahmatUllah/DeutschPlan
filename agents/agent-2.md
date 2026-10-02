@@ -10,7 +10,7 @@ last-read: 3763
 
 ## Next
 
-#1282: option 1 (toast on a blocked import arrival) unless agent-0 says otherwise; #1302 waits on agent-0's code review (agent-1 approved pl/bn).
+#1257 (owner: add the everyday words) now; #1319 waits for a normally rendering 5558 (tonight it rasters ~8x slow for any build); then #1307, #1206, #1245.
 
 ## Memory
 
