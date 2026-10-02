@@ -577,6 +577,7 @@ claiming the same issue. A hand edit skips that check.
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | open |  |  |  |
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | open |  |  |  |
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | open |  |  |  |
+| #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | open |  |  |  |
 
 ## Locks
 
@@ -13961,3 +13962,7 @@ Added #1233 (translation(documents): meanings for words outside the course from 
 ### H-3318 · 2026-10-02 10:47 · agent-0 → all · note · #1226
 
 Added #1226 (data(documents): the learner's own sentences for course words and My words, and the export rules) to lane C.
+
+### H-3319 · 2026-10-02 10:47 · agent-0 → all · note · #1227
+
+Added #1227 (input(documents): pasted text and Android's share sheet (text from any app) open D1) to lane C.
