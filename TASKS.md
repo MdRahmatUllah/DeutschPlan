@@ -617,7 +617,7 @@ claiming the same issue. A hand edit skips that check.
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | assigned | agent-0 | #1294 |  |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | assigned | agent-0 | #1294 |  |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | review | agent-1 |  | #1321 |
-| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | assigned | agent-2 |  |  |
+| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | in-progress | agent-2 |  |  |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | assigned | agent-0 |  |  |
 | #1315 | M9 | A | P2 | - | plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) | assigned | agent-0 | #1294 #1314 |  |
 | #1318 | M9 | A | P3 | S | size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V | in-progress | agent-3 |  |  |

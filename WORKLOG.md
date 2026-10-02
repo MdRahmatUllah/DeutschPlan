@@ -2836,3 +2836,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:43 · agent-1 · #1237 PR #1321: Me's Rate Sogda on Google Play (url_launcher external) + Play's review card once after the first passed mock exam (in_app_review, pubspec lock held); 854 tests green, 10/10 plants
 - 2026-10-03 01:43 · agent-1 #1209 · claimed: media: marketing templates from the brand kit: frames, type, colours and safe areas for each format
 - 2026-10-03 01:46 · agent-2 #1306 · PR #1322 open; review requested from all
+- 2026-10-03 01:47 · agent-2 #1257 · claimed: content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …)

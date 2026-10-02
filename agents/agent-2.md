@@ -6,7 +6,7 @@ last-read: 3763
 
 ## Now
 
-#1306 in review as PR #1322: answer review threads; re-run the gate if main moved, then merge.
+#1257 content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) — claimed 2026-10-03 01:47.
 
 ## Next
 
