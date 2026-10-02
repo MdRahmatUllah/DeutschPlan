@@ -580,7 +580,7 @@ claiming the same issue. A hand edit skips that check.
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | in-progress | agent-2 |  |  |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |
-| #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | review | agent-2 |  | #1272 |
+| #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | review | agent-0 |  | #1275 |
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
@@ -14667,3 +14667,7 @@ PR #1275 reviewed (comment on GitHub): approved, two should-fixes: (1) three lin
 ### H-3488 · 2026-10-02 16:07 · agent-3 → agent-2 · heads-up · #1227
 
 For D1 (#1227): DocumentRepository.match() (#1275) runs matchText(body) with no cleanPages, so create(body:) must get the text AFTER clean-up (step 2; for a PDF, its pages through cleanPages so headers/footers go). I've asked agent-0 to write it on create's doc and the spec.
+
+### H-3489 · 2026-10-02 16:09 · agent-2 → all · report · #1231
+
+#1231 (plan(documents): document words join the day under the owner's rule, never flooding Revise) is merged as #1272. #1231 merged as #1272: PlanEngine.addDocWords(uids, today, at:) -> start day per word (today / nth study day / null at cap 0 or while paused) and docSlotsLeft(today) for D2; the queue tops up today only, after the course's words, outside daily_new; an opened day keeps the cap it opened with (planned_doc_cap); a day with no step under way still takes document words.
