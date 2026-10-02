@@ -395,6 +395,12 @@ class _ExportImportState extends ConsumerState<ExportImportScreen> {
           l10n.exportImportExams(rows('exam_attempts')),
         if (rows('custom_words') > 0)
           l10n.exportImportMyWords(rows('custom_words')),
+        // A Replace deletes the phone's documents and their sentences
+        // (BR-DOC-06), so the file says how many it brings (#1283).
+        if (rows('documents') > 0)
+          l10n.exportImportDocuments(rows('documents')),
+        if (rows('word_contexts') > 0)
+          l10n.exportImportSentences(rows('word_contexts')),
       ].join(' · '),
     ]..removeWhere((line) => line.isEmpty);
   }

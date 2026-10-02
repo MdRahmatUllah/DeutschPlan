@@ -149,3 +149,11 @@ const Map<String, (String, String)> strongVerbs = <String, (String, String)>{
   'ziehen': ('zog', 'zöge'),
   'zwingen': ('zwang', 'zwänge'),
 };
+
+/// The forms no rule makes from a verb's infinitive, its 3rd person and its
+/// past (#1274): sein's present, werden's «wirst», and werden's participle
+/// in the passive («ist gemacht worden»).
+const Map<String, List<String>> irregularForms = <String, List<String>>{
+  'sein': <String>['bin', 'bist', 'sind', 'seid'],
+  'werden': <String>['wirst', 'worden'],
+};

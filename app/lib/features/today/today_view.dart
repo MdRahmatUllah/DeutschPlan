@@ -266,6 +266,7 @@ class TodayView {
     this.step,
     this.learnerName,
     this.newCategory,
+    this.newFromDocuments = 0,
     this.grammar,
   });
 
@@ -346,8 +347,12 @@ class TodayView {
   /// `learner_name`; the greeting leaves it out when empty.
   final String? learnerName;
 
-  /// The category most of today's new words share.
+  /// The category most of today's new words from the course share.
   final String? newCategory;
+
+  /// How many of [newToday]'s words came from the document queue
+  /// (BR-PLAN-11, #1280): no step's, so named apart from the category.
+  final int newFromDocuments;
 
   final GrammarPreview? grammar;
 

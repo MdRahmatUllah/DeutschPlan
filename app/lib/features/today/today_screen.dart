@@ -244,12 +244,7 @@ class _Plan extends ConsumerWidget {
                   icon: Icons.star_outline,
                   tile: tokens.color.accent,
                   title: l10n.todayNew(view.newToday.total),
-                  subtitle: view.newCategory == null
-                      ? l10n.todayNewPlain(view.newToday.total)
-                      : l10n.todayNewCategory(
-                          view.newToday.total,
-                          view.newCategory!,
-                        ),
+                  subtitle: _newLine(l10n, view),
                   trailing: _trailing(view.newToday),
                   progress: view.newToday,
                   ringColour: tokens.color.accent,
@@ -468,6 +463,23 @@ class _Plan extends ConsumerWidget {
   static SectionTrailing _trailing(BlockProgress block) {
     if (block.finished) return SectionTrailing.done;
     return block.total == 0 ? SectionTrailing.none : SectionTrailing.progress;
+  }
+
+  /// The New card's line: the course's words with their category, and the
+  /// document queue's apart (#1280), since they're no step's.
+  static String _newLine(AppLocalizations l10n, TodayView view) {
+    final documents = view.newFromDocuments;
+    final course = view.newToday.total - documents;
+    final category = view.newCategory;
+    if (documents == 0) {
+      return category == null
+          ? l10n.todayNewPlain(course)
+          : l10n.todayNewCategory(course, category);
+    }
+    if (course == 0) return l10n.todayNewFromDocuments(documents);
+    return category == null
+        ? l10n.todayNewPlainDocuments(course, documents)
+        : l10n.todayNewCategoryDocuments(course, category, documents);
   }
 
   /// "Tue–Wed", or "30 Sep–15 Oct" once it goes back further (#821).
