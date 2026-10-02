@@ -2626,3 +2626,4 @@ able to tell what is going on without asking.
 - 2026-10-02 13:19 · agent-3 #1222 · done (#1258)
 - 2026-10-02 13:25 · agent-2 #1226 · PR #1262 open; review requested from all
 - 2026-10-02 13:26 · agent-2 · #1226: PR #1262 up (user.db v6: documents tables, settings, export rules; 11/11 plants; v5→v6 upgrade on 5558). user-db-schema lock held until merge.
+- 2026-10-02 13:29 · agent-1 · #1255 (#154 part 2) merged: agent-0's starting-window test added (plant caught), main merged in, gate green. Next: #1261 (two-model space check) before part 3.
