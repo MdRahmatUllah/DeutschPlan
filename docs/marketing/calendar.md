@@ -6,7 +6,7 @@
 
 - **Live:** the day Play shows the production listing. It comes when Google's review finishes, and the owner can't schedule it: managed publishing, which holds changes back until the owner publishes them, doesn't apply to an app's first release ("You can't use it when publishing an app for the first time", https://support.google.com/googleplay/android-developer/answer/9859654, read 2026-10-02).
 - **L, launch day:** **the first Tuesday or Wednesday after Live**, once the owner has opened the listing on a phone and checked it in every language. Tuesday and Wednesday are the best days in Sprout Social's Facebook data, and they avoid Bangladesh's weekend, which is Friday and Saturday (sources in [`channels.md`](channels.md)). A listing that sits live and unannounced for a day or two loses nothing.
-- **Week −3 happens only if Play's testing rule applies** (§2 of [`plan.md`](plan.md), #1239). Then Production opens at the earliest 14 days after the 12th tester opts in, plus up to about 7 days of review.
+- **Week −3 is the closed test.** Play's testing rule applies (D1, answered 2026-10-02; #1239), so Production opens at the earliest 14 days after the 12th tester opts in, plus up to about 7 days of review. The steps and the texts: [`launch/closed-test.md`](launch/closed-test.md).
 
 ## The clock
 
@@ -32,7 +32,7 @@ The status of each row is one of:
 
 Every asset row names its issue in lane M.
 
-### Week −3 (L−21 … L−15), only if the testing rule applies
+### Week −3 (L−21 … L−15): the closed test (the rule applies: D1, answered 2026-10-02)
 
 | Day | Time (local) | Channel | Lang | What | Asset | Status |
 |---|---|---|---|---|---|---|
