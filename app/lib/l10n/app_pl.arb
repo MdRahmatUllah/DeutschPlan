@@ -1063,7 +1063,7 @@
   "docWordsAddedFrom": "Dodano: {word} — w planie: {day}",
   "docWordsAddedWaiting": "Dodano: {word} — czeka w kolejce",
   "docWordsAddedManyToday": "Dodano: {count} · wszystkie na dziś",
-  "docWordsAddedManyLater": "Dodano: {count} · zaczną się jutro lub później",
+  "docWordsAddedManyLater": "Dodano: {count} · od jutra lub później",
   "docWordsAddedManyWaiting": "Dodano: {count} · czekają w kolejce",
   "docWordsAddedMany": "Dodano: {count} · dziś: {today}, reszta później",
   "docWordsGone": "Tego dokumentu już nie ma.",
