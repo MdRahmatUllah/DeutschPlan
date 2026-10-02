@@ -2755,3 +2755,4 @@ able to tell what is going on without asking.
 - 2026-10-02 23:26 · agent-2 #1296 · PR #1302 open; review requested from all
 - 2026-10-02 23:26 · agent-2 · #1292 merged (03a17755) after both approvals; branches feat/1227 + feat/1229 deleted; filed #1298 (picker cache, lane C); PR #1302 up for #1296 + #1298.
 - 2026-10-02 23:29 · agent-0 · #1297 built on feat/1297-particle-salutation (takenUp from the lemmatiser; salutation line ends its sentence); domain tests 75 + corpus 1.000/0.998, plants 3/3. PR once #1294 or #1299 merges (max 2 open).
+- 2026-10-02 23:31 · agent-2 #1282 · claimed: ux(documents): a share during a running exam is dropped with no sign; say so, or open D1 once the exam ends
