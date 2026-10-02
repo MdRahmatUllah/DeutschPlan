@@ -220,6 +220,84 @@ void main() {
     expect(await documents.imageBytes(support: support), 0);
   });
 
+  group('#1296 FR-D3-03 auto-delete', () {
+    /// A document created [daysAgo] before the clock's 2 Oct, 09:00, with a
+    /// photo kept under [support].
+    Future<int> kept(Directory support, int daysAgo) async {
+      final id = await db
+          .into(db.documents)
+          .insert(
+            DocumentsCompanion.insert(
+              title: '$daysAgo days',
+              source: 'photo',
+              createdAt: DateTime.utc(
+                2026,
+                10,
+                2,
+                9,
+              ).subtract(Duration(days: daysAgo)).toIso8601String(),
+              body: letter,
+            ),
+          );
+      File('${support.path}/documents/$id/page-1.jpg')
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(<int>[1, 2, 3]);
+      return id;
+    }
+
+    test('BR-DOC-05: at 30 days, a document of 31 days goes with its photos '
+        'and one of 29 stays; its sentences stay', () async {
+      final support = tempDir('sg_autodelete');
+      final old = await kept(support, 31);
+      final recent = await kept(support, 29);
+      final key = uid['Kündigung']!;
+      await documents.recordAdd(
+        documentId: old,
+        lemmaKey: key,
+        wordKey: key,
+        sentence: 'Die Kündigung kommt pünktlich.',
+      );
+
+      expect(await documents.deleteOlderThan(30, support: support), 1);
+      expect(await documents.document(old), isNull);
+      expect(Directory('${support.path}/documents/$old').existsSync(), isFalse);
+      expect(await documents.document(recent), isNotNull);
+      expect(
+        File('${support.path}/documents/$recent/page-1.jpg').existsSync(),
+        isTrue,
+      );
+      final context = (await db.select(db.wordContexts).get()).single;
+      expect((context.wordKey, context.documentId), (key, null));
+    });
+
+    test('Never (0) deletes nothing, however old', () async {
+      final support = tempDir('sg_autodelete');
+      final ancient = await kept(support, 4000);
+      expect(await documents.deleteOlderThan(0, support: support), 0);
+      expect(await documents.document(ancient), isNotNull);
+    });
+  });
+
+  test('#1296 FR-D3-04: dropping the kept photos keeps every document\'s '
+      'text', () async {
+    final support = tempDir('sg_drop');
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'photo',
+      body: letter,
+    );
+    final shot = File('${support.path}/shot.jpg')
+      ..writeAsBytesSync(jpeg(exif()));
+    await documents.saveImages(id, <String>[shot.path], support: support);
+    expect(await documents.imageBytes(support: support), greaterThan(0));
+
+    await documents.dropImages(support: support);
+    final document = (await documents.document(id))!;
+    expect(document.imagePaths, isNull);
+    expect(document.body, letter);
+    expect(await documents.imageBytes(support: support), 0);
+  });
+
   test('#1230: a document that is gone has nothing to match', () async {
     expect(await documents.match(404), isNull);
   });

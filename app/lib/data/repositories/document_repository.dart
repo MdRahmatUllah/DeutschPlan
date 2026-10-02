@@ -288,6 +288,36 @@ class DocumentRepository {
     }
   }
 
+  /// FR-D3-03, at launch: the documents older than [days] (M3's *Delete
+  /// documents after*) go as D3's *Delete* takes one, and their words and
+  /// sentences stay (BR-DOC-05). 0 is never. How many went.
+  Future<int> deleteOlderThan(int days, {Directory? support}) async {
+    if (days <= 0) return 0;
+    final cutoff = _now()
+        .toUtc()
+        .subtract(Duration(days: days))
+        .toIso8601String();
+    final old =
+        await (_db.selectOnly(_db.documents)
+              ..addColumns(<Expression<Object>>[_db.documents.id])
+              ..where(_db.documents.createdAt.isSmallerThanValue(cutoff)))
+            .map((row) => row.read(_db.documents.id)!)
+            .get();
+    for (final id in old) {
+      await delete(id, support: support);
+    }
+    return old.length;
+  }
+
+  /// FR-D3-04: *Save original images* turned off, and the learner chose to
+  /// delete the photos already kept. Every document keeps its text.
+  Future<void> dropImages({Directory? support}) async {
+    await _db
+        .update(_db.documents)
+        .write(const DocumentsCompanion(imagePaths: Value(null)));
+    await deleteAllImages(support: support);
+  }
+
   /// D3's storage line: the bytes the kept photos take.
   Future<int> imageBytes({Directory? support}) async {
     final root = support ?? await getApplicationSupportDirectory();
