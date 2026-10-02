@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 00:08
+last-seen: 2026-10-03 00:09
 last-read: 3676
 
 ## Now
 
-#1282 in review as PR #1304: answer review threads; re-run the gate if main moved, then merge.
+#1305 fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque — claimed 2026-10-03 00:09.
 
 ## Next
 
