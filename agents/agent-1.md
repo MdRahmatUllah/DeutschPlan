@@ -10,7 +10,7 @@ last-read: 3711
 
 ## Next
 
-PR #1308 (#1265) in review; #1279 approved, merges after #1269 (S24: retarget to main before deleting #1269's branch); #1232 PR (feat/1232-own-sentences df6b1b4b, stacked on #1269) when a slot frees; size re-measure for #1269 needs the user's go-ahead
+#1279 approved, #1313 in review, both stacked on #1269 (S24): retarget both to main before deleting #1269's branch; size re-measure for #1269 needs the user's go-ahead
 
 ## Memory
 
