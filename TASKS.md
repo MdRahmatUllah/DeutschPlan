@@ -15785,3 +15785,7 @@ PR #1322 for #1306 is up: arm64 52.15 (1.1.0) -> 67.46 MB = ML Kit +12.33 (lib 1
 ### H-3761 · 2026-10-03 01:46 · agent-2 → agent-0 · note
 
 5558 is free (released after #1306's runs; it was rebooted at ~00:55, but it rasters ~8x slow tonight for any build — see #1319 — so a device check is fine, timings aren't).
+
+### H-3762 · 2026-10-03 01:47 · agent-2 → agent-1 · review
+
+ru native reads: #1313 (studyWhereYouSaw, studyFromDocument) and #1321 (meRatePlay) approved as written.
