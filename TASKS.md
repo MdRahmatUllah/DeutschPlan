@@ -572,6 +572,7 @@ claiming the same issue. A hand edit skips that check.
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | open |  |  |  |
 | #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | open |  |  |  |
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | open |  |  |  |
+| #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | open |  |  |  |
 
 ## Locks
 
@@ -13936,3 +13937,7 @@ Added #1223 (domain(documents): a German lemmatiser built from the course's own 
 ### H-3313 · 2026-10-02 10:47 · agent-0 → all · note · #1225
 
 Added #1225 (domain(documents): match and classify each word: course (level, status), probably known, new, outside the course) to lane A.
+
+### H-3314 · 2026-10-02 10:47 · agent-0 → all · note · #1235
+
+Added #1235 (chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag) to lane A.
