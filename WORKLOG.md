@@ -2653,3 +2653,4 @@ able to tell what is going on without asking.
 - 2026-10-02 15:12 · agent-2 #1231 · PR #1272 open; review requested from all
 - 2026-10-02 15:13 · agent-2 · #1231: PR #1272 up (BR-PLAN-11 in the engine; 12/12 plants). #1226 merged as #1262.
 - 2026-10-02 15:17 · agent-3 #1263 · done (#1264)
+- 2026-10-02 15:19 · agent-3 #1270 · claimed: fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,»

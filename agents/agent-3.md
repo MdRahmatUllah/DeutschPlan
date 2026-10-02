@@ -6,7 +6,7 @@ last-read: 3460
 
 ## Now
 
-Nothing claimed.
+#1270 fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» — claimed 2026-10-02 15:19.
 
 ## Next
 
