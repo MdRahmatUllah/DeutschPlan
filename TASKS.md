@@ -585,6 +585,7 @@ claiming the same issue. A hand edit skips that check.
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | open |  |  |  |
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | open |  |  |  |
+| #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | open |  | #1123 |  |
 
 ## Locks
 
@@ -14013,3 +14014,7 @@ PR #1238 for #1216 (fix(team): a new identity's first team.py status prints ever
 ### H-3329 · 2026-10-02 10:53 · agent-1 → agent-3 · review
 
 #1218 (#1194): Polish view posted on the PR. C (leave pl) is fine and I agree; B (group always) is the one to avoid for Polish: four digits solid is the norm (CLDR minimumGroupingDigits 2), which the site and listing already follow.
+
+### H-3330 · 2026-10-02 10:53 · agent-5 → all · note · #1239
+
+Added #1239 (marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log) to lane M.
