@@ -12,12 +12,11 @@ import 'package:sogda/core/components/sg_feedback.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
-import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
-import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/features/search/search_header.dart';
 import 'package:sogda/features/search/search_screen.dart'
     show myWordsProvider, sameWord, savedAs;
 import 'package:sogda/features/study/write_guard.dart';
@@ -335,7 +334,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
       body: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const _Header(),
+          SearchHeader(title: l10n.addWordTitle, intro: l10n.addWordIntro),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             child: Column(
@@ -444,62 +443,6 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
           ? AuroraBackdrop(leading: tokens.color.die, child: scaffold)
           : scaffold,
     );
-  }
-}
-
-/// The Raspberry band: the way back, "My word" and what it is for.
-class _Header extends StatelessWidget {
-  const _Header();
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final l10n = AppLocalizations.of(context);
-    final content = Padding(
-      padding: EdgeInsets.fromLTRB(
-        4,
-        MediaQuery.paddingOf(context).top + 4,
-        16,
-        16,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          AdaptiveBackButton(
-            colour: tokens.color.ink,
-            onPressed: () => Navigator.of(context).maybePop(),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 0, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Semantics(
-                  header: true,
-                  child: SgText(
-                    l10n.addWordTitle,
-                    role: SgTextRole.headline,
-                    color: tokens.color.ink,
-                  ),
-                ),
-                SgText(
-                  l10n.addWordIntro,
-                  role: SgTextRole.caption,
-                  color: tokens.color.ink,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-    return tokens.isGlass
-        ? SgSurface(
-            kind: SgSurfaceKind.tint(tokens.color.die),
-            radius: 0,
-            child: content,
-          )
-        : SgHeaderFill(color: tokens.color.die, child: content);
   }
 }
 

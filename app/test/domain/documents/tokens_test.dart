@@ -217,4 +217,46 @@ void main() {
     expect(share('english'), lessThan(germanThreshold));
     expect(share('bangla'), lessThan(germanThreshold));
   });
+
+  group('#1227 FR-D1-02 a text over the limit', () {
+    test('is cut at the last sentence end before it, with a note', () {
+      const text = 'Erster Satz hier. Zweiter Satz da. Dritter Satz dort.';
+      // The limit falls inside the third sentence.
+      final limited = limitText(text, limit: text.indexOf('dort') + 2);
+      expect(limited.text, 'Erster Satz hier. Zweiter Satz da.');
+      expect(limited.cut, isTrue);
+    });
+
+    test('keeps a sentence that ends on the limit', () {
+      const text = 'Erster Satz hier. Zweiter Satz da. Dritter Satz.';
+      final limited = limitText(text, limit: text.indexOf('Dritter'));
+      expect(limited.text, 'Erster Satz hier. Zweiter Satz da.');
+    });
+
+    test('not after an abbreviation, which ends no sentence', () {
+      const text =
+          'Er kam spät. Bringen Sie z. B. den Pass mit. Und dann mehr.';
+      final limited = limitText(text, limit: text.indexOf('Pass'));
+      expect(limited.text, 'Er kam spät.');
+    });
+
+    test('at the last word end when no sentence ends before it', () {
+      final text = 'Wort ' * 10;
+      final limited = limitText(text, limit: 12); // «Wort Wort Wo»
+      expect(limited.text, 'Wort Wort');
+      expect(limited.cut, isTrue);
+    });
+
+    test('never splits a surrogate pair', () {
+      final text = '${'a' * 9}\u{1F600}${'b' * 9}';
+      expect(limitText(text, limit: 10).text, 'a' * 9);
+    });
+
+    test('and one at or under the limit is left as it is', () {
+      final text = 'Kurz. ${'x' * 19994}';
+      expect(text.length, docMaxChars);
+      expect(limitText(text), (text: text, cut: false));
+      expect(limitText('$text.').cut, isTrue);
+    });
+  });
 }

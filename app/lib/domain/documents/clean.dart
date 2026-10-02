@@ -98,3 +98,19 @@ String _joinHyphens(String text) => text
       RegExp(r'(\p{L})-\n(\p{Lu})', unicode: true),
       (m) => '${m[1]}-${m[2]}',
     );
+
+/// A document's title by default (`doc-words.md`): its first line with a
+/// letter in it, cut at a word end to [max] characters. Null for a text with
+/// none, where D1 names it by its day.
+String? documentTitle(String body, {int max = 60}) {
+  final line = body
+      .split('\n')
+      .map((l) => l.trim())
+      .firstWhere(_letter.hasMatch, orElse: () => '');
+  if (line.isEmpty) return null;
+  if (line.length <= max) return line;
+  final space = line.lastIndexOf(' ', max);
+  return '${line.substring(0, space > 0 ? space : max).trimRight()}…';
+}
+
+final RegExp _letter = RegExp(r'\p{L}', unicode: true);

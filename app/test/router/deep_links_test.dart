@@ -17,6 +17,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
+import 'package:sogda/features/documents/doc_import_screen.dart';
 import 'package:sogda/features/exam/exam_runner_screen.dart';
 import 'package:sogda/features/learn/step_detail_screen.dart';
 import 'package:sogda/features/sentences/sentences_screen.dart';
@@ -29,6 +30,7 @@ import 'package:sogda/router/app_shell.dart';
 import 'package:sogda/router/deep_links.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/services/shared_text.dart';
 
 import '../features/today_fixtures.dart';
 import '../services/fake_tts.dart';
@@ -54,6 +56,14 @@ void main() {
         resolveDeepLink(Uri.parse('sogda://exam/A1.2')),
         '/learn/step/A1.2?tab=exams',
       );
+    });
+
+    test('#1227 the share link opens D1, without the text, which stays '
+        'out of links', () {
+      expect(resolveDeepLink(Uri.parse('sogda://import')), shareLocation);
+      expect(shareLocation, const DocImportRoute().location);
+      expect(numberedArrival(Uri.parse(shareLocation)), isTrue);
+      expect(numberedArrival(Uri.parse('/search')), isFalse);
     });
 
     test('an exam link opens the hub, not the runner', () {
@@ -487,6 +497,62 @@ void main() {
       });
     });
 
+    group('#1227 FR-D1-01 "Share → Sogda"', () {
+      // R1 is built under D1, and it reads the settings.
+      Future<Override> loadedSettings(WidgetTester tester) async {
+        late SettingsRepository settings;
+        await tester.runAsync(() async {
+          final db = AppDatabase.memory();
+          settings = SettingsRepository(db);
+          await settings.load();
+          addTearDown(() async {
+            await settings.dispose();
+            await db.close();
+          });
+        });
+        return settingsProvider.overrideWithValue(settings);
+      }
+
+      testWidgets('opens D1, and each share is a new arrival', (tester) async {
+        final shared = _SharedTexts();
+        await pumpApp(
+          tester,
+          extra: <Override>[
+            await loadedSettings(tester),
+            sharedTextProvider.overrideWithValue(shared),
+          ],
+        );
+        await openLink(tester, 'sogda://import');
+        expect(find.byType(DocImportScreen), findsOneWidget);
+        expect(location(), '$shareLocation?$arrivalParameter=1');
+        expect(shared.taken, 1, reason: 'D1 takes the text');
+
+        await openLink(tester, 'sogda://import');
+        expect(location(), '$shareLocation?$arrivalParameter=2');
+        expect(shared.taken, 2, reason: 'a second share onto D1 is read too');
+      });
+
+      testWidgets('even mid-session, but never over a running exam', (
+        tester,
+      ) async {
+        await pumpApp(
+          tester,
+          extra: <Override>[
+            await loadedSettings(tester),
+            sharedTextProvider.overrideWithValue(_SharedTexts()),
+          ],
+        );
+        router.go('/learn/step/A1.2');
+        await tester.pumpAndSettle();
+        unawaited(router.push(const ExamRoute(attemptId: 7).location));
+        await tester.pumpAndSettle();
+        await openLink(tester, 'sogda://import');
+
+        expect(find.byType(ExamRunnerScreen), findsOneWidget);
+        expect(router.state.uri.path, '/exam/7');
+      });
+    });
+
     group('#676 FR-L12-04 an exam pushed over its step', () {
       // As the hub opens one (`ExamRoute.open`): the configuration's own uri
       // stays the step's, and only the top route is the exam.
@@ -677,6 +743,48 @@ void main() {
       );
     });
 
+    test('#1227 Android takes a share in the app\'s own task, its text as '
+        'an extra, never as data', () {
+      final manifest = File('android/app/src/main/AndroidManifest.xml')
+          .readAsStringSync();
+      final filter = RegExp(
+        r'android:name="\.ShareActivity"[\s\S]*?</activity>',
+      ).firstMatch(manifest)![0]!;
+      expect(filter, contains('android.intent.action.SEND"'));
+      expect(filter, contains('android:mimeType="text/plain"'));
+      expect(filter, contains('android:noHistory="true"'));
+
+      final share = File(
+        'android/app/src/main/kotlin/de/sogda/app/ShareActivity.kt',
+      ).readAsStringSync();
+      // As the widget opens it: one task, one engine (SogdaWidget.kt).
+      expect(
+        share,
+        contains('FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP'),
+      );
+      expect(share, contains('.setData(Uri.parse(MainActivity.SHARE_LINK))'));
+      expect(
+        share,
+        contains('.putExtra(MainActivity.EXTRA_SHARED_TEXT, text)'),
+      );
+
+      final activity = File(
+        'android/app/src/main/kotlin/de/sogda/app/MainActivity.kt',
+      ).readAsStringSync();
+      expect(activity, contains('const val SHARE_LINK = "sogda://import"'));
+      expect(
+        activity,
+        contains('if (keep && intent.dataString == SHARE_LINK)'),
+        reason: "another intent's extra is dropped unread",
+      );
+      expect(
+        RegExp(r'takeShare\(intent, keep = savedInstanceState == null\)')
+            .hasMatch(activity),
+        isTrue,
+        reason: 'a launch restored from recents shares nothing twice',
+      );
+    });
+
     test('iOS declares the scheme', () {
       final plist = File('ios/Runner/Info.plist').readAsStringSync();
 
@@ -705,4 +813,15 @@ class _English extends Languages {
   @override
   ({MeaningChoice meaning, UiLanguage ui}) build() =>
       (meaning: const MeaningChoice('en', 'bn'), ui: UiLanguage.english);
+}
+
+/// "Share → Sogda"'s text, counted as D1 takes it.
+class _SharedTexts implements SharedText {
+  int taken = 0;
+
+  @override
+  Future<String?> take() async {
+    taken++;
+    return null;
+  }
 }

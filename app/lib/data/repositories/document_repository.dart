@@ -5,6 +5,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
 import 'package:sogda/domain/documents/lemmatiser.dart';
 import 'package:sogda/domain/documents/matcher.dart';
+import 'package:sogda/domain/documents/tokens.dart';
 import 'package:sogda/domain/text_norm.dart';
 
 /// What a document's run reads of the course and the learner, once
@@ -41,6 +42,22 @@ class DocumentRepository {
           pageCount: Value(pageCount),
         ),
       );
+
+  /// FR-D1-04, before D1 saves anything: the share of [body]'s words the
+  /// course knows (`germanShare`), read in an isolate as [match] is.
+  Future<double> germanShareOf(String body) async {
+    final entries = <LemmaEntry>[
+      for (final row in await ContentDao(_db).lemmaWords().get())
+        LemmaEntry(
+          uid: row.uid,
+          german: row.german,
+          pos: row.pos ?? '',
+          article: row.article,
+          forms: row.forms,
+        ),
+    ];
+    return _shareApart(body, entries);
+  }
 
   Future<Document?> document(int id) => (_db.select(
     _db.documents,
@@ -179,6 +196,10 @@ class DocumentRepository {
           input.learner,
         ),
       );
+
+  /// Static for the same reason as [_matchApart].
+  static Future<double> _shareApart(String body, List<LemmaEntry> entries) =>
+      Isolate.run(() => germanShare(splitText(body), Lemmatiser(entries)));
 
   static String _sentence(String body, DocumentMatch match, int index) {
     final sentence = match.sentences[index];
