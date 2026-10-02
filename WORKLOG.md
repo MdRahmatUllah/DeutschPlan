@@ -2751,3 +2751,4 @@ able to tell what is going on without asking.
 - 2026-10-02 23:17 · agent-0 · #1294: agent-3's 3 should-fixes + 5 nits in, main merged, 615 tests, plants 9/9 → re-look asked. #1299 (D3): agent-1's pl/bn nits in, D2+main merged, 561 tests; waiting on agent-2's code review. #1300 filed (FR-D2-05 R2 prefill) → agent-1.
 - 2026-10-02 23:18 · agent-0 #1297 · added to the board, lane A
 - 2026-10-02 23:18 · agent-0 #1297 · claimed: matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence
+- 2026-10-02 23:18 · agent-1 · #1300 ready on local wip/1300 (aba935d1): D2 card MT meaning / M4 link, Add as my word -> R2 example/where/suggestions; 12 D2 tests + 40 goldens green, 8/8 plants. Cherry-pick into #1279 once #1294 merges. PR #1301 pl/bn read posted.
