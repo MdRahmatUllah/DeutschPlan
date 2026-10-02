@@ -131,11 +131,13 @@ DocumentMatch matchText(
     final tokens = sentence.words;
     final lemmas = lemmatiser.sentence(tokens);
     final first = sentence.tokens.indexWhere((t) => t.isWord);
-    String? previous;
+    // The word before, by its index: its text and its course readings, for
+    // likelyName's adjective sign (#1270), as germanShare passes them.
+    var previous = -1;
     for (final (i, token) in sentence.tokens.indexed) {
       if (!token.isWord) continue;
       final before = previous;
-      previous = token.text;
+      previous = i;
       final entries = lemmas[i];
       if (isStopWord(token.text, entries)) continue;
       final String key;
@@ -163,7 +165,8 @@ DocumentMatch matchText(
           token.text,
           sentenceStart: start,
           compound: parts != null,
-          previous: before,
+          previous: before < 0 ? null : sentence.tokens[before].text,
+          previousEntries: before < 0 ? const <LemmaEntry>[] : lemmas[before],
         )) {
           continue;
         }

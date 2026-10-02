@@ -84,6 +84,34 @@ class DryRunPlanStore implements PlanStore {
     );
   }
 
+  /// The document queue's words this run planned, by day (BR-PLAN-11).
+  final Map<PlanDate, List<String>> _docPlanned = <PlanDate, List<String>>{};
+
+  @override
+  Future<List<String>> docWaiting({required int limit}) async {
+    final taken = <String>{
+      ..._addedNew,
+      for (final uids in _docPlanned.values) ...uids,
+    };
+    final words = await _inner.docWaiting(limit: limit + taken.length);
+    return words.where((uid) => !taken.contains(uid)).take(limit).toList();
+  }
+
+  @override
+  Future<List<String>> docPlannedOn(PlanDate date) async => <String>[
+    ...await _inner.docPlannedOn(date),
+    ...?_docPlanned[date],
+  ];
+
+  @override
+  Future<void> markDocPlanned(PlanDate date, List<String> uids) async =>
+      (_docPlanned[date] ??= <String>[]).addAll(uids);
+
+  // ponytail: a preview opens a day and never adds to the queue (that's
+  // D2's *Add*), so there's nothing to keep.
+  @override
+  Future<void> queueDocWords(List<String> uids, String at) async {}
+
   @override
   Future<List<String>> backlogBefore(PlanDate today) async {
     // A row this run planned is never done, so any before [today] is open.
@@ -120,6 +148,19 @@ class DryRunPlanStore implements PlanStore {
   Future<void> setPlannedMask(int mask) async {
     _plannedMaskSet = true;
     _plannedMask = mask;
+  }
+
+  int? _plannedDocCap;
+  bool _plannedDocCapSet = false;
+
+  @override
+  Future<int?> plannedDocCap() async =>
+      _plannedDocCapSet ? _plannedDocCap : _inner.plannedDocCap();
+
+  @override
+  Future<void> setPlannedDocCap(int cap) async {
+    _plannedDocCapSet = true;
+    _plannedDocCap = cap;
   }
 
   @override

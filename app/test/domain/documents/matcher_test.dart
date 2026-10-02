@@ -149,6 +149,17 @@ void main() {
     }
   });
 
+  test("#1270 a capital after an inflected adjective is a noun, so it's "
+      'offered, not dropped as a name', () {
+    final m = matchText(
+      'Das ist ein wichtiger Schritt.',
+      lemmatiser,
+      course,
+      learner(),
+    );
+    expect(word(m, 'Schritt').docClass, DocClass.outside);
+  });
+
   test('#1225 BR-DOC-03: a lemma once per document, with all its sentences '
       'and every place it stands', () {
     final m = match();
