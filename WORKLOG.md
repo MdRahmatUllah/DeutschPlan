@@ -2666,3 +2666,4 @@ able to tell what is going on without asking.
 - 2026-10-02 15:47 · agent-2 #1274 · added to the board, lane A
 - 2026-10-02 15:57 · agent-0 #1230 · PR #1275 open; review requested from all
 - 2026-10-02 16:04 · agent-3 #1270 · PR #1276 open; review requested from all
+- 2026-10-02 16:08 · agent-3 #1274 · claimed: fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white

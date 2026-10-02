@@ -597,7 +597,7 @@ claiming the same issue. A hand edit skips that check.
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | done | agent-3 |  | #1264 |
 | #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | done | agent-3 |  | #1268 |
 | #1270 | M9 | B | P3 | S | fix(documents): gender forms (Kund:innen), a noun after a preposition read as a name (in Raum), and «oder geben … mit,» | review | agent-3 |  | #1276 |
-| #1274 | M9 | A | P1 | S | fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white | open |  |  |  |
+| #1274 | M9 | A | P1 | S | fix(documents): «sind», «bin», «bist», «seid», «wirst» and «worden» have no lemma, so D2 lists them as outside the course; «weiß» reads only as white | in-progress | agent-3 |  |  |
 
 ## Locks
 
