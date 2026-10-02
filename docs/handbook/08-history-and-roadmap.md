@@ -108,7 +108,7 @@ The SQA milestone holds 52 issues, all closed.
 | **M3 · Learn & grammar** | 12 | 24 Sep | 24 Sep | The grammar practice generator; L1, L2 and its tabs, L3, L4, L15, L5, L6 |
 | **M4 · Quiz & mock exams** | 22 | 24–25 Sep | 25 Sep | The quiz builder, the exam generator and grading; L7–L9; L10–L14 with Writing and Speaking |
 | **M5 · Search, words, Me** | 19 | 24–25 Sep | 25 Sep | R1, R2, W1 and its actions, W2; M1, M2, M3, M5, M6, M7, M8/M9 |
-| **M6 · Voice, translation, widget** | 13 | 24–26 Sep | 26 Sep | The TTS seam, Supertonic 3, engine selection and fallback, the download manager and M4; notifications, background tasks, the widget snapshot and the Android widget. The Hy-MT translator (#154) was deferred |
+| **M6 · Voice, translation, widget** | 13 | 24–26 Sep | 26 Sep | The TTS seam, Supertonic 3, engine selection and fallback, the download manager and M4; notifications, background tasks, the widget snapshot and the Android widget. The Hy-MT translator (#154) was deferred; it returns as Hy-MT2 for v1.2.0 (ADR 30) |
 | **M7 · Polish & release** | 25 | 24–26 Sep | 26 Sep | The screen-reader pass, contrast, reduce motion and transparency, 200 % text, localisation, performance budgets, the full golden matrix, the integration smoke test, the Android release pipeline, licences, the Hy-MT region decision, the error matrix, the store listing and the tag |
 | **M8 · Meaning languages** | 42 | 29–30 Sep | open | Russian and Polish as meaning languages (meanings, pronunciation, examples, grammar, tips, category names) and as app languages; a first and an optional second meaning language; quizzes, exams, placement, compare and search in them; the English pronunciation guide; release prep for v1.1.0 (#1085) |
 
@@ -199,8 +199,7 @@ The milestone's open issues, each blocked on the owner or on a Mac:
 | #171 | The iOS release pipeline: iOS 16+, the privacy manifest, background modes, the widget extension | A Mac with Xcode |
 | #161 | The iOS home-screen widget (WidgetKit), the same two sizes, reading the same snapshot | A Mac |
 | #398 | The integration smoke test on an iOS simulator, and in CI when it returns | A Mac, and CI (#302) |
-| #154 | The Hy-MT translator behind its licence flag | Deferred with ADR 9; the owner |
-| #533 | Bring translation back with the Firefox/Bergamot tiny models (MPL-2.0, about 51 MB, bundled)? If yes, a quality check on about twenty course sentences needs reference translations checked by a native Bangla speaker | The owner's decision |
+| #154 | Hy-MT2 translation through llamadart, in every build (ADR 30; #533 closed with the owner's choice of Hy-MT2) | In progress for v1.2.0 |
 
 ### Noted in the specs, not scheduled
 

@@ -4,7 +4,7 @@ v1.0 ships on Android only (the owner, 2026-09-26). These are the texts for the 
 
 v1.1.0's languages: **the app** in English, Bangla, Polish and Russian; **meanings** in English, Bangla, Russian and Polish, a first language and an optional second shown under it. Each listing leads with its own language; the Bangla listing keeps its audience's texts and adds the new languages.
 
-Translation (Hy-MT) is off in every v1.0 build (ADR 9), so the listing doesn't mention it.
+Translation is not in v1.1.0 (ADR 9 kept Hy-MT off until then), so the listing doesn't mention it. Hy-MT2 arrives with v1.2.0 (ADR 30, #154), whose store notes say so.
 
 **Search (#1176, sogda.de's master plan W4-b):** each title is "Sogda: " plus the phrase people search in that language, within Play's 30 characters. Neither a title nor a short description names "Goethe" or "telc" (their trademarks); `test_store_listing.py` checks both. The short description and the full description's second paragraph are the positioning sentence, the same one sogda.de, its FAQ and `llms.txt` use. The owner approves the wording before the listing changes.
 
