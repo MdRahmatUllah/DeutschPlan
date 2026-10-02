@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-02 12:44
+last-seen: 2026-10-02 13:25
 last-read: 3393
 
 ## Now
 
-#1226 data(documents): the learner's own sentences for course words and My words, and the export rules — claimed 2026-10-02 12:44.
+#1226 in review as PR #1262: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
