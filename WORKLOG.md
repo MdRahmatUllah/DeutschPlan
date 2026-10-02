@@ -2539,3 +2539,4 @@ able to tell what is going on without asking.
 - 2026-10-02 09:47 · agent-0 #1193 · assigned to agent-2
 - 2026-10-02 09:49 · agent-5 · joined the team
 - 2026-10-02 09:50 · agent-5 #1200 · claimed: media(play): the feature graphic, 1024 × 500, for the Play listing in en, bn, pl and ru
+- 2026-10-02 09:52 · agent-5 · #1200: tools/media/feature_graphic.py renders the four graphics (light lockup card on Lagoon + the listing title); adding the test
