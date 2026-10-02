@@ -2,6 +2,29 @@
 
 Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pubspec.yaml`'s; each entry is dated in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
 
+## [1.2.0] — unreleased
+
+Learn from your own documents, and translation on the phone.
+
+### Added
+- **Learn from a document** (D1): paste or share a text from any app (#1227), photograph pages or pick photos, read on the phone by ML Kit with *Check the text* for a hard page (#1229), or choose a PDF, read from its text layer up to 30 pages, a scan sent to the photos (#1228).
+- **The words in your text** (D2): every word marked by its class, the new ones by level; a card to *Add*, mark *I know this*, or keep a word outside the course as your own; *Add all new* or your level at once, and a long press to add (#1230). An added word joins the plan, a few a day (BR-PLAN-11, #1272), with the sentence you met it in.
+- **My documents** (D3): the documents you kept, to reopen, rename or delete with their photos (#1295). Settings sets the words a day, whether photos are kept, and when documents delete themselves (#1296).
+- **Your own sentence** on the word's card, in W1 and as a cloze (#1232).
+- **Translation on the phone** with Hy-MT2, an optional download where the phone has the memory: W1's examples and T5's sentences (#154), and suggested meanings for a word outside the course, never filled in for you (#1233).
+
+### Changed
+- The download grows with the on-device reader: ML Kit's Latin text recogniser and pdfbox (#1306 has the numbers).
+
+### Fixed
+- A word's level in D2 is its lowest reading's, and readings that share a spelling say their step and meaning (#1294); a split verb's particle is never "outside the course", and a letter's salutation isn't part of its first sentence (#1297).
+- A share during a running mock exam says it was held (#1282).
+- A failed model download can be deleted in Voice & translation, and leaves no part-files behind (#1265).
+
+### Privacy
+- A kept photo loses its metadata (location, camera, time) (BR-DOC-05, #1229), and the picker's and a shared PDF's copies are deleted once read (#1298, #1228).
+- ML Kit's usage metrics are never sent (BR-PRIV-01): its DataTransport backend is removed from the app.
+
 ## [1.1.0] — 2026-10-02
 
 Polish and Russian, the first build as Sogda (`de.sogda.app`), and the production review's fixes.

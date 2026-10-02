@@ -44,13 +44,15 @@ def test_every_field_is_there_and_fits_plays_limit_175(language):
         assert len(text) <= limit, f"{language} {field}: {len(text)} > {limit}"
 
 
-def test_the_listing_offers_no_translation_which_v1_leaves_out_175():
-    # ADR 9: Hy-MT is off in every v1.0 build.
+def test_translation_is_named_as_hymt2_on_the_phone_175_1235():
+    # v1 left translation out (ADR 9); from 1.2.0 Hy-MT2 is an optional
+    # download that runs on the phone (ADR 30, #154). Wherever the listing
+    # names translation it names Hy-MT2 too, so no text promises a cloud
+    # translator.
     for (language, field), text in texts().items():
-        assert "translat" not in text.lower(), f"{language} {field}"
-        assert "অনুবাদ" not in text, f"{language} {field}"
-        assert "tłumacz" not in text.lower(), f"{language} {field}"
-        assert "перевод" not in text.lower(), f"{language} {field}"
+        low = text.lower()
+        if any(word in low for word in ("translat", "অনুবাদ", "tłumacz", "перевод")):
+            assert "Hy-MT2" in text, f"{language} {field}"
 
 
 def test_the_counts_are_abouts_175_631_1176():
