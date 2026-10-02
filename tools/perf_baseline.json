@@ -45,7 +45,7 @@
     "today.missed_raster": 0
   },
   "metrics": {
-    "size.arm64_mb": 54.12,
+    "size.arm64_mb": 75.11,
     "card.build_avg_ms": 1.112,
     "card.build_p90_ms": 2.037,
     "card.build_p99_ms": 5.254,

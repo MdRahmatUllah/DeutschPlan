@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +14,7 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/document_repository.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/plan_store.dart';
@@ -40,6 +43,7 @@ void main() {
   late AppDatabase db;
   late SettingsRepository settings;
   late String went;
+  late _Photos photos;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -50,6 +54,7 @@ void main() {
     settings = SettingsRepository(db);
     await settings.load();
     went = '';
+    photos = _Photos(db);
   });
 
   tearDown(() => db.close());
@@ -85,6 +90,7 @@ void main() {
           translationModelProvider.overrideWith((ref) async => model),
           if (voiceInstalled != null)
             voiceInstalledProvider.overrideWith((ref) async => voiceInstalled),
+          documentRepositoryProvider.overrideWithValue(photos),
           ...extra,
         ],
         child: MaterialApp.router(
@@ -160,6 +166,9 @@ void main() {
       l10n.settingsPassMark,
       l10n.settingsTimerDefault,
       l10n.settingsTranslation,
+      l10n.settingsDocDailyCap,
+      l10n.settingsDocSaveImages,
+      l10n.settingsDocAutodelete,
       l10n.settingsExport,
       l10n.settingsReset,
       l10n.settingsRestart,
@@ -176,6 +185,7 @@ void main() {
       (l10n.settingsReviseCountIncrease, SettingKeys.reviseCount, 11),
       (l10n.settingsSentenceCountIncrease, SettingKeys.sentenceCount, 4),
       (l10n.settingsDoneDaysIncrease, SettingKeys.doneStabilityDays, 8),
+      (l10n.settingsDocDailyCapIncrease, SettingKeys.docDailyCap, 6),
     ]) {
       await tester.tap(find.bySemanticsLabel(increase));
       await tester.pumpAndSettle();
@@ -198,6 +208,7 @@ void main() {
       l10n.settingsReviseCountIncrease: (0, 100),
       l10n.settingsSentenceCountIncrease: (0, 20),
       l10n.settingsDoneDaysIncrease: (3, 60),
+      l10n.settingsDocDailyCapIncrease: (0, 20),
     });
     final retention = tester.widget<SgSlider>(
       sliderFor(l10n.settingsRetention),
@@ -218,6 +229,8 @@ void main() {
       (l10n.settingsAutoplayExample, SettingKeys.autoplayExample),
       (l10n.settingsListening, SettingKeys.listeningQuestions),
       (l10n.settingsTimerDefault, SettingKeys.examTimerDefault),
+      // No photo kept: nothing to ask (FR-D3-04).
+      (l10n.settingsDocSaveImages, SettingKeys.docSaveImages),
     ]) {
       final before = settings.read(key);
       await tester.tap(switchFor(label));
@@ -541,11 +554,76 @@ void main() {
     expect(tomorrow.newToday, hasLength(8));
   });
 
-  testWidgets('BR-PLAN-08 new words and revisions apply from tomorrow', (
-    tester,
-  ) async {
+  testWidgets('BR-PLAN-08 new words, revisions and the words from documents '
+      '(#1296) apply from tomorrow', (tester) async {
     await pump(tester);
-    expect(find.text(l10n.settingsFromTomorrow), findsNWidgets(2));
+    expect(find.text(l10n.settingsFromTomorrow), findsNWidgets(3));
+  });
+
+  group('#1296 FR-D3-04 Save original images, turned off', () {
+    Future<void> flip(WidgetTester tester) async {
+      await tester.tap(switchFor(l10n.settingsDocSaveImages));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('with photos kept, asks; Delete images drops them', (
+      tester,
+    ) async {
+      photos.bytes = 4000;
+      await pump(tester);
+      await flip(tester);
+      expect(settings.read(SettingKeys.docSaveImages), isFalse);
+      expect(find.text(l10n.settingsDocImagesDropTitle), findsOneWidget);
+
+      await tester.tap(find.text(l10n.settingsDocImagesDrop));
+      await tester.pumpAndSettle();
+      expect(photos.drops, 1);
+      expect(find.text(l10n.settingsDocImagesDropTitle), findsNothing);
+    });
+
+    testWidgets('Keep them keeps them, and the switch stays off', (
+      tester,
+    ) async {
+      photos.bytes = 4000;
+      await pump(tester);
+      await flip(tester);
+      await tester.tap(find.text(l10n.settingsDocImagesKeep));
+      await tester.pumpAndSettle();
+      expect(photos.drops, 0);
+      expect(settings.read(SettingKeys.docSaveImages), isFalse);
+    });
+
+    testWidgets('with none kept, or turned on, nothing is asked', (
+      tester,
+    ) async {
+      await pump(tester);
+      await flip(tester);
+      expect(find.text(l10n.settingsDocImagesDropTitle), findsNothing);
+
+      photos.bytes = 4000;
+      await flip(tester);
+      expect(settings.read(SettingKeys.docSaveImages), isTrue);
+      expect(find.text(l10n.settingsDocImagesDropTitle), findsNothing);
+      expect(photos.drops, 0);
+    });
+  });
+
+  testWidgets('#1296 FR-D3-03 Auto-delete documents: Never, or after 30, 90 '
+      'or 365 days, its value beside it', (tester) async {
+    await pump(tester);
+    expect(find.text(l10n.settingsDocAutodeleteNever), findsOneWidget);
+    expect(find.text(l10n.settingsDocAutodeleteNote), findsOneWidget);
+
+    await tester.tap(find.text(l10n.settingsDocAutodelete));
+    await tester.pumpAndSettle();
+    for (final days in <int>[30, 90, 365]) {
+      expect(find.text(l10n.settingsDocAutodeleteAfter(days)), findsOneWidget);
+    }
+    await tester.tap(find.text(l10n.settingsDocAutodeleteAfter(90)));
+    await tester.pumpAndSettle();
+    expect(settings.read(SettingKeys.docAutodeleteDays), 90);
+    expect(find.text(l10n.settingsDocAutodeleteAfter(90)), findsOneWidget);
+    expect(find.text(l10n.settingsDocAutodeleteNever), findsNothing);
   });
 
   testWidgets('FR-M3-01 the retention line: reviews a day at the chosen '
@@ -862,7 +940,7 @@ void main() {
       find.text(l10n.settingsGroupDailyPlan.toUpperCase()),
       findsOneWidget,
     );
-    expect(find.byType(SgSurface), findsNWidgets(7));
+    expect(find.byType(SgSurface), findsNWidgets(8));
   });
 
   testWidgets('a screen reader hears a switch row once, and its note', (
@@ -993,4 +1071,22 @@ INSERT INTO word_state (word_uid, status, stability, reps) VALUES
     expect(tapsInsideTaps(tester), isEmpty);
     semantics.dispose();
   });
+}
+
+/// FR-D3-04's documents (#1296): [bytes] of photos kept, and how many times
+/// they were dropped. No disk: path_provider has no platform here.
+class _Photos extends DocumentRepository {
+  _Photos(AppDatabase db) : super(db, () => DateTime(2026, 10, 2));
+
+  int bytes = 0;
+  int drops = 0;
+
+  @override
+  Future<int> imageBytes({Directory? support}) async => bytes;
+
+  @override
+  Future<void> dropImages({Directory? support}) async {
+    drops++;
+    bytes = 0;
+  }
 }

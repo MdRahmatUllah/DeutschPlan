@@ -52,14 +52,45 @@ class PlatformPagePhotos implements PagePhotos {
       photo.path,
   ];
 
+  /// The folder image_picker copies a gallery photo into: a random UUID.
+  static final RegExp _uuid = RegExp(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+  );
+
+  /// The path D1 holds is image_picker's resized `cache/scaled_<name>`.
+  /// Its copy from before the resize, with the camera's EXIF, goes too
+  /// (#1298): the camera's `cache/<name>` beside it, or the gallery's
+  /// `cache/<uuid>/<name>`. A photo never resized is the copy itself, in its
+  /// UUID folder.
   @override
   Future<void> discard(List<String> paths) async {
     for (final path in paths) {
-      try {
-        await File(path).delete();
-      } on FileSystemException {
-        // Gone already, or never written: nothing left to drop.
+      final file = File(path);
+      final cache = file.parent;
+      final name = file.uri.pathSegments.last;
+      await _delete(file);
+      if (_uuid.hasMatch(cache.uri.pathSegments.lastWhere((s) => s != ''))) {
+        await _delete(cache);
+        continue;
       }
+      if (!name.startsWith('scaled_') || !cache.existsSync()) continue;
+      final original = name.substring('scaled_'.length);
+      await _delete(File('${cache.path}/$original'));
+      for (final entry in cache.listSync().whereType<Directory>()) {
+        final folder = entry.uri.pathSegments.lastWhere((s) => s != '');
+        if (_uuid.hasMatch(folder) &&
+            File('${entry.path}/$original').existsSync()) {
+          await _delete(entry);
+        }
+      }
+    }
+  }
+
+  static Future<void> _delete(FileSystemEntity entity) async {
+    try {
+      await entity.delete(recursive: true);
+    } on FileSystemException {
+      // Gone already, or never written: nothing left to drop.
     }
   }
 

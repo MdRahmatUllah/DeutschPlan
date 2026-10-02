@@ -71,9 +71,9 @@ A write is in memory before it is on disk. A write that fails, or a transaction 
 | `last_export` | — | M6 — the day of the last export the share sheet took (`2026-09-20`); an import leaves it as it was (#839) |
 | `planned_study_days` | 0 | engine — the study-days mask `last_planned_date`'s day was planned with, so an M5 change is tomorrow's (BR-PLAN-08) |
 | `planned_doc_cap` | -1 | engine — the `doc_daily_cap` `last_planned_date`'s day was opened with, so an M3 change is tomorrow's (BR-PLAN-11); -1 until one is recorded |
-| `doc_daily_cap` | 5 | Settings (documents) — BR-PLAN-11's new words a day from documents, 0–20 (#1220, #1231) |
-| `doc_save_images` | 1 | Settings (documents) — keep a photo's or a PDF's pages with the document (#1220) |
-| `doc_autodelete_days` | 0 | Settings (documents) — delete a document after 30, 90 or 365 days; 0 never (#1220). An import refuses any other value (#820) |
+| `doc_daily_cap` | 5 | M3 *Learn from documents* — BR-PLAN-11's new words a day from documents, 0–20 (#1220, #1231) |
+| `doc_save_images` | 1 | M3 *Learn from documents* — keep a photo's or a PDF's pages with the document (#1220); turned off, M3 asks whether to delete those kept (FR-D3-04, #1296) |
+| `doc_autodelete_days` | 0 | M3 *Learn from documents* — delete a document after 30, 90 or 365 days, at launch (FR-D3-03, #1296); 0 never (#1220). An import refuses any other value (#820) |
 | `doc_show_probably_known` | 0 | D2 — list the words the matcher thinks are known (BR-DOC-03) |
 
 ## Migrations

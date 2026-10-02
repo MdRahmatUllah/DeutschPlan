@@ -79,7 +79,7 @@ outside: the course's own data, plus rules, plus one small table we write.
 ## Data (`user.db`, schema change in #1226)
 - **`documents`** (id, title, source `paste|share|pdf|photo`, created_at, body, image_paths JSON, page_count, word_count). `body` is the text: drift's tables have a `text()` of their own (#1226). Kept, as the owner decided (#1220):
   - the text always; the images while *Save original images* (`doc_save_images`, default on) is on, in app-private storage (`<appSupport>/documents/<id>/`);
-  - **auto-delete** after `doc_autodelete_days` (default 0, never).
+  - **auto-delete** after `doc_autodelete_days` (default 0, never), at launch (FR-D3-03, #1296).
 - **`document_words`** (document_id, lemma_key, surface, sentence, class, added `0|1`), one row per lemma and sentence (PK(document_id, lemma_key, sentence)): what each run found, for D3's counts and for what was added. Reopening runs the matcher again (FR-D2-07), and an earlier row keeps its `added`.
 - **`word_contexts`** (id, word_key, sentence, document_id NULL, created_at): the learner's sentences for a word.
   - `word_key` is a course `uid` or `custom:<id>`.
@@ -96,7 +96,7 @@ outside: the course's own data, plus rules, plus one small table we write.
   - **A JPEG** loses EXIF and XMP (APP1), IPTC (APP13), MPF's index (APP2) and the other APPn, the comments, and whatever follows the image's end: MPF's second pictures, a phone's trailer (a motion photo), each with an EXIF of its own. It keeps JFIF, the colour profile (APP2's `ICC_PROFILE`), Adobe's colour transform (APP14) and the image data byte for byte, so it isn't re-encoded. A minimal EXIF with the orientation alone goes back in, since the pixels aren't rotated.
   - **A PNG** keeps only the chunks that draw it.
   - **Any other format** isn't kept, and the document's text is.
-  - **image_picker's own copies** (`cache/`) are discarded once the document is saved or the reading cancelled.
+  - **image_picker's own copies** (`cache/`) are discarded once the document is saved or the reading cancelled, or a page taken again: the resized `scaled_<name>` D1 holds, and the copy from before the resize, with the camera's EXIF (#1298). That's the camera's `cache/<name>` beside it, or the gallery's `cache/<uuid>/<name>`.
 - **New settings:**
   - `doc_daily_cap`: 5, from 0 to 20;
   - `doc_save_images`: 1;

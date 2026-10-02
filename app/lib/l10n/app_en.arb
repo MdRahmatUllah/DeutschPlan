@@ -4066,6 +4066,64 @@
   "@settingsGroupData": {
     "description": "M3 group header."
   },
+  "settingsGroupDocuments": "Learn from documents",
+  "@settingsGroupDocuments": {
+    "description": "M3 group header (#1296): the settings of Learn from your documents."
+  },
+  "settingsDocDailyCap": "Words a day from documents",
+  "@settingsDocDailyCap": {
+    "description": "M3 row: doc_daily_cap, a stepper 0–20 (BR-PLAN-11): the new words a study day takes from the documents' queue, after the course's own."
+  },
+  "settingsDocDailyCapDecrease": "Decrease words a day from documents",
+  "@settingsDocDailyCapDecrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsDocDailyCapIncrease": "Increase words a day from documents",
+  "@settingsDocDailyCapIncrease": {
+    "description": "M3 stepper button, for screen readers."
+  },
+  "settingsDocSaveImages": "Save original images",
+  "@settingsDocSaveImages": {
+    "description": "M3 switch: doc_save_images (BR-DOC-05): a photographed document keeps its pages' photos on this phone."
+  },
+  "settingsDocAutodelete": "Auto-delete documents",
+  "@settingsDocAutodelete": {
+    "description": "M3 row: doc_autodelete_days (FR-D3-03), its value beside it; opens the choice of Never or after 30, 90 or 365 days."
+  },
+  "settingsDocAutodeleteNote": "The words you added stay",
+  "@settingsDocAutodeleteNote": {
+    "description": "M3 subtitle under Auto-delete documents (BR-DOC-05): deleting a document never deletes the words added from it."
+  },
+  "settingsDocAutodeleteNever": "Never",
+  "@settingsDocAutodeleteNever": {
+    "description": "M3: Auto-delete documents is off (doc_autodelete_days 0)."
+  },
+  "settingsDocAutodeleteAfter": "{count, plural, =1{After 1 day} other{After {count} days}}",
+  "@settingsDocAutodeleteAfter": {
+    "description": "M3: a document is deleted this many days after it was added (30, 90 or 365).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "settingsDocImagesDropTitle": "Delete the images already saved?",
+  "@settingsDocImagesDropTitle": {
+    "description": "FR-D3-04: the question when Save original images is turned off while documents keep photos."
+  },
+  "settingsDocImagesDropMessage": "New documents won't keep their images. The documents you have keep their text, and the words you added stay.",
+  "@settingsDocImagesDropMessage": {
+    "description": "FR-D3-04's message: what deleting the kept photos does, and what stays (BR-DOC-05)."
+  },
+  "settingsDocImagesDrop": "Delete images",
+  "@settingsDocImagesDrop": {
+    "description": "FR-D3-04's button: delete the kept photos."
+  },
+  "settingsDocImagesKeep": "Keep them",
+  "@settingsDocImagesKeep": {
+    "description": "FR-D3-04's other button: keep the photos already saved."
+  },
   "settingsFromTomorrow": "Applies from tomorrow",
   "@settingsFromTomorrow": {
     "description": "M3 subtitle of a row whose change reaches the plan tomorrow (BR-PLAN-08): today's plan is fixed."
