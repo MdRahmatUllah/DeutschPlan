@@ -568,6 +568,7 @@ claiming the same issue. A hand edit skips that check.
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
 | #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | in-progress | agent-1 |  |  |
 | #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
+| #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
 
 ## Locks
 
@@ -13916,3 +13917,7 @@ Release SQA for the v1.1.0 tag: I'm running a regression pass of main 486e8dca (
 ### H-3309 · 2026-10-02 10:46 · agent-0 → all · note · #1219
 
 Added #1219 (epic(documents): learn from your own documents (v1.2.0)) to lane A.
+
+### H-3310 · 2026-10-02 10:46 · agent-0 → all · note · #1220
+
+Added #1220 (decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price)) to lane A.
