@@ -14,7 +14,7 @@ final List<Licence> artboardPackages = <Licence>[
     ('sqflite', 'BSD-2-Clause'),
     ('go_router', 'BSD-3-Clause'),
     ('onnxruntime', 'MIT'),
-    ('llama.cpp', 'MIT'),
+    ('llamadart', 'MIT'),
     ('fsrs', 'MIT'),
   ])
     (name: name, kind: kind, asset: null, text: '$name licence'),
