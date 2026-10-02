@@ -23,6 +23,8 @@
   "tabLearn": "Nauka",
   "tabSearch": "Szukaj",
   "searchHint": "Niemiecki, angielski lub bengalski",
+  "searchHintOne": "Niemiecki lub {last, select, en{angielski} bn{bengalski} pl{polski} ru{rosyjski} other{angielski}}",
+  "searchHintTwo": "Niemiecki, {first, select, en{angielski} bn{bengalski} pl{polski} ru{rosyjski} other{angielski}} lub {last, select, en{angielski} bn{bengalski} pl{polski} ru{rosyjski} other{angielski}}",
   "searchClear": "Wyczyść",
   "searchRemoveStep": "Szukaj we wszystkich etapach, nie tylko w {step}",
   "searchExact": "Dokładne dopasowanie · {count}",

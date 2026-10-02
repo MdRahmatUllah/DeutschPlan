@@ -1,5 +1,8 @@
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/search/search_screen.dart';
 
@@ -136,4 +139,12 @@ class StubRecentSearches extends RecentSearches {
 
   @override
   List<String> build() => terms;
+}
+
+/// R1's languages without settings: English and Bangla, the field's hint as
+/// the artboard draws it (#1189).
+class StubLanguages extends Languages {
+  @override
+  ({MeaningChoice meaning, UiLanguage ui}) build() =>
+      (meaning: MeaningChoice.fallback, ui: UiLanguage.english);
 }

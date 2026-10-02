@@ -17,6 +17,7 @@ import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/system_bars.dart';
 import 'package:sogda/core/typography/sg_text.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
@@ -355,6 +356,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         children: <Widget>[
           _Header(
             field: _field,
+            hint: searchHintFor(l10n, ref.watch(languagesProvider).meaning),
             step: _step,
             onChanged: _changed,
             onSubmitted: (text) => unawaited(_submitted(text)),
@@ -409,10 +411,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 }
 
+/// #1189: the field's hint names German and the learner's meaning languages,
+/// the ones they read, though English and Bangla are searched for everyone.
+/// A language the copy has no name for keeps the hint as it was.
+String searchHintFor(AppLocalizations l10n, MeaningChoice choice) {
+  const named = <String>{'en', 'bn', 'pl', 'ru'};
+  if (!choice.languages.every(named.contains)) return l10n.searchHint;
+  final secondary = choice.secondary;
+  return secondary == null
+      ? l10n.searchHintOne(choice.primary)
+      : l10n.searchHintTwo(choice.primary, secondary);
+}
+
 /// The Raspberry band under the status bar: the field, and L2's step chip.
 class _Header extends StatelessWidget {
   const _Header({
     required this.field,
+    required this.hint,
     required this.onChanged,
     required this.onSubmitted,
     required this.onClear,
@@ -421,6 +436,7 @@ class _Header extends StatelessWidget {
   });
 
   final TextEditingController field;
+  final String hint;
   final String? step;
   final ValueChanged<String> onChanged;
   final ValueChanged<String> onSubmitted;
@@ -483,7 +499,7 @@ class _Header extends StatelessWidget {
                           color: tokens.color.ink,
                         ),
                         decoration: InputDecoration.collapsed(
-                          hintText: l10n.searchHint,
+                          hintText: hint,
                           // A one-line field caps its hint at one line, so
                           // at large text "…English or Bangla" was cut: it
                           // wraps, and the empty field grows (#565). Typing,
