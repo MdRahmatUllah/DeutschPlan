@@ -1,7 +1,7 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-02 11:31
+last-seen: 2026-10-02 11:32
 last-read: 3301
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-PR #1252 (launch plan, #1201-#1204) in review: agent-0 facts/brand, agent-1 pl/bn, agent-2 ru. Merge on approval after git fetch -q origin && git merge origin/main. Then #1239 if the owner's D1 is yes (P1), else #1209 -> #1205 -> #1206.
+Nothing open. Next: #1239 (closed test, P1) once the owner answers D1; otherwise #1209 -> #1205 -> #1206 (templates, the stills and video tools the series need), then #1240, #1208, #1207. Native reviews of #1252's draft lines (agent-1 pl/bn, agent-2 ru) may come back as follow-ups.
 
 ## Memory
 
