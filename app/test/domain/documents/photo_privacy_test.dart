@@ -101,6 +101,37 @@ void main() {
     expect(clean.sublist(clean.length - 2), <int>[0xFF, 0xD9]);
   });
 
+  test('#1229 BR-DOC-05 what follows a JPEG\'s end goes (MPF\'s second '
+      'picture, a phone\'s trailer), and so do MPF\'s index and a comment '
+      'between a progressive file\'s scans', () {
+    final first = jpeg(<int>[
+      ...segment(0xE2, <int>[...ascii.encode('MPF'), 0, 0x4D, 0x4D]),
+    ]);
+    final photo = Uint8List.fromList(<int>[
+      ...first.sublist(0, first.length - 2), // the first scan, not its end
+      ...segment(0xFE, ascii.encode('between scans: Rahim')),
+      ...segment(0xC4, <int>[0x10, 0xFF, 0xD9]), // a table holding FF D9
+      ...segment(0xDA, <int>[1, 1, 0, 0, 63, 0]),
+      0x12, 0xFF, 0x00, 0x34, 0xFF, 0xD3, ...ascii.encode('MORE'), //
+      0xFF, 0xD9,
+      ...jpeg(exif()), // MPF's second picture, with the camera's make
+      ...ascii.encode('MotionPhoto_Data SEFT'),
+    ]);
+
+    final clean = withoutMetadata(photo)!;
+    for (final gone in <String>['SQA', 'MPF', 'Rahim', 'SEFT']) {
+      expect(holds(clean, gone), isFalse, reason: gone);
+    }
+    expect(holds(clean, 'PIXELS'), isTrue);
+    expect(holds(clean, 'MORE'), isTrue, reason: 'the second scan is whole');
+    expect(clean.sublist(clean.length - 2), <int>[0xFF, 0xD9]);
+    expect(
+      withoutMetadata(first.sublist(0, first.length - 2)),
+      isNull,
+      reason: 'no end: a broken file',
+    );
+  });
+
   test('a JPEG with no EXIF gains none, and a little-endian orientation is '
       'read too', () {
     expect(holds(withoutMetadata(jpeg())!, 'Exif'), isFalse);

@@ -93,7 +93,7 @@ outside: the course's own data, plus rules, plus one small table we write.
   - **The merge identity:** a document is its `created_at` and title; a sentence is its `word_key` and text; a queue row is its `word_key` (the earlier `added_at` wins).
   - Import refuses a file whose new settings are out of range (#820): `doc_daily_cap` 0–20, `doc_autodelete_days` one of 0, 30, 90, 365, and the two switches 0 or 1.
 - **Saved images** lose their metadata on save (EXIF, GPS included), never copied as they came (BR-DOC-05, #1229). `withoutMetadata` (`domain/documents/photo_privacy.dart`) rewrites the file without it.
-  - **A JPEG** loses EXIF and XMP (APP1), IPTC (APP13), the other APPn and comments. It keeps JFIF, the colour profile (APP2), Adobe's colour transform (APP14) and the image data byte for byte, so it isn't re-encoded. A minimal EXIF with the orientation alone goes back in, since the pixels aren't rotated.
+  - **A JPEG** loses EXIF and XMP (APP1), IPTC (APP13), MPF's index (APP2) and the other APPn, the comments, and whatever follows the image's end: MPF's second pictures, a phone's trailer (a motion photo), each with an EXIF of its own. It keeps JFIF, the colour profile (APP2's `ICC_PROFILE`), Adobe's colour transform (APP14) and the image data byte for byte, so it isn't re-encoded. A minimal EXIF with the orientation alone goes back in, since the pixels aren't rotated.
   - **A PNG** keeps only the chunks that draw it.
   - **Any other format** isn't kept, and the document's text is.
   - **image_picker's own copies** (`cache/`) are discarded once the document is saved or the reading cancelled.

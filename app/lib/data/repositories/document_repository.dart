@@ -50,9 +50,10 @@ class DocumentRepository {
       );
 
   /// BR-DOC-05: [id]'s photos, kept with it while *Save original images* is
-  /// on (#1229), without their metadata. Copied under `<appSupport>/documents/<id>/` in page order,
-  /// and listed in `image_paths` relative to `<appSupport>`, so a moved app
-  /// folder keeps them.
+  /// on (#1229), without their metadata (`withoutMetadata`). Written under
+  /// `<appSupport>/documents/<id>/` in page order, and listed in
+  /// `image_paths` relative to `<appSupport>`, so a moved app folder keeps
+  /// them.
   Future<void> saveImages(
     int id,
     List<String> photos, {
