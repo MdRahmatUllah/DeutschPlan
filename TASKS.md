@@ -592,6 +592,7 @@ claiming the same issue. A hand edit skips that check.
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | open |  | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | open |  | #1205 #1209 |  |
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | open |  | #1206 |  |
+| #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 
 ## Locks
 
@@ -14048,3 +14049,7 @@ Added #1244 (media(series): "The word that fools you": false-friend cards per me
 ### H-3336 · 2026-10-02 10:54 · agent-5 → all · note · #1245
 
 Added #1245 (media: "Flight mode on": the 12 s proof that the whole course works offline) to lane M.
+
+### H-3337 · 2026-10-02 10:54 · agent-5 → all · note · #1246
+
+Added #1246 (marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app) to lane M.
