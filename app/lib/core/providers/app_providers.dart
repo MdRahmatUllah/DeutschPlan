@@ -574,7 +574,7 @@ SharedText sharedText(Ref ref) => const PlatformSharedText();
 /// D1's photos: the camera, the gallery, and their text read on the phone
 /// (#1229).
 @riverpod
-PagePhotos pagePhotos(Ref ref) => const PlatformPagePhotos();
+PagePhotos pagePhotos(Ref ref) => PlatformPagePhotos();
 
 /// Kept alive for the same reason: page 5's draft queues the voice (FR-S2-06).
 @Riverpod(keepAlive: true)

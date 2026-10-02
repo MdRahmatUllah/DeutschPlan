@@ -6,3 +6,14 @@
 # Supertonic synthesis crashed the release app with a ClassNotFoundException
 # (#152). flutter_onnxruntime ships no consumer rules of its own.
 -keep class ai.onnxruntime.** { *; }
+
+# ML Kit's text recognition (#1229): Latin only, its model bundled. The
+# plugin refers to the other scripts' options, whose models aren't added.
+-dontwarn com.google.mlkit.vision.text.chinese.**
+-dontwarn com.google.mlkit.vision.text.devanagari.**
+-dontwarn com.google.mlkit.vision.text.japanese.**
+-dontwarn com.google.mlkit.vision.text.korean.**
+# R8 renamed what ML Kit's text recognition finds by name, and the first
+# read in a release build failed with an NPE in its pipeline (#1229).
+-keep class com.google.mlkit.** { *; }
+-keep class com.google.android.gms.internal.mlkit_** { *; }

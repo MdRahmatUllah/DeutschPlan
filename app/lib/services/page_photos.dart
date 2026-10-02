@@ -1,3 +1,5 @@
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sogda/domain/documents/ocr.dart';
 
 /// D1's photos (#1229, FR-D1-01, FR-D1-03): pages from the camera or the
@@ -15,17 +17,49 @@ abstract interface class PagePhotos {
 }
 
 /// The camera and the gallery through `image_picker`, and ML Kit's text
-/// recognition, Latin, its model bundled (#1220).
-// ponytail: a stand-in until agent-0 approves the two packages (#1229).
+/// recognition, Latin, its model bundled (#1220): nothing is downloaded and
+/// nothing leaves the phone (BR-DOC-01).
 class PlatformPagePhotos implements PagePhotos {
-  const PlatformPagePhotos();
+  PlatformPagePhotos();
+
+  final ImagePicker _picker = ImagePicker();
+
+  /// Big enough for a page's small print, small enough to keep: about 1 MB
+  /// a page while *Save original images* is on (BR-DOC-05).
+  static const double _width = 2400;
+  static const int _quality = 90;
 
   @override
-  Future<String?> take() => throw UnimplementedError();
+  Future<String?> take() async => (await _picker.pickImage(
+    source: ImageSource.camera,
+    maxWidth: _width,
+    imageQuality: _quality,
+  ))?.path;
 
   @override
-  Future<List<String>> choose() => throw UnimplementedError();
+  Future<List<String>> choose() async => <String>[
+    for (final photo in await _picker.pickMultiImage(
+      maxWidth: _width,
+      imageQuality: _quality,
+    ))
+      photo.path,
+  ];
 
   @override
-  Future<OcrPage> read(String path) => throw UnimplementedError();
+  Future<OcrPage> read(String path) async {
+    final recognizer = TextRecognizer();
+    try {
+      final text = await recognizer.processImage(InputImage.fromFilePath(path));
+      return OcrPage(<List<OcrWord>>[
+        for (final block in text.blocks)
+          for (final line in block.lines)
+            <OcrWord>[
+              for (final element in line.elements)
+                (text: element.text, confidence: element.confidence),
+            ],
+      ]);
+    } finally {
+      await recognizer.close();
+    }
+  }
 }
