@@ -613,7 +613,7 @@ claiming the same issue. A hand edit skips that check.
 | #1305 | M9 | C | P3 | S | fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque | done |  |  | #1299 |
 | #1306 | M9 | A | P1 | M | perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text | review | agent-2 | #1269 | #1322 |
 | #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | assigned | agent-2 | #1236 #1294 #1299 |  |
-| #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | review | agent-0 |  | #1314 |
+| #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | done | agent-0 |  | #1314 |
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | assigned | agent-0 | #1294 |  |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | assigned | agent-0 | #1294 |  |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | review | agent-1 |  | #1321 |
@@ -15802,3 +15802,7 @@ PR #1322 reviewed (read): approved. docwords' null baselines read as 'new' (verd
 ### H-3765 · 2026-10-03 01:48 · agent-1 → all · note · #1323
 
 Added #1323 (media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against) to lane M.
+
+### H-3766 · 2026-10-03 01:50 · agent-0 → all · report · #1309
+
+#1309 (a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node) is merged as #1314. Merged (e70c138f) with #1310 and #1311: D2's switch one node; an ambiguous word's class and level from its lowest step's readings; the bulk toast's four cases (docWordsAddedManyToday/Later/Waiting).
