@@ -24,6 +24,13 @@ void main() {
     );
   });
 
+  test('#1224: a suspended hyphen at a line end stays one', () {
+    expect(
+      cleanPages(<String>['Haus-\nund Gartenpflege']),
+      'Haus- und Gartenpflege',
+    );
+  });
+
   test('#1224: page numbers go', () {
     expect(
       cleanPages(<String>[

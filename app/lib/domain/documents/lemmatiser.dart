@@ -9,6 +9,7 @@
 /// ("kommte"); where it is one, the best-founded reading wins (`_Source`).
 library;
 
+import 'package:sogda/domain/documents/stop_words.dart';
 import 'package:sogda/domain/documents/strong_verbs.dart';
 import 'package:sogda/domain/text_norm.dart';
 
@@ -551,16 +552,22 @@ class Lemmatiser {
   List<String>? compoundParts(String word) {
     for (var cut = 3; cut <= word.length - 3; cut++) {
       final rest = word.substring(cut);
-      final head = '${rest[0].toUpperCase()}${rest.substring(1)}';
-      if (!lookup(head).any((e) => e.pos == 'noun')) continue;
+      final nouns = lookup('${rest[0].toUpperCase()}${rest.substring(1)}')
+          .where((e) => e.pos == 'noun');
+      if (nouns.isEmpty) continue;
       final left = word.substring(0, cut);
       for (final link in const <String>['', 's', 'es', 'n', 'en', 'e']) {
         if (!left.endsWith(link) || left.length - link.length < 3) continue;
         final stem = left.substring(0, left.length - link.length);
-        final parts = lookup(stem, sentenceStart: true).isNotEmpty
-            ? <String>[stem]
+        // A part is a word to learn, never a stop word: «Wasserzähler» is
+        // no «Was» + «Erzähler».
+        if (stopForms.contains(stem.toLowerCase())) continue;
+        final known = lookup(stem, sentenceStart: true);
+        final parts = known.isNotEmpty
+            ? <String>[known.first.german]
             : compoundParts(stem);
-        if (parts != null) return <String>[...parts, head];
+        // The parts as their headwords: «Mietvertrags» → … + Vertrag.
+        if (parts != null) return <String>[...parts, nouns.first.german];
       }
     }
     return null;

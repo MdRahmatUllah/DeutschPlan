@@ -28,7 +28,6 @@ final ModelEntry voiceEntry = ModelEntry(
   name: 'Supertonic 3 voice',
   licence: 'OpenRAIL-M',
   disables: 'tts_engine',
-  regionExcluded: const <String>[],
   variants: <ModelVariant>[
     ModelVariant(
       id: 'default',
@@ -38,18 +37,17 @@ final ModelEntry voiceEntry = ModelEntry(
   ],
 );
 
-/// The manifest's translation model, at its real size (#409's Q4_K_M).
+/// The manifest's translation model, Hy-MT2 at its real size (#409's Q4_K_M, #154).
 final ModelEntry translationEntry = ModelEntry(
   id: ModelRepository.translationModel,
-  name: 'Hy-MT 1.5 translation',
-  licence: 'Tencent HY',
+  name: 'Hy-MT2 translation',
+  licence: 'Apache-2.0',
   disables: 'mt_enabled',
-  regionExcluded: const <String>['EU', 'GB', 'KR'],
   variants: <ModelVariant>[
     ModelVariant(
       id: 'q4_k_m',
       name: '4-bit build',
-      files: <ModelFile>[_file('HY-MT1.5-1.8B-Q4_K_M.gguf', 1133080512)],
+      files: <ModelFile>[_file('Hy-MT2-1.8B-Q4_K_M.gguf', 1133080448)],
     ),
   ],
 );
@@ -149,18 +147,26 @@ class FakeDownloads extends Fake implements ModelDownloads {
   Stream<DownloadProgress> watch(String modelId) => live
       .putIfAbsent(modelId, StreamController<DownloadProgress>.broadcast)
       .stream;
+
+  /// Another model's download in flight, as M4's *Delete* asks (#154).
+  @override
+  bool downloading = false;
 }
 
 /// The model files, recording what M4 deletes, with the voice [voice].
 class FakeModels extends Fake implements ModelRepository {
   final List<String> deleted = <String>[];
 
+  /// Each delete's `keepPartial` (#154).
+  final List<bool> keptPartial = <bool>[];
+
   ModelStatus voice = ModelStatus.notDownloaded;
 
   @override
-  Future<void> delete(ModelEntry entry) async {
+  Future<void> delete(ModelEntry entry, {bool keepPartial = false}) async {
     if (deleteFails) throw StateError('files in use');
     deleted.add(entry.id);
+    keptPartial.add(keepPartial);
   }
 
   /// A delete whose files won't go (#721).

@@ -135,7 +135,7 @@ The coordination state lives on the **`team` branch**. It is never merged into
 | `PLAN.md` | The route through M4–M7: lanes, order, hand-offs, decisions. | Anyone, when reality changes (announce it) |
 | `MEMORY.md` | The project's memory: the owner's rules, decisions made, lessons learned. | `team.py remember` |
 | `WORKLOG.md` | The running record of what each agent is doing, newest last. | `team.py`, and `team.py log` |
-| `agents/agent-N.md` | **Your memory:** `Now`, `Next`, `Memory` (notes for your next session), plus `session`, `last-seen` and `last-read`. | `team.py` |
+| `agents/agent-N.md` | **Your memory:** `Now`, `Next`, `Memory` (notes for your next session), plus `session`, `last-seen`, `last-read` and `joined` (the newest handoff when the identity was created: older notes to `all` aren't shown to it, #1216). | `team.py` |
 
 `tools/team.py` is the only thing that edits the board. Each command fetches
 `origin/team`, resets to it, applies the change, commits and pushes. If the

@@ -1,26 +1,78 @@
 # On-device translation (optional)
 
-The design below is Hy-MT's, off in every build (ADR 9) and off by default (`mt_enabled = 0`). Nothing implements it now: `services/translation/translator.dart` has only `UnavailableTranslator`, and the llama.cpp binding, `llamadart`, was removed (ADR 29). Translation returns through #533.
+**Hy-MT2-1.8B, Q4_K_M, on stock llama.cpp through `llamadart`** (the owner's decision on #533, 2026-09-30; ADR 30, #154). It is an optional download, offered in every build, and translation is off until the learner turns it on (`mt_enabled = 0`).
 
-- Model: Hy-MT1.5-1.8B, one build: Q4_K_M (`HY-MT1.5-1.8B-Q4_K_M.gguf`, ~1.1 GB, from `tencent/HY-MT1.5-1.8B-GGUF`), the owner's choice (#409). The repo publishes Q6_K and Q8_0 too, and no 1.25- or 2-bit build. It is downloaded via `background_downloader` to `<appSupport>/models/hymt/`, checksum-verified, Wi-Fi-only switch.
-- Prompt: the model's documented translation template with source/target language names; DE→EN, DE→BN, EN→DE. Max 256 tokens, greedy decoding, run in an isolate; results cached in `translation_cache`. It ran on the CPU: until ADR 29 the app bundled llama.cpp's CPU backend only (ADR 27), so `ModelParams.preferredBackend` stayed `auto` (the CPU on Android) or `cpu`.
-- Where it appears: Word detail *Translate* (examples into the meaning language), Practice sentences word tap for words not in the course, Search "no results" as an extra action.
-- **Licence gate:** the Tencent HY licence excludes the EU, UK and South Korea. The Model manager shows the licence text and the download button is controlled by a build flag `ENABLE_HYMT_DOWNLOAD`; v1.0 ships with it **off in every build** (ADR 9, #173): a single store build can't be kept out of those regions. A licence-clean alternative is #494. Deleting the model turns `mt_enabled` off.
+## The model
 
-## After v1.0: a translator that can ship everywhere (#494)
+- **Pinned:** [`tencent/Hy-MT2-1.8B-GGUF`](https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF) at revision `a0c709d9fac510f2c807aa3af52872340dc37a4a`.
+  - The file is `Hy-MT2-1.8B-Q4_K_M.gguf`: 1,133,080,448 bytes, sha256 `dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699`.
+  - Architecture `hunyuan-dense`, stock tensor types only, so stock llama.cpp loads it. (The repository's 1.25-bit build needs an unmerged llama.cpp change and a fork, so it isn't used.)
+- **Manifest:** the entry keeps the id `hymt` (so its folder is `<appSupport>/models/hymt/`), named *Hy-MT2 translation*, licence Apache-2.0, `disables: mt_enabled`. It has no `region_excluded`.
+- **Offered in every build.** The licence is Apache-2.0: not gated, no regional exclusions, no NOTICE file. So the `ENABLE_HYMT_DOWNLOAD` build flag of ADR 9 and its EU/UK/KR reasoning are gone.
+- **The download is the voice's** (`model-manager.md`): pinned URL and sha256, the space check, the *Wi-Fi only* switch, and the swap into place. Two models can now download side by side:
+  - deleting one never touches the other's download in flight (its partial file, its records);
+  - a new attempt while another model downloads joins that one's notification, so the shade keeps one for both.
+- **Deleting the model** turns `mt_enabled` off (FR-M4-03) and releases the engine.
 
-Desk research, 2026-09-26, from the model cards and terms cited. Nothing here ships in v1.0; the owner decides whether to pursue it (#533).
+## The binding
 
-| Option | de→en · en→de · de→bn | Licence | Size | Offline | Flutter path |
-|---|---|---|---|---|---|
-| **Firefox / Bergamot tiny** ([models](https://github.com/mozilla/firefox-translations-models/tree/main/models/tiny)) | de↔en; en↔bn, so de→bn goes through English | MPL-2.0 ([licence](https://raw.githubusercontent.com/mozilla/firefox-translations-models/main/LICENSE)) | ~17 MB a direction: ~51 MB for de→en, en→de, en→bn | Yes, bundled | A new native library behind a platform channel: DuckDuckGo's [translate-kit](https://github.com/duckduckgo/translate-kit) (Apache-2.0, an Android AAR and an iOS package) |
-| **Opus-MT** (Helsinki-NLP) on the app's ONNX Runtime | [de-en](https://huggingface.co/Helsinki-NLP/opus-mt-de-en), [en-de](https://huggingface.co/Helsinki-NLP/opus-mt-en-de); en→bn only through [en-inc](https://huggingface.co/Helsinki-NLP/opus-mt-en-inc)/en-mul; one direct de→bn, [tc-bible-big](https://huggingface.co/Helsinki-NLP/opus-mt-tc-bible-big-deu_eng_fra_por_spa-inc) | Apache-2.0; en-de CC-BY-4.0 (a credit) | ~106 MB a direction int8 ([de-en ONNX](https://huggingface.co/Xenova/opus-mt-de-en/tree/main/onnx)); tc-bible-big 959 MB fp32; no ONNX export of the Bengali ones yet | Yes, bundled | `flutter_onnxruntime`, already shipped, plus a Dart SentencePiece tokeniser and our own decoding loop |
-| **Google ML Kit** ([languages](https://developers.google.com/ml-kit/language/translation/translation-language-support)) | de, en, bn; de→bn through English | [Google APIs terms](https://developers.google.com/terms), usage metrics to Google ([ML Kit terms](https://developers.google.com/ml-kit/terms)), "Translate with Google" attribution ([rules](https://docs.cloud.google.com/translate/attribution)) | ~30 MB a language | Only after a download from Google; can't be bundled ([paths](https://developers.google.com/ml-kit/tips/installation-paths)) | [google_mlkit_translation](https://pub.dev/packages/google_mlkit_translation) (community, MIT) |
-| NLLB-200 distilled 600M | direct de→bn | CC-BY-NC, "not for production" ([card](https://huggingface.co/facebook/nllb-200-distilled-600M)) | — | — | Ruled out: non-commercial |
-| Argos Translate | de↔en, en↔bn | code MIT; the models' licence unstated | — | — | No mobile runtime |
+- **`llamadart` ^0.9.0.** It pins `llamadart-native` v0.5.0, which is llama.cpp `7fe450e1` and has `LLM_ARCH_HUNYUAN_DENSE`.
+- **CPU backend only** (ADR 27's `hooks: user_defines: llamadart:` block, back): `llamadart_native_runtimes: llama_cpp` and, on Android, `llamadart_native_backends: [cpu]`. Without it the hook also bundles Vulkan and LiteRT-LM.
+- **The cost** is llama.cpp's CPU libraries in every APK: about 21 MB of the arm64 APK when ADR 29 took them out (72.3 → 51.2 MB). The PR that adds it measures the size again and moves the perf baseline with it.
+- **No isolate of our own:** llamadart's llama.cpp backend runs the model in its own worker isolate, so a translation never blocks the UI.
+- **`ModelParams`:**
+  - `contextSize: 1024`. A sentence and its translation fit, and the default 4096 would hold four times the cache in memory.
+  - `preferredBackend: cpu`.
+  - `useMmap: true`, the default: the 1.1 GB file is mapped, not copied into memory.
 
-Reported quality (flores, from the cards): Bergamot tiny en→bn BLEU 19.2, de→en 39.6, en→de 38.8 ([en-bn metadata](https://raw.githubusercontent.com/mozilla/firefox-translations-models/main/models/tiny/enbn/metadata.json)); Opus tc-bible-big deu→ben 11.3 and eng→ben 17.7: going through English beats Opus's direct German→Bengali.
+## The prompt
 
-**Recommendation:** the Bergamot tiny models. They're the smallest, their licence is clean everywhere (MPL-2.0 with a credits line in M8), they ship inside the app as the offline promise asks, and their en→bn is the best of the lot. The cost is a native library (translate-kit) behind a platform channel, where Opus-MT would reuse ONNX Runtime at three times the size with weaker Bengali; Opus-MT is the fallback. ML Kit is the least work but breaks the offline promise (a download from Google), puts Google's branding in the UI and sends it metrics. The Bergamot repository was archived on 2025-12-15, its models moving elsewhere: where they live now is part of the implementation issue.
+The model card's, with **no system prompt**. It goes in as the user message, through the GGUF's own chat template (`LlamaEngine.create`):
 
-**Before an implementation issue** (if the owner agrees): a quality check on about twenty sentences from `content.db`, A1 to C1, in the three directions, the two-hop de→bn beside Opus's direct model. It needs reference translations a native Bangla speaker checks, chrF (sacrebleu) and a 1–5 adequacy rating, a look at what the course teaches (du/Sie, case, separable verbs, register), and latency and memory on the emulator.
+```
+Translate the following text into {target_lang}. Note that you should only output the translated result without any additional explanation:
+
+{source_text}
+```
+
+- `{target_lang}` is the full English name: German, English, Bengali, Russian or Polish.
+- **Sampling, as the card recommends:** temperature 0.7, top_p 0.6, top_k 20, repetition penalty 1.05. At most 256 new tokens.
+- **The output is trimmed.** An empty result is no result: `translate` returns null, and nothing is cached.
+
+## Directions
+
+German into each meaning language the app offers (en, bn, ru, pl), and each of them into German. `Translator.translate(text, from:, to:)` takes any pair; the app asks only these eight.
+
+## The engine's life
+
+- **`translatorProvider`:**
+  - with the model ready on the phone and `mt_enabled` on, it gives the llama-backed `Translator`;
+  - otherwise it gives `UnavailableTranslator`, which answers null and caches nothing.
+- **Loaded on the first translation,** not at launch. That takes a few seconds; the device check records how long the first one takes. It stays loaded for the next one.
+- **Released** under memory pressure and when the app goes to the background, as the voice is (`VoiceRelease`). Also when the model is deleted.
+- **Reloaded** when a new download of it lands.
+- **One translation at a time.** A second request waits for the first.
+
+## The cache
+
+`translation_cache`, keyed by (`src_lang`, `tgt_lang`, `src_text`, `model`).
+- **`model` is `hymt2-1.8b-q4km`,** so nothing an older or another model wrote is read back.
+- **A second ask doesn't run the model.**
+- **It's a cache,** so it isn't exported or restored (`user-database.md`), and a reset clears it.
+
+## Where it appears
+
+- **W1 *Translate*** (FR-W1-05):
+  - it's offered when translation is on and at least one example has no translation in the learner's **first meaning language**, and it fills those into it;
+  - today that means a Bangla learner, since the course has no Bangla example lines;
+  - an English, Polish or Russian learner already sees every example in their language, so isn't offered it.
+- **T5's word tap** (FR-T5-03): a word that isn't in the course shows its translation into the first meaning language, above the Duden link.
+- **R1's *No results*:**
+  - an extra action, *Translate «…»*;
+  - a query can be German or the learner's own language, so it shows both: German into the first meaning language, and that language into German.
+
+## The licence
+
+- **Apache-2.0.** The model repository's licence text ships as `assets/licences/Hy-MT2-Apache-2.0.txt`.
+- **M8's Models row** reads *Hy-MT2 (1.8B) — Apache-2.0*.
+- **What goes:** the region note, the Tencent HY Community License text and `modelsHymtGated`.

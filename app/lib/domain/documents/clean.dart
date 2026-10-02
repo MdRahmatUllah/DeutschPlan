@@ -85,6 +85,11 @@ Set<String> _repeated(List<List<String>> pages) {
 /// A word broken at a line end: lower case goes on as one word, a capital
 /// starts a hyphenated compound's next part.
 String _joinHyphens(String text) => text
+    // A suspended hyphen stays one: «Haus-↵und Gartenpflege».
+    .replaceAllMapped(
+      RegExp(r'(\p{L})-\n((?:und|oder|bis|sowie)\b)', unicode: true),
+      (m) => '${m[1]}- ${m[2]}',
+    )
     .replaceAllMapped(
       RegExp(r'(\p{L})-\n(\p{Ll})', unicode: true),
       (m) => '${m[1]}${m[2]}',
