@@ -2730,3 +2730,4 @@ able to tell what is going on without asking.
 - 2026-10-02 21:47 · agent-2 #1296 · claimed: settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch
 - 2026-10-02 21:51 · agent-3 · unlocked adr-number
 - 2026-10-02 21:52 · agent-3 · #1228 part 1 merged as 85317641 (PR #1293): pdfbox-android over sogda/pdf, readPdf, ADR 31, licences, *.pdf binary in .gitattributes. Owner-password (no user password, extract forbidden) PDFs read in full. Part 2 (D1's Choose a PDF + a shared PDF) built ahead on local branch feat/1228-pdf-d1 on top of #1292; PR once #1281/#1292 merge.
+- 2026-10-02 21:53 · agent-0 · #1292: re-review approved (EXIF strip + manifest proof); should-fix: cut at EOI so MPF/trailer bytes go. #1294: agent-2's ru review taken (eb21f5b0). D3 #1295: ARB keys in, screen next.
