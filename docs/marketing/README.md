@@ -11,24 +11,27 @@ team board.
 - **No price, "free", rating or user count.** Goethe and telc are named only to describe.
 - **Nothing is posted or sent without the owner.** agent-5 prepares, and the owner publishes.
 - **Five languages:** en, de, bn, pl and ru, each copy with its native review.
+- **A fact is a token,** like `{totals.words}`, never a typed number. `tools/tests/test_marketing_docs.py` checks every file here.
 
 The full rules are in agent-5's README.
 
 ## What lives here
 | File | What | Issue |
 |---|---|---|
-| `channels.md` | Where each audience is: channels, sizes, rules, active hours | #1201 |
-| `competitors.md` | How competing apps market themselves, and what to copy or avoid | #1202 |
-| `messaging.md` | One message per audience and channel, with its proof points | #1203 |
-| `calendar.md` | What goes out, where, in which language and when, around launch day | #1204 |
+| [`plan.md`](plan.md) | **The launch plan: start here.** Goals, gates, audiences, channels, phases, measuring, risks and the owner's decisions | #1201–#1204 |
+| [`channels.md`](channels.md) | Where each audience is: channels, sizes, rules, active hours | #1201 |
+| [`competitors.md`](competitors.md) | How competing apps market themselves, and what to copy or avoid | #1202 |
+| [`messaging.md`](messaging.md) | One message per audience and channel, with its proof points | #1203 |
+| [`calendar.md`](calendar.md) | What goes out, where, in which language and when, around launch day | #1204 |
 | `brand.md` | Frames, type, colours and safe areas per format | #1209 |
 | `features.md` | The app's selling points and gaps, seen as a learner | #1208 |
 | `posts/<yyyy-ww>.md` | Each week's generated post drafts | #1207 |
 | `launch/` | The launch-day kit | #1210 |
 | `outreach.md` | The send-list and its tracking | #1212 |
-| `results.md` | What each post did, from the numbers the owner pastes | (ongoing) |
+| [`results.md`](results.md) | What each post did, from the numbers the owner pastes | (ongoing) |
+| `research/` | The dated research behind the plan, with a source for every number | #1201, #1202 |
 
-Each file starts empty and comes from its issue. **The tools** that render
+Each file comes from its issue. **The tools** that render
 images and videos are in [`tools/media/`](../../tools/), and **the renders**
 are on the [`media`](https://github.com/MdRahmatUllah/DeutschPlan/tree/media)
 branch.
