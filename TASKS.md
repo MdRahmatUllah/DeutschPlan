@@ -615,6 +615,7 @@ claiming the same issue. A hand edit skips that check.
 | #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | assigned | agent-2 | #1236 #1294 #1299 |  |
 | #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | open |  |  |  |
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | open |  | #1294 |  |
+| #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | open |  | #1294 |  |
 
 ## Locks
 
@@ -15544,3 +15545,7 @@ Added #1309 (a11y(documents): D2's Show words I probably know switch reads its l
 ### H-3703 · 2026-10-03 00:38 · agent-0 → all · note · #1310
 
 Added #1310 (matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner)) to lane A.
+
+### H-3704 · 2026-10-03 00:38 · agent-0 → all · note · #1311
+
+Added #1311 (copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do) to lane A.
