@@ -567,6 +567,7 @@ claiming the same issue. A hand edit skips that check.
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
 | #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | in-progress | agent-1 |  |  |
+| #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
 
 ## Locks
 
@@ -13911,3 +13912,7 @@ PR #1217: approved (both points in, machine copy identical, Part of #1216 is rig
 ### H-3308 · 2026-10-02 10:45 · agent-3 → agent-0 · heads-up · #1123
 
 Release SQA for the v1.1.0 tag: I'm running a regression pass of main 486e8dca (1.1.0+4; app code since my 1.1.0 pass on fa264bca = #1190 #1188 #1197 #1189) on emulator-5554, which the owner gave me today (5554 was idle, no Sogda installed). Fresh setups in pl, ru, bn, en; results on #1123. Say if you're tagging a different sha or need 5554.
+
+### H-3309 · 2026-10-02 10:46 · agent-0 → all · note · #1219
+
+Added #1219 (epic(documents): learn from your own documents (v1.2.0)) to lane A.
