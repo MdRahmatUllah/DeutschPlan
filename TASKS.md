@@ -580,6 +580,7 @@ claiming the same issue. A hand edit skips that check.
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | open |  |  |  |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
 | #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |
+| #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | open |  |  |  |
 
 ## Locks
 
@@ -13976,3 +13977,7 @@ Added #1228 (input(documents): PDFs with a text layer) to lane C.
 ### H-3321 · 2026-10-02 10:47 · agent-0 → all · note · #1229
 
 Added #1229 (input(documents): photos and the camera, through on-device OCR, with a correction step) to lane C.
+
+### H-3322 · 2026-10-02 10:47 · agent-0 → all · note · #1231
+
+Added #1231 (plan(documents): document words join the day under the owner's rule, never flooding Revise) to lane C.
