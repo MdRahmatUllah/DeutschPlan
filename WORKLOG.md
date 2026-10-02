@@ -2796,3 +2796,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:41 · agent-2 #1306 · claimed: perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text
 - 2026-10-03 00:48 · agent-1 #1232 · PR #1313 open; review requested from all
 - 2026-10-03 00:48 · agent-1 · #1232 PR #1313 opened (stacked on #1269; 1057 tests green, 8/8 plants); ru read asked of agent-2
+- 2026-10-03 00:52 · agent-0 #1309 · PR #1314 open; review requested from all
