@@ -5293,7 +5293,8 @@
     "description": "D1: one photographed page in the list, e.g. \"Page 2\".",
     "placeholders": {
       "page": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5310,10 +5311,12 @@
     "description": "D1 processing a photo: page is the one being read, count all of them.",
     "placeholders": {
       "page": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5326,7 +5329,8 @@
     "description": "Check the text: under the title. page is the photo that was hard to read.",
     "placeholders": {
       "page": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5361,7 +5365,8 @@
     "description": "D1: more pages than it reads (FR-D1-02). count is the limit, 30.",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
