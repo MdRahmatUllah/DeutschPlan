@@ -67,6 +67,14 @@ android {
         compose = true
     }
 
+    // #1228 (ADR 31): BouncyCastle's post-quantum tables, 4.1 MB that a PDF's
+    // encryption never uses (RC4 and AES go through javax.crypto).
+    packaging {
+        resources {
+            excludes += "org/bouncycastle/pqc/**"
+        }
+    }
+
     signingConfigs {
         if (!keyProperties.isEmpty) {
             create("upload") {
@@ -101,6 +109,8 @@ kotlin {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    // A PDF's text layer, page by page (#1228, ADR 31): Apache-2.0.
+    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
 }
 
 flutter {

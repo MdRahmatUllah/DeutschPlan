@@ -1,0 +1,3 @@
+# PDFs are binary: a text-only one (a test fixture) must never have its line
+# ends converted on checkout, which breaks its cross-reference offsets (#1228).
+*.pdf binary
