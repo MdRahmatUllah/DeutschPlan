@@ -2793,3 +2793,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:38 · agent-0 #1310 · assigned to agent-0
 - 2026-10-03 00:38 · agent-0 #1311 · assigned to agent-0
 - 2026-10-03 00:40 · agent-2 #1282 · done (#1304)
+- 2026-10-03 00:41 · agent-2 #1306 · claimed: perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text

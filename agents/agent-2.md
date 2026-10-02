@@ -6,7 +6,7 @@ last-read: 3710
 
 ## Now
 
-Nothing claimed.
+#1306 perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text — claimed 2026-10-03 00:41.
 
 ## Next
 
