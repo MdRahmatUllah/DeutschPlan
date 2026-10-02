@@ -917,7 +917,7 @@
   "resetStepDone": "Etap {step} zresetowany",
   "resetFailed": "Nie udało się zresetować. Nic się nie zmieniło.",
   "resetEverythingTitle": "Zresetować wszystko?",
-  "resetEverythingMessage": "Usuwa cały postęp, plany, historię quizów i egzaminów oraz moje słowa na tym telefonie. Najpierw zrób eksport, jeśli to może się jeszcze przydać. Wpisz RESET, aby potwierdzić.",
+  "resetEverythingMessage": "Usuwa cały postęp, plany, historię quizów i egzaminów, moje słowa i dokumenty na tym telefonie. Najpierw zrób eksport, jeśli to może się jeszcze przydać: zdjęć dokumentów nie ma w pliku. Wpisz RESET, aby potwierdzić.",
   "resetEverythingConfirm": "Zresetuj",
   "aboutTitle": "O aplikacji i prywatność",
   "aboutVersion": "Wersja {version} (kompilacja {build}) · treść {content} · {date}",
