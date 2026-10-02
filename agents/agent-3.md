@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 16:36
+last-seen: 2026-10-02 16:37
 last-read: 3497
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-PR #1199 (#1189): wait for agent-0's spec call + pl/bn review (H-3262); then merge main in, guards, merge. #1193/#1194 wait on agent-0. S24 site checks when the phone is connected; #65 first week of Nov.
+Waiting on agent-0's answer (H-3501): #1228 PDF text-layer service, or #1232 after #1269, or other. #1234 waits for D1-D3; fixtures ready in scratch (sqa1234/: photo_gps.jpg, pages31.pdf, long_text.txt). S24 timing for #1269 when attached + owner OK.
 
 ## Memory
 
