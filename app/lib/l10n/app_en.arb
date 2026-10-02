@@ -6568,7 +6568,7 @@
   "@docWordsEmpty": {
     "description": "D2's empty state: no new word in the text (doc-words.md, States)."
   },
-  "docWordsSemNew": "{word}, new, {level}, double tap for its card",
+  "docWordsSemNew": "{word}, new, {level}",
   "@docWordsSemNew": {
     "description": "Screen reader: a new course word in D2's text. level is A1 … C2.",
     "placeholders": {
@@ -6580,7 +6580,7 @@
       }
     }
   },
-  "docWordsSemProbable": "{word}, probably known, double tap for its card",
+  "docWordsSemProbable": "{word}, probably known",
   "@docWordsSemProbable": {
     "description": "Screen reader: a word D2 thinks the learner probably knows.",
     "placeholders": {
@@ -6589,7 +6589,7 @@
       }
     }
   },
-  "docWordsSemOutside": "{word}, outside the course, double tap for its card",
+  "docWordsSemOutside": "{word}, outside the course",
   "@docWordsSemOutside": {
     "description": "Screen reader: a word outside the course in D2's text.",
     "placeholders": {
@@ -6598,7 +6598,7 @@
       }
     }
   },
-  "docWordsSemMine": "{word}, my word, double tap for its card",
+  "docWordsSemMine": "{word}, my word",
   "@docWordsSemMine": {
     "description": "Screen reader: a word that is one of My words in D2's text.",
     "placeholders": {
@@ -6607,7 +6607,7 @@
       }
     }
   },
-  "docWordsSemAdded": "{word}, added, double tap for its card",
+  "docWordsSemAdded": "{word}, added",
   "@docWordsSemAdded": {
     "description": "Screen reader: a word already added from this document.",
     "placeholders": {

@@ -81,7 +81,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 - Write: `doc_queue`, `word_contexts`, `word_state` (*Mark known*), and `custom_words` through R2.
 
 **Developer notes.**
-- The text is built lazily, a paragraph per item of a list, so a 20,000-character text (about 3,000 words) never builds at once. Each marked word is its own semantics node, read as "Termin, new, A1.1, double tap for its card". `perf.py` measures the long text's first frame (`03-domain/document-matcher.md`, *Tests*).
+- The text is built lazily, a paragraph per item of a list, so a 20,000-character text (about 3,000 words) never builds at once. Each marked word is its own semantics node, read as "Termin, new, A1", and TalkBack adds its own "Double-tap to activate", once (agent-1's review: a "double tap" in the label would repeat it). `perf.py` measures the long text's first frame (`03-domain/document-matcher.md`, *Tests*).
 - The bulk bar keeps its height at 200 %, with its counts on a second line.
 - Routes and providers are added to `navigation.md` and `state-management.md` with the code.
 
