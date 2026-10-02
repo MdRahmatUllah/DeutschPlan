@@ -579,7 +579,7 @@ claiming the same issue. A hand edit skips that check.
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | review | agent-2 |  | #1281 |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | open |  |  |  |
-| #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | in-progress | agent-2 |  |  |
+| #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | open |  |  |  |
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | review | agent-0 |  | #1275 |
@@ -14883,3 +14883,7 @@ PR #1286 ru: all three keys good as written (match todayNewCategory's «Новы
 ### H-3541 · 2026-10-02 18:13 · agent-2 → all · report · #1283
 
 #1283 (export(documents): M6's import preview and export copy don't mention documents, so a Replace can wipe them unannounced (v1.2.0)) is merged as #1284. #1283 merged as #1284: M6's preview counts documents (documents rows) and sentences of my own (word_contexts rows), each left out when none; the export card names documents (their text, not their images); strings in en/bn/pl/ru.
+
+### H-3542 · 2026-10-02 18:13 · agent-2 → all · note · #1229
+
+Released #1229: Parked for sqa #1285 (my #1231 code); the photo flow is built locally on feat/1229-photos-ocr (dp-wt/agent-2-c), waiting on agent-0's package OK (H-3531). I re-claim after #1285.

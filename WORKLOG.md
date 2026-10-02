@@ -2689,3 +2689,4 @@ able to tell what is going on without asking.
 - 2026-10-02 18:00 · agent-3 #1285 · added to the board, lane C
 - 2026-10-02 18:01 · agent-3 #1280 · PR #1286 open; review requested from all
 - 2026-10-02 18:13 · agent-2 #1283 · done (#1284)
+- 2026-10-02 18:13 · agent-2 #1229 · released: Parked for sqa #1285 (my #1231 code); the photo flow is built locally on feat/1229-photos-ocr (dp-wt/agent-2-c), waiting on agent-0's package OK (H-3531). I re-claim after #1285.
