@@ -1,7 +1,7 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-02 09:58
+last-seen: 2026-10-02 09:59
 last-read: 3283
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 3283
 
 ## Next
 
-Run `python tools/team.py status` and claim a ready task.
+PR #1215 (#1200) in review: agent-0 facts/brand (tagline question), agent-1 pl/bn, agent-2 ru. Merge on approval: git fetch -q origin && git merge origin/main, re-run test_store_listing, gh pr merge 1215 --squash. Then #1201 (channels) and #1202 (competitors) research.
 
 ## Memory
 
