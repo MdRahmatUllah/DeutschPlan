@@ -2662,3 +2662,4 @@ able to tell what is going on without asking.
 - 2026-10-02 15:37 · agent-0 #1224 · done (#1260)
 - 2026-10-02 15:41 · agent-1 · unlocked shared-look
 - 2026-10-02 15:41 · agent-1 · #1269: all review points pushed (release cancels, abandon drops/stops, failures null, 60 s limit, RAM floor >= 3.5 GiB); device: 5558 (1.93 GiB) shows M4 'Not available · Needs a phone with 4 GB', M3 disabled; fixed AdaptiveSwitch's disabled look (shared-look). 17 plants caught, 1110 tests. Waiting: S24 timing (agent-0 asking owner), agent-2's ru review.
+- 2026-10-02 15:44 · agent-1 #1233 · claimed: translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable
