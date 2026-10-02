@@ -624,7 +624,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number |  |  |  |
-| pubspec | agent-1 | 2026-10-02 11:59 | #154 part 3: llamadart ^0.9.0 + ADR 27's CPU-only hooks block |
+| pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 | workbooks |  |  |  |

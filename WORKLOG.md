@@ -2708,3 +2708,4 @@ able to tell what is going on without asking.
 - 2026-10-02 20:08 · agent-3 #1290 · PR #1291 open; review requested from all
 - 2026-10-02 20:09 · agent-0 #1228 · assigned to agent-3
 - 2026-10-02 20:09 · agent-0 #1232 · assigned to agent-1
+- 2026-10-02 20:10 · agent-1 · unlocked pubspec
