@@ -29,6 +29,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - **BR-PLAN-08** Changes to `daily_new`, `revise_count`, `study_days_mask` take effect from the next day; today's plan is fixed.
 - **BR-PLAN-09** Time estimate = 25 s per revision + 45 s per new word + 60 s per grammar topic + 40 s per sentence, replaced by the learner's own median timings once ≥ 7 sessions exist before today; measured over the last 30 study days before today, so the estimate is fixed for the day (#708).
 - **BR-PLAN-10** Day complete = every plan item of today is completed or skipped, and no grammar/sentence item is open. Rest days count as complete for streak purposes.
+- BR-PLAN-11 *(planned, #1231)* Words added from a document (BR-DOC-04) are introduced up to `doc_daily_cap` a day (default 5, from 0 to 20; the owner's call, #1220), after the course's new words and outside `daily_new`. The rest wait in the document queue, in the order added, and are never backlog. The cap applies on study days only, and the time estimate counts them as new words (BR-PLAN-09). A cap of 0 holds them all in the queue.
 
 ## Scheduling (FSRS)
 
@@ -69,6 +70,19 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - **BR-CONTENT-02** New words join their step's To-do queue in teaching order; removed words are hidden but their history stays; changed meanings show an *updated* chip for 7 days.
 - **BR-CONTENT-03** Today shows a one-time update card with counts. A duplicate merged into a word the course kept (PIPE-12) is not counted as removed: its progress moved to that word (#922).
 - **BR-CONTENT-04** A row of the course is a word to learn (`vocab`), a lesson note (`note`: word formation, "beantworten — Präfix be-"; a grammar rule's name, "Vorfeldbesetzung") or a comparison (`compare`: "machen ↔ tun"). Notes and comparisons are listed, searched and opened (L2, L6, R1, W1) like any word, with no status; they are never planned, revised, quizzed, examined, placed, practised in sentences or counted in a step's or the course's words (#630). The pipeline assigns the kind (PIPE-10).
+
+## Documents (v1.2.0, epic #1219)
+
+*Planned:* these ids aren't bold yet. Each one becomes bold, and so enforced by `architecture_test.dart` (every bold id must name a test), in the PR that implements and tests it.
+
+- BR-DOC-01 Everything a document goes through happens on the phone: text extraction, OCR (ML Kit text recognition with the model bundled), lemmatising and translation (Hy-MT2, once downloaded). No document, image or word is sent anywhere (BR-PRIV-01).
+- BR-DOC-02 A document comes from pasted text, Android's share sheet (text, a PDF or an image), a PDF chosen in the file picker (its text layer), or photos (the camera or the gallery). It has at most 30 pages or 20,000 characters; the rest is cut, and the learner is told.
+- BR-DOC-03 Each lemma found is classed as **known**, **probably known**, **new in the course**, **mine** or **outside the course**, as `03-domain/document-matcher.md` defines. Stop words are never offered. A lemma is listed once per document, with all its sentences.
+- BR-DOC-04 *Add* puts a course word in the document queue (BR-PLAN-11), with its sentence kept as a context. A word outside the course becomes one of *My words*: the sentence is its example, the document's title is its *where I saw it*, and its meaning is Hy-MT2's (labelled) or typed in. A word added again gets the new sentence, never a second card. *I know this* is W1's *Mark known* (FR-W1-02).
+- BR-DOC-05 Documents are kept, as the owner decided (#1220): the text always, and the images while *Save original images* is on (the default). *Auto-delete after N days* is off by default. Deleting a document never deletes the words added from it, and their sentences stay on the cards.
+- BR-DOC-06 Export carries the documents' text, what each one found, the sentences and the queue. It never carries images. Import merges them like *My words*.
+- BR-DOC-07 A machine-translated meaning is labelled as such until the learner edits it.
+- BR-DOC-08 The feature is free, with no limits (#1220).
 
 ## Privacy
 
