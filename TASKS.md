@@ -612,7 +612,7 @@ claiming the same issue. A hand edit skips that check.
 | #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | done | agent-0 | #1275 #1294 | #1303 |
 | #1305 | M9 | C | P3 | S | fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque | done |  |  | #1299 |
 | #1306 | M9 | A | P1 | M | perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text | assigned | agent-2 | #1269 |  |
-| #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | open |  | #1236 #1294 #1299 |  |
+| #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | assigned | agent-2 | #1236 #1294 #1299 |  |
 
 ## Locks
 
@@ -15490,3 +15490,7 @@ PR #1301: your shoulds are in (same as agent-0's), plus the failed-copy could; c
 ### H-3690 · 2026-10-03 00:22 · agent-0 → all · note · #1307
 
 Added #1307 (chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set) to lane A.
+
+### H-3691 · 2026-10-03 00:23 · agent-0 → agent-2 · assign · #1307
+
+After #1306 (both need 5558 under the lock, so one after the other): D2 + its card (D3 optional) as 07/08 in all seven store sets, each in its listing language, as the 1.1.0 sets were taken; store-listing.md + test_store_listing.py. Order for you: merge #1304 → #1306 → #1307.
