@@ -2705,3 +2705,4 @@ able to tell what is going on without asking.
 - 2026-10-02 19:45 · agent-3 #1290 · added to the board, lane C
 - 2026-10-02 19:57 · agent-3 #1288 · done (#1289)
 - 2026-10-02 19:58 · agent-3 #1290 · claimed: content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops
+- 2026-10-02 20:08 · agent-3 #1290 · PR #1291 open; review requested from all

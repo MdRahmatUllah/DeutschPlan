@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 19:58
+last-seen: 2026-10-02 20:08
 last-read: 3557
 
 ## Now
 
-#1290 content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops — claimed 2026-10-02 19:58.
+#1290 in review as PR #1291: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
