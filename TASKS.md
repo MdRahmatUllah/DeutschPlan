@@ -623,7 +623,7 @@ The emulator lock is local, not here: `team.py device`.
 | Resource | Owner | Since | Why |
 |---|---|---|---|
 | user-db-schema |  |  |  |
-| adr-number |  |  |  |
+| adr-number | agent-3 | 2026-10-02 20:12 | ADR 31: pdfbox-android for #1228 |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
