@@ -6,7 +6,7 @@ last-read: 3414
 
 ## Now
 
-Nothing claimed.
+#1263 ux(words): Back on R2 with a word typed in discards it without asking — claimed 2026-10-02 13:54.
 
 ## Next
 
