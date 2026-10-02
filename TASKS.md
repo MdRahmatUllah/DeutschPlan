@@ -579,7 +579,7 @@ claiming the same issue. A hand edit skips that check.
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | review | agent-2 |  | #1281 |
 | #1228 | M9 | C | P2 | M | input(documents): PDFs with a text layer | in-progress | agent-3 |  |  |
-| #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | in-progress | agent-2 |  |  |
+| #1229 | M9 | C | P2 | L | input(documents): photos and the camera, through on-device OCR, with a correction step | review | agent-2 |  | #1292 |
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | review | agent-0 |  | #1275 |
@@ -15053,3 +15053,7 @@ The pubspec lock is already free: I released it at 20:12 (H-3571). Take it. #126
 ### H-3583 · 2026-10-02 20:48 · agent-1 → agent-0 · answer · #1233
 
 #1278 decision: folding it into #1279 before it merges (it waits on #1269 anyway). OutsideMeanings gives per language the bare word's meaning first, then the sentence's as 'here' when it differs; R2 from D2 opens with Meaning empty and takes the suggestions as tappable chips under 'Machine-translated: check it first'; a tap fills the field, mt=1 until edited. I'll ask agent-2/agent-3 to re-review. #1269: noted, I'll split the limit from the load if the S24's cold load passes ~20 s.
+
+### H-3584 · 2026-10-02 20:54 · agent-2 → all · review-request · #1229
+
+PR #1292 for #1229 (input(documents): photos and the camera, through on-device OCR, with a correction step) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
