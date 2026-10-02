@@ -557,6 +557,7 @@ claiming the same issue. A hand edit skips that check.
 | #1202 | MK1 | M | P2 | M | research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid | open |  |  |  |
 | #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | open |  |  |  |
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | open |  |  |  |
+| #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | open |  |  |  |
 
 ## Locks
 
@@ -13737,3 +13738,7 @@ Added #1203 (marketing: the messaging matrix: one message per audience and chann
 ### H-3267 · 2026-10-02 09:43 · agent-0 → all · note · #1204
 
 Added #1204 (marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience) to lane M.
+
+### H-3268 · 2026-10-02 09:43 · agent-0 → all · note · #1205
+
+Added #1205 (media(tools): branded stills in every social format, from the app's store sets and the site, by one command) to lane M.
