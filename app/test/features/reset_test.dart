@@ -11,6 +11,7 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/document_repository.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/data/repositories/reset_repository.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
@@ -60,6 +61,7 @@ void main() {
   late SettingsRepository settings;
   late String went;
   late _Recordings recordings;
+  late _Photos photos;
 
   setUpAll(() async {
     l10n = await AppLocalizations.delegate.load(supportedLocales.first);
@@ -76,6 +78,7 @@ void main() {
     await settings.load();
     went = '';
     recordings = _Recordings();
+    photos = _Photos();
     // A1.1, the current step, with a word learning.
     await db.customStatement(
       'INSERT INTO enrollments '
@@ -123,6 +126,7 @@ void main() {
           learnedStabilitiesProvider.overrideWith((ref) async => <double>[]),
           translationModelProvider.overrideWith((ref) async => null),
           modelRepositoryProvider.overrideWithValue(recordings),
+          documentRepositoryProvider.overrideWithValue(photos),
           ...more,
         ],
         child: AdaptiveChromeScope(
@@ -280,6 +284,7 @@ void main() {
 
     expect(went, '/onboarding/1');
     expect(recordings.deleted, <Iterable<int>?>[null], reason: 'all of them');
+    expect(photos.deletions, 1, reason: "#1229: the documents' photos too");
     expect(await count('word_state'), 0);
     expect(await count('enrollments'), 0);
     expect(settings.read(SettingKeys.themeMode), ThemeModeSetting.dark);
@@ -323,6 +328,7 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(recordings.deleted, hasLength(1));
     expect(await count('word_state'), 0);
+    expect(photos.deletions, 0, reason: 'a step keeps its documents');
   });
 
   testWidgets("#692 ME-13 a step list that can't be read says so, and "
@@ -379,4 +385,12 @@ void main() {
     expect(find.text(l10n.resetStepDone('A1.1')), findsOneWidget);
     expect(find.text(l10n.resetFailed), findsNothing);
   });
+}
+
+/// The documents' photos, deleted without a disk (#1229).
+class _Photos extends Fake implements DocumentRepository {
+  int deletions = 0;
+
+  @override
+  Future<void> deleteAllImages({Directory? support}) async => deletions++;
 }
