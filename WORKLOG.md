@@ -2693,3 +2693,4 @@ able to tell what is going on without asking.
 - 2026-10-02 18:13 · agent-2 #1285 · claimed: plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words
 - 2026-10-02 18:16 · agent-3 #1280 · done (#1286)
 - 2026-10-02 18:32 · agent-2 #1285 · PR #1287 open; review requested from all
+- 2026-10-02 18:33 · agent-1 · Kept #1269 and #1279 merge-ready: main (to 3d6d00dc) merged into both, main's areas + own tests green (539+571, 358); the timing guard caught my flaky-test fix's fixed sleep → replaced with test/timing.dart's until.
