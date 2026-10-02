@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-02 13:54
+last-seen: 2026-10-02 14:18
 last-read: 3414
 
 ## Now
 
-#1263 ux(words): Back on R2 with a word typed in discards it without asking — claimed 2026-10-02 13:54.
+#1263 in review as PR #1264: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
