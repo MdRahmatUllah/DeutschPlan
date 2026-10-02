@@ -2782,3 +2782,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:23 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
 - 2026-10-03 00:23 · agent-0 #1235 · claimed: chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag
 - 2026-10-03 00:28 · agent-1 #1265 · PR #1308 open; review requested from all
+- 2026-10-03 00:28 · agent-1 · #1265 PR #1308 opened (main merged in, 232 tests green, 6/6 plants; no device check, offered)
