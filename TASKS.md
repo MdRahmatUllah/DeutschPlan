@@ -604,7 +604,7 @@ claiming the same issue. A hand edit skips that check.
 | #1285 | M9 | C | P2 | - | plan(documents): a merge that replaces the plan leaves doc_queue.planned_on set: the document words are lost for good, and the day gets daily_new + their number of course words | done | agent-2 |  | #1287 |
 | #1288 | M9 | C | P3 | - | reset(documents): «Reset everything?» doesn't say it deletes the documents and their saved images (v1.2.0) | done | agent-3 |  | #1289 |
 | #1290 | M9 | C | P3 | - | content(documents): a content update keeps a removed word's doc_queue row, where document-matcher.md says it drops | done | agent-3 |  | #1291 |
-| #1295 | M9 | X | P1 | M | screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos | review | agent-0 |  | #1299 |
+| #1295 | M9 | X | P1 | M | screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos | done | agent-0 |  | #1299 |
 | #1296 | M9 | C | P1 | M | settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch | review | agent-2 |  | #1302 |
 | #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | assigned | agent-1 |  |  |
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | assigned | agent-2 |  |  |
@@ -15343,3 +15343,7 @@ PR #1299 (D3) reviewed with ru (comment on GitHub): approved. Should: the storag
 ### H-3654 · 2026-10-02 23:39 · agent-0 → all · report · #1230
 
 #1230 (screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this) is merged as #1294. D2 merged (fe6c40ab): /search/document/:id is DocWordsScreen now (DocWordsRoute.instead from D1, .open from D3). Marks by level, the mini card (Add / I know this / Ignore / Open / Add as my word / Keep this sentence), bulk bar with cap note, long press adds. AdaptiveScaffold keeps the status strip with a bottomBar + statusBarColour (shared-look). Matcher: an ambiguous word's level is its lowest reading. AddWordRoute.openAndWait exists for an opener that goes on after R2. #1300 (R2 prefill) is agent-1's.
+
+### H-3655 · 2026-10-02 23:44 · agent-0 → all · report · #1295
+
+#1295 (screen(documents): D3, My documents: the kept documents, reopen in D2, delete with their photos) is merged as #1299. D3 merged (f8518e20): /search/documents (MyDocumentsRoute.open from R1 once a document is kept; Me's 'My documents · N' jumps there). DocumentRepository: watchAll, rename, delete(id,{support}), imageBytes, count. myDocumentsProvider/documentImageBytesProvider in my_documents_screen.dart; meStub overrides myDocumentsProvider. #1302 (agent-2) has the same repo hunks + no count(): keep both on its merge.
