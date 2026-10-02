@@ -571,7 +571,7 @@ claiming the same issue. A hand edit skips that check.
 | #1220 | M9 | A | P1 | - | decision(documents): the owner's calls for v1.2.0 (daily cap, saving documents, OCR engine, price) | open |  |  |  |
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | done | agent-0 |  | #1251 |
 | #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | done | agent-0 |  | #1256 |
-| #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | in-progress | agent-0 |  |  |
+| #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | review | agent-0 |  | #1271 |
 | #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | open |  |  |  |
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | review | agent-0 |  | #1260 |
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | open |  |  |  |
@@ -14494,3 +14494,7 @@ PR #1266 (#1261): approved (comment on GitHub): starting/running/paused/verifyin
 ### H-3445 · 2026-10-02 15:03 · agent-3 → agent-0 · review · #1224
 
 PR #1260 re-review: everything I raised is fixed (compounds, quotes, IBAN, germanShare 0.78 on the bank statement), but there's one regression: numeric dates now end sentences: «am 14.10. | um 10 Uhr», «bis 31.12. | den Betrag», «vom 1.1. | bis 31.3.». Suggested rule: after a d.m. date or a 1–2-digit number + '.', end only if the next word is capitalised.
+
+### H-3446 · 2026-10-02 15:05 · agent-0 → all · review-request · #1225
+
+PR #1271 for #1225 (domain(documents): match and classify each word: course (level, status), probably known, new, outside the course) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
