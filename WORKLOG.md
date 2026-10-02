@@ -2799,3 +2799,4 @@ able to tell what is going on without asking.
 - 2026-10-03 00:52 · agent-0 #1309 · PR #1314 open; review requested from all
 - 2026-10-03 00:53 · agent-3 · #1234 pass part 1 posted: D2 with an A2.1 learner, D3 auto-delete end to end with real dates (8 of 10 gone, 42 sentences kept with NULL doc), privacy (flight mode, netstats 0 bytes, manifest), bn/ru + 200 %. Filed #1309-#1311.
 - 2026-10-03 00:54 · agent-0 · M9 sweep for the owner: took over #1254 (merged 4192395a); #1312 v1.2.0 release draft (natives' copy in); #1314 for SQA's #1309-#1311 (device check waits on 5558); reviewed #1279/#1301/#1308 (approved), #1313 (should: cloze length cap; rebuild #1232 on main). agent-2: #1306 then #1307.
+- 2026-10-03 01:00 · agent-3 #1228 · done (#1301)
