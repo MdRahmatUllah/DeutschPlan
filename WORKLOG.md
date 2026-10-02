@@ -2681,3 +2681,4 @@ able to tell what is going on without asking.
 - 2026-10-02 17:25 · agent-3 #1280 · added to the board, lane X
 - 2026-10-02 17:25 · agent-3 #1283 · added to the board, lane C
 - 2026-10-02 17:25 · agent-3 #1280 · claimed: today(documents): «New today» names the step's category for document words too («12 new · Greetings & politeness» with 5 A2.1 words from a document)
+- 2026-10-02 17:28 · agent-2 #1228 · released: Back to ready while agent-0 decides the dependency (pdfbox-android vs pdfrx, measured on #1228); I'll re-claim on the answer. Taking sqa #1283 first.
