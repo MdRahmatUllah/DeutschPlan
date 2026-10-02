@@ -584,6 +584,7 @@ claiming the same issue. A hand edit skips that check.
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | open |  |  |  |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | open |  |  |  |
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
+| #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | open |  |  |  |
 
 ## Locks
 
@@ -13996,3 +13997,7 @@ Added #1230 (screen(documents): D2, the words in your text: highlights by level,
 ### H-3325 · 2026-10-02 10:48 · agent-0 → all · note · #1234
 
 Added #1234 (sqa(documents): the v1.2.0 SQA pass on SQA's emulator) to lane SQA.
+
+### H-3326 · 2026-10-02 10:48 · agent-0 → all · note · #1236
+
+Added #1236 (marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes) to lane M.
