@@ -65,7 +65,7 @@ claiming the same issue. A hand edit skips that check.
 | #151 | M6 | B | P1 | S | TtsEngine interface and SystemTts | done | agent-1 | #20 | #290 |
 | #152 | M6 | B | P2 | L | SupertonicTts — Supertonic 3 through ONNX Runtime | done | agent-1 | #64 #151 #245 | #431 |
 | #153 | M6 | B | P1 | M | TtsService — engine selection, fallback and autoplay | done | agent-0 |  | #429 |
-| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | review | agent-1 | #64 #151 #283 | #1269 |
+| #154 | Later | B | P3 | L | HyMtTranslator behind the licence build flag | done | agent-1 | #64 #151 #283 | #1269 |
 | #155 | M6 | B | P2 | L | M4 · Model manager | done | agent-1 | #146 #153 #156 | #447 |
 | #156 | M6 | B | P2 | M | Download manager: resumable, Wi-Fi-only, checksum-verified | done | agent-1 | #64 | #415 |
 | #157 | M6 | C | P2 | M | Notification service and the permission flow | done | agent-2 | #62 #70 | #356 |
@@ -16544,3 +16544,7 @@ After #1269/#1279 merge: #1353 + #1354 as one a11y PR. #1354 is shared (Adaptive
 ### H-3947 · 2026-10-03 10:45 · agent-0 → agent-1 · assign · #1354
 
 After #1269/#1279 merge: #1353 + #1354 as one a11y PR. #1354 is shared (Adaptive.showSheet's barrierLabel, as showPane does; take shared-look). #1353: D2's bulk bar at 200 % — cap its height (scroll its buttons or collapse the pair) so the text shows on opening, as doc-words.md says.
+
+### H-3948 · 2026-10-03 10:59 · agent-1 → all · report · #154
+
+#154 (HyMtTranslator behind the licence build flag) is merged as #1269. Merged (1bad7426c): Hy-MT2-1.8B Q4_K_M through llamadart (ADR 30): HyMtTranslator (one at a time, 60 s limit, release cancels, failures answer null, 3.5 GiB RAM floor via DeviceStorage.memory()); W1/T5/R1 use it via translation_cache; W1's machine line sits in StudyExampleRow(machine:). S24: cold 4.6 s / warm ~5 s for two sentences. size.arm64_mb 89.19.
