@@ -18,6 +18,7 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
 
 ### Changed
 - **Setup in English opens on English meanings alone.** Bangla is one tap away on the same page; a Bangla app keeps Bangla then English (#1363). Before, an English speaker who kept the defaults got a Bangla line and the Bangla-script guide on every card.
+- **Locked mock exams point to the threshold:** L2's locked exams and M1's card offer *Lower the unlock threshold*, one tap to Settings' row (#1364).
 - **Setup's first promise says what's offline:** «The whole course works offline · no account needed». The sound needs the phone's German voice or Supertonic (#1365).
 - **A bigger download for reading and translating on the phone:** arm64 52.15 → 89.19 MB. llama.cpp for Hy-MT2 +22.95 MB (#154; the model itself is the optional 1.1 GB download), ML Kit's text recogniser and its Latin models +12.33 MB, pdfbox +0.40 MB once its CJK maps went (#1318), the code +1.20 MB (#1306).
 
