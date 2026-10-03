@@ -64,6 +64,9 @@ Rendered PNGs of the Paper & Ink set are committed under `design/` in this folde
 | W1 | `04-screens/word-detail.md` | WordDetail |
 | W2 | `04-screens/compare.md` | Compare |
 | R2 | `04-screens/add-word.md` | AddWord |
+| D1 | `04-screens/doc-import.md` | DocImport, DocImportProcessing, DocImportCorrect |
+| D2 | `04-screens/doc-words.md` | DocWords, DocWordsCard, DocWordsEmpty |
+| D3 | `04-screens/my-documents.md` | MyDocuments, MyDocumentsEmpty |
 | M1 | `04-screens/me.md` | Me |
 | M2 | `04-screens/progress.md` | Progress |
 | M3 | `04-screens/settings.md` | Settings, SettingsBottom |

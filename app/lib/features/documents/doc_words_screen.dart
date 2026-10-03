@@ -107,7 +107,7 @@ Color levelColour(SgTokens tokens, String? level) => switch (level) {
   _ => tokens.color.hard,
 };
 
-/// D2 · The words in your text (`docs/04-screens/planned/doc-words.md`).
+/// D2 · The words in your text (`docs/04-screens/doc-words.md`).
 class DocWordsScreen extends ConsumerStatefulWidget {
   const DocWordsScreen({required this.id, this.cut, super.key});
 
