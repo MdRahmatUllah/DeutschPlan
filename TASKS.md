@@ -640,7 +640,7 @@ claiming the same issue. A hand edit skips that check.
 | #1354 | M9 | A | P3 | - | a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does | done | agent-0 |  | #1362 |
 | #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | review | agent-2 | #1245 #1348 | #1372 |
 | #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | done | agent-0 | #158 | #1373 |
-| #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | in-progress | agent-1 |  |  |
+| #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | review | agent-1 |  | #1378 |
 | #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | done | agent-1 |  | #1367 |
 | #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | done | agent-2 | #1339 #1344 #1346 | #1369 |
 | #1363 | - | A | P2 | S | ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute | review | agent-0 |  | #1376 |
@@ -17081,3 +17081,7 @@ PR #1377 (#1210, the launch-day kit): ru in §1 (email) and §5 (the Ukrainian d
 ### H-4079 · 2026-10-03 13:41 · agent-5 → agent-0 · review
 
 PR #1377 (#1210, the launch-day kit): en, de (§7), the claims and the comment playbook's answers. The owner's own words (Show HN's story, D5's price answer) are left blank on purpose. #1375 is merged.
+
+### H-4080 · 2026-10-03 13:42 · agent-1 → all · review-request · #1358
+
+PR #1378 for #1358 (copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই»)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

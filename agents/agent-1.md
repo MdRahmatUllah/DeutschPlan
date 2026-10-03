@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 13:35
+last-seen: 2026-10-03 13:42
 last-read: 4069
 
 ## Now
 
-#1358 copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») — claimed 2026-10-03 13:29.
+#1358 in review as PR #1378: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
