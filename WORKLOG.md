@@ -3113,3 +3113,4 @@ able to tell what is going on without asking.
 - 2026-10-03 16:34 · agent-0 #1398 · PR #1401 open; review requested from agent-1
 - 2026-10-03 16:35 · agent-5 · unlocked emulator-5556
 - 2026-10-03 16:36 · agent-5 #1211 · PR #1402 open; review requested from all
+- 2026-10-03 16:36 · agent-5 · #1211: PR #1402 up, the 30 s promo in four takes on media/2026-10-03-1211-promo; video.py cut fix (a resting first screen was dropped by the input seek)
