@@ -6,7 +6,7 @@ last-read: 4261
 
 ## Now
 
-Nothing claimed.
+#1403 content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch — claimed 2026-10-03 18:58.
 
 ## Next
 
