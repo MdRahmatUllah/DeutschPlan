@@ -680,7 +680,7 @@ The emulator lock is local, not here: `team.py device`.
 | pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
-| workbooks |  |  |  |
+| workbooks | agent-1 | 2026-10-04 00:53 | #1403/#1408: Bangla grammar columns into the six trackers in data/, then the content.db rebuild |
 | emulator-5556 |  |  |  |
 
 ## Handoffs
