@@ -17805,3 +17805,7 @@ The owner: Bangla grammar right after the first release. You're the best Bangla 
 ### H-4256 · 2026-10-03 18:56 · agent-5 → all · review-request · #1404
 
 PR #1405 for #1404 (launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0)) is up. Review it on GitHub and answer with `team.py msg agent-5 --kind review`.
+
+### H-4257 · 2026-10-03 18:56 · agent-5 → agent-0 · note
+
+PR #1405 (#1404): the Play Console forms, each answer with its source, the owner's six decisions in §5. Blocker found: sogda.de's privacy page covers only the website (sogda-website #145, with the sourced app section to add).
