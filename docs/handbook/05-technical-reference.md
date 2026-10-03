@@ -4,7 +4,8 @@ The facts a developer looks up: the stack and its versions, the repository
 layout, the two databases, the content pipeline, each domain engine, the
 shared components, the provider and settings catalogues, the tools, the
 coding standards and the decision records. Versions are those of
-`app/pubspec.yaml` and `app/pubspec.lock` at v1.0.1 (main `0d23968e`).
+`app/pubspec.yaml` and `app/pubspec.lock` at v1.0.1 (main `0d23968e`), and
+for what v1.2.0 adds, on main by 2026-10-03 (`f5151b64`).
 [Chapter 4](04-architecture.md) explains how the pieces fit together.
 
 > The detailed specs in [`docs/`](../README.md) win if anything here
@@ -34,14 +35,17 @@ Dart file under `lib/` imports it at v1.0.1.
 | Routing | `go_router` | ^18.0.1 → 18.0.1 | Typed routes, the tab shell, deep links (ADR 5) |
 | Database | `drift`, `drift_flutter`, `sqlite3` | ^2.35.0 → 2.35.0, ^0.3.1 → 0.3.1, ^3.6.0 → 3.6.0 | Typed SQL, streams, migrations, FTS5 (ADR 3, 14) |
 | Localisation | `flutter_localizations`, `intl` | SDK, ^0.20.3 → 0.20.3 | ARB, number formats |
-| Voice | `flutter_tts`, `flutter_onnxruntime`, `just_audio` | ^4.2.5 → 4.2.5, ^1.8.5 → 1.8.5, ^0.10.6 → 0.10.6 | The phone's voice, Supertonic 3, playback (ADR 8) |
+| Voice | `flutter_tts`, `flutter_onnxruntime`, `just_audio`, `audio_session` | ^4.2.5 → 4.2.5, ^1.8.5 → 1.8.5, ^0.10.6 → 0.10.6, ^0.2.4 → 0.2.4 | The phone's voice, Supertonic 3, playback, and the session it plays in, as speech that ducks (ADR 8, #623) |
 | Recording | `record` | ^7.1.1 → 7.1.1 | The Speaking exam |
-| Translation | none | — | `llamadart` was removed (ADR 29, #609): Hy-MT is off, so nothing called it; translation returns through #533 |
+| Translation | `llamadart` (with #154) | ^0.9.0 | Hy-MT2 on llama.cpp's CPU backend (ADR 30, `tech-stack.md`). It was removed while Hy-MT was off (ADR 29, #609), and isn't in the lock on main until #154 merges |
+| Documents (v1.2.0) | `google_mlkit_text_recognition`, `image_picker` | ^0.17.1 → 0.17.1, ^1.2.3 → 1.2.3 | ML Kit's text recognition, the Latin model bundled (#1229); the phone's camera app and the system photo picker |
+| PDF text (v1.2.0) | pdfbox-android, a Gradle dependency, not a pub package | 2.0.27.0 | A PDF's text layer over `sogda/pdf` (ADR 31), with Bouncy Castle 1.72 for encrypted files |
+| Rating (v1.2.0) | `in_app_review` | ^2.0.12 → 2.0.12 | Play's review card, once (BR-RATE-01, #1237) |
 | Downloads | `background_downloader` | ^9.6.2 → 9.6.2 | Model downloads |
 | Reminders | `flutter_local_notifications`, `timezone` | ^22.3.1 → 22.3.1, ^0.11.1 → 0.11.1 | The daily reminder |
 | Widget | `home_widget` | ^0.10.0 → 0.10.0 | The snapshot the Glance widget reads |
 | Background | `workmanager` | ^0.10.10 → 0.10.10 | The three background tasks |
-| Files | `path_provider`, `file_picker`, `share_plus` | ^2.1.6 → 2.1.6, ^13.1.0 → 13.1.0, ^13.3.0 → 13.3.0 | App-support storage, export and import |
+| Files | `path_provider`, `file_picker`, `share_plus` | ^2.1.6 → 2.1.6, ^13.1.0 → 13.1.0, ^13.3.0 → 13.3.0 | App-support storage, export and import, D1's *Choose a PDF* |
 | Web links | `url_launcher` | ^6.3.2 → 6.3.2 | Dictionary links in an in-app browser view |
 | Charts | `fl_chart` | ^1.2.0 → 1.2.0 | M2's progress charts |
 | Platform | `permission_handler`, `package_info_plus` | ^13.0.2 → 13.0.2, ^10.2.1 → 10.2.1 | Mic and notification permissions; the app version in About |
@@ -55,8 +59,8 @@ Ten packages that were declared but never imported (`flutter_custom_tabs`,
 `json_annotation`, `json_serializable`, `logging`, `mocktail`, `alchemist`) were
 removed (#697 TL-10). llamadart, and the native-assets
 `user_defines` that trimmed it to llama.cpp's CPU backend (ADR 27), were
-removed (ADR 29): the arm64 APK went from 159.5 MB to 72.3 MB, then to 51.2 MB. Hy-MT2 brought them
-back (ADR 30): 75.1 MB. The rationale for each
+removed (ADR 29): the arm64 APK went from 159.5 MB to 72.3 MB, then to 51.2 MB. Both come back
+with Hy-MT2 (ADR 30, #154). The rationale for each
 choice, and the rejected alternatives, are in
 [`tech-stack.md`](../01-architecture/tech-stack.md).
 
@@ -71,17 +75,18 @@ deutschplan/
 │   │   ├── core/                     adaptive/ components/ providers/ theme/ typography/
 │   │   ├── data/db/                  user_schema.drift, content.drift, content_schema.drift,
 │   │   │                             *_queries.drift, app_database.dart, content_dao.dart, content_update.dart
-│   │   ├── data/repositories/        24 files: repositories, services over them, setting_keys.dart
-│   │   ├── domain/                   19 pure-Dart files (the engines)
-│   │   ├── features/                 14 screen groups
+│   │   ├── data/repositories/        27 files: repositories, services over them, setting_keys.dart
+│   │   ├── domain/                   27 pure-Dart files (the engines; 8 of them in documents/)
+│   │   ├── features/                 15 screen groups
 │   │   ├── router/                   routes.dart, app_router.dart, app_shell.dart, guards, deep links
-│   │   ├── services/                 tts/, translation/, downloads, reminders, background, widget, recorder
+│   │   ├── services/                 tts/, translation/, downloads, reminders, background, widget, recorder,
+│   │   │                             shared text, PDF text, page photos
 │   │   └── l10n/                     app_en.arb, app_bn.arb, ui_digits.dart (generated/ is gitignored)
 │   ├── test/                         mirrors lib/, plus golden/ (harness, 55 golden files, goldens/)
 │   ├── integration_test/             the emulator smoke and the perf driver
 │   ├── assets/                       db/ (content.db + manifest), fonts/, licences/, models/manifest.json
-│   ├── drift_schemas/                drift_schema_v1..v3.json, one fixture per user.db version
-│   └── android/ · ios/               native: MainActivity, the Glance widget, launch screens
+│   ├── drift_schemas/                drift_schema_v1..v6.json, one fixture per user.db version
+│   └── android/ · ios/               native: MainActivity, ShareActivity, PdfText, the Glance widget, launch screens
 ├── content/                          manifest.yaml (which workbooks), interference_tips.csv
 ├── data/                             the Excel workbooks (gitignored, only where content is edited)
 ├── tools/                            the Python tools and their pytest suite (tools/tests/)
@@ -101,7 +106,7 @@ Generated code is not committed (ADR 17): `*.g.dart`, `*.drift.dart`,
 ## user.db
 
 The learner's data, created from `app/lib/data/db/user_schema.drift`
-([`user-database.md`](../02-data/user-database.md)). 17 tables, listed in
+([`user-database.md`](../02-data/user-database.md)). 21 tables, listed in
 `AppDatabase.ownTables`, which `app_database_test` checks against the doc:
 
 | Table | Holds |
@@ -115,17 +120,23 @@ The learner's data, created from `app/lib/data/db/user_schema.drift`
 | `sentence_log` | Practice sentences shown, so they don't repeat within the gap |
 | `quiz_attempts`, `quiz_answers` | Quizzes: direction, source, seed, each answer's verdict |
 | `exam_attempts`, `exam_answers` | Mock exams; answer rows are pre-inserted so a crash resumes exactly |
-| `custom_words` | "My words"; scheduled as `custom:<id>` wherever a course uid goes |
+| `custom_words` | "My words"; scheduled as `custom:<id>` wherever a course uid goes; `mt` is 1 while the meaning is the translator's (v6) |
+| `documents` | Learn from your documents (v6): title, source (`paste`, `share`, `pdf`, `photo`), the text (`body`), the kept photos' paths, page and word counts |
+| `document_words` | What each run of the matcher found: a lemma once per sentence, its class, and whether it was added |
+| `word_contexts` | The learner's own sentences for a word (a course uid or `custom:<id>`); a sentence outlives its document |
+| `doc_queue` | Course words added from documents, in order, with the day each went into a plan (BR-PLAN-11) |
 | `daily_stats` | Per-day totals for the streak and charts |
 | `content_updates` | One row per installed course version, for Today's card |
-| `translation_cache` | Translations (unused while Hy-MT is off) |
+| `translation_cache` | The translator's outputs, keyed by languages, text and model (`hymt2-1.8b-q4km`), so another model's are never read back |
 | `undo_stack` | The last actions, trimmed to 20 rows |
 
-- **Version and migrations.** `AppDatabase.latestSchemaVersion` is 3, stored
+- **Version and migrations.** `AppDatabase.latestSchemaVersion` is 6, stored
   in `PRAGMA user_version` (ADR 23). `onUpgrade` runs drift's generated
   `stepByStep` in a transaction, then `PRAGMA foreign_key_check`: v1 → v2 added
   `content_updates.recorded_at`, v2 → v3 added `word_state.card_mode_manual`
-  (#316). Each version's shape is a committed fixture in
+  (#316), v3 → v4 `enrollments.left_part_way` (#1047), v4 → v5
+  `exam_attempts.meaning_lang` (#1120), and v5 → v6 the documents' four
+  tables and `custom_words.mt` (#1226). Each version's shape is a committed fixture in
   `app/drift_schemas/`, and `test/db/migration_test.dart` migrates every
   fixture forward. Columns with data are never dropped.
 - **Transactions.** A rating is one transaction (word_state, review_log,
@@ -134,7 +145,10 @@ The learner's data, created from `app/lib/data/db/user_schema.drift`
 - **Backups.** Export writes every table except `translation_cache`,
   `undo_stack` and `content_updates` (this phone's course history, #1025) to
   JSON with the schema version; import replaces or merges
-  (the most recent `last_review` wins per word).
+  (the most recent `last_review` wins per word). The documents' tables merge
+  like *My words*: a document is its `created_at` and title, a sentence its
+  word and text, a queue row its word. A document's photos are never in the
+  file (BR-DOC-06).
 
 ## content.db
 
@@ -231,7 +245,11 @@ enrolment and, with `auto_advance`, enrols the next. It implements
 BR-PLAN-01…10: rest days, the backlog, the backlog pause, the streak (each
 past day judged by the study-days mask in force on it, #377), the time
 estimate and day completion. `DryRunPlanStore` lets `previewDay` run the real
-logic without writing.
+logic without writing. BR-PLAN-11's document queue (v1.2.0) is the engine's
+too: `addDocWords(uids, today)` queues words added from a document and
+answers each one's first day, `plannedToday` and `docSlotsLeft` say what
+today holds, and a study day takes up to `doc_daily_cap` of the queue after
+the course's new words, under the cap it opened with (`planned_doc_cap`).
 
 **Quiz builder** (`quiz_builder.dart`, `quiz_queue.dart`, `compare_set.dart`, [`quiz-engine.md`](../03-domain/quiz-engine.md)).
 Builds a `Quiz` from `QuizArgs(direction, length, source, timer, seed)`.
@@ -280,6 +298,23 @@ distance 2, or 3 for queries over five letters) and in sentences
 limited to a step, and offers dictionary links (Duden, DWDS, Wiktionary,
 Linguee, Google).
 
+**Document matcher** (`domain/documents/`, [`document-matcher.md`](../03-domain/document-matcher.md), v1.2.0).
+Text in, words out: `clean.dart` joins words hyphenated across a line and
+drops page numbers and repeated headers; `tokens.dart` splits sentences and
+words, skips numbers, IBANs and names, and measures the German share
+(`germanShare`, FR-D1-04: under 50 % warns); `lemmatiser.dart` maps each
+form to the course's lemmas from `words.forms`, rules, the strong-verb table
+(`strong_verbs.dart`, about 145 verbs) and the split verbs of a clause, with
+compound parts as a hint; `matcher.dart` (`matchText`) gives each lemma one
+class (stop word, known, probably known, new, mine, outside the course) and
+ranks them, the learner's level first. An ambiguous word takes its class
+and level from its lowest step's readings. It runs in an isolate, a
+two-page letter in under 500 ms. On the test corpus it finds the course
+words at precision 1.000 and recall 0.998 (the test asserts at least 0.95
+and 0.90). `ocr.dart` is a photographed page and its confidence, and
+`photo_privacy.dart`'s `withoutMetadata` rewrites a JPEG or a PNG without
+its metadata (a JPEG's image data byte for byte, so it isn't re-encoded).
+
 **Smaller engines.** `cloze.dart` (where a cloze card blanks its sentence),
 `placement.dart` (S3's adaptive placement check), `progress_stats.dart` (M2's
 views), `word_of_day.dart` (the widget's word, seeded by the date) and
@@ -304,9 +339,16 @@ changes.
 The `Translator` interface (`services/translation/translator.dart`) is
 filled by `HyMtTranslator` (`services/translation/hymt_translator.dart`):
 Hy-MT2-1.8B through llamadart (ADR 30, #154, v1.2.0), which answers nothing
-while translation is off or the model isn't on the phone. Hy-MT2 is
-Apache-2.0, so its download is offered in every build. W1's *Translate*,
-T5's word sheet and R1's *No results* use it, cached in `translation_cache`.
+while translation is off, the model isn't on the phone, or the phone is below
+its 3.5 GiB memory floor. Hy-MT2 is Apache-2.0, so its download is offered in
+every build; ADR 9's `ENABLE_HYMT_DOWNLOAD` is gone. The model card's prompt
+with no system prompt, its sampling (temperature 0.7, top_p 0.6, top_k 20), at
+most 256 new tokens, a 1,024-token context and the file memory-mapped; one
+translation at a time, 60 s at most; loaded on the first, released in the
+background, under memory pressure and before a delete. The manifest pins
+`tencent/Hy-MT2-1.8B-GGUF` at a revision, with the file's SHA-256. W1's
+*Translate*, T5's word sheet and R1's *No results* use it, cached in
+`translation_cache`.
 
 ## Shared components
 
@@ -350,6 +392,8 @@ architecture test holds the keepAlive set to this list.
 | `wordDetail(uid)`, `wordHistory(uid)`, `recentlyUpdated`, `compareView(uid)` | autoDispose | W1, the *Updated* chip, W2 |
 | `searchResults(query)`, `stepProgress`, `grammarCourse` | autoDispose | Search, per-step progress, the course text grammar practice checks against |
 | `examRunService`, `modelCard(id)`, `phoneSpace`, `ttsPlayback` | autoDispose | L12's reads and writes, M4's cards, what the voice is sounding |
+| `documentRepository`, `docWords(id)`, `myDocuments` | autoDispose | v1.2.0: the documents' repository, D2's view (the matcher run again at each opening, FR-D2-07), and D3's list as it changes |
+| `translator` | autoDispose | The `Translator` the app asks: `UnavailableTranslator` until #154 |
 
 The repositories and services (`wordRepository`, `planRepository`,
 `ratingService`, `examRepository`, `searchRepository`, `backupRepository`,
@@ -379,6 +423,9 @@ From [`user-database.md`](../02-data/user-database.md), whose table
 | `swipe_to_rate` | 0 | `coach_mark_seen` | 0 |
 | `last_planned_date`, `planned_study_days` | —, 0 | `dismissed_cards`, `recent_searches` | — |
 | `learner_name` | — | `last_export` | — |
+| `doc_daily_cap` | 5 (0–20) | `doc_save_images` | 1 |
+| `doc_autodelete_days` | 0 (or 30, 90, 365) | `doc_show_probably_known` | 0 |
+| `planned_doc_cap` | -1 | `play_review_asked` | 0 |
 
 ## The tools
 
@@ -475,5 +522,6 @@ The full table, with each decision's reason and when to revisit it, is
 | 28 | The app is Sogda, `de.sogda.app`; the internals follow (package `sogda`, prefix `Sg`, `sogda://`) |
 | 29 | llamadart removed while Hy-MT is off (72.3 → 51.2 MB); superseded by 30 |
 | 30 | Hy-MT2-1.8B Q4_K_M through llamadart 0.9, offered in every build (Apache-2.0); 27's CPU-only hook back |
+| 31 | A PDF's text layer read on the phone by pdfbox-android 2.0.27.0 over `sogda/pdf`, page by page (+1.8 MiB, against pdfrx's +6.2 MiB) |
 
-The next free number is 30 (read the last row of `decisions.md` first); take the `adr-number` lock before writing it.
+The next free number is 32 (read the last row of `decisions.md` first); take the `adr-number` lock before writing it.

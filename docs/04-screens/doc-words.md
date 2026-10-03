@@ -21,7 +21,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 1. **The header:**
    - the document's title (editable; by default its first line with a letter, or "Text of 2 Oct": D1 names it, #1227);
    - the summary: "12 new · 4 probably known · 3 outside the course";
-   - a *Show words I probably know* switch (`doc_show_probably_known`).
+   - a *Show words I probably know* switch (`doc_show_probably_known`). To a screen reader it is one node, «Show words I probably know, switch», as M3's switches are; the legend below reads apart from it (#1309).
 2. **The text,** as extracted, scrollable, in reading size:
    - new course words have an underline and a soft fill in their level's colour (the CEFR colours of L1);
    - words that are mine carry a small "My word" mark;
@@ -31,7 +31,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 3. **The bulk bar,** pinned at the bottom:
    - *Add my level* and *Add my level and one above*, side by side (one height for the pair), stacked above 100 % text. A button that would add what *Add all new* adds is left out (#1294);
    - *Add all new*, and the number each would add;
-   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes. This visit's adds that start today take their slots off it (#1294);
+   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes. This visit's adds that start today take their slots off it (#1294). When no day can be said, it says the words wait instead (#1334, `PlanEngine.docQueueHold`, the same rule as *Add*'s): at a cap of 0 (the setting, read at once: no later day takes them), "0 a day from documents: the other 16 wait in your queue until you raise it in Settings"; under the backlog pause (BR-PLAN-07), "Backlog first: what you add waits in your queue until it's cleared";
    - an ambiguous word is in no bulk action: its card asks which it is.
 
 **The mini card (a sheet).**
@@ -56,9 +56,9 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 **Functional requirements**
 - FR-D2-01 Each lemma is shown in its class from BR-DOC-03; stop words are never marked.
 - FR-D2-02 *Add* on a course word puts it in the document queue with its sentence (BR-DOC-04, BR-PLAN-11); the toast says when it starts: "Added der Termin: you'll learn it today" when it joined today's plan, or "… from Thursday" (BR-PLAN-11's *Today*).
-- FR-D2-03 The bulk actions add every new course word of the chosen levels in one write, under the cap, and say how many: "Added 9 words: 5 today, 4 from tomorrow".
+- FR-D2-03 The bulk actions add every new course word of the chosen levels in one write, under the cap, and say how many: "Added 9: 5 today, the rest later"; "Added 5, all for today" when every one starts today; "Added 25: they start tomorrow or later" when today's slots are taken; and "Added 25: they wait in your queue" while no day can be said (the backlog pause, a cap of 0), as a single *Add* says (#1311).
 - FR-D2-04 *I know this* rates the word Easy (W1's *Mark known*), with W1's Undo. *Ignore* takes the mark away for this visit only.
-- FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example*, the document's title as *Where I saw it*, and the meaning (Hy-MT2's, labelled, or empty).
+- FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example* and the document's title as *Where I saw it*. The meaning is the learner's to write: Hy-MT2's answers come as labelled suggestions to pick from, never filled in (#1278, #1279).
 - FR-D2-06 A word already mine gets the sentence added to its contexts, and no second word.
 - FR-D2-07 The document and what it found are saved (BR-DOC-05): D3 counts from `document_words`. Reopening it from D3 runs the matcher again on the saved text (under 500 ms), so its marks follow what the learner has learnt since, and what was added stays added.
 
@@ -68,13 +68,13 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 - **Processing** happens in D1.
 - **No new words:** "You know every word in this text" plus the counts, with *Show words I probably know*.
 - **Not German:** a warning from D1, with *Continue anyway*.
-- **Ambiguous words** are marked with a "?".
+- **Ambiguous words** are marked with a "?" (a small circled one after the word, on the word's line, #1333), and a screen reader hears "fällt, new, A2, two readings". Once a reading is added the word is settled: the check takes the "?"'s place.
 - **A very long text** shows its first 20,000 characters, with a note (BR-DOC-02).
 
 **Interactions & motion.**
 - Tapping a word opens its card.
 - A long press on a new word adds it directly, with haptic feedback: a sighted shortcut, kept out of semantics (a screen reader adds from the card). On a word already added it does nothing.
-- A word's chip and its check stay on the word's line (word joiners).
+- A word's chip and its check or "?" stay on the word's line, at any width and text size, unless the chip and its word together are wider than a line (#1339). They are text, not widgets inside the text, since a line may always break on either side of one of those: the check and the "?" are the icon font's glyphs, and the chip is its label between no-break spaces, its outline drawn around it, the artboard's size. A screen reader doesn't read them: the word's label says what they show.
 - Back from R2 after *Add as my word*, the document is read again, so the word shows as mine.
 - *Add* marks the word "added" with a check. It doesn't animate (#1230): the check needs no motion, so reduce motion has nothing to skip.
 
@@ -83,7 +83,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 - Write: `doc_queue`, `word_contexts`, `word_state` (*Mark known*), and `custom_words` through R2.
 
 **Developer notes.**
-- The text is built lazily, a paragraph per item of a list, so a 20,000-character text (about 3,000 words) never builds at once. Each marked word is its own semantics node, read as "Termin, new, A1", and TalkBack adds its own "Double-tap to activate", once (agent-1's review: a "double tap" in the label would repeat it). `perf.py` measures the long text's first frame (`03-domain/document-matcher.md`, *Tests*).
+- The text is built lazily, a paragraph per item of a list, so a 20,000-character text (about 3,000 words) never builds at once. Each marked word is its own semantics node, read as "Termin, new, A1", and TalkBack adds its own "Double-tap to activate", once (agent-1's review: a "double tap" in the label would repeat it). The plain text between two marked words is a node too, unless it has nothing to hear (a space or a full stop): then it has no label, and a screen reader doesn't stop on it (#1344). `perf.py` measures the long text's first frame (`03-domain/document-matcher.md`, *Tests*).
 - The bulk bar keeps its height at 200 %, with its counts on a second line.
 - Routes and providers are added to `navigation.md` and `state-management.md` with the code.
 

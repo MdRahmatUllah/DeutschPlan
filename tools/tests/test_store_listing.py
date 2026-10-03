@@ -95,7 +95,8 @@ def test_the_counts_are_abouts_175_631_1176():
 
 
 STORE = LISTING.parent / "store"
-SHOTS = ("01-today", "02-card-front", "03-card-back", "04-course", "05-step", "06-word")
+SHOTS = ("01-today", "02-card-front", "03-card-back", "04-course", "05-step", "06-word",
+         "07-document", "08-document-card")  # 07 and 08: D2, 1.2.0 (#1307)
 
 
 def png_header(path: Path) -> tuple[int, int, int]:

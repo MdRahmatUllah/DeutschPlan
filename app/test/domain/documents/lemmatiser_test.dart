@@ -138,8 +138,8 @@ void main() {
     const known = <String, ({Set<String> extra, Set<String> missed})>{
       'heldout_school': (extra: {}, missed: {}),
       'heldout_doctor': (extra: {}, missed: {}),
-      // «auf den Bänken»: the course's Bank has only «Banken» (content).
-      'heldout_news': (extra: {}, missed: {'Bank'}),
+      // «auf den Bänken»: the bench Bank («Bänke») since #1257.
+      'heldout_news': (extra: {}, missed: {}),
     };
     for (final MapEntry(key: name, value: misses) in known.entries) {
       final text = File('test/fixtures/documents/corpus/$name.txt')
@@ -219,7 +219,8 @@ void main() {
       'infinitive', () {
     expect(lemmas('Wir sprechen mit Hansen.')[3], '');
     expect(lemmas('Beim Lesen lerne ich viel.')[1], 'lesen');
-    expect(lemmas('Wir sprechen über das Leben.')[4], 'leben');
+    // Not «das Leben», a noun of the course since #1257.
+    expect(lemmas('Wir sprechen über das Schwimmen.')[4], 'schwimmen');
   });
 
   test('#1223: sein\'s Präteritum is sein, stopped, never the C2 headword '

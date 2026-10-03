@@ -6,7 +6,7 @@
 // learner did), dated a year back, then the year itself in SQL: seven new
 // words a day in teaching order and 30 revisions, each rated with its plan
 // row, and a daily_stats row a day. About 13,500 ratings; the learner is in
-// B1.2, with words still to learn. Today itself is left unplanned, as after
+// B1.1, with words still to learn (B1.2 until #1257's words came in). Today itself is left unplanned, as after
 // any night: the app plans it on start.
 
 import 'package:sogda/data/db/app_database.dart';

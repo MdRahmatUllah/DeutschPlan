@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/gestures.dart'
     show GestureRecognizer, TapGestureRecognizer;
 import 'package:flutter/rendering.dart' show RenderParagraph;
@@ -21,6 +22,10 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/documents/matcher.dart';
+import 'package:sogda/domain/documents/tokens.dart' show docMaxChars;
+import 'package:sogda/domain/plan_engine.dart' show DocQueueHold;
+import 'package:sogda/features/documents/doc_import_screen.dart'
+    show docMaxPages;
 import 'package:sogda/features/search/search_header.dart';
 import 'package:sogda/features/study/study_back.dart' show MeaningLines;
 import 'package:sogda/features/today/today_providers.dart';
@@ -38,6 +43,8 @@ class DocWordsView {
     required this.match,
     required this.added,
     required this.slotsLeft,
+    this.plannedToday = const <String>{},
+    this.hold,
   });
 
   final Document document;
@@ -46,6 +53,14 @@ class DocWordsView {
 
   /// BR-PLAN-11: how many more words today takes (`docSlotsLeft`).
   final int slotsLeft;
+
+  /// The words today's plan has already, by any route (#1315): they take no
+  /// slot, so the cap note leaves them out.
+  final Set<String> plannedToday;
+
+  /// Why no start day can be said for a word added now (#1334): a cap of 0,
+  /// or the backlog pause. Null while one can.
+  final DocQueueHold? hold;
 }
 
 /// FR-D2-07: every opening runs the matcher again on the saved text, so the
@@ -63,6 +78,8 @@ Future<DocWordsView?> docWords(Ref ref, int id) async {
     match: match,
     added: await documents.added(id),
     slotsLeft: await engine.docSlotsLeft(today),
+    plannedToday: await engine.plannedToday(today),
+    hold: await engine.docQueueHold(today),
   );
 }
 
@@ -98,11 +115,14 @@ Color levelColour(SgTokens tokens, String? level) => switch (level) {
   _ => tokens.color.hard,
 };
 
-/// D2 · The words in your text (`docs/04-screens/planned/doc-words.md`).
+/// D2 · The words in your text (`docs/04-screens/doc-words.md`).
 class DocWordsScreen extends ConsumerStatefulWidget {
-  const DocWordsScreen({required this.id, super.key});
+  const DocWordsScreen({required this.id, this.cut, super.key});
 
   final int id;
+
+  /// D1's cut, said here once (`DocWordsRoute.cut`, #1320).
+  final String? cut;
 
   @override
   ConsumerState<DocWordsScreen> createState() => _DocWordsScreenState();
@@ -126,6 +146,25 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
   /// counts them itself (agent-3, #1294).
   int _startedToday = 0;
   DocWordsView? _countedOn;
+
+  @override
+  void initState() {
+    super.initState();
+    // #1320: D1's note that it cut the text or the pages went with D1, so it
+    // is said here, where it can be read.
+    if (widget.cut case final cut?) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context);
+        SgToast.show(
+          context,
+          cut == 'pages'
+              ? l10n.docImportTooManyPages(docMaxPages)
+              : l10n.docImportCut(docMaxChars),
+        );
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -207,10 +246,14 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
               ),
               null => l10n.docWordsAddedWaiting(words.single.surface),
             }
-          : l10n.docWordsAddedMany(
-              words.length,
-              days.where((d) => d == today).length,
-            );
+          // #1311: what happened, all today, some, none, or no day at all.
+          : switch (days.where((d) => d == today).length) {
+              final n when n == words.length => l10n.docWordsAddedManyToday(n),
+              0 when days.every((d) => d == null) =>
+                l10n.docWordsAddedManyWaiting(words.length),
+              0 => l10n.docWordsAddedManyLater(words.length),
+              final n => l10n.docWordsAddedMany(words.length, n),
+            };
       SgToast.show(context, message);
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -342,6 +385,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
           bar = _BulkBar(
             level: view.match.level,
             fresh: fresh,
+            plannedToday: view.plannedToday,
             slotsLeft: math.max(
               0,
               view.slotsLeft -
@@ -350,6 +394,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
             cap: ref
                 .watch(settingsSourceProvider)
                 .read(SettingKeys.docDailyCap),
+            hold: view.hold,
             busy: _busy,
             onAdd: (words) => unawaited(_add(view, words)),
           );
@@ -434,22 +479,29 @@ class _Controls extends ConsumerWidget {
             SgText(l10n.docWordsEmpty, role: SgTextRole.title),
             const SizedBox(height: 8),
           ],
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: SgText(
-                  l10n.docWordsShowProbablyKnown,
-                  role: SgTextRole.body,
+          // #1309: one node, «Show words I probably know, switch»: the
+          // switch says the title, as M3's rows do, and the legend below
+          // reads as the list item's text, apart from it.
+          MergeSemantics(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: ExcludeSemantics(
+                    child: SgText(
+                      l10n.docWordsShowProbablyKnown,
+                      role: SgTextRole.body,
+                    ),
+                  ),
                 ),
-              ),
-              AdaptiveSwitch(
-                value: showProbable,
-                semanticLabel: l10n.docWordsShowProbablyKnown,
-                onChanged: (on) => unawaited(
-                  ref.read(showProbablyKnownProvider.notifier).set(on),
+                AdaptiveSwitch(
+                  value: showProbable,
+                  semanticLabel: l10n.docWordsShowProbablyKnown,
+                  onChanged: (on) => unawaited(
+                    ref.read(showProbablyKnownProvider.notifier).set(on),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -582,16 +634,40 @@ class _Paragraph extends StatelessWidget {
         : s;
     TextSpan plain(String s) {
       final shown = fit(s);
-      return TextSpan(text: shown, semanticsLabel: shown == s ? null : s);
+      return TextSpan(
+        text: shown,
+        // #1344: a run with nothing to hear (the space or full stop between
+        // two marked words) has no label, so a screen reader doesn't stop.
+        semanticsLabel: !_heard.hasMatch(s) ? '' : (shown == s ? null : s),
+      );
     }
 
     // Each word's tap, for the long press to find the word under it.
     final byTap = <GestureRecognizer, DocWord>{};
     final spans = <InlineSpan>[];
+    // The My-word chips' places in the text, for the paragraph's borders.
+    final chips = <TextRange>[];
+    var length = 0;
+    void add(InlineSpan span) {
+      spans.add(span);
+      length += span.toPlainText(includeSemanticsLabels: false).length;
+    }
+
+    // The chip's label as SgText draws it: Text merges the default style.
+    TextStyle bold(TextStyle style) =>
+        DefaultTextStyle.of(context).style
+            .merge(style.copyWith(fontVariations: AppFonts.weight(700)));
+    // A space [width] wide at 100 %, unread: the chip's padding and border
+    // inside its outline, and the gap after it, as the artboard's.
+    TextSpan space(double width) => TextSpan(
+      text: '\u00a0',
+      style: TextStyle(fontSize: 0.01, letterSpacing: scaler.scale(width)),
+      semanticsLabel: '',
+    );
     var at = from;
     for (final (start, end, word) in marks) {
       if (start < at) continue;
-      spans.add(plain(text.substring(at, start)));
+      add(plain(text.substring(at, start)));
       final surface = text.substring(start, end);
       final shown = switch (word.docClass) {
         _ when ignored.contains(word.key) => false,
@@ -600,7 +676,7 @@ class _Paragraph extends StatelessWidget {
         DocClass.known => word.mine,
       };
       if (!shown) {
-        spans.add(plain(surface));
+        add(plain(surface));
         at = end;
         continue;
       }
@@ -629,60 +705,66 @@ class _Paragraph extends StatelessWidget {
         // A word of my own: plain, its chip says what it is (the artboard).
         DocClass.mine || DocClass.known => const TextStyle(),
       };
+      // #1339: the chip and the marks are text, held to their word by
+      // no-break spaces and by being letters: SkParagraph may break a line
+      // on either side of any WidgetSpan, a word joiner or not. The word's
+      // label says what they show.
       if (word.mine) {
-        spans.add(
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 4),
-              child: ExcludeSemantics(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                    vertical: 1,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: tokens.color.ink),
-                  ),
-                  child: SgText(
-                    l10n.docWordsLegendMine,
-                    role: SgTextRole.caption,
-                    weight: 700,
-                  ),
-                ),
+        final chip = length;
+        add(space(6));
+        for (final run in SgScript.runs(
+          l10n.docWordsLegendMine.replaceAll(' ', '\u00a0'),
+        )) {
+          add(
+            TextSpan(
+              text: run.$1,
+              style: bold(
+                run.$2
+                    ? SgText.banglaStyleFor(tokens, SgTextRole.caption)
+                    : SgText.styleFor(tokens, SgTextRole.caption),
               ),
+              semanticsLabel: '',
             ),
-          ),
-        );
+          );
+        }
+        add(space(6));
+        chips.add(TextRange(start: chip, end: length));
+        add(space(4));
       }
+      // #1333: two readings, asked on the card first; added, it's settled.
+      final twoReadings = word.ambiguous && !added;
       final tap = tapOf(word);
       byTap[tap] = word;
-      spans.add(
+      add(
         TextSpan(
-          // A word joiner each side: the chip before and the check after
-          // stay on the word's line (agent-3, #1294).
-          text:
-              '${word.mine ? '\u2060' : ''}${fit(surface)}'
-              '${added ? '\u2060' : ''}',
+          text: fit(surface),
           style: style,
           recognizer: tap,
-          semanticsLabel: _label(l10n, word, surface, added),
+          semanticsLabel: twoReadings
+              ? l10n.docWordsSemTwoReadings(_label(l10n, word, surface, added))
+              : _label(l10n, word, surface, added),
         ),
       );
-      if (added) {
-        spans.add(
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: ExcludeSemantics(
-              child: Icon(Icons.check, size: 16, color: tokens.color.ink),
+      if (added || twoReadings) {
+        final icon = added ? Icons.check : Icons.help_outline;
+        add(
+          TextSpan(
+            text: String.fromCharCode(icon.codePoint),
+            style: TextStyle(
+              fontFamily: icon.fontFamily,
+              package: icon.fontPackage,
+              fontSize: 16,
+              // The icon font's box sits on the baseline: at the text's own
+              // line height it would make the line taller.
+              height: 1,
             ),
+            semanticsLabel: '',
           ),
         );
       }
       at = end;
     }
-    spans.add(plain(text.substring(at, to)));
+    add(plain(text.substring(at, to)));
     return GestureDetector(
       // A long press on a new word adds it at once (doc-words.md): a sighted
       // shortcut, so a screen reader hears the words' own taps only.
@@ -691,15 +773,16 @@ class _Paragraph extends StatelessWidget {
         final word = _wordAt(context, details.localPosition, byTap);
         if (word != null) onLongPress(word);
       },
-      // The words' taps and labels sit beside WidgetSpans (the My-word
-      // chip, the check), which SgRuns' TextSpans can't carry; too-wide
-      // words break by breakTooWide above. ponytail: allow-raw-text
-      child: RichText(
-        textScaler: scaler,
+      // The words' taps and labels, and the chips' borders, which SgRuns'
+      // TextSpans can't carry; too-wide words break by breakTooWide above.
+      child: _DocParagraph(
         text: TextSpan(
           style: base.copyWith(color: tokens.color.ink),
           children: spans,
         ),
+        textScaler: scaler,
+        chips: chips,
+        border: tokens.color.ink,
       ),
     );
   }
@@ -728,6 +811,8 @@ class _Paragraph extends StatelessWidget {
     return found;
   }
 
+  static final RegExp _heard = RegExp(r'[\p{L}\p{N}]', unicode: true);
+
   static String _label(
     AppLocalizations l10n,
     DocWord word,
@@ -742,6 +827,95 @@ class _Paragraph extends StatelessWidget {
   };
 }
 
+/// The document's text, laid out as RichText, with a rounded border around
+/// each My-word chip (#1339): the chip is text, so no line ends between it
+/// and its word. ponytail: allow-raw-text (SgRuns' TextSpans can't carry the
+/// words' taps, labels and the chips' outlines; agent-1 on #1346).
+class _DocParagraph extends RichText {
+  _DocParagraph({
+    required super.text,
+    required super.textScaler,
+    required this.chips,
+    required this.border,
+  });
+
+  final List<TextRange> chips;
+  final Color border;
+
+  @override
+  RenderParagraph createRenderObject(BuildContext context) =>
+      _RenderDocParagraph(
+        text,
+        chips,
+        border,
+        textDirection: Directionality.of(context),
+        textScaler: textScaler,
+        locale: Localizations.maybeLocaleOf(context),
+      );
+
+  @override
+  void updateRenderObject(BuildContext context, RenderParagraph renderObject) {
+    super.updateRenderObject(context, renderObject);
+    (renderObject as _RenderDocParagraph)
+      ..chips = chips
+      ..border = border;
+  }
+}
+
+class _RenderDocParagraph extends RenderParagraph {
+  _RenderDocParagraph(
+    super.text,
+    this._chips,
+    this._border, {
+    required super.textDirection,
+    required super.textScaler,
+    required super.locale,
+  });
+
+  List<TextRange> _chips;
+  set chips(List<TextRange> value) {
+    if (listEquals(value, _chips)) return;
+    _chips = value;
+    markNeedsPaint();
+  }
+
+  Color _border;
+  set border(Color value) {
+    if (value == _border) return;
+    _border = value;
+    markNeedsPaint();
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    super.paint(context, offset);
+    final pen = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = _border;
+    for (final chip in _chips) {
+      // One line (its spaces don't break), maybe in two scripts' runs;
+      // as tall as the artboard's chip, a caption line and 2 px each side,
+      // and its outline drawn inside that box.
+      final box = getBoxesForSelection(
+        TextSelection(baseOffset: chip.start, extentOffset: chip.end),
+      ).map((box) => box.toRect()).reduce((a, b) => a.expandToInclude(b));
+      final height = textScaler.scale(20);
+      context.canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: box.center,
+            width: box.width,
+            height: height,
+          ).shift(offset).deflate(0.5),
+          const Radius.circular(6),
+        ),
+        pen,
+      );
+    }
+  }
+}
+
 /// The bulk bar (FR-D2-03), pinned at the foot.
 class _BulkBar extends StatelessWidget {
   const _BulkBar({
@@ -751,12 +925,18 @@ class _BulkBar extends StatelessWidget {
     required this.cap,
     required this.busy,
     required this.onAdd,
+    this.plannedToday = const <String>{},
+    this.hold,
   });
 
   final String? level;
   final List<DocWord> fresh;
   final int slotsLeft;
+  final Set<String> plannedToday;
   final int cap;
+
+  /// No day takes them now (#1334): they wait, rather than start later.
+  final DocQueueHold? hold;
   final bool busy;
   final ValueChanged<List<DocWord>> onAdd;
 
@@ -774,7 +954,9 @@ class _BulkBar extends StatelessWidget {
       for (final w in fresh)
         if (at >= 0 && (w.level == level || w.level == next)) w,
     ];
-    final later = fresh.length - slotsLeft;
+    // #1315: a word already in today's plan takes no slot.
+    final later =
+        fresh.where((w) => !plannedToday.contains(w.key)).length - slotsLeft;
     final pair = <(String, List<DocWord>)>[
       if (mine.isNotEmpty && level != null)
         (l10n.docWordsAddLevel(level!, mine.length), mine),
@@ -842,7 +1024,11 @@ class _BulkBar extends StatelessWidget {
             if (later > 0) ...<Widget>[
               const SizedBox(height: 6),
               SgText(
-                l10n.docWordsCapNote(cap, later),
+                switch (hold) {
+                  DocQueueHold.capZero => l10n.docWordsCapZero(later),
+                  DocQueueHold.backlog => l10n.docWordsHeldByBacklog,
+                  null => l10n.docWordsCapNote(cap, later),
+                },
                 role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
                 textAlign: TextAlign.center,

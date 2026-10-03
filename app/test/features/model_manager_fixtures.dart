@@ -136,6 +136,9 @@ class FakeDownloads extends Fake implements ModelDownloads {
   Future<void> retry(String modelId) async => calls.add('retry $modelId');
 
   @override
+  Future<void> forget(String modelId) async => calls.add('forget $modelId');
+
+  @override
   Future<void> setWifiOnly({required bool on}) async {
     calls.add('wifi $on');
     await settings?.write(SettingKeys.modelsWifiOnly, on);

@@ -346,6 +346,10 @@
   "@meAbout": {
     "description": "M1 list: opens M9."
   },
+  "meRatePlay": "Rate Sogda on Google Play",
+  "@meRatePlay": {
+    "description": "M1's last row (FR-M1-05, #1237): opens Sogda's listing in the Play Store app, where the learner can rate it. Android only."
+  },
   "meLoadFailed": "Your progress could not be loaded.",
   "@meLoadFailed": {
     "description": "M1 and M2 when the learner's progress cannot be read."
@@ -1662,6 +1666,19 @@
   "speakerFallbackSettings": "Settings",
   "@speakerFallbackSettings": {
     "description": "The action on the speakerFallback toast: opens Settings (M3), where the voice engine is chosen (#153)."
+  },
+  "studyWhereYouSaw": "Where you saw it",
+  "@studyWhereYouSaw": {
+    "description": "T2's back and W1: the heading over the learner's own sentences for the word, from the documents they read (#1232)."
+  },
+  "studyFromDocument": "From {title}",
+  "@studyFromDocument": {
+    "description": "Under one of the learner's own sentences (T2, W1): the document it came from (#1232). title is the document's title.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   },
   "studyTip": "⚠ {tip}",
   "@studyTip": {
@@ -5304,6 +5321,10 @@
   "@docImportShared": {
     "description": "D1 while processing: text another app shared."
   },
+  "docImportExamHeld": "Finish the exam first, then share it again.",
+  "@docImportExamHeld": {
+    "description": "#1282: a toast over a running mock exam when the learner shares a text or a PDF to Sogda: the exam holds it (FR-L12-04), so D1 didn't open."
+  },
   "docImportReading": "Reading",
   "@docImportReading": {
     "description": "D1: the processing card's heading, in small capitals."
@@ -5360,6 +5381,28 @@
   "docImportChooseImagesDetail": "Photos already on this phone",
   "@docImportChooseImagesDetail": {
     "description": "D1: the line under Choose images."
+  },
+  "docImportChoosePdf": "Choose a PDF",
+  "@docImportChoosePdf": {
+    "description": "#1228: D1's choice: a PDF from the file picker; also the button of the locked PDF's panel."
+  },
+  "docImportChoosePdfDetail": "Its text, up to {count} pages",
+  "@docImportChoosePdfDetail": {
+    "description": "#1228: D1's PDF choice, the line under it (the artboard's): how many pages are read at most (BR-DOC-02).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docImportPdfScan": "This PDF is a scan: take photos of it instead.",
+  "@docImportPdfScan": {
+    "description": "#1228: a PDF with no text layer (a scan): its pages are pictures; the panel's button is Choose images."
+  },
+  "docImportPdfLocked": "This PDF needs a password. Open it in another app and copy its text instead.",
+  "@docImportPdfLocked": {
+    "description": "#1228: a password-protected PDF, which Sogda doesn't ask a password for; the panel's button is Choose a PDF."
   },
   "docImportPhotos": "{count, plural, =1{1 photo} other{{count} photos}}",
   "@docImportPhotos": {
@@ -6720,6 +6763,29 @@
       }
     }
   },
+  "docWordsCapZero": "0 a day from documents: the other {later} wait in your queue until you raise it in Settings",
+  "@docWordsCapZero": {
+    "description": "D2's note under the bulk bar when Words a day from documents is 0 (#1334, BR-PLAN-11): no later day takes document words, so the later ones wait in the queue until M3's setting is raised. later is how many would not fit today.",
+    "placeholders": {
+      "later": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsHeldByBacklog": "Backlog first: what you add waits in your queue until it's cleared",
+  "@docWordsHeldByBacklog": {
+    "description": "D2's note under the bulk bar while the backlog pause holds new words (#1334, BR-PLAN-07): what is added waits in the queue until the backlog is cleared."
+  },
+  "docWordsSemTwoReadings": "{label}, two readings",
+  "@docWordsSemTwoReadings": {
+    "description": "Screen reader (#1333): a word in D2's text with two readings, marked with a ?; its card asks which one first. label is the word's own label, e.g. «fällt, new, A2».",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "docWordsAddedToday": "Added {word}: you'll learn it today",
   "@docWordsAddedToday": {
     "description": "D2's toast (FR-D2-02): the word joined today's plan. word is the word as it stands in the text.",
@@ -6747,6 +6813,36 @@
     "placeholders": {
       "word": {
         "type": "String"
+      }
+    }
+  },
+  "docWordsAddedManyToday": "Added {count}, all for today",
+  "@docWordsAddedManyToday": {
+    "description": "D2's toast after a bulk add when every word starts today (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedManyLater": "Added {count}: they start tomorrow or later",
+  "@docWordsAddedManyLater": {
+    "description": "D2's toast after a bulk add when none starts today: today's slots are taken (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedManyWaiting": "Added {count}: they wait in your queue",
+  "@docWordsAddedManyWaiting": {
+    "description": "D2's toast after a bulk add while no day can be said (the backlog pause, a cap of 0): the single add's «it waits in your queue» (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },

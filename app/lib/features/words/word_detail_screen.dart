@@ -652,6 +652,9 @@ class _Body extends ConsumerWidget {
     ];
     final compare = comparesSet(word.german);
     final translated = ref.watch(exampleTranslationsProvider(word.uid));
+    final mine =
+        ref.watch(wordContextsProvider(word.uid)).value ??
+        const <OwnSentence>[];
     final tip = tipText(detail.tip, meanings.choice);
 
     Widget gap(double height) => SizedBox(height: height);
@@ -701,6 +704,18 @@ class _Body extends ConsumerWidget {
                     color: tokens.color.textSecondary,
                   ),
                 ),
+            ],
+          ],
+          // #1232: every sentence the learner met the word in, newest first.
+          if (mine.isNotEmpty) ...<Widget>[
+            gap(12),
+            OwnSentencesHeading(l10n.studyWhereYouSaw),
+            for (final sentence in mine) ...<Widget>[
+              gap(8),
+              StudyExampleRow(
+                ownExample(l10n, sentence),
+                onPlay: () => unawaited(say(ref, context, sentence.sentence)),
+              ),
             ],
           ],
           if (tip != null) ...<Widget>[

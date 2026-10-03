@@ -7,6 +7,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/data/repositories/model_repository.dart';
 import 'package:sogda/features/me/model_manager_screen.dart';
+import 'package:sogda/services/model_downloads.dart' show DownloadPhase;
 
 import '../features/model_manager_fixtures.dart';
 import 'golden_harness.dart';
@@ -46,6 +47,23 @@ void main() {
     builder: (context) => ProviderScope(
       overrides: modelManagerStub(
         translation: cardOf(translationEntry, fits: false),
+      ),
+      child: const ModelManagerScreen(),
+    ),
+    devices: <GoldenDevice>[GoldenDevice.phone],
+  );
+  // #1265: a download that failed with nothing on the phone, with Delete.
+  goldenTest(
+    'model_manager_failed',
+    builder: (context) => ProviderScope(
+      overrides: modelManagerStub(
+        voice: cardOf(
+          voiceEntry,
+          // Its one file half-written in models/.partial, none in staging:
+          // nothing on the phone counts.
+          live: (phase: DownloadPhase.failed, progress: 0),
+        ),
+        translation: cardOf(translationEntry),
       ),
       child: const ModelManagerScreen(),
     ),

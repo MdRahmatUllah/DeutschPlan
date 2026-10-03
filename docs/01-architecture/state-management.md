@@ -34,6 +34,10 @@
 | `onboarding` | keepAlive Notifier | S2 | `OnboardingNotifier`: S2's plan values as a draft — step, pace, reminders — until the finish commits them in one transaction (#92). Kept alive because the pages come and go and FR-S2-02 wants the values on the way back. |
 | `modelRepository` | keepAlive | app | Model files on disk and the parsed manifest, which it caches. |
 | `notificationPermission` | keepAlive | app | Asks whether the app may post (FR-S2-05). Stateless; kept with the draft that asks it. |
+| `docWords(id)` | autoDispose Future | D2 | The document, the matcher's run over it (in an isolate), what was added from it, today's slots left and what today's plan has already (`plannedToday`, #1315). Read again on every opening (FR-D2-07). In `features/documents/doc_words_screen.dart`. |
+| `showProbablyKnown` | autoDispose Notifier | D2 | `doc_show_probably_known`, following the setting's changes. |
+| `myDocuments` | autoDispose Stream | D3, M1 | `DocumentRepository.watchAll()`: the kept documents with their added words, newest first. In `features/documents/my_documents_screen.dart`. |
+| `documentImageBytes` | autoDispose Future | D3 | The bytes under `documents/`, read again whenever the list changes. |
 | `modelDownloads` | keepAlive | app | The model download manager (FR-M4-01, #156): queues, pauses, resumes and retries a model's files with the platform downloader, follows its updates and records, and verifies before activating. `attach()` runs once at launch. |
 
 ## Patterns

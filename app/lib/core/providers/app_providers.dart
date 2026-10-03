@@ -62,6 +62,8 @@ import 'package:sogda/services/exam_recorder.dart';
 import 'package:sogda/services/model_downloads.dart';
 import 'package:sogda/services/notification_permission.dart';
 import 'package:sogda/services/page_photos.dart';
+import 'package:sogda/services/pdf_text.dart';
+import 'package:sogda/services/play_review.dart';
 import 'package:sogda/services/shared_text.dart';
 import 'package:sogda/services/translation/hymt_translator.dart';
 import 'package:sogda/services/translation/translator.dart';
@@ -536,14 +538,29 @@ DocumentRepository documentRepository(Ref ref) => DocumentRepository(
 typedef OpenWeb = Future<bool> Function(Uri page);
 
 @riverpod
-OpenWeb openWeb(Ref ref) => (page) async {
+OpenWeb openWeb(Ref ref) =>
+    (page) => _launch(page, LaunchMode.inAppBrowserView);
+
+/// A link another app opens, as [openWeb] says whether it could: Me's *Rate
+/// Sogda on Google Play* (#1237), the listing in the Play Store app, or a
+/// browser where there is none.
+@riverpod
+OpenWeb openApp(Ref ref) =>
+    (page) => _launch(page, LaunchMode.externalApplication);
+
+Future<bool> _launch(Uri page, LaunchMode mode) async {
   try {
-    return await launchUrl(page, mode: LaunchMode.inAppBrowserView);
+    return await launchUrl(page, mode: mode);
   } on Object catch (error) {
     debugPrint('web: $error');
     return false;
   }
-};
+}
+
+/// Play's in-app review card, once, after the first passed mock exam
+/// (#1237, BR-RATE-01).
+@riverpod
+PlayReview playReview(Ref ref) => PlayReview(ref.watch(settingsProvider));
 
 /// The phone's German voice: S2's preview (FR-S2-06) and `tts.md`'s fallback.
 /// Kept alive because the plugin reports playback to one instance only.
@@ -623,6 +640,11 @@ SharedText sharedText(Ref ref) => const PlatformSharedText();
 /// (#1229).
 @riverpod
 PagePhotos pagePhotos(Ref ref) => PlatformPagePhotos();
+
+/// D1's PDFs: the file picker and their text layer, read on the phone
+/// (#1228, ADR 31).
+@riverpod
+PdfText pdfText(Ref ref) => const PlatformPdfText();
 
 /// Kept alive for the same reason: page 5's draft queues the voice (FR-S2-06).
 @Riverpod(keepAlive: true)

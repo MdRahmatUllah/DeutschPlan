@@ -136,6 +136,7 @@ class MainActivity : FlutterActivity() {
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "take" -> result.success(ShareActivity.take())
+                    "takePdf" -> result.success(ShareActivity.takePdf())
                     else -> result.notImplemented()
                 }
             }

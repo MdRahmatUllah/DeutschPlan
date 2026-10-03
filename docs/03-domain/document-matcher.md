@@ -68,7 +68,7 @@ outside: the course's own data, plus rules, plus one small table we write.
 **One class per lemma, in this order:** stop word, known, probably known, new in the course, mine, outside the course. A course word wins over *Mine*: a word of my own that the course also has (`custom_words.matched_uid`) is offered as the course word, and D2 shows its "My word" mark too.
 
 **The matcher** (`domain/documents/matcher.dart`, `matchText`) runs in an isolate (`DocumentRepository.match`, #1230) on a snapshot the data layer reads once (`matcherInput`): each course word's step (its place in the course's order of steps), level and `freq`, and the learner's statuses, the uids any day's plan has held, *My words*' search keys and the active step. In it:
-- **An ambiguous lemma** takes the class of its reading most worth offering (new, then probably known, then known), and D2 asks which before *Add*.
+- **An ambiguous lemma** takes its level and its class from the same readings, those of its lowest step (#1294, #1310): «allein» (A1.1, and C2.1's literary «but») is A1 and, to an A2.1 learner, probably known. Among readings of that one step, the class is the one most worth offering (new, then probably known, then known), so a known noun «Morgen» doesn't hide the adverb «morgen». D2 asks which before *Add*.
 - **A course word that is also one of *My words*** (`custom_words.matched_uid`) is offered as the course word with D2's "My word" mark, and it's never *probably known*: the learner added it, so they don't know it.
 - **No step under way:** nothing is probably known.
 - **A word the sentence took up** (a split particle, «findet … statt», a salutation) is never *outside the course*: the lemmatiser says which tokens it took up (`sentence(…, takenUp:)`), so «zurück» in «rufen Sie uns bitte zurück» (zurückrufen) is no word outside, though the course has no «zurück» of its own (#1297).
@@ -122,4 +122,4 @@ The result is labelled *machine-translated* (`custom_words.mt = 1`) and can be e
 **The shared fixtures,** in `app/test/fixtures/documents/`, written or photographed by the team (no real person's document). The unit tests and SQA's device pass (#1234) use the same files:
 - `corpus/`: the six texts, the held-out seventh and SQA's three held-out ones (#1267), each with a `.labels.json` of its course words, plus `english.txt` and `bangla.txt` (the not-German check, #1225);
 - `text_layer.pdf` and `scanned.pdf` (the same letter, with and without a text layer);
-- `photo_1.jpg`, `photo_2.jpg` and `photo_blurred.jpg`: a printed team letter, the last one deliberately blurred (FR-D1-03).
+- No photo files: `ocr_test` builds its pages in code, a sharp one and a blurred one, for FR-D1-03's confidence check, and #1229's on-device check drew a letter sharp, lightly and heavily blurred.

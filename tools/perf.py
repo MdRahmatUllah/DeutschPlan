@@ -303,6 +303,7 @@ def frames_from(data: dict) -> dict[str, float]:
         **frame_metrics("list", data["list"]),
         **frame_metrics("learn", data["learn"]),  # #1030: L1 and Today under glass
         **frame_metrics("today", data["today"]),
+        **frame_metrics("docwords", data["docwords"]),  # #1306: D2 at 20,000 characters
         **search_metrics(data["search"]["keystrokes"]),
     }
 

@@ -24,7 +24,12 @@
     "today.missed_build": null,
     "today.missed_raster": null,
     "today.raster_p99_ms": null,
-    "search.first_ms": null
+    "search.first_ms": null,
+    "docwords": 0.5,
+    "docwords.build_p99_ms": null,
+    "docwords.missed_build": null,
+    "docwords.missed_raster": null,
+    "docwords.raster_p99_ms": null
   },
   "budgets": {
     "size": null,
@@ -42,10 +47,13 @@
     "learn.missed_raster": 0,
     "today": 16,
     "today.missed_build": 0,
-    "today.missed_raster": 0
+    "today.missed_raster": 0,
+    "docwords": 16,
+    "docwords.missed_build": 0,
+    "docwords.missed_raster": 0
   },
   "metrics": {
-    "size.arm64_mb": 75.11,
+    "size.arm64_mb": 66.24,
     "card.build_avg_ms": 1.112,
     "card.build_p90_ms": 2.037,
     "card.build_p99_ms": 5.254,
@@ -119,6 +127,22 @@
     "year.today.raster_p90_ms": 17.943,
     "year.today.raster_p99_ms": 25.836,
     "year.today.missed_build": 1,
-    "year.today.missed_raster": 318
+    "year.today.missed_raster": 318,
+    "docwords.build_avg_ms": 0.702,
+    "docwords.build_p90_ms": 1.129,
+    "docwords.build_p99_ms": 1.697,
+    "docwords.raster_avg_ms": 15.492,
+    "docwords.raster_p90_ms": 17.112,
+    "docwords.raster_p99_ms": 19.634,
+    "docwords.missed_build": 0,
+    "docwords.missed_raster": 332,
+    "year.docwords.build_avg_ms": 0.659,
+    "year.docwords.build_p90_ms": 1.036,
+    "year.docwords.build_p99_ms": 1.428,
+    "year.docwords.raster_avg_ms": 15.848,
+    "year.docwords.raster_p90_ms": 17.573,
+    "year.docwords.raster_p99_ms": 19.35,
+    "year.docwords.missed_build": 0,
+    "year.docwords.missed_raster": 359
   }
 }

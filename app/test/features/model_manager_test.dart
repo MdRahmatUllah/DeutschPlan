@@ -252,6 +252,33 @@ void main() {
       );
     });
 
+    testWidgets('#1265 a download that failed with nothing on the phone can '
+        'be deleted: the attempt is forgotten, and what it left goes', (
+      tester,
+    ) async {
+      final downloads = FakeDownloads();
+      final models = FakeModels();
+      await pump(
+        tester,
+        modelManagerStub(
+          downloads: downloads,
+          models: models,
+          voice: cardOf(
+            voiceEntry,
+            live: (phase: DownloadPhase.failed, progress: 0),
+          ),
+        ),
+      );
+      expect(find.text(l10n.modelsStatusFailed), findsOneWidget);
+      await tester.tap(find.text(l10n.modelsDeleteConfirm));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.modelsDeleteConfirm).last);
+      await tester.pumpAndSettle();
+      expect(downloads.calls, contains('forget supertonic3'));
+      expect(models.deleted, <String>['supertonic3']);
+      expect(models.keptPartial, <bool>[false], reason: 'nothing else runs');
+    });
+
     testWidgets('the Wi-Fi only switch goes through the manager, which keeps '
         'the setting and the downloader\'s rule', (tester) async {
       final downloads = FakeDownloads();
