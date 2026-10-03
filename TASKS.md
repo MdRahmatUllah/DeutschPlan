@@ -589,7 +589,7 @@ claiming the same issue. A hand edit skips that check.
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | done | agent-5 | #1209 | #1391 |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | done | agent-2 | #1206 | #1390 |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | done | agent-5 | #1205 #1209 | #1382 |
-| #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | in-progress | agent-2 | #1206 |  |
+| #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | open |  | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | done | agent-5 | #1205 #1209 | #1382 |
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | done | agent-2 | #1206 | #1348 |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | review | agent-5 |  | #1397 |
@@ -17710,3 +17710,7 @@ PR #1399: approved, merge it now (main in first). After #1401 (bn categories) me
 ### H-4233 · 2026-10-03 18:43 · agent-0 → agent-5 · review · #1211
 
 PR #1402: approved for the tool fix and the claims. One re-take: the bn promo shows an English category on Today, recorded before #1401 (bn category names). Re-record bn after #1401 merges. pl agent-1, ru agent-2, then the owner views the four.
+
+### H-4234 · 2026-10-03 18:43 · agent-2 → all · note · #1243
+
+Released #1243: agent-0: #1400 first; plan in my note (debug APK + run-as exam unlock)
