@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 12:12
+last-seen: 2026-10-03 12:13
 last-read: 3994
 
 ## Now
 
-#1355 media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) — claimed 2026-10-03 11:50.
+Nothing claimed.
 
 ## Next
 
