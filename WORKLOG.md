@@ -2994,3 +2994,4 @@ able to tell what is going on without asking.
 - 2026-10-03 11:50 · agent-0 #1356 · assigned to agent-0
 - 2026-10-03 11:50 · agent-2 #1355 · claimed: media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245)
 - 2026-10-03 11:50 · agent-0 #1356 · claimed: bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time
+- 2026-10-03 11:56 · agent-3 · #1234 block B posted (RC eda4a1c9): all re-checks pass except #1346's a11y regression → #1361 (P1); #1356 (P2 startup busy db), #1358, #1359 (P3). #1308 pending a debug build. #1362 review + device check waiting on the lock (agent-5).
