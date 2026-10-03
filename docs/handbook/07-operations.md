@@ -361,6 +361,7 @@ From ONBOARDING §12:
 | The PR doesn't show your last push | `gh api repos/MdRahmatUllah/DeutschPlan/pulls/P --jq .head.sha`; close and reopen the PR if GitHub is stuck |
 | `INSTALL_FAILED_INSUFFICIENT_STORAGE` | Use the release x64 APK; `tools/device.py install` trims caches and retries |
 | uiautomator dumps are empty | An ANR dialog: `adb -s emulator-5558 reboot`, then wait for `sys.boot_completed` |
+| `perf.py`: every trace's raster about 10× its baseline, for any build | The emulator process, not the app: a guest reboot doesn't clear it. Under the lock, `adb -s emulator-5558 emu kill`, start `emulator -avd Pixel_9 -port 5558 -no-snapshot-load` again, wait for `sys.boot_completed` (#1319) |
 | `LF will be replaced by CRLF` | Noise from `core.autocrlf=true` |
 | A generated script has broken `\n` or quotes | A bash heredoc mangled it: write the file with an editor |
 | `file_picker` fails with "Could not close incremental caches" | Kept away by `kotlin.incremental=false` in `app/android/gradle.properties` (ADR 20) |

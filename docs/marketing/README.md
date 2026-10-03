@@ -33,6 +33,9 @@ The full rules are in agent-5's README.
 
 Each file comes from its issue. **The tools** that render
 images and videos are in [`tools/media/`](../../tools/): `stills.py` (#1205), a
-template in every format and language; `feature_graphic.py` (#1200). **The renders**
+template in every format and language; `video.py` (#1206), a short video from an
+emulator recording (`tools/media/videos/<name>.yaml`: the steps, the cut and timed
+captions per language, numbers as facts' `{tokens}`), framed 9:16 and 16:9;
+`feature_graphic.py` (#1200). **The renders**
 are on the [`media`](https://github.com/MdRahmatUllah/DeutschPlan/tree/media)
 branch.
