@@ -558,6 +558,34 @@ void main() {
           findsOneWidget,
         );
       });
+
+      testWidgets('#1317 FR-D1-01 over an open sheet: the sheet closes and '
+          'D1 is on top', (tester) async {
+        await pumpApp(
+          tester,
+          extra: <Override>[
+            await loadedSettings(tester),
+            sharedTextProvider.overrideWithValue(_SharedTexts()),
+          ],
+        );
+        router.go('/search');
+        await tester.pumpAndSettle();
+        // As R1's row opens W1 on a phone: a sheet on the root navigator.
+        unawaited(
+          Adaptive.showSheet<void>(
+            context: rootNavigatorKey.currentContext!,
+            builder: (_) => const Text('a sheet'),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('a sheet'), findsOneWidget);
+
+        await openLink(tester, 'sogda://import');
+
+        expect(find.text('a sheet'), findsNothing);
+        expect(find.byType(DocImportScreen), findsOneWidget);
+        expect(location(), '$shareLocation?$arrivalParameter=1');
+      });
     });
 
     group('#676 FR-L12-04 an exam pushed over its step', () {

@@ -23,15 +23,19 @@ The full rules are in agent-5's README.
 | [`competitors.md`](competitors.md) | How competing apps market themselves, and what to copy or avoid | #1202 |
 | [`messaging.md`](messaging.md) | One message per audience and channel, with its proof points | #1203 |
 | [`calendar.md`](calendar.md) | What goes out, where, in which language and when, around launch day | #1204 |
-| `brand.md` | Frames, type, colours and safe areas per format | #1209 |
+| [`brand.md`](brand.md), [`brand.json`](brand.json) | Frames, type, colours and safe areas per format: the values in `brand.json`, which the tools read through `tools/media/brand.py` | #1209 |
 | `features.md` | The app's selling points and gaps, seen as a learner | #1208 |
-| `posts/<yyyy-ww>.md` | Each week's generated post drafts | #1207 |
+| [`posts/<yyyy-ww>.md`](posts/) | Each week's post drafts and the owner's due-list, made by `tools/media/posts.py --week <-3…rhythm> --monday <date>` from the calendar and the messaging, every number filled from `site-facts.json` | #1207 |
 | `launch/` | The launch-day kit | #1210 |
 | `outreach.md` | The send-list and its tracking | #1212 |
 | [`results.md`](results.md) | What each post did, from the numbers the owner pastes | (ongoing) |
 | `research/` | The dated research behind the plan, with a source for every number | #1201, #1202 |
 
 Each file comes from its issue. **The tools** that render
-images and videos are in [`tools/media/`](../../tools/), and **the renders**
+images and videos are in [`tools/media/`](../../tools/): `stills.py` (#1205), a
+template in every format and language; `video.py` (#1206), a short video from an
+emulator recording (`tools/media/videos/<name>.yaml`: the steps, the cut and timed
+captions per language, numbers as facts' `{tokens}`), framed 9:16 and 16:9;
+`feature_graphic.py` (#1200). **The renders**
 are on the [`media`](https://github.com/MdRahmatUllah/DeutschPlan/tree/media)
 branch.

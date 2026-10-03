@@ -34,7 +34,7 @@
 
 **Functional requirements**
 - FR-D1-01 Text comes from paste, share (text, PDF, image), a PDF's text layer or OCR on photos (ML Kit, bundled), all on the phone (BR-DOC-01, BR-DOC-02).
-- FR-D1-02 At most 30 pages or 20,000 characters; the rest is cut, and the learner told.
+- FR-D1-02 At most 30 pages or 20,000 characters; the rest is cut, and the learner told: on D1 while it's showing, and again on D2 once it opens, since D2 takes D1's place and its note would go with it (`DocWordsRoute(cut:)`, #1320).
 - FR-D1-03 Low-confidence OCR (the page's mean element confidence below 0.7; #1229 tunes the number on the fixtures' blurred photo, and the test asserts it) offers *Check the text* before processing; the learner's edits are the text that's processed and saved.
 - FR-D1-04 Text that isn't German (the matcher's threshold, `03-domain/document-matcher.md`) warns ("This doesn't look like German") with *Continue anyway*.
 - FR-D1-05 *Cancel* stops processing and saves nothing.

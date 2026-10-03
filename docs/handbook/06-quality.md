@@ -331,6 +331,42 @@ splits, uids, search keys against `test_vectors.json`, FTS, tips, the
 manifest). `test/domain/text_norm_test.dart` loads the same vectors, so the
 Dart and Python search keys stay byte-identical.
 
+## Documents: how they are checked (v1.2.0)
+
+The documents feature reads text nobody on the team wrote in advance, so it
+is tested on a corpus, not only case by case
+([`document-matcher.md`](../03-domain/document-matcher.md), *Tests*).
+
+- **The corpus** is in `app/test/fixtures/documents/corpus/`, all
+  team-written, with no real person's document: three official letters (a
+  landlord's, a Jobcenter's, a health insurer's) and three articles; a
+  bank's letter held out, written after the rules were tuned and never tuned
+  on; and three more held out by SQA (a school letter, a doctor's letter, a
+  news item, #1267). Each has a reader's `.labels.json` of the course words
+  in it. `english.txt` and `bangla.txt` are there for the not-German check.
+- **The figure.** `test/domain/documents/lemmatiser_test.dart` asserts at
+  least 95 % precision and 90 % recall on course words, stop words left
+  out. On main on 2026-10-03 it printed **precision 1.000, recall 0.998**.
+  The held-out texts are also pinned word for word, so a broken rule shows
+  even while the corpus clears its floor; the one known miss is «Bänken»,
+  the bench plural the course's *Bank* doesn't have.
+- **Named cases.** Separable verbs, compounds, ambiguity, salutations and
+  gender forms each have their own test, the classes are tested BR-DOC-03
+  case by case, and `matcher_test` holds a two-page letter under 500 ms on
+  the host.
+- **Privacy** is tested too: `photo_privacy_test.dart` on what
+  `withoutMetadata` keeps and drops, and `test/services/page_photos_test.dart`
+  on the manifest lines that cut ML Kit's metrics off.
+- **On the device,** with a release build, because R8 is where the
+  documents broke: a release build without ML Kit's keep rules crashed at
+  launch or on its first read, and a debug run showed neither.
+  `integration_test/ocr_threshold_test.dart` checks FR-D1-03's 0.7 on a
+  letter it draws (0.87 sharp, 0.80 lightly blurred, 0.41 heavily blurred),
+  and `integration_test/pdf_probe.dart` reads a PDF where R8 has run.
+- **Goldens** for D1, D2 and D3 (`doc_import`, `doc_words`,
+  `my_documents`), with the 150 % and 200 % audit in English and Bangla like
+  every screen.
+
 ## Review
 
 - Every PR is reviewed by another agent before it merges. Reviews beat new
@@ -355,8 +391,15 @@ GitHub issue in the **SQA milestone (#9)**, with steps to reproduce, expected
 and actual behaviour, and links to the source issue and PR, and a priority.
 The developer agents fix them, and SQA verifies each fix once it merges,
 sometimes checking a PR before it merges. It made passes over M0–M6 and a
-full pass before v1.0; at v1.0.1 the SQA milestone has 52 issues closed and
-none open. SQA also reports on how the agents work, and keeps its own ledger.
+full pass before v1.0; at v1.0.1 the SQA milestone had 52 issues closed and
+none open, and by 2026-10-03 it has 86 closed and none open. SQA also
+reports on how the agents work, and keeps its own ledger.
+
+For v1.2.0, SQA's pass is #1234: every input path on its emulator with a
+release build, in the UI and meaning languages. Its findings go into M9 with
+the `sqa` label rather than the SQA milestone: by 2026-10-03, #1309, #1310,
+#1311, #1315 and #1320 (fixed) and #1317 (open). Its review of the
+lemmatiser added the corpus's three held-out texts (#1267).
 
 ## CI is off
 

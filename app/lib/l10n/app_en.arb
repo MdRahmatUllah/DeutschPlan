@@ -346,6 +346,10 @@
   "@meAbout": {
     "description": "M1 list: opens M9."
   },
+  "meRatePlay": "Rate Sogda on Google Play",
+  "@meRatePlay": {
+    "description": "M1's last row (FR-M1-05, #1237): opens Sogda's listing in the Play Store app, where the learner can rate it. Android only."
+  },
   "meLoadFailed": "Your progress could not be loaded.",
   "@meLoadFailed": {
     "description": "M1 and M2 when the learner's progress cannot be read."
@@ -6721,6 +6725,29 @@
       }
     }
   },
+  "docWordsCapZero": "0 a day from documents: the other {later} wait in your queue until you raise it in Settings",
+  "@docWordsCapZero": {
+    "description": "D2's note under the bulk bar when Words a day from documents is 0 (#1334, BR-PLAN-11): no later day takes document words, so the later ones wait in the queue until M3's setting is raised. later is how many would not fit today.",
+    "placeholders": {
+      "later": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsHeldByBacklog": "Backlog first: what you add waits in your queue until it's cleared",
+  "@docWordsHeldByBacklog": {
+    "description": "D2's note under the bulk bar while the backlog pause holds new words (#1334, BR-PLAN-07): what is added waits in the queue until the backlog is cleared."
+  },
+  "docWordsSemTwoReadings": "{label}, two readings",
+  "@docWordsSemTwoReadings": {
+    "description": "Screen reader (#1333): a word in D2's text with two readings, marked with a ?; its card asks which one first. label is the word's own label, e.g. «fällt, new, A2».",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "docWordsAddedToday": "Added {word}: you'll learn it today",
   "@docWordsAddedToday": {
     "description": "D2's toast (FR-D2-02): the word joined today's plan. word is the word as it stands in the text.",
@@ -6748,6 +6775,36 @@
     "placeholders": {
       "word": {
         "type": "String"
+      }
+    }
+  },
+  "docWordsAddedManyToday": "Added {count}, all for today",
+  "@docWordsAddedManyToday": {
+    "description": "D2's toast after a bulk add when every word starts today (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedManyLater": "Added {count}: they start tomorrow or later",
+  "@docWordsAddedManyLater": {
+    "description": "D2's toast after a bulk add when none starts today: today's slots are taken (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedManyWaiting": "Added {count}: they wait in your queue",
+  "@docWordsAddedManyWaiting": {
+    "description": "D2's toast after a bulk add while no day can be said (the backlog pause, a cap of 0): the single add's «it waits in your queue» (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },

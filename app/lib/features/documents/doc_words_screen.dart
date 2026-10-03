@@ -21,6 +21,10 @@ import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/documents/matcher.dart';
+import 'package:sogda/domain/documents/tokens.dart' show docMaxChars;
+import 'package:sogda/domain/plan_engine.dart' show DocQueueHold;
+import 'package:sogda/features/documents/doc_import_screen.dart'
+    show docMaxPages;
 import 'package:sogda/features/search/search_header.dart';
 import 'package:sogda/features/study/study_back.dart' show MeaningLines;
 import 'package:sogda/features/today/today_providers.dart';
@@ -38,6 +42,8 @@ class DocWordsView {
     required this.match,
     required this.added,
     required this.slotsLeft,
+    this.plannedToday = const <String>{},
+    this.hold,
   });
 
   final Document document;
@@ -46,6 +52,14 @@ class DocWordsView {
 
   /// BR-PLAN-11: how many more words today takes (`docSlotsLeft`).
   final int slotsLeft;
+
+  /// The words today's plan has already, by any route (#1315): they take no
+  /// slot, so the cap note leaves them out.
+  final Set<String> plannedToday;
+
+  /// Why no start day can be said for a word added now (#1334): a cap of 0,
+  /// or the backlog pause. Null while one can.
+  final DocQueueHold? hold;
 }
 
 /// FR-D2-07: every opening runs the matcher again on the saved text, so the
@@ -63,6 +77,8 @@ Future<DocWordsView?> docWords(Ref ref, int id) async {
     match: match,
     added: await documents.added(id),
     slotsLeft: await engine.docSlotsLeft(today),
+    plannedToday: await engine.plannedToday(today),
+    hold: await engine.docQueueHold(today),
   );
 }
 
@@ -98,11 +114,14 @@ Color levelColour(SgTokens tokens, String? level) => switch (level) {
   _ => tokens.color.hard,
 };
 
-/// D2 · The words in your text (`docs/04-screens/planned/doc-words.md`).
+/// D2 · The words in your text (`docs/04-screens/doc-words.md`).
 class DocWordsScreen extends ConsumerStatefulWidget {
-  const DocWordsScreen({required this.id, super.key});
+  const DocWordsScreen({required this.id, this.cut, super.key});
 
   final int id;
+
+  /// D1's cut, said here once (`DocWordsRoute.cut`, #1320).
+  final String? cut;
 
   @override
   ConsumerState<DocWordsScreen> createState() => _DocWordsScreenState();
@@ -126,6 +145,25 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
   /// counts them itself (agent-3, #1294).
   int _startedToday = 0;
   DocWordsView? _countedOn;
+
+  @override
+  void initState() {
+    super.initState();
+    // #1320: D1's note that it cut the text or the pages went with D1, so it
+    // is said here, where it can be read.
+    if (widget.cut case final cut?) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context);
+        SgToast.show(
+          context,
+          cut == 'pages'
+              ? l10n.docImportTooManyPages(docMaxPages)
+              : l10n.docImportCut(docMaxChars),
+        );
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -207,10 +245,14 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
               ),
               null => l10n.docWordsAddedWaiting(words.single.surface),
             }
-          : l10n.docWordsAddedMany(
-              words.length,
-              days.where((d) => d == today).length,
-            );
+          // #1311: what happened, all today, some, none, or no day at all.
+          : switch (days.where((d) => d == today).length) {
+              final n when n == words.length => l10n.docWordsAddedManyToday(n),
+              0 when days.every((d) => d == null) =>
+                l10n.docWordsAddedManyWaiting(words.length),
+              0 => l10n.docWordsAddedManyLater(words.length),
+              final n => l10n.docWordsAddedMany(words.length, n),
+            };
       SgToast.show(context, message);
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -342,6 +384,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
           bar = _BulkBar(
             level: view.match.level,
             fresh: fresh,
+            plannedToday: view.plannedToday,
             slotsLeft: math.max(
               0,
               view.slotsLeft -
@@ -350,6 +393,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
             cap: ref
                 .watch(settingsSourceProvider)
                 .read(SettingKeys.docDailyCap),
+            hold: view.hold,
             busy: _busy,
             onAdd: (words) => unawaited(_add(view, words)),
           );
@@ -434,22 +478,29 @@ class _Controls extends ConsumerWidget {
             SgText(l10n.docWordsEmpty, role: SgTextRole.title),
             const SizedBox(height: 8),
           ],
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: SgText(
-                  l10n.docWordsShowProbablyKnown,
-                  role: SgTextRole.body,
+          // #1309: one node, «Show words I probably know, switch»: the
+          // switch says the title, as M3's rows do, and the legend below
+          // reads as the list item's text, apart from it.
+          MergeSemantics(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: ExcludeSemantics(
+                    child: SgText(
+                      l10n.docWordsShowProbablyKnown,
+                      role: SgTextRole.body,
+                    ),
+                  ),
                 ),
-              ),
-              AdaptiveSwitch(
-                value: showProbable,
-                semanticLabel: l10n.docWordsShowProbablyKnown,
-                onChanged: (on) => unawaited(
-                  ref.read(showProbablyKnownProvider.notifier).set(on),
+                AdaptiveSwitch(
+                  value: showProbable,
+                  semanticLabel: l10n.docWordsShowProbablyKnown,
+                  onChanged: (on) => unawaited(
+                    ref.read(showProbablyKnownProvider.notifier).set(on),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -656,26 +707,34 @@ class _Paragraph extends StatelessWidget {
           ),
         );
       }
+      // #1333: two readings, asked on the card first; added, it's settled.
+      final twoReadings = word.ambiguous && !added;
       final tap = tapOf(word);
       byTap[tap] = word;
       spans.add(
         TextSpan(
-          // A word joiner each side: the chip before and the check after
-          // stay on the word's line (agent-3, #1294).
+          // A word joiner each side: the chip before, and the check or the
+          // "?" after, stay on the word's line (agent-3, #1294).
           text:
               '${word.mine ? '\u2060' : ''}${fit(surface)}'
-              '${added ? '\u2060' : ''}',
+              '${added || twoReadings ? '\u2060' : ''}',
           style: style,
           recognizer: tap,
-          semanticsLabel: _label(l10n, word, surface, added),
+          semanticsLabel: twoReadings
+              ? l10n.docWordsSemTwoReadings(_label(l10n, word, surface, added))
+              : _label(l10n, word, surface, added),
         ),
       );
-      if (added) {
+      if (added || twoReadings) {
         spans.add(
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: ExcludeSemantics(
-              child: Icon(Icons.check, size: 16, color: tokens.color.ink),
+              child: Icon(
+                added ? Icons.check : Icons.help_outline,
+                size: 16,
+                color: tokens.color.ink,
+              ),
             ),
           ),
         );
@@ -751,12 +810,18 @@ class _BulkBar extends StatelessWidget {
     required this.cap,
     required this.busy,
     required this.onAdd,
+    this.plannedToday = const <String>{},
+    this.hold,
   });
 
   final String? level;
   final List<DocWord> fresh;
   final int slotsLeft;
+  final Set<String> plannedToday;
   final int cap;
+
+  /// No day takes them now (#1334): they wait, rather than start later.
+  final DocQueueHold? hold;
   final bool busy;
   final ValueChanged<List<DocWord>> onAdd;
 
@@ -774,7 +839,9 @@ class _BulkBar extends StatelessWidget {
       for (final w in fresh)
         if (at >= 0 && (w.level == level || w.level == next)) w,
     ];
-    final later = fresh.length - slotsLeft;
+    // #1315: a word already in today's plan takes no slot.
+    final later =
+        fresh.where((w) => !plannedToday.contains(w.key)).length - slotsLeft;
     final pair = <(String, List<DocWord>)>[
       if (mine.isNotEmpty && level != null)
         (l10n.docWordsAddLevel(level!, mine.length), mine),
@@ -842,7 +909,11 @@ class _BulkBar extends StatelessWidget {
             if (later > 0) ...<Widget>[
               const SizedBox(height: 6),
               SgText(
-                l10n.docWordsCapNote(cap, later),
+                switch (hold) {
+                  DocQueueHold.capZero => l10n.docWordsCapZero(later),
+                  DocQueueHold.backlog => l10n.docWordsHeldByBacklog,
+                  null => l10n.docWordsCapNote(cap, later),
+                },
                 role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
                 textAlign: TextAlign.center,
