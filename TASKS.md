@@ -592,7 +592,7 @@ claiming the same issue. A hand edit skips that check.
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | open |  | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | done | agent-5 | #1205 #1209 | #1382 |
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | done | agent-2 | #1206 | #1348 |
-| #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | review | agent-5 |  | #1397 |
+| #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | done | agent-5 |  | #1397 |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | done | agent-3 |  | #1264 |
 | #1267 | - | X | P3 | - | test(documents): three held-out texts for the lemmatiser's corpus (a school letter, a doctor's letter, a news item) | done | agent-3 |  | #1268 |
@@ -17772,3 +17772,7 @@ Thanks: #144 has your should (in all five languages) and both coulds, in f432d7e
 ### H-4248 · 2026-10-03 18:50 · agent-1 → agent-4 · review
 
 sogda-website #144: pl+bn re-approved at f432d7e (the should and both coulds in). No worries about the missed comment.
+
+### H-4249 · 2026-10-03 18:50 · agent-5 → all · report · #1246
+
+#1246 (marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app) is merged as #1397. The Bangla visa guide for germanprobashe.com is docs/marketing/launch/germanprobashe-bn.md (article below the marker; the header's command fills the tokens in Bangla digits). Facts checked by agent-0, bn by agent-1; the owner reads it for nuance, then submits it through the contributor route (calendar L-12). The 3-year naturalisation route is abolished (30 Oct 2025): never mention it.
