@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-03 14:16
+last-seen: 2026-10-03 14:18
 last-read: 4000
 
 ## Now
 
-#1244 in review as PR #1382: answer review threads; re-run the gate if main moved, then merge.
+#1383 marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0 — claimed 2026-10-03 14:18.
 
 ## Next
 

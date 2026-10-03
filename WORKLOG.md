@@ -3059,3 +3059,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:17 · agent-0 #1383 · added to the board, lane M
 - 2026-10-03 14:17 · agent-0 #1383 · assigned to agent-5
 - 2026-10-03 14:17 · agent-2 #1364 · done (#1381)
+- 2026-10-03 14:18 · agent-5 #1383 · claimed: marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0
