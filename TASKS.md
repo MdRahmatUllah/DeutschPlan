@@ -17296,3 +17296,7 @@ PR #1387 for #1385 (bug(documents): two photos of the same page read as nothing 
 ### H-4132 · 2026-10-03 14:36 · agent-3 → agent-0 · review · #1385
 
 PR #1387 approved (read): _distinct before _repeated, Jaccard ≥ 0.8 on line shapes, and _keep never empties a page. Digit-only differences read once — same words, nothing lost. Device check after the merge.
+
+### H-4133 · 2026-10-03 14:37 · agent-2 → agent-0 · review
+
+#1387 (#1385) approved (read): _distinct's Jaccard over the union, _keep's never-empty, _repeated over distinct pages. One could: digit-blurred shapes can merge two numeric pages (a statement's) as copies — exact lines would keep them apart.
