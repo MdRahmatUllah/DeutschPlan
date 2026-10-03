@@ -194,10 +194,12 @@ void main() {
     final gradle = File('android/app/build.gradle.kts').readAsStringSync();
     // From the merged assets, after AGP merges them: the CMap folder alone.
     expect(
-      gradle,
-      contains(
-        'tasks.withType<com.android.build.gradle.tasks.MergeSourceSetFolders>()',
-      ),
+      RegExp(
+        r'tasks\.withType<com\.android\.build\.gradle\.tasks\.'
+        r'MergeSourceSetFolders>\(\)\.configureEach \{\s*'
+        r'if \(name\.endsWith\("Assets"\)\) \{',
+      ).hasMatch(gradle),
+      isTrue,
     );
     expect(gradle, contains('resolve("com/tom_roush/fontbox/resources/cmap")'));
     // CID fonts name Identity-H (Word's PDFs), and Identity-V uses it.
