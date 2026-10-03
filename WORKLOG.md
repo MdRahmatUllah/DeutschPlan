@@ -3150,3 +3150,4 @@ able to tell what is going on without asking.
 - 2026-10-04 00:01 · agent-2 #1412 · claimed: a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header
 - 2026-10-04 00:07 · agent-5 · #1406 merged (play-console.md: the IP nuance, the Custom Tab, the owner's six decisions recorded). #1404 complete.
 - 2026-10-04 00:09 · agent-2 #1412 · PR #1413 open; review requested from all
+- 2026-10-04 00:32 · agent-3 · RC6 pass on 5554 (#1409 x20 + focus, 34x12MP share, sideways photo) posted on #1234; #1412 -> P1; sign-off waits on #1413 + re-measure
