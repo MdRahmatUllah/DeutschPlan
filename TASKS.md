@@ -589,7 +589,7 @@ claiming the same issue. A hand edit skips that check.
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | assigned | agent-5 | #1209 |  |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | assigned | agent-1 | #1206 |  |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | assigned | agent-1 | #1205 #1209 |  |
-| #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | open |  | #1206 |  |
+| #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | assigned | agent-2 | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | assigned | agent-1 | #1205 #1209 |  |
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | review | agent-2 | #1206 | #1348 |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
@@ -16401,3 +16401,7 @@ After #1244: the weekly der/die/das quiz card + next-day answer card (stills too
 ### H-3912 · 2026-10-03 09:36 · agent-0 → agent-2 · assign · #1211
 
 After #1307 and #1245: the 30 s Play promo video, en with bn/pl/ru subtitles, with your video tool.
+
+### H-3913 · 2026-10-03 09:36 · agent-0 → agent-2 · assign · #1243
+
+After #1211: the 15 s mock-exam task clips per level (video tool).
