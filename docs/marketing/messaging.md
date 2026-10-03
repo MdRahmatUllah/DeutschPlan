@@ -62,7 +62,7 @@ People living the paperwork: the Anmeldung, the Ausländerbehörde, a Termin.
 
 ### 3. Russian speakers, and Ukrainians who choose Russian (ru)
 
-- **Promise** (*draft*): Немецкий от A1 до C2, и всё на русском: значения, переводы примеров, правила и подсказки произношения кириллицей. Без интернета и без аккаунта.
+- **Promise:** Немецкий от A1 до C2, и всё на русском: значения, переводы примеров, правила и подсказки произношения кириллицей. Без интернета и без аккаунта.
   *(German from A1 to C2, all in Russian: meanings, examples, rules and pronunciation in Cyrillic. Offline, no account.)*
 - **Proof:**
   1. In Russian, the meanings, the example sentences' translations and the grammar rules are all Russian (`languages.grammar_in`), and the guide is in Cyrillic (*Termin* → {featured.1.guide.ru}).
