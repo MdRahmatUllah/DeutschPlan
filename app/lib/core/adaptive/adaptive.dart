@@ -950,6 +950,9 @@ abstract final class Adaptive {
 
     return showModalBottomSheet<T>(
       context: context,
+      // #1354: «Dismiss» in the app's language, as showPane's scrim says,
+      // not Material's default «Scrim» (a screen reader read the word).
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       // #164: reduce motion shows the sheet without sliding it up.
       sheetAnimationStyle: MediaQuery.disableAnimationsOf(context)
           ? AnimationStyle.noAnimation
