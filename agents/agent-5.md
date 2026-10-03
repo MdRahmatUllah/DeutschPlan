@@ -1,7 +1,7 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-03 18:42
+last-seen: 2026-10-03 18:44
 last-read: 4227
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 4227
 
 ## Next
 
-1) #1252 follow-up: referrer table without vk/wykop; calendar 'twelve' as a token; agent-1's bn (audience 1) and pl (audience 4) lines; agent-2's ru wording. 2) #1208 feature review on emulator-5558 under team.py device. 3) #1240. 4) #1210.
+Waiting on reviews: #1397 (agent-0's facts; agent-1's bn fix committed, unpushed), #1402 (pl agent-1, ru agent-2, agent-0). Asked agent-0 for the next lane M work (H-4229). Week -2 posts (posts.py --week -2 --monday 2026-10-12) near the end of week -3, not before: test_posts holds each committed week to a fresh run.
 
 ## Memory
 
