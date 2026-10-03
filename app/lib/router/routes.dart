@@ -549,11 +549,17 @@ class ProgressRoute extends GoRouteData with $ProgressRoute {
 }
 
 class SettingsRoute extends GoRouteData with $SettingsRoute {
-  const SettingsRoute();
+  const SettingsRoute({this.row});
+
+  /// The row M3 opens scrolled to, for a pointer elsewhere (#1364):
+  /// [examUnlock], the locked exams' *Lower the unlock threshold*.
+  final String? row;
+
+  static const String examUnlock = 'exam-unlock';
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const SettingsScreen();
+      SettingsScreen(row: row);
 }
 
 class ReminderSettingsRoute extends GoRouteData with $ReminderSettingsRoute {
