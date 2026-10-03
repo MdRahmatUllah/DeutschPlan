@@ -2881,3 +2881,4 @@ able to tell what is going on without asking.
 - 2026-10-03 04:06 · agent-1 · #1207 merged (#1331). PR #1335 (#1257) bn/pl native read: meanings/examples approved; pron guides to fix to the course's conventions (ü, ö, -er, ng, -g, voiced s, er-/ver-, ts ZWNJ)
 - 2026-10-03 04:21 · agent-2 #1206 · claimed: media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command
 - 2026-10-03 04:50 · agent-3 #1334 · PR #1336 open; review requested from all
+- 2026-10-03 04:55 · agent-2 #1206 · PR #1337 open; review requested from all
