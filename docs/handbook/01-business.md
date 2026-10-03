@@ -5,15 +5,17 @@ an Android phone, for adults who learn German for work, study or residence.
 Its first audience is Bangla speakers, who get every meaning in Bangla and
 every word's pronunciation written in Bangla letters; English speakers are
 the second. It needs no account, shows no ads, collects nothing, and works
-without a signal. This chapter makes the case for it: the problem, the
-audience, how it compares with the alternatives, the principles it keeps,
-the open business questions, the risks, and how the design can grow into
-more languages.
+without a signal. Since v1.2.0 it also reads the German the learner meets, a
+letter or a page, and turns it into words to learn, on the phone. This
+chapter makes the case for it: the problem, the audience, how it compares
+with the alternatives, the principles it keeps, the open business
+questions, the risks, and how the design can grow into more languages.
 
 > The detailed specs in [`docs/`](../README.md) are the source of truth. If
 > anything here disagrees with them, the spec wins and this page is wrong.
 
-State described: v1.0.1, tagged 2026-09-26 on main `0d23968e`.
+State described: v1.2.0 as built on main by 2026-10-03 (`f5151b64`), ahead of
+its release commit (#1235). Counts marked v1.0.1 are that release's.
 
 ## The problem
 
@@ -31,6 +33,14 @@ their constraints, and the product is built around them:
 - **Many think in Bangla.** The course's differentiator is its Bangla
   meaning and Bangla pronunciation columns (`overview.md`, "Who it is for").
   With them, a Bangla speaker learns German without going through English.
+- **They meet German they didn't choose.** A landlord's letter, a
+  Jobcenter's, a health insurer's, a school's note, an article: the kinds of
+  text the documents feature is tested on
+  ([`document-matcher.md`](../03-domain/document-matcher.md)). The course
+  teaches words in its own order, not the ones on the page in front of the
+  learner. Since v1.2.0 they can bring that page (epic #1219): Sogda marks
+  the words they don't know yet, by level, and adds the ones they choose,
+  each with the sentence it was met in.
 
 ## The audience
 
@@ -73,6 +83,17 @@ In numbers, at v1.0.1:
 - **Nothing to sign up for.** No account, no ads, no analytics. Progress
   stays on the phone and moves only in an export file the learner shares.
 
+v1.2.0 adds two things on the same terms:
+
+- **The learner's own German** ([`doc-import.md`](../04-screens/doc-import.md)).
+  Pasted, shared from another app, a PDF of up to 30 pages, or photographed:
+  up to 20,000 characters a document (BR-DOC-02). Its words join the day
+  under their own cap, 5 a day by default, on top of the course's new words
+  (BR-PLAN-11). Free, with no limits (BR-DOC-08, the owner, #1220).
+- **Translation on the phone.** Hy-MT2-1.8B, an optional 1.1 GB download
+  under Apache-2.0, offered in every build (ADR 30,
+  [`translation.md`](../03-domain/translation.md)).
+
 ## Why offline matters
 
 Offline is not a feature added on top: the whole design follows from it.
@@ -93,8 +114,11 @@ Offline is not a feature added on top: the whole design follows from it.
    emulator), and a card rating writes locally with no round trip.
 
 The only network use the app makes itself is a model download the learner
-starts. Web-search links and *Report a problem* open pages in a browser when
-the learner taps them (BR-PRIV-01, BR-SEARCH-04).
+starts. Web-search links, *Report a problem* and Me's *Rate Sogda on Google
+Play* open a page or the Play Store when the learner taps them (BR-PRIV-01,
+BR-SEARCH-04, FR-M1-05). Reading a document needs no network either: a PDF's
+text, a photo's words and the lemmas are all worked out on the phone
+(BR-DOC-01).
 
 ## Positioning
 
@@ -115,7 +139,8 @@ check each row before quoting it outside the team.
 
 What Sogda offers that none of them combine: the whole A1.1–C2.2 path,
 Bangla throughout, a daily plan decided for the learner, and no account or
-connection at all.
+connection at all. Since v1.2.0, also the learner's own letters and pages
+turned into words to learn, with the course's levels, on the phone.
 
 What they offer that Sogda does not (and a learner may still want):
 
@@ -145,7 +170,10 @@ ADR.
 | No network call without a user action | BR-PRIV-01 (web link, model download, export share) |
 | Not a game | `overview.md`: no hearts, lives or leaderboards; streaks exist but are quiet |
 | Not an official exam | `overview.md`; L10's note "not official Goethe or telc papers" |
-| Honest sizes | The voice is offered as "About 400 MB, over Wi-Fi, downloaded once" (the owner, #245) |
+| Honest sizes | The voice is offered as "About 400 MB, over Wi-Fi, downloaded once" (the owner, #245); Hy-MT2 as 1.1 GB ([`model-manager.md`](../04-screens/model-manager.md)) |
+| Documents stay on the phone | BR-DOC-01: extraction, OCR, lemmatising and translation all run on the phone; BR-DOC-05: a kept photo loses its metadata |
+| A machine's meaning says so | BR-DOC-07: labelled until the learner edits it |
+| No pressure to rate | BR-RATE-01: Play's review card once, after the first passed mock exam, with no question before it, no incentive and no button that triggers it |
 | Missing a day is not failing | BR-PLAN-06: the backlog has no deadline and is never shown as overdue |
 
 ## Privacy
@@ -162,9 +190,28 @@ ADR.
   ([`export-import.md`](../04-screens/export-import.md)).
 - ***Report a problem*** opens a pre-filled GitHub issue page in the browser,
   with the card's id. The learner sends it, or doesn't.
+- **Documents** (v1.2.0) are read and kept on the phone (BR-DOC-01,
+  BR-DOC-05): the text always, and the photos while *Save original images*
+  is on, in app-private storage. A kept photo loses its metadata (EXIF and
+  GPS, XMP, IPTC, a phone's trailer) before it is written, and the photo
+  picker's or a share's own copy of a page or a PDF is deleted once it is
+  read ([`document-matcher.md`](../03-domain/document-matcher.md), *Data*).
+  *Auto-delete documents* (after 30, 90 or 365 days) is off by default. An
+  export carries a document's text, never its photos (BR-DOC-06).
+- **ML Kit's usage metrics never leave.** Its text recogniser queues them
+  for Google even with its model bundled; the manifest removes the
+  DataTransport backend that would send them (BR-PRIV-01, #1229).
+- **Translation** runs on the phone, once Hy-MT2 is downloaded: no text goes
+  to a translation service ([`translation.md`](../03-domain/translation.md)).
+- **The rating card** (v1.2.0) is the Play Store's own UI, asked for once.
+  Sogda sends nothing about the learner with it, and keeps only that it has
+  asked (BR-RATE-01).
 - **Permissions** are asked only when a feature needs them: the microphone on
   the first Speaking recording, notifications when the reminder is switched on
-  or a model download starts. The full list is in
+  or a model download starts. v1.2.0 adds none: *Take photos* opens the
+  phone's camera app and *Choose images* the system photo picker, so Sogda
+  holds neither ([`doc-import.md`](../04-screens/doc-import.md),
+  *States*). The full list is in
   [chapter 3](03-capabilities.md#privacy-and-permissions).
 
 ## The licences stance
@@ -187,6 +234,14 @@ every country where the app is offered. That has already cost a feature.
   allows commercial use with use-based restrictions. Its text ships in the
   app's Licences screen (M8), with the MIT licence of the SDK whose text
   front end the app ports.
+- **Reading documents (v1.2.0).** OCR is Google's ML Kit text recognition,
+  the Latin model bundled, chosen by the owner over Tesseract (#1220). It
+  comes under Google's terms rather than a licence text, so M8 names those
+  terms with their links. A PDF's text layer is read by pdfbox-android
+  (Apache-2.0, with Apache PDFBox's NOTICE), which brings Bouncy Castle (MIT)
+  for encrypted files (ADR 31). Play's in-app review library, behind
+  BR-RATE-01's card, is listed the same way as ML Kit
+  ([`about-licences.md`](../04-screens/about-licences.md)).
 - **Fonts** are Inter and Noto Sans Bengali, SIL OFL 1.1, bundled.
 - **Packages** are listed from Flutter's `LicenseRegistry`. The release
   checklist runs `tools/licences.py check`, which fails if a bundled licence
@@ -240,7 +295,7 @@ Design targets the build is held to:
 | Cold start to Today | < 1.5 s on a mid-range 2022 Android phone | `accessibility-performance.md` |
 | Warm start | < 500 ms | same |
 | Search | < 50 ms a keystroke | same |
-| App size | at most 3 % over the baseline (arm64 APK 72.3 MB) | same, ADR 27 |
+| App size | at most 3 % over the baseline (the arm64 APK; 54.12 MB in `tools/perf_baseline.json` since #1293) | same, ADR 27, ADR 31 |
 | Release quality | no P1 from the SQA pass (v1.0.0's pass 4 found none, and its three P2s were fixed and rechecked) | the team board |
 
 **Questions for the owner:** Google Play Console gives aggregate installs,
@@ -254,12 +309,15 @@ the product to?
 | Risk | Why it matters | What limits it today | Open action |
 |---|---|---|---|
 | **Licences** | A model licence can exclude a market (Hy-MT 1.5 did) | Hy-MT2 is Apache-2.0 (ADR 30); `licences.py check` at release | — |
-| **Models hosted by third parties** | The voice downloads from its maker's Hugging Face repository. If the files move, downloads fail until an app update, since the manifest ships in the app | SHA-256 checks; the phone's voice always works as a fallback | Consider mirroring the model files |
+| **Models hosted by third parties** | The voice and Hy-MT2 download from their makers' Hugging Face repositories. If the files move, downloads fail until an app update, since the manifest ships in the app | SHA-256 checks; the phone's voice always works as a fallback | Consider mirroring the model files |
 | **Thin B1** | B1 has 379 words (A1 1,315, B2 1,023); `overview.md` marks it "to be expanded" | Mock exams at A1.1–B1.2 reuse a grammar topic or two and say so | New content in the workbooks |
 | **English-only content parts** | Grammar rules, example translations and category names are in English, even in the Bangla UI (#425) | Meanings, pronunciation, tips and the whole UI are in Bangla | Bangla translations through the workbooks and the pipeline |
 | **One platform** | iOS users can't install it | iOS code paths are built and tested (adaptive chrome, iOS goldens) | A Mac for #171, #161, #398 |
 | **No telemetry** | Crashes and confusion are invisible unless reported | 4,598 Flutter tests (goldens included), a dedicated SQA agent, *Report a problem* | Decide on Play vitals (above) |
-| **Low-end phones** | With Supertonic's sessions open the app uses about 520 MB of memory (PSS, on the emulator); the voice is 399 MB to download | The voice is optional; a 100 MB free-space margin is enforced; the phone voice is the fallback | Owner: a memory budget (none yet) |
+| **Low-end phones** | With Supertonic's sessions open the app uses about 520 MB of memory (PSS, on the emulator); the voice is 399 MB to download, Hy-MT2 1.1 GB | The voice and the translator are optional; a 100 MB free-space margin is enforced; the phone voice is the fallback; Hy-MT2 needs 3.5 GiB of memory (below it, it's *Not available*), loads on the first translation, stops after 60 s, and is released in the background (`translation.md`, #1269) | Owner: a memory budget (none yet) |
+| **Machine translation quality** | In #1278's spot check of 50 words outside the course per language, Hy-MT2's meaning was wrong for 17 in Polish, 15 in Bangla and 13 in Russian | Labelled machine-translated (BR-DOC-07); offered as suggestions to check, never a pre-filled meaning (the lead's call on #1278) | The owner may change that call |
+| **Personal documents on the phone** | A letter can be a bank statement or a doctor's | App-private storage, Android backup off (BR-PRIV-02), photo metadata removed, copies deleted once read, optional auto-delete, photos never exported (BR-DOC-05, BR-DOC-06) | — |
+| **App size** | v1.2.0 adds ML Kit's text recognition (about 12 MB a phone, `doc-import.md`), pdfbox-android (+1.8 MiB, ADR 31) and llama.cpp's CPU libraries (about 21 MB at ADR 29's measure, ADR 30) | One-ABI downloads from the App Bundle; the models download separately | #1318 trims pdfbox's CJK CMaps; #1306 measures v1.2.0 feature by feature |
 | **Release depends on the owner** | Release builds fail without the upload key unless they opt in to the debug key, as the agents' device checks do (#705); start time on a real phone is unchecked | `tools/release_android.py` reports the signing key | Owner: upload key, real-phone check |
 | **The app id is permanent** | `de.sogda.app` can never change once on Play | Chosen by the owner (ADR 28, #601) | — |
 | **Exam claims and trademarks** | Implying official exams would mislead | Mock exams are labelled generated; Goethe and telc named only for the level | Recheck the store texts (`store-listing.md`) before each upload; the brand kit (`docs/sogda-brand-kit/`) names no exam body |
@@ -326,6 +384,7 @@ The column for more languages to learn stands as written.
 | **Voice and text** | `SystemTts` speaks `de-DE`; Supertonic's input is tagged `<de>`; course text is tagged `de-DE` for screen readers; Today's date is always German | None | A voice per language (whether Supertonic speaks it is unchecked) |
 | **Links and names** | Web links to Duden and DWDS | None | New dictionaries. The name already fits every language: Sogda (ADR 28), whose mark changes only its front tile per course (É for French, Ñ for Spanish; `docs/sogda-brand-kit/`) |
 | **One course per install** | `content.db` is one course, and progress assumes it | None | A course picker, and progress kept per course |
+| **Documents** (v1.2.0) | The lemmatiser's rules, its strong-verb and stop-word tables, the German check, and OCR's Latin model | Hy-MT2 translates between German and the four meaning languages (`translation.md`); a new one needs its directions checked | A lemmatiser, tables and a check per language, and OCR for its script |
 
 Adding a meaning language is mostly data (translations through the
 workbooks), a schema change, and widening two enums. Adding a language to

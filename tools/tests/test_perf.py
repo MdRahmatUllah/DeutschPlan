@@ -72,6 +72,7 @@ def response(blur: bool) -> dict:
         "list": SUMMARY,
         "learn": SUMMARY,
         "today": SUMMARY,
+        "docwords": SUMMARY,
         "glass": {"blur": blur, "reasons": [] if blur else ["frameBudget"]},
         "search": {"keystrokes": [["H", [20.0, 10.0, 12.0]], ["Ha", [9.0, 8.0, 30.0]]]},
     }
@@ -152,13 +153,13 @@ def test_the_response_becomes_the_card_list_and_search_metrics():
     assert metrics["card.raster_p90_ms"] == 11.0
     assert metrics["list.build_avg_ms"] == 3.1
     assert metrics["search.max_ms"] == 12.0
-    assert len(metrics) == 4 * 8 + 3
+    assert len(metrics) == 5 * 8 + 3
 
 
 def test_1030_l1_and_today_are_flung_under_glass_with_baselines_of_their_own():
     metrics = perf.frames_from(response(blur=True))
     doc = json.loads(perf.BASELINE.read_text(encoding="utf-8"))
-    for screen in ("learn", "today"):
+    for screen in ("learn", "today", "docwords"):
         assert metrics[f"{screen}.raster_avg_ms"] == 6.4
         assert perf.lookup(doc["margins"], f"{screen}.raster_avg_ms") == 0.5
         assert perf.lookup(doc["budgets"], f"{screen}.raster_avg_ms") == 16
@@ -213,7 +214,7 @@ def test_a_group_with_no_entry_is_an_error_not_information():
 
 def test_the_baseline_has_a_margin_for_every_group_and_the_budgets():
     doc = json.loads(perf.BASELINE.read_text(encoding="utf-8"))
-    for group in ("size", "start", "card", "list", "learn", "today", "search"):
+    for group in ("size", "start", "card", "list", "learn", "today", "docwords", "search"):
         assert doc["margins"][group] > 0
         assert group in doc["budgets"] or any(k.startswith(group + ".") for k in doc["budgets"])
     assert doc["budgets"]["start.cold_ms"] == 1500

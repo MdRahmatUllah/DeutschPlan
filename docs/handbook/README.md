@@ -9,7 +9,10 @@ The handbook explains and connects. The detailed specifications in
 [`docs/`](../README.md) remain the source of truth: **if the handbook and a
 spec disagree, the spec wins**, and the handbook is the one to fix.
 
-State described: **v1.0.1**, tagged 2026-09-26 on main `0d23968e` (Android).
+State described: **v1.2.0** as built on main by 2026-10-03 (`f5151b64`),
+ahead of its release commit (#1235); the last tag is v1.1.0, 2026-10-02 on
+`4106e393` (Android). Where a chapter gives a count or a measurement from an
+earlier release, it names that release.
 
 ## The product in one page
 
@@ -24,8 +27,10 @@ and since v1.1.0 in **Russian** or **Polish**.
   - Word detail, with examples and near-synonym comparisons.
   - Quizzes in six directions and grammar practice.
   - Three mock exams per step, each with vocabulary, grammar, listening, writing and speaking sections.
+- **Learn from your documents** (v1.2.0). A letter, a PDF, a photographed page or text shared from another app: Sogda marks the words the learner doesn't know yet, by level, and adds the ones they choose, each with the sentence it was met in. All of it is read on the phone.
 - **The voice.** The phone's German voice, or Supertonic, an optional ~400 MB on-device voice.
-- **It works offline, with no account, no ads and no analytics.** Progress stays on the phone; export and import move it. The app itself sends nothing: it goes online only for a model download the learner starts, a web link the learner taps (Duden, DWDS and the others, FR-R1-06), and *Report a problem*, which opens a pre-filled GitHub issue in the browser.
+- **Translation** (v1.2.0). Hy-MT2, an optional 1.1 GB download, translates on the phone: examples without a line in the learner's language, a word outside the course, a search with no result.
+- **It works offline, with no account, no ads and no analytics.** Progress stays on the phone; export and import move it. The app itself sends nothing: it goes online only for a model download the learner starts, a web link the learner taps (Duden, DWDS and the others, FR-R1-06), *Report a problem*, which opens a pre-filled GitHub issue in the browser, and Me's *Rate Sogda on Google Play* (v1.2.0), which opens the Play listing.
 - **It is built to be used by everyone.**
   - English, Bangla, Polish or Russian, light, dark and aurora-glass themes, and text up to 200 %, checked on every screen in every language with the keyboard up.
   - Screen readers, reduced motion and transparency.
@@ -36,6 +41,7 @@ tested, but the iOS release waits for a Mac. It was built in eight
 milestones (M0–M7) in six days (2026-09-21 to 2026-09-26): M0–M3 by one Claude Code
 session working alone (101 PRs), and M4–M7 by a team of three developer agents
 plus a dedicated SQA agent (see [`developer-agents/`](../../developer-agents/README.md)).
+M8 brought the meaning languages (v1.1.0), and M9 the documents (v1.2.0).
 
 ## Chapters
 
