@@ -11,8 +11,8 @@
 #   python tools/media/video.py promo --record --serial emulator-5556 --takes en
 #   python tools/media/video.py promo --render --formats landscape
 # Captions: en, bn and the closing line from messaging.md's promises and the
-# reviewed study-day and own-letter lines; pl and ru are drafts for their
-# native review (pl agent-1, ru agent-2).
+# reviewed study-day and own-letter lines; pl read by agent-1, ru by agent-2
+# (#1402).
 locales: [en, bn, pl, ru]
 takes:
   en:
@@ -61,14 +61,14 @@ captions:
       en: Every word with its meaning and a pronunciation guide
       bn: প্রতিটি শব্দের অর্থ বাংলায় আর উচ্চারণ বাংলা অক্ষরে
       pl: Każde słowo ze znaczeniem po polsku i wymową zapisaną polskimi literami
-      ru: Каждое слово со значением на русском и произношением кириллицей
+      ru: Каждое слово — со значением на русском и произношением кириллицей
   - from: 13.5
     to: 17.2
     text:
       en: "Say how well you knew it: spaced revision brings it back in time"
       bn: "কতটা মনে ছিল বলুন: রিভিশন শব্দটিকে ঠিক সময়ে ফিরিয়ে আনবে"
       pl: "Oceń, jak dobrze pamiętasz słowo: powtórka przyjdzie w porę"
-      ru: "Оцени, насколько хорошо помнишь слово: повторение придёт вовремя"
+      ru: "Оцени, насколько хорошо помнишь слово: оно вернётся на повторение вовремя"
   - from: 17.5
     to: 25.2
     text:
@@ -82,4 +82,4 @@ captions:
       en: "A whole German course, A1 to C2: offline, no account"
       bn: "A1 থেকে C2 পর্যন্ত পুরো কোর্স, ইন্টারনেট আর অ্যাকাউন্ট ছাড়াই"
       pl: "Cały kurs od A1 do C2. Offline, bez konta"
-      ru: "Весь курс от A1 до C2. Без интернета и без аккаунта"
+      ru: "Полный курс немецкого от A1 до C2: без интернета и без аккаунта"
