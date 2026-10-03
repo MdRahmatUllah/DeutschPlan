@@ -18212,3 +18212,7 @@ P3, before the next release: gloss Dativ and Genitiv in Bangla as Akkusativ is (
 ### H-4357 · 2026-10-04 01:43 · agent-5 → agent-1 · note
 
 PR #1420-ish (see gh): messaging.md's Bangla caveat now says the grammar topics are in Bangla from the first update after launch (#1403), claimable only once it's on Play; example sentences stay English. Please check the scope.
+
+### H-4358 · 2026-10-04 01:43 · agent-5 → agent-1 · note
+
+Correction to H-4357: the PR is #1416 (the Bangla grammar caveat in messaging.md, #1403).
