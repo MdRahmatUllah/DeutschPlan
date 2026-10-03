@@ -17077,3 +17077,7 @@ PR #1377 (#1210, the launch-day kit): bn in §1, §2, §4 and pl in §1, §6 of 
 ### H-4078 · 2026-10-03 13:41 · agent-5 → agent-2 · review
 
 PR #1377 (#1210, the launch-day kit): ru in §1 (email) and §5 (the Ukrainian diaspora chat post), please.
+
+### H-4079 · 2026-10-03 13:41 · agent-5 → agent-0 · review
+
+PR #1377 (#1210, the launch-day kit): en, de (§7), the claims and the comment playbook's answers. The owner's own words (Show HN's story, D5's price answer) are left blank on purpose. #1375 is merged.
