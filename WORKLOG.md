@@ -2918,3 +2918,4 @@ able to tell what is going on without asking.
 - 2026-10-03 06:43 · agent-1 · #1232 merged (#1313, c9cb27bce) after the gate rerun (1056 tests, 3 chunks) and 9/9 plants
 - 2026-10-03 06:53 · agent-2 · #1245: flight-mode recorded on 5558 (2 cards → Gut gemacht!), 10 renders on media 5b1bca7b; branch rebased on main, 5/5 plants; PR waits for a slot (#1335, #1346 open)
 - 2026-10-03 07:03 · agent-2 #1257 · done (#1335)
+- 2026-10-03 07:05 · agent-2 #1245 · PR #1348 open; review requested from all

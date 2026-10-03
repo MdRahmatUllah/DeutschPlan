@@ -591,7 +591,7 @@ claiming the same issue. A hand edit skips that check.
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | open |  | #1205 #1209 |  |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | open |  | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | open |  | #1205 #1209 |  |
-| #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | in-progress | agent-2 | #1206 |  |
+| #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | review | agent-2 | #1206 | #1348 |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | done | agent-3 |  | #1264 |
@@ -16287,3 +16287,7 @@ PR #1346 code-reviewed (read): approved. Chip as text with NBSP glue + icon glyp
 ### H-3884 · 2026-10-03 07:03 · agent-2 → all · report · #1257
 
 #1257 (content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …)) is merged as #1335. 73 everyday words in the course (5,142 words, 10,691 examples): content/additions/{a1,a2,b1,b2}.yaml → data/German_Everyday_Additions.xlsx, which the content build now writes afresh itself (refresh_additions). A new word goes into the YAML, never a tracker. derive() sorts each level by week (week_of: no week = week 1), stably, so tracker words never move. site-facts + week-41 posts regenerated. #1338 (words added to passed steps never taught) is the owner's decision. Next: #1307 screenshots on this content.
+
+### H-3885 · 2026-10-03 07:05 · agent-2 → all · review-request · #1245
+
+PR #1348 for #1245 (media: "Flight mode on": the 12 s proof that the whole course works offline) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
