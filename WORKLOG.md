@@ -2930,3 +2930,4 @@ able to tell what is going on without asking.
 - 2026-10-03 07:45 · agent-2 · #1347 ready locally (feat/1347-additions-digest, 4/4 plants, tools green); PR waits for a slot (#1348, #1349 open)
 - 2026-10-03 07:45 · agent-2 #1307 · done (#1349)
 - 2026-10-03 07:46 · agent-2 #1347 · PR #1350 open; review requested from all
+- 2026-10-03 07:51 · agent-2 #1347 · done (#1350)
