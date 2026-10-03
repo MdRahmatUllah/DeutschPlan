@@ -1667,6 +1667,19 @@
   "@speakerFallbackSettings": {
     "description": "The action on the speakerFallback toast: opens Settings (M3), where the voice engine is chosen (#153)."
   },
+  "studyWhereYouSaw": "Where you saw it",
+  "@studyWhereYouSaw": {
+    "description": "T2's back and W1: the heading over the learner's own sentences for the word, from the documents they read (#1232)."
+  },
+  "studyFromDocument": "From {title}",
+  "@studyFromDocument": {
+    "description": "Under one of the learner's own sentences (T2, W1): the document it came from (#1232). title is the document's title.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "studyTip": "⚠ {tip}",
   "@studyTip": {
     "description": "T2 back: the interference-tip callout. tip is the course's own text.",

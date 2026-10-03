@@ -85,6 +85,7 @@ void main() {
         translation: 'Could we have the bill, please?',
       ),
     ],
+    List<OwnSentence> mine = const <OwnSentence>[],
   }) => ProviderScope(
     overrides: [
       settingsProvider.overrideWithValue(settings),
@@ -100,6 +101,7 @@ void main() {
       ),
       studyBackProvider('r3')
           .overrideWith((ref) async => (examples: examples, tip: null)),
+      wordContextsProvider('r3').overrideWith((ref) async => mine),
       studyWordProvider('r3').overrideWith(
         (ref) async => WordWithState(
           word: target,
@@ -133,6 +135,21 @@ void main() {
     'study_cloze',
     builder: screen,
     act: (tester) => answer(tester, 'Rechnung'),
+  );
+
+  // #1232: the learner's own sentence is the gap's, with no translation.
+  goldenTest(
+    'study_cloze_own',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (context) => screen(
+      context,
+      mine: const <OwnSentence>[
+        (
+          sentence: 'Die Rechnung kam gestern mit der Post.',
+          document: 'Brief der Stadtwerke',
+        ),
+      ],
+    ),
   );
 
   // #539: a long compound around the gap breaks at a syllable at 200 %, not
