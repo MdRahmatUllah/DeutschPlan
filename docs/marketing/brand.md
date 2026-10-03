@@ -71,7 +71,7 @@ Text and the logo stay inside the safe area. The background, and a screenshot's 
 | Portrait | 1080 × 1350 | feed posts, the tallest a feed shows whole | 6 % all round | Ours |
 | Vertical | 1080 × 1920 | Reels, Stories, TikTok, Shorts | 14 %, 6 %, 35 %, 6 % | [Meta's Reels guide](https://www.facebook.com/business/ads-guide/update/image/instagram-reels): "leave roughly 14 % of the top, 35 % of the bottom and 6 % of each side free" of text and logos, read 2026-10-03. TikTok's own safe-zone article no longer exists, so the same zone serves TikTok and Shorts |
 | Landscape | 1920 × 1080 | YouTube, the website, slides | 6 % all round | Ours |
-| YouTube banner | 2560 × 1440 | the channel's banner (#1240) | 35.3 % top and bottom, 19.8 % sides | [YouTube](https://support.google.com/youtube/answer/10456525): minimum 2048 × 1152, recommended 2560 × 1440, text and logos inside 1235 × 338 at the minimum (so 1544 × 423 at 2560), read 2026-10-03 |
+| YouTube banner | 2560 × 1440 | the channel's banner (#1240) | 38.3 % top and bottom, 25.9 % sides | [YouTube](https://support.google.com/youtube/answer/10456525): minimum 2048 × 1152, recommended 2560 × 1440, text and logos inside 1235 × 338 at the minimum, read 2026-10-03. We keep that box at 2560 too, so the group survives every crop |
 | Facebook cover | 1640 × 624 | the Page's cover (#1240) | 20 % top and bottom, 25 % sides | Ours: [Meta's page](https://www.facebook.com/help/125379114252045) needs scripts to read, so everything sits in the middle, which both crops keep. The owner checks the crop on upload |
 
 ### Play's feature graphic, from Play's page (read 2026-10-03)

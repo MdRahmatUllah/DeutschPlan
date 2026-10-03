@@ -76,7 +76,7 @@ def test_a_card_takes_its_words_and_meaning_from_the_course_1244():
     headline, line = stills.card_copy("termin-ru", "ru")
     assert headline.startswith(f"{article} {german} ") and line.endswith(meaning)
     page = stills.page_html("card", "ru", "square", card="termin-ru")
-    assert "«термин»" in page and meaning in page
+    assert "«термин»" in page and meaning in page.replace("&nbsp;", " ")  # as it reads
 
 
 def test_a_card_with_a_word_the_course_lacks_is_refused_1244(tmp_path, monkeypatch):
@@ -96,3 +96,10 @@ def test_a_card_with_a_malformed_token_is_refused_1244(tmp_path, monkeypatch):
 def test_a_level_range_never_breaks_at_its_dash_1240():
     page = stills.page_html("banner", "en", "facebook_cover")
     assert '<span style="white-space:nowrap">A1–C2</span>' in page
+
+
+def test_a_level_range_and_the_last_word_stay_together_in_the_body_1240():
+    page = stills.page_html("banner", "bn", "facebook_cover")
+    assert "A1&nbsp;থেকে&nbsp;C2" in page
+    body = page.split("<p>", 1)[1].split("</p>", 1)[0]
+    assert "&nbsp;" in body.rsplit(" ", 1)[-1] or body.count(" ") == 0

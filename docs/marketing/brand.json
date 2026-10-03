@@ -63,8 +63,8 @@
     "youtube_banner": {
       "size": [2560, 1440],
       "for": "the YouTube channel's banner (#1240)",
-      "safe": {"top": 0.353, "right": 0.198, "bottom": 0.353, "left": 0.198},
-      "source": "YouTube: minimum 2048 x 1152, recommended 2560 x 1440, and text and logos inside 1235 x 338 at the minimum size, so 1544 x 423 at 2560 (support.google.com/youtube/answer/10456525, read 2026-10-03)"
+      "safe": {"top": 0.383, "right": 0.259, "bottom": 0.383, "left": 0.259},
+      "source": "YouTube: minimum 2048 x 1152, recommended 2560 x 1440, and text and logos inside 1235 x 338 at the minimum size; we keep the group inside 1235 x 338 at 2560 too, so it survives every crop, TV to phone (agent-0's review of #1391) (support.google.com/youtube/answer/10456525, read 2026-10-03)"
     },
     "facebook_cover": {
       "size": [1640, 624],

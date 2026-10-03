@@ -156,7 +156,9 @@ def page_html(template: str, locale: str, fmt: str, shot: str = "01-today.png", 
         "line_height": kind["line_height"]["bengali" if locale == "bn" else "latin"],
         # A level range never breaks at its dash («A1–» / «C2»), as on the feature graphic.
         "headline_text": re.sub(r"(\w+–\w+)", r'<span style="white-space:nowrap">\1</span>', html.escape(headline)),
-        "body_text": html.escape(line),
+        # «A1 to C2» («A1 থেকে C2») stays on one line, and the last word never stands alone.
+        "body_text": re.sub(r" (\S+)$", r"&nbsp;\1", re.sub(
+            r"\b([ABC][12]) (\S{1,6}) ([ABC][12])\b", r"\1&nbsp;\2&nbsp;\3", html.escape(line))),
         "screen": _base64(STORE / SETS[locale] / shot),
     }
     page = (TEMPLATES / f"{template}.html").read_text(encoding="utf-8")
