@@ -196,7 +196,9 @@ abstract interface class PlanStore {
 
   /// The update queue's words in [date]'s plan: a step finished before
   /// [date] has no word the course plans then, and the document queue's are
-  /// its own.
+  /// its own. A word of such a step W1's *Add to today* put there counts
+  /// too, and takes one of the day's update slots: it's one of those words,
+  /// taught (agent-3 on #1360).
   Future<List<String>> updatePlannedOn(PlanDate date);
 
   /// The day this phone last installed a course that added words, or null.
