@@ -9,7 +9,7 @@
 **Where it sits** (#1295). D3 is `/search/documents`, in the search's stack with D1 and D2, so a row's D2 and *New document*'s D1 (whose end is D2, in its place) come back to D3. Me's link is a cross-tab jump (`navigation.md`): the Search tab opens on R1 → D3, and back returns to R1. The artboard draws the Me tab; one stack for the three document screens is worth that difference.
 
 **Layout.**
-- A list, newest first. Each row has the title, the source icon (photo, PDF, text), the date ("2 Oct"), and "12 words added" ("nothing new" at none): the distinct lemmas added from it, a sentence kept for a word of my own (FR-D2-06) included.
+- A list, newest first. Each row has the title, the source icon (photo, PDF, text), the date ("2 Oct"), and "12 words added" ("no words added yet" at none: what the learner did, never what the document holds, which «nothing new» read as on one with 53 new words, #1358): the distinct lemmas added from it, a sentence kept for a word of my own (FR-D2-06) included.
   - A row is one button; its ⋮ is another, named "Options for <title>".
 - A row's menu (a sheet): *Rename*, *Delete*.
   - *Rename* asks for the title in a sheet, as Me's name does. A blank one keeps the title.
