@@ -6,7 +6,7 @@ last-read: 4020
 
 ## Now
 
-Nothing claimed.
+#1332 input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is — claimed 2026-10-03 12:34.
 
 ## Next
 
