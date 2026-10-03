@@ -6,7 +6,8 @@ language, by one command (#1206).
     python tools/media/video.py study-day --render --locales en,bn --formats vertical
 
 A script is `tools/media/videos/<name>.yaml`: the `tools/device.py` steps the
-recording runs, the seconds of it kept (`cut`), and timed captions in each of
+recording runs, the seconds of it kept (`cut`: start it after screenrecord's
+first ~1.5 s, its warm-up, which may be black or frozen), and timed captions in each of
 its `locales`. A caption's numbers come from `site-facts.json` as `{tokens}`
 (`{totals.words}`), each language's way (posts.py's `fill`): a digit typed in a
 caption stops the run, as the marketing rules ask.
@@ -179,6 +180,7 @@ def layout(fmt: str, lang: str) -> dict:
 def frame_html(fmt: str, lang: str, text: str, fonts: dict[str, str]) -> str:
     values = {**layout(fmt, lang), **fonts, "lang": lang,
               "caption_text": text.replace("&", "&amp;").replace("<", "&lt;")}
+    # A value isn't read for $ again: a caption's «$» needs no escape.
     return string.Template(TEMPLATE.read_text(encoding="utf-8")).substitute(values)
 
 

@@ -75,3 +75,8 @@ def test_the_caption_block_is_the_same_size_whatever_the_caption():
     vertical, landscape = video.layout("vertical", "bn"), video.layout("landscape", "en")
     assert vertical["direction"] == "column" and landscape["direction"] == "row"
     assert vertical["caption_extent"] >= video.CAPTION_LINES * vertical["caption"] * vertical["line_height"]
+
+
+def test_a_caption_with_a_dollar_or_markup_is_drawn_as_written():
+    html = video.frame_html("vertical", "en", "Save $5 & ${totals} <b>", {"inter": "", "bengali": ""})
+    assert "Save $5 &amp; ${totals} &lt;b>" in html
