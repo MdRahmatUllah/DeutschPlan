@@ -612,26 +612,31 @@ class _Choices extends StatelessWidget {
           onTap: clipboardHasText ? onPaste : null,
         ),
         const SizedBox(height: 14),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 1),
-              child: Icon(
-                Icons.lock_outline,
-                size: 18,
-                color: tokens.color.textSecondary,
+        // A node of its own, so it's read after the choices, where it's
+        // drawn, not as their container's label (#1343).
+        Semantics(
+          container: true,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 1),
+                child: Icon(
+                  Icons.lock_outline,
+                  size: 18,
+                  color: tokens.color.textSecondary,
+                ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: SgText(
-                l10n.docImportPrivacy,
-                role: SgTextRole.caption,
-                color: tokens.color.textSecondary,
+              const SizedBox(width: 8),
+              Expanded(
+                child: SgText(
+                  l10n.docImportPrivacy,
+                  role: SgTextRole.caption,
+                  color: tokens.color.textSecondary,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

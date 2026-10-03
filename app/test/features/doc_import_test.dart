@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/rendering.dart' show DebugSemanticsDumpOrder;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -106,6 +107,28 @@ void main() {
     await tester.pumpAndSettle();
     return router;
   }
+
+  testWidgets('#1343 FR-D1-01 the privacy note is a node of its own, read '
+      'after the four choices, as it is drawn', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, docs: FakeDocuments());
+    final note = tester.getSemantics(find.text(l10n.docImportPrivacy));
+    expect(note.label, l10n.docImportPrivacy);
+    final paste = tester.getSemantics(find.text(l10n.docImportPaste));
+    expect(paste.label, isNot(contains(l10n.docImportPrivacy)));
+    // The choices and the note are siblings, the note last.
+    final siblings = note.parent!
+        .debugListChildrenInOrder(DebugSemanticsDumpOrder.traversalOrder)
+        .map((node) => node.label.split('\n').first)
+        .toList();
+    expect(siblings.last, l10n.docImportPrivacy);
+    expect(
+      siblings.indexOf(l10n.docImportPaste),
+      siblings.length - 2,
+      reason: '$siblings',
+    );
+    semantics.dispose();
+  });
 
   testWidgets('FR-D1-01 Paste shows the clipboard in a box to edit, and Find '
       'my words saves the clean text, named by its first line, then opens D2', (
