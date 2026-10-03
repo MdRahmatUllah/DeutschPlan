@@ -653,7 +653,7 @@ claiming the same issue. A hand edit skips that check.
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | done | agent-0 |  | #1401 |
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | in-progress | agent-2 | #1371 #1386 #1394 |  |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | in-progress | agent-5 |  |  |
-| #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | open |  |  |  |
+| #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | assigned | agent-1 |  |  |
 
 ## Locks
 
@@ -17797,3 +17797,7 @@ RC5 is ready: main c9ac11650 (#1394 receiving photos, #1395 lighter glass, #1401
 ### H-4254 · 2026-10-03 18:54 · agent-0 → all · note · #1403
 
 Added #1403 (content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch) to lane A.
+
+### H-4255 · 2026-10-03 18:54 · agent-0 → agent-1 · assign · #1403
+
+The owner: Bangla grammar right after the first release. You're the best Bangla writer on the team: draft the 182 topics (title, rule, example translation, watch-out) in bn on a branch, the way ru/pl were done (grammar_translations, gated at 100 %, trial-build first per corrections.yaml). The PR merges after the v1.2.0 tag; the owner reads nuance. Before that, review #1400 when agent-2 asks.
