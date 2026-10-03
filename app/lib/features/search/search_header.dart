@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_surface.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/theme/system_bars.dart';
@@ -16,6 +17,10 @@ class SearchHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    // #1412: on the Raspberry fill, the dark ink in every theme, as Today's
+    // header (the page ink is light in dark mode: ~2:1 on its pink). Glass
+    // has no fill, only a tint over frosted paper, so it keeps the page ink.
+    final ink = tokens.isGlass ? tokens.color.ink : tokens.color.onAccent;
     final content = Padding(
       padding: EdgeInsets.fromLTRB(
         4,
@@ -27,7 +32,7 @@ class SearchHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           AdaptiveBackButton(
-            colour: tokens.color.ink,
+            colour: ink,
             onPressed: () => Navigator.of(context).maybePop(),
           ),
           Padding(
@@ -37,17 +42,9 @@ class SearchHeader extends StatelessWidget {
               children: <Widget>[
                 Semantics(
                   header: true,
-                  child: SgText(
-                    title,
-                    role: SgTextRole.headline,
-                    color: tokens.color.ink,
-                  ),
+                  child: SgText(title, role: SgTextRole.headline, color: ink),
                 ),
-                SgText(
-                  intro,
-                  role: SgTextRole.caption,
-                  color: tokens.color.ink,
-                ),
+                SgText(intro, role: SgTextRole.caption, color: ink),
               ],
             ),
           ),
@@ -60,6 +57,10 @@ class SearchHeader extends StatelessWidget {
             radius: 0,
             child: content,
           )
-        : SgHeaderFill(color: tokens.color.die, child: content);
+        : SgHeaderFill(
+            color: tokens.color.die,
+            // #1064: the ring in the dark ink too, as R1's on die.
+            child: SgFocusRingColour(colour: ink, child: content),
+          );
   }
 }
