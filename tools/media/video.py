@@ -10,12 +10,16 @@ recording runs, the seconds of it kept (`cut`: start it after screenrecord's
 first ~1.5 s, its warm-up, which may be black or frozen), and timed captions in each of
 its `locales`. A caption's numbers come from `site-facts.json` as `{tokens}`
 (`{totals.words}`), each language's way (posts.py's `fill`): a digit typed in a
-caption stops the run, as the marketing rules ask.
+caption stops the run, as the marketing rules ask. A script's `takes`
+(#1355) record one learner per meaning language, each made by its unrecorded
+`prepare` steps, so a language's cut shows that language's card; a locale no
+take names is cut from the one recording.
 
-**Recording** needs the emulator held (`python tools/team.py device`): it runs
-`screenrecord` on emulator-5558 while device.py walks the steps, and keeps
-the recording in `build/media/` (git-ignored: a raw recording is too big for
-the media branch).
+**Recording** needs the emulator held: `python tools/team.py device` for
+emulator-5558, `team.py lock emulator-5556` for `--serial emulator-5556`,
+agent-0's for videos. It runs `screenrecord` while device.py walks the steps,
+and keeps the recording in `build/media/` (git-ignored: a raw recording is
+too big for the media branch).
 
 **Rendering** draws each caption's frame (`videos/frame.html`, every
 value from brand.json through brand.py) with Playwright, and ffmpeg puts the
@@ -343,7 +347,7 @@ def holds(serial: str, agent: str) -> bool:
     from smoke import holds_device
     if serial == device.DEV_SERIAL:
         return holds_device(agent)
-    board = team.Board((team.team_root() / "TASKS.md").read_text(encoding="utf-8"))
+    board = team.Board((team.team_root() / agent / "TASKS.md").read_text(encoding="utf-8"))
     return bool(agent) and any(lock.resource == serial and lock.owner == agent for lock in board.locks)
 
 
