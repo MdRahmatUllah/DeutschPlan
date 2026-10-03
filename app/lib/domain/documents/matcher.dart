@@ -192,7 +192,7 @@ DocumentMatch matchText(
           mine: entries.any((e) => learner.mineUids.contains(e.uid)),
           // An ambiguous word's lowest: the reading a learner meets first
           // («ausfallen» A2.2 before C1.1, agent-3 on #1294).
-          level: _lowest(entries, course)?.level,
+          level: course[_lowest(entries, course)?.uid]?.level,
         );
       } else {
         // A word the sentence took up (a split particle, «findet … statt», a
@@ -268,7 +268,19 @@ DocClass _courseClass(
     return DocClass.newInCourse;
   }
 
-  return entries.map(of).reduce((a, b) => a.index < b.index ? a : b);
+  // #1310: an ambiguous word is classed by the readings its level comes from,
+  // the lowest step's, so a word drawn as A1 is classed as A1's words are:
+  // «allein» (A1.1, and C2.1's literary «but») is probably known to an A2.1
+  // learner. Among readings of that one step, the one most worth offering:
+  // a known noun «Morgen» doesn't hide the adverb «morgen».
+  final low = course[_lowest(entries, course)?.uid]?.stepOrder;
+  final readings = low == null
+      ? entries
+      : <LemmaEntry>[
+          for (final entry in entries)
+            if (course[entry.uid]?.stepOrder == low) entry,
+        ];
+  return readings.map(of).reduce((a, b) => a.index < b.index ? a : b);
 }
 
 List<DocWord> _ranked(
@@ -300,17 +312,18 @@ List<DocWord> _ranked(
   return <DocWord>[...inCourse, ...words.where((w) => w.entries.isEmpty)];
 }
 
-/// The earliest in the course of [entries]' words, or null when none is.
-CourseWordInfo? _lowest(
+/// The reading of [entries] earliest in the course, or null when none is a
+/// course word: an ambiguous word's level and class both come from it
+/// (#1294, #1310).
+LemmaEntry? _lowest(
   List<LemmaEntry> entries,
   Map<String, CourseWordInfo> course,
 ) {
-  CourseWordInfo? low;
+  LemmaEntry? low;
   for (final entry in entries) {
     final info = course[entry.uid];
-    if (info != null && (low == null || info.stepOrder < low.stepOrder)) {
-      low = info;
-    }
+    if (info == null) continue;
+    if (low == null || info.stepOrder < course[low.uid]!.stepOrder) low = entry;
   }
   return low;
 }

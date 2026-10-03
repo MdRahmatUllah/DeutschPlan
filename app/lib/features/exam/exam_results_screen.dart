@@ -26,6 +26,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_digits.dart';
 import 'package:sogda/router/cross_tab.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/services/play_review.dart';
 
 part 'exam_results_screen.g.dart';
 
@@ -64,6 +65,33 @@ class ExamResultsScreen extends ConsumerStatefulWidget {
 
 class _ExamResultsScreenState extends ConsumerState<ExamResultsScreen> {
   bool _reviewing = false;
+
+  /// BR-RATE-01 (#1237): set while the result shows a pass, so leaving L13
+  /// asks for Play's review card, once ever. Not on arrival: Play's sheet
+  /// would cover the score the learner came for.
+  PlayReview? _askOnLeave;
+
+  @override
+  void initState() {
+    super.initState();
+    // A rubric tick that makes the paper pass counts too, and one that
+    // takes the pass away takes the ask with it.
+    ref.listenManual(examResultProvider(widget.attemptId), (_, next) {
+      if (next.value case final result?) {
+        _askOnLeave = result.attempt.passed != 0
+            ? ref.read(playReviewProvider)
+            : null;
+      }
+    }, fireImmediately: true);
+  }
+
+  @override
+  void dispose() {
+    // *Back to step*, *Try another mock* or back: Play's card comes over
+    // what opens next.
+    if (_askOnLeave case final review?) unawaited(review.afterPass());
+    super.dispose();
+  }
 
   /// Out of a result that could not load: Learn, the course (#725).
   void _leave() => context.jumpToTab(const LearnRoute());
