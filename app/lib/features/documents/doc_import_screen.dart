@@ -148,6 +148,14 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   /// FR-D1-01: the shared text, straight into processing. None (a restored
   /// launch, or a second read of the same share) leaves D1 as it is.
   Future<void> _takeShare() async {
+    // Shared photos (#1332): their copies, read as chosen ones are.
+    final images = await ref.read(sharedTextProvider).takeImages();
+    if (!mounted) return;
+    if (images != null && images.pages.isNotEmpty) {
+      _dropPdf();
+      _readChosen(images.pages, images.of);
+      return;
+    }
     // A shared PDF (#1228): its copy, read as a chosen one is.
     final pdf = await ref.read(sharedTextProvider).takePdf();
     if (!mounted) return;
@@ -194,9 +202,14 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   Future<void> _chooseImages() async {
     final chosen = await ref.read(pagePhotosProvider).choose();
     if (!mounted || chosen.isEmpty) return;
-    _photos = chosen.take(docMaxPages).toList();
-    _pagesCut = chosen.length > docMaxPages;
-    if (chosen.length > docMaxPages) {
+    _readChosen(chosen, chosen.length);
+  }
+
+  /// [photos], the first [docMaxPages] of the [of] chosen or shared, read.
+  void _readChosen(List<String> photos, int of) {
+    _photos = photos.take(docMaxPages).toList();
+    _pagesCut = of > docMaxPages;
+    if (_pagesCut) {
       SgToast.show(
         context,
         AppLocalizations.of(context).docImportTooManyPages(docMaxPages),

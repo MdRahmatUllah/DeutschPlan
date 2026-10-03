@@ -918,4 +918,7 @@ class _SharedTexts implements SharedText {
 
   @override
   Future<String?> takePdf() async => null;
+
+  @override
+  Future<({List<String> pages, int of})?> takeImages() async => null;
 }

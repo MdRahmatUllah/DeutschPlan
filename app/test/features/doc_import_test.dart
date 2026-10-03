@@ -426,6 +426,59 @@ void main() {
       expect(docs.images[7], <String>['again.jpg']);
     });
 
+    testWidgets('#1332 FR-D1-01 "Share → Sogda" with photos: their copies '
+        'read at once, in the order shared, saved as photo with its pages, '
+        'then dropped (BR-DOC-05)', (tester) async {
+      final docs = FakeDocuments();
+      const shared = <String>[
+        '/cache/shared/01-Seite 2.jpg',
+        '/cache/shared/02-Seite 1.jpg',
+      ];
+      final photos = FakePhotos(
+        pages: <String, OcrPage>{
+          shared[0]: page('Sehr geehrte Frau Okafor,'),
+          shared[1]: page('die Miete ist da.'),
+        },
+      );
+      final router = await pump(
+        tester,
+        docs: docs,
+        photos: photos,
+        arrival: '1',
+        shared: FakeShared(null, images: (pages: shared, of: 2)),
+      );
+
+      expect(photos.chosenTimes, 0, reason: 'no gallery for a share');
+      expect(photos.readPaths, shared);
+      final saved = docs.saved.single;
+      expect(saved.source, 'photo');
+      expect(saved.pageCount, 2);
+      expect(saved.body, 'Sehr geehrte Frau Okafor,\n\ndie Miete ist da.');
+      expect(docs.images, <int, List<String>>{7: shared});
+      expect(photos.discarded, shared);
+      expect(router.state.uri.path, '/search/document/7');
+      expect(router.state.uri.queryParameters['cut'], isNull);
+    });
+
+    testWidgets('#1332 FR-D1-02 more than 30 photos shared: the 30 copied are '
+        'read, and the learner told', (tester) async {
+      final copied = <String>[for (var i = 1; i <= 30; i++) '/s/$i.jpg'];
+      final photos = FakePhotos(
+        pages: <String, OcrPage>{for (final c in copied) c: page('Seite.')},
+      );
+      final docs = FakeDocuments();
+      final router = await pump(
+        tester,
+        docs: docs,
+        photos: photos,
+        arrival: '1',
+        shared: FakeShared(null, images: (pages: copied, of: 34)),
+      );
+      expect(photos.readPaths, copied);
+      expect(docs.saved.single.pageCount, 30);
+      expect(router.state.uri.queryParameters['cut'], 'pages');
+    });
+
     testWidgets('FR-D1-02 more than 30 images: the first 30 are read, and the '
         'learner told', (tester) async {
       final chosen = <String>[for (var i = 1; i <= 32; i++) 'g$i.jpg'];
@@ -778,7 +831,7 @@ class FakeDocuments extends Fake implements DocumentRepository {
 }
 
 class FakeShared implements SharedText {
-  FakeShared(this._text, {this.pdf});
+  FakeShared(this._text, {this.pdf, this.images});
 
   String? _text;
 
@@ -796,6 +849,16 @@ class FakeShared implements SharedText {
   Future<String?> takePdf() async {
     final taken = pdf;
     pdf = null;
+    return taken;
+  }
+
+  /// Shared photos' copies, taken once.
+  ({List<String> pages, int of})? images;
+
+  @override
+  Future<({List<String> pages, int of})?> takeImages() async {
+    final taken = images;
+    images = null;
     return taken;
   }
 }
