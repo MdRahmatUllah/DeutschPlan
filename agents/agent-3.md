@@ -6,7 +6,7 @@ last-read: 3853
 
 ## Now
 
-Nothing claimed.
+#1340 a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label — claimed 2026-10-03 05:37.
 
 ## Next
 

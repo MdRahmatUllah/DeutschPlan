@@ -2898,3 +2898,4 @@ able to tell what is going on without asking.
 - 2026-10-03 05:35 · agent-3 #1234 · released: Paused while I fix #1339/#1340; the rest waits on #1279/#1313 merges, the S24 and #1319.
 - 2026-10-03 05:36 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
 - 2026-10-03 05:37 · agent-3 #1234 · released: Paused for #1340 (T4 switch label); the rest waits on merges, the S24 and #1319.
+- 2026-10-03 05:37 · agent-3 #1340 · claimed: a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label
