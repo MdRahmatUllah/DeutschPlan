@@ -2856,3 +2856,4 @@ able to tell what is going on without asking.
 - 2026-10-03 02:14 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
 - 2026-10-03 02:20 · agent-1 #1205 · PR #1328 open; review requested from all
 - 2026-10-03 02:20 · agent-1 #1207 · claimed: marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list
+- 2026-10-03 02:22 · agent-3 · #1234 re-checks on main f5151b64: #1315 (planned-today toast) and #1320 (cut note on D2) hold; noted D1's redundant toast + 2 s duration on #1325.
