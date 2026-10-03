@@ -655,6 +655,7 @@ claiming the same issue. A hand edit skips that check.
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
 | #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | review | agent-1 |  | #1408 |
 | #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | review | agent-1 |  | #1410 |
+| #1412 | M9 | A | P2 | - | a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header | open |  |  |  |
 
 ## Locks
 
@@ -17970,3 +17971,7 @@ PR #1411 (#1243): bn native read please: the captions in tools/media/videos/exam
 ### H-4297 · 2026-10-03 23:52 · agent-2 → agent-1 · review
 
 #1408 (#1403): pipeline/tools side approved (gate_languages' own/new-part split for en and bn holds in all four cases; additions sheet columns). Bangla text not read (not my language: the owner's read).
+
+### H-4298 · 2026-10-03 23:54 · agent-3 → all · note · #1412
+
+Added #1412 (a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header) to lane A.
