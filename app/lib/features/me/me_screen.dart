@@ -1,5 +1,6 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart' show GoRouteData;
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -221,17 +222,17 @@ class _Me extends ConsumerWidget {
               ),
               const SizedBox(height: 10),
               _Links(
-                links: <(IconData, String, GoRouteData)>[
+                links: <(IconData, String, VoidCallback)>[
                   (
                     Icons.settings_outlined,
                     l10n.meSettings,
-                    const SettingsRoute(),
+                    () => context.jumpToTab(const SettingsRoute()),
                   ),
                   (
                     Icons.mic_none,
                     // #1164: M4's title.
                     l10n.modelsTitle,
-                    const ModelsRoute(),
+                    () => context.jumpToTab(const ModelsRoute()),
                   ),
                   // D3 (#1295), in the search's stack with D1 and D2.
                   (
@@ -240,9 +241,28 @@ class _Me extends ConsumerWidget {
                       null || 0 => l10n.meDocuments,
                       final count => l10n.meDocumentsCount(count),
                     },
-                    const MyDocumentsRoute(),
+                    () => context.jumpToTab(const MyDocumentsRoute()),
                   ),
-                  (Icons.shield_outlined, l10n.meAbout, const AboutRoute()),
+                  (
+                    Icons.shield_outlined,
+                    l10n.meAbout,
+                    () => context.jumpToTab(const AboutRoute()),
+                  ),
+                  // FR-M1-05 (#1237): the listing, in the Play Store app.
+                  // Android only: the app is on Play alone.
+                  if (defaultTargetPlatform == TargetPlatform.android)
+                    (
+                      Icons.star_outline,
+                      l10n.meRatePlay,
+                      () async {
+                        final opened = await ref.read(openAppProvider)(
+                          playListing,
+                        );
+                        if (!opened && context.mounted) {
+                          SgToast.show(context, l10n.webOpenFailed);
+                        }
+                      },
+                    ),
                 ],
               ),
             ],
@@ -877,10 +897,15 @@ class _Badge extends StatelessWidget {
 
 /// Settings, Voice (M4), My documents (D3), About & privacy: one card, a
 /// row each.
+/// Sogda's Play listing (FR-M1-05, #1237).
+final Uri playListing = Uri.parse(
+  'https://play.google.com/store/apps/details?id=de.sogda.app',
+);
+
 class _Links extends StatelessWidget {
   const _Links({required this.links});
 
-  final List<(IconData, String, GoRouteData)> links;
+  final List<(IconData, String, VoidCallback)> links;
 
   @override
   Widget build(BuildContext context) {
@@ -890,13 +915,13 @@ class _Links extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         children: <Widget>[
-          for (final (i, (icon, label, route)) in links.indexed) ...<Widget>[
+          for (final (i, (icon, label, onTap)) in links.indexed) ...<Widget>[
             if (i > 0) Container(height: 1, color: tokens.surface.outline),
             Semantics(
               container: true,
               button: true,
               child: SgTappable(
-                onTap: () => context.jumpToTab(route),
+                onTap: onTap,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 52),
                   child: Padding(

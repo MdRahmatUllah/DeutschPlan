@@ -835,6 +835,24 @@ void main() {
       );
     });
 
+    test("#1315 FR-D2-02 a word today's plan has by the course's route "
+        'starts today, even with the cap taken, and takes no slot', () async {
+      store.queue.clear();
+      final engine = engineWith(docDailyCap: 1);
+      await engine.openDay(monday); // the course's w1, w2, w3
+      await engine.addDocWords(<String>['d1'], monday, at: at); // the cap
+      expect(
+        await engine.addDocWords(<String>['w2', 'd2'], monday, at: at),
+        <String, PlanDate?>{'w2': monday, 'd2': tuesday},
+      );
+      expect(await engine.plannedToday(monday), <String>{
+        'w1',
+        'w2',
+        'w3',
+        'd1',
+      });
+    });
+
     test("#687 AN-7 a day topped up by the next step counts only the course's "
         "words against daily_new, not the queue's", () async {
       store.wordsByStep
@@ -882,6 +900,26 @@ void main() {
         ).docSlotsLeft(addDays(monday, 2)),
         0,
         reason: 'paused',
+      );
+    });
+
+    test('#1334 BR-PLAN-11 why no start day can be said: a cap of 0, or the '
+        'backlog pause; nothing while one can be', () async {
+      expect(await engineWith(docDailyCap: 3).docQueueHold(monday), isNull);
+      expect(await engineWith().docQueueHold(monday), DocQueueHold.capZero);
+
+      await store.addToPlan(addDays(monday, -1), PlanKind.newWord, <String>[
+        'w0',
+      ]);
+      final paused = engineWith(docDailyCap: 3, pauseNewWhenBacklog: true);
+      expect(
+        await paused.docQueueHold(addDays(monday, 2)),
+        DocQueueHold.backlog,
+      );
+      // The same rule as Add's: no day said for it either.
+      expect(
+        await paused.addDocWords(<String>['d4'], addDays(monday, 2), at: at),
+        <String, PlanDate?>{'d4': null},
       );
     });
 

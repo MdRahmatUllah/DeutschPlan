@@ -116,6 +116,20 @@ void main() {
     );
   });
 
+  test('#1310 an ambiguous word is classed by its lowest reading too: '
+      '«allein» (A1.1 and C2.1) is probably known to an A2.1 learner', () {
+    final m = matchText(
+      'Das Kind darf allein nach Hause gehen.',
+      lemmatiser,
+      course,
+      learner(),
+    );
+    final allein = m.words.singleWhere((w) => w.surface == 'allein');
+    expect(allein.ambiguous, isTrue);
+    expect(allein.level, 'A1');
+    expect(allein.docClass, DocClass.probablyKnown);
+  });
+
   test('#1225 BR-DOC-03: known is learning, done or suspended', () {
     final m = match();
     for (final known in <String>[
@@ -201,12 +215,13 @@ void main() {
   test("#1270 a capital after an inflected adjective is a noun, so it's "
       'offered, not dropped as a name', () {
     final m = matchText(
-      'Das ist ein wichtiger Schritt.',
+      // Not «Schritt», a word of the course since #1257.
+      'Das ist ein wichtiger Meilenstein.',
       lemmatiser,
       course,
       learner(),
     );
-    expect(word(m, 'Schritt').docClass, DocClass.outside);
+    expect(word(m, 'Meilenstein').docClass, DocClass.outside);
   });
 
   test('#1225 BR-DOC-03: a lemma once per document, with all its sentences '

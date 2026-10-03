@@ -209,6 +209,11 @@ typedef MyWordDraft = ({
   String? example,
 });
 
+/// One of the learner's own sentences for a word (`word_contexts`, #1232):
+/// the sentence, and the title of the document it came from while that
+/// document is kept (a deleted one leaves the sentence, BR-DOC-05).
+typedef OwnSentence = ({String sentence, String? document});
+
 /// One of the learner's own words (`custom_words`), as R1's *My words* shows
 /// it.
 typedef MyWord = ({
@@ -281,6 +286,28 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
     (days) => wordsWithStateForStep(days, code).watch(),
     (row) => _word(row.w, row.s, row.derivedStatus),
   );
+
+  /// The learner's own sentences for [wordKey], a course uid or
+  /// `custom:<id>` (#1232): newest first.
+  Future<List<OwnSentence>> contextsFor(String wordKey) async {
+    final rows = await customSelect(
+      'SELECT c.sentence, d.title FROM word_contexts c '
+      'LEFT JOIN documents d ON d.id = c.document_id '
+      'WHERE c.word_key = ?1 ORDER BY c.created_at DESC, c.id DESC',
+      variables: <Variable<Object>>[Variable.withString(wordKey)],
+      readsFrom: <ResultSetImplementation<Object, Object>>{
+        db.wordContexts,
+        db.documents,
+      },
+    ).get();
+    return <OwnSentence>[
+      for (final row in rows)
+        (
+          sentence: row.read<String>('sentence'),
+          document: row.readNullable<String>('title'),
+        ),
+    ];
+  }
 
   /// R2's edit mode (#143): one of the learner's own words, or null once it
   /// has gone.

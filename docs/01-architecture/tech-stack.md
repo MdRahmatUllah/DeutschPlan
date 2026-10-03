@@ -42,7 +42,11 @@ Import `package:material_ui/material_ui.dart` and `package:cupertino_ui/cupertin
 | Time zones | `timezone` | 0.11.x | The `TZDateTime` that `zonedSchedule` takes for the reminder (#157); it came with the notifications plugin. |
 | Home-screen widget | `home_widget` | 0.10.x | Bridges to Glance (Android) and WidgetKit (iOS) via a shared JSON snapshot. |
 | Background work | `workmanager` | 0.10.x | Nightly plan pre-generation and widget refresh on Android; iOS uses BGTaskScheduler through the same package. |
-| Files & sharing | `path_provider`, `file_picker`, `share_plus` | 2.x / 13.x / 13.x | Export/import JSON. |
+| Files & sharing | `path_provider`, `file_picker`, `share_plus` | 2.x / 13.x / 13.x | Export/import JSON; D1's *Choose a PDF* (#1228). |
+| Text in photos | `google_mlkit_text_recognition` | ^0.17.1 | D1 (#1229): ML Kit's bundled Latin recogniser, on the phone (the owner's call, #1220). Its usage metrics are removed from the manifest (BR-PRIV-01). |
+| Photos | `image_picker` | ^1.2.3 | D1's *Take photos* and *Choose images* (#1229), resized; the copies go once read (#1298). |
+| PDF text | `com.tom-roush:pdfbox-android` (Gradle) | 2.0.27.0 | D1's PDFs, through `sogda/pdf` (ADR 31, #1228); its CJK CMaps trimmed (#1318). |
+| Play review | `in_app_review` | ^2.0.12 | Play's review card once, as the learner leaves their first passed mock exam (BR-RATE-01, #1237). |
 | Web links | `url_launcher` | 6.x | Its in-app browser view (a Custom Tab on Android, SFSafariViewController on iOS) for Duden, DWDS, Wiktionary, Linguee, Google (FR-R1-06). `flutter_custom_tabs` was never imported and was removed (#697). |
 | Animation | the framework's own | — | Implicit and explicit animations (reveal, shake, ring fill); confetti is a custom `CustomPainter`. `flutter_animate` was never imported and was removed (#697). |
 | Charts | `fl_chart` | 1.x | Activity bars, retention line on Progress. |

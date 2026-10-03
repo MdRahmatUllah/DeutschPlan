@@ -1,5 +1,7 @@
-import 'package:flutter/widgets.dart' show WidgetsBinding;
+import 'package:flutter/widgets.dart' show PopupRoute, WidgetsBinding;
 import 'package:go_router/go_router.dart';
+import 'package:sogda/core/components/sg_feedback.dart';
+import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/deep_links.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
@@ -58,12 +60,25 @@ GoRouter buildRouter({String initialLocation = '/today', RouteGuards? guards}) {
         // ponytail: a null id can't be current (the typed route's int param
         // and the attempt guard stop it first); held, the safe way, if it is.
         if (id == null || await checks.isExamRunning(id)) {
+          // #1282: a share comes from another app, so its learner would see
+          // nothing happen. Say so; the next share brings it again.
+          if (context.mounted && resolveDeepLink(next.uri) == shareLocation) {
+            SgToast.show(
+              context,
+              AppLocalizations.of(context).docImportExamHeld,
+            );
+          }
           return const Block.stop();
         }
       }
       if (top.startsWith('/onboarding') && !await checks.isEnrolled()) {
         return const Block.stop();
       }
+      // #1317: an arrival lands on top. A sheet, pane or dialog is a popup on
+      // the root navigator, above every page a branch pushes, so a share's D1
+      // and D2 opened under W1's sheet and nothing seemed to happen. They
+      // close first, as a dismissal would: their callers read it as a cancel.
+      rootNavigatorKey.currentState?.popUntil((route) => route is! PopupRoute);
       return const Allow();
     },
     redirect: (context, state) async {

@@ -870,6 +870,41 @@ void main() {
       expect(downloader.calls, <String>['cancel hymt']);
     });
 
+    test('#1265 a failed attempt\'s part-files go once nothing is in '
+        'flight: Retry queues fresh tasks, so they are no use', () async {
+      final half = File(
+        '${(await models.partialDirectory()).path}/com.bbflight.half',
+      )..createSync(recursive: true);
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
+      expect(half.existsSync(), isTrue, reason: 'one.gguf is still running');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.canceled), 'one.gguf');
+      expect(half.existsSync(), isFalse);
+    });
+
+    test('#1265 forgotten, a failed attempt holds nothing: no files, no last '
+        'word for the card, no records for the next launch', () async {
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'two.gguf',
+      );
+      downloader.database.records.add(
+        TaskRecord(downloader.queued.first, TaskStatus.failed, 0, 300),
+      );
+      downloader.calls.clear();
+      await downloads.forget('hymt');
+      expect(downloader.calls, <String>['cancel hymt']);
+      expect(downloads.downloading, isFalse);
+      expect(await downloader.database.allRecords(group: 'hymt'), isEmpty);
+      final heard = <DownloadProgress>[];
+      final sub = downloads.watch('hymt').listen(heard.add);
+      addTearDown(sub.cancel);
+      await pumpEventQueue();
+      expect(heard, isEmpty, reason: 'the card reads the phone again');
+    });
+
     test('#428 a file waiting for the downloader\'s own retry is not a '
         'failure: nothing is cancelled', () async {
       downloader.isWiFi = true;
@@ -970,6 +1005,48 @@ void main() {
       expect(partial.existsSync(), isFalse);
       expect(orphan.existsSync(), isFalse);
       expect(mine.existsSync(), isTrue);
+    });
+
+    test("#1265 another model's failed attempt doesn't keep the landing from "
+        'clearing: once nothing is in flight, what was left goes', () async {
+      models.useManifest(
+        ModelManifest(
+          version: 1,
+          models: <ModelEntry>[
+            ...manifest.models,
+            ModelEntry(
+              id: 'voice',
+              name: 'Voice',
+              licence: 'test',
+              disables: 'tts_engine',
+              variants: <ModelVariant>[
+                ModelVariant(
+                  id: 'default',
+                  name: 'test build',
+                  files: <ModelFile>[file('voice.onnx', 'c' * 50)],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      await downloads.start('voice');
+      final half = File(
+        '${(await models.partialDirectory()).path}/com.bbflight.half',
+      )..createSync(recursive: true);
+      // The voice fails while Hy-MT2 still runs: kept, for Retry.
+      await report(
+        (t) => TaskStatusUpdate(t, TaskStatus.failed, _serverError),
+        'voice.onnx',
+      );
+      expect(half.existsSync(), isTrue, reason: 'Hy-MT2 is in flight');
+
+      await land('one.gguf', one);
+      await land('two.gguf', two);
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'one.gguf');
+      await report((t) => TaskStatusUpdate(t, TaskStatus.complete), 'two.gguf');
+      await settled();
+      expect(half.existsSync(), isFalse);
     });
 
     test('every file in and every checksum right: verified, then ready and '

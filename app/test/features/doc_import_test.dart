@@ -18,6 +18,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
 import 'package:sogda/services/page_photos.dart';
+import 'package:sogda/services/pdf_text.dart';
 import 'package:sogda/services/shared_text.dart';
 
 import 'settings_fixtures.dart';
@@ -42,6 +43,7 @@ void main() {
     SharedText? shared,
     String? arrival,
     PagePhotos? photos,
+    PdfText? pdf,
     StubSettings? settings,
   }) async {
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -89,6 +91,7 @@ void main() {
           documentRepositoryProvider.overrideWithValue(docs),
           sharedTextProvider.overrideWithValue(shared ?? FakeShared(null)),
           pagePhotosProvider.overrideWithValue(photos ?? FakePhotos()),
+          pdfTextProvider.overrideWithValue(pdf ?? FakePdf()),
           settingsProvider.overrideWithValue(settings ?? StubSettings()),
           clockProvider.overrideWithValue(() => DateTime(2026, 10, 2, 9)),
         ],
@@ -148,10 +151,12 @@ void main() {
   });
 
   testWidgets('FR-D1-02 a text over 20,000 characters is cut at a sentence '
-      'end, with a note', (tester) async {
+      'end, with a note, which D2 says again once open (#1320)', (
+    tester,
+  ) async {
     final long = 'Das ist ein Satz. ' * 1200; // 21,600 characters
     final docs = FakeDocuments();
-    await pump(tester, docs: docs, clipboard: long);
+    final router = await pump(tester, docs: docs, clipboard: long);
 
     await tester.tap(find.text(l10n.docImportPaste));
     await tester.pumpAndSettle();
@@ -168,6 +173,7 @@ void main() {
     final body = docs.saved.single.body;
     expect(body.length, lessThanOrEqualTo(docMaxChars));
     expect(body, endsWith('Satz.'));
+    expect(router.state.uri.queryParameters['cut'], 'text');
   });
 
   testWidgets('FR-D1-04 a text that isn\'t German warns before anything is '
@@ -405,7 +411,7 @@ void main() {
         pages: <String, OcrPage>{for (final c in chosen) c: page('Seite.')},
       );
       final docs = FakeDocuments();
-      await pump(tester, docs: docs, photos: photos);
+      final router = await pump(tester, docs: docs, photos: photos);
       await tester.tap(find.text(l10n.docImportChooseImages));
       await tester.pump();
       expect(
@@ -415,6 +421,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(photos.readPaths, hasLength(30));
       expect(docs.saved.single.pageCount, 30);
+      // #1320: D2 says it again once open.
+      expect(router.state.uri.queryParameters['cut'], 'pages');
     });
 
     testWidgets('photos with no text say so, and nothing is saved', (
@@ -487,6 +495,206 @@ void main() {
     });
   });
 
+  group('#1228 PDFs', () {
+    const brief = <String>[
+      'Sehr geehrte Frau Okafor,\ndie Abrechnung der Ver-\nwaltung',
+      'ist da.',
+    ];
+
+    testWidgets('FR-D1-01 Choose a PDF: its text layer read page by page on '
+        'the phone, saved as pdf with its page count', (tester) async {
+      final docs = FakeDocuments();
+      final pdf = FakePdf(pages: brief);
+      final router = await pump(tester, docs: docs, pdf: pdf);
+
+      expect(find.text(l10n.docImportChoosePdfDetail(30)), findsOneWidget);
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pumpAndSettle();
+
+      expect(pdf.read, <int>[1, 2]);
+      expect(pdf.closed, 1);
+      final saved = docs.saved.single;
+      expect(saved.source, 'pdf');
+      expect(saved.pageCount, 2);
+      expect(
+        saved.body,
+        'Sehr geehrte Frau Okafor,\ndie Abrechnung der Verwaltung\n\nist da.',
+        reason: 'cleaned, a page a paragraph',
+      );
+      expect(router.state.uri.path, '/search/document/7');
+      expect(pdf.discarded, <String>[
+        '/picked/Brief.pdf',
+      ], reason: 'BR-DOC-05: the copy goes once its text is out');
+    });
+
+    testWidgets("«Reading page 1 of 2…» while it reads, under the file's "
+        'name; Cancel saves nothing (FR-D1-05)', (tester) async {
+      final docs = FakeDocuments();
+      final pdf = FakePdf(pages: brief, gate: Completer<void>());
+      await pump(tester, docs: docs, pdf: pdf);
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10n.docImportReadingPage(1, 2)), findsOneWidget);
+      expect(find.text('Brief.pdf'), findsOneWidget);
+
+      await tester.tap(find.text(l10n.docImportCancel));
+      await tester.pump();
+      pdf.gate!.complete();
+      await tester.pumpAndSettle();
+      expect(pdf.read, <int>[1], reason: 'no page after Cancel');
+      expect(docs.saved, isEmpty);
+      expect(find.text(l10n.docImportChoosePdf), findsOneWidget);
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
+    });
+
+    testWidgets('FR-D1-02 a PDF over 30 pages: the first 30 are read, and the '
+        'learner told', (tester) async {
+      final docs = FakeDocuments();
+      // A letterhead and a footer on every page, which the clean-up drops,
+      // and the text between them.
+      final pdf = FakePdf(
+        pages: List<String>.filled(
+          32,
+          'Hausverwaltung\nHauptstraße\nDie Miete ist da.\nSeite\nEnde',
+        ),
+      );
+      await pump(tester, docs: docs, pdf: pdf);
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      // The note comes once the 30 pages are read, before the toast goes.
+      final note = find.text(l10n.docImportTooManyPages(30));
+      for (var i = 0; i < 50 && note.evaluate().isEmpty; i++) {
+        await tester.pump();
+      }
+      expect(note, findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(pdf.read, hasLength(30));
+      expect(docs.saved.single.pageCount, 30);
+    });
+
+    testWidgets('a scan says so and offers the photos; nothing is saved', (
+      tester,
+    ) async {
+      final docs = FakeDocuments();
+      final photos = FakePhotos();
+      final pdf = FakePdf(pages: <String>['', 'Seite 2']);
+      await pump(tester, docs: docs, photos: photos, pdf: pdf);
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportPdfScan), findsOneWidget);
+      expect(docs.saved, isEmpty);
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
+
+      await tester.tap(find.text(l10n.docImportChooseImages));
+      await tester.pumpAndSettle();
+      expect(photos.chosenTimes, 1);
+    });
+
+    testWidgets('a password-protected PDF says so, and Choose a PDF picks '
+        'another', (tester) async {
+      final pdf = FakePdf(pages: brief, locked: true);
+      await pump(tester, docs: FakeDocuments(), pdf: pdf);
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportPdfLocked), findsOneWidget);
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
+
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pumpAndSettle();
+      expect(pdf.chosen, 2);
+      expect(pdf.discarded, hasLength(2), reason: 'each copy, once');
+    });
+
+    testWidgets('a PDF that fails to read says so, and Retry reads it again', (
+      tester,
+    ) async {
+      final docs = FakeDocuments();
+      final pdf = FakePdf(pages: brief, failures: 1);
+      await pump(tester, docs: docs, pdf: pdf);
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+      expect(pdf.discarded, isEmpty, reason: 'kept for Retry');
+
+      await tester.tap(find.text(l10n.retry));
+      await tester.pumpAndSettle();
+      expect(pdf.chosen, 1, reason: 'the same file, not a new pick');
+      expect(pdf.read, <int>[1, 2], reason: 'its pages read this time');
+      expect(docs.saved.single.source, 'pdf');
+      expect(docs.saved.single.body, contains('Abrechnung'));
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
+    });
+
+    testWidgets('BR-DOC-05 leaving D1 from the failure, the copy kept for '
+        'Retry goes too', (tester) async {
+      final pdf = FakePdf(pages: brief, failures: 1);
+      final router = await pump(tester, docs: FakeDocuments(), pdf: pdf);
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+
+      router.go('/search');
+      await tester.pumpAndSettle();
+      expect(find.text('R1'), findsOneWidget);
+      expect(pdf.discarded, <String>['/picked/Brief.pdf']);
+    });
+
+    testWidgets('FR-D1-01 "Share → Sogda" with a PDF: its copy read at once '
+        'and saved as pdf', (tester) async {
+      final docs = FakeDocuments();
+      final pdf = FakePdf(path: null, pages: brief);
+      await pump(
+        tester,
+        docs: docs,
+        pdf: pdf,
+        arrival: '1',
+        shared: FakeShared(null, pdf: '/cache/shared/Nebenkosten 2025.pdf'),
+      );
+
+      expect(pdf.chosen, 0, reason: 'no picker for a share');
+      expect(pdf.read, <int>[1, 2]);
+      expect(docs.saved.single.source, 'pdf');
+      expect(docs.saved.single.pageCount, 2);
+      expect(pdf.discarded, <String>['/cache/shared/Nebenkosten 2025.pdf']);
+    });
+
+    testWidgets('BR-DOC-05 a second share over a failed one: the first copy '
+        'goes, the second is read', (tester) async {
+      final docs = FakeDocuments();
+      final pdf = FakePdf(path: null, pages: brief, failures: 1);
+      final shared = FakeShared(null, pdf: '/cache/shared/A.pdf');
+      final router = await pump(
+        tester,
+        docs: docs,
+        pdf: pdf,
+        arrival: '1',
+        shared: shared,
+      );
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+      expect(pdf.discarded, isEmpty, reason: 'kept for Retry');
+
+      shared.pdf = '/cache/shared/B.pdf';
+      router.go('/search/import?arrival=2');
+      await tester.pumpAndSettle();
+      expect(docs.saved.single.source, 'pdf');
+      expect(pdf.discarded, <String>[
+        '/cache/shared/A.pdf',
+        '/cache/shared/B.pdf',
+      ]);
+    });
+
+    testWidgets('backing out of the picker stays on the choices', (
+      tester,
+    ) async {
+      final docs = FakeDocuments();
+      await pump(tester, docs: docs, pdf: FakePdf(path: null));
+      await tester.tap(find.text(l10n.docImportChoosePdf));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportChoosePdf), findsOneWidget);
+      expect(docs.saved, isEmpty);
+    });
+  });
+
   testWidgets('back from the box returns to the choices, not to R1', (
     tester,
   ) async {
@@ -547,15 +755,25 @@ class FakeDocuments extends Fake implements DocumentRepository {
 }
 
 class FakeShared implements SharedText {
-  FakeShared(this._text);
+  FakeShared(this._text, {this.pdf});
 
   String? _text;
+
+  /// A shared PDF's copy, taken once.
+  String? pdf;
 
   @override
   Future<String?> take() async {
     final text = _text;
     _text = null;
     return text;
+  }
+
+  @override
+  Future<String?> takePdf() async {
+    final taken = pdf;
+    pdf = null;
+    return taken;
   }
 }
 
@@ -590,8 +808,14 @@ class FakePhotos implements PagePhotos {
   @override
   Future<String?> take() async => _taken.isEmpty ? null : _taken.removeAt(0);
 
+  /// How many times the gallery was opened.
+  int chosenTimes = 0;
+
   @override
-  Future<List<String>> choose() async => chosen;
+  Future<List<String>> choose() async {
+    chosenTimes++;
+    return chosen;
+  }
 
   @override
   Future<OcrPage> read(String path) async {
@@ -602,4 +826,58 @@ class FakePhotos implements PagePhotos {
     }
     return pending?.future ?? pages[path] ?? const OcrPage(<List<OcrWord>>[]);
   }
+}
+
+/// A PDF of [pages] picked at [path] (null: the learner backed out), read
+/// page by page, each page waiting for [gate] when there is one.
+class FakePdf implements PdfText {
+  FakePdf({
+    this.path = '/picked/Brief.pdf',
+    this.pages = const <String>[],
+    this.locked = false,
+    this.failures = 0,
+    this.gate,
+  });
+
+  final String? path;
+  final List<String> pages;
+  final bool locked;
+  final Completer<void>? gate;
+
+  /// How many opens fail before one answers.
+  int failures;
+
+  int chosen = 0;
+  int closed = 0;
+  final List<int> read = <int>[];
+  final List<String> discarded = <String>[];
+
+  @override
+  Future<String?> choose() async {
+    chosen++;
+    return path;
+  }
+
+  @override
+  Future<({int handle, int pages})> open(String source) async {
+    if (locked) throw const PdfLocked();
+    if (failures > 0) {
+      failures--;
+      throw const PdfUnreadable('broken');
+    }
+    return (handle: 1, pages: pages.length);
+  }
+
+  @override
+  Future<String> page(int handle, int page) async {
+    await gate?.future;
+    read.add(page);
+    return pages[page - 1];
+  }
+
+  @override
+  Future<void> close(int handle) async => closed++;
+
+  @override
+  Future<void> discard(String path) async => discarded.add(path);
 }

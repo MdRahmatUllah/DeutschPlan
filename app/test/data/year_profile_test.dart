@@ -70,7 +70,8 @@ void main() {
         .get();
     expect(
       [for (final step in steps) step.read<String>('code')],
-      <String>['A1.1', 'A1.2', 'A2.1', 'A2.2', 'B1.1', 'B1.2'],
+      // B1.2 until #1257 added 73 words, 2,611 up to B1.2 for 2,555 a year.
+      <String>['A1.1', 'A1.2', 'A2.1', 'A2.2', 'B1.1'],
     );
     for (var i = 1; i < steps.length; i++) {
       expect(
@@ -99,7 +100,7 @@ void main() {
     );
     final plan = await engine.openDay(planDate(today));
 
-    expect(plan.activeStep, 'B1.2');
+    expect(plan.activeStep, 'B1.1');
     expect(plan.isStudyDay, isTrue);
     expect(plan.newToday, hasLength(7));
     expect(plan.revise, hasLength(yearReviseCount));

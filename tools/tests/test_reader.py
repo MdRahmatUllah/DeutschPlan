@@ -204,7 +204,8 @@ def test_the_repository_manifest_parses():
     # on someone's machine at `make content`.
     repo_root = Path(__file__).resolve().parent.parent.parent
     manifest = read_manifest(repo_root / "content" / "manifest.yaml")
-    assert [p.name for p in manifest.workbooks] == list(BOOK_LEVELS)
+    # #1257: the trackers, then the additions workbook.
+    assert [p.name for p in manifest.workbooks] == [*BOOK_LEVELS, "German_Everyday_Additions.xlsx"]
     assert manifest.tips is not None and manifest.tips.name == "interference_tips.csv"
 
 

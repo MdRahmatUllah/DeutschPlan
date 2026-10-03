@@ -88,6 +88,14 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 - BR-DOC-07 A machine-translated meaning is labelled as such until the learner edits it.
 - BR-DOC-08 The feature is free, with no limits (#1220).
 
+## Ratings (v1.2.0, #1237)
+
+- **BR-RATE-01** Google Play's in-app review card is asked for **once**, after the learner's first passed mock exam (BR-EXAM-04), as they leave L13 after the pass, so the card never covers the score. The owner chose this milestone on 2026-10-03.
+  - **Google's rules:** no question before the card, no incentive, and no button that triggers it. A button may only open the listing, which is Me's *Rate Sogda on Google Play* (FR-M1-05).
+  - **What the app keeps:** only that it has asked (`play_review_asked`). It never asks again, even when Play didn't show the card: whether it shows is Play's call, under a quota Play doesn't publish.
+  - **Privacy:** the card is the Play Store app's own UI, reached on the phone through Play's In-App Review library. Sogda sends nothing about the learner, and asks only after a pass the learner just made (BR-PRIV-01).
+  - **Android only:** the app is on Play alone (v1 scope).
+
 ## Privacy
 
 - **BR-PRIV-01** No network call is made without a user action (web link, model download, export share). A library's own reporting counts: ML Kit's usage metrics, which its text recognition queues for Google even with the model bundled, are cut off in the manifest (DataTransport's backend and schedulers removed, #1229). After a dependency update, the release APK's merged manifest is checked for `datatransport`, `firebase`, `clearcut` and `measurement` (`aapt2 dump xmltree --file AndroidManifest.xml`).

@@ -20,10 +20,11 @@ import 'package:sogda/domain/documents/tokens.dart';
 import 'package:sogda/features/search/search_header.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/services/pdf_text.dart';
 
-/// D1, Learn from a document (`docs/04-screens/planned/doc-import.md`):
+/// D1, Learn from a document (`docs/04-screens/doc-import.md`):
 /// text in, pasted or shared from another app (#1227), or photographed and
-/// read on the phone (#1229). PDFs join its choices in #1228.
+/// read on the phone (#1229), or a PDF's text layer (#1228).
 class DocImportScreen extends ConsumerStatefulWidget {
   const DocImportScreen({super.key, this.arrival});
 
@@ -44,6 +45,8 @@ enum _Stage {
   processing,
   notGerman,
   noText,
+  scan,
+  locked,
   failed,
 }
 
@@ -65,9 +68,26 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   /// Null until asked: *Paste text* shows as on rather than flashing off.
   bool? _clipboardHasText;
 
-  /// What's being read: `paste`, `share` or `photo` (`documents.source`).
+  /// What's being read: `paste`, `share`, `photo` or `pdf`
+  /// (`documents.source`).
   String _source = 'paste';
   String _body = '';
+
+  /// The PDF chosen (#1228): its file, its name for the intro, how many of
+  /// its pages are being read, and how many were.
+  String _pdfPath = '';
+
+  /// What this reading cut (FR-D1-02), for D2 to say (#1320): the text past
+  /// its 20,000 characters, or the photos or PDF past their 30 pages.
+  bool _textCut = false;
+  bool _pagesCut = false;
+  String _pdfName = '';
+  int _readingOf = 0;
+  int _pdfPages = 0;
+
+  /// The PDF reader, read on first use and kept for [dispose], where `ref`
+  /// can't be read: a copy to drop there means it was read already.
+  late final PdfText _pdf = ref.read(pdfTextProvider);
 
   /// The photos, in page order, as they were taken or chosen (#1229).
   List<String> _photos = const <String>[];
@@ -104,6 +124,8 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
 
   @override
   void dispose() {
+    // Left from an error panel: the copy a Retry would have read goes too.
+    _dropPdf();
     _lifecycle.dispose();
     _paste.dispose();
     _check.dispose();
@@ -126,6 +148,16 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   /// FR-D1-01: the shared text, straight into processing. None (a restored
   /// launch, or a second read of the same share) leaves D1 as it is.
   Future<void> _takeShare() async {
+    // A shared PDF (#1228): its copy, read as a chosen one is.
+    final pdf = await ref.read(sharedTextProvider).takePdf();
+    if (!mounted) return;
+    if (pdf != null) {
+      _dropPdf();
+      _pdfPath = pdf;
+      _pdfName = pdf.split(RegExp(r'[/\\]')).last;
+      unawaited(_readPdf());
+      return;
+    }
     final text = await ref.read(sharedTextProvider).take();
     if (!mounted || text == null || text.trim().isEmpty) return;
     unawaited(_read(<String>[text], source: 'share'));
@@ -163,6 +195,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     final chosen = await ref.read(pagePhotosProvider).choose();
     if (!mounted || chosen.isEmpty) return;
     _photos = chosen.take(docMaxPages).toList();
+    _pagesCut = chosen.length > docMaxPages;
     if (chosen.length > docMaxPages) {
       SgToast.show(
         context,
@@ -170,6 +203,70 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
       );
     }
     unawaited(_readPhotos());
+  }
+
+  /// *Choose a PDF*: the file picker, then its text layer.
+  Future<void> _choosePdf() async {
+    final path = await _pdf.choose();
+    if (!mounted || path == null) return;
+    _pdfPath = path;
+    _pdfName = path.split(RegExp(r'[/\\]')).last;
+    unawaited(_readPdf());
+  }
+
+  /// FR-D1-01: the PDF's text layer, page by page, up to 30 (BR-DOC-02),
+  /// on the phone (#1228). A scan goes to the photos; *Cancel* stops between
+  /// two pages (FR-D1-05).
+  Future<void> _readPdf() async {
+    final run = ++_run;
+    setState(() {
+      _source = 'pdf';
+      _body = '';
+      _readingPage = 0;
+      _readingOf = 0;
+      _stage = _Stage.reading;
+    });
+    try {
+      final read = await readPdf(
+        _pdf,
+        _pdfPath,
+        onOpen: (pages) {
+          // A stale run's late answer says nothing about this one (agent-1).
+          if (!mounted || run != _run) return;
+          _pagesCut = pages > maxPdfPages;
+          if (pages > maxPdfPages) {
+            SgToast.show(
+              context,
+              AppLocalizations.of(context).docImportTooManyPages(maxPdfPages),
+            );
+          }
+        },
+        onPage: (page, of) {
+          if (mounted && run == _run) {
+            setState(() {
+              _readingPage = page;
+              _readingOf = of;
+            });
+          }
+        },
+        cancelled: () => !mounted || run != _run,
+      );
+      if (read == null || !mounted || run != _run) return;
+      // Its text is out (or there's none): the copy isn't needed again.
+      _dropPdf();
+      if (read.scan) {
+        setState(() => _stage = _Stage.scan);
+        return;
+      }
+      _pdfPages = read.pages.length;
+      unawaited(_read(read.pages, source: 'pdf'));
+    } on PdfLocked {
+      if (!mounted || run != _run) return;
+      _dropPdf();
+      setState(() => _stage = _Stage.locked);
+    } on Object {
+      if (mounted && run == _run) setState(() => _stage = _Stage.failed);
+    }
   }
 
   /// FR-D1-01: each photo read on the phone, in turn (BR-DOC-01).
@@ -251,6 +348,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   Future<void> _read(List<String> pages, {required String source}) async {
     final run = ++_run;
     final limited = limitText(cleanPages(pages));
+    _textCut = limited.cut;
     setState(() {
       _source = source;
       _body = limited.text;
@@ -286,7 +384,11 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
               l10n.docImportUntitled(DateFormat.MMMd(locale).format(today)),
           source: _source,
           body: _body,
-          pageCount: _source == 'photo' ? _photos.length : 1,
+          pageCount: switch (_source) {
+            'photo' => _photos.length,
+            'pdf' => _pdfPages,
+            _ => 1,
+          },
         );
     // BR-DOC-05: the photos stay with it while *Save original images* is
     // on. Best effort: the document is saved either way.
@@ -303,7 +405,25 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
       unawaited(ref.read(pagePhotosProvider).discard(_photos));
     }
     if (!mounted || run != _run) return;
-    DocWordsRoute.instead(context, id);
+    // #1320: D2 says what was cut; this screen's note goes with it.
+    DocWordsRoute.instead(
+      context,
+      id,
+      cut: _textCut
+          ? 'text'
+          : (_source == 'photo' || _source == 'pdf') && _pagesCut
+          ? 'pages'
+          : null,
+    );
+  }
+
+  /// BR-DOC-05: the PDF's copy (the picker's, or a share's in
+  /// `cache/shared`) goes once D1 is done with it. A failed read keeps it
+  /// for *Retry*, until another file, *Cancel* or leaving D1.
+  void _dropPdf() {
+    if (_pdfPath.isEmpty) return;
+    unawaited(_pdf.discard(_pdfPath));
+    _pdfPath = '';
   }
 
   /// FR-D1-05: back to the choices, with nothing saved.
@@ -311,6 +431,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     if (_photos.isNotEmpty) {
       unawaited(ref.read(pagePhotosProvider).discard(_photos));
     }
+    _dropPdf();
     setState(() {
       _run++;
       _photos = const <String>[];
@@ -324,6 +445,8 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     final l10n = AppLocalizations.of(context);
     final intro = switch (_stage) {
       _Stage.check => l10n.docImportCheckIntro(_checkPage + 1),
+      _Stage.scan || _Stage.locked => _pdfName,
+      _Stage.reading when _source == 'pdf' => _pdfName,
       _Stage.camera ||
       _Stage.reading ||
       _Stage.noText => l10n.docImportPhotos(_photos.length),
@@ -332,6 +455,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
       _Stage.failed => switch (_source) {
         'share' => l10n.docImportShared,
         'photo' => l10n.docImportPhotos(_photos.length),
+        'pdf' => _pdfName,
         _ => l10n.docImportPasted,
       },
       _ => l10n.docImportIntro,
@@ -342,6 +466,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
         onPaste: () => unawaited(_openPaste()),
         onTakePhotos: () => unawaited(_takePage()),
         onChooseImages: () => unawaited(_chooseImages()),
+        onChoosePdf: () => unawaited(_choosePdf()),
       ),
       _Stage.camera => _Camera(
         pages: _photos.length,
@@ -351,7 +476,10 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
         onDone: () => unawaited(_readPhotos()),
       ),
       _Stage.reading => _Processing(
-        reading: (page: _readingPage, of: _photos.length),
+        reading: (
+          page: _readingPage,
+          of: _source == 'pdf' ? _readingOf : _photos.length,
+        ),
         onCancel: _cancel,
       ),
       _Stage.check => _Check(
@@ -363,6 +491,17 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
         message: l10n.docImportNoText,
         retryLabel: l10n.docImportTakeAgain,
         onRetry: _cancel,
+      ),
+      // A PDF with no text layer: its pages are pictures, for the photo path.
+      _Stage.scan => SgErrorPanel(
+        message: l10n.docImportPdfScan,
+        retryLabel: l10n.docImportChooseImages,
+        onRetry: () => unawaited(_chooseImages()),
+      ),
+      _Stage.locked => SgErrorPanel(
+        message: l10n.docImportPdfLocked,
+        retryLabel: l10n.docImportChoosePdf,
+        onRetry: () => unawaited(_choosePdf()),
       ),
       _Stage.paste => _PasteBox(
         controller: _paste,
@@ -381,6 +520,9 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
         onRetry: () => unawaited(
           _source == 'photo' && _texts.length < _photos.length
               ? _readPhotos()
+              // The PDF failed while it was read: read it again.
+              : _source == 'pdf' && _body.isEmpty
+              ? _readPdf()
               : _read(<String>[_body], source: _source),
         ),
       ),
@@ -416,19 +558,22 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   }
 }
 
-/// The ways in: photos (#1229) and text (#1227); PDFs are #1228's.
+/// The ways in: photos (#1229), a PDF (#1228) and text (#1227), in the
+/// artboard's order.
 class _Choices extends StatelessWidget {
   const _Choices({
     required this.clipboardHasText,
     required this.onPaste,
     required this.onTakePhotos,
     required this.onChooseImages,
+    required this.onChoosePdf,
   });
 
   final bool clipboardHasText;
   final VoidCallback onPaste;
   final VoidCallback onTakePhotos;
   final VoidCallback onChooseImages;
+  final VoidCallback onChoosePdf;
 
   @override
   Widget build(BuildContext context) {
@@ -449,6 +594,13 @@ class _Choices extends StatelessWidget {
           title: l10n.docImportChooseImages,
           detail: l10n.docImportChooseImagesDetail,
           onTap: onChooseImages,
+        ),
+        const SizedBox(height: 12),
+        _Choice(
+          icon: Icons.picture_as_pdf_outlined,
+          title: l10n.docImportChoosePdf,
+          detail: l10n.docImportChoosePdfDetail(maxPdfPages),
+          onTap: onChoosePdf,
         ),
         const SizedBox(height: 12),
         _Choice(

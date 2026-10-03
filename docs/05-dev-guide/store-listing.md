@@ -1,6 +1,6 @@
 # Store listing (Google Play)
 
-v1.0 ships on Android only (the owner, 2026-09-26). These are the texts for the Play Console, in English and Bangla (#175), and since v1.1.0 in Polish and Russian (#1143). Play's limits: title 30 characters, short description 80, full description 4,000, *What's new* 500; `tools/tests/test_store_listing.py` checks them. The Bangla, Polish and Russian reuse the app's own wording where it says the same thing (S2's promises, the voice card, the pronunciation key's line), and Polish and Russian speak to the reader as the app does (*ty*, with the courtesy capital *Twój* in Polish). Counts take CLDR's form: Polish writes four digits solid («5069», as sogda.de does), Russian groups them with a no-break space («5 069», as the app and sogda.de do, #1194). A native reader checks the Bangla before the first upload; Polish and Russian ship on an agent's review (the owner, 2026-09-30).
+v1.0 ships on Android only (the owner, 2026-09-26). These are the texts for the Play Console, in English and Bangla (#175), and since v1.1.0 in Polish and Russian (#1143). Play's limits: title 30 characters, short description 80, full description 4,000, *What's new* 500; `tools/tests/test_store_listing.py` checks them. The Bangla, Polish and Russian reuse the app's own wording where it says the same thing (S2's promises, the voice card, the pronunciation key's line), and Polish and Russian speak to the reader as the app does (*ty*, with the courtesy capital *Twój* in Polish). Counts take CLDR's form: Polish writes four digits solid («5142», as sogda.de does), Russian groups them with a no-break space («5 142», as the app and sogda.de do, #1194). A native reader checks the Bangla before the first upload; Polish and Russian ship on an agent's review (the owner, 2026-09-30).
 
 v1.1.0's languages: **the app** in English, Bangla, Polish and Russian; **meanings** in English, Bangla, Russian and Polish, a first language and an optional second shown under it. Each listing leads with its own language; the Bangla listing keeps its audience's texts and adds the new languages.
 
@@ -19,11 +19,11 @@ Offline German course app: A1 to C2 in 12 steps, 36 mock exams, no account
 ### Full description
 Learn German, one clear day at a time.
 
-Sogda is an offline German course app: A1 to C2 in 12 steps, with 5,069 words, 182 grammar topics and 36 mock exams, and meanings and a pronunciation guide in English, Bangla, Russian or Polish. No account and no signal needed, and your progress stays on this phone.
+Sogda is an offline German course app: A1 to C2 in 12 steps, with 5,142 words, 182 grammar topics and 36 mock exams, and meanings and a pronunciation guide in English, Bangla, Russian or Polish. No account and no signal needed, and your progress stays on this phone.
 
 WHAT YOU LEARN
 • 12 steps from A1.1 to C2.2, built around the exams
-• 5,069 words, each with examples, its article and forms where it has them, and a pronunciation guide in your meaning language: Bangla, Russian or Polish letters, or an English respelling
+• 5,142 words, each with examples, its article and forms where it has them, and a pronunciation guide in your meaning language: Bangla, Russian or Polish letters, or an English respelling
 • 182 grammar topics, each with its rule and a short practice
 • Meanings in English, Bangla, Russian or Polish: one language, or two shown together
 • In Russian and Polish, the example sentences and grammar rules too
@@ -67,11 +67,11 @@ Sogda: জার্মান ভাষা A1–C2
 ### Full description
 প্রতিদিন একটু একটু করে জার্মান শিখুন।
 
-Sogda একটি অফলাইন জার্মান কোর্স অ্যাপ: A1 থেকে C2 পর্যন্ত ১২টি ধাপে ৫,০৬৯টি শব্দ, ১৮২টি ব্যাকরণ বিষয় আর ৩৬টি মক পরীক্ষা, সঙ্গে ইংরেজি, বাংলা, রুশ বা পোলিশে অর্থ আর উচ্চারণ নির্দেশিকা। অ্যাকাউন্ট বা ইন্টারনেট লাগে না, আর আপনার অগ্রগতি এই ফোনেই থাকে।
+Sogda একটি অফলাইন জার্মান কোর্স অ্যাপ: A1 থেকে C2 পর্যন্ত ১২টি ধাপে ৫,১৪২টি শব্দ, ১৮২টি ব্যাকরণ বিষয় আর ৩৬টি মক পরীক্ষা, সঙ্গে ইংরেজি, বাংলা, রুশ বা পোলিশে অর্থ আর উচ্চারণ নির্দেশিকা। অ্যাকাউন্ট বা ইন্টারনেট লাগে না, আর আপনার অগ্রগতি এই ফোনেই থাকে।
 
 যা শিখবেন
 • A1.1 থেকে C2.2 পর্যন্ত ১২টি ধাপ, পরীক্ষার কাঠামো মেনে সাজানো
-• ৫,০৬৯টি শব্দ, প্রতিটির উদাহরণ আর বাংলা হরফে লেখা উচ্চারণসহ, আর যেখানে আছে সেখানে আর্টিকেল ও রূপ
+• ৫,১৪২টি শব্দ, প্রতিটির উদাহরণ আর বাংলা হরফে লেখা উচ্চারণসহ, আর যেখানে আছে সেখানে আর্টিকেল ও রূপ
 • ১৮২টি ব্যাকরণ বিষয়, প্রতিটির নিয়ম আর ছোট অনুশীলনসহ
 • অর্থ ইংরেজি, বাংলা, রুশ বা পোলিশে: একটি ভাষায়, বা দুটি একসঙ্গে
 
@@ -114,11 +114,11 @@ Kurs niemieckiego offline, A1–C2: 12 etapów, 36 egzaminów próbnych, po pols
 ### Full description
 Ucz się niemieckiego dzień po dniu, z jasnym planem.
 
-Sogda to aplikacja z kursem niemieckiego offline: od A1 do C2 w 12 etapach, z 5069 słowami, 182 tematami gramatycznymi i 36 egzaminami próbnymi, ze znaczeniami i wskazówkami wymowy po angielsku, bengalsku, rosyjsku lub polsku. Bez konta i bez zasięgu, a Twoje postępy zostają na tym telefonie.
+Sogda to aplikacja z kursem niemieckiego offline: od A1 do C2 w 12 etapach, z 5142 słowami, 182 tematami gramatycznymi i 36 egzaminami próbnymi, ze znaczeniami i wskazówkami wymowy po angielsku, bengalsku, rosyjsku lub polsku. Bez konta i bez zasięgu, a Twoje postępy zostają na tym telefonie.
 
 CZEGO SIĘ NAUCZYSZ
 • 12 etapów od A1.1 do C2.2, ułożonych pod kątem egzaminów
-• 5069 słów, każde z przykładami, z rodzajnikiem i formami tam, gdzie je ma, oraz z wymową zapisaną polskimi literami
+• 5142 słów, każde z przykładami, z rodzajnikiem i formami tam, gdzie je ma, oraz z wymową zapisaną polskimi literami
 • 182 tematy gramatyczne, każdy z regułą i krótkim ćwiczeniem; reguły i przykłady są po polsku
 • Znaczenia po polsku, a pod nimi, jeśli chcesz, drugi język: angielski, bengalski lub rosyjski
 
@@ -161,11 +161,11 @@ Sogda: немецкий с нуля до C2
 ### Full description
 Учи немецкий день за днём, с ясным планом.
 
-Sogda — приложение с офлайн-курсом немецкого: от A1 до C2 за 12 этапов: 5 069 слов, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети: твой прогресс остаётся на этом телефоне.
+Sogda — приложение с офлайн-курсом немецкого: от A1 до C2 за 12 этапов: 5 142 слов, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети: твой прогресс остаётся на этом телефоне.
 
 ЧТО ТЫ ВЫУЧИШЬ
 • 12 этапов от A1.1 до C2.2, по структуре экзаменов
-• 5 069 слов, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами
+• 5 142 слов, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами
 • 182 грамматические темы, у каждой — правило и короткая практика; правила и примеры на русском
 • Значения на русском, а под ними, если хочешь, второй язык: английский, бенгальский или польский
 
@@ -199,7 +199,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 
 ## Screenshots
 
-`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, six each, from the release x86_64 APK of 1.1.0+4 on emulator-5558 (wiped, API 36), English UI and English meanings, the course's own content (re-shot 2026-10-01: the 1.0 set counted 5,594 words):
+`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, eight each: the first six from the release x86_64 APK of 1.1.0+4 on emulator-5558 (wiped, API 36), English UI and English meanings, the course's own content (re-shot 2026-10-01: the 1.0 set counted 5,594 words):
 
 | File | Screen |
 |---|---|
@@ -209,16 +209,19 @@ Sogda — приложение с офлайн-курсом немецкого: 
 | `04-course.png` | L1, the course by level |
 | `05-step.png` | L2, a step's words |
 | `06-word.png` | W1 over L2 (a sheet on the phone, a side pane on the tablet) |
+| `07-document.png` | D2 over the landlord's letter, «Nebenkosten 2025»: its words marked by level, the *Show words I probably know* switch, the bulk bar (1.2.0, #1307) |
+| `08-document-card.png` | D2's card for *die Nachzahlung*: its step, meaning and the sentence under *In your text* (1.2.0, #1307) |
 
 - **Phone:** 1080 × 2160 (`wm size`), since Play takes at most 2:1.
 - **Tablet:** 1600 × 2560 at density 320, a 10-inch tablet.
 - **The status bar** is Android's demo mode (10:00, full Wi-Fi and battery). Light and dark follow the system setting.
 - **Format:** RGB PNGs without alpha, as Play asks. `test_store_listing.py` checks the format, the sizes and the ratio.
+- **D2 and its card (1.2.0, #1307):** in every set, from the release x86_64 APK of main at 1.2.0's content (5,142 words), after #1346. A fresh install, onboarded at A2.1 with the set's languages; the landlord's letter (D2's widget fixture, `artboardLetter`) shared in through `ShareActivity`, renamed «Nebenkosten 2025» in D3, as the artboard titles it, and opened again from D3. Nothing added, so every new word shows its level.
 - **Not included:** a mock exam (L12), which unlocks only once 90 % of a step is introduced; day 1 can't reach it. Take one on a device with progress before the upload if the owner wants it.
 
 ### Polish and Russian (#1123)
 
-`store/pl-phone-light` and `store/ru-phone-light`, the same six screens, taken as the English ones were (the release x86_64 APK on emulator-5558, wiped, API 36, 1080 × 2160, the demo status bar), from the course with Russian and Polish (#1100):
+`store/pl-phone-light` and `store/ru-phone-light`, the same eight screens, taken as the English ones were (the release x86_64 APK on emulator-5558, wiped, API 36, 1080 × 2160, the demo status bar), from the course with Russian and Polish (#1100):
 
 - **The app language and the first meaning language** are Polish for `pl-phone-light` and Russian for `ru-phone-light`, with no second meaning. So each card shows that language's meaning, its pronunciation guide and its example lines: *danke* → *dziękuję / dzięki*, `/DAN-ke/`; → *спасибо*, `/дАнкэ/`.
 - **Upload them** under the Polish (pl-PL) and Russian (ru-RU) listings. The English phone and tablet sets serve English and any listing without its own set.
@@ -226,7 +229,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 
 ### Bangla (#1175)
 
-`store/bn-phone-light`, the same six screens, taken the same way (the release x86_64 APK on emulator-5558, a fresh install, API 36, 1080 × 2160, the demo status bar with full Wi-Fi):
+`store/bn-phone-light`, the same eight screens, taken the same way (the release x86_64 APK on emulator-5558, a fresh install, API 36, 1080 × 2160, the demo status bar with full Wi-Fi):
 
 - **The app language is Bangla, and the meanings are Bangla first and English second**, setup's default for a Bangla app (#1156). So *danke* shows *ধন্যবাদ* with *thanks / thank you* under it, and the Bangla-letter guide `/ডাংকে/`. The course has no Bangla example lines, grammar rules or topic names, so those show in English, as every Bangla learner sees them.
 - **Upload them** under the Bangla (bn-BD) listing. sogda.de's `/bn` shows them too (sogda-website #66).

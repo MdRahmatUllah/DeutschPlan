@@ -5,7 +5,8 @@ runs, what works offline, which languages it speaks, how accessible it is,
 how it looks, what its voice can do, how much content it carries, how it
 keeps a learner's data safe, how fast and how big it is, what it asks
 permission for, and where its limits are. Numbers come from the docs, the
-code, `content.db` and `tools/perf_baseline.json` at v1.0.1.
+code, `content.db` and `tools/perf_baseline.json` at v1.0.1, unless a line
+names v1.1.0 or v1.2.0, whose additions are those on main by 2026-10-03.
 
 > The detailed specs in [`docs/`](../README.md) are the source of truth. If
 > anything here disagrees with them, the spec wins and this page is wrong.
@@ -29,17 +30,26 @@ screen for core features
 | Needs the network | When | Notes |
 |---|---|---|
 | **Supertonic voice download** | Only when the learner starts it (S2 page 5, or M4) | Wi-Fi only by default (`models_wifi_only`); resumable; pauses off Wi-Fi |
+| **Hy-MT2 translation download** (v1.2.0) | Only when the learner starts it (M4, which M3's switch and D2's card lead to) | The same rules as the voice; the two can download side by side |
+| *Rate Sogda on Google Play* (v1.2.0) | At the learner's tap in Me | Opens the Play listing (FR-M1-05); Play's review card after the first passed mock exam is the Play Store's own UI (BR-RATE-01) |
 | Web-search chips (Duden, DWDS, Wiktionary, Linguee, Google) | At the learner's tap | Open in an in-app browser; the app itself sends nothing (BR-SEARCH-04) |
 | *Report a problem*, About's *Contact* | At the learner's tap | Open a GitHub issue page in the browser |
 | Export | At the learner's tap | The system share sheet; the learner chooses where the file goes |
 
 What does **not** need the network:
 
-- The course, all 5,069 words and their examples, which ship inside the app.
+- The course, all 5,142 words and their examples, which ship inside the app.
 - *Check for update* on a model, which reads the manifest bundled with the
   app; the manifest changes only with an app update.
 - Content updates, which arrive as app updates through the store.
 - Reminders and the widget, which are built on the phone from the local plan.
+- **A document** (v1.2.0), from pasted or shared text, a PDF or photos: a
+  PDF's text layer is read by pdfbox-android, a photo by ML Kit's text
+  recogniser with its Latin model bundled in the app, and the words by
+  Sogda's own lemmatiser and matcher (BR-DOC-01). Nothing is downloaded
+  for them.
+- **Translation** (v1.2.0), once Hy-MT2 is on the phone: llama.cpp runs it
+  there ([`translation.md`](../03-domain/translation.md)).
 
 ## Languages
 
@@ -51,10 +61,10 @@ optional second.
 |---|---|---|---|---|
 | **App language** (all UI copy) | Yes: 992 strings | Yes: 992 strings, every number in Bangla digits | Yes: 992 strings | Yes: 992 strings |
 | **Meaning language** (first or second) | Yes | Yes | Yes | Yes |
-| **Word meanings** | All 5,069 | All 5,069 | All 5,069 | All 5,069 |
-| **Pronunciation of each word** | All, an English respelling (v1.1.0) | All 5,069, in Bangla letters (while Bangla is chosen) | All, in Russian letters | All, in Polish spelling |
+| **Word meanings** | All 5,142 | All 5,142 | All 5,142 | All 5,142 |
+| **Pronunciation of each word** | All, an English respelling (v1.1.0) | All 5,142, in Bangla letters (while Bangla is chosen) | All, in Russian letters | All, in Polish spelling |
 | **Interference tips** | All 622 | All 622 | Those written for Russian speakers | Those written for Polish speakers |
-| **Example translations** (10,545) | All | None: English shows (#598) | All | All |
+| **Example translations** (10,691) | All | None: English shows (#598) | All | All |
 | **Grammar rules** (182 topics) | All | None | All | All |
 | **Category names** | All | Shown in English (#425) | All (#1128) | All (#1128) |
 
@@ -75,6 +85,11 @@ placement and the compare quiz ask in the learner's languages (#1120, #1121).
 - **Screen readers switch voices mid-sentence.** The course's German is
   tagged `de-DE` and Bangla `bn-BD`, so TalkBack and VoiceOver read each in
   its own voice; the app's own copy is read in the app's language.
+- **Translation** (v1.2.0) goes between German and each of the four meaning
+  languages, both ways (`translation.md`, *Directions*).
+- **Documents** (v1.2.0) are German: a text where fewer than half the words
+  read as German gets a warning first (FR-D1-04). OCR reads the Latin
+  script, the only model bundled.
 
 ## Accessibility
 
@@ -108,7 +123,10 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
   contrasts least with. `contrast_test.dart` checks the tokens. Non-text 3:1
   holds everywhere, even where the artboards were softer (#437).
 - **Never colour alone.** Articles are printed as well as coloured, statuses
-  have labels, verdicts have icons and words.
+  have labels, verdicts have icons and words. D2's level marks are a fill and
+  an ink underline, with the level named on the card; ink on every level's
+  fill is at least 6.4:1 in all eight canvases
+  ([`doc-words.md`](../04-screens/doc-words.md)).
 - **Alternatives.** Every swipe has a button. Timers can be paused or turned
   off. Listening questions can be switched off in Settings. Every sound has
   its text on screen.
@@ -177,8 +195,8 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
 | | Count |
 |---|---|
 | Course steps | 12 (A1.1 … C2.2), in 6 CEFR levels |
-| Words and phrases | 5,069 to learn: A1 1,315 · A2 1,035 · B1 379 · B2 1,023 · C1 819 · C2 498, plus 167 lesson notes and comparisons |
-| Example sentences | 10,545 (two for almost every word) |
+| Words and phrases | 5,142 to learn: A1 1,337 · A2 1,067 · B1 396 · B2 1,025 · C1 819 · C2 498, plus 167 lesson notes and comparisons |
+| Example sentences | 10,691 (two for almost every word) |
 | Grammar topics | 182: 10 or 11 per step from A1.1 to B1.2, 20 per step from B2.1 |
 | Word categories | 159 |
 | Interference tips | 622, in English and Bangla |
@@ -211,8 +229,11 @@ release bumps the patch version ([`release.md`](../05-dev-guide/release.md)).
 - **Undo.** A rating or a word action can be undone from its snackbar; the
   undo stack keeps the last 20.
 - **Export** writes one JSON file: word states, review log, plans, quiz and
-  exam history, settings and the learner's own words (not the translation
-  cache, the undo stack or Speaking recordings).
+  exam history, settings, the learner's own words and the documents' text,
+  words, sentences and queue (not the translation cache, the undo stack,
+  Speaking recordings or a document's photos, BR-DOC-06).
+- **A deleted document** takes its photos and what it found with it, never
+  the words added from it or their sentences (BR-DOC-05).
 - **Import** previews the file first. It migrates an older file forward and
   refuses one from a newer build. *Merge* keeps the more recent of each word;
   *Replace* wipes and inserts in one transaction, so a failed import changes
@@ -251,9 +272,23 @@ owner checks cold and warm start on a real phone before each release.
   v1.0.0 passed: size 72.44 MB, cold 3,268 ms, warm 807 ms, frames and search
   within their margins.
 - **Size.** The arm64 APK went from 159.5 MB to 72.3 MB when llama.cpp was cut
-  to its CPU backend (ADR 27), then to 51.2 MB when llamadart was removed (ADR 29). Hy-MT2 brings llamadart's CPU libraries back (ADR 30, #154), and its PR measures the size again. The APK stands in for the one-ABI download
-  Play serves, which is compressed and so smaller. The voice model is
-  downloaded separately.
+  to its CPU backend (ADR 27), then to 51.2 MB when llamadart was removed (ADR 29). The APK stands in for the one-ABI download
+  Play serves, which is compressed and so smaller. The voice model and
+  Hy-MT2 are downloaded separately. v1.2.0 adds three libraries:
+  - **pdfbox-android:** +1.8 MiB (52.22 → 54.12 MB, ADR 31), the figure
+    `perf_baseline.json` has held since. Its post-quantum Bouncy Castle tables
+    (4.1 MB) are left out; its CJK CMaps, 1.2 MB, are #1318's to trim.
+  - **ML Kit's text recognition:** about 12 MB a phone through the App
+    Bundle's per-ABI split, 11 MB of it the arm64 pipeline library
+    (`doc-import.md`). A universal APK carries all three ABIs, +31 MB.
+  - **llama.cpp's CPU libraries,** back with Hy-MT2 (ADR 30): about 21 MB of
+    the arm64 APK when ADR 29 took them out.
+
+  v1.2.0's own total, feature by feature, is #1306's measurement.
+- **The documents' budget:** a two-page letter (about 600 words) goes
+  through the matcher in under 500 ms, in an isolate, so D2 never blocks
+  the UI (`matcher_test` on the host; D2's line in `perf.py` comes with
+  #1306 and #1319). D2 builds a 20,000-character text a paragraph at a time.
 - **Cold start** is measured to Android's "Fully drawn", which the app
   reports once Today shows its plan, not at the splash's first frame (#462).
 
@@ -263,9 +298,13 @@ owner checks cold and warm start on a real phone before each release.
   collected and none shared: no account, no analytics, no ads
   ([`release.md`](../05-dev-guide/release.md)).
 - **Stored:** everything in `user.db` and app-private files on the phone
-  (BR-PRIV-02).
+  (BR-PRIV-02), a document's photos included, under
+  `<appSupport>/documents/<id>/`, each without its metadata (BR-DOC-05).
 - **Network:** no call without a user action (BR-PRIV-01; see *Offline
-  first*).
+  first*). A library's own reporting counts: ML Kit's usage metrics are cut
+  off in the manifest, and a release checks the merged manifest for
+  `datatransport`, `firebase`, `clearcut` and `measurement` after a
+  dependency update.
 
 The Android permissions, as the merged manifest has them:
 
@@ -279,6 +318,11 @@ The Android permissions, as the merged manifest has them:
 | `VIBRATE` | The reminder notification | Not asked |
 
 Reminders use an inexact alarm, so no exact-alarm permission is needed.
+v1.2.0 adds no permission: *Take photos* opens the phone's own camera app
+and *Choose images* the system photo picker (both through `image_picker`),
+so Sogda holds neither the camera nor the gallery. A shared or chosen PDF
+is read from Sogda's own copy in its cache, deleted once its text is out
+([`doc-import.md`](../04-screens/doc-import.md)).
 
 ## Background behaviour
 
@@ -299,7 +343,11 @@ or dark mode, and draws the glass theme as its opaque fallback.
 | Limit | Detail |
 |---|---|
 | **No iOS release** | Waits for a Mac: #171 (pipeline), #161 (widget), #398 (simulator smoke test) |
-| **No translation yet** | Hy-MT2 (Apache-2.0, offered in every build, ADR 30) is being built in #154 for v1.2.0; until it ships there is no translator |
+| **Translation is a download, and a machine's** | Hy-MT2 needs 1.1 GB, and in #1278's spot check about a third of its meanings for words outside the course were wrong in Polish and Bangla: they are labelled and offered as suggestions, never filled in |
+| **A document's size** | 30 pages or 20,000 characters, whichever comes first; the rest is cut at a sentence end, and the learner told (BR-DOC-02) |
+| **PDFs** | Only a text layer is read: a scan goes through the photos, and a PDF with a password is refused, since Sogda asks for none |
+| **OCR** | Latin script only; a hard page is the learner's to check (*Check the text*, FR-D1-03) |
+| **The lemmatiser's misses** | Recall 0.998 on the corpus: a form the course doesn't have, such as the bench plural «Bänken», reads as outside the course |
 | **English-only parts of the course** | Example translations, grammar rules and category names |
 | **Self-assessed speaking and writing** | No speech recognition; the app checks length, target words and connectors, and the learner ticks the rubric |
 | **Thin B1** | 379 words, against 1,035 at A2 and 1,023 at B2; mock exams at A1.1–B1.2 reuse a grammar topic or two |

@@ -1,0 +1,64 @@
+# #1257 (the owner, 2026-10-03): everyday words the course used but never
+# taught, B2 (B2.2 from week 21).
+words:
+  - german: Analyse
+    article: die
+    forms: Analysen
+    pos: noun
+    level: B2
+    week: 15
+    category: Science & technology
+    freq: 3
+    english: analysis
+    bangla: বিশ্লেষণ
+    pron_bn: আনাল্যুজে
+    pron_en: ah-nah-LEW-zuh
+    examples_de: |-
+      Die Analyse der Daten dauert eine Woche.
+      Das Labor macht eine Analyse des Wassers.
+    examples_en: |-
+      Analysing the data takes a week.
+      The lab is analysing the water.
+    ru:
+      meaning: анализ
+      pron: аналЮзэ
+      examples: |-
+        Анализ данных занимает неделю.
+        Лаборатория делает анализ воды.
+    pl:
+      meaning: analiza
+      pron: a-na-LÜ-ze
+      examples: |-
+        Analiza danych trwa tydzień.
+        Laboratorium wykonuje analizę wody.
+
+  - german: Effekt
+    article: der
+    forms: Effekte
+    pos: noun
+    level: B2
+    week: 15
+    category: Science & technology
+    freq: 3
+    english: effect
+    bangla: প্রভাব / ফল
+    pron_bn: এফেক্ট
+    pron_en: eh-FEKT
+    examples_de: |-
+      Die Maßnahme hatte einen positiven Effekt.
+      Der Film hat tolle Effekte.
+    examples_en: |-
+      The measure had a positive effect.
+      The film has great effects.
+    ru:
+      meaning: эффект
+      pron: эфЭкт
+      examples: |-
+        Мера дала положительный эффект.
+        В фильме отличные эффекты.
+    pl:
+      meaning: efekt
+      pron: e-FEKT
+      examples: |-
+        Ten środek przyniósł pozytywny efekt.
+        Film ma świetne efekty.

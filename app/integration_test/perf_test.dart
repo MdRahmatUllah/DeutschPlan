@@ -19,6 +19,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/domain/documents/tokens.dart' show docMaxChars, limitText;
+import 'package:sogda/features/documents/doc_words_screen.dart';
 import 'package:sogda/features/learn/learn_screen.dart';
 import 'package:sogda/features/study/study_screen.dart';
 import 'package:sogda/features/today/today_components.dart';
@@ -67,7 +69,7 @@ void main() {
   }
 
   testWidgets(
-    'Y06: the card transition, L2, L1 and Today under glass, and search, measured',
+    'Y06: the card transition, L2, L1, Today and D2 under glass, and search, measured',
     timeout: const Timeout(Duration(minutes: 10)),
     (tester) async {
       if (_year) await seedInstalledApp();
@@ -135,6 +137,21 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
       await trace('today', () => _fling(tester, today));
 
+      // (b'') #1306: D2 on a text at D1's 20,000-character limit (BR-DOC-02,
+      // doc-words.md's *A very long text*), every word marked, under glass.
+      final id = await container
+          .read(documentRepositoryProvider)
+          .create(title: 'perf', source: 'paste', body: _longText());
+      DocWordsRoute(id: id).go(tester.element(today));
+      final words = find.descendant(
+        of: find.byType(DocWordsScreen),
+        matching: find.byType(ListView),
+      );
+      // The matcher runs in an isolate first.
+      await pumpUntil(tester, words, timeout: launchTimeout);
+      await tester.pump(const Duration(seconds: 2));
+      await trace('docwords', () => _fling(tester, words.first));
+
       // (c) R1's own call against the real content.db, at each keystroke:
       // the whole list three times over, not each query three times running,
       // which would time SQLite's page cache. perf.py takes each keystroke's
@@ -164,6 +181,29 @@ void main() {
       await theme.choose(ThemeModeSetting.system);
     },
   );
+}
+
+/// A tenancy letter, paragraph by paragraph, again and again up to D1's limit:
+/// words of every level, names and numbers, as a real document has them.
+String _longText() {
+  const letter =
+      'Sehr geehrte Frau Okafor,\n\n'
+      'die Nebenkostenabrechnung für das Jahr 2025 liegt vor. Leider ergibt '
+      'sich eine Nachzahlung von 84 Euro, die Sie bitte bis zum 15. November '
+      'auf unser Konto überweisen.\n\n'
+      'Der Hausmeister kommt am Dienstag zwischen 9 und 12 Uhr, um die '
+      'Heizkörper zu kontrollieren und den Wasserzähler abzulesen. Bitte '
+      'sorgen Sie dafür, dass die Wohnung zugänglich ist.\n\n'
+      'Außerdem weisen wir darauf hin, dass Fahrräder nicht im Treppenhaus '
+      'abgestellt werden dürfen. Im Hof gibt es genug Platz.\n\n'
+      'Bei Fragen rufen Sie uns bitte zurück. Wir sind montags bis freitags '
+      'von 8 bis 16 Uhr erreichbar.\n\n'
+      'Mit freundlichen Grüßen\nHausverwaltung Becker GmbH\n\n';
+  final text = StringBuffer();
+  while (text.length < docMaxChars) {
+    text.write(letter);
+  }
+  return limitText(text.toString()).text;
 }
 
 /// Eight flings, four down the list and four back up.

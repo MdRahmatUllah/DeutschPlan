@@ -177,6 +177,7 @@ HOMONYMS = frozenset(
     {
         ("A1", "ihr", "pron"),  # her / their; you (plural)
         ("A1", "einfach", "adj"),  # simple; one-way (ticket)
+        ("A1", "Bank", "noun"),  # bank (Banken); bench (Bänke), #1257
         ("A2", "Sendung", "noun"),  # programme; shipment
         ("A2", "Gericht", "noun"),  # dish; court
         ("B2", "Anlage", "noun"),  # enclosure; investment

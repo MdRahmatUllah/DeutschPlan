@@ -1,0 +1,522 @@
+# #1257 (the owner, 2026-10-03): everyday words the course used but never
+# taught, B1 (B1.2 from week 5).
+words:
+  - german: Betrag
+    article: der
+    forms: Beträge
+    pos: noun
+    level: B1
+    week: 1
+    category: Banking, money & insurance
+    freq: 4
+    english: amount / sum
+    bangla: পরিমাণ (টাকার)
+    pron_bn: বেট্রাক
+    pron_en: buh-TRAHK
+    examples_de: |-
+      Bitte überweisen Sie den Betrag bis Freitag.
+      Der Betrag ist schon bezahlt.
+    examples_en: |-
+      Please transfer the amount by Friday.
+      The amount has already been paid.
+    ru:
+      meaning: сумма
+      pron: бэтрАк
+      examples: |-
+        Пожалуйста, переведите сумму до пятницы.
+        Сумма уже оплачена.
+    pl:
+      meaning: kwota / suma
+      pron: be-TRAK
+      examples: |-
+        Proszę przelać kwotę do piątku.
+        Kwota jest już zapłacona.
+
+  - german: Handwerker
+    article: der
+    forms: Handwerker
+    pos: noun
+    level: B1
+    week: 1
+    category: Housing & renting
+    freq: 4
+    english: tradesman / craftsman
+    bangla: কারিগর / মিস্ত্রি
+    pron_bn: হান্টভেরকার
+    pron_en: HAHNT-vair-ker
+    examples_de: |-
+      Morgen kommt ein Handwerker für die Heizung.
+      Es ist schwer, einen guten Handwerker zu finden.
+    examples_en: |-
+      Tomorrow a tradesman is coming to fix the heating.
+      It's hard to find a good tradesman.
+    ru:
+      meaning: мастер / ремесленник
+      pron: хАнтвэрка
+      examples: |-
+        Завтра придёт мастер чинить отопление.
+        Трудно найти хорошего мастера.
+    pl:
+      meaning: fachowiec / rzemieślnik
+      pron: HANT-wer-ka
+      examples: |-
+        Jutro przyjdzie fachowiec do ogrzewania.
+        Trudno znaleźć dobrego fachowca.
+
+  - german: Chance
+    article: die
+    forms: Chancen
+    pos: noun
+    level: B1
+    week: 2
+    category: Office & work
+    freq: 4
+    english: chance / opportunity
+    bangla: সুযোগ
+    pron_bn: শাঁসে
+    pron_en: SHAHN-suh
+    examples_de: |-
+      Mit Deutsch haben Sie bessere Chancen.
+      Das ist eine große Chance für mich.
+    examples_en: |-
+      With German you have better chances.
+      This is a big opportunity for me.
+    ru:
+      meaning: шанс
+      pron: шАнсэ
+      examples: |-
+        С немецким у вас больше шансов.
+        Это большой шанс для меня.
+    pl:
+      meaning: szansa
+      pron: SZAN-se
+      examples: |-
+        Z niemieckim ma pan większe szanse.
+        To dla mnie wielka szansa.
+
+  - german: führen
+    forms: führt · hat geführt
+    pos: verb
+    level: B1
+    week: 2
+    category: Office & work
+    freq: 4
+    english: to lead / to run (a business)
+    bangla: নেতৃত্ব দেওয়া / চালানো
+    pron_bn: ফ্যুরেন
+    pron_en: FEW-ren
+    examples_de: |-
+      Sie führt ein kleines Café.
+      Der Weg führt zum See.
+    examples_en: |-
+      She runs a small café.
+      The path leads to the lake.
+    ru:
+      meaning: вести / руководить
+      pron: фЮрэн
+      examples: |-
+        Она держит маленькое кафе.
+        Дорога ведёт к озеру.
+    pl:
+      meaning: prowadzić
+      pron: FÜ-ren
+      examples: |-
+        Prowadzi małą kawiarnię.
+        Droga prowadzi do jeziora.
+
+  - german: Druck
+    article: der
+    pos: noun
+    level: B1
+    week: 2
+    category: Office & work
+    freq: 4
+    english: pressure / print
+    bangla: চাপ / ছাপা
+    pron_bn: ড্রুক
+    pron_en: DROOK
+    examples_de: |-
+      Bei der Arbeit stehe ich unter Druck.
+      Der Druck im Reifen ist zu niedrig.
+    examples_en: |-
+      At work I'm under pressure.
+      The pressure in the tyre is too low.
+    ru:
+      meaning: давление / печать
+      pron: друк
+      examples: |-
+        На работе на меня давят.
+        Давление в шине слишком низкое.
+    pl:
+      meaning: presja / ciśnienie / druk
+      pron: DRUK
+      examples: |-
+        W pracy jestem pod presją.
+        Ciśnienie w oponie jest za niskie.
+
+  - german: Leistung
+    article: die
+    forms: Leistungen
+    pos: noun
+    level: B1
+    week: 2
+    category: Office & work
+    freq: 4
+    english: performance / achievement / service
+    bangla: কর্মদক্ষতা / সাফল্য / সেবা
+    pron_bn: লাইস্টুং
+    pron_en: LYE-stoong
+    examples_de: |-
+      Ihre Leistung im Kurs ist sehr gut.
+      Die Versicherung zahlt diese Leistung nicht.
+    examples_en: |-
+      Your performance in the course is very good.
+      The insurance doesn't pay for this service.
+    ru:
+      meaning: успеваемость / достижение / услуга
+      pron: лАйстунг
+      examples: |-
+        Ваша успеваемость на курсе очень хорошая.
+        Страховка не оплачивает эту услугу.
+    pl:
+      meaning: wynik / osiągnięcie / świadczenie
+      pron: LAJ-stung
+      examples: |-
+        Pana wyniki na kursie są bardzo dobre.
+        Ubezpieczenie nie pokrywa tego świadczenia.
+
+  - german: Personal
+    article: das
+    pos: noun
+    level: B1
+    week: 2
+    category: Office & work
+    freq: 3
+    english: staff / personnel
+    bangla: কর্মী / কর্মীবৃন্দ
+    pron_bn: পের্জোনাল
+    pron_en: pair-zoh-NAHL
+    examples_de: |-
+      Das Personal ist sehr freundlich.
+      Im Krankenhaus fehlt Personal.
+    examples_en: |-
+      The staff are very friendly.
+      The hospital is short of staff.
+    ru:
+      meaning: персонал
+      pron: пэрзонАль
+      examples: |-
+        Персонал очень приветливый.
+        В больнице не хватает персонала.
+    pl:
+      meaning: personel
+      pron: per-zo-NAL
+      examples: |-
+        Personel jest bardzo miły.
+        W szpitalu brakuje personelu.
+
+  - german: Position
+    article: die
+    forms: Positionen
+    pos: noun
+    level: B1
+    week: 2
+    category: Office & work
+    freq: 3
+    english: position
+    bangla: পদ / অবস্থান
+    pron_bn: পোজিৎসিওন
+    pron_en: poh-zee-TSYOHN
+    examples_de: |-
+      Sie hat eine leitende Position.
+      Welche Position spielst du im Team?
+    examples_en: |-
+      She has a senior position.
+      Which position do you play on the team?
+    ru:
+      meaning: должность / позиция
+      pron: позицьОн
+      examples: |-
+        У неё руководящая должность.
+        На какой позиции ты играешь в команде?
+    pl:
+      meaning: stanowisko / pozycja
+      pron: po-zi-CJON
+      examples: |-
+        Ma stanowisko kierownicze.
+        Na jakiej pozycji grasz w drużynie?
+
+  - german: Schritt
+    article: der
+    forms: Schritte
+    pos: noun
+    level: B1
+    week: 3
+    category: Environment & society
+    freq: 4
+    english: step
+    bangla: পদক্ষেপ / ধাপ
+    pron_bn: শ্রিট
+    pron_en: SHRIT
+    examples_de: |-
+      Das ist ein wichtiger Schritt.
+      Gehen Sie ein paar Schritte zurück.
+    examples_en: |-
+      That is an important step.
+      Take a few steps back.
+    ru:
+      meaning: шаг
+      pron: шрит
+      examples: |-
+        Это важный шаг.
+        Отойдите на несколько шагов назад.
+    pl:
+      meaning: krok
+      pron: SZRIT
+      examples: |-
+        To ważny krok.
+        Proszę cofnąć się o kilka kroków.
+
+  - german: Leser
+    article: der
+    forms: Leser
+    pos: noun
+    level: B1
+    week: 3
+    category: Media & culture
+    freq: 3
+    english: reader
+    bangla: পাঠক
+    pron_bn: লেজার
+    pron_en: LAY-zer
+    examples_de: |-
+      Die Zeitung hat viele Leser.
+      Liebe Leserinnen und Leser!
+    examples_en: |-
+      The newspaper has many readers.
+      Dear readers!
+    ru:
+      meaning: читатель
+      pron: лЕза
+      examples: |-
+        У газеты много читателей.
+        Дорогие читательницы и читатели!
+    pl:
+      meaning: czytelnik
+      pron: LE-za
+      examples: |-
+        Gazeta ma wielu czytelników.
+        Drogie czytelniczki i drodzy czytelnicy!
+
+  - german: Rahmen
+    article: der
+    forms: Rahmen
+    pos: noun
+    level: B1
+    week: 4
+    category: Connectors & function words
+    freq: 3
+    english: frame / framework
+    bangla: ফ্রেম / কাঠামো
+    pron_bn: রামেন
+    pron_en: RAH-men
+    examples_de: |-
+      Das Bild hat einen goldenen Rahmen.
+      Im Rahmen des Projekts gibt es drei Kurse.
+    examples_en: |-
+      The picture has a golden frame.
+      As part of the project there are three courses.
+    ru:
+      meaning: рама / рамки
+      pron: рАмэн
+      examples: |-
+        У картины золотая рама.
+        В рамках проекта есть три курса.
+    pl:
+      meaning: rama / ramy
+      pron: RA-men
+      examples: |-
+        Obraz ma złotą ramę.
+        W ramach projektu są trzy kursy.
+
+  - german: bereits
+    pos: adv
+    level: B1
+    week: 4
+    category: Connectors & function words
+    freq: 4
+    english: already
+    bangla: ইতিমধ্যে
+    pron_bn: বেরাইট্‌স
+    pron_en: buh-RITES
+    examples_de: |-
+      Die Regel gilt bereits seit Januar.
+      Ich habe bereits bezahlt.
+    examples_en: |-
+      The rule has been in force since January.
+      I've already paid.
+    ru:
+      meaning: уже
+      pron: бэрАйтс
+      examples: |-
+        Правило действует уже с января.
+        Я уже заплатил.
+    pl:
+      meaning: już
+      pron: be-RAJC
+      examples: |-
+        Zasada obowiązuje już od stycznia.
+        Już zapłaciłem.
+
+  - german: Begriff
+    article: der
+    forms: Begriffe
+    pos: noun
+    level: B1
+    week: 4
+    category: Education & learning
+    freq: 3
+    english: term / concept
+    bangla: ধারণা / পরিভাষা
+    pron_bn: বেগ্রিফ
+    pron_en: buh-GRIF
+    examples_de: |-
+      Was bedeutet dieser Begriff?
+      Kennst du den Begriff Nebenkosten?
+    examples_en: |-
+      What does this term mean?
+      Do you know the term Nebenkosten?
+    ru:
+      meaning: понятие / термин
+      pron: бэгрИф
+      examples: |-
+        Что означает этот термин?
+        Ты знаешь термин Nebenkosten?
+    pl:
+      meaning: pojęcie / termin
+      pron: be-GRIF
+      examples: |-
+        Co oznacza to pojęcie?
+        Znasz termin Nebenkosten?
+
+  - german: Erklärung
+    article: die
+    forms: Erklärungen
+    pos: noun
+    level: B1
+    week: 6
+    category: Meetings, email & phone
+    freq: 3
+    english: explanation / declaration
+    bangla: ব্যাখ্যা / ঘোষণা
+    pron_bn: এয়াক্লেরুং
+    pron_en: air-KLAIR-oong
+    examples_de: |-
+      Danke für die Erklärung!
+      Für den Fehler gibt es eine einfache Erklärung.
+    examples_en: |-
+      Thanks for the explanation!
+      There is a simple explanation for the mistake.
+    ru:
+      meaning: объяснение / заявление
+      pron: эаклЭрунг
+      examples: |-
+        Спасибо за объяснение!
+        У этой ошибки есть простое объяснение.
+    pl:
+      meaning: wyjaśnienie / oświadczenie
+      pron: ea-KLE-rung
+      examples: |-
+        Dziękuję za wyjaśnienie!
+        Na ten błąd jest proste wyjaśnienie.
+
+  - german: Aussage
+    article: die
+    forms: Aussagen
+    pos: noun
+    level: B1
+    week: 7
+    category: Feelings & opinions
+    freq: 3
+    english: statement
+    bangla: বক্তব্য / বিবৃতি
+    pron_bn: আউসজাগে
+    pron_en: OWSS-zah-guh
+    examples_de: |-
+      Diese Aussage ist falsch.
+      Der Zeuge hat eine Aussage gemacht.
+    examples_en: |-
+      This statement is wrong.
+      The witness made a statement.
+    ru:
+      meaning: высказывание / утверждение / показание
+      pron: Аусзагэ
+      examples: |-
+        Это утверждение неверно.
+        Свидетель дал показания.
+    pl:
+      meaning: wypowiedź / zeznanie
+      pron: AUS-za-ge
+      examples: |-
+        To stwierdzenie jest błędne.
+        Świadek złożył zeznanie.
+
+  - german: neutral
+    pos: adj
+    level: B1
+    week: 7
+    category: Feelings & opinions
+    freq: 3
+    english: neutral
+    bangla: নিরপেক্ষ
+    pron_bn: নয়ট্রাল
+    pron_en: noy-TRAHL
+    examples_de: |-
+      Der Text ist neutral geschrieben.
+      Ich bleibe in dieser Frage neutral.
+    examples_en: |-
+      The text is written neutrally.
+      I'm staying neutral on this question.
+    ru:
+      meaning: нейтральный
+      pron: нойтрАль
+      examples: |-
+        Текст написан нейтрально.
+        В этом вопросе я остаюсь нейтральным.
+    pl:
+      meaning: neutralny
+      pron: noj-TRAL
+      examples: |-
+        Tekst jest napisany neutralnie.
+        W tej kwestii pozostaję neutralny.
+
+  - german: Rolle
+    article: die
+    forms: Rollen
+    pos: noun
+    level: B1
+    week: 7
+    category: Feelings & opinions
+    freq: 4
+    english: role
+    bangla: ভূমিকা
+    pron_bn: রোলে
+    pron_en: ROL-luh
+    examples_de: |-
+      Der Preis spielt für mich keine Rolle.
+      Sie spielt die Hauptrolle im Film.
+    examples_en: |-
+      The price doesn't matter to me.
+      She plays the lead role in the film.
+    ru:
+      meaning: роль
+      pron: рОлэ
+      examples: |-
+        Цена для меня не играет роли.
+        Она играет главную роль в фильме.
+    pl:
+      meaning: rola
+      pron: RO-le
+      examples: |-
+        Cena nie gra dla mnie roli.
+        Gra główną rolę w filmie.
