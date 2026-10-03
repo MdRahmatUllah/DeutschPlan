@@ -70,8 +70,8 @@ void main() {
     );
   });
 
-  test('#1156 the owner: setup opens on the app language\'s meanings, where '
-      'the course ships them', () {
+  test('#1156 #1363 the owner: setup opens on the app language\'s meanings, '
+      'where the course ships them; English alone for an English app', () {
     const shipped = <String>{'en', 'bn', 'ru', 'pl'};
     expect(
       meaningDefaultFor(UiLanguage.russian, shipped),
@@ -83,7 +83,8 @@ void main() {
     );
     expect(
       meaningDefaultFor(UiLanguage.english, shipped),
-      const MeaningChoice('en', 'bn'),
+      const MeaningChoice('en'),
+      reason: 'no Bangla line or Bangla guide for an English speaker (#1363)',
     );
     expect(
       meaningDefaultFor(UiLanguage.bangla, shipped),
@@ -91,8 +92,8 @@ void main() {
     );
     expect(
       meaningDefaultFor(UiLanguage.russian, const <String>{'en', 'bn'}),
-      MeaningChoice.fallback,
-      reason: 'a course without Russian: English then Bangla',
+      const MeaningChoice('en'),
+      reason: 'a course without Russian: English alone',
     );
   });
 

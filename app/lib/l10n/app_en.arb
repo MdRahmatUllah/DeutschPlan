@@ -414,9 +414,9 @@
   "@onboardingRestoreBackup": {
     "description": "S2 page 1 link under Let's start: picks a Sogda export and makes it this phone's data (a Replace), then opens Today, skipping the rest of setup. For a learner moving phones (#822)."
   },
-  "onboardingPromiseOffline": "Works fully offline · no account, no signal needed",
+  "onboardingPromiseOffline": "The whole course works offline · no account needed",
   "@onboardingPromiseOffline": {
-    "description": "S2 page 1, first promise."
+    "description": "S2 page 1, first promise. The course, not the sound, which needs the phone's German voice or Supertonic (#1365)."
   },
   "onboardingPromiseSteps": "Exam-structured: 12 steps from A1.1 to C2.2",
   "@onboardingPromiseSteps": {
@@ -3063,9 +3063,9 @@
   "@examHubStudyNow": {
     "description": "L10 locked card button: today's session (T2)."
   },
-  "examHubThreshold": "Change the unlock threshold in Settings.",
-  "@examHubThreshold": {
-    "description": "L10 locked panel, after examHubDisclaimer."
+  "examUnlockLower": "Lower the unlock threshold",
+  "@examUnlockLower": {
+    "description": "L2 Exams tab while locked, and M1 under the exam badges while the current step's are locked: a link that opens M3 at 'Unlock mock exams at', so a learner can try a mock now (#1364, the owner's decision). Replaces 'Change the unlock threshold in Settings.'"
   },
   "examHubStart": "Start",
   "@examHubStart": {
@@ -7055,9 +7055,9 @@
       }
     }
   },
-  "myDocumentsNothingNew": "nothing new",
-  "@myDocumentsNothingNew": {
-    "description": "D3's row: none of its words added."
+  "myDocumentsNoneAdded": "no words added yet",
+  "@myDocumentsNoneAdded": {
+    "description": "D3's row (FR-D3-01): none of its words added yet. Says what the learner did, never what the document holds: «nothing new» read as «this text had nothing new for you» on one with 53 new words (#1358)."
   },
   "myDocumentsStorage": "{count, plural, one{1 document} other{{count} documents}} · {megabytes} MB (images)",
   "@myDocumentsStorage": {
