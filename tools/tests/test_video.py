@@ -173,14 +173,17 @@ def test_an_unknown_take_is_named_not_a_key_error_1372(monkeypatch):
 
 def test_another_emulator_records_only_under_its_board_lock_1236(tmp_path, monkeypatch):
     # The media lane's emulator-5556 is held with `team.py lock emulator-5556`, not `team.py device`.
-    (tmp_path / "agent-5").mkdir()
-    (tmp_path / "agent-5" / "TASKS.md").write_text(
+    # Every agent asked about gets this fixture board: a missing one would be
+    # cloned from the real team branch, and the test would read live locks.
+    board = (
         "## Tasks\n\n| # | MS | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |\n"
         "|---|---|---|---|---|---|---|---|---|---|\n\n"
         "## Locks\n\n| Resource | Owner | Since | Why |\n|---|---|---|---|\n"
-        "| emulator-5556 | agent-5 | 2026-10-03 13:00 | #1236 |\n| pubspec |  |  |  |\n\n## Handoffs\n",
-        encoding="utf-8",
+        "| emulator-5556 | agent-5 | 2026-10-03 13:00 | #1236 |\n| pubspec |  |  |  |\n\n## Handoffs\n"
     )
+    for agent in ("agent-5", "agent-2"):
+        (tmp_path / agent).mkdir()
+        (tmp_path / agent / "TASKS.md").write_text(board, encoding="utf-8")
     monkeypatch.setenv("DP_TEAM_ROOT", str(tmp_path))
     assert video.holds("emulator-5556", "agent-5")
     assert not video.holds("emulator-5556", "agent-2")
