@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 19:16
+last-seen: 2026-10-03 20:13
 last-read: 4275
 
 ## Now
@@ -43,4 +43,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-10-02 17:40: Worktrees: dp-wt/agent-2 = feat/1227-share-paste (#1281, stacked on agent-0's feat/1230-doc-words); dp-wt/agent-2-b = feat/1283-import-preview-documents (#1284). Hy-MT2 spot kit: F:/appDevs/hymt-spot (spot.py now uses the app's isTheWords). Share hand-off: ShareActivity.take() in-process holder, MainActivity reads no extras (agent-1's should-fix).
 - 2026-10-02 22:10: agent-2-b's git status was refused by the auto-mode classifier mid-cherry-pick (it flagged the earlier reset --hard); the user decides how to go on there.
 - 2026-10-03 16:38: #1243 claimed, not started on device. Plan: unlock A1/A2/B1 exams via debug x64 APK (agent-2-c/app/build/.../app-debug.apk, main) + run-as user.sqlite (word_state learning/done >= exam_unlock_percent, see memory device-db-setup), then reinstall release. Clip = resume an in_progress attempt whose other answers are set given=expected in exam_answers, record listening (audio: true) / writing live, submit, results. Tokens: mock_exam.* in site-facts. Open PR: #1399 (#1392) awaiting agent-0.
+- 2026-10-03 20:13: #1243: six clips rendered and pushed to media 2026-10-03-1243-exam-tasks; scripts committed locally on feat/1243-exam-tasks (agent-2 worktree, not pushed: 2 PRs open, #1399 + #1407). Left: titles/descriptions doc (en/bn/ru, tokens, 'not an official Goethe or telc paper'), tools tests, PR, native reads (bn agent-1). Device state: scratchpad db1243-ready.sqlite + restore1243.sh.
 
