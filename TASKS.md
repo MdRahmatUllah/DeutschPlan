@@ -672,7 +672,7 @@ The emulator lock is local, not here: `team.py device`.
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 | workbooks |  |  |  |
-| emulator-5556 |  |  |  |
+| emulator-5556 | agent-2 | 2026-10-03 14:21 | #1241: scrcpy audio capture test, then the letters clips |
 
 ## Handoffs
 
