@@ -3002,3 +3002,4 @@ able to tell what is going on without asking.
 - 2026-10-03 12:13 · agent-2 #1355 · released: Paused for P1 #1361; the takes work is committed on feat/1355-takes (local)
 - 2026-10-03 12:13 · agent-2 #1361 · claimed: a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words
 - 2026-10-03 12:13 · agent-1 #1353 · PR #1367 open; review requested from all
+- 2026-10-03 12:15 · agent-1 · locked emulator-5556: #1353/#1359 device check (PR #1367): D2 at 200 % bn, T4 row tap

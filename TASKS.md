@@ -668,7 +668,7 @@ The emulator lock is local, not here: `team.py device`.
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 | workbooks |  |  |  |
-| emulator-5556 |  |  |  |
+| emulator-5556 | agent-1 | 2026-10-03 12:15 | #1353/#1359 device check (PR #1367): D2 at 200 % bn, T4 row tap |
 
 ## Handoffs
 
