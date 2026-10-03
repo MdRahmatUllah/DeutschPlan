@@ -1,0 +1,76 @@
+# Cards for `python tools/media/stills.py card --card <id>` (#1242, #1244).
+# Each card has a headline and a line per language. Course words are never
+# typed: `{word:<uid>}` is the word with its article, `{noun:<uid>}` the word
+# alone, `{meaning:<uid>}` its meaning in the card's language, all from
+# content.db. Every line is a draft until its native review (bn and pl
+# agent-1, ru agent-2, en and de agent-0).
+
+# --- #1244, "The word that fools you": a German word beside its look-alike,
+# then the app's own meaning in the viewer's language.
+termin-ru:
+  text:
+    ru:
+      headline: "{word:4a51e6804d593c0b} ≠ «термин»"
+      line: "В Sogda: {meaning:4a51e6804d593c0b}"
+familie-ru:
+  text:
+    ru:
+      headline: "{word:9901d257c37d28d4} ≠ «фамилия»"
+      line: "В Sogda: {meaning:9901d257c37d28d4}"
+gymnasium-pl:
+  text:
+    pl:
+      headline: "{word:861b6760b7ab15c2} ≠ „gimnazjum”"
+      line: "W aplikacji Sogda: {meaning:861b6760b7ab15c2}"
+gift-en:
+  text:
+    en:
+      headline: "{word:817b658f7dd0fb1f} ≠ gift"
+      line: "In Sogda: {meaning:817b658f7dd0fb1f}"
+gift-bn:
+  text:
+    bn:
+      headline: "{word:817b658f7dd0fb1f} ≠ gift"
+      line: "Sogda-তে অর্থ: {meaning:817b658f7dd0fb1f}"
+bekommen-en:
+  text:
+    en:
+      headline: "{word:78c7379f726ce97f} ≠ become"
+      line: "In Sogda: {meaning:78c7379f726ce97f}"
+
+# --- #1242, "der, die or das? Answer in a full sentence": three nouns, one
+# of each article, then the answer card the next day.
+besteck-question:
+  text:
+    en:
+      headline: "{noun:8625e5e3d3dd76d1} · {noun:655d20a7193aa75f} · {noun:abbedc26a645c26e}"
+      line: "der, die or das? Answer with a whole sentence."
+    bn:
+      headline: "{noun:8625e5e3d3dd76d1} · {noun:655d20a7193aa75f} · {noun:abbedc26a645c26e}"
+      line: "der, die না das? পুরো একটি বাক্যে উত্তর দিন।"
+    pl:
+      headline: "{noun:8625e5e3d3dd76d1} · {noun:655d20a7193aa75f} · {noun:abbedc26a645c26e}"
+      line: "der, die czy das? Odpowiedz całym zdaniem."
+    ru:
+      headline: "{noun:8625e5e3d3dd76d1} · {noun:655d20a7193aa75f} · {noun:abbedc26a645c26e}"
+      line: "der, die или das? Ответь полным предложением."
+    de:
+      headline: "{noun:8625e5e3d3dd76d1} · {noun:655d20a7193aa75f} · {noun:abbedc26a645c26e}"
+      line: "der, die oder das? Antworten Sie mit einem ganzen Satz."
+besteck-answer:
+  text:
+    en:
+      headline: "{word:8625e5e3d3dd76d1} · {word:655d20a7193aa75f} · {word:abbedc26a645c26e}"
+      line: "{meaning:8625e5e3d3dd76d1} · {meaning:655d20a7193aa75f} · {meaning:abbedc26a645c26e}"
+    bn:
+      headline: "{word:8625e5e3d3dd76d1} · {word:655d20a7193aa75f} · {word:abbedc26a645c26e}"
+      line: "{meaning:8625e5e3d3dd76d1} · {meaning:655d20a7193aa75f} · {meaning:abbedc26a645c26e}"
+    pl:
+      headline: "{word:8625e5e3d3dd76d1} · {word:655d20a7193aa75f} · {word:abbedc26a645c26e}"
+      line: "{meaning:8625e5e3d3dd76d1} · {meaning:655d20a7193aa75f} · {meaning:abbedc26a645c26e}"
+    ru:
+      headline: "{word:8625e5e3d3dd76d1} · {word:655d20a7193aa75f} · {word:abbedc26a645c26e}"
+      line: "{meaning:8625e5e3d3dd76d1} · {meaning:655d20a7193aa75f} · {meaning:abbedc26a645c26e}"
+    de:
+      headline: "{word:8625e5e3d3dd76d1} · {word:655d20a7193aa75f} · {word:abbedc26a645c26e}"
+      line: "Die Artikel lernt man mit dem Wort: so zeigt Sogda jedes Nomen."

@@ -119,4 +119,3 @@ Each week has the same shape, so the owner's time stays at about one sitting a d
 - **Week 4:** the Bangla guide, if germanprobashe.com publishes it (#1246); the owner shares it in BSAAG, as its rule 8 invites.
 - **Week 6:** the review. `results.md` decides which channels keep their slots, and agent-5 proposes MK3.
 - **Any week:** a real learner's question in the comments gets a video reply (Busuu's best post was one). It's never staged.
-
