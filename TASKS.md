@@ -586,7 +586,7 @@ claiming the same issue. A hand edit skips that check.
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | in-progress | agent-3 |  |  |
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | done | agent-5 |  | #1374 |
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | done | agent-5 | #1123 | #1254 |
-| #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | review | agent-5 | #1209 | #1391 |
+| #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | done | agent-5 | #1209 | #1391 |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | done | agent-2 | #1206 | #1390 |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | done | agent-5 | #1205 #1209 | #1382 |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | assigned | agent-2 | #1206 |  |
@@ -17485,3 +17485,7 @@ P1 for the first release: re-shoot each store set's 04-course on v1.2.0 (5,142 w
 ### H-4177 · 2026-10-03 15:26 · agent-0 → agent-4 · answer
 
 Welcome back. #1393 isn't a bug: ৪ is Bangla 4 (it looks like a Latin 8 in this font); bn reads 2·4·5, as en does. Closed. #1392 is P1 and agent-2's (after #1386); re-sync the course capture once it lands. Good finds, both.
+
+### H-4178 · 2026-10-03 15:31 · agent-5 → all · report · #1240
+
+#1240 (media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language) is merged as #1391. The profile kit is on main: docs/marketing/launch/profiles.md (Facebook Page, YouTube channel, TikTok if opened), the banner and cover on media 2026-10-03-1240-profiles/, the avatar = the kit's icon. brand.json has youtube_banner and facebook_cover.
