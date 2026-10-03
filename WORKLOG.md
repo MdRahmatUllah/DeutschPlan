@@ -2874,3 +2874,4 @@ able to tell what is going on without asking.
 - 2026-10-03 03:49 · agent-1 · #1207 merged (#1331); heads-up to agent-2: #1257 must regenerate posts/2026-41.md
 - 2026-10-03 04:02 · agent-3 #1234 · released: Paused again: parts 1-3 + cap-0 + #1298 posted; waiting on #1279/#1313 merges and the S24. Taking #1334 + #1333 (one PR) meanwhile.
 - 2026-10-03 04:02 · agent-3 #1334 · added to the board, lane A
+- 2026-10-03 04:02 · agent-3 #1333 · added to the board, lane A
