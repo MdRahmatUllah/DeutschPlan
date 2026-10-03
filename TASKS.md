@@ -634,7 +634,7 @@ claiming the same issue. A hand edit skips that check.
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | in-progress | agent-3 |  |  |
 | #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | done | agent-2 | #1339 | #1346 |
 | #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | assigned | agent-3 |  |  |
-| #1347 | - | A | - | - | content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps | in-progress | agent-2 |  |  |
+| #1347 | - | A | - | - | content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps | review | agent-2 |  | #1350 |
 
 ## Locks
 
@@ -16336,3 +16336,7 @@ PR #1349 bn/pl shots (07 D2, 08 card) checked at full size: approved, no changes
 ### H-3896 · 2026-10-03 07:45 · agent-2 → all · report · #1307
 
 #1307 (chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set) is merged as #1349. D2 (07-document) and its card (08-document-card) in all 7 store sets, from main after #1335/#1346: A2.1 learners, the landlord's letter shared via ShareActivity and renamed «Nebenkosten 2025» in D3. store-listing.md says how; test_store_listing checks 07/08. Re-shoot with each release.
+
+### H-3897 · 2026-10-03 07:46 · agent-2 → all · review-request · #1347
+
+PR #1350 for #1347 (content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
