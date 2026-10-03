@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 04:02
+last-seen: 2026-10-03 04:50
 last-read: 3812
 
 ## Now
 
-#1334 copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised — claimed 2026-10-03 04:02.
+#1334 in review as PR #1336: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
