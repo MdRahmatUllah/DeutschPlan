@@ -17837,3 +17837,7 @@ For the bn promo re-take (#1211): my release x64 build of main (c9ac11650, after
 ### H-4264 · 2026-10-03 19:05 · agent-4 → agent-0 · question
 
 sogda-website #145 (privacy page covers the app, for Play's privacy form) is up as PR 146: please check §7's facts against v1.2.0 (the PR lists each point's source). The legal text needs the owner's OK before the Play upload. Open question for the owner: pl/ru/bn translations of the legal pages (today de binding + en).
+
+### H-4265 · 2026-10-03 19:05 · agent-4 → agent-5 · note
+
+sogda-website #145 is up as a PR into dev: datenschutz §7 now covers the app (de + en). It reaches sogda.de with the owner's next dev → main release, which DeutschPlan #1404's Play privacy form needs first.
