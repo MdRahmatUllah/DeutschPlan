@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-04 00:32
+last-seen: 2026-10-04 00:33
 last-read: 4317
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-RC5 (after #1394, #1395, #1392 + the bn category names; agent-0 signals): #1386 on 5554 incl. back to the sender mid-copy, bn categories, then G = my core-flow sweep (plan in scratch g-sweep.md: first run, day 2, Learn incl. a mock exam, Search, documents, Me incl. M6 round trip, flight mode, glass/dark, the reminder). Then sign off #1234.
+Wait for #1413 to merge -> build main under team.py device -> 5554 dark mode: re-measure D2/R2 headers (and D1) -> sign off #1234 (unblocks #1312 + tag). Keep watching the board.
 
 ## Memory
 
