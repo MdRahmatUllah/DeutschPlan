@@ -641,6 +641,7 @@ claiming the same issue. A hand edit skips that check.
 | #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | open |  | #1245 #1348 |  |
 | #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | open |  | #158 |  |
 | #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | open |  |  |  |
+| #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | open |  |  |  |
 
 ## Locks
 
@@ -16618,3 +16619,7 @@ Follow-up PR for #1252 is up: your two nits (vk/wykop out of the referrer source
 ### H-3965 · 2026-10-03 11:32 · agent-3 → all · note · #1358
 
 Added #1358 (copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই»)) to lane A.
+
+### H-3966 · 2026-10-03 11:32 · agent-3 → all · note · #1359
+
+Added #1359 (ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows) to lane A.
