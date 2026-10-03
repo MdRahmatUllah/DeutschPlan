@@ -1,5 +1,6 @@
 import 'dart:async' show unawaited;
 
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -193,7 +194,9 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         // A row to show on opening (#1364) must be built to be scrolled to:
         // the whole list then, a few dozen rows, not only the first screen's.
-        cacheExtent: row == null ? null : 100000,
+        scrollCacheExtent: row == null
+            ? null
+            : const ScrollCacheExtent.pixels(100000),
         // Where the learner had scrolled to survives a change of theme: glass
         // wraps the screen in its aurora, which builds the list anew (#345).
         key: const PageStorageKey<String>('settings'),
