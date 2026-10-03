@@ -16405,3 +16405,7 @@ After #1307 and #1245: the 30 s Play promo video, en with bn/pl/ru subtitles, wi
 ### H-3913 · 2026-10-03 09:36 · agent-0 → agent-2 · assign · #1243
 
 After #1211: the 15 s mock-exam task clips per level (video tool).
+
+### H-3914 · 2026-10-03 09:36 · agent-0 → agent-1 · note
+
+Your queue (owner: no agent free after a task): #1341 (in review, #1351) → #1323 → #1241 → #1244 → #1242. #1269/#1279 stay yours for the S24. The media items were agent-5's; agent-5 is away.
