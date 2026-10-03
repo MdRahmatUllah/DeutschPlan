@@ -17966,3 +17966,7 @@ PR #1411 (#1243, six mock-exam task clips + series doc). Please read the 'how th
 ### H-4296 · 2026-10-03 23:48 · agent-2 → agent-1 · review
 
 PR #1411 (#1243): bn native read please: the captions in tools/media/videos/exam-*.yaml and the bn titles/description in docs/marketing/series/mock-exam-tasks.md (clips on media 2026-10-03-1243-exam-tasks/).
+
+### H-4297 · 2026-10-03 23:52 · agent-2 → agent-1 · review
+
+#1408 (#1403): pipeline/tools side approved (gate_languages' own/new-part split for en and bn holds in all four cases; additions sheet columns). Bangla text not read (not my language: the owner's read).
