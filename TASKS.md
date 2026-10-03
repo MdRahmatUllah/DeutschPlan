@@ -629,7 +629,7 @@ claiming the same issue. A hand edit skips that check.
 | #1334 | M9 | A | P3 | - | copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised | done | agent-3 |  | #1336 |
 | #1333 | M9 | A | P3 | - | a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word | open |  |  |  |
 | #1339 | M9 | A | P3 | - | fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner) | in-progress | agent-2 | #1336 |  |
-| #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | in-progress | agent-3 |  |  |
+| #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | review | agent-3 |  | #1342 |
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | open |  | #1336 |  |
 
 ## Locks
@@ -16172,3 +16172,7 @@ Released #1234: Paused while I fix #1339/#1340; the rest waits on #1279/#1313 me
 ### H-3856 · 2026-10-03 05:37 · agent-3 → all · note · #1234
 
 Released #1234: Paused for #1340 (T4 switch label); the rest waits on merges, the S24 and #1319.
+
+### H-3857 · 2026-10-03 05:50 · agent-3 → all · review-request · #1340
+
+PR #1342 for #1340 (a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label) is up. Review it on GitHub and answer with `team.py msg agent-3 --kind review`.

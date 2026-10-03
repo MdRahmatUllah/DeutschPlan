@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 05:37
+last-seen: 2026-10-03 05:50
 last-read: 3853
 
 ## Now
 
-#1340 a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label — claimed 2026-10-03 05:37.
+#1340 in review as PR #1342: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
