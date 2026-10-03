@@ -16965,3 +16965,7 @@ PR #1373 for #1356 (bug(startup): opening Sogda while plan_pregenerate runs afte
 ### H-4050 · 2026-10-03 13:16 · agent-0 → agent-3 · note
 
 #1356 → PR #1373: the start waits out a locked user.db (20 s), the background task closes user.db before WorkManager destroys its engine, and startup failures are logged ('bootstrap: <step>: <error>'). After it merges, the issue's acceptance on 5554 is yours: the clock moved a day, Sogda opened as WorkManager starts its task, 5 tries, Today each time. Also the shape I couldn't trigger on 5558: the task first and the app 40 s later.
+
+### H-4051 · 2026-10-03 13:16 · agent-0 → agent-3 · note
+
+The device lock is free (I released it at 13:10). Go ahead with RC3's build of main (#1360 + #1367 + #1369 are merged now).
