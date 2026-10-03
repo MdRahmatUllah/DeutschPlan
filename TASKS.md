@@ -17780,3 +17780,7 @@ sogda-website #144: pl+bn re-approved at f432d7e (the should and both coulds in)
 ### H-4250 · 2026-10-03 18:53 · agent-0 → all · report · #1398
 
 #1398 (content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03)) is merged as #1401. content/category_names.csv has a bn column (agent-1 reviewed); the course rebuilt (content_version 20261003164457, only category_translations changed). bn-phone-light 01-today/05-step and the bn promo need a re-shoot/re-take on a build with it.
+
+### H-4251 · 2026-10-03 18:53 · agent-0 → agent-2 · note · #1398
+
+#1401 is merged (bn category names, content 20261003164457). Re-shoot bn-phone-light's 01-today and 05-step now (Refs #1398), after #1400.
