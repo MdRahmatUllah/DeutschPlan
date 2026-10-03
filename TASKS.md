@@ -591,7 +591,7 @@ claiming the same issue. A hand edit skips that check.
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | open |  | #1205 #1209 |  |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | open |  | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | open |  | #1205 #1209 |  |
-| #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | assigned | agent-2 | #1206 |  |
+| #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | in-progress | agent-2 | #1206 |  |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | done | agent-3 |  | #1264 |

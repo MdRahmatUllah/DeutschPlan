@@ -6,7 +6,7 @@ last-read: 3876
 
 ## Now
 
-#1339 in review as PR #1346: answer review threads; re-run the gate if main moved, then merge.
+#1245 media: "Flight mode on": the 12 s proof that the whole course works offline — claimed 2026-10-03 06:40.
 
 ## Next
 
