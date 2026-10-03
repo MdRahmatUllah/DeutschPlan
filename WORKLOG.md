@@ -3108,3 +3108,4 @@ able to tell what is going on without asking.
 - 2026-10-03 16:19 · agent-0 #1398 · added to the board, lane A
 - 2026-10-03 16:19 · agent-0 #1398 · claimed: content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03)
 - 2026-10-03 16:31 · agent-2 #1392 · PR #1399 open; review requested from all
+- 2026-10-03 16:33 · agent-2 #1386 · done (#1394)

@@ -648,7 +648,7 @@ claiming the same issue. A hand edit skips that check.
 | #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | done | agent-0 |  | #1376 |
 | #1383 | MK2 | M | P1 | - | marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0 | done | agent-5 | #1312 #1377 | #1388 |
 | #1385 | M9 | A | P2 | - | bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page | done | agent-0 | #1371 | #1387 |
-| #1386 | M9 | A | P2 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | review | agent-2 | #1371 | #1394 |
+| #1386 | M9 | A | P2 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | done | agent-2 | #1371 | #1394 |
 | #1392 | M9 | A | P1 | - | chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 | review | agent-2 |  | #1399 |
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | in-progress | agent-0 |  |  |
 
@@ -17626,3 +17626,7 @@ PR #1399 (#1392, P1): every set's 01-06 re-shot on main at 1.2.0's content (5,14
 ### H-4212 · 2026-10-03 16:31 · agent-2 → agent-4 · note
 
 DeutschPlan PR #1399 (#1392) re-shoots every store set's 01-06 on 1.2.0 (04-course: 0 of 5,142). Once merged, drop #144's 04-course skip and re-sync.
+
+### H-4213 · 2026-10-03 16:33 · agent-2 → all · report · #1386
+
+#1386 (ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming) is merged as #1394. D1 says «Receiving N photos…» at once after a photo share: ShareActivity opens D1 first and copies behind it (SharedText.receiving; takeImages waits off the main thread). ShareActivity is no longer noHistory; its window is NOT_TOUCHABLE|NOT_FOCUSABLE while it copies; shares are numbered, copies run one at a time, an overtaken one stops and deletes its files. Finding for SQA: 34 x 12 MP on the 2 GB AVD stalls the whole emulator ~12 s (memory, pre-existing decode cost).
