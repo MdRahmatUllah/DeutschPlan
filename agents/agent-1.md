@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 12:06
+last-seen: 2026-10-03 12:13
 last-read: 4000
 
 ## Now
 
-#1353 a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height — claimed 2026-10-03 11:22.
+#1353 in review as PR #1367: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
