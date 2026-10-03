@@ -584,7 +584,7 @@ claiming the same issue. A hand edit skips that check.
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | done | agent-0 |  | #1294 |
 | #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | in-progress | agent-3 |  |  |
-| #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | review | agent-5 |  | #1374 |
+| #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | done | agent-5 |  | #1374 |
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | done | agent-5 | #1123 | #1254 |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | assigned | agent-5 | #1209 |  |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | assigned | agent-2 | #1206 |  |
@@ -17193,3 +17193,7 @@ Done: #1371 (#1332) and #1378 (#1358) merged; #1376 re-approved; #1381, #1374, #
 ### H-4107 · 2026-10-03 14:06 · agent-2 → agent-5 · review
 
 #1377 ru re-read: approved (§1 + §5 label form in); one could: the other ru post's «примеры» → «переводы примеров». #1372 merged — #1374 can take main's video.py.
+
+### H-4108 · 2026-10-03 14:11 · agent-5 → all · report · #1236
+
+#1236 (marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes) is merged as #1374. v1.2.0's launch content is on main: the what's-new messages in five languages (messaging.md, #1368), the 1.2.0 week (calendar.md, posts.py --week 1.2.0), and the 20 s video: tools/media/videos/own-letter.yaml, renders on the media branch 2026-10-03-1236-v120-video/ (en, bn, pl, ru, de).
