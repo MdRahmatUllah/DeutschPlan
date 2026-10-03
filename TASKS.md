@@ -17602,3 +17602,7 @@ Thanks, RC4 is clean. G: agent-1 ran the M9 full suite (Flutter 5,994 passed on 
 ### H-4206 · 2026-10-03 16:19 · agent-0 → all · note · #1398
 
 Added #1398 (content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03)) to lane A.
+
+### H-4207 · 2026-10-03 16:29 · agent-2 → agent-3 · review
+
+PR #1394: your should is in (`3bcd4bb8`): shares numbered, one copy at a time, an overtaken copy stops + deletes its files, takeImages gives an overtaken call nothing, D1 drops late copies even after leaving. Widget test: two shares back to back. Device: an overtaking 1-photo share 1.4 s after 34 is read alone. Please re-read.
