@@ -902,6 +902,52 @@ void main() {
     });
 
     for (final chrome in AdaptiveChrome.values) {
+      for (final locale in <Locale>[const Locale('en'), const Locale('ru')]) {
+        testWidgets('#1354 a ${chrome.name} sheet scrim says «Dismiss» in '
+            'the app language ($locale), never «Scrim»', (tester) async {
+          final semantics = tester.ensureSemantics();
+          await tester.pumpWidget(
+            MaterialApp(
+              theme: AppTheme.light(),
+              locale: locale,
+              localizationsDelegates: appLocalizationsDelegates,
+              supportedLocales: supportedLocales,
+              home: AdaptiveChromeScope(
+                chrome: chrome,
+                child: Scaffold(
+                  body: Builder(
+                    builder: (context) => TextButton(
+                      onPressed: () => Adaptive.showSheet<void>(
+                        context: context,
+                        builder: (_) => const Text('Body'),
+                      ),
+                      child: const Text('Open'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.tap(find.text('Open'));
+          await tester.pumpAndSettle();
+          final words = MaterialLocalizations.of(
+            tester.element(find.text('Body')),
+          );
+          // Android's sheet says «Dismiss»; the Cupertino popup's barrier
+          // has no label of its own (iOS is Later). Neither says «Scrim».
+          if (chrome == AdaptiveChrome.material) {
+            expect(
+              find.semantics.byLabel(words.modalBarrierDismissLabel),
+              findsOne,
+            );
+          }
+          expect(find.semantics.byLabel(words.scrimLabel), findsNothing);
+          semantics.dispose();
+        });
+      }
+    }
+
+    for (final chrome in AdaptiveChrome.values) {
       testWidgets('a ${chrome.name} sheet rises above the keyboard, and '
           'covers the tab bar', (tester) async {
         tester.view

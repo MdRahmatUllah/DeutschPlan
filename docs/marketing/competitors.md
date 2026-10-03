@@ -55,7 +55,7 @@ The pronunciation guide in the viewer's own script.
   - **Video:** {featured.0.article} {featured.0.german}, with its guide «{featured.0.guide.bn}» and its sound.
   - **Caption** (*draft*): «Anmeldung কীভাবে বলবেন? বাংলা অক্ষরে লেখা উচ্চারণ।» No "offline" in this caption: the clip plays sound, and offline sound needs a voice installed. Shoot it with Supertonic installed.
 - **The same clip in ru and pl:** the same video re-cut with «{featured.0.guide.ru}» and «{featured.0.guide.pl}».
-- **Series:** the twelve words of `featured` in `site-facts.json`, from *Anmeldung* to *Einbürgerung*. That's one a week for twelve weeks, with no word to invent.
+- **Series:** the words of `featured` in `site-facts.json`, from {featured.0.german} on, one a week, with no word to invent. The list's length isn't typed here, so it never goes stale.
 
 ### 2. "der, die or das? Answer in a full sentence"
 
