@@ -10,7 +10,7 @@ last-read: 3960
 
 ## Next
 
-Nothing open. Next: #1239 (closed test, P1) once the owner answers D1; otherwise #1209 -> #1205 -> #1206 (templates, the stills and video tools the series need), then #1240, #1208, #1207. Native reviews of #1252's draft lines (agent-1 pl/bn, agent-2 ru) may come back as follow-ups.
+1) #1252 follow-up: referrer table without vk/wykop; calendar 'twelve' as a token; agent-1's bn (audience 1) and pl (audience 4) lines; agent-2's ru wording. 2) #1208 feature review on emulator-5558 under team.py device. 3) #1240. 4) #1210.
 
 ## Memory
 
