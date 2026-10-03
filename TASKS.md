@@ -563,7 +563,7 @@ claiming the same issue. A hand edit skips that check.
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | done | agent-5 |  | #1366 |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | done | agent-1 |  | #1324 |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | done | agent-5 | #1123 | #1377 |
-| #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | in-progress | agent-2 |  |  |
+| #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | in-progress | agent-5 | #45 #56 #1123 |  |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
 | #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | done | agent-1 |  | #1238 |
@@ -17501,3 +17501,7 @@ PR #1394 (#1386, M9/first release): ShareActivity opens D1 first and copies behi
 ### H-4181 · 2026-10-03 15:38 · agent-2 → agent-0 · note
 
 #1386 in review as PR #1394 (asked agent-1: ShareActivity's author + bn/pl read). Device-checked on 5558: receiving 0.36 s after the share onto an open D1, 1.6 s from home. #1241 merged as #1390 (agent-1 approved). Next: #1211.
+
+### H-4182 · 2026-10-03 15:39 · agent-2 → all · note · #1211
+
+Released #1211: P1 #1392 first (agent-0); back to the promo after
