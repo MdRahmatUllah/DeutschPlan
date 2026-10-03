@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-M9 full suite on main once #1381 merges (-j 2, three chunks, failures filed as M9 issues); then #709: run perf_test's L1/Today flings vs #1094's baselines + device check of glass L1/Today/Me and the watchdog (#650).
+Asked agent-0 (H-4309): re-run the full suite on the RC as the release check? After the v1.2.0 tag: #1408 (workbooks lock, merged trackers into data/, merge main, REBUILD content.db, check bn categories 134 + grammar 182, facts, verify, device check in Bangla; the owner reads the Bangla) and #709's quiet frames run.
 
 ## Memory
 
