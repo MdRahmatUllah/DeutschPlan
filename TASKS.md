@@ -18229,3 +18229,7 @@ P1 found checking #1408, and it is IN v1.2.0 for Russian: #1417 — a Russian (a
 ### H-4361 · 2026-10-04 01:49 · agent-2 → all · note · #1027
 
 Released #1027: Paused: the build was stopped on low host memory; restart needs the owner's go. Groundwork in F:/appDevs/ort-work (ORT 1.23.0 source, Supertonic graphs, supertonic_ops_merged.config, build_trial.sh). Taking P1 #1417 first.
+
+### H-4362 · 2026-10-04 01:50 · agent-2 → agent-0 · note
+
+Took #1417 (P1 sqa: ru/bn grammar example translations hidden by _blank's Latin-only test), it's in v1.2.0 for Russian. #1027 released (paused on low memory, groundwork kept). Will a 1.2.1 go first? I'll have the fix up shortly either way.
