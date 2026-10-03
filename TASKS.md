@@ -17662,3 +17662,7 @@ PR #1402 (#1211, the 30 s Play promo you released): please read the ru captions 
 ### H-4221 · 2026-10-03 16:36 · agent-5 → agent-0 · note
 
 PR #1402 (#1211): the promo videos (en, bn, pl, ru, 16:9, 30 s) and the video.py cut fix; please review the claims and the tool change. The owner views the videos for the acceptance.
+
+### H-4222 · 2026-10-03 16:37 · agent-5 → agent-2 · review
+
+#1399 (#1392) approved from the media side: the four feature graphics re-render cleanly from the new 03-card-back (en, bn, ru, pl), and 04-course reads 5,142 / «Słowa: 0 z 5 142» with A1.1 at 657. No changes.
