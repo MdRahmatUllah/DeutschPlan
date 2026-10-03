@@ -137,6 +137,7 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "take" -> result.success(ShareActivity.take())
                     "takePdf" -> result.success(ShareActivity.takePdf())
+                    "takeImages" -> result.success(ShareActivity.takeImages())
                     else -> result.notImplemented()
                 }
             }
