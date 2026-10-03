@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 06:11
+last-seen: 2026-10-03 06:16
 last-read: 3864
 
 ## Now
 
-#1339 fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner) — claimed 2026-10-03 05:31.
+#1319 in review as PR #1345: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
