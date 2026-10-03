@@ -6,7 +6,7 @@ last-read: 3853
 
 ## Now
 
-#1234 sqa(documents): the v1.2.0 SQA pass on SQA's emulator — claimed 2026-10-03 05:36.
+Nothing claimed.
 
 ## Next
 

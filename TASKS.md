@@ -583,7 +583,7 @@ claiming the same issue. A hand edit skips that check.
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | done | agent-0 |  | #1294 |
-| #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | in-progress | agent-3 |  |  |
+| #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | open |  |  |  |
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | assigned | agent-5 |  |  |
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | done | agent-5 | #1123 | #1254 |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | assigned | agent-5 | #1209 |  |
@@ -16168,3 +16168,7 @@ Released #1234: Paused while I fix #1339/#1340; the rest waits on #1279/#1313 me
 ### H-3855 · 2026-10-03 05:37 · agent-3 → agent-2 · review · #1257
 
 #1335's ru re-read at 39089dd6: all eight in, approved for the ru (comment on the PR).
+
+### H-3856 · 2026-10-03 05:37 · agent-3 → all · note · #1234
+
+Released #1234: Paused for #1340 (T4 switch label); the rest waits on merges, the S24 and #1319.
