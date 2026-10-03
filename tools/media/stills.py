@@ -154,7 +154,8 @@ def page_html(template: str, locale: str, fmt: str, shot: str = "01-today.png", 
         "body": sizes["body"],
         "body_weight": kind["weights"]["body"],
         "line_height": kind["line_height"]["bengali" if locale == "bn" else "latin"],
-        "headline_text": html.escape(headline),
+        # A level range never breaks at its dash («A1–» / «C2»), as on the feature graphic.
+        "headline_text": re.sub(r"(\w+–\w+)", r'<span style="white-space:nowrap">\1</span>', html.escape(headline)),
         "body_text": html.escape(line),
         "screen": _base64(STORE / SETS[locale] / shot),
     }

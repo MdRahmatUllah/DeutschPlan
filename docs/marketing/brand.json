@@ -44,7 +44,9 @@
       "square": {"headline": 88, "body": 44, "caption": 32},
       "portrait": {"headline": 88, "body": 44, "caption": 32},
       "vertical": {"headline": 96, "body": 48, "caption": 36},
-      "landscape": {"headline": 96, "body": 48, "caption": 34}
+      "landscape": {"headline": 96, "body": 48, "caption": 34},
+      "youtube_banner": {"headline": 72, "body": 36, "caption": 30},
+      "facebook_cover": {"headline": 56, "body": 28, "caption": 24}
     }
   },
   "frame": {
@@ -58,6 +60,18 @@
     }
   },
   "formats": {
+    "youtube_banner": {
+      "size": [2560, 1440],
+      "for": "the YouTube channel's banner (#1240)",
+      "safe": {"top": 0.353, "right": 0.198, "bottom": 0.353, "left": 0.198},
+      "source": "YouTube: minimum 2048 x 1152, recommended 2560 x 1440, and text and logos inside 1235 x 338 at the minimum size, so 1544 x 423 at 2560 (support.google.com/youtube/answer/10456525, read 2026-10-03)"
+    },
+    "facebook_cover": {
+      "size": [1640, 624],
+      "for": "the Facebook Page's cover (#1240)",
+      "safe": {"top": 0.2, "right": 0.25, "bottom": 0.2, "left": 0.25},
+      "source": "ours: Meta's sizes page (facebook.com/help/125379114252045) needs scripts to read, so everything sits in the middle, where both the desktop and the phone crop show it; the owner checks the crop on upload"
+    },
     "feature": {
       "size": [1024, 500],
       "for": "Play's feature graphic (RGB, no alpha)",

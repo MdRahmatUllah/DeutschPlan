@@ -91,3 +91,8 @@ def test_a_card_with_a_malformed_token_is_refused_1244(tmp_path, monkeypatch):
     monkeypatch.setattr(stills, "CARDS", tmp_path / "cards.yaml")
     with pytest.raises(SystemExit):
         stills.card_copy("bad", "en")
+
+
+def test_a_level_range_never_breaks_at_its_dash_1240():
+    page = stills.page_html("banner", "en", "facebook_cover")
+    assert '<span style="white-space:nowrap">A1–C2</span>' in page
