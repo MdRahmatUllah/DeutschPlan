@@ -2907,3 +2907,4 @@ able to tell what is going on without asking.
 - 2026-10-03 05:58 · agent-3 #1234 · released: Paused for #1343 (D1 note node) while #1342 waits on the device lock.
 - 2026-10-03 05:58 · agent-3 #1343 · claimed: a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own
 - 2026-10-03 06:03 · agent-3 · #1343 fix + test (D1 note node), plants 2/2; gate running; #1342 approved x2, device check waits on agent-2's perf lock (~06:40)
+- 2026-10-03 06:05 · agent-3 · Claude Code reaped my lock poll and #1343's test batch (host low on memory); not restarting until the owner says. #1343 committed locally (570f… is #1342), not pushed.
