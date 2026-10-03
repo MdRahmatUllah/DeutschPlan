@@ -13,10 +13,10 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
 - **Your own sentence** on the word's card, in W1 and as a cloze when it's short enough to gap (#1232).
 - **73 everyday words** the course used but never taught on their own: Zeit, Name, Dank, zahlen, Raum, bereit, the bench *Bank* and more, with meanings and guides in all four languages (#1257). The course is now 5,142 words.
 - **Rate Sogda on Google Play** in Me, and Play's own rating card once, as you leave your first passed mock exam (#1237).
-- **Translation on the phone** with Hy-MT2, an optional download where the phone has the memory: W1's examples and T5's sentences (#154), and suggested meanings for a word outside the course, never filled in for you (#1233).
+- **Translation on the phone** with Hy-MT2, an optional download for phones with at least 3.5 GiB of memory: W1's examples, T5's words outside the course and R1's *Translate* (#154), and suggested meanings for a word outside the course in D2 and R2, never filled in for you (#1233). *Add as my word* brings the sentence and the document's title (#1300). Timed on a Galaxy S24: two sentences in about 5 s.
 
 ### Changed
-- **A bigger download for the on-device reader:** arm64 52.15 → 66.24 MB. ML Kit's text recogniser and its Latin models +12.33 MB, pdfbox +0.40 MB once its CJK maps went (#1318), the code +1.20 MB (#1306).
+- **A bigger download for reading and translating on the phone:** arm64 52.15 → 89.19 MB. llama.cpp for Hy-MT2 +22.95 MB (#154; the model itself is the optional 1.1 GB download), ML Kit's text recogniser and its Latin models +12.33 MB, pdfbox +0.40 MB once its CJK maps went (#1318), the code +1.20 MB (#1306).
 
 ### Fixed
 - **D2's marks:**
@@ -25,7 +25,7 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
   - a split verb's particle is never «outside the course», and a letter's salutation isn't part of its first sentence (#1297);
   - the check and the «?» stay on their word's line, and a screen reader doesn't stop on bare spaces (#1339, #1344).
 - **D2's notes:**
-  - the switch reads once (#1309);
+  - the switch reads once (#1309), and so do Backlog's pause switch (#1340) and D1's privacy note, after the choices (#1343);
   - the bulk toast says what happened: all today, some, none, or waiting (#1311);
   - a word already in today's plan says today (#1315);
   - the cap note says why words wait at a cap of 0 or under the backlog pause (#1334), and counts the words already queued ahead (#1341).
