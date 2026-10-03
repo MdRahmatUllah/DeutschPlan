@@ -74,13 +74,19 @@ void main() {
   }
 
   testWidgets("BR-RATE-01 FR-L13-04 a passed mock exam asks for Play's "
-      'review card', (tester) async {
+      'review card as the learner leaves L13, not over the score', (
+    tester,
+  ) async {
     await pump(tester);
-    expect(review.asked, greaterThan(0));
+    expect(review.asked, 0, reason: 'the score shows, uncovered');
+    await tester.pumpWidget(const SizedBox());
+    expect(review.asked, 1);
   });
 
-  testWidgets('BR-RATE-01 one that did not pass asks nothing', (tester) async {
+  testWidgets('BR-RATE-01 one that did not pass asks nothing, then or on '
+      'leaving', (tester) async {
     await pump(tester, with_: StubExamResult(result: failedResult()));
+    await tester.pumpWidget(const SizedBox());
     expect(review.asked, 0);
   });
 

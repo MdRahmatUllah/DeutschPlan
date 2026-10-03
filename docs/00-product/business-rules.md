@@ -90,7 +90,7 @@ Every rule has an ID. Engines in `03-domain/` implement them; screens in `04-scr
 
 ## Ratings (v1.2.0, #1237)
 
-- **BR-RATE-01** Google Play's in-app review card is asked for **once**, after the learner's first passed mock exam (BR-EXAM-04), when L13 shows the pass. The owner chose this milestone on 2026-10-03.
+- **BR-RATE-01** Google Play's in-app review card is asked for **once**, after the learner's first passed mock exam (BR-EXAM-04), as they leave L13 after the pass, so the card never covers the score. The owner chose this milestone on 2026-10-03.
   - **Google's rules:** no question before the card, no incentive, and no button that triggers it. A button may only open the listing, which is Me's *Rate Sogda on Google Play* (FR-M1-05).
   - **What the app keeps:** only that it has asked (`play_review_asked`). It never asks again, even when Play didn't show the card: whether it shows is Play's call, under a quota Play doesn't publish.
   - **Privacy:** the card is the Play Store app's own UI, reached on the phone through Play's In-App Review library. Sogda sends nothing about the learner, and asks only after a pass the learner just made (BR-PRIV-01).
