@@ -927,6 +927,16 @@ void main() {
         ('Wir wohnen in einer ruhigen Straße.', 'bn'),
       ]);
       expect(find.text('অনুবাদ'), findsNWidgets(2));
+      // Read with its sentence, as the course's line is (#154, on the S24).
+      final semantics = tester.ensureSemantics();
+      expect(
+        tester.getSemantics(find.byType(StudyExampleRow).first).label,
+        allOf(
+          contains('Die Straße ist wegen Bauarbeiten gesperrt.'),
+          contains('অনুবাদ'),
+        ),
+      );
+      semantics.dispose();
     });
 
     testWidgets('#694 CC-3 a second tap on Translate while one runs '
@@ -956,6 +966,33 @@ void main() {
 
       expect(asked, hasLength(2), reason: 'each example once');
       expect(find.text('অনুবাদ'), findsNWidgets(2));
+    });
+
+    test('#154 leaving W1 abandons the translations it asked for and has '
+        'not got', () async {
+      final translations = _Translations(
+        (text, to) => 'অনুবাদ',
+        gate: Completer<void>().future,
+      );
+      final container = ProviderContainer(
+        overrides: <Override>[
+          translationRepositoryProvider.overrideWithValue(translations),
+        ],
+      );
+      addTearDown(container.dispose);
+      final w1 = container.listen(exampleTranslationsProvider('w'), (_, _) {});
+      unawaited(
+        container.read(exampleTranslationsProvider('w').notifier).translate(
+          <String>['Ich sehe das Haus.'],
+          to: 'bn',
+        ),
+      );
+      await pumpEventQueue();
+      var gone = false;
+      unawaited(translations.abandoned.single!.then((_) => gone = true));
+      w1.close();
+      await pumpEventQueue();
+      expect(gone, isTrue);
     });
 
     testWidgets('FR-W1-05 an English learner is not offered Translate: the '
@@ -1211,6 +1248,64 @@ void main() {
     expect((await read())!.pron?.text, 'হাউস');
   });
 
+  test('#154 FR-W1-05 Translate goes into the first chosen meaning language '
+      'the course lacks lines in, for the lines it lacks', () async {
+    final db = AppDatabase.memory();
+    addTearDown(db.close);
+    final content = ContentFixture.write(
+      '${tempDir('sg_w1_translate').path}/content.db',
+      russian: true,
+    );
+    await db.customStatement(
+      "ATTACH DATABASE '${ContentDao.attachPath(content.file)}' AS c",
+    );
+    final settings = SettingsRepository(db);
+    await settings.load();
+    addTearDown(settings.dispose);
+    final container = ProviderContainer(
+      overrides: <Override>[
+        appDatabaseProvider.overrideWithValue(db),
+        settingsProvider.overrideWithValue(settings),
+        contentUpdaterProvider.overrideWithValue(
+          _Aliased(db, const <String, String>{}),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    final hold = container.listen(
+      wordDetailProvider(ContentFixture.haus),
+      (_, _) {},
+    );
+    addTearDown(hold.close);
+    Future<WordDetail> read() async {
+      final WordDetail? detail = await container.read(
+        wordDetailProvider(ContentFixture.haus).future,
+      );
+      return detail!;
+    }
+
+    Future<void> choose(MeaningChoice choice) =>
+        container.read(languagesProvider.notifier).setMeaning(choice);
+
+    // English then Bangla, the default: English has every line, Bangla none.
+    var detail = await read();
+    expect(detail.translateTo, 'bn');
+    expect(detail.untranslated, <String>[
+      'Das Haus ist groß.',
+      'Ich sehe das Haus.',
+    ]);
+
+    await choose(const MeaningChoice('ru'));
+    detail = await read();
+    expect(detail.translateTo, 'ru', reason: 'one Russian line is missing');
+    expect(detail.untranslated, <String>['Ich sehe das Haus.']);
+
+    await choose(const MeaningChoice('en'));
+    detail = await read();
+    expect(detail.translateTo, isNull, reason: 'English lacks no line');
+    expect(detail.untranslated, isEmpty);
+  });
+
   test('#854 PIPE-09 an old uid, from a link written before an update '
       're-keyed its word, opens the word it became', () async {
     final db = AppDatabase.memory();
@@ -1318,12 +1413,17 @@ class _Translations implements TranslationRepository {
   /// While not complete, every translation waits for it.
   final Future<void>? gate;
 
+  /// Each request's word that nobody waits any more (#154).
+  final List<Future<void>?> abandoned = <Future<void>?>[];
+
   @override
   Future<String?> translate(
     String text, {
     required String from,
     required String to,
+    Future<void>? abandoned,
   }) async {
+    this.abandoned.add(abandoned);
     await gate;
     return answer(text, to);
   }

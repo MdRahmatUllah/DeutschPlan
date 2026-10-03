@@ -10,6 +10,10 @@ typedef StorageSpace = ({int free, int total});
 abstract interface class DeviceStorage {
   /// Null when the phone won't say.
   Future<StorageSpace?> space();
+
+  /// The phone's memory (RAM) in all, in bytes: whether Hy-MT2 is offered
+  /// (#154). Null when the phone won't say.
+  Future<int?> memory();
 }
 
 /// Asks the platform: Android's `StatFs` over the app's files, iOS's
@@ -18,6 +22,18 @@ class PlatformDeviceStorage implements DeviceStorage {
   const PlatformDeviceStorage();
 
   static const MethodChannel _channel = MethodChannel('sogda/storage');
+
+  @override
+  Future<int?> memory() async {
+    try {
+      final total = await _channel.invokeMethod<int>('memory');
+      return total == null || total <= 0 ? null : total;
+    } on PlatformException {
+      return null;
+    } on MissingPluginException {
+      return null;
+    }
+  }
 
   @override
   Future<StorageSpace?> space() async {

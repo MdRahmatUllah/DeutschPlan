@@ -53,7 +53,7 @@
     "docwords.missed_raster": 0
   },
   "metrics": {
-    "size.arm64_mb": 66.24,
+    "size.arm64_mb": 89.19,
     "card.build_avg_ms": 1.112,
     "card.build_p90_ms": 2.037,
     "card.build_p99_ms": 5.254,

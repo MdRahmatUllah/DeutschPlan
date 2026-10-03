@@ -437,10 +437,19 @@ class OwnSentencesHeading extends StatelessWidget {
 }
 
 class StudyExampleRow extends StatelessWidget {
-  const StudyExampleRow(this.example, {required this.onPlay, super.key});
+  const StudyExampleRow(
+    this.example, {
+    required this.onPlay,
+    this.machine,
+    super.key,
+  });
 
   final StudyExample example;
   final VoidCallback onPlay;
+
+  /// W1's *Translate* (FR-W1-05, #154): Hy-MT2's line under the course's,
+  /// in the row, so a screen reader hears it with its sentence.
+  final String? machine;
 
   @override
   Widget build(BuildContext context) {
@@ -473,10 +482,10 @@ class StudyExampleRow extends StatelessWidget {
                       italic: true,
                       german: true,
                     ),
-                    if (translation != null) ...<Widget>[
+                    for (final line in <String>[?translation, ?machine]) ...[
                       const SizedBox(height: 2),
                       SgText(
-                        translation,
+                        line,
                         role: SgTextRole.body,
                         color: tokens.color.textSecondary,
                       ),

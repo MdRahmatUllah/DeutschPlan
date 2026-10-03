@@ -653,6 +653,20 @@ void main() {
     expect(find.text(l10n.retry), findsOneWidget);
   });
 
+  testWidgets('#154 FR-M4-04 a phone below Hy-MT2\'s memory floor: Not '
+      'available, why, and no Download', (tester) async {
+    await pump(
+      tester,
+      modelManagerStub(translation: cardOf(translationEntry, fits: false)),
+    );
+    expect(find.text(l10n.modelsStatusNoMemory), findsOneWidget);
+    expect(
+      find.text(l10n.modelsNeedsMemory(l10n.modelsSizeGb('4'))),
+      findsOneWidget,
+    );
+    expect(find.text(l10n.modelsDownload('1.1 GB')), findsNothing);
+  });
+
   testWidgets("#428 a start the manager refuses for space says how much", (
     tester,
   ) async {
@@ -895,6 +909,29 @@ void main() {
       expect(asked, greaterThan(1), reason: 'bytes came or went');
     });
 
+    test('#154 FR-M4-04 Hy-MT2 asks the phone for its memory: 2 GiB is too '
+        'little, 3.6 GiB (a "4 GB" phone) is enough', () async {
+      for (final (memory, status) in <(int, ModelCardStatus)>[
+        (2 << 30, ModelCardStatus.needsMemory),
+        (3686 << 20, ModelCardStatus.notDownloaded),
+      ]) {
+        final phone = ProviderContainer(
+          overrides: <Override>[
+            modelRepositoryProvider.overrideWithValue(models),
+            modelDownloadsProvider.overrideWithValue(downloads),
+            deviceStorageProvider.overrideWithValue(
+              _Storage(() => space, memoryBytes: memory),
+            ),
+          ],
+        );
+        addTearDown(phone.dispose);
+        final card = modelCardProvider(ModelRepository.translationModel);
+        final sub = phone.listen(card, (_, _) {});
+        addTearDown(sub.close);
+        expect(cardStatusOf(await phone.read(card.future)), status);
+      }
+    });
+
     test('#1261 a failed download asks the space for its Retry', () async {
       downloads.shortfall = 120000000;
       final seen = await cards(() async {
@@ -974,10 +1011,16 @@ class _Models extends FakeModels {
 }
 
 class _Storage extends Fake implements DeviceStorage {
-  _Storage(this._space);
+  _Storage(this._space, {this.memoryBytes});
 
   final StorageSpace? Function() _space;
 
+  /// The phone's memory, as Android reports it (#154).
+  final int? memoryBytes;
+
   @override
   Future<StorageSpace?> space() async => _space();
+
+  @override
+  Future<int?> memory() async => memoryBytes;
 }

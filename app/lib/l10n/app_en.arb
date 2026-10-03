@@ -2186,7 +2186,32 @@
   },
   "wordTranslate": "Translate",
   "@wordTranslate": {
-    "description": "W1 action, only when on-device translation is on: the examples into the meaning language (FR-W1-05)."
+    "description": "W1 action, only when on-device translation is on: the examples a chosen meaning language has no line for, into it (FR-W1-05, #154)."
+  },
+  "translating": "Translating…",
+  "@translating": {
+    "description": "While the on-device translator works (T5's word sheet, R1's Translate sheet; #154)."
+  },
+  "searchTranslate": "Translate “{query}”",
+  "@searchTranslate": {
+    "description": "R1 no results, only with on-device translation on: opens a sheet with the query translated both ways (#154).",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "translateFromGerman": "From German",
+  "@translateFromGerman": {
+    "description": "R1's Translate sheet: the heading over the query translated from German into the first meaning language (#154)."
+  },
+  "translateIntoGerman": "Into German",
+  "@translateIntoGerman": {
+    "description": "R1's Translate sheet: the heading over the query translated from the first meaning language into German (#154)."
+  },
+  "translationNone": "No translation",
+  "@translationNone": {
+    "description": "R1's Translate sheet, when the translator gave nothing (#154)."
   },
   "wordAddedToday": "{word} is in today's plan",
   "@wordAddedToday": {
@@ -6569,6 +6594,19 @@
   "modelsNoSpaceNote": "Free {size} on the phone to download it",
   "@modelsNoSpaceNote": {
     "description": "Under a model the phone lacks the space for: how much to free (FR-M4).",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsStatusNoMemory": "Not available",
+  "@modelsStatusNoMemory": {
+    "description": "M4 pill: this phone has too little memory (RAM) for the model, so it isn't offered (#154)."
+  },
+  "modelsNeedsMemory": "Needs a phone with {size} of memory",
+  "@modelsNeedsMemory": {
+    "description": "M4 note under Hy-MT2, and M3's translation row, on a phone below its memory floor (#154). size is '4 GB'.",
     "placeholders": {
       "size": {
         "type": "String"
