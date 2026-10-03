@@ -2903,3 +2903,4 @@ able to tell what is going on without asking.
 - 2026-10-03 05:50 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
 - 2026-10-03 05:56 · agent-2 · #1319: 5558's slowness was the emulator process: a guest reboot kept it, a cold boot (emu kill + start) gives baseline frames (raster 10-16 ms; docwords 15.49). Now start, size, and the year profile.
 - 2026-10-03 05:57 · agent-3 #1343 · added to the board, lane A
+- 2026-10-03 05:57 · agent-3 #1344 · added to the board, lane A

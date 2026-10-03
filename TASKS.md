@@ -632,6 +632,7 @@ claiming the same issue. A hand edit skips that check.
 | #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | review | agent-3 |  | #1342 |
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | open |  | #1336 |  |
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | open |  |  |  |
+| #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | open |  | #1339 |  |
 
 ## Locks
 
@@ -16193,3 +16194,7 @@ PR #1342 approved: same rule as M3's labelledByControl rows; backlog_test + arch
 ### H-3861 · 2026-10-03 05:57 · agent-3 → all · note · #1343
 
 Added #1343 (a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own) to lane A.
+
+### H-3862 · 2026-10-03 05:57 · agent-3 → all · note · #1344
+
+Added #1344 (a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing) to lane A.
