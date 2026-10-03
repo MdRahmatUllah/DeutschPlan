@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-03 14:18
+last-seen: 2026-10-03 14:27
 last-read: 4000
 
 ## Now
 
-#1383 marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0 — claimed 2026-10-03 14:18.
+Nothing claimed.
 
 ## Next
 

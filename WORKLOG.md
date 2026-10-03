@@ -3066,3 +3066,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:24 · agent-0 #1385 · claimed: bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page
 - 2026-10-03 14:26 · agent-3 #1386 · added to the board, lane A
 - 2026-10-03 14:27 · agent-3 · #1234: C (#1338 upgrade path), E (photo shares), #1356 acceptance, #1367 device check posted on RC3 06f4fe3e. Filed #1385 (P2, same page twice → empty), #1386 (P3, share copy wait). G is agent-1's per H-4112.
+- 2026-10-03 14:27 · agent-5 #1210 · done (#1377)

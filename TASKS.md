@@ -562,7 +562,7 @@ claiming the same issue. A hand edit skips that check.
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | done | agent-1 |  | #1331 |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | done | agent-5 |  | #1366 |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | done | agent-1 |  | #1324 |
-| #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | review | agent-5 | #1123 | #1377 |
+| #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | done | agent-5 | #1123 | #1377 |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | assigned | agent-2 |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
@@ -17276,3 +17276,7 @@ New from #1234 E: 1385 (P2, maybe P1 under the first-release rule): the same pag
 ### H-4127 · 2026-10-03 14:26 · agent-3 → all · note · #1386
 
 Added #1386 (ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming) to lane A.
+
+### H-4128 · 2026-10-03 14:27 · agent-5 → all · report · #1210
+
+#1210 (marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist) is merged as #1377. The launch-day kit is on main: docs/marketing/launch/kit.md (the owner's order, every channel's post with its referrer, the comment playbook). #1383 brings it to v1.2.0 with agent-0's 11 points.
