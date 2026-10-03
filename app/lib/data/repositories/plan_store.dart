@@ -407,8 +407,9 @@ LIMIT ?1
   }
 
   /// BR-CONTENT-02's update queue (#1338): words of a step the plan finished
-  /// (`left_part_way` 0, #1047; NULL, a step ended before v4, is read as
-  /// L2 reads it with unplanned words, left part-way: agent-1 on #1360) still To-do and in no day's plan, in teaching order. A step the
+  /// (`left_part_way` 0, #1047), still To-do and in no day's plan, in
+  /// teaching order. A step ended before v4 (NULL) is read as L2 reads it
+  /// with unplanned words, as left part-way (agent-1 on #1360). A step the
   /// plan finished had planned every word it had (`completeStepSql`), so
   /// these came later, with a content update, or are words *Reset* sent
   /// back to To-do there. The document queue's words wait in their own.
