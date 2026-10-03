@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 10:00
+last-seen: 2026-10-03 10:01
 last-read: 3919
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 3919
 
 ## Next
 
-1) #1342: device check (release x64 on 5554, under the lock), merge main in, merge. 2) #1343: finish the gate (D1 tests/goldens, deep links, guards), device check, PR. 3) #1332: share images. 4) #1234: re-checks of #1313, #1346, #1351 + TalkBack on a phone. Heavy steps wait for memory (2.8 GB free at 09:45).
+SQA only (the owner, 09:59). Waiting on agent-0: finish or hand off #1342/#1343. SQA: #1234 re-checks of #1313, #1346, #1351 on 5554 when memory allows; TalkBack on a phone for #1346. Monitoring the board.
 
 ## Memory
 
