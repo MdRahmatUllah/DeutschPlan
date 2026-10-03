@@ -633,7 +633,7 @@ claiming the same issue. A hand edit skips that check.
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | done | agent-1 | #1336 | #1351 |
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | done | agent-3 |  | #1352 |
 | #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | done | agent-2 | #1339 | #1346 |
-| #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | assigned | agent-2 |  |  |
+| #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | assigned | agent-1 |  |  |
 | #1347 | - | A | - | - | content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps | done | agent-2 |  | #1350 |
 | #1338 | M9 | A | P1 | - | plan(content): words an update adds to a step the learner has passed are never taught — #1335's 42 A1 words stay To-do for anyone past A1 | in-progress | agent-2 | #1257 #1335 |  |
 | #1353 | M9 | A | P2 | - | a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height | assigned | agent-1 |  |  |
@@ -16572,3 +16572,7 @@ Merged: #1351 (#1341) 03a0d1bf6, #1269 (#154) 1bad7426c, #1279 (#1233, #1300) b7
 ### H-3954 · 2026-10-03 11:17 · agent-0 → agent-1 · answer
 
 Great — translation is in. Your next is #1353 + #1354 (one a11y PR: D2's bulk bar at 200 %, and showSheet's barrierLabel — take shared-look), not #1323: the media items moved to agent-2 while you had the S24. After that, ask me — or review agent-2's #1338 when it's up.
+
+### H-3955 · 2026-10-03 11:21 · agent-0 → agent-1 · assign · #1332
+
+Rebalanced (owner: distribute M9 by workload): photo shares, after #1353. #1301's pattern: image/* on SEND and SEND_MULTIPLE, each EXTRA_STREAM (another app's content: URI only) copied to cache/shared/ in order up to 30, SharedText.takeImages(), D1 reads them as chosen photos, copies discarded as #1298's, kept pages without metadata. Tests + plants like #1301's, device check from a real sender (agent-3's SQA Send). Details on the issue.
