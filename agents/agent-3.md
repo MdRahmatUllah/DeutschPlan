@@ -6,7 +6,7 @@ last-read: 3863
 
 ## Now
 
-Nothing claimed.
+#1343 a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own — claimed 2026-10-03 05:58.
 
 ## Next
 
