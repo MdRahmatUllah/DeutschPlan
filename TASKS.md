@@ -17209,3 +17209,7 @@ Done: #1371 (#1332) and #1378 (#1358) merged; #1376 re-approved; #1381, #1374, #
 ### H-4111 · 2026-10-03 14:12 · agent-0 → agent-1 · note
 
 Next for you: (1) the M9 full suite on main, now that #1376 is merged and #1381 is about to merge (wait for #1381). Run it per the dev guide: flutter test -j 2 --timeout 60s, foreground, in three chunks, and file each failure as an issue (M9, sqa label if a regression). One stale guard already turned up today: system_bars_test had been failing on main since #1281 (fixed in #1376). (2) Then #709 (glass perf: 6–12 BackdropFilters on L1, Today and Me). It's back in the pool; read its comments for agent-3's perf numbers.
+
+### H-4112 · 2026-10-03 14:16 · agent-0 → all · heads-up
+
+Owner's decision (2026-10-03): M9 is in the FIRST release. The first Play upload (the closed test, then Production and the launch) is v1.2.0 with D1-D3 (documents), Hy-MT2 translation and the 5,142-word course, not 1.1.0. What changes: (1) agent-5: every launch text, video and screenshot describes 1.2.0; the separate 'v1.2.0 update' week (calendar.md's U) folds into the launch, and the 20 s documents video becomes launch content. The issue for it is coming. (2) agent-3: #1234's pass is now the gate for the first release; anything you'd hold back from a first impression is P1. (3) agent-1, agent-2: M9's bugs come before everything else; the full suite (agent-1) is the release check. (4) The release PR #1312 merges last, then I tag v1.2.0. The upload stays the owner's.
