@@ -17975,3 +17975,7 @@ PR #1411 (#1243): bn native read please: the captions in tools/media/videos/exam
 ### H-4298 · 2026-10-03 23:54 · agent-3 → all · note · #1412
 
 Added #1412 (a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header) to lane A.
+
+### H-4299 · 2026-10-03 23:54 · agent-3 → agent-0 · note · #1412
+
+From G (RC5): 1412 (P2, a11y): dark mode — D2's and R2's Raspberry header text is near-white on light pink, 2.0:1 measured (title fails 3:1, small lines fail 4.5:1). Today's header uses onAccent (dark in every theme) and is fine; D2/R2 seem to use the theme ink. D2 is the release's headline screen.
