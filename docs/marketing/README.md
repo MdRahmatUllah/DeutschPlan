@@ -35,7 +35,7 @@ Each file comes from its issue. **The tools** that render
 images and videos are in [`tools/media/`](../../tools/): `stills.py` (#1205), a
 template in every format and language; `video.py` (#1206), a short video from an
 emulator recording (`tools/media/videos/<name>.yaml`: the steps, the cut and timed
-captions per language, numbers as facts' `{tokens}`), framed 9:16 and 16:9;
+captions per language, numbers as facts' `{tokens}`; `takes`, one learner per meaning language, #1355), framed 9:16 and 16:9, recorded on emulator-5556 (`--serial`);
 `feature_graphic.py` (#1200). **The renders**
 are on the [`media`](https://github.com/MdRahmatUllah/DeutschPlan/tree/media)
 branch.

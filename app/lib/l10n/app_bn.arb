@@ -1116,7 +1116,7 @@
   "myDocumentsPdf": "PDF, {pages} পৃষ্ঠা",
   "myDocumentsText": "টেক্সট",
   "myDocumentsAdded": "{count}টি শব্দ যোগ হয়েছে",
-  "myDocumentsNothingNew": "নতুন কিছু নেই",
+  "myDocumentsNoneAdded": "এখনো কোনো শব্দ যোগ হয়নি",
   "myDocumentsStorage": "{count}টি ডকুমেন্ট · {megabytes} MB (ছবি)",
   "myDocumentsStorageNone": "{count}টি ডকুমেন্ট",
   "myDocumentsOptions": "{title}-এর বিকল্প",

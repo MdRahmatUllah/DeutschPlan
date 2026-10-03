@@ -84,13 +84,28 @@ void main() {
       '2 Oct · ${l10n.myDocumentsPhotos(4)} · ${l10n.myDocumentsAdded(5)}',
       '28 Sep · ${l10n.myDocumentsText} · ${l10n.myDocumentsAdded(3)}',
       '20 Sep · ${l10n.myDocumentsPdf(6)} · ${l10n.myDocumentsAdded(12)}',
-      '12 Sep · ${l10n.myDocumentsPhotos(1)} · ${l10n.myDocumentsNothingNew}',
+      '12 Sep · ${l10n.myDocumentsPhotos(1)} · ${l10n.myDocumentsNoneAdded}',
     ]) {
       expect(find.text(line), findsOneWidget);
     }
     expect(find.text(l10n.myDocumentsStorage(4, 18)), findsOneWidget);
     // A PDF's icon is D1's Choose a PDF's (agent-3 on #1299).
     expect(find.byIcon(Icons.picture_as_pdf_outlined), findsOneWidget);
+  });
+
+  test('#1358 FR-D3-01 a row with no word added says so, in every language, '
+      'never that the document has nothing new', () async {
+    const nothingNew = <String>[
+      'nothing new',
+      'nic nowego',
+      'ничего нового',
+      'নতুন কিছু নেই',
+    ];
+    for (final locale in supportedLocales) {
+      final words = await AppLocalizations.delegate.load(locale);
+      expect(nothingNew, isNot(contains(words.myDocumentsNoneAdded)));
+    }
+    expect(l10n.myDocumentsNoneAdded, 'no words added yet');
   });
 
   testWidgets('with no photo kept, the storage line counts documents alone '
