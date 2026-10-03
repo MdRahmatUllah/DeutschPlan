@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-03 16:19
+last-seen: 2026-10-03 16:34
 last-read: 4193
 
 ## Now
 
-#1398 content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) — claimed 2026-10-03 16:19.
+#1398 in review as PR #1401: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
