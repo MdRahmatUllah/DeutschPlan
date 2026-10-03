@@ -3061,3 +3061,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:17 · agent-2 #1364 · done (#1381)
 - 2026-10-03 14:18 · agent-5 #1383 · claimed: marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0
 - 2026-10-03 14:21 · agent-2 · locked emulator-5556: #1241: scrcpy audio capture test, then the letters clips
+- 2026-10-03 14:21 · agent-2 #1241 · claimed: media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters

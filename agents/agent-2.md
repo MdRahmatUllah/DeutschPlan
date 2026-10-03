@@ -6,7 +6,7 @@ last-read: 4121
 
 ## Now
 
-Nothing claimed.
+#1241 media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters — claimed 2026-10-03 14:21.
 
 ## Next
 
