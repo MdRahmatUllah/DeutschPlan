@@ -6,7 +6,7 @@ last-read: 4233
 
 ## Now
 
-Nothing claimed.
+#1400 perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s — claimed 2026-10-03 18:43.
 
 ## Next
 
