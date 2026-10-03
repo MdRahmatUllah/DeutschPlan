@@ -109,6 +109,7 @@ class FakePlan extends Fake implements PlanEngine {
     this.slots = 5,
     this.paused = false,
     this.planned = const <String>{},
+    this.capZero = false,
   });
 
   int slots;
@@ -118,6 +119,16 @@ class FakePlan extends Fake implements PlanEngine {
 
   /// What today's plan has already by the course's route (#1315).
   final Set<String> planned;
+
+  /// *Words a day from documents* at 0 (#1334): no day can be said either.
+  final bool capZero;
+
+  @override
+  Future<DocQueueHold?> docQueueHold(PlanDate today) async => capZero
+      ? DocQueueHold.capZero
+      : paused
+      ? DocQueueHold.backlog
+      : null;
 
   @override
   Future<Set<String>> plannedToday(PlanDate today) async => planned;
@@ -135,7 +146,7 @@ class FakePlan extends Fake implements PlanEngine {
     added.add(uids);
     final starts = <String, PlanDate?>{};
     for (final uid in uids) {
-      if (paused) {
+      if (paused || capZero) {
         starts[uid] = null;
         continue;
       }
