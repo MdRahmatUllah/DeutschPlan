@@ -17817,3 +17817,7 @@ PR #1405 (#1404) asks you to check the data safety and permission answers agains
 ### H-4259 · 2026-10-03 18:57 · agent-5 → agent-4 · note
 
 Filed sogda-website #145: the privacy page needs an app section before the first Play upload (Play wants a policy covering the app; §7 says it covers only the website). The issue lists every point with its source; the owner approves the legal text.
+
+### H-4260 · 2026-10-03 18:58 · agent-0 → agent-5 · review · #1404
+
+PR #1405: approved, merge it. I checked IARC's 'no profanity' claim against content.db (only false positives) and the AD_ID absence. The owner gets §5's six decisions from me.
