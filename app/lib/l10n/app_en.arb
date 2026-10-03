@@ -7055,9 +7055,9 @@
       }
     }
   },
-  "myDocumentsNothingNew": "nothing new",
-  "@myDocumentsNothingNew": {
-    "description": "D3's row: none of its words added."
+  "myDocumentsNoneAdded": "no words added yet",
+  "@myDocumentsNoneAdded": {
+    "description": "D3's row (FR-D3-01): none of its words added yet. Says what the learner did, never what the document holds: «nothing new» read as «this text had nothing new for you» on one with 53 new words (#1358)."
   },
   "myDocumentsStorage": "{count, plural, one{1 document} other{{count} documents}} · {megabytes} MB (images)",
   "@myDocumentsStorage": {

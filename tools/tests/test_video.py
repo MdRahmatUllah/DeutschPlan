@@ -115,3 +115,57 @@ def test_after_runs_however_the_recording_ends(monkeypatch):
     with pytest.raises(SystemExit):
         video.record(script)
     assert ran == ["on", "screenrecord", "off"]
+
+
+@pytest.mark.parametrize("takes, why", [
+    ({"en": {"locales": ["en", "pl"]}}, "some of the script's locales"),
+    ({"en": {"locales": ["en"]}, "also": {"locales": ["en", "bn"]}}, "a locale is in two takes"),
+    ({"bn": {"locales": ["bn"], "prepare": [["not", "a", "step"]]}}, "prepare must be device.py steps"),
+])
+def test_a_broken_take_is_refused(takes, why):
+    with pytest.raises(video.ScriptError, match=why):
+        video.check(with_(takes=takes))
+
+
+def test_each_locale_is_cut_from_its_own_takes_recording_1355():
+    script = with_(takes={"bn": {"locales": ["bn"], "prepare": ["launch"]}})
+    video.check(script)
+    assert video.raw_of(script, "bn").name == "t-bn.mp4"
+    assert video.raw_of(script, "en").name == "t.mp4", "no take: the one recording"
+    assert video.raw_of(script, take="bn") == video.raw_of(script, "bn")
+
+
+def test_a_take_prepares_its_learner_unrecorded_before_flight_mode_goes_on(monkeypatch, tmp_path):
+    ran: list[str] = []
+
+    def run(args, check, **_):
+        ran.append(args[-1])
+        if "pull" in args:
+            Path(args[-1]).write_bytes(b"mp4")
+
+    monkeypatch.setattr(video, "RAW", tmp_path)
+    monkeypatch.setattr(video.device, "adb_path", lambda: "adb")
+    monkeypatch.setattr(video.subprocess, "run", run)
+    monkeypatch.setattr(video.subprocess, "Popen", lambda args: ran.append("recording") or SimpleNamespace(wait=lambda timeout: 0))
+    monkeypatch.setattr(video.time, "sleep", lambda seconds: None)
+    monkeypatch.setattr(video, "walk", lambda script, shell, serial: ran.append(" ".join(script["steps"])))
+    script = with_(takes={"bn": {"locales": ["bn"], "prepare": ["launch", "tap:শুরু করি"]}},
+                   before=["on"], after=["off"])
+    assert video.record(script, "emulator-5556", "bn").name == "t-bn.mp4"
+    assert ran[:5] == ["launch tap:শুরু করি", "on", "recording", "launch sleep2", "screenrecord"]
+    assert "off" in ran
+
+
+def test_the_recording_never_reaches_sqas_emulator_whatever_the_lock_1372(monkeypatch):
+    monkeypatch.setattr(video, "holds", lambda serial, agent: True)
+    monkeypatch.setattr(video.device, "agent", lambda: "agent-2")
+    monkeypatch.setattr(video, "record", lambda *_: pytest.fail("recorded on SQA's emulator"))
+    with pytest.raises(SystemExit, match="emulator-5554 is agent-3's"):
+        video.main(["flight-mode", "--record", "--serial", "emulator-5554"])
+
+
+def test_an_unknown_take_is_named_not_a_key_error_1372(monkeypatch):
+    monkeypatch.setattr(video, "holds", lambda serial, agent: True)
+    monkeypatch.setattr(video, "record", lambda *_: pytest.fail("recorded"))
+    with pytest.raises(SystemExit, match="has no take xx"):
+        video.main(["flight-mode", "--record", "--serial", "emulator-5556", "--takes", "en,xx"])
