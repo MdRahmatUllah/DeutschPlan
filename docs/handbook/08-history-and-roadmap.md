@@ -30,7 +30,7 @@ local time (CEST, UTC+2).
 | **2026-09-26, evening** | The owner renamed the app **Sogda** (sogda.de), with the application id `de.sogda.app`, internals included (ADR 28, #601), and adopted the brand kit in `docs/sogda-brand-kit/` (#602) |
 | **2026-09-30** | The owner chose Hy-MT2-1.8B (Apache-2.0) as the translator, offered in every build (#533; ADR 30) |
 | **2026-10-02** | M9 created at 10:44 for v1.2.0 (epic #1219), and the owner's four calls recorded on #1220. The spec merged at 11:32 (#1251), and **v1.1.0 was tagged at 11:46** on `4106e393` (#1250). By midnight the artboards, user.db v6, the lemmatiser, the matcher, the document queue, the text, PDF and photo inputs, D2, D3 and M3's group had merged; D1's *Choose a PDF* followed at 01:00 |
-| **2026-10-03** | SQA's v1.2.0 pass (#1234) went on through the night, and its findings were fixed as they came. The owner decided to add the everyday words (#1257) and the rating ask (#1237), which merged at 02:10 (#1321) |
+| **2026-10-03** | SQA's v1.2.0 pass (#1234) went on through the night, and its findings were fixed as they came. The owner decided to add the everyday words (#1257) and the rating ask (#1237), which merged at 02:10 (#1321). The owner put M9 in the first release: the first Play upload is v1.2.0, not 1.1.0 (#1383). |
 
 Commits on main per day: 22, 46, 22, 44, 74 and 86.
 
@@ -248,6 +248,8 @@ M9's open issues on 2026-10-03:
 | #1235 | The release: the changelog, What's new in four listings, the tag | Draft PR #1312, which merges last |
 
 ### Then: the Play release
+
+**The first release is v1.2.0** (the owner, 2026-10-03): M9 is in it, so the closed test and the launch carry the learner's own documents and Hy-MT2, and the launch content folds 1.2.0's in (#1383).
 
 | Item | Who | State |
 |---|---|---|

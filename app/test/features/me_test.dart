@@ -17,6 +17,7 @@ import 'package:sogda/features/me/me_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/router/routes.dart' show SettingsRoute;
 
 import '../core/keyboard.dart';
 import '../core/semantics_checks.dart';
@@ -326,6 +327,15 @@ void main() {
         ),
         findsOneWidget,
       );
+    });
+
+    testWidgets('#1364 the step under way with its mocks locked offers to '
+        'lower the unlock threshold: a tap opens M3 at its row', (
+      tester,
+    ) async {
+      await pump(tester);
+      await tapAndSettle(tester, find.text(l10n.examUnlockLower));
+      expect(went, const SettingsRoute(row: SettingsRoute.examUnlock).location);
     });
 
     testWidgets('on schedule: no backlog line, and nowhere to go', (
