@@ -10,7 +10,7 @@ last-read: 3919
 
 ## Next
 
-#1234: remaining = S24 (camera-path EXIF/cache copy, Hy-MT2 timing) when the owner allows; perf after #1322; re-check #1332/#1333/#1334 fixes and #1279/#1313 once merged; then the release candidate for #1235 (full suite at milestone end).
+1) #1342: device check (release x64 on 5554, under the lock), merge main in, merge. 2) #1343: finish the gate (D1 tests/goldens, deep links, guards), device check, PR. 3) #1332: share images. 4) #1234: re-checks of #1313, #1346, #1351 + TalkBack on a phone. Heavy steps wait for memory (2.8 GB free at 09:45).
 
 ## Memory
 
