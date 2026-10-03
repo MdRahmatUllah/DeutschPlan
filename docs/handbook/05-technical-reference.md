@@ -336,17 +336,19 @@ rolling; the widget snapshot is written at midnight, hourly and whenever it
 changes.
 
 **Translation** ([`translation.md`](../03-domain/translation.md)).
-The `Translator` interface exists (`services/translation/translator.dart`),
-with `UnavailableTranslator` as its only implementation until #154 adds the
-llamadart-backed one for Hy-MT2-1.8B (ADR 30, v1.2.0). Hy-MT2 is
-Apache-2.0, so its download is offered in every build; ADR 9's
-`ENABLE_HYMT_DOWNLOAD` is gone. The design: `translatorProvider` gives the
-llama-backed translator while the model is on the phone and `mt_enabled` is
-on; the model card's prompt with no system prompt, its sampling (temperature
-0.7, top_p 0.6, top_k 20), at most 256 new tokens, a 1,024-token context and
-the file memory-mapped; one translation at a time; loaded on the first,
-released in the background and under memory pressure. The manifest pins
-`tencent/Hy-MT2-1.8B-GGUF` at a revision, with the file's SHA-256.
+The `Translator` interface (`services/translation/translator.dart`) is
+filled by `HyMtTranslator` (`services/translation/hymt_translator.dart`):
+Hy-MT2-1.8B through llamadart (ADR 30, #154, v1.2.0), which answers nothing
+while translation is off, the model isn't on the phone, or the phone is below
+its 3.5 GiB memory floor. Hy-MT2 is Apache-2.0, so its download is offered in
+every build; ADR 9's `ENABLE_HYMT_DOWNLOAD` is gone. The model card's prompt
+with no system prompt, its sampling (temperature 0.7, top_p 0.6, top_k 20), at
+most 256 new tokens, a 1,024-token context and the file memory-mapped; one
+translation at a time, 60 s at most; loaded on the first, released in the
+background, under memory pressure and before a delete. The manifest pins
+`tencent/Hy-MT2-1.8B-GGUF` at a revision, with the file's SHA-256. W1's
+*Translate*, T5's word sheet and R1's *No results* use it, cached in
+`translation_cache`.
 
 ## Shared components
 

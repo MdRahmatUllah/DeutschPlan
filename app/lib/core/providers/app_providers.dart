@@ -65,6 +65,8 @@ import 'package:sogda/services/page_photos.dart';
 import 'package:sogda/services/pdf_text.dart';
 import 'package:sogda/services/play_review.dart';
 import 'package:sogda/services/shared_text.dart';
+import 'package:sogda/services/translation/hymt_translator.dart';
+import 'package:sogda/services/translation/outside_meanings.dart';
 import 'package:sogda/services/translation/translator.dart';
 import 'package:sogda/services/tts/supertonic_tts.dart';
 import 'package:sogda/services/tts/system_tts.dart';
@@ -461,10 +463,25 @@ ModelRepository modelRepository(Ref ref) =>
 // `project-structure.md`: platform plugins behind small interfaces, so a test
 // can put a fake in the scope instead of a method channel that is not there.
 
-/// On-device translation: nothing yet. #154 puts the Hy-MT model here, and
-/// until it does `mt_enabled` cannot be on.
+/// Hy-MT2 (#154, `translation.md`): kept alive, since loading the model takes
+/// seconds and its ~1.1 GB is mapped once. It answers nothing while
+/// `mt_enabled` is off or the model isn't on the phone.
+@Riverpod(keepAlive: true)
+HyMtTranslator hymtTranslator(Ref ref) {
+  final translator = HyMtTranslator(
+    models: ref.watch(modelRepositoryProvider),
+    settings: ref.watch(settingsProvider),
+    downloads: ref
+        .watch(modelDownloadsProvider)
+        .watch(ModelRepository.translationModel),
+  );
+  ref.onDispose(() => unawaited(translator.dispose()));
+  return translator;
+}
+
+/// On-device translation (`translation.md`): Hy-MT2 through llamadart.
 @riverpod
-Translator translator(Ref ref) => const UnavailableTranslator();
+Translator translator(Ref ref) => ref.watch(hymtTranslatorProvider);
 
 /// W1's *Translate* (FR-W1-05): the translator through `translation_cache`.
 @riverpod
@@ -473,6 +490,76 @@ TranslationRepository translationRepository(Ref ref) => TranslationRepository(
   ref.watch(translatorProvider),
   ref.watch(clockProvider),
 );
+
+/// A word outside the course in [sentence]: Hy-MT2's suggestions into each
+/// meaning language, in order, the first as soon as it lands (#1233, D2's
+/// mini card, which shows the first): the bare word's meaning, then the
+/// sentence's as *here* when it differs. Empty with no model or translation
+/// off, where D2 offers M4's download instead.
+@riverpod
+Stream<Map<String, List<MeaningSuggestion>>> outsideMeaning(
+  Ref ref,
+  String word,
+  String sentence,
+) {
+  // The card closed: nobody waits for it (#154).
+  final gone = Completer<void>();
+  ref.onDispose(gone.complete);
+  return OutsideMeanings(ref.watch(translationRepositoryProvider)).of(
+    word,
+    sentence,
+    meaningChoiceOf(ref.watch(settingsProvider)).languages,
+    abandoned: gone.future,
+  );
+}
+
+/// Whether this phone has the memory Hy-MT2 needs (#154): M4 offers it, and
+/// M3 turns translation on, only then.
+@riverpod
+Future<bool> translationFits(Ref ref) async =>
+    HyMtTranslator.fitsIn(await ref.watch(deviceStorageProvider).memory());
+
+/// Whether D2's card offers M4's download for a word outside the course
+/// (#1300): only while Hy-MT2 isn't on the phone and the phone has the
+/// memory for it. With the model there (translation off in M3, or a run
+/// that found nothing), a download would bring nothing.
+@riverpod
+Future<bool> translationDownloadable(Ref ref) async {
+  if (!await ref.watch(translationFitsProvider.future)) return false;
+  final models = ref.watch(modelRepositoryProvider);
+  final entry = (await models.manifest()).model(
+    ModelRepository.translationModel,
+  );
+  if (entry == null || entry.variants.isEmpty) return false;
+  final state = await models.stateOf(entry, entry.variants.first, sized: false);
+  return state.status == ModelStatus.notDownloaded;
+}
+
+/// `mt_enabled`, followed (#154): the Search tab keeps R1's *No results*
+/// on screen while Settings turns translation on or off.
+@riverpod
+bool mtEnabled(Ref ref) {
+  final settings = ref.watch(settingsProvider);
+  final changes = settings.changes
+      .where((key) => key == SettingKeys.mtEnabled)
+      .listen((_) => ref.invalidateSelf());
+  ref.onDispose(changes.cancel);
+  return settings.read(SettingKeys.mtEnabled);
+}
+
+/// [text] from [from] into [to], through [translationRepository] (cached):
+/// T5's word sheet and R1's *Translate* (#154). Null with translation off or
+/// no model on the phone.
+@riverpod
+Future<String?> translationOf(Ref ref, String text, String from, String to) {
+  // Off the screen (a sheet closed), nobody waits for it: dropped, or
+  // stopped, rather than holding up the next one (#154).
+  final gone = Completer<void>();
+  ref.onDispose(gone.complete);
+  return ref
+      .watch(translationRepositoryProvider)
+      .translate(text, from: from, to: to, abandoned: gone.future);
+}
 
 /// Learn from your documents (#1230): D1's saved texts, the matcher's run
 /// and what D2 adds.

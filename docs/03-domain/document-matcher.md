@@ -112,6 +112,18 @@ With Hy-MT2 downloaded (#154):
 
 The result is labelled *machine-translated* (`custom_words.mt = 1`) and can be edited before saving. Without the model, the meaning is empty, and D2 links to M4's download. Results are cached in `translation_cache`, keyed by the model id.
 
+**As built (#1233; the lead's call on #1278: a suggestion, never pre-filled):**
+- **`OutsideMeanings.of(word, sentence, languages)`** (`services/translation/outside_meanings.dart`) asks for each meaning language in turn, the first first, and gives up to two suggestions:
+  - **the bare word's meaning first:** the headword's, more often in its base form;
+  - **then the word in its sentence** (the card's background-information prompt, `translation.md`) as *here*, when it differs, for the sense there, though often in the sentence's form («Mieszkańcy», «বেঞ্চগুলোতে»).
+- **Why both:** #1278's spot check (50 corpus words each in pl, bn and ru) found about a third of the answers wrong, and each prompt failing where the other held. So the learner chooses, and nothing is filled in for them.
+- **An in-sentence answer that isn't the word's is left out:** empty, 5 words or more, or ending as a sentence ends («.», «।»). Every real meaning in the spot check had 1 to 4 words. With nothing from either prompt, the language is left out. So with no model, translation off, or a phone below Hy-MT2's memory floor, the map is empty.
+- **`outsideMeaningProvider(word, sentence)`** streams the suggestions in the learner's meaning languages for D2's mini card, which shows the first with the *machine-translated* label. It grows as each answer lands: the bare word's at once, then the sentence's, a language at a time (up to four model runs a card). It ends empty when there's nothing, and it abandons its requests when the card closes (#154).
+- **A bare answer that explains rather than translates is left out too:** more than 6 words, or ending as a sentence ends. A compound's meaning may run to 5 («কফি পাত্র গরম করার যন্ত্র»).
+- **R2 from D2** (FR-D2-05): `AddWordRoute.openAndWait(context, german:, example:, where:, meanings:, meaningsHere:)` fills in the word, its sentence and the document's title; D2 reads the document again once R2 closes (#1294, #1300).
+  - **The meaning stays empty.** Under it, "Machine-translated: check it first" sits over the suggestions as chips: the bare word's, then «here: …».
+  - **A tap fills the field** with the chip's text, and the chip shows ticked. *Save* writes `custom_words.mt = 1` while the field holds that text. An edited meaning is the learner's (BR-DOC-07), and so is one edited later in R2's edit mode.
+
 ## Tests
 - The lemmatiser on the corpus, with precision and recall as asserted numbers.
 - The separable-verb, compound and ambiguity cases each named in a test.

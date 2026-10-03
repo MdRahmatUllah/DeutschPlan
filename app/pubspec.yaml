@@ -79,6 +79,9 @@ dependencies:
   # card, once, after the first passed mock exam.
   in_app_review: ^2.0.12
 
+  # On-device translation (ADR 30, #154): Hy-MT2 through llama.cpp.
+  llamadart: ^0.9.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -98,6 +101,22 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   # riverpod_lint 3.1.4+ is a native analyzer plugin; it no longer needs custom_lint
   riverpod_lint: ^3.1.9
+
+# llamadart's native-assets hook bundles only llama.cpp's CPU backend (ADR 27,
+# back with ADR 30). Hy-MT2 runs on the CPU; by default the hook also ships the
+# Vulkan backend and the whole LiteRT-LM runtime (LiteRT, WebGPU, the Gemma
+# constraint libraries), about 77 MB of the arm64 APK that nothing loads.
+# `runtimes` drops LiteRT-LM on every platform, iOS included (no Apple
+# companion package here); `backends` is Android's (Apple's are fixed). The
+# keys are read by llamadart's hook/build.dart and
+# lib/src/hook/native_bundle_config.dart (the same names in 0.9.0).
+hooks:
+  user_defines:
+    llamadart:
+      llamadart_native_runtimes: llama_cpp
+      llamadart_native_backends:
+        platforms:
+          android: [cpu]
 
 flutter:
   uses-material-design: true

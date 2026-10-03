@@ -16,20 +16,31 @@ class TranslationRepository {
     String text, {
     required String from,
     required String to,
+    String? context,
+    Future<void>? abandoned,
   }) async {
     final model = _translator.model;
+    // ponytail: a word in its sentence is keyed by both, the sentence after a
+    // unit separator no text has; a context column when the cache needs one.
+    final key = context == null ? text : '$text\u001f$context';
     final cached =
         await (_db.select(_db.translationCache)..where(
               (t) =>
                   t.srcLang.equals(from) &
                   t.tgtLang.equals(to) &
-                  t.srcText.equals(text) &
+                  t.srcText.equals(key) &
                   t.model.equals(model),
             ))
             .getSingleOrNull();
     if (cached != null) return cached.result;
 
-    final result = await _translator.translate(text, from: from, to: to);
+    final result = await _translator.translate(
+      text,
+      from: from,
+      to: to,
+      context: context,
+      abandoned: abandoned,
+    );
     if (result == null) return null;
     await _db
         .into(_db.translationCache)
@@ -37,7 +48,7 @@ class TranslationRepository {
           TranslationCacheCompanion.insert(
             srcLang: from,
             tgtLang: to,
-            srcText: text,
+            srcText: key,
             model: model,
             result: result,
             createdAt: _now().toUtc().toIso8601String(),

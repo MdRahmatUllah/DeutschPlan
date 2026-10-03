@@ -1142,6 +1142,39 @@ void main() {
     });
   });
 
+  group("#154 mt_enabled is this phone's: a file never carries the model", () {
+    String fileWith({required String mt}) => jsonEncode(<String, Object?>{
+      'schema_version': AppDatabase.latestSchemaVersion,
+      'content_version': null,
+      'exported_at': '2026-10-02T08:00:00Z',
+      'tables': <String, Object?>{
+        'settings': <Object?>[
+          <String, Object?>{'key': 'mt_enabled', 'value': mt},
+        ],
+      },
+    });
+
+    Future<Object?> mtEnabled() async =>
+        (await rowsOf('settings'))
+            .where((row) => row['key'] == 'mt_enabled')
+            .map((row) => row['value'])
+            .firstOrNull;
+
+    for (final mode in ImportMode.values) {
+      test('#154 FR-M3-03 ${mode.name}: a file with translation on leaves a '
+          'phone without it off', () async {
+        await backup.import(fileWith(mt: '1'), mode: mode);
+        expect(await mtEnabled(), isNull, reason: 'off, as it was');
+      });
+
+      test('#154 ${mode.name}: and a phone with it on keeps it on', () async {
+        await sql("INSERT INTO settings VALUES ('mt_enabled', '1')");
+        await backup.import(fileWith(mt: '0'), mode: mode);
+        expect(await mtEnabled(), '1');
+      });
+    }
+  });
+
   group('#369 words of my own, in both modes', () {
     String fileWith(Map<String, Object?> tables) =>
         jsonEncode(<String, Object?>{

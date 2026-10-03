@@ -24,6 +24,7 @@ import 'package:sogda/domain/sentence_picker.dart';
 import 'package:sogda/features/study/study_summary.dart';
 import 'package:sogda/features/study/write_guard.dart';
 import 'package:sogda/features/words/speak.dart';
+import 'package:sogda/features/words/translation_line.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
 
@@ -615,9 +616,8 @@ class _SentencePageState extends ConsumerState<_SentencePage> {
 }
 
 /// FR-T5-03's mini sheet: a course word's meaning and a way to it, or — for
-/// a word the course lacks — Duden. ponytail: the translation model's path
-/// ("translation if `mt_enabled`") waits for M6's translator; until then
-/// `mt_enabled` cannot be on, and Duden is what there is.
+/// a word the course lacks — with `mt_enabled` its translation into the
+/// first meaning language (#154), and Duden.
 class _TokenSheet extends ConsumerWidget {
   const _TokenSheet({required this.token, required this.word});
 
@@ -666,6 +666,10 @@ class _TokenSheet extends ConsumerWidget {
               role: SgTextRole.body,
               color: tokens.color.textSecondary,
             ),
+            if (ref.watch(mtEnabledProvider)) ...[
+              const SizedBox(height: 8),
+              TranslationLine(token, from: 'de', to: meanings.choice.primary),
+            ],
             const SizedBox(height: 12),
             SgButton(
               label: l10n.sentencesDuden,

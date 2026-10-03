@@ -1511,6 +1511,9 @@ class _Storage implements DeviceStorage {
     await hold;
     return (free: free, total: free * 10);
   }
+
+  @override
+  Future<int?> memory() async => null;
 }
 
 /// A repository whose rename into place fails, as on a full disk.

@@ -54,11 +54,23 @@ void main() {
             ),
             GoRoute(
               path: 'add',
-              builder: (_, state) =>
-                  Text('R2 ${state.uri.queryParameters['german']}'),
+              builder: (_, state) => Text(
+                <String>[
+                  'R2',
+                  for (final key in <String>[
+                    'german',
+                    'example',
+                    'where',
+                    'meanings',
+                    'meanings-here',
+                  ])
+                    ...?state.uri.queryParametersAll[key],
+                ].join(' | '),
+              ),
             ),
           ],
         ),
+        GoRoute(path: '/me/models', builder: (_, _) => const Text('M4')),
       ],
     );
     addTearDown(router.dispose);
@@ -270,15 +282,76 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets('FR-D2-05 a word outside the course opens R2 with its German', (
+  const sentence =
+      'Er will die Heizkörper kontrollieren und den Wasserzähler ablesen.';
+
+  testWidgets('FR-D2-05 #1300 a word outside the course opens R2 with its '
+      'German, its sentence, the document\'s title and Hy-MT2\'s '
+      'suggestions, the bare word\'s apart from the sentence\'s', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      docWordsStub(
+        meanings: const <String, List<({String meaning, bool here})>>{
+          'en': <({String meaning, bool here})>[
+            (meaning: 'water meter', here: false),
+            (meaning: 'the water meter', here: true),
+          ],
+          'bn': <({String meaning, bool here})>[
+            (meaning: 'পানির মিটার', here: false),
+          ],
+        },
+      ),
+    );
+    await tapWord(tester, 'Wasserzähler');
+    expect(find.text(l10n.docWordsCardOutside), findsOneWidget);
+    expect(find.text('water meter'), findsOneWidget, reason: 'the first');
+    expect(find.text(l10n.docWordsCardMachine), findsOneWidget);
+    expect(find.text(l10n.docWordsCardNoMeaning), findsNothing);
+    await tester.tap(find.text(l10n.docWordsCardAddMine));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'R2 | Wasserzähler | $sentence | Nebenkosten 2025 | water meter | '
+        'পানির মিটার | the water meter',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('#1233 #1300 with no meaning and Hy-MT2 not on the phone, the '
+      'card offers M4\'s download, and R2 opens with no suggestions', (
+    tester,
+  ) async {
+    final router = await pump(tester, docWordsStub(downloadable: true));
+    await tapWord(tester, 'Wasserzähler');
+    expect(find.text(l10n.docWordsCardMachine), findsNothing);
+    await tester.tap(find.text(l10n.docWordsCardAddMine));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('R2 | Wasserzähler | $sentence | Nebenkosten 2025'),
+      findsOneWidget,
+    );
+    router.pop();
+    await tester.pumpAndSettle();
+    await tapWord(tester, 'Wasserzähler');
+    await tester.tap(find.text(l10n.docWordsCardNoMeaning));
+    await tester.pumpAndSettle();
+    expect(find.text('M4'), findsOneWidget);
+  });
+
+  testWidgets('#1300 with no meaning while a download would bring none (the '
+      'model there with translation off or a run that found nothing, or a '
+      'phone below the floor), the card says nothing of a meaning', (
     tester,
   ) async {
     await pump(tester, docWordsStub());
     await tapWord(tester, 'Wasserzähler');
     expect(find.text(l10n.docWordsCardOutside), findsOneWidget);
-    await tester.tap(find.text(l10n.docWordsCardAddMine));
-    await tester.pumpAndSettle();
-    expect(find.text('R2 Wasserzähler'), findsOneWidget);
+    expect(find.text(l10n.docWordsCardMachine), findsNothing);
+    expect(find.text(l10n.docWordsCardNoMeaning), findsNothing);
+    expect(find.text(l10n.docWordsCardAddMine), findsOneWidget);
   });
 
   testWidgets('FR-D2-06 a word that is already mine keeps the sentence, and '

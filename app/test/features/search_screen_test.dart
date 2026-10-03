@@ -31,6 +31,7 @@ import 'package:sogda/main.dart'
 import 'package:sogda/router/app_router.dart';
 import 'package:sogda/router/route_guards.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/services/translation/translator.dart';
 
 import '../core/keyboard.dart';
 import '../core/semantics_checks.dart';
@@ -1121,6 +1122,36 @@ void main() {
       ]);
     });
 
+    testWidgets('#154 with translation on, Translate "…" shows the query '
+        'both ways, and remembers the search', (tester) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          translatorProvider.overrideWithValue(const _Translator()),
+        ],
+      );
+      await settings.write(SettingKeys.mtEnabled, true);
+      await type(tester, 'Fahrrad');
+      await tester.tap(find.text(l10n.searchTranslate('Fahrrad')));
+      await settle(tester);
+      final primary = meaningChoiceOf(settings).primary;
+      expect(find.text(l10n.translateFromGerman.toUpperCase()), findsOneWidget);
+      expect(find.text('de→$primary: Fahrrad'), findsOneWidget);
+      expect(find.text('$primary→de: Fahrrad'), findsOneWidget);
+      expect(settings.read(SettingKeys.recentSearches), contains('Fahrrad'));
+    });
+
+    testWidgets('#154 with translation off, no Translate; turned on in '
+        'Settings while the search shows, it appears', (tester) async {
+      await pump(tester);
+      await type(tester, 'Fahrrad');
+      expect(find.text(l10n.searchTranslate('Fahrrad')), findsNothing);
+
+      await settings.write(SettingKeys.mtEnabled, true);
+      await settle(tester);
+      expect(find.text(l10n.searchTranslate('Fahrrad')), findsOneWidget);
+    });
+
     testWidgets('Add "…" as my word opens R2 with the word filled in, and '
         'remembers the search', (tester) async {
       await pump(tester, routed: true);
@@ -1294,4 +1325,21 @@ void main() {
     expect(tapsInsideTaps(tester), isEmpty);
     semantics.dispose();
   });
+}
+
+/// A translator whose answer names its direction (#154).
+class _Translator implements Translator {
+  const _Translator();
+
+  @override
+  String get model => 'test';
+
+  @override
+  Future<String?> translate(
+    String text, {
+    required String from,
+    required String to,
+    String? context,
+    Future<void>? abandoned,
+  }) async => '$from→$to: $text';
 }

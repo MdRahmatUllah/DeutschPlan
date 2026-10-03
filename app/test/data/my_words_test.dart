@@ -36,6 +36,7 @@ void main() {
     meaning: 'deposit',
     whereSeen: 'Rewe',
     example: 'Ich bekomme das Pfand zurück.',
+    mt: false,
   );
 
   late Directory directory;

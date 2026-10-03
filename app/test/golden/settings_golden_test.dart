@@ -3,9 +3,11 @@
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
+import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/features/me/settings_screen.dart';
 
 import '../features/settings_fixtures.dart';
@@ -53,6 +55,20 @@ void main() {
     textAudit: false,
   );
   goldenTest('settings_bottom', builder: screen, act: toTheEnd);
+  // #154: a phone below Hy-MT2's memory floor: translation off, dimmed, and
+  // the row says why.
+  goldenTest(
+    'settings_memory',
+    builder: (context) => ProviderScope(
+      overrides: <Override>[
+        ...artboardSettingsStub(),
+        translationFitsProvider.overrideWith((ref) async => false),
+      ],
+      child: const SettingsScreen(),
+    ),
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    act: toTheEnd,
+  );
   goldenTest(
     'settings_ios',
     builder: screen,

@@ -19,48 +19,8 @@ WordDetail artboardWordDetail({
   List<({String german, String? translation})>? examples,
   bool translate = false,
   String kind = 'vocab',
-}) => WordDetail(
-  meanings: meanings ?? Meanings(meaning),
-  pron: pron,
-  translate: translate,
-  word: WordWithState(
-    word: Word(
-      kind: kind,
-      uid: uid,
-      sublevelCode: 'A1.1',
-      levelCode: 'A1',
-      seq: 1,
-      seqInSublevel: 1,
-      article: article,
-      german: german,
-      forms: '-n',
-      pos: 'noun',
-      pronBn: 'স্ট্রাসে',
-      english: 'street, road',
-      bangla: 'রাস্তা',
-      collocations: 'die Straße überqueren; auf der Straße; die Straße entlang',
-      synonymsRegister: 'Gasse = narrow street · Weg = path, way',
-      searchKey: 'strasse',
-      searchKeyAlt: 'strasse',
-    ),
-    state: WordStateData(
-      wordUid: uid,
-      status: status.name,
-      introducedOn: '2026-09-01',
-      due: '2026-09-29',
-      stability: 30,
-      difficulty: 5,
-      reps: 5,
-      lapses: 0,
-      fsrsState: 2,
-      lastReview: '2026-09-21T08:00:00Z',
-      cardMode: 'plain',
-      cardModeManual: 0,
-      timesLogged: 0,
-    ),
-    status: status,
-  ),
-  examples:
+}) {
+  final lines =
       examples ??
       const <({String german, String? translation})>[
         (
@@ -71,8 +31,60 @@ WordDetail artboardWordDetail({
           german: 'Wir wohnen in einer ruhigen Straße.',
           translation: 'We live on a quiet street.',
         ),
-      ],
-);
+      ];
+  // As the course: no Bangla example lines (#598), every other language's
+  // there, so *Translate* goes into Bangla when it's chosen (#154).
+  final bangla = meaning.languages.contains('bn');
+  return WordDetail(
+    meanings: meanings ?? Meanings(meaning),
+    pron: pron,
+    translate: translate,
+    translateTo: bangla ? 'bn' : null,
+    untranslated: <String>[
+      if (bangla)
+        for (final e in lines) e.german,
+    ],
+    word: WordWithState(
+      word: Word(
+        kind: kind,
+        uid: uid,
+        sublevelCode: 'A1.1',
+        levelCode: 'A1',
+        seq: 1,
+        seqInSublevel: 1,
+        article: article,
+        german: german,
+        forms: '-n',
+        pos: 'noun',
+        pronBn: 'স্ট্রাসে',
+        english: 'street, road',
+        bangla: 'রাস্তা',
+        collocations:
+            'die Straße überqueren; auf der Straße; die Straße entlang',
+        synonymsRegister: 'Gasse = narrow street · Weg = path, way',
+        searchKey: 'strasse',
+        searchKeyAlt: 'strasse',
+      ),
+      state: WordStateData(
+        wordUid: uid,
+        status: status.name,
+        introducedOn: '2026-09-01',
+        due: '2026-09-29',
+        stability: 30,
+        difficulty: 5,
+        reps: 5,
+        lapses: 0,
+        fsrsState: 2,
+        lastReview: '2026-09-21T08:00:00Z',
+        cardMode: 'plain',
+        cardModeManual: 0,
+        timesLogged: 0,
+      ),
+      status: status,
+    ),
+    examples: lines,
+  );
+}
 
 /// "reviewed 5 times · last: Good".
 const ReviewHistory artboardHistory = (reviews: 5, last: Rating.good);

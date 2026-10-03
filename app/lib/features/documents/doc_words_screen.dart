@@ -303,11 +303,24 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
             Navigator.of(sheet).pop();
             WordRoute.open(context, uid);
           },
-          onAddMine: () async {
+          onAddMine: (meanings, meaningsHere) async {
             Navigator.of(sheet).pop();
-            await AddWordRoute.openAndWait(context, german: word.surface);
+            // FR-D2-05 (#1300): the word with its sentence, the document and
+            // Hy-MT2's suggestions (BR-DOC-04, #1278).
+            await AddWordRoute.openAndWait(
+              context,
+              german: word.surface,
+              example: _sentenceOf(view, word).$1,
+              where: view.document.title,
+              meanings: meanings,
+              meaningsHere: meaningsHere,
+            );
             // Saved there, it is mine here: its chip and Keep this sentence.
             if (mounted) ref.invalidate(docWordsProvider(widget.id));
+          },
+          onDownload: () {
+            Navigator.of(sheet).pop();
+            ModelsRoute.open(context);
           },
           onKeepSentence: () {
             Navigator.of(sheet).pop();
@@ -1077,6 +1090,7 @@ class _WordCard extends ConsumerStatefulWidget {
     required this.onIgnore,
     required this.onOpen,
     required this.onAddMine,
+    required this.onDownload,
     required this.onKeepSentence,
   });
 
@@ -1087,7 +1101,14 @@ class _WordCard extends ConsumerStatefulWidget {
   final ValueChanged<String> onKnow;
   final VoidCallback onIgnore;
   final ValueChanged<String> onOpen;
-  final VoidCallback onAddMine;
+
+  /// FR-D2-05: R2 with Hy-MT2's suggestions, the bare word's and the
+  /// sentence's (#1278).
+  final void Function(List<String> meanings, List<String> meaningsHere)
+  onAddMine;
+
+  /// M4, for a word outside the course with no meaning yet (#1233).
+  final VoidCallback onDownload;
 
   /// FR-D2-06: the sentence kept with a word of my own.
   final VoidCallback onKeepSentence;
@@ -1106,6 +1127,13 @@ class _WordCardState extends ConsumerState<_WordCard> {
     final l10n = AppLocalizations.of(context);
     final word = widget.word;
     final uid = word.ambiguous ? _uid : word.entries.firstOrNull?.uid;
+    // #1233: Hy-MT2's suggestions for a word outside the course, by
+    // language; null while they run, and for any other word.
+    final machine = word.docClass == DocClass.outside
+        ? ref
+              .watch(outsideMeaningProvider(word.surface, widget.sentence.$1))
+              .value
+        : null;
     final children = <Widget>[];
     if (word.entries.isEmpty) {
       children.addAll(<Widget>[
@@ -1118,6 +1146,25 @@ class _WordCardState extends ConsumerState<_WordCard> {
           role: SgTextRole.body,
           color: tokens.color.textSecondary,
         ),
+        // #1233: Hy-MT2's meaning, the first language's, labelled. With
+        // none, M4's download, only when it would bring one (#1300).
+        // Nothing while it runs.
+        if (machine?.values.firstOrNull?.firstOrNull
+            case final first?) ...<Widget>[
+          const SizedBox(height: 8),
+          SgText(first.meaning, role: SgTextRole.body),
+          SgText(
+            l10n.docWordsCardMachine,
+            role: SgTextRole.caption,
+            color: tokens.color.textSecondary,
+          ),
+        ] else if (machine != null &&
+            (ref.watch(translationDownloadableProvider).value ?? false))
+          SgButton(
+            label: l10n.docWordsCardNoMeaning,
+            kind: SgButtonKind.text,
+            onPressed: widget.onDownload,
+          ),
         if (word.compound case final parts?) ...<Widget>[
           const SizedBox(height: 4),
           SgText(
@@ -1226,7 +1273,7 @@ class _WordCardState extends ConsumerState<_WordCard> {
           word: word.surface,
         ),
         const SizedBox(height: 16),
-        ..._actions(l10n, word, uid),
+        ..._actions(l10n, word, uid, machine),
       ]);
     }
     return Padding(
@@ -1241,13 +1288,32 @@ class _WordCardState extends ConsumerState<_WordCard> {
     );
   }
 
-  List<Widget> _actions(AppLocalizations l10n, DocWord word, String? uid) {
+  List<Widget> _actions(
+    AppLocalizations l10n,
+    DocWord word,
+    String? uid,
+    Map<String, List<({String meaning, bool here})>>? machine,
+  ) {
     if (uid == null) {
       return <Widget>[
         if (word.docClass == DocClass.outside)
           SgButton(
             label: l10n.docWordsCardAddMine,
-            onPressed: widget.onAddMine,
+            onPressed: () {
+              final all = <({String meaning, bool here})>[
+                for (final list in (machine ?? const {}).values) ...list,
+              ];
+              widget.onAddMine(
+                <String>[
+                  for (final s in all)
+                    if (!s.here) s.meaning,
+                ],
+                <String>[
+                  for (final s in all)
+                    if (s.here) s.meaning,
+                ],
+              );
+            },
           ),
         if (word.customId != null)
           SgButton(

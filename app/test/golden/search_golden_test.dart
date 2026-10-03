@@ -1,11 +1,16 @@
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
+import 'package:sogda/data/repositories/translation_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/features/search/search_screen.dart';
 
 import '../features/search_fixtures.dart';
+import '../features/settings_fixtures.dart';
 import '../services/fake_tts.dart';
 import 'golden_harness.dart';
 
@@ -147,6 +152,7 @@ void main() {
       courseWordsProvider.overrideWith((ref) async => 5594),
       recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
       myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
+      settingsProvider.overrideWithValue(StubSettings()),
       fakeVoice(FakeTts()),
     ],
     builder: (_) => const SearchScreen(),
@@ -156,6 +162,54 @@ void main() {
         'Wohnungsgeberbestätigung',
       );
       await tester.pump(SearchScreen.debounce);
+      await tester.pumpAndSettle();
+    },
+  );
+
+  // #154: the same search with on-device translation on: *Translate "…"*
+  // under *Add*, and its sheet, the query both ways.
+  List<Override> translating() => <Override>[
+    languagesProvider.overrideWith(StubLanguages.new),
+    searchResultsProvider.overrideWith(
+      (ref, query) => Stream.value(
+        const SearchView(words: <SearchRow>[], sentences: <SentenceHit>[]),
+      ),
+    ),
+    courseWordsProvider.overrideWith((ref) async => 5594),
+    recentSearchesProvider.overrideWith(() => StubRecentSearches(const [])),
+    myWordsProvider.overrideWith((ref) => Stream.value(const <MyWord>[])),
+    settingsProvider.overrideWithValue(
+      StubSettings()..put(SettingKeys.mtEnabled, true),
+    ),
+    translationRepositoryProvider.overrideWithValue(_Translations()),
+    fakeVoice(FakeTts()),
+  ];
+  Future<void> searchFor(WidgetTester tester) async {
+    await tester.enterText(find.byType(TextField), 'Wohnungsgeberbestätigung');
+    await tester.pump(SearchScreen.debounce);
+    await tester.pumpAndSettle();
+  }
+
+  goldenTest(
+    'search_none_translate',
+    overrides: translating(),
+    builder: (_) => const SearchScreen(),
+    act: searchFor,
+  );
+
+  goldenTest(
+    'search_translate_sheet',
+    overrides: translating(),
+    // The search field is under the sheet's scrim.
+    keyboard: false,
+    builder: (_) => const SearchScreen(),
+    act: (tester) async {
+      await searchFor(tester);
+      // The last button under No results, in every language the audit runs.
+      final button = find.byType(SgButton).last;
+      await tester.ensureVisible(button);
+      await tester.pumpAndSettle();
+      await tester.tap(button);
       await tester.pumpAndSettle();
     },
   );
@@ -186,6 +240,7 @@ void main() {
           ),
         ]),
       ),
+      settingsProvider.overrideWithValue(StubSettings()),
       fakeVoice(FakeTts()),
     ],
     builder: (_) => const SearchScreen(),
@@ -246,4 +301,20 @@ void main() {
     devices: const <GoldenDevice>[GoldenDevice.phone],
     textScale: 2,
   );
+}
+
+/// The translator's answers for the search (#154): the artboard's word, its
+/// meaning; and into German, a longer compound.
+class _Translations extends Fake implements TranslationRepository {
+  @override
+  Future<String?> translate(
+    String text, {
+    required String from,
+    required String to,
+    String? context,
+    Future<void>? abandoned,
+  }) async => to == 'de'
+      // Longer than a line at 200 %: it must break, only where it may.
+      ? '${text}sformular'
+      : "the landlord's confirmation of a move";
 }

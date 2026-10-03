@@ -32,6 +32,7 @@ part 'model_manager_screen.g.dart';
 enum ModelCardStatus {
   notDownloaded,
   notEnoughSpace,
+  needsMemory,
   downloading,
   verifying,
   ready,
@@ -40,14 +41,15 @@ enum ModelCardStatus {
 }
 
 /// One model's card: its manifest entry and build, what is on the phone, the
-/// download as it moves (null while there is none), and the bytes a new
-/// download would lack.
+/// download as it moves (null while there is none), the bytes a new
+/// download would lack, and whether the phone has the memory it needs.
 typedef ModelCard = ({
   ModelEntry entry,
   ModelVariant variant,
   ModelState installed,
   DownloadProgress? live,
   int shortfall,
+  bool fits,
 });
 
 /// The card's state: the download's while one is running, and otherwise
@@ -71,6 +73,8 @@ ModelCardStatus cardStatusOf(ModelCard card) {
     ModelStatus.failed => ModelCardStatus.failed,
     ModelStatus.verifying => ModelCardStatus.verifying,
     ModelStatus.downloading => ModelCardStatus.downloading,
+    // #154: a phone below Hy-MT2's memory floor isn't offered it at all.
+    ModelStatus.notDownloaded when !card.fits => ModelCardStatus.needsMemory,
     ModelStatus.notDownloaded =>
       card.shortfall > 0
           ? ModelCardStatus.notEnoughSpace
@@ -84,6 +88,10 @@ ModelCardStatus cardStatusOf(ModelCard card) {
 Stream<ModelCard> modelCard(Ref ref, String id) async* {
   final models = ref.watch(modelRepositoryProvider);
   final downloads = ref.watch(modelDownloadsProvider);
+  // Only Hy-MT2 has a memory floor (#154).
+  final fits =
+      id != ModelRepository.translationModel ||
+      await ref.watch(translationFitsProvider.future);
   final manifest = await models.manifest();
   final entry = manifest.model(id);
   if (entry == null || entry.variants.isEmpty) return;
@@ -111,6 +119,7 @@ Stream<ModelCard> modelCard(Ref ref, String id) async* {
       // The manager's own check (#428), margin and all, so the card and
       // `start` never disagree.
       shortfall: needsSpace ? await downloads.shortfallFor(id) : 0,
+      fits: fits,
     );
   }
 
@@ -599,6 +608,11 @@ class _ModelCardView extends ConsumerWidget {
             ],
           ),
         ];
+      // #154: no *Download*; the note says what the phone lacks.
+      case ModelCardStatus.needsMemory:
+        return <Widget>[
+          note(l10n.modelsNeedsMemory(l10n.modelsSizeGb(l10n.digits(4)))),
+        ];
       case ModelCardStatus.notDownloaded:
         return <Widget>[
           _Actions(
@@ -635,6 +649,10 @@ class _ModelCardView extends ConsumerWidget {
     );
     if (confirmed != true) return;
     try {
+      // Hy-MT2 lets go of its mapped file first (#154).
+      if (!_isVoice && container.exists(hymtTranslatorProvider)) {
+        await container.read(hymtTranslatorProvider).release();
+      }
       // #1265: a failed attempt is forgotten first, so it holds nothing.
       if (card.live?.phase == DownloadPhase.failed) {
         await container.read(modelDownloadsProvider).forget(card.entry.id);
@@ -722,6 +740,11 @@ class _StatusPill extends StatelessWidget {
       ModelCardStatus.notEnoughSpace => (
         l10n.modelsStatusNoSpace,
         tokens.color.again,
+        null,
+      ),
+      ModelCardStatus.needsMemory => (
+        l10n.modelsStatusNoMemory,
+        tokens.surface.muted,
         null,
       ),
       ModelCardStatus.notDownloaded => (
