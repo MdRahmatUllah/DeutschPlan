@@ -645,7 +645,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number |  |  |  |
-| pubspec | agent-1 | 2026-10-03 01:22 | #1237: add in_app_review (owner-accepted 2026-10-03) |
+| pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 | workbooks |  |  |  |
