@@ -677,7 +677,7 @@ The emulator lock is local, not here: `team.py device`.
 |---|---|---|---|
 | user-db-schema |  |  |  |
 | adr-number |  |  |  |
-| pubspec | agent-1 | 2026-10-03 19:52 | #1409: pin path_provider_android 2.2.23 (no jni) |
+| pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
 | workbooks |  |  |  |
