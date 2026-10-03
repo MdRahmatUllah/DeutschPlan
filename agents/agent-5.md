@@ -6,7 +6,7 @@ last-read: 4000
 
 ## Now
 
-Nothing claimed.
+#1212 marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches — claimed 2026-10-03 15:31.
 
 ## Next
 

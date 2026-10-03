@@ -3090,3 +3090,4 @@ able to tell what is going on without asking.
 - 2026-10-03 15:25 · agent-0 #1392 · added to the board, lane A
 - 2026-10-03 15:25 · agent-0 #1392 · assigned to agent-2
 - 2026-10-03 15:31 · agent-5 #1240 · done (#1391)
+- 2026-10-03 15:31 · agent-5 #1212 · claimed: marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches
