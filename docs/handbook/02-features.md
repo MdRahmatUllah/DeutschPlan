@@ -1,13 +1,15 @@
 # 2 · Features
 
-Everything a learner can do in Sogda v1.0.1, grouped the way the app
+Everything a learner can do in Sogda v1.2.0, grouped the way the app
 groups it: first run, Today and its study sessions, the word cards, word
 detail and compare, Learn (the course, grammar, quizzes), the mock exams,
-search and the learner's own words, Me (progress, settings, voice, data), and
-the reminder and widget that reach outside the app. Each feature names its
-screen id (S1, T2, L12…) and links to its spec, which has the full layout,
-functional requirements (FR-*), business rules (BR-*) and states. Every
-screen in the route table is built: none is a placeholder in v1.0.1.
+search and the learner's own words, the learner's own documents (v1.2.0), Me
+(progress, settings, voice, data), translation, and the reminder and widget
+that reach outside the app. Each feature names its screen id (S1, T2, L12,
+D2…) and links to its spec, which has the full layout, functional
+requirements (FR-*), business rules (BR-*) and states. Every screen in the
+route table is built: none is a placeholder. The three document screens'
+specs are still in [`04-screens/planned/`](../04-screens/planned/README.md).
 
 > The detailed specs in [`docs/`](../README.md) are the source of truth. If
 > anything here disagrees with them, the spec wins and this page is wrong.
@@ -21,7 +23,7 @@ Four tabs, each with its own stack, and full-screen tasks pushed over them
 |---|---|---|
 | **Today** | T1 Today | T4 Backlog; T2 study sessions, T3, T5 and T6 open over it |
 | **Learn** | L1 Course map | L2 Step detail, L3 Grammar library, L4 Grammar topic, L5/L6 Categories, L11 Exam intro |
-| **Search** | R1 Search | R2 Add / edit my word |
+| **Search** | R1 Search | R2 Add / edit my word; D1 Learn from a document, D2 The words in your text, D3 My documents (v1.2.0) |
 | **Me** | M1 Me | M2 Progress, M3 Settings, M4 Voice & translation, M5 Study days & reminder, M6 Export / import, M9 About, M8 Licences |
 
 Full-screen tasks: S1–S3 (first run), T2 study session, T5 practice
@@ -54,6 +56,9 @@ on tablets) and W2 compare.
 | L13 / L14 | Exam results · review | [`exam-results.md`](../04-screens/exam-results.md) |
 | R1 | Search | [`search.md`](../04-screens/search.md) |
 | R2 | Add / edit my word | [`add-word.md`](../04-screens/add-word.md) |
+| D1 | Learn from a document | [`doc-import.md`](../04-screens/planned/doc-import.md) |
+| D2 | The words in your text | [`doc-words.md`](../04-screens/planned/doc-words.md) |
+| D3 | My documents | [`my-documents.md`](../04-screens/planned/my-documents.md) |
 | W1 | Word detail | [`word-detail.md`](../04-screens/word-detail.md) |
 | W2 | Compare words | [`compare.md`](../04-screens/compare.md) |
 | M1 | Me | [`me.md`](../04-screens/me.md) |
@@ -117,7 +122,9 @@ One glance answers "what do I do now, and how long will it take":
   revision, 45 s per new word, 60 s per grammar topic, 40 s per sentence,
   replaced by the learner's own median timings after 7 sessions: BR-PLAN-09).
 - **Today's blocks:** Revise (10 by default), New today (7 by default, from
-  the active step in teaching order), Backlog (when there is one), Grammar
+  the active step in teaching order, plus words from the learner's
+  documents, 5 a day by default, named apart: "7 new · {category} · 5 from
+  your documents", #1280), Backlog (when there is one), Grammar
   due (when a topic is due) and Practice sentences (3 by default). Each
   block opens its own work: Revise or New a session of that block alone,
   Backlog T4, Grammar due L15, Sentences T5.
@@ -166,9 +173,12 @@ over three days of new words. Spec: [`backlog.md`](../04-screens/backlog.md).
 
 Example sentences built from words the learner already knows (3 a day by
 default, stable for the day, not repeated within 14 days). The learner hears
-each one (long-press for slow), can show the English translation, taps any
-word for its course meaning, and rates it *Understood*, *Partly* or *Not
-yet*. *Not yet* brings the word back sooner (it rates it Hard). Spec:
+each one (long-press for slow), can show its translation (in the first
+meaning language, English where the course has none), taps any word for its
+course meaning, and rates it *Understood*, *Partly* or *Not yet*. A word the
+course doesn't have shows a Duden link, and with translation on, Hy-MT2's
+translation above it (FR-T5-03). *Not yet* brings the word back sooner (it
+rates it Hard). Spec:
 [`practice-sentences.md`](../04-screens/practice-sentences.md).
 
 ### Day complete · T6
@@ -226,7 +236,10 @@ review history ("Next review in 8 days · reviewed 5 times · last: Good").
 The actions, each with *Undo*: *Add to today* (a word not started yet),
 *Mark known*, *Suspend* / *Resume*, *Reset word*, *Copy*, the plain or cloze
 card, *Compare a synonym set* where there is one, and web chips for Duden,
-DWDS and Wiktionary. Spec: [`word-detail.md`](../04-screens/word-detail.md).
+DWDS and Wiktionary. With translation on, *Translate* fills in the examples
+that have no line in the first meaning language (FR-W1-05): today that is a
+Bangla learner's, since the course has no Bangla example lines. Spec:
+[`word-detail.md`](../04-screens/word-detail.md).
 
 ### Compare words · W2
 
@@ -363,6 +376,9 @@ words and grammar, and say that they are not official Goethe or telc papers
   example, or the grammar rule) and *Open word* / *See rule*.
 - Passing any mock marks the step *Passed* (pass mark 60 %, a setting from
   50 to 90 %).
+- **The first pass** (v1.2.0) asks Google Play for its review card as the
+  learner leaves L13, once ever and with no question before it; Play decides
+  whether it shows (FR-L13-04, BR-RATE-01).
 
 Specs: [`exam-hub.md`](../04-screens/exam-hub.md),
 [`exam-runner.md`](../04-screens/exam-runner.md),
@@ -381,14 +397,17 @@ the match highlighted. Each row plays the word without opening it. Chips
 narrow the results by status and step, and a search from a step (L2, L6)
 starts filtered to it.
 
-- **Idle:** the last 10 searches, the learner's own words, and *Add a word I
-  found*.
+- **Idle:** the last 10 searches, the learner's own words, *Add a word I
+  found*, and *Learn from a document* under it (D1, or D3 once a document is
+  kept).
 - **No results:** says the course has none spelled like it, offers the web
-  chips large, and *Add "…" as my word*.
+  chips large, and *Add "…" as my word*. With translation on, *Translate
+  «…»* shows the query from German into the first meaning language and from
+  it into German, since a query can be either.
 - **Web chips:** Duden, DWDS, Wiktionary, Linguee and Google open in an
   in-app browser. These chips (and W1's), T5's Duden link, *Report a
-  problem* and About's *Contact* are, with a model download, the only ways
-  the app goes online.
+  problem*, About's *Contact* and Me's *Rate Sogda on Google Play* are, with
+  a model download, the only ways the app goes online.
 
 Spec: [`search.md`](../04-screens/search.md); the engine:
 [`search.md`](../03-domain/search.md).
@@ -401,7 +420,125 @@ already has the word, with *Open* and *Log it* (one more real-life
 sighting). *Save*, or *Save and add to revision*, which puts it on the FSRS
 schedule from today like any course word. Saved words can be edited or
 deleted. They appear in all-learned quizzes when the setting is on, and never
-in exams. Spec: [`add-word.md`](../04-screens/add-word.md).
+in exams. Opened from D2's *Add as my word*, it starts with the word's
+German, its sentence as the example and the document's title as where it
+was seen (FR-D2-05). Spec: [`add-word.md`](../04-screens/add-word.md).
+
+## Learn from your documents (v1.2.0)
+
+The learner brings the German they meet, and Sogda finds the words they
+don't know yet and adds the ones they choose, each with the sentence it came
+in (epic #1219). Everything happens on the phone (BR-DOC-01). The engine is
+[`document-matcher.md`](../03-domain/document-matcher.md); the rules are
+BR-DOC-01…08 and BR-PLAN-11 in
+[`business-rules.md`](../00-product/business-rules.md). The feature is free,
+with no limits (BR-DOC-08).
+
+### Learn from a document · D1
+
+Four large choices, under "Everything stays on this phone":
+
+- **Take photos:** the phone's camera app, a page at a time, the pages
+  listed with *Done* and *Add a page*, up to 30.
+- **Choose images:** the system photo picker.
+- **Choose a PDF:** its text layer, up to 30 pages.
+- **Paste text:** the clipboard, shown in an editable box first.
+
+It opens from R1 (*Learn from a document*), D3's *New document*, and
+**Android's share sheet**: "Share → Sogda" with text, a PDF or images opens
+D1 straight into processing, even mid-session. A running exam is never
+interrupted: a toast says «Finish the exam first, then share it again.»
+(#1282).
+
+- **Processing** shows "Reading page 2 of 4…", then "Finding your words…",
+  with *Cancel*, which saves nothing.
+- **Photos** are read on the phone by ML Kit's text recogniser, its model
+  bundled. A page read with little confidence (below 0.7 on average, FR-D1-03)
+  opens *Check the text*: the
+  text, editable, with the doubtful words marked, and *Take again* or
+  *Continue*. What the learner leaves is the page's text.
+- **A PDF** is read page by page. One with no text layer is a scan, and D1
+  offers *Choose images* instead; one with a password asks the learner to
+  open it elsewhere and copy its text, since Sogda asks for no password.
+- **The limits** are 30 pages or 20,000 characters: the rest is cut at a
+  sentence end, and the learner is told on D1 and again on D2 (BR-DOC-02,
+  #1320).
+- **Not German?** When under half of its words read as German (course
+  words, stop words, compounds of course words), it warns "This doesn't look
+  like German", with *Continue anyway* (FR-D1-04).
+- **The title** is the text's first line with a letter in it, passing over
+  a letter's salutation, or "Text of 2 Oct"; D2 can change it.
+
+Spec: [`doc-import.md`](../04-screens/planned/doc-import.md).
+
+### The words in your text · D2
+
+The text as it was read, with every word marked by its class (BR-DOC-03):
+
+- **New in the course:** a soft fill in its level's colour and an ink
+  underline, so the level is never shown by colour alone.
+- **Probably known:** a word of an earlier step that no plan ever held,
+  dimmed while *Show words I probably know* is on.
+- **Outside the course:** a dotted underline.
+- **Mine:** a small "My word" badge.
+- Known words and stop words stay plain. A word with two readings
+  («Weg» or «weg») wears a "?" and takes its lowest reading's level.
+
+The header has the title, the counts ("12 new · 4 probably known · 3
+outside the course") and the switch. Tapping a word opens its **mini card**
+(a sheet, or a side pane on a tablet): the headword with its article and
+plural or its verb forms, the level, the meanings in the learner's
+languages, and the document's sentence with the word in bold.
+
+- **Add** puts a course word in the document queue with its sentence; the
+  toast says when it starts: "Added der Termin: you'll learn it today", or
+  "… from Thursday" (FR-D2-02).
+- **I know this** is W1's *Mark known* (rated Easy), with its *Undo*;
+  **Ignore** takes the mark away for this visit; **Open** is W1.
+- **A word outside the course** offers *Add as my word* (R2, pre-filled), a
+  compound's parts as a hint ("Nebenkosten + Abrechnung"), and Hy-MT2's
+  meaning, labelled machine-translated, or a link to M4's download.
+  Hy-MT2's meanings are suggestions to tap, never a pre-filled meaning
+  (#1278); they come with #1233.
+- **A word already mine** keeps the new sentence with it (*Keep this
+  sentence*), never a second word.
+- **A long press** on a new word adds it at once, a sighted shortcut; a
+  screen reader adds from the card.
+- **The bulk bar:** *Add my level*, *Add my level and one above* and *Add
+  all new*, each with its count, and the cap's note ("5 a day: the other 7
+  start tomorrow or later"). An ambiguous word is in no bulk action.
+
+A document reopened from D3 is matched again, so its marks follow what the
+learner has learnt since, and what was added stays added (FR-D2-07). With
+nothing new: "You know every word in this text". Spec:
+[`doc-words.md`](../04-screens/planned/doc-words.md).
+
+### My documents · D3
+
+The kept documents, newest first: each with its title, a source icon
+(photo, PDF, text), the date and "12 words added". A row opens D2; its menu
+has *Rename* and *Delete*, which asks first ("Delete 'Letter of 2 Oct'? The
+words you added stay.") and removes the document, its photos and what it
+found, never the words or their sentences (FR-D3-02). *New document* is at
+the top, and a storage line ("4 documents · 18 MB (images)") with *Settings*
+at the bottom. D3 sits in the Search tab with D1 and D2, reached from R1 and
+from Me's *My documents · N*. Spec:
+[`my-documents.md`](../04-screens/planned/my-documents.md).
+
+### Document words in the plan
+
+Words added from documents wait in a queue of their own, in the order added,
+and each study day takes up to *Words a day from documents* of them (5 by
+default, 0 to 20) after the course's new words, outside *New words a day*
+(BR-PLAN-11, the owner, #1220). A word added while today still has room
+joins today, as W1's *Add to today* does; the rest start on the next study
+days. A queued word is never backlog, a rest day or the backlog pause takes
+none, and a cap change applies from the next day
+([`plan-engine.md`](../03-domain/plan-engine.md), *The document queue*).
+
+The sentence a word was added with is kept as the learner's own
+(`word_contexts`), and outlives its document (BR-DOC-05). Showing it on T2's
+back, in its cloze and in W1 is #1232, still in review for v1.2.0.
 
 ## Me
 
@@ -411,7 +548,9 @@ The learner's overview: their name (tap to edit; the greeting on Today
 follows), the streak, "Learning since …" and days studied, words Done,
 Learning and To do, a 12-week activity heat map, whether the course is on
 schedule (with a tap to the backlog when behind), and the 12 steps' mock exam
-badges. Below: Settings, Voice & translation, About & privacy. Spec:
+badges. Below: Settings, Voice & translation, *My documents · N* (a jump to
+D3 in the Search tab), About & privacy, and *Rate Sogda on Google Play*
+(v1.2.0), which opens the Play listing (FR-M1-05). Spec:
 [`me.md`](../04-screens/me.md).
 
 ### Progress · M2
@@ -433,9 +572,12 @@ Every change saves at once; the plan's own changes apply from tomorrow
 | Display | Meaning languages (a first and an optional second, from the course's: English, বাংলা, Русский, Polski), app language (English, বাংলা, Polski, Русский), theme (System, Light, Dark, Glass), show the Bangla pronunciation |
 | Audio | Voice engine (M4), speech speed (0.5–1.5×), auto-play the headword and the first example, listening questions |
 | Exams | Unlock mock exams at (50–100 %), pass mark (50–90 %), timer on by default |
+| Translation | On-device translation (Hy-MT2), off by default; turned on with no model, it opens M4 (FR-M3-03) |
+| Learn from documents | Words a day from documents (0–20, 5 by default, from tomorrow), save original images (on; turned off while photos are kept, it asks whether to delete them), auto-delete documents (never, or after 30, 90 or 365 days, at launch) |
 | Data | Export / import (M6), Reset (M7), Restart setup (S2) |
 
-The Translation group is hidden in v1.x, since translation isn't offered.
+The Translation group shows in every build since Hy-MT2 (ADR 30); v1.0 and
+v1.1 hid it. *Show words I probably know* is D2's own switch.
 Spec: [`settings.md`](../04-screens/settings.md).
 
 ### Voice & translation · M4
@@ -446,7 +588,8 @@ models' share. The **Supertonic 3 voice** card downloads the voice (about
 by checksum, lets the learner pick Anna, Jonas or Lena with a sample, checks
 for an update, and deletes it, which falls back to the phone's voice. A
 download refused for space says how much to free. The **Hy-MT2 translation**
-card downloads the same way: 1.1 GB, Apache-2.0, in every build (ADR 30). Spec:
+card downloads the same way: 1.1 GB, Apache-2.0, in every build (ADR 30). The
+two models can download side by side, under one notification (#1255). Spec:
 [`model-manager.md`](../04-screens/model-manager.md); the voice engine:
 [`tts.md`](../03-domain/tts.md).
 
@@ -461,7 +604,9 @@ something to do*. A preview shows tonight's text, built from the real plan
 ### Export / import · M6
 
 One JSON file with word states, the review log, plans, quiz and exam history,
-settings and the learner's own words, shared through the system share sheet
+settings, the learner's own words and, since v1.2.0, the documents (their
+text, what each found, the sentences and the queue; never their photos,
+BR-DOC-06), shared through the system share sheet
 (to Files, Drive or email). Importing shows a preview first (word states,
 last active, the step, what else the file holds), then either merges (the
 most recent of each word wins) or replaces everything, after a confirm.
@@ -472,7 +617,8 @@ Speaking recordings are not included. Spec:
 
 *Export first*, *Reset one step* (its words back to To do, with their
 reviews, plans, grammar, quizzes and mocks), or *Reset everything*, which
-needs RESET typed to confirm and returns to setup. Theme, app language and
+needs RESET typed to confirm and returns to setup; it deletes the documents
+and their photos too, and says so. Theme, app language and
 downloaded models survive a full reset. Spec: [`reset.md`](../04-screens/reset.md).
 
 ### About & privacy · M9 and licences · M8
@@ -480,7 +626,9 @@ downloaded models survive a full reset. Spec: [`reset.md`](../04-screens/reset.m
 The version, the course's content version and counts (5,069 words, 182
 grammar topics, 10,545 sentences), the privacy statement, a *Contact* link to
 the project's GitHub issues, and the licences: the Supertonic model and SDK,
-Hy-MT2's (Apache-2.0), the fonts, and every package, each in full. Spec:
+Hy-MT2's (Apache-2.0), the fonts, PdfBox-Android with Bouncy Castle, and
+every package, each in full, and the terms of ML Kit and Play's in-app
+review library, linked. Spec:
 [`about-licences.md`](../04-screens/about-licences.md).
 
 ## Voice, everywhere
@@ -498,6 +646,25 @@ heard ([`tts.md`](../03-domain/tts.md)):
   tap explains how to install one.
 - Speed is a setting; a long press on the study card's, W1's or T5's speaker
   plays at 0.75×.
+
+## Translation on the phone (v1.2.0)
+
+Hy-MT2-1.8B translates between German and the learner's meaning languages,
+on the phone, once the learner downloads it in M4 (1.1 GB) and turns
+*On-device translation* on in M3; it is off until then (`mt_enabled`). Every
+build offers it (ADR 30). It appears in four places:
+
+- **W1's *Translate*,** for examples with no line in the first meaning
+  language (FR-W1-05).
+- **T5's word tap,** for a word the course doesn't have (FR-T5-03).
+- **R1's *Translate «…»*,** when a search finds nothing.
+- **D2's card and R2,** a meaning for a word outside the course, labelled
+  machine-translated until the learner edits it (BR-DOC-07, #1233).
+
+The first translation loads the model, which takes a few seconds; it is
+released in the background and under memory pressure, as the voice is. An
+answer is cached, so a second ask doesn't run the model again. Spec:
+[`translation.md`](../03-domain/translation.md).
 
 ## Reminders and the widget
 
@@ -545,7 +712,9 @@ The full table is in [`accessibility-performance.md`](../01-architecture/accessi
 | Not included | Why, and where it is tracked |
 |---|---|
 | **iOS** | Needs a Mac to build and sign. The iOS code paths exist and are tested on Windows; the release pipeline (#171), the WidgetKit widget (#161) and the simulator smoke test (#398) are in "Later · after v1.0" |
-| **On-device translation** | Hy-MT's licence excludes the EU, UK and South Korea, so it is off in every build (ADR 9, #173). W1's *Translate* and translation in T5 and search don't appear; T5 offers Duden instead. The translator (#154) is deferred; a licence-clean replacement is the owner's question (#533) |
+| **On-device translation before v1.2.0** | Hy-MT 1.5's licence excludes the EU, UK and South Korea, so v1.0 and v1.1 shipped with it off (ADR 9, #173). Hy-MT2 (Apache-2.0) brings it back in v1.2.0 (ADR 30, #154) |
+| **A PDF's password, or a scanned PDF as text** | Sogda asks for no password; a scan has no text layer, so D1 sends it to the photos (`doc-import.md`) |
+| **Documents on iOS** | Out of v1.2.0's scope, as iOS is (epic #1219) |
 | **Bangla translations of example sentences and grammar rules** | The course has none in Bangla: Bangla learners read examples and rules in English (#598). Russian and Polish have their own since v1.1.0 |
 | **Category names in Bangla** | Course content, kept in English for Bangla learners (#425). Russian and Polish have theirs since v1.1.0 (#1128) |
 | **Speech recognition or scoring of speaking** | Speaking and writing are self-assessed with app checks (BR-EXAM-06) |
