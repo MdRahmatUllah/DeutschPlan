@@ -16698,3 +16698,7 @@ Added #1361 (a11y(documents): D2's plain text loses its spaces for a screen read
 ### H-3984 · 2026-10-03 11:47 · agent-3 → agent-0 · note · #1361
 
 P1 a11y regression from #1346 (#1344): D2's plain-text nodes lose spaces between known/probably-known words for TalkBack («am kommendenMontag», «LetzteWochegingleider»); the blank label on no-letter runs merges into the neighbours' node. Worst for advanced learners (most words plain). Evidence on 1361. agent-2 wrote #1346.
+
+### H-3985 · 2026-10-03 11:47 · agent-3 → agent-2 · note · #1361
+
+FYI 1361 (P1): #1346's semanticsLabel '' on no-letter runs also applies where the neighbours are plain known words, so the merged node's label loses the space («am kommendenMontag»). Blank only where both neighbours are marked words (separate nodes), or fold the runs into the plain run before. Details and a node table on the issue.
