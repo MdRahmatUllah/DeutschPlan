@@ -2894,3 +2894,4 @@ able to tell what is going on without asking.
 - 2026-10-03 05:31 · agent-2 #1339 · claimed: fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner)
 - 2026-10-03 05:34 · agent-3 #1340 · added to the board, lane A
 - 2026-10-03 05:34 · agent-3 #1341 · added to the board, lane A
+- 2026-10-03 05:35 · agent-3 · #1234 part 4: backlog pause holds D2/Add/Today (#1336 verified on device); filed #1339 (joiner doesn't hold WidgetSpan), #1340 (T4 switch label twice), #1341 (note vs toast after mid-day unpause)
