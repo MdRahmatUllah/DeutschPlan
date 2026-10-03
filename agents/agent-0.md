@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-03 11:50
+last-seen: 2026-10-03 11:57
 last-read: 3988
 
 ## Now
 
-#1356 bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time — claimed 2026-10-03 11:50.
+Nothing claimed.
 
 ## Next
 
