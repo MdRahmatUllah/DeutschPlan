@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 07:53
+last-seen: 2026-10-03 09:14
 last-read: 3901
 
 ## Now
 
-Nothing claimed.
+#1341 copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» — claimed 2026-10-03 09:14.
 
 ## Next
 
