@@ -23,7 +23,7 @@ captions:
     to: 6.5
     text:
       en: Your plan for today, ready when you open the app
-      bn: অ্যাপ খুললেই আজকের পরিকল্পনা তৈরি
+      bn: অ্যাপ খুললেই আজকের পরিকল্পনা তৈরি থাকে
   - from: 7
     to: 12
     text:
@@ -33,7 +33,7 @@ captions:
     to: 19
     text:
       en: "Say how well you knew it: spaced revision brings it back in time"
-      bn: "কতটা মনে ছিল বলুন: স্পেসড রিভিশন ঠিক সময়ে আবার দেখাবে"
+      bn: "কতটা মনে ছিল বলুন: রিভিশন শব্দটিকে ঠিক সময়ে ফিরিয়ে আনবে"
   - from: 19.5
     to: 27
     text:

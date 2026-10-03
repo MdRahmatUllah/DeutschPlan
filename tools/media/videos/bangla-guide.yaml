@@ -26,9 +26,10 @@ captions:
     to: 17
     text:
       en: Its meaning in your language, its pronunciation in Bangla letters
-      bn: অর্থ আপনার ভাষায়, উচ্চারণ বাংলা হরফে
+      bn: অর্থ আপনার ভাষায়, উচ্চারণ বাংলা অক্ষরে
   - from: 17.5
     to: 24
     text:
-      en: Heard on your phone, without internet
-      bn: ফোনেই শুনুন, ইন্টারনেট ছাড়া
+      # messaging.md: never promise offline audio (the phone's voice may stream).
+      en: Heard in your phone's German voice
+      bn: আপনার ফোনের জার্মান কণ্ঠে শুনুন
