@@ -6,7 +6,7 @@ last-read: 4000
 
 ## Now
 
-#1240 media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language — claimed 2026-10-03 15:20.
+#1240 in review as PR #1391: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
