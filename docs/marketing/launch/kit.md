@@ -45,7 +45,7 @@ On L, the first Tuesday or Wednesday after the listing is live:
 > <name>
 
 - **bn** (*draft*): «হ্যালো, Sogda এখন Google Play-তে: <play-link email/post>। <আগে পরীক্ষা করার | জানাতে বলার> জন্য ধন্যবাদ। ব্যবহার করে থাকলে Play-তে আপনার সৎ মতামত অন্যদের অ্যাপটি খুঁজে পেতে সাহায্য করবে। কিছু ভুল থাকলে বা কোনো কিছুর অভাব মনে হলে, এই ইমেইলের উত্তরে জানান। <name>»
-- **ru** (*draft*): «Sogda уже в Google Play: <play-link email/post>. Спасибо, что <тестировал(а) её первым | попросил(а) сообщить>. Если ты уже пользуешься, честный отзыв в Google Play поможет другим найти приложение. А если что-то не так или чего-то не хватает, просто ответь на это письмо.»
+- **ru** (*draft*): «Sogda уже в Google Play: <play-link email/post>. <Спасибо за помощь в тестировании. | Мы обещали сообщить — сообщаем.> Если ты уже пользуешься приложением, честный отзыв в Google Play поможет другим его найти. А если что-то не так или чего-то не хватает, просто ответь на это письмо.»
 - **pl** (*draft*): «Cześć, aplikacja Sogda jest już w Google Play: <play-link email/post>. Dziękuję za <przetestowanie jej przed premierą | prośbę o powiadomienie>. Jeśli już z niej korzystasz, szczera opinia w Google Play pomoże innym ją znaleźć. A jeśli coś nie działa albo czegoś brakuje, po prostu odpowiedz na tego maila. <name>»
 
 **Never** offer anything for a review, and never ask for five stars (Play's policy).
