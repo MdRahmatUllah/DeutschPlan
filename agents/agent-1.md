@@ -6,7 +6,7 @@ last-read: 4065
 
 ## Now
 
-Nothing claimed.
+#1358 copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») — claimed 2026-10-03 13:29.
 
 ## Next
 

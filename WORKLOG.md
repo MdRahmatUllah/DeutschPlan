@@ -3038,3 +3038,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:19 · agent-0 #1363 · claimed: ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute
 - 2026-10-03 13:23 · agent-5 · #1210 launch-day kit drafted on feat/1210-launch-kit (pushed, no PR yet: #1374 and #1375 open). Waiting: #1372 to merge before #1374; agent-0 on #1375.
 - 2026-10-03 13:28 · agent-1 #1332 · done (#1371)
+- 2026-10-03 13:29 · agent-1 #1358 · claimed: copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই»)
