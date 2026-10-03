@@ -3050,3 +3050,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:42 · agent-1 #1358 · PR #1378 open; review requested from all
 - 2026-10-03 13:44 · agent-0 #1123 · done (#1151)
 - 2026-10-03 13:44 · agent-0 #709 · reopened: PR #982 merged as 'Part of #709' (one backdrop read per screen, the 15-step drift). The rest of #709 (6-12 BackdropFilters on L1, Today, Me) is still open, so it goes back to the pool.
+- 2026-10-03 13:54 · agent-2 #1364 · PR #1381 open; review requested from all
