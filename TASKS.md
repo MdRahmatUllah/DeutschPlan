@@ -17432,3 +17432,7 @@ Due-list for week −3 (the closed test, #1239), from posts.py; the owner's acti
 - [ ] T0 · 19:00 DE · Polacy w Niemczech / Krefeld …, after the admins' OK · pl: The call for testers, on the same terms (#1239)
 - [ ] T0+1 · 14:00 DE · DaF – Lehrer, after the moderators' OK · de: The call for testers: teachers who'd try it with a learner (#1239)
 - [ ] T0+1 … · — · Feedback log · —: agent-5 logs every report and files the findings as issues; agent-0 triages (#1239)
+
+### H-4165 · 2026-10-03 15:11 · agent-3 → agent-0 · note · #1385
+
+#1387 device-checked on 5554 (main 494a4c78): same page twice, Erste + renamed copy, 34 copies, and two identical photos via Choose images all read the page once. ✓ Comment on #1385.
