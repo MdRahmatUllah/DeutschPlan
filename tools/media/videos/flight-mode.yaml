@@ -1,14 +1,142 @@
 # #1245: "Flight mode on": the home screen with flight mode on, Sogda
 # opened warm (its task brought back, as a learner's tap does: a cold start
 # would take the clip's whole length on the emulator), the day's last two
-# cards reviewed, and the session's «Gut gemacht!». Prepare the learner first:
-# a fresh A1.1 learner at Relaxed · 5, three cards studied, the app on Today
-# in the background (Today says «Continue · 3 left»: its practice sentence
-# counts, but the card session holds two). Taps by position (at:), as label taps wait for a
-# UI dump: Today's primary button, then Show meaning and Good, where the study
-# screen draws them on emulator-5558 (1080 x 2424). Captions in the
-# listing's own words (de: messaging.md's, a draft).
+# cards reviewed, and the session's «Gut gemacht!».
+#
+# One take per meaning language (#1355, agent-0 on #1348), so each cut's card
+# shows its own guide: en and de the English respelling, pl Polish letters, ru
+# Cyrillic. Each take's `prepare` makes its learner, unrecorded: a fresh A1.1
+# learner at Relaxed · 5 in that app language, three cards studied, the app on
+# Today in the background (Today says «Continue · 3 left»: its practice
+# sentence counts, but the card session holds two). bn's cut is the first
+# recording's (emulator-5558, #1348), approved as it was.
+#
+# Recorded on emulator-5556 (1080 x 1920, the media lane's:
+# `video.py flight-mode --serial emulator-5556` under `team.py lock
+# emulator-5556`). Taps by position (at:), as label taps wait for a UI dump:
+# Today's primary button, then Show meaning and Good, where the screens draw
+# them there. Captions in the listing's own words (de: messaging.md's, a draft).
 locales: [en, bn, pl, ru, de]
+takes:
+  en:
+    locales: [en, de]
+    prepare:
+      - "shell:pm clear de.sogda.app"
+      - launch
+      - sleep4
+      - "tap:Let's start"
+      - sleep2
+      - "tap:English"
+      - "shell:input swipe 540 1300 540 600 400"
+      - "tap:None"
+      - "tap:Continue"
+      - sleep2
+      - "tap:A1.1"
+      - "tap:Continue"
+      - sleep2
+      - "tap:Relaxed"
+      - "tap:Continue"
+      - sleep2
+      - "tap:Later"
+      - "tap:Start learning"
+      - sleep4
+      - "at:540,1531"
+      - sleep3
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - sleep8
+      - back
+      - sleep3
+  pl:
+    locales: [pl]
+    prepare:
+      - "shell:pm clear de.sogda.app"
+      - launch
+      - sleep4
+      - "tap:Polski"
+      - "tap:Zaczynajmy"
+      - sleep2
+      - "tap:Polski"
+      - "shell:input swipe 540 1300 540 600 400"
+      - "tap:Brak"
+      - "tap:Dalej"
+      - sleep2
+      - "tap:A1.1"
+      - "tap:Dalej"
+      - sleep2
+      - "tap:Spokojnie"
+      - "tap:Dalej"
+      - sleep2
+      - "tap:Później"
+      - "tap:Zacznij naukę"
+      - sleep4
+      - "at:540,1531"
+      - sleep3
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - sleep8
+      - back
+      - sleep3
+  ru:
+    locales: [ru]
+    prepare:
+      - "shell:pm clear de.sogda.app"
+      - launch
+      - sleep4
+      - "tap:Русский"
+      - "tap:Начнём"
+      - sleep2
+      - "tap:Русский"
+      - "shell:input swipe 540 1300 540 600 400"
+      - "tap:Нет"
+      - "tap:Далее"
+      - sleep2
+      - "tap:A1.1"
+      - "tap:Далее"
+      - sleep2
+      - "tap:Спокойный"
+      - "tap:Далее"
+      - sleep2
+      - "tap:Позже"
+      - "tap:Начать учёбу"
+      - sleep4
+      - "at:540,1531"
+      - sleep3
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - sleep8
+      - back
+      - sleep3
 before:
   - cmd connectivity airplane-mode enable
   - input keyevent KEYCODE_HOME
@@ -18,11 +146,11 @@ steps:
   - sleep2
   - "shell:am start -n de.sogda.app/.MainActivity"
   - sleep2
-  - "at:540,2035"
-  - "at:540,2203"
-  - "at:667,2198"
-  - "at:540,2203"
-  - "at:667,2198"
+  - "at:540,1531"
+  - "at:540,1699"
+  - "at:667,1694"
+  - "at:540,1699"
+  - "at:667,1694"
   # The session's sheet, with the last rating's undo, to the cut's end.
   - sleep9
 cut: [1, 13]
