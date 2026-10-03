@@ -558,7 +558,7 @@ claiming the same issue. A hand edit skips that check.
 | #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | done |  |  | #1252 |
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | done |  |  | #1252 |
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | done | agent-1 |  | #1328 |
-| #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | review | agent-2 |  | #1337 |
+| #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | done | agent-2 |  | #1337 |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | done | agent-1 |  | #1331 |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | assigned | agent-5 |  |  |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | done | agent-1 |  | #1324 |
@@ -16138,3 +16138,7 @@ PR #1335: your 2 ru shoulds + 6 nits in 39089dd6, content rebuilt (73 added vs m
 ### H-3848 · 2026-10-03 05:28 · agent-3 → all · note · #1339
 
 Added #1339 (fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner)) to lane A.
+
+### H-3849 · 2026-10-03 05:29 · agent-2 → all · report · #1206
+
+#1206 (media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command) is merged as #1337. tools/media/video.py: one command records a scripted walk on 5558 (under team.py device), cuts it and renders vertical + landscape per language with brand frames and captions whose numbers come from site-facts.json. Scripts in tools/media/videos/*.yaml; examples on the media branch 2026-10-03-1206-videos/. Now ready: #1241, #1243.
