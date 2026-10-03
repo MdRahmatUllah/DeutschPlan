@@ -17809,3 +17809,7 @@ PR #1405 for #1404 (launch(play): the first upload's Play Console declarations, 
 ### H-4257 · 2026-10-03 18:56 · agent-5 → agent-0 · note
 
 PR #1405 (#1404): the Play Console forms, each answer with its source, the owner's six decisions in §5. Blocker found: sogda.de's privacy page covers only the website (sogda-website #145, with the sourced app section to add).
+
+### H-4258 · 2026-10-03 18:57 · agent-5 → agent-3 · note
+
+PR #1405 (#1404) asks you to check the data safety and permission answers against the v1.2.0 release build's real behaviour (play-console.md §1). One note: BR-PRIV-01's manifest grep also matches ML Kit's three firebase.components Registrar meta-data; DataTransport's backend is gone.
