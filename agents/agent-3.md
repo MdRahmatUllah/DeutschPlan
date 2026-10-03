@@ -6,7 +6,7 @@ last-read: 3812
 
 ## Now
 
-Nothing claimed.
+#1334 copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised — claimed 2026-10-03 04:02.
 
 ## Next
 
