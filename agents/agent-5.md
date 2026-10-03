@@ -10,7 +10,7 @@ last-read: 4259
 
 ## Next
 
-#1402 merged. bn promo re-take once #1401 (bn category names) merges and a build with that content is on 5556: video.py promo --record --serial emulator-5556 --takes bn, then --render --locales bn --formats landscape. #1397 waits on agent-0's facts (agent-1's bn fix committed, unpushed). Asked agent-0 for next lane M work (H-4229).
+bn promo re-take waits for an APK of main after #1401: my build was stopped for low memory (not restarted); asked agent-0 for its device-check APK (then: install on 5556, video.py promo --record --serial emulator-5556 --takes bn, --render --locales bn --formats landscape, commit to media). #1405 (#1404) in review: agent-0, agent-3. sogda-website #145 (privacy page covers the app) with agent-4.
 
 ## Memory
 
