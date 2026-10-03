@@ -28,6 +28,7 @@ void main() {
     bool autoAdvance = true,
     bool pauseNewWhenBacklog = false,
     int docDailyCap = 0,
+    int updateDailyCap = 0,
   }) => PlanEngine(
     store: store,
     reviseCount: revise,
@@ -35,6 +36,7 @@ void main() {
     autoAdvance: autoAdvance,
     pauseNewWhenBacklog: pauseNewWhenBacklog,
     docDailyCap: docDailyCap,
+    updateDailyCap: updateDailyCap,
   );
 
   setUp(() {
@@ -695,6 +697,150 @@ void main() {
           reason: 'clearing bit $day should disable $date',
         );
       }
+    });
+  });
+
+  group("BR-CONTENT-02 — an update's words in steps already finished "
+      '(#1338)', () {
+    final tuesday = addDays(monday, 1);
+
+    setUp(() {
+      store.enrollment = const ActiveStep(
+        sublevelCode: 'A1.1',
+        startedOn: monday,
+        dailyNew: 3,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      store.queue.addAll(<String>['d1', 'd2']);
+      store.updates.addAll(<String>['u1', 'u2', 'u3', 'u4', 'u5']);
+    });
+
+    test(
+      'a study day takes up to update_daily_cap of them as it is first '
+      "opened, after the course's and the documents', outside daily_new",
+      () async {
+        final engine = engineWith(docDailyCap: 2, updateDailyCap: 3);
+        final plan = await engine.openDay(monday);
+        expect(plan.newToday, <String>[
+          'w1', 'w2', 'w3', 'd1', 'd2', 'u1', 'u2', 'u3', //
+        ]);
+        expect(await store.updatePlannedOn(monday), <String>['u1', 'u2', 'u3']);
+        expect(
+          (await engine.openDay(monday)).newToday,
+          plan.newToday,
+          reason: 'reopened: the course still counts its own three',
+        );
+        final tomorrow = await engine.openDay(tuesday);
+        expect(tomorrow.newToday, <String>['w4', 'w5', 'w6', 'u4', 'u5']);
+      },
+    );
+
+    test("they're the update queue's, never the documents': docWaiting has "
+        "none of them, and D2's cap note doesn't count them (#1351)", () async {
+      final engine = engineWith(docDailyCap: 2, updateDailyCap: 3);
+      expect(await store.docWaiting(limit: 10), <String>['d1', 'd2']);
+      store.queue.clear();
+      expect(
+        await engine.docSlotsLeft(monday),
+        2,
+        reason: 'five update words wait, and no document word',
+      );
+    });
+
+    test('never on the day the update came, whose card says from tomorrow, '
+        'nor into a day opened before (BR-PLAN-04)', () async {
+      store.updatedOn = monday;
+      final engine = engineWith(updateDailyCap: 3);
+      expect((await engine.openDay(monday)).newToday, isNot(contains('u1')));
+      store.updatedOn = null;
+      expect(
+        (await engine.openDay(monday)).newToday,
+        isNot(contains('u1')),
+        reason: 'opened already: its plan is fixed',
+      );
+      expect(
+        (await engine.openDay(tuesday)).newToday,
+        containsAllInOrder(<String>['u1', 'u2', 'u3']),
+      );
+    });
+
+    test("#687 AN-7 a day topped up by the next step counts only the "
+        "course's words against daily_new, not the update queue's", () async {
+      store.wordsByStep
+        ..['A1.1'] = <String>['a1']
+        ..['A1.2'] = <String>['b1', 'b2', 'b3'];
+      final engine = engineWith(autoAdvance: false, updateDailyCap: 2);
+      expect((await engine.openDay(monday)).newToday, <String>[
+        'a1',
+        'u1',
+        'u2',
+      ]);
+      await engine.startNextStep(
+        monday,
+        dailyNew: 3,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      expect((await engine.openDay(monday)).newToday, <String>[
+        'a1',
+        'u1',
+        'u2',
+        'b1',
+        'b2',
+      ]);
+    });
+
+    test('a learner past their last step, with none under way, still gets '
+        "them: agent-3's year learner (Step complete)", () async {
+      final finished = store.enrollment!;
+      store
+        ..enrollment = null
+        ..enrolled.add(finished);
+      final plan = await engineWith(updateDailyCap: 3).openDay(monday);
+      expect(plan.newToday, <String>['u1', 'u2', 'u3']);
+    });
+
+    test('with no step under way, which opens a day on every visit, a day '
+        'opened already takes none when reopened (BR-PLAN-04)', () async {
+      final finished = store.enrollment!;
+      store
+        ..enrollment = null
+        ..enrolled.add(finished)
+        ..updatedOn = monday;
+      final engine = engineWith(updateDailyCap: 3);
+      expect((await engine.openDay(monday)).newToday, isEmpty);
+      store.updatedOn = null;
+      expect((await engine.openDay(monday)).newToday, isEmpty);
+      expect((await engine.openDay(tuesday)).newToday, <String>[
+        'u1',
+        'u2',
+        'u3',
+      ]);
+    });
+
+    test('a missed day takes none, the backlog pause and a rest day hold '
+        'them, and a cap of 0 holds them all', () async {
+      final engine = engineWith(updateDailyCap: 3);
+      await engine.openDay(monday);
+      final thursday = addDays(monday, 3);
+      await engine.openDay(thursday);
+      expect(await store.updatePlannedOn(tuesday), isEmpty);
+      expect(await store.updatePlannedOn(thursday), <String>['u4', 'u5']);
+
+      store.updates
+        ..clear()
+        ..addAll(<String>['v1', 'v2']);
+      final paused = engineWith(updateDailyCap: 3, pauseNewWhenBacklog: true);
+      final friday = addDays(monday, 4);
+      expect(
+        (await paused.openDay(friday)).newToday,
+        isNot(contains('v1')),
+        reason: "Monday's and Thursday's unstudied words are backlog",
+      );
+      expect(
+        (await engineWith().openDay(addDays(monday, 5))).newToday,
+        isNot(contains('v1')),
+        reason: 'a cap of 0',
+      );
     });
   });
 
@@ -2231,6 +2377,29 @@ class FakeStore implements PlanStore {
       if (!queue.contains(uid)) queue.add(uid);
     }
   }
+
+  /// BR-CONTENT-02's update queue (#1338): the words an update put in
+  /// finished steps, in order, and the day this phone installed it.
+  final List<String> updates = <String>[];
+  PlanDate? updatedOn;
+
+  @override
+  Future<List<String>> updateWaiting({required int limit}) async => <String>[
+    for (final uid in updates)
+      if (!_everPlannedNew.contains(uid) &&
+          !known.contains(uid) &&
+          !queue.contains(uid))
+        uid,
+  ].take(limit).toList();
+
+  @override
+  Future<List<String>> updatePlannedOn(PlanDate date) async => <String>[
+    for (final uid in plan['$date/${PlanKind.newWord.wire}'] ?? <String>[])
+      if (updates.contains(uid) && queuePlannedOn[uid] != date) uid,
+  ];
+
+  @override
+  Future<PlanDate?> courseUpdatedOn() async => updatedOn;
 
   /// Marks every row of [date] complete, so it leaves the backlog.
   void complete(PlanDate date) {
