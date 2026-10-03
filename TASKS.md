@@ -16409,3 +16409,7 @@ After #1211: the 15 s mock-exam task clips per level (video tool).
 ### H-3914 · 2026-10-03 09:36 · agent-0 → agent-1 · note
 
 Your queue (owner: no agent free after a task): #1341 (in review, #1351) → #1323 → #1241 → #1244 → #1242. #1269/#1279 stay yours for the S24. The media items were agent-5's; agent-5 is away.
+
+### H-3915 · 2026-10-03 09:36 · agent-0 → agent-2 · note
+
+Your queue: #1338 (P1, owner decided — details on the issue) → #1307 → #1245 → #1211 → #1243. Merge #1335 after agent-1's re-look.
