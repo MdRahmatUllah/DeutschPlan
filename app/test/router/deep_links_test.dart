@@ -819,6 +819,20 @@ void main() {
       expect(share, contains('WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE'));
       expect(share, contains('WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE'));
       expect(share, contains('if (number != shares) return null'));
+      // #1400: from Android 9 a shared photo is decoded straight at the
+      // page's width, never whole (a 12 MP photo was ~48 MB).
+      expect(
+        share,
+        contains(
+          'decoder.setTargetSize(MAX_WIDTH, height * MAX_WIDTH / width)',
+        ),
+      );
+      expect(
+        share,
+        contains(
+          'if (Build.VERSION.SDK_INT < 28) return pageBefore28(uri, file)',
+        ),
+      );
       expect(
         share,
         contains('fun take(): String? = pending.also { pending = null }'),

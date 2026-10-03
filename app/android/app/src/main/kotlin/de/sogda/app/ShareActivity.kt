@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
@@ -248,13 +249,35 @@ class ShareActivity : Activity() {
      * #1371): upright, at most [MAX_WIDTH] wide, a JPEG at [QUALITY]. ML Kit
      * then never decodes a 200 MP photo whole (~800 MB), a HEIC or WebP page
      * becomes one D1 can keep, and the copy carries no metadata at all (no
-     * GPS, BR-DOC-05), even one left behind. Decoded at the smallest power
-     * of two that stays at least [MAX_WIDTH] wide.
+     * GPS, BR-DOC-05), even one left behind.
+     *
+     * #1400: from Android 9, [ImageDecoder] decodes it straight at that
+     * width, upright from its EXIF: a 12 MP photo is never ~48 MB in memory
+     * (34 of them stalled a 2 GB phone for seconds). Before 9, [pageBefore28].
      */
     // ponytail: the width alone bounds it, as the picker's maxWidth: a very
     // long screenshot (1080 x 20000) is decoded whole, ~90 MB. Cap the
     // height too if one ever runs out of memory.
     private fun page(uri: Uri, file: File) {
+        if (Build.VERSION.SDK_INT < 28) return pageBefore28(uri, file)
+        val decoded = ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri)) { decoder, info, _ ->
+            // A software bitmap: compress() reads its pixels.
+            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+            // The size as it stands, already turned upright.
+            val (width, height) = info.size.width to info.size.height
+            if (width > MAX_WIDTH) decoder.setTargetSize(MAX_WIDTH, height * MAX_WIDTH / width)
+        }
+        file.outputStream().use { decoded.compress(Bitmap.CompressFormat.JPEG, QUALITY, it) }
+        decoded.recycle()
+    }
+
+    /**
+     * [page] on Android 8: decoded at the smallest power of two that stays
+     * at least [MAX_WIDTH] wide, turned upright and scaled.
+     */
+    // ponytail: Android 8's 12 MP photo is still decoded whole (~48 MB),
+    // as before #1400; inDensity scaling if those phones ever stall.
+    private fun pageBefore28(uri: Uri, file: File) {
         // A format with no EXIF (or none this phone reads) stands as drawn.
         val degrees = runCatching {
             contentResolver.openInputStream(uri)!!.use { input ->
