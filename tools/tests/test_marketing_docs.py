@@ -56,3 +56,15 @@ def test_every_token_is_a_fact_1203(doc):
                 fact(path)
             except (KeyError, IndexError, ValueError, TypeError):
                 pytest.fail(f"{doc.name}:{n}: {{{path}}} is not in site-facts.json")
+
+
+# Polish and Russian inflect the noun after a number («5142 słowa», «5069 słów»),
+# but a token fills only the number: so a count is written «label: count» in
+# those languages (agent-1, #1377), never «{totals.words} słów».
+AFTER_COUNT = re.compile(r"\{totals\.(?:words|grammar_topics|mock_exams)\}\s+(?:sł|tema|egzamin|слов|граммат|пробн|экзам)")
+
+
+@pytest.mark.parametrize("doc", COPY, ids=lambda p: p.relative_to(MARKETING).as_posix())
+def test_no_polish_or_russian_noun_follows_a_count_1377(doc):
+    for n, line in enumerate(doc.read_text(encoding="utf-8").splitlines(), 1):
+        assert not AFTER_COUNT.search(line), f"{doc.name}:{n}: write «label: count» in pl and ru"
