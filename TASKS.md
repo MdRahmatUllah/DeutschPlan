@@ -638,7 +638,7 @@ claiming the same issue. A hand edit skips that check.
 | #1338 | M9 | A | P1 | - | plan(content): words an update adds to a step the learner has passed are never taught — #1335's 42 A1 words stay To-do for anyone past A1 | done | agent-2 | #1257 #1335 | #1360 |
 | #1353 | M9 | A | P2 | - | a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height | done | agent-1 |  | #1367 |
 | #1354 | M9 | A | P3 | - | a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does | done | agent-0 |  | #1362 |
-| #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | open |  | #1245 #1348 |  |
+| #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | in-progress | agent-2 | #1245 #1348 |  |
 | #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | in-progress | agent-0 | #158 |  |
 | #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | assigned | agent-0 |  |  |
 | #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | done | agent-1 |  | #1367 |
