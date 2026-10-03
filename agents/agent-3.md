@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 02:24
+last-seen: 2026-10-03 02:44
 last-read: 3789
 
 ## Now
 
-#1234 sqa(documents): the v1.2.0 SQA pass on SQA's emulator — claimed 2026-10-03 02:14.
+Nothing claimed.
 
 ## Next
 
