@@ -446,8 +446,14 @@ def read_workbook(path: Path) -> SourceBook:
                 f"Found: {', '.join(book.sheetnames)}"
             )
 
+        # The additions workbook is written afresh by each build: its YAML's
+        # digest is what names it (#1347).
+        additions = path.resolve() == additions_workbook.OUT.resolve()
         source = SourceBook(
-            file=path.name, sha256=hashlib.sha256(path.read_bytes()).hexdigest()
+            file=path.name,
+            sha256=additions_workbook.digest()
+            if additions
+            else hashlib.sha256(path.read_bytes()).hexdigest(),
         )
         source.words = _read_words(book[sheets[WORDS_SHEET]], source)
         source.grammar = _read_grammar(book[sheets[GRAMMAR_SHEET]], source)
