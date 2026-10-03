@@ -3011,3 +3011,4 @@ able to tell what is going on without asking.
 - 2026-10-03 12:32 · agent-1 #1353 · done (#1367)
 - 2026-10-03 12:32 · agent-1 #1359 · done (#1367)
 - 2026-10-03 12:34 · agent-1 #1332 · claimed: input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is
+- 2026-10-03 12:43 · agent-2 #1338 · done (#1360)
