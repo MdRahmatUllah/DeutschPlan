@@ -18,6 +18,8 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
 
 ### Changed
 - **Setup in English opens on English meanings alone.** Bangla is one tap away on the same page; a Bangla app keeps Bangla then English (#1363). Before, an English speaker who kept the defaults got a Bangla line and the Bangla-script guide on every card.
+- **Category names in Bangla:** a Bangla learner sees the course's 134 word categories in Bangla, as Russian and Polish learners have since 1.1.0 (#1398).
+- **Glass draws lighter:** a list's panels on the aurora no longer blur it, so L1, Today and Me go from up to 19 blur layers to none, with the same look (#709).
 - **Locked mock exams point to the threshold:** L2's locked exams and M1's card offer *Lower the unlock threshold*, one tap to Settings' row (#1364).
 - **Setup's first promise says what's offline:** «The whole course works offline · no account needed». The sound needs the phone's German voice or Supertonic (#1365).
 - **A bigger download for reading and translating on the phone:** arm64 52.15 → 89.19 MB. llama.cpp for Hy-MT2 +22.95 MB (#154; the model itself is the optional 1.1 GB download), ML Kit's text recogniser and its Latin models +12.33 MB, pdfbox +0.40 MB once its CJK maps went (#1318), the code +1.20 MB (#1306).
@@ -36,6 +38,7 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
   - the cap note says why words wait at a cap of 0 or under the backlog pause (#1334), and counts the words already queued ahead (#1341).
 - **The same page twice** (two photos to be safe, or a page shared twice) is read once, never emptied to nothing, and a statement's next page with other amounts is kept (#1385).
 - **Shares:**
+  - photos shared from another app say «Receiving N photos…» at once, never D1's idle choices while they're copied (#1386);
   - a share during a running mock exam says it was held (#1282);
   - a share while a sheet is open lands on top (#1317).
 - A failed model download can be deleted in Voice & translation, and leaves no part-files behind (#1265).
