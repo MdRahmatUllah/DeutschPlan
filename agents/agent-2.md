@@ -6,7 +6,7 @@ last-read: 4132
 
 ## Now
 
-#1386 in review as PR #1394: answer review threads; re-run the gate if main moved, then merge.
+#1211 media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles — claimed 2026-10-03 15:38.
 
 ## Next
 
