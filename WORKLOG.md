@@ -2950,3 +2950,4 @@ able to tell what is going on without asking.
 - 2026-10-03 09:59 · agent-0 #1242 · assigned to agent-2
 - 2026-10-03 10:12 · agent-2 #1338 · claimed: plan(content): words an update adds to a step the learner has passed are never taught — #1335's 42 A1 words stay To-do for anyone past A1
 - 2026-10-03 10:13 · agent-3 #1340 · done (#1342)
+- 2026-10-03 10:15 · agent-2 · locked user-db-schema: #1338: update_queue table (schema 7)

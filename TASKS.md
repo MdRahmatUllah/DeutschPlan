@@ -654,7 +654,7 @@ The emulator lock is local, not here: `team.py device`.
 
 | Resource | Owner | Since | Why |
 |---|---|---|---|
-| user-db-schema |  |  |  |
+| user-db-schema | agent-2 | 2026-10-03 10:15 | #1338: update_queue table (schema 7) |
 | adr-number |  |  |  |
 | pubspec |  |  |  |
 | ci-config |  |  |  |
