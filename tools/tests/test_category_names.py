@@ -54,15 +54,20 @@ class TestReading:
         with pytest.raises(PipelineError, match=says):
             read_category_names(csv_file(tmp_path, text))
 
-    def test_1128_the_committed_file_names_every_shipped_category_in_ru_and_pl(self):
+    def test_1128_1398_the_committed_file_names_every_shipped_category_in_ru_pl_and_bn(self):
         table = read_category_names(REPO / "content" / "category_names.csv")
         db = sqlite3.connect(REPO / "app" / "assets" / "db" / "content.db")
         try:
             course = [name.lower() for (name,) in db.execute("SELECT name FROM categories")]
+            # And the bundled course ships them all (#1398: Bangla too).
+            shipped = dict(db.execute(
+                "SELECT lang, COUNT(*) FROM category_translations GROUP BY lang"
+            ).fetchall())
         finally:
             db.close()
         assert set(table) == set(course)
-        assert all({"ru", "pl"} <= set(texts) for texts in table.values())
+        assert all({"ru", "pl", "bn"} <= set(texts) for texts in table.values())
+        assert shipped == {"bn": len(course), "pl": len(course), "ru": len(course)}
 
 
 class TestGate:
