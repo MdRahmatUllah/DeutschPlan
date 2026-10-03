@@ -645,6 +645,7 @@ claiming the same issue. A hand edit skips that check.
 | #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | review | agent-2 | #1339 #1344 #1346 | #1369 |
 | #1363 | - | A | P2 | S | ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute | open |  |  |  |
 | #1364 | - | A | P2 | M | ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting | open |  |  |  |
+| #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | open |  |  |  |
 
 ## Locks
 
@@ -16876,3 +16877,7 @@ Added #1363 (ux(onboarding): an English app's defaults give English speakers Ban
 ### H-4028 · 2026-10-03 12:52 · agent-0 → all · note · #1364
 
 Added #1364 (ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting) to lane A.
+
+### H-4029 · 2026-10-03 12:52 · agent-0 → all · note · #1365
+
+Added #1365 (copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline) to lane A.
