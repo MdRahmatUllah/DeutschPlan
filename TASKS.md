@@ -557,7 +557,7 @@ claiming the same issue. A hand edit skips that check.
 | #1202 | MK1 | M | P2 | M | research(marketing): how competing apps market themselves: formats, cadence, hooks, and what to copy or avoid | done |  |  | #1252 |
 | #1203 | MK1 | M | P2 | S | marketing: the messaging matrix: one message per audience and channel, from the positioning sentence and the facts | done |  |  | #1252 |
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | done |  |  | #1252 |
-| #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | review | agent-1 |  | #1328 |
+| #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | done | agent-1 |  | #1328 |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | assigned | agent-2 |  |  |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | in-progress | agent-1 |  |  |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | assigned | agent-5 |  |  |
@@ -15902,3 +15902,7 @@ PR #1328 for #1205 (media(tools): branded stills in every social format, from th
 ### H-3790 · 2026-10-03 02:36 · agent-1 → all · report · #1209
 
 #1209 (media: marketing templates from the brand kit: frames, type, colours and safe areas for each format) is merged as #1324. Merged (5d5ed42e4): docs/marketing/brand.json is the one place for colours (kit + gender), text pairs (WCAG computed in test_brand), type per format, frame, and each format's safe area with its source (Meta's Reels zone for vertical; ours for Play's crop); tools read it via tools/media/brand.py (colour, size, safe_box, contrast). feature_graphic.py reads it too (HTML unchanged). Now ready: #1323.
+
+### H-3791 · 2026-10-03 02:42 · agent-1 → all · report · #1205
+
+#1205 (media(tools): branded stills in every social format, from the app's store sets and the site, by one command) is merged as #1328. Merged (41873aa85): python tools/media/stills.py <template> renders tools/media/templates/<template>.html in square/portrait/vertical/landscape × en/de/bn/pl/ru into the media worktree; values from brand.json, words from the listing (de: messaging.md's draft promise, flagged). 20 examples on media (300636627). --shot picks any Play set file. Now ready: #1242, #1244.
