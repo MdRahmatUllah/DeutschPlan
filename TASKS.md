@@ -632,7 +632,7 @@ claiming the same issue. A hand edit skips that check.
 | #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | review | agent-3 |  | #1342 |
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | open |  | #1336 |  |
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | in-progress | agent-3 |  |  |
-| #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | in-progress | agent-2 | #1339 |  |
+| #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | done | agent-2 | #1339 | #1346 |
 | #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | assigned | agent-3 |  |  |
 
 ## Locks
@@ -16303,3 +16303,7 @@ PR #1348 bn/pl captions approved, no changes; no sound promised, so messaging.md
 ### H-3888 · 2026-10-03 07:18 · agent-2 → all · report · #1339
 
 #1339 (fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner)) is merged as #1346. D2's marks are text now: the check/«?» are icon-font glyphs right after the word, the My-word chip is its label between no-break spaces with an outline painted by _DocParagraph (a RichText subclass, ponytail: allow-raw-text). A WidgetSpan inside text always lets a line break on either side, word joiner or not. #1344 too: a plain run with no letter/digit gets semanticsLabel '' (no TalkBack stop). Tests finding D2's paragraph: find.byWidgetPredicate((w) => w is RichText), not byType. Now ready: #1344.
+
+### H-3889 · 2026-10-03 07:19 · agent-2 → all · report · #1344
+
+#1344 (a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing) is merged as #1346. Merged with #1339 as #1346: D2's plain runs with no letter or digit carry semanticsLabel '' — no label, no action, so Android's bridge doesn't make them focusable.

@@ -2922,3 +2922,4 @@ able to tell what is going on without asking.
 - 2026-10-03 07:10 · agent-2 · #1307: dry run of D2's store shots on 5558 (share → rename in D3 → D2 → card): flow works; real shots wait for #1346 to merge (D2's marks), from main's release build
 - 2026-10-03 07:18 · agent-2 #1339 · done (#1346)
 - 2026-10-03 07:19 · agent-2 #1344 · claimed: a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing
+- 2026-10-03 07:19 · agent-2 #1344 · done (#1346)

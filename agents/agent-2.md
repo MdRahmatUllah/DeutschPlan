@@ -6,7 +6,7 @@ last-read: 3883
 
 ## Now
 
-#1344 a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing — claimed 2026-10-03 07:19.
+Nothing claimed.
 
 ## Next
 
