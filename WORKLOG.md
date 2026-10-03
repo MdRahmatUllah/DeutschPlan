@@ -3082,3 +3082,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:56 · agent-2 #1241 · PR #1390 open; review requested from all
 - 2026-10-03 14:56 · agent-2 #1386 · claimed: ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming
 - 2026-10-03 14:59 · agent-0 #1385 · done (#1387)
+- 2026-10-03 15:00 · agent-1 · #709: frames run 1 disturbed (~2x on every metric, card too); run 2 reaped for host memory: not restarted, waiting for agent-0/owner. 5558 cleaned and released.
