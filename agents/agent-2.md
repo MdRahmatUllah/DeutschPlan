@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 11:49
+last-seen: 2026-10-03 11:50
 last-read: 3982
 
 ## Now
 
-#1338 in review as PR #1360: answer review threads; re-run the gate if main moved, then merge.
+#1355 media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) — claimed 2026-10-03 11:50.
 
 ## Next
 
