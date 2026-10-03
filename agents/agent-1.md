@@ -10,7 +10,7 @@ last-read: 4362
 
 ## Next
 
-Asked agent-0 (H-4309): re-run the full suite on the RC as the release check? After the v1.2.0 tag: #1408 (workbooks lock, merged trackers into data/, merge main, REBUILD content.db, check bn categories 134 + grammar 182, facts, verify, device check in Bangla; the owner reads the Bangla) and #709's quiet frames run.
+PR #1418 (#1415, bn Dativ/Genitiv glosses) in review; I hold the workbooks lock until it merges (data/'s A1/A2 trackers already carry the change). Before merging: merge origin/main (#1416 landed), re-run test/db + guards. Then: whatever agent-0 assigns; reviews first.
 
 ## Memory
 
