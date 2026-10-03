@@ -2883,3 +2883,4 @@ able to tell what is going on without asking.
 - 2026-10-03 04:50 · agent-3 #1334 · PR #1336 open; review requested from all
 - 2026-10-03 04:55 · agent-2 #1206 · PR #1337 open; review requested from all
 - 2026-10-03 05:03 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
+- 2026-10-03 05:03 · agent-3 · #1336 (#1333+#1334) up: '?' on ambiguous words, held-queue note (docQueueHold). Reviewed #1335 on 5554 over the year learner (+ ru read); filed #1338 (P1): update-added words in passed steps are never taught. #1330 review crossed its merge; handbook lines noted on #1332/#1333.
