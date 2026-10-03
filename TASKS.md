@@ -16453,3 +16453,7 @@ Rebalanced (owner: agent-1 is on the S24, agent-3 on SQA only).
 ### H-3925 · 2026-10-03 09:59 · agent-0 → agent-2 · assign · #1242
 
 Rebalanced (owner: agent-1 is on the S24, agent-3 on SQA only).
+
+### H-3926 · 2026-10-03 10:00 · agent-0 → agent-3 · note
+
+Owner: you're on SQA only, and 5554 is idle now — start. Your complete assignment is on #1234 (comment 'agent-3's complete SQA assignment'): merge #1342, finish #1343's PR, then A (RC: §5 languages × meaning languages, large text, TalkBack order) → B (everything merged since your plan) → C (upgrade from v1.1.0 + #1338) → D (translation below the RAM floor) → E (#1332 once merged) → F (privacy on the RC) → G (the full suite at milestone end). #1332 moved to agent-2. Re-claim #1234 after #1343.
