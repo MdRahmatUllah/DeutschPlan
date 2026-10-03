@@ -71,8 +71,9 @@
                 <data android:scheme="sogda"/>
             </intent-filter>
         </activity>
-        <!-- "Share → Sogda" with text (#1227): a window-less trampoline that
-             hands the text to MainActivity in the app's own task. -->
+        <!-- "Share → Sogda" with text (#1227), a PDF (#1228) or photos
+             (#1332): a window-less trampoline that hands the share to
+             MainActivity in the app's own task. -->
         <activity
             android:name=".ShareActivity"
             android:exported="true"
@@ -86,6 +87,14 @@
                 <data android:mimeType="text/plain"/>
                 <!-- #1228: a PDF, its text layer read on the phone. -->
                 <data android:mimeType="application/pdf"/>
+                <!-- #1332: a photo, read as a chosen one is. -->
+                <data android:mimeType="image/*"/>
+            </intent-filter>
+            <!-- #1332: several photos, a page each, up to 30. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
             </intent-filter>
         </activity>
         <!-- X1, the home-screen widget (#160): Glance, drawn from the snapshot
