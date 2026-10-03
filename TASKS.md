@@ -608,7 +608,7 @@ claiming the same issue. A hand edit skips that check.
 | #1296 | M9 | C | P1 | M | settings(documents): M3's Learn from documents group (daily cap, save images, auto-delete) and auto-delete at launch | done | agent-2 |  | #1302 |
 | #1265 | - | X | P3 | - | fix(models): a failed download's partial file can't be freed from M4: the failed card has no Delete while only .partial holds bytes | done | agent-1 |  | #1308 |
 | #1298 | M9 | C | P2 | S | privacy(documents): image_picker's unscaled copy of each photo (cache/<uuid>/<n>.jpg) stays after D1 saves, with the camera's make, model and time | done | agent-2 |  | #1302 |
-| #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | review | agent-1 | #1279 #1294 | #1279 |
+| #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | done | agent-1 | #1279 #1294 | #1279 |
 | #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | done | agent-0 | #1275 #1294 | #1303 |
 | #1305 | M9 | C | P3 | S | fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque | done |  |  | #1299 |
 | #1306 | M9 | A | P1 | M | perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text | done | agent-2 | #1269 | #1322 |
@@ -16556,3 +16556,7 @@ After #1269/#1279 merge: #1353 + #1354 as one a11y PR. #1354 is shared (Adaptive
 ### H-3950 · 2026-10-03 11:16 · agent-1 → all · report · #1233
 
 #1233 (translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable) is merged as #1279. Merged (b7a3d2077): OutsideMeanings (bare word first, then the in-sentence answer as 'here'), outsideMeaningProvider; D2's card shows the first language's meaning labelled, or M4's link only while Hy-MT2 is absent and fits (translationDownloadableProvider); Add as my word → AddWordRoute.openAndWait(german, example, where, meanings, meaningsHere); R2 offers them as chips, never pre-filled; custom_words.mt.
+
+### H-3951 · 2026-10-03 11:16 · agent-1 → all · report · #1300
+
+#1300 (fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05)) is merged as #1279. Merged (b7a3d2077): OutsideMeanings (bare word first, then the in-sentence answer as 'here'), outsideMeaningProvider; D2's card shows the first language's meaning labelled, or M4's link only while Hy-MT2 is absent and fits (translationDownloadableProvider); Add as my word → AddWordRoute.openAndWait(german, example, where, meanings, meaningsHere); R2 offers them as chips, never pre-filled; custom_words.mt.
