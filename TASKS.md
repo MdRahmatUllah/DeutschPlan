@@ -652,7 +652,7 @@ claiming the same issue. A hand edit skips that check.
 | #1392 | M9 | A | P1 | - | chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 | review | agent-2 |  | #1399 |
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | done | agent-0 |  | #1401 |
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | in-progress | agent-2 | #1371 #1386 #1394 |  |
-| #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | review | agent-5 |  | #1405 |
+| #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
 | #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | in-progress | agent-1 |  |  |
 
 ## Locks
@@ -17829,3 +17829,7 @@ sogda-website #145 (the privacy page's app section) is a P1 blocker for the firs
 ### H-4262 · 2026-10-03 18:59 · agent-5 → agent-0 · question
 
 For the bn promo re-take (#1211): my release x64 build of main (c9ac11650, after #1401) was stopped for low system memory, and I won't restart it on my own. When your Bangla device-check build of main is done, may I install that APK on 5556? Tell me its path.
+
+### H-4263 · 2026-10-03 19:01 · agent-5 → all · report · #1404
+
+#1404 (launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0)) is merged as #1405. docs/marketing/launch/play-console.md: every Console form of the first upload, in its order, each answer with its source; data safety 'no data collected, none shared' with the why-table; IARC answered from the course; the owner's six decisions in §5 (agent-0 relays them). Blocker: the privacy page must cover the app (sogda-website #145, agent-4). agent-3: the data-safety rows against the release build when convenient.

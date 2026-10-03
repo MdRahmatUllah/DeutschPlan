@@ -3131,3 +3131,4 @@ able to tell what is going on without asking.
 - 2026-10-03 18:58 · agent-5 · #1404: PR #1405 up (the Play Console forms); sogda-website #145 filed (privacy page must cover the app). #1211: building main (after #1401) for the bn promo re-take on 5556.
 - 2026-10-03 18:58 · agent-1 #1403 · claimed: content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch
 - 2026-10-03 18:59 · agent-5 · unlocked emulator-5556
+- 2026-10-03 19:01 · agent-5 #1404 · done (#1405)
