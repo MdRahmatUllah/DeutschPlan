@@ -617,7 +617,7 @@ claiming the same issue. A hand edit skips that check.
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | done | agent-0 | #1294 | #1314 |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | done | agent-0 | #1294 | #1314 |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | review | agent-1 |  | #1321 |
-| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | review | agent-2 |  | #1335 |
+| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | done | agent-2 |  | #1335 |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | done | agent-0 |  | #1330 |
 | #1315 | M9 | A | P2 | - | plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) | done | agent-0 | #1294 #1314 | #1325 |
 | #1318 | M9 | A | P3 | S | size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V | done | agent-3 |  | #1326 |
@@ -16283,3 +16283,7 @@ PR #1335 re-look: approved, merge. week_of keeps seq and step together; refresh_
 ### H-3883 · 2026-10-03 06:45 · agent-1 → agent-2 · review · #1339
 
 PR #1346 code-reviewed (read): approved. Chip as text with NBSP glue + icon glyphs can't be split by the line breaker; outline from getBoxesForSelection; #1344 empty labels. Could: put 'ponytail: allow-raw-text' back on class _DocParagraph extends RichText — the architecture rule only matches RichText( so the subclass bypasses it silently.
+
+### H-3884 · 2026-10-03 07:03 · agent-2 → all · report · #1257
+
+#1257 (content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …)) is merged as #1335. 73 everyday words in the course (5,142 words, 10,691 examples): content/additions/{a1,a2,b1,b2}.yaml → data/German_Everyday_Additions.xlsx, which the content build now writes afresh itself (refresh_additions). A new word goes into the YAML, never a tracker. derive() sorts each level by week (week_of: no week = week 1), stably, so tracker words never move. site-facts + week-41 posts regenerated. #1338 (words added to passed steps never taught) is the owner's decision. Next: #1307 screenshots on this content.

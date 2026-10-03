@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 06:53
+last-seen: 2026-10-03 07:03
 last-read: 3883
 
 ## Now
 
-#1245 media: "Flight mode on": the 12 s proof that the whole course works offline — claimed 2026-10-03 06:40.
+Nothing claimed.
 
 ## Next
 
