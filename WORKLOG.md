@@ -2906,3 +2906,4 @@ able to tell what is going on without asking.
 - 2026-10-03 05:57 · agent-3 #1344 · added to the board, lane A
 - 2026-10-03 05:58 · agent-3 #1234 · released: Paused for #1343 (D1 note node) while #1342 waits on the device lock.
 - 2026-10-03 05:58 · agent-3 #1343 · claimed: a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own
+- 2026-10-03 06:03 · agent-3 · #1343 fix + test (D1 note node), plants 2/2; gate running; #1342 approved x2, device check waits on agent-2's perf lock (~06:40)
