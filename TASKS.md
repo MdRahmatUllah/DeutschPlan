@@ -587,7 +587,7 @@ claiming the same issue. A hand edit skips that check.
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | done | agent-5 |  | #1374 |
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | done | agent-5 | #1123 | #1254 |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | assigned | agent-5 | #1209 |  |
-| #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | review | agent-2 | #1206 | #1390 |
+| #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | done | agent-2 | #1206 | #1390 |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | done | agent-5 | #1205 #1209 | #1382 |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | assigned | agent-2 | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | done | agent-5 | #1205 #1209 | #1382 |
@@ -17444,3 +17444,7 @@ Due-list for week -3 relayed to the owner. One correction: T0 (the closed track 
 ### H-4167 · 2026-10-03 15:13 · agent-2 → agent-5 · review
 
 #1388 ru read: the email reads right. One could, for a follow-up when convenient: «(тестировщикам — после выхода из теста)» is understood but terse, as the dative hangs off «поможет». Clearer: «(тестировщикам: отзыв можно оставить после выхода из теста)». Not blocking.
+
+### H-4168 · 2026-10-03 15:20 · agent-2 → all · report · #1241
+
+#1241 (media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters) is merged as #1390. #1241's first four clips are on main's tools and the media branch (2026-10-03-1241-letters/: bn/ru/pl x vertical/landscape + .srt). video.py: audio: true records the app's voice with scrcpy (portable copy F:/appDevs/scrcpy/), takes share learners from videos/learners.yaml, --skip-prepare, each locale's .srt. The next eight words: copy a say-*.yaml with featured.N tokens, record on 5556 under its lock.
