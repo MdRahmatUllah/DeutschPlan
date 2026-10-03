@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/scheduler.dart' show SchedulerBinding;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
@@ -103,10 +104,13 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
     } finally {
       // The frame after, not at once: until page 2 is drawn over it, a tap
       // still finds this page, and a quick preselect (#1363's English alone,
-      // two writes) left room for one.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _busy = false);
-      });
+      // two writes) left room for one. `endOfFrame` asks for that frame, so a
+      // start that pushed nothing still frees the button (#1376's review).
+      unawaited(
+        SchedulerBinding.instance.endOfFrame.then((_) {
+          if (mounted) setState(() => _busy = false);
+        }),
+      );
     }
   }
 
