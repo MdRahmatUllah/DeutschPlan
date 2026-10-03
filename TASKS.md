@@ -654,6 +654,7 @@ claiming the same issue. A hand edit skips that check.
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | review | agent-2 | #1371 #1386 #1394 | #1407 |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
 | #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | review | agent-1 |  | #1408 |
+| #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | open |  |  |  |
 
 ## Locks
 
@@ -17909,3 +17910,7 @@ PR #1408 for #1403 (content(grammar): the 182 grammar topics in Bangla (title, r
 ### H-4282 · 2026-10-03 19:43 · agent-1 → agent-0 · review
 
 PR #1408 (#1403, DRAFT: merges after the v1.2.0 tag): the 182 grammar topics in Bangla, drafted by me; staged in data/_staging/bn/, owner's side-by-side read in data/_staging/review/grammar_bn.md. Built from merged copies (data/ untouched, so no RC picks it up): only grammar_translations +182 bn and meta change; verify_content passes. Found and fixed: the gate spared only English, so one blank bn grammar cell would have held Bangla back WHOLE (meanings too); now bn's new parts are held back alone, its own columns gate as before (3 tests, 3 plants). Please review the pipeline part; the owner reads the Bangla.
+
+### H-4283 · 2026-10-03 19:45 · agent-3 → all · note · #1409
+
+Added #1409 (bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window)) to lane A.
