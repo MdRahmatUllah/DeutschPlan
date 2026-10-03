@@ -41,15 +41,15 @@ On L, the first Tuesday or Wednesday after the listing is live:
 >
 > Sogda is on Google Play now: <play-link email/post>
 >
-> Thank you for <testing it before anyone else | asking to be told>. If you've used it, an honest review on Play helps other learners find it (testers: once you've left the test). And if something is wrong or missing, just reply to this email.
->
 > Learn the German you actually meet: photograph a letter or paste a text, and Sogda marks the words you don't know yet, by level. On your phone, private.
+>
+> Thank you for <testing it before anyone else | asking to be told>. If you've used it, an honest review on Play helps other learners find it (testers: once you've left the test). And if something is wrong or missing, just reply to this email.
 >
 > <name>
 
-- **bn** (*draft*): «হ্যালো, Sogda এখন Google Play-তে: <play-link email/post>। <আগে পরীক্ষা করার | জানাতে বলার> জন্য ধন্যবাদ। ব্যবহার করে থাকলে Play-তে আপনার সৎ মতামত অন্যদের অ্যাপটি খুঁজে পেতে সাহায্য করবে। কিছু ভুল থাকলে বা কোনো কিছুর অভাব মনে হলে, এই ইমেইলের উত্তরে জানান। যে জার্মান আপনি রোজ দেখেন, সেটাই শিখুন: চিঠির ছবি তুলুন বা লেখা পেস্ট করুন, Sogda আপনার অজানা শব্দগুলো লেভেল ধরে চিহ্নিত করবে। সবকিছু আপনার ফোনেই। <name>»
-- **ru** (*draft*): «Sogda уже в Google Play: <play-link email/post>. <Спасибо за помощь в тестировании. | Мы обещали сообщить — сообщаем.> Если ты уже пользуешься приложением, честный отзыв в Google Play поможет другим его найти. А если что-то не так или чего-то не хватает, просто ответь на это письмо. Учи тот немецкий, который встречаешь: сфотографируй письмо или вставь текст — Sogda отметит незнакомые слова по уровням. Всё остаётся на телефоне.»
-- **pl** (*draft*): «Cześć, aplikacja Sogda jest już w Google Play: <play-link email/post>. Dziękuję za <przetestowanie jej przed premierą | prośbę o powiadomienie>. Jeśli już z niej korzystasz, szczera opinia w Google Play pomoże innym ją znaleźć. A jeśli coś nie działa albo czegoś brakuje, po prostu odpowiedz na tego maila. Ucz się niemieckiego, który spotykasz na co dzień: zrób zdjęcie listu albo wklej tekst, a Sogda zaznaczy nieznane słowa według poziomu. Wszystko zostaje na telefonie. <name>»
+- **bn** (*draft*): «হ্যালো, Sogda এখন Google Play-তে: <play-link email/post>। যে জার্মান আপনি রোজ দেখেন, সেটাই শিখুন: চিঠির ছবি তুলুন বা লেখা পেস্ট করুন, Sogda আপনার অজানা শব্দগুলো লেভেল ধরে চিহ্নিত করবে। সবকিছু আপনার ফোনেই। <আগে পরীক্ষা করার | জানাতে বলার> জন্য ধন্যবাদ। ব্যবহার করে থাকলে Play-তে আপনার সৎ মতামত অন্যদের অ্যাপটি খুঁজে পেতে সাহায্য করবে (পরীক্ষকরা: পরীক্ষা থেকে বেরিয়ে আসার পর)। কিছু ভুল থাকলে বা কোনো কিছুর অভাব মনে হলে, এই ইমেইলের উত্তরে জানান। <name>»
+- **ru** (*draft*): «Sogda уже в Google Play: <play-link email/post>. Учи тот немецкий, который встречаешь: сфотографируй письмо или вставь текст — Sogda отметит незнакомые слова по уровням. Всё остаётся на телефоне. <Спасибо за помощь в тестировании. | Мы обещали сообщить — сообщаем.> Если ты уже пользуешься приложением, честный отзыв в Google Play поможет другим его найти (тестировщикам — после выхода из теста). А если что-то не так или чего-то не хватает, просто ответь на это письмо.»
+- **pl** (*draft*): «Cześć, aplikacja Sogda jest już w Google Play: <play-link email/post>. Ucz się niemieckiego, który spotykasz na co dzień: zrób zdjęcie listu albo wklej tekst, a Sogda zaznaczy nieznane słowa według poziomu. Wszystko zostaje na telefonie. Dziękuję za <przetestowanie jej przed premierą | prośbę o powiadomienie>. Jeśli już z niej korzystasz, szczera opinia w Google Play pomoże innym ją znaleźć (testerzy: po wyjściu z testu). A jeśli coś nie działa albo czegoś brakuje, po prostu odpowiedz na tego maila. <name>»
 
 **Never** offer anything for a review, and never ask for five stars (Play's policy).
 
