@@ -3026,3 +3026,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:01 · agent-5 · #1366 (#1208) and #1368 (#1236 part 1) merged. Next: #1236's 20 s video (agent-0's APK at dp-wt/agent-0-c), #1323 option 4 (agent-0's brand call).
 - 2026-10-03 13:02 · agent-5 · locked emulator-5556: #1236: the v1.2.0 video (share a letter, D2, add, the card), with agent-0's main build
 - 2026-10-03 13:03 · agent-3 · #1234: C (upgrade v1.1.0 → RC2, nothing lost), D (Hy-MT2 below RAM floor), F (flight mode, netstats, manifest) posted. #1362 verified on device. Left: C's #1338 part + E (#1371) on RC3, then G.
+- 2026-10-03 13:04 · agent-2 #1355 · PR #1372 open; review requested from all
