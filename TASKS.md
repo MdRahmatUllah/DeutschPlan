@@ -632,7 +632,7 @@ claiming the same issue. A hand edit skips that check.
 | #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | review | agent-3 |  | #1342 |
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | open |  | #1336 |  |
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | in-progress | agent-3 |  |  |
-| #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | open |  | #1339 |  |
+| #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | in-progress | agent-2 | #1339 |  |
 | #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | assigned | agent-3 |  |  |
 
 ## Locks
