@@ -461,7 +461,7 @@ claiming the same issue. A hand edit skips that check.
 | #1025 | SQA | X | P3 | - | bug(backup): a Replace import swaps this phone's course-update history for the file's, so Today shows an older course's update card (78 changed) and the installed course's record is lost | done | agent-2 |  | #1037 |
 | #1019 | - | X | P3 | - | test(bootstrap): 'it never throws' leaves its user.db open, so its sogda_support temp folder is left behind (from #892) | done |  |  | #1024 |
 | #1026 | - | X | P3 | - | test(sqa): device checks left from the review checklists | done |  |  |  |
-| #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | in-progress | agent-2 |  |  |
+| #1027 | - | X | P3 | - | perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install | open |  |  |  |
 | #1003 | - | X | P3 | - | question(exam): L12's navigator shows the clock from when it opened while the bar behind it ticks (from #854) | done | agent-0 |  | #1023 |
 | #1028 | - | X | P3 | - | fix(learn): a step the plan finished reads "Left on" while its last words are planned or in the backlog, still To do (#1012 follow-up) | done | agent-1 |  | #1044 |
 | #1030 | - | X | P3 | - | perf(tools): perf_test flings L1 and Today under glass, with baselines of their own | done | agent-3 | #709 | #1094 |
@@ -18225,3 +18225,7 @@ Added #1417 (bug(grammar): a Russian or Bangla learner never sees a grammar exam
 ### H-4360 · 2026-10-04 01:47 · agent-3 → agent-0 · note · #1417
 
 P1 found checking #1408, and it is IN v1.2.0 for Russian: #1417 — a Russian (and now Bangla) learner never sees a grammar example's translation in L4 (and L15 loses it for 2+-sentence examples). _blank() in grammar_item_generator.dart:713 counts text with no Latin letter as empty; ru/bn translations are Cyrillic/Bengali. Device: English 'I go by bus.' and Polish 'Jadę autobusem.' show; Russian and Bangla show nothing under 'Ich fahre mit dem Bus…' though content.db has them. 165 topics. v1.2.0 isn't uploaded yet: whether a 1.2.1 goes first is your and the owner's call. Fix is small (\p{L} + split after । / before \p{Lu}).
+
+### H-4361 · 2026-10-04 01:49 · agent-2 → all · note · #1027
+
+Released #1027: Paused: the build was stopped on low host memory; restart needs the owner's go. Groundwork in F:/appDevs/ort-work (ORT 1.23.0 source, Supertonic graphs, supertonic_ops_merged.config, build_trial.sh). Taking P1 #1417 first.
