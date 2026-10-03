@@ -414,9 +414,9 @@
   "@onboardingRestoreBackup": {
     "description": "S2 page 1 link under Let's start: picks a Sogda export and makes it this phone's data (a Replace), then opens Today, skipping the rest of setup. For a learner moving phones (#822)."
   },
-  "onboardingPromiseOffline": "Works fully offline · no account, no signal needed",
+  "onboardingPromiseOffline": "The whole course works offline · no account needed",
   "@onboardingPromiseOffline": {
-    "description": "S2 page 1, first promise."
+    "description": "S2 page 1, first promise. The course, not the sound, which needs the phone's German voice or Supertonic (#1365)."
   },
   "onboardingPromiseSteps": "Exam-structured: 12 steps from A1.1 to C2.2",
   "@onboardingPromiseSteps": {

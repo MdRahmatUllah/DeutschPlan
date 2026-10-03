@@ -48,7 +48,7 @@ void main() {
       'lib/features/learn/grammar_topic_screen.dart',
       'lib/features/learn/grammar_practice_screen.dart',
       'lib/features/search/search_screen.dart',
-      'lib/features/search/add_word_screen.dart',
+      'lib/features/search/search_header.dart',
       'lib/features/onboarding/onboarding_shell.dart',
       'lib/features/exam/exam_results_screen.dart',
       'lib/features/exam/exam_runner_screen.dart',

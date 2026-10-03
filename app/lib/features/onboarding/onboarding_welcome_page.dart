@@ -89,8 +89,8 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
     }
   }
 
-  /// *Let's start*, once: busy until page 2 is pushed, so a second tap
-  /// before then pushes no second page 2 (#1158). Only until the push: back
+  /// *Let's start*, once: busy until page 2 is pushed and drawn, so a second
+  /// tap before then pushes no second page 2 (#1158). Only until then: back
   /// on page 1, the button works again.
   Future<void> _start() async {
     if (_busy) return;
@@ -101,7 +101,12 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage> {
     try {
       await widget.onStart?.call();
     } finally {
-      if (mounted) setState(() => _busy = false);
+      // The frame after, not at once: until page 2 is drawn over it, a tap
+      // still finds this page, and a quick preselect (#1363's English alone,
+      // two writes) left room for one.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _busy = false);
+      });
     }
   }
 
