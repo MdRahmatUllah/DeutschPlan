@@ -2926,3 +2926,4 @@ able to tell what is going on without asking.
 - 2026-10-03 07:20 · agent-2 · #1307: shooting D2's store shots from main 483c9809 (+#1346), 7 sets; board's #1236 blocker is spurious (asked agent-0)
 - 2026-10-03 07:26 · agent-2 #1347 · added to the board, lane A
 - 2026-10-03 07:39 · agent-2 #1307 · PR #1349 open; review requested from all
+- 2026-10-03 07:40 · agent-2 #1347 · claimed: content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps

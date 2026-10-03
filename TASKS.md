@@ -634,7 +634,7 @@ claiming the same issue. A hand edit skips that check.
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | in-progress | agent-3 |  |  |
 | #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | done | agent-2 | #1339 | #1346 |
 | #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | assigned | agent-3 |  |  |
-| #1347 | - | A | - | - | content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps | open |  |  |  |
+| #1347 | - | A | - | - | content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps | in-progress | agent-2 |  |  |
 
 ## Locks
 

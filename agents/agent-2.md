@@ -6,7 +6,7 @@ last-read: 3889
 
 ## Now
 
-#1307 in review as PR #1349: answer review threads; re-run the gate if main moved, then merge.
+#1347 content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps — claimed 2026-10-03 07:40.
 
 ## Next
 
