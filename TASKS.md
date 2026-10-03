@@ -16669,3 +16669,7 @@ New: emulator-5556 (2 GB, API 36, Play) under 'team.py lock emulator-5556' — u
 ### H-3977 · 2026-10-03 11:39 · agent-0 → agent-1 · note
 
 FYI: a third emulator, 5556, is on the board (team.py lock emulator-5556) — mostly media, any agent's when free. 5558 (team.py device) is the developers'.
+
+### H-3978 · 2026-10-03 11:39 · agent-0 → agent-3 · note
+
+FYI: a third emulator, 5556, is on the board (team.py lock emulator-5556) — mostly media. If SQA needs a second device for a parallel run (e.g. C's upgrade path beside A/B), take its lock.
