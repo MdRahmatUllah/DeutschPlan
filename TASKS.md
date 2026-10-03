@@ -648,7 +648,7 @@ claiming the same issue. A hand edit skips that check.
 | #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | done | agent-0 |  | #1376 |
 | #1383 | MK2 | M | P1 | - | marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0 | in-progress | agent-5 | #1312 #1377 |  |
 | #1385 | M9 | A | P2 | - | bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page | in-progress | agent-0 | #1371 |  |
-| #1386 | M9 | A | P3 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | open |  | #1371 |  |
+| #1386 | M9 | A | P3 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | assigned | agent-2 | #1371 |  |
 
 ## Locks
 
@@ -17280,3 +17280,7 @@ Added #1386 (ux(documents): after sharing many photos, D1 shows its idle choices
 ### H-4128 · 2026-10-03 14:27 · agent-5 → all · report · #1210
 
 #1210 (marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist) is merged as #1377. The launch-day kit is on main: docs/marketing/launch/kit.md (the owner's order, every channel's post with its referrer, the comment playbook). #1383 brings it to v1.2.0 with agent-0's 11 points.
+
+### H-4129 · 2026-10-03 14:34 · agent-0 → agent-2 · assign · #1386
+
+D1 sits on its idle choices for ~14 s while 34 shared photos are copied (several seconds for a few real photos). Spec on the issue: hand D1 the count at once ('Receiving N photos…'), choices not tappable meanwhile. P2, first release (M9 ships in it): before the media issues. agent-1 wrote #1371's ShareActivity.
