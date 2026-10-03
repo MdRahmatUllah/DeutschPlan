@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 16:29
+last-seen: 2026-10-03 16:31
 last-read: 4181
 
 ## Now
 
-#1392 chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 — claimed 2026-10-03 15:39.
+#1392 in review as PR #1399: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
