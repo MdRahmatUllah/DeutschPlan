@@ -27,7 +27,10 @@
   - **The plugins' native symbol tables** ride in the bundle (`debugSymbolLevel = "SYMBOL_TABLE"`), and Play symbolicates their crashes from them.
 - **Play Console declarations.**
   - **Data safety:** no data collected and none shared. There is no account, no analytics and no ads. Model downloads fetch files and send nothing, and progress stays on the phone (export is the learner's own file; Android backup and device transfer are off, #607). *Report a problem* opens a pre-filled GitHub issue page in the browser, with the card's id, and the learner sends it there, or doesn't.
-  - **Permissions**, as the merged manifest has them. `tools/release_android.py` fails when the two differ (#611):
+    - **Documents (1.2.0, D1–D3):** a pasted, shared, photographed or chosen text is read on the phone (ML Kit's bundled recogniser, pdfbox for a PDF's text layer) and kept on the phone, with a kept photo's metadata removed (BR-DOC-05). Nothing is uploaded. ML Kit's usage metrics never leave: its DataTransport backend is removed from the manifest (BR-PRIV-01). The picker's and a share's copies are deleted once read.
+    - **Translation (1.2.0):** Hy-MT2's model is a download like the voices, fetched and never sent to; it translates on the phone (#154).
+    - **Rating (1.2.0):** Play's own review card (`in_app_review`) and a link to the listing; Sogda sends nothing (BR-RATE-01, #1237).
+  - **Permissions**, as the merged manifest has them. `tools/release_android.py` fails when the two differ (#611). 1.2.0 adds none: photos come by intent from the camera app and the system picker, and shares through `ShareActivity`, so there's no camera or storage permission:
     - `RECORD_AUDIO`: the Speaking exam's recording, asked for on the first Record and kept on the phone.
     - `POST_NOTIFICATIONS`: the daily reminder, asked for when it's switched on, and a model download's progress.
     - `RECEIVE_BOOT_COMPLETED`: reminders scheduled again after a restart.
