@@ -870,12 +870,19 @@ void main() {
       expect(topped.newToday, <String>['a1', 'd1', 'd2', 'b1', 'b2']);
     });
 
-    test("FR-D2-02 the cap note: today's slots left, none on a rest day, "
-        'while paused or with a cap of 0', () async {
+    test("FR-D2-02 the cap note: today's slots left for a word added now, "
+        'none on a rest day, while paused or with a cap of 0', () async {
       final engine = engineWith(docDailyCap: 3);
-      expect(await engine.docSlotsLeft(monday), 3, reason: 'not opened yet');
+      // #1341: d1 to d5 wait, and today's three slots are theirs.
+      expect(await engine.docSlotsLeft(monday), 0, reason: 'five wait ahead');
       await engine.openDay(monday); // takes d1, d2, d3
       expect(await engine.docSlotsLeft(monday), 0);
+      store.queue.clear();
+      expect(
+        await engine.docSlotsLeft(tuesday),
+        3,
+        reason: 'not opened yet, and nothing waits',
+      );
       expect(
         await engineWith().docSlotsLeft(addDays(monday, 2)),
         0,
@@ -953,6 +960,34 @@ void main() {
       },
     );
 
+    test(
+      "#1341 FR-D2-02 once the pause lifts mid-day, the cap note and Add's "
+      "answer agree: today's slots go to the words already waiting",
+      () async {
+        // Monday opened under the pause, with Sunday's word as backlog: the
+        // queue's d1 to d5 waited.
+        await store.addToPlan(addDays(monday, -1), PlanKind.newWord, <String>[
+          'w0',
+        ]);
+        final engine = engineWith(docDailyCap: 2, pauseNewWhenBacklog: true);
+        await engine.openDay(monday);
+        expect(await engine.docQueueHold(monday), DocQueueHold.backlog);
+        expect(await store.docPlannedOn(monday), isEmpty);
+
+        // The backlog cleared mid-day: the pause lifts, today keeps its plan.
+        store.complete(addDays(monday, -1));
+        expect(await engine.docQueueHold(monday), isNull);
+        expect(
+          await engine.docSlotsLeft(monday),
+          0,
+          reason: "d1 to d5 wait ahead: no word added now starts today",
+        );
+        final starts = await engine.addDocWords(<String>['d6'], monday, at: at);
+        expect(await store.docPlannedOn(monday), <String>['d1', 'd2']);
+        expect(starts['d6'], isNot(monday), reason: 'as the note said');
+      },
+    );
+
     test('BR-PLAN-07 while the pause holds, Add says no start day: the queue '
         'waits for the backlog', () async {
       store.queue.clear();
@@ -975,7 +1010,11 @@ void main() {
         ..enrollment = null
         ..enrolled.add(finished);
       final engine = engineWith(docDailyCap: 2);
-      expect(await engine.docSlotsLeft(monday), 2, reason: 'not opened yet');
+      expect(
+        await engine.docSlotsLeft(monday),
+        0,
+        reason: 'not opened yet, but d1 to d5 wait ahead (#1341)',
+      );
       final plan = await engine.openDay(monday);
       expect(plan.newToday, <String>['d1', 'd2']);
       expect(await engine.docSlotsLeft(monday), 0);
