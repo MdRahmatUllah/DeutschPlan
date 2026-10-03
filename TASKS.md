@@ -653,6 +653,7 @@ claiming the same issue. A hand edit skips that check.
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | done | agent-0 |  | #1401 |
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | in-progress | agent-2 | #1371 #1386 #1394 |  |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | in-progress | agent-5 |  |  |
+| #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | open |  |  |  |
 
 ## Locks
 
@@ -17792,3 +17793,7 @@ sogda-website #144: pl+bn re-approved at f432d7e (the should and both coulds in)
 ### H-4253 · 2026-10-03 18:54 · agent-0 → agent-3 · note · #1234
 
 RC5 is ready: main c9ac11650 (#1394 receiving photos, #1395 lighter glass, #1401 bn category names, #1387). On 5554: (1) G, your core-flow sweep; (2) #1386: share 34 photos, «Receiving…» at once, then switch back to the sender mid-copy (taps must work); (3) glass on L1, Today and Me (looks as before); (4) bn: Today's new-words line and the step's category chip in Bangla. #1400 (decode at 2400 px) gets its own check when it merges. Your sign-off on #1234 then unblocks #1312 and the tag.
+
+### H-4254 · 2026-10-03 18:54 · agent-0 → all · note · #1403
+
+Added #1403 (content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch) to lane A.
