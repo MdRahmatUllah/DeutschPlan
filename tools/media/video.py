@@ -17,7 +17,8 @@ take names is cut from the one recording.
 
 **Recording** needs the emulator held: `python tools/team.py device` for
 emulator-5558, `team.py lock emulator-5556` for `--serial emulator-5556`,
-agent-0's for videos. It runs `screenrecord` while device.py walks the steps,
+the media lane's. Neither is ever SQA's emulator-5554 (`device.pick_serial`).
+It runs `screenrecord` while device.py walks the steps,
 and keeps the recording in `build/media/` (git-ignored: a raw recording is
 too big for the media branch).
 
@@ -342,12 +343,12 @@ def render(script: dict, locales: list[str], formats: list[str], out: Path) -> l
 def holds(serial: str, agent: str) -> bool:
     """Whether [agent] may record on [serial]: `team.py device` for the
     developers' 5558, a lock named after any other (`team.py lock
-    emulator-5556`, agent-0 for videos, #1355)."""
+    emulator-5556`, the media lane's, #1355)."""
     import team
     from smoke import holds_device
     if serial == device.DEV_SERIAL:
         return holds_device(agent)
-    board = team.Board((team.team_root() / agent / "TASKS.md").read_text(encoding="utf-8"))
+    board = team.Board((team.board_checkout(agent) / "TASKS.md").read_text(encoding="utf-8"))
     return bool(agent) and any(lock.resource == serial and lock.owner == agent for lock in board.locks)
 
 
@@ -370,7 +371,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--formats", default=",".join(FORMATS))
     parser.add_argument("--out", type=Path, help="default: the media worktree's dated folder")
     parser.add_argument("--serial", default=device.DEV_SERIAL,
-                        help="the emulator to record on (agent-0: emulator-5556 for videos)")
+                        help="the emulator to record on: emulator-5558 under `team.py device`, "
+                             "or the media lane's emulator-5556 under `team.py lock emulator-5556`")
     parser.add_argument("--takes", help="the takes to record, default: all, or the one recording")
     args = parser.parse_args(argv)
     if hasattr(sys.stdout, "reconfigure"):
@@ -382,9 +384,15 @@ def main(argv: list[str] | None = None) -> int:
             lock = "device" if args.serial == device.DEV_SERIAL else f"lock {args.serial}"
             print(f"refused: hold the emulator first: `python tools/team.py {lock}`", file=sys.stderr)
             return 2
+        # agent-1 on #1372: never SQA's emulator-5554, whatever lock is held:
+        # `before` and a take's `prepare` (pm clear) run raw adb on it.
+        serial = device.pick_serial(args.serial, device.agent())
         takes = args.takes.split(",") if args.takes else list(script.get("takes") or {}) or [None]
+        unknown = [take for take in takes if take and take not in (script.get("takes") or {})]
+        if unknown:
+            raise SystemExit(f"{script['name']} has no take {', '.join(unknown)}")
         for take in takes:
-            record(script, args.serial, take)
+            record(script, serial, take)
     if args.render or both:
         if not shutil.which("ffmpeg"):
             raise SystemExit("ffmpeg isn't on the PATH")

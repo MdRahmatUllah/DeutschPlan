@@ -154,3 +154,18 @@ def test_a_take_prepares_its_learner_unrecorded_before_flight_mode_goes_on(monke
     assert video.record(script, "emulator-5556", "bn").name == "t-bn.mp4"
     assert ran[:5] == ["launch tap:শুরু করি", "on", "recording", "launch sleep2", "screenrecord"]
     assert "off" in ran
+
+
+def test_the_recording_never_reaches_sqas_emulator_whatever_the_lock_1372(monkeypatch):
+    monkeypatch.setattr(video, "holds", lambda serial, agent: True)
+    monkeypatch.setattr(video.device, "agent", lambda: "agent-2")
+    monkeypatch.setattr(video, "record", lambda *_: pytest.fail("recorded on SQA's emulator"))
+    with pytest.raises(SystemExit, match="emulator-5554 is agent-3's"):
+        video.main(["flight-mode", "--record", "--serial", "emulator-5554"])
+
+
+def test_an_unknown_take_is_named_not_a_key_error_1372(monkeypatch):
+    monkeypatch.setattr(video, "holds", lambda serial, agent: True)
+    monkeypatch.setattr(video, "record", lambda *_: pytest.fail("recorded"))
+    with pytest.raises(SystemExit, match="has no take xx"):
+        video.main(["flight-mode", "--record", "--serial", "emulator-5556", "--takes", "en,xx"])

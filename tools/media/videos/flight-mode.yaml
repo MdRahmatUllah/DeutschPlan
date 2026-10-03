@@ -11,7 +11,7 @@
 # sentence counts, but the card session holds two). bn's cut is the first
 # recording's (emulator-5558, #1348), approved as it was.
 #
-# Recorded on emulator-5556 (1080 x 1920, agent-0's for videos:
+# Recorded on emulator-5556 (1080 x 1920, the media lane's:
 # `video.py flight-mode --serial emulator-5556` under `team.py lock
 # emulator-5556`). Taps by position (at:), as label taps wait for a UI dump:
 # Today's primary button, then Show meaning and Good, where the screens draw
