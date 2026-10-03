@@ -533,6 +533,9 @@ WHERE kind = 'new' AND completed_at IS NULL
           mapped['completed_on'] == null &&
           await _hasOpenEnrollment()) {
         mapped['completed_on'] = mapped['started_on'];
+        // Closed part-way, as it was open (#1047): its unplanned words are
+        // no update's to teach (BR-CONTENT-02's queue, #1338).
+        mapped['left_part_way'] = 1;
       }
 
       if (mode == ImportMode.merge) {

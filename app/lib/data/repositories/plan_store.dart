@@ -406,6 +406,82 @@ LIMIT ?1
     );
   }
 
+  /// BR-CONTENT-02's update queue (#1338): words of a step the plan finished
+  /// (`left_part_way` 0, #1047; NULL, a step ended before v4, read the same
+  /// way) still To-do and in no day's plan, in teaching order. A step the
+  /// plan finished had planned every word it had (`completeStepSql`), so
+  /// these came later, with a content update, or are words *Reset* sent
+  /// back to To-do there. The document queue's words wait in their own.
+  /// Public for D2, which counts them as planned (BR-DOC-03).
+  static const String updateQueueSql = """
+SELECT w.uid AS uid
+FROM words w
+JOIN enrollments e ON e.sublevel_code = w.sublevel_code
+  AND e.completed_on IS NOT NULL AND COALESCE(e.left_part_way, 0) = 0
+LEFT JOIN word_state s ON s.word_uid = w.uid
+WHERE w.kind = 'vocab' AND COALESCE(s.status, 'todo') = 'todo'
+  AND w.uid NOT IN (SELECT word_uid FROM plan_items WHERE kind = 'new')
+  AND w.uid NOT IN (SELECT word_key FROM doc_queue)
+ORDER BY w.seq
+""";
+
+  @override
+  Future<List<String>> updateWaiting({required int limit}) async {
+    if (limit <= 0) return const <String>[];
+    final rows = await _db
+        .customSelect(
+          '$updateQueueSql LIMIT ?1',
+          variables: <Variable<Object>>[Variable<int>(limit)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.words,
+            _db.enrollments,
+            _db.wordState,
+            _db.planItems,
+            _db.docQueue,
+          },
+        )
+        .get();
+    return <String>[for (final row in rows) row.read<String>('uid')];
+  }
+
+  @override
+  Future<List<String>> updatePlannedOn(PlanDate date) async {
+    final rows = await _db
+        .customSelect(
+          """
+SELECT p.word_uid AS uid
+FROM plan_items p
+JOIN enrollments e ON e.sublevel_code = p.sublevel_code
+  AND e.completed_on IS NOT NULL AND e.completed_on < p.plan_date
+WHERE p.plan_date = ?1 AND p.kind = 'new'
+  AND NOT EXISTS (SELECT 1 FROM doc_queue q
+    WHERE q.word_key = p.word_uid AND q.planned_on = p.plan_date)
+""",
+          variables: <Variable<Object>>[Variable<String>(date)],
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.planItems,
+            _db.enrollments,
+            _db.docQueue,
+          },
+        )
+        .get();
+    return <String>[for (final row in rows) row.read<String>('uid')];
+  }
+
+  @override
+  Future<PlanDate?> courseUpdatedOn() async {
+    final row = await _db
+        .customSelect(
+          'SELECT MAX(recorded_at) AS at FROM content_updates WHERE added > 0',
+          readsFrom: <ResultSetImplementation<Object, Object>>{
+            _db.contentUpdates,
+          },
+        )
+        .getSingle();
+    final at = row.read<String?>('at');
+    return at == null ? null : planDate(DateTime.parse(at).toLocal());
+  }
+
   /// The backlog (BR-PLAN-05): open `new` rows from before [today].
   ///
   /// Newest day first, because Today shows the most recent missed day at the

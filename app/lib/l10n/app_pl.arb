@@ -215,6 +215,7 @@
   "todayCardCourseBody": "Wszystkie etapy ukończone. Powtórki trwają codziennie.",
   "todayCardUpdateTitle": "Kurs zaktualizowany",
   "todayCardUpdateBody": "Dodano: {added} · usunięto: {removed} · zmieniono: {changed}",
+  "todayCardUpdateQueued": "W ukończonych etapach: {count} · po kilka dziennie od jutra",
   "todayCardPauseTitle": "Twoje zaległości rosną",
   "todayCardPauseBody": "Czekające słowa: {count}. Wstrzymaj nowe słowa, dopóki ich nie nadrobisz — powtórki trwają dalej.",
   "todayCardPauseAction": "Wstrzymaj nowe słowa",

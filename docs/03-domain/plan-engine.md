@@ -37,6 +37,9 @@ for each day ≤ today:
 if today was walked, is a study day and not paused:   // BR-PLAN-11, today only
   picked = the document queue's oldest waiting words, limit doc_daily_cap - today's already
   insert plan_items(today, uid, 'new'); doc_queue.planned_on = today
+  if today is first opened now and the course wasn't updated today:   // BR-CONTENT-02
+    picked = the update queue's next words in seq order, limit update_daily_cap - today's already
+    insert plan_items(today, uid, 'new')
 last_planned_date = max(last_planned_date, today)
 ```
 
@@ -49,6 +52,15 @@ Words a learner adds from a document (D2's *Add*, BR-DOC-04) wait in `doc_queue`
 - **Waiting** means not planned by any route (its day, the course's own New today, W1's *Add to today*), still To-do, and still a word of the course. A removed word's row stays unread, as its history does (BR-CONTENT-02). A rest day, the backlog pause (BR-PLAN-07) and a cap of 0 take none.
 - **`addDocWords(uids, today)`** (FR-D2-02/03) queues the words, lets an opened study day take its share at once, and answers each word's first day: today, the study day the queue reaches it on under the cap (rest days skipped), or none with a cap of 0 or while the backlog pause holds, since the queue then waits for the backlog and no day can be said. A day not opened yet keeps its share for when it opens. `replanToday` (an import's merge) tops today up the same way.
 - **No step under way** (a finished step with *Auto-advance* off, or the course done) holds nothing back: document words aren't the step's. The day opens as a study day, as `generateNewThrough` plans it, and takes its share; *Add*, `docSlotsLeft` and `replanToday` treat it so too.
+### The update queue (BR-CONTENT-02, #1338)
+
+A content update's new words in a step the learner has finished would never be planned: the course plans the active step, and BR-CONTENT-02 put them in a To-do queue no day reads. The update queue teaches them, a few a day.
+- **Read, not stored** (`DriftPlanStore.updateQueueSql`): the vocab words of steps the plan finished (`left_part_way` 0 or NULL), still To-do, in no `new` row and not in `doc_queue`, in `seq` order. A step the plan finished planned every word it had (`completeStepSql`), so such a word came later. A step left part-way, by a switch or a merge that closed the file's open one, isn't read. No table and no migration, and an export carries it: the steps, the states and the plan say what it holds.
+- **A day's share:** `update_daily_cap` (default 3, 0–20, no screen yet), after the course's and the documents' words, outside `daily_new`. `updatePlannedOn(day)` counts the day's `new` rows from steps finished before it, less the document queue's, so `_coursePlannedOn` counts the course's own and a reopened day isn't topped up wrongly.
+- **When:** only as a day is first opened (`lastPlannedDate` before it), never into an opened day (BR-PLAN-04), and not on the day this phone installed the update (`courseUpdatedOn`, the newest `content_updates` row that added words): Today's card says they start tomorrow. Today only, as the documents' (a missed day takes none). A rest day, the backlog pause and a cap of 0 take none. No step under way holds nothing back: agent-3's learner past A1 with *Step complete* gets them.
+- **Apart from the documents'** (#1351): `docWaiting` never holds them, so D2's cap note and *Add*'s answers are the documents' alone.
+- **D2** reads them as planned (BR-DOC-03), and Today leaves them out of the day's category, as a passed step's.
+
 - **The cap a day opened with** holds for that day (BR-PLAN-08): opening it records `doc_daily_cap` as `planned_doc_cap`, and *Add*, `replanToday` and `docSlotsLeft` read today's room from it. An M3 change plans the next day, and `addDocWords`' start days after today use it.
 
 ### ensureRevise (BR-PLAN-03)

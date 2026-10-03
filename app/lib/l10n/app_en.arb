@@ -1444,6 +1444,16 @@
       }
     }
   },
+  "todayCardUpdateQueued": "In steps you've done: {count}, a few a day from tomorrow",
+  "@todayCardUpdateQueued": {
+    "description": "T1 content-update card, a second line when the update added words to steps the learner had finished: BR-CONTENT-02's update queue teaches them a few a day from tomorrow (#1338).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "todayCardPauseTitle": "Your backlog is growing",
   "@todayCardPauseTitle": {
     "description": "T1 contextual card: the backlog pause offer (BR-PLAN-07)."

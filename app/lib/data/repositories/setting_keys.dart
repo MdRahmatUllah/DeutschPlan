@@ -354,6 +354,14 @@ abstract final class SettingKeys {
   static const recentSearches = StringSetting('recent_searches');
   static const learnerName = StringSetting('learner_name');
 
+  /// BR-CONTENT-02 (#1338, the owner): the words a study day takes from the
+  /// update queue, a content update's words in steps the learner had
+  /// finished. No screen sets it yet: the owner may make it adjustable.
+  static const updateDailyCap = IntSetting('update_daily_cap', 3, (
+    min: 0,
+    max: 20,
+  ));
+
   /// Learn from your documents (#1219, `document-matcher.md`), as the owner
   /// decided (#1220): BR-PLAN-11's new words a day from documents (#1231),
   /// whether a document keeps its pages' images, when one deletes itself
@@ -416,6 +424,7 @@ abstract final class SettingKeys {
     playReviewAsked,
     plannedStudyDays,
     plannedDocCap,
+    updateDailyCap,
     docDailyCap,
     docSaveImages,
     docAutodeleteDays,

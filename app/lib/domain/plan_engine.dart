@@ -187,6 +187,21 @@ abstract interface class PlanStore {
   /// keeps its place (BR-DOC-04's *Add*).
   Future<void> queueDocWords(List<String> uids, String at);
 
+  /// BR-CONTENT-02's update queue (#1338), in teaching order, at most
+  /// [limit]: words of a step the plan finished (not left part-way, #1047)
+  /// that are still To-do and in no day's plan. Such a step planned every
+  /// word it had, so these came later, with a content update. Never the
+  /// document queue's words, which wait in their own (BR-PLAN-11).
+  Future<List<String>> updateWaiting({required int limit});
+
+  /// The update queue's words in [date]'s plan: a step finished before
+  /// [date] has no word the course plans then, and the document queue's are
+  /// its own.
+  Future<List<String>> updatePlannedOn(PlanDate date);
+
+  /// The day this phone last installed a course that added words, or null.
+  Future<PlanDate?> courseUpdatedOn();
+
   /// Open `new` rows from before [today], newest day first (BR-PLAN-05).
   Future<List<String>> backlogBefore(PlanDate today);
 
@@ -367,6 +382,7 @@ class PlanEngine {
     bool autoAdvance = true,
     bool pauseNewWhenBacklog = false,
     int docDailyCap = 0,
+    int updateDailyCap = 0,
     Fsrs? fsrs,
   }) : this._(
          store,
@@ -375,6 +391,7 @@ class PlanEngine {
          autoAdvance,
          pauseNewWhenBacklog,
          docDailyCap,
+         updateDailyCap,
          fsrs ?? Fsrs(),
        );
 
@@ -385,6 +402,7 @@ class PlanEngine {
     this._autoAdvance,
     this._pauseNewWhenBacklog,
     this._docDailyCap,
+    this._updateDailyCap,
     this._fsrs,
   );
 
@@ -409,6 +427,10 @@ class PlanEngine {
   /// document queue, after the course's and outside `daily_new`. 0 holds
   /// them all in the queue.
   final int _docDailyCap;
+
+  /// BR-CONTENT-02, `update_daily_cap` (#1338): the words a study day takes
+  /// from the update queue when it is first opened, after the documents'.
+  final int _updateDailyCap;
 
   final Fsrs _fsrs;
 
@@ -499,6 +521,7 @@ class PlanEngine {
     _autoAdvance,
     _pauseNewWhenBacklog,
     _docDailyCap,
+    _updateDailyCap,
     _fsrs,
   ).openDay(date);
 
@@ -562,6 +585,8 @@ class PlanEngine {
   /// word has to carry the date it was *meant* for: that date is what makes it
   /// backlog rather than part of today, and what the backlog list groups by.
   Future<void> generateNewThrough(PlanDate today) async {
+    final last = await _store.lastPlannedDate();
+    final firstOpening = last == null || last.compareTo(today) < 0;
     var step = await _store.activeStep();
     if (step == null) {
       // No new words to plan, but a day after the course (or after a step
@@ -574,7 +599,9 @@ class PlanEngine {
         await _recordPlanned(today, mask: allDays);
         // BR-PLAN-11: document words aren't the step's, so a day with none
         // under way still takes them.
-        if (!await _isPaused(today)) await _topUpDocWords(today);
+        if (!await _isPaused(today)) {
+          await _topUpQueues(today, firstOpening: firstOpening);
+        }
       }
       return;
     }
@@ -625,17 +652,39 @@ class PlanEngine {
           setupDay ? allDays : step?.studyDaysMask ?? allDays,
         ) &&
         !await _isPaused(today)) {
-      await _topUpDocWords(today);
+      await _topUpQueues(today, firstOpening: firstOpening);
     }
 
     await _recordPlanned(today);
   }
 
   /// [day]'s new words from the course: its `new` rows less the ones the
-  /// document queue gave it (BR-PLAN-11: outside `daily_new`).
+  /// document queue (BR-PLAN-11) and the update queue (BR-CONTENT-02) gave
+  /// it, which are outside `daily_new`.
   Future<int> _coursePlannedOn(PlanDate day) async =>
       (await _store.plannedOn(day, PlanKind.newWord)).length -
-      (await _store.docPlannedOn(day)).length;
+      (await _store.docPlannedOn(day)).length -
+      (await _store.updatePlannedOn(day)).length;
+
+  /// [day]'s words from the queues, after the course's: the documents'
+  /// (BR-PLAN-11), then a content update's in finished steps (BR-CONTENT-02,
+  /// #1338). Those join a day only as it is first opened, as its plan is
+  /// fixed once it is (BR-PLAN-04), and never on the day the update came:
+  /// its card says they start tomorrow.
+  Future<void> _topUpQueues(PlanDate day, {required bool firstOpening}) async {
+    await _topUpDocWords(day);
+    if (!firstOpening ||
+        _updateDailyCap <= 0 ||
+        await _store.courseUpdatedOn() == day) {
+      return;
+    }
+    final room = _updateDailyCap - (await _store.updatePlannedOn(day)).length;
+    if (room <= 0) return;
+    final picked = await _store.updateWaiting(limit: room);
+    if (picked.isNotEmpty) {
+      await _store.addToPlan(day, PlanKind.newWord, picked);
+    }
+  }
 
   /// BR-PLAN-11: [day] takes the document queue's oldest waiting words, up
   /// to its cap less the ones it has already.

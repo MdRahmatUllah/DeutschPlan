@@ -215,6 +215,7 @@
   "todayCardCourseBody": "Все этапы пройдены. Повторение продолжается каждый день.",
   "todayCardUpdateTitle": "Курс обновлён",
   "todayCardUpdateBody": "Добавлено: {added} · удалено: {removed} · изменено: {changed}",
+  "todayCardUpdateQueued": "В пройденных этапах: {count} · по несколько в день, с завтрашнего дня",
   "todayCardPauseTitle": "Пропущенное растёт",
   "todayCardPauseBody": "Слов в очереди: {count}. Поставь новые слова на паузу, пока список не опустеет — повторение продолжится.",
   "todayCardPauseAction": "Пауза новых слов",

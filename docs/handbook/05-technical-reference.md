@@ -424,6 +424,7 @@ From [`user-database.md`](../02-data/user-database.md), whose table
 | `doc_daily_cap` | 5 (0–20) | `doc_save_images` | 1 |
 | `doc_autodelete_days` | 0 (or 30, 90, 365) | `doc_show_probably_known` | 0 |
 | `planned_doc_cap` | -1 | `play_review_asked` | 0 |
+| `update_daily_cap` | 3 (0–20) | | |
 
 ## The tools
 

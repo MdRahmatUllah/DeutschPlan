@@ -215,6 +215,7 @@
   "todayCardCourseBody": "সব ধাপ শেষ। রিভিশন প্রতিদিন চলবে।",
   "todayCardUpdateTitle": "কোর্স হালনাগাদ হয়েছে",
   "todayCardUpdateBody": "{added}টি যোগ · {removed}টি বাদ · {changed}টি বদল",
+  "todayCardUpdateQueued": "শেষ করা ধাপে: {count}টি · কাল থেকে দিনে কয়েকটি করে",
   "todayCardPauseTitle": "ব্যাকলগ বাড়ছে",
   "todayCardPauseBody": "{count}টি শব্দ অপেক্ষায়। শেষ না হওয়া পর্যন্ত নতুন শব্দ থামান — রিভিশন চলবে।",
   "todayCardPauseAction": "নতুন শব্দ থামান",
