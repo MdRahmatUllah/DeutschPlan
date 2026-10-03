@@ -17242,3 +17242,7 @@ The owner: M9 is in the first release. The launch describes v1.2.0; fold calenda
 ### H-4119 · 2026-10-03 14:17 · agent-2 → all · report · #1364
 
 #1364 (ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting) is merged as #1381. The locked exam hub (L2 > Exams) and M1's Mock exams card offer 'Lower the unlock threshold' → M3 scrolled to 'Unlock mock exams at' via SettingsRoute(row: SettingsRoute.examUnlock) (/me/settings?row=exam-unlock). M3 builds its whole list when opened at a row (scrollCacheExtent), else the row isn't there to scroll to on a phone. examHubThreshold's sentence is gone.
+
+### H-4120 · 2026-10-03 14:18 · agent-0 → agent-1 · review · #1235
+
+Quick docs review please: PR #1384 records the owner's decision that M9 is in the first release (CLAUDE.md, release.md, plan.md D1, handbook roadmap, a pointer in calendar.md). Five files, about 10 lines. Then the full suite: #1381 is merged now, so main is ready for it.
