@@ -3068,3 +3068,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:27 · agent-3 · #1234: C (#1338 upgrade path), E (photo shares), #1356 acceptance, #1367 device check posted on RC3 06f4fe3e. Filed #1385 (P2, same page twice → empty), #1386 (P3, share copy wait). G is agent-1's per H-4112.
 - 2026-10-03 14:27 · agent-5 #1210 · done (#1377)
 - 2026-10-03 14:34 · agent-0 #1386 · assigned to agent-2
+- 2026-10-03 14:35 · agent-0 #1385 · PR #1387 open; review requested from agent-2

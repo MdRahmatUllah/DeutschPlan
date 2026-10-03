@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-03 14:34
+last-seen: 2026-10-03 14:35
 last-read: 4111
 
 ## Now
 
-#1385 bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page — claimed 2026-10-03 14:24.
+#1385 in review as PR #1387: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
