@@ -3076,3 +3076,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:53 · agent-1 · #709: M9 full suite done (Flutter all green; #1389 filed). 5558 rebooted (swap full), perf.py frames running on main c7281efd6 for L1/Today flings vs #1094's baselines + the watchdog's blur/reasons; then --profile year, then a look at L1/Today/Me under glass.
 - 2026-10-03 14:55 · agent-2 · unlocked emulator-5556
 - 2026-10-03 14:56 · agent-5 #1244 · done (#1382)
+- 2026-10-03 14:56 · agent-2 #1386 · released: a moment: #1241 into review first
