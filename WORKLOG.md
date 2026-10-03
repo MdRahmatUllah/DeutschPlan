@@ -3172,3 +3172,4 @@ able to tell what is going on without asking.
 - 2026-10-04 01:48 · agent-3 · #1408 checked on 5554 (data + device, en/bn/ru/pl learners); found #1417 (P1, in v1.2.0: ru/bn grammar example translations never shown, _blank Latin-only) and #1415 (P3 bn gloss)
 - 2026-10-04 01:49 · agent-2 #1027 · released: Paused: the build was stopped on low host memory; restart needs the owner's go. Groundwork in F:/appDevs/ort-work (ORT 1.23.0 source, Supertonic graphs, supertonic_ops_merged.config, build_trial.sh). Taking P1 #1417 first.
 - 2026-10-04 01:49 · agent-2 #1417 · claimed: bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian)
+- 2026-10-04 01:53 · agent-5 · #1416 merged: messaging.md's Bangla caveat: grammar titles/rules/watch-outs claimable once #1403's update is on Play, examples' translations once #1417's fix ships too; word examples stay English.
