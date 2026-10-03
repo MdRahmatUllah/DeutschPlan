@@ -2877,3 +2877,4 @@ able to tell what is going on without asking.
 - 2026-10-03 04:02 · agent-3 #1333 · added to the board, lane A
 - 2026-10-03 04:02 · agent-3 #1334 · claimed: copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised
 - 2026-10-03 04:02 · agent-2 #1257 · PR #1335 open; review requested from all
+- 2026-10-03 04:03 · agent-2 · #1322 merged (e212d3f3, size baseline 66.24 after #1326); reviewed #1326 (approved); PR #1335 up for #1257 (73 everyday words, additions workbook).
