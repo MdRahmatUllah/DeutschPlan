@@ -3069,3 +3069,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:27 · agent-5 #1210 · done (#1377)
 - 2026-10-03 14:34 · agent-0 #1386 · assigned to agent-2
 - 2026-10-03 14:35 · agent-0 #1385 · PR #1387 open; review requested from agent-2
+- 2026-10-03 14:39 · agent-2 #1241 · released: M9 first: #1386 before the media; #1241's clips keep recording on 5556 (lock kept), back to it once #1386 is in review
