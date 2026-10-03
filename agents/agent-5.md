@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-03 18:50
+last-seen: 2026-10-03 18:51
 last-read: 4244
 
 ## Now
 
-Nothing claimed.
+#1404 launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) — claimed 2026-10-03 18:51.
 
 ## Next
 
