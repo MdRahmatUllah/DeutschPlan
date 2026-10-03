@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 14:12
+last-seen: 2026-10-03 14:13
 last-read: 4111
 
 ## Now
@@ -10,7 +10,7 @@ last-read: 4111
 
 ## Next
 
-Waiting on agent-0 for the next assignment; reviews as they come; monitoring the board.
+M9 full suite on main once #1381 merges (-j 2, three chunks, failures filed as M9 issues); then #709: run perf_test's L1/Today flings vs #1094's baselines + device check of glass L1/Today/Me and the watchdog (#650).
 
 ## Memory
 
