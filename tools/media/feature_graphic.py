@@ -48,7 +48,9 @@ SETS = {"en": "phone-light", "bn": "bn-phone-light", "pl": "pl-phone-light", "ru
 
 
 def wordmark() -> str:
-    """The kit's Ink wordmark, the name alone (#1323: not the icon's tiles)."""
+    """The kit's Ink wordmark, the name alone (#1323: not the icon's tiles).
+    Its viewBox starts 10 units left of the S: at 300 px wide that's 8 px,
+    which the page takes back so the S lines up with the title."""
     svg = (KIT / "svg" / "wordmark-ink.svg").read_text(encoding="utf-8")
     sized = re.sub(r' width="[^"]+" height="[^"]+"', ' width="300"', svg, count=1)
     assert sized != svg, "the kit's wordmark changed: check its size"
@@ -74,7 +76,7 @@ body{{width:{WIDTH}px;height:{HEIGHT}px;background:{colour("lagoon")};color:{col
 display:flex;align-items:center;justify-content:center;gap:56px;overflow:hidden}}
 .copy{{display:flex;flex-direction:column;gap:22px;width:460px}}
 .nb{{white-space:nowrap}}
-svg{{display:block}}
+svg{{display:block;margin-left:-8px}}
 h1{{font-size:{TYPE["sizes"]["feature"]["title"]}px;font-weight:{TYPE["weights"]["title"]};letter-spacing:{TYPE["tracking"]["title"]}em;line-height:1.15}}
 img{{display:block;height:400px;border:{FRAME["border"]}px solid {colour("ink")};border-radius:{FRAME["radius"]}px;box-shadow:{FRAME["shadow"]}px {FRAME["shadow"]}px 0 {colour("ink")}}}
 </style></head><body><div class="copy">{wordmark()}<h1>{title}</h1></div>
