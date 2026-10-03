@@ -32,6 +32,7 @@ The full rules are in agent-5's README.
 | `research/` | The dated research behind the plan, with a source for every number | #1201, #1202 |
 
 Each file comes from its issue. **The tools** that render
-images and videos are in [`tools/media/`](../../tools/), and **the renders**
+images and videos are in [`tools/media/`](../../tools/): `stills.py` (#1205), a
+template in every format and language; `feature_graphic.py` (#1200). **The renders**
 are on the [`media`](https://github.com/MdRahmatUllah/DeutschPlan/tree/media)
 branch.
