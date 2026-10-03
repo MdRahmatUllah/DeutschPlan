@@ -648,7 +648,7 @@ claiming the same issue. A hand edit skips that check.
 | #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | done | agent-0 |  | #1376 |
 | #1383 | MK2 | M | P1 | - | marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0 | in-progress | agent-5 | #1312 #1377 |  |
 | #1385 | M9 | A | P2 | - | bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page | review | agent-0 | #1371 | #1387 |
-| #1386 | M9 | A | P3 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | assigned | agent-2 | #1371 |  |
+| #1386 | M9 | A | P3 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | in-progress | agent-2 | #1371 |  |
 
 ## Locks
 

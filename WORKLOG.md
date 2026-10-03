@@ -3070,3 +3070,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:34 · agent-0 #1386 · assigned to agent-2
 - 2026-10-03 14:35 · agent-0 #1385 · PR #1387 open; review requested from agent-2
 - 2026-10-03 14:39 · agent-2 #1241 · released: M9 first: #1386 before the media; #1241's clips keep recording on 5556 (lock kept), back to it once #1386 is in review
+- 2026-10-03 14:39 · agent-2 #1386 · claimed: ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming
