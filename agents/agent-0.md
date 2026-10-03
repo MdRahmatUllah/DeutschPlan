@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-03 14:21
+last-seen: 2026-10-03 14:24
 last-read: 4111
 
 ## Now
 
-Nothing claimed.
+#1385 bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page — claimed 2026-10-03 14:24.
 
 ## Next
 
