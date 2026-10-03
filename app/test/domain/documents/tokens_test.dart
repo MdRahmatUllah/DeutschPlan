@@ -343,9 +343,10 @@ void main() {
     expect(name('Raum', 'in'), isTrue, reason: 'as «in Krefeld»: the corpus');
     // The cost, taken: a place after an adjective reads as a word.
     expect(name('Berlin', 'schönen'), isFalse, reason: '«im schönen Berlin»');
-    // FR-D1-04: so Schritt, outside the course, is a word that isn't German.
+    // FR-D1-04: so Meilenstein, outside the course (Schritt is in it since
+    // #1257), is a word that isn't German.
     expect(
-      germanShare(splitText('Das ist ein wichtiger Schritt.'), lemmatiser),
+      germanShare(splitText('Das ist ein wichtiger Meilenstein.'), lemmatiser),
       0.8,
     );
   });

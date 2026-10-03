@@ -1,0 +1,964 @@
+# #1257 (the owner, 2026-10-03): everyday words the course used but never
+# taught, A2 (A2.2 from week 12).
+words:
+  - german: persönlich
+    pos: adj
+    level: A2
+    week: 1
+    category: People & personality
+    freq: 4
+    english: personal / in person
+    bangla: ব্যক্তিগত / নিজে
+    pron_bn: পেরজ্যোনলিশ
+    pron_en: per-ZURN-lihy
+    examples_de: |-
+      Ich möchte Sie persönlich sprechen.
+      Das ist eine persönliche Frage.
+    examples_en: |-
+      I'd like to speak to you in person.
+      That's a personal question.
+    ru:
+      meaning: личный / лично
+      pron: пэрзЁнлихь
+      examples: |-
+        Я хотел бы поговорить с вами лично.
+        Это личный вопрос.
+    pl:
+      meaning: osobisty / osobiście
+      pron: per-ZEN-liś
+      examples: |-
+        Chciałbym porozmawiać z panem osobiście.
+        To osobiste pytanie.
+
+  - german: eigen
+    pos: adj
+    level: A2
+    week: 1
+    category: People & personality
+    freq: 4
+    english: own
+    bangla: নিজের
+    pron_bn: আইগেন
+    pron_en: EYE-gen
+    examples_de: |-
+      Sie hat ein eigenes Zimmer.
+      Wir möchten eine eigene Wohnung.
+    examples_en: |-
+      She has her own room.
+      We want our own flat.
+    ru:
+      meaning: собственный / свой
+      pron: Айгэн
+      examples: |-
+        У неё своя комната.
+        Мы хотим свою квартиру.
+    pl:
+      meaning: własny
+      pron: AJ-gen
+      examples: |-
+        Ma własny pokój.
+        Chcemy mieć własne mieszkanie.
+
+  - german: wirken
+    forms: wirkt · hat gewirkt
+    pos: verb
+    level: A2
+    week: 1
+    category: People & personality
+    freq: 4
+    english: to seem / to have an effect
+    bangla: মনে হওয়া / কাজ করা (প্রভাব)
+    pron_bn: ভিরকেন
+    pron_en: VEER-ken
+    examples_de: |-
+      Sie wirkt sehr sympathisch.
+      Die Tablette wirkt nach einer halben Stunde.
+    examples_en: |-
+      She seems very nice.
+      The tablet takes effect after half an hour.
+    ru:
+      meaning: казаться / действовать
+      pron: вИркэн
+      examples: |-
+        Она кажется очень симпатичной.
+        Таблетка действует через полчаса.
+    pl:
+      meaning: wydawać się / działać
+      pron: WIR-ken
+      examples: |-
+        Wydaje się bardzo sympatyczna.
+        Tabletka działa po pół godzinie.
+
+  - german: zuletzt
+    pos: adv
+    level: A2
+    week: 2
+    category: Doctor, pharmacy & emergency
+    freq: 4
+    english: last / most recently
+    bangla: শেষবার / সবশেষে
+    pron_bn: ৎসুলেৎস্ট
+    pron_en: tsoo-LETST
+    examples_de: |-
+      Wann waren Sie zuletzt beim Arzt?
+      Zuletzt habe ich in Hamburg gewohnt.
+    examples_en: |-
+      When did you last see a doctor?
+      Most recently I lived in Hamburg.
+    ru:
+      meaning: в последний раз / напоследок
+      pron: цулЭцт
+      examples: |-
+        Когда вы в последний раз были у врача?
+        В последнее время я жил в Гамбурге.
+    pl:
+      meaning: ostatnio / na koniec
+      pron: cu-LECT
+      examples: |-
+        Kiedy był pan ostatnio u lekarza?
+        Ostatnio mieszkałem w Hamburgu.
+
+  - german: prüfen
+    forms: prüft · hat geprüft
+    pos: verb
+    level: A2
+    week: 3
+    category: Bureaucracy & Amt
+    freq: 4
+    english: to check / to examine
+    bangla: পরীক্ষা করা / যাচাই করা
+    pron_bn: প্রুফেন
+    pron_en: PRUE-fen
+    examples_de: |-
+      Wir prüfen Ihren Antrag.
+      Bitte prüfen Sie die Rechnung.
+    examples_en: |-
+      We are checking your application.
+      Please check the invoice.
+    ru:
+      meaning: проверять
+      pron: прЮфэн
+      examples: |-
+        Мы проверяем ваше заявление.
+        Пожалуйста, проверьте счёт.
+    pl:
+      meaning: sprawdzać
+      pron: PRY-fen
+      examples: |-
+        Sprawdzamy pana wniosek.
+        Proszę sprawdzić rachunek.
+
+  - german: schriftlich
+    pos: adj
+    level: A2
+    week: 3
+    category: Bureaucracy & Amt
+    freq: 4
+    english: written / in writing
+    bangla: লিখিত
+    pron_bn: শ্রিফ্টলিশ
+    pron_en: SHRIFT-lihy
+    examples_de: |-
+      Die Kündigung muss schriftlich sein.
+      Die schriftliche Prüfung dauert zwei Stunden.
+    examples_en: |-
+      The notice must be in writing.
+      The written exam lasts two hours.
+    ru:
+      meaning: письменный / письменно
+      pron: шрИфтлихь
+      examples: |-
+        Расторжение должно быть в письменной форме.
+        Письменный экзамен длится два часа.
+    pl:
+      meaning: pisemny / na piśmie
+      pron: SZRIFT-liś
+      examples: |-
+        Wypowiedzenie musi być na piśmie.
+        Egzamin pisemny trwa dwie godziny.
+
+  - german: Verständnis
+    article: das
+    pos: noun
+    level: A2
+    week: 3
+    category: Bureaucracy & Amt
+    freq: 3
+    english: understanding
+    bangla: বোঝাপড়া / সহানুভূতি
+    pron_bn: ফেরশ্টেন্টনিস
+    pron_en: fair-SHTENT-nis
+    examples_de: |-
+      Wir bitten um Ihr Verständnis.
+      Ich habe Verständnis für deine Situation.
+    examples_en: |-
+      We ask for your understanding.
+      I understand your situation.
+    ru:
+      meaning: понимание
+      pron: фэрштЭнтнис
+      examples: |-
+        Просим отнестись с пониманием.
+        Я понимаю твою ситуацию.
+    pl:
+      meaning: zrozumienie
+      pron: fer-SZTENT-nis
+      examples: |-
+        Prosimy o wyrozumiałość.
+        Rozumiem twoją sytuację.
+
+  - german: Teil
+    article: der
+    forms: Teile
+    pos: noun
+    level: A2
+    week: 4
+    category: Education & learning
+    freq: 5
+    english: part
+    bangla: অংশ
+    pron_bn: টাইল
+    pron_en: TILE
+    examples_de: |-
+      Der erste Teil der Prüfung ist schriftlich.
+      Zum Teil hast du recht.
+    examples_en: |-
+      The first part of the exam is written.
+      You're partly right.
+    ru:
+      meaning: часть
+      pron: тайль
+      examples: |-
+        Первая часть экзамена письменная.
+        Отчасти ты прав.
+    pl:
+      meaning: część
+      pron: TAJL
+      examples: |-
+        Pierwsza część egzaminu jest pisemna.
+        Częściowo masz rację.
+
+  - german: Kapitel
+    article: das
+    forms: Kapitel
+    pos: noun
+    level: A2
+    week: 4
+    category: Education & learning
+    freq: 3
+    english: chapter
+    bangla: অধ্যায়
+    pron_bn: কাপিটেল
+    pron_en: kah-PIT-el
+    examples_de: |-
+      Lesen Sie bitte Kapitel drei.
+      Das Buch hat zwölf Kapitel.
+    examples_en: |-
+      Please read chapter three.
+      The book has twelve chapters.
+    ru:
+      meaning: глава
+      pron: капИтэль
+      examples: |-
+        Прочитайте, пожалуйста, третью главу.
+        В книге двенадцать глав.
+    pl:
+      meaning: rozdział
+      pron: ka-PI-tel
+      examples: |-
+        Proszę przeczytać rozdział trzeci.
+        Książka ma dwanaście rozdziałów.
+
+  - german: Plan
+    article: der
+    forms: Pläne
+    pos: noun
+    level: A2
+    week: 5
+    category: Meetings, email & phone
+    freq: 4
+    english: plan
+    bangla: পরিকল্পনা
+    pron_bn: প্লান
+    pron_en: PLAHN
+    examples_de: |-
+      Was ist der Plan für morgen?
+      Wir haben unsere Pläne geändert.
+    examples_en: |-
+      What's the plan for tomorrow?
+      We've changed our plans.
+    ru:
+      meaning: план
+      pron: план
+      examples: |-
+        Какой план на завтра?
+        Мы изменили наши планы.
+    pl:
+      meaning: plan
+      pron: PLAN
+      examples: |-
+        Jaki jest plan na jutro?
+        Zmieniliśmy nasze plany.
+
+  - german: Schluss
+    article: der
+    pos: noun
+    level: A2
+    week: 5
+    category: Meetings, email & phone
+    freq: 4
+    english: end / conclusion
+    bangla: শেষ / উপসংহার
+    pron_bn: শ্লুস
+    pron_en: SHLOOSS
+    examples_de: |-
+      Zum Schluss noch eine Frage.
+      Machen wir für heute Schluss.
+    examples_en: |-
+      One more question at the end.
+      Let's call it a day.
+    ru:
+      meaning: конец / вывод
+      pron: шлус
+      examples: |-
+        Напоследок ещё один вопрос.
+        Давайте на сегодня закончим.
+    pl:
+      meaning: koniec / wniosek
+      pron: SZLUS
+      examples: |-
+        Na koniec jeszcze jedno pytanie.
+        Kończymy na dziś.
+
+  - german: Rede
+    article: die
+    forms: Reden
+    pos: noun
+    level: A2
+    week: 6
+    category: Media & culture
+    freq: 3
+    english: speech / talk
+    bangla: বক্তৃতা / কথা
+    pron_bn: রেডে
+    pron_en: RAY-duh
+    examples_de: |-
+      Der Bürgermeister hält eine Rede.
+      Davon kann keine Rede sein.
+    examples_en: |-
+      The mayor is giving a speech.
+      That's out of the question.
+    ru:
+      meaning: речь
+      pron: рЭдэ
+      examples: |-
+        Мэр произносит речь.
+        Об этом не может быть и речи.
+    pl:
+      meaning: przemówienie / mowa
+      pron: RE-de
+      examples: |-
+        Burmistrz wygłasza przemówienie.
+        Nie ma o tym mowy.
+
+  - german: sozial
+    pos: adj
+    level: A2
+    week: 8
+    category: Environment & society
+    freq: 4
+    english: social
+    bangla: সামাজিক
+    pron_bn: জোৎসিয়াল
+    pron_en: zoh-TSYAHL
+    examples_de: |-
+      Sie arbeitet in einem sozialen Beruf.
+      Soziale Medien sind für viele wichtig.
+    examples_en: |-
+      She works in a social-care job.
+      Social media are important to many people.
+    ru:
+      meaning: социальный
+      pron: зоцьЯль
+      examples: |-
+        Она работает в социальной сфере.
+        Социальные сети важны для многих.
+    pl:
+      meaning: społeczny / socjalny
+      pron: zo-CJAL
+      examples: |-
+        Pracuje w zawodzie społecznym.
+        Media społecznościowe są dla wielu ważne.
+
+  - german: Welt
+    article: die
+    forms: Welten
+    pos: noun
+    level: A2
+    week: 8
+    category: Environment & society
+    freq: 4
+    english: world
+    bangla: পৃথিবী / বিশ্ব
+    pron_bn: ভেল্ট
+    pron_en: VELT
+    examples_de: |-
+      Er möchte die Welt sehen.
+      Das ist das schönste Land der Welt.
+    examples_en: |-
+      He wants to see the world.
+      That is the most beautiful country in the world.
+    ru:
+      meaning: мир
+      pron: вэльт
+      examples: |-
+        Он хочет увидеть мир.
+        Это самая красивая страна в мире.
+    pl:
+      meaning: świat
+      pron: WELT
+      examples: |-
+        Chce zobaczyć świat.
+        To najpiękniejszy kraj na świecie.
+
+  - german: stellen
+    forms: stellt · hat gestellt
+    pos: verb
+    level: A2
+    week: 9
+    category: Core verbs
+    freq: 5
+    english: to put (upright) / to place
+    bangla: রাখা (দাঁড় করিয়ে)
+    pron_bn: শ্টেলেন
+    pron_en: SHTEL-en
+    examples_de: |-
+      Stell die Flasche auf den Tisch.
+      Darf ich eine Frage stellen?
+    examples_en: |-
+      Put the bottle on the table.
+      May I ask a question?
+    ru:
+      meaning: ставить / поставить
+      pron: штЭлэн
+      examples: |-
+        Поставь бутылку на стол.
+        Можно задать вопрос?
+    pl:
+      meaning: stawiać / postawić
+      pron: SZTE-len
+      examples: |-
+        Postaw butelkę na stole.
+        Czy mogę zadać pytanie?
+
+  - german: legen
+    forms: legt · hat gelegt
+    pos: verb
+    level: A2
+    week: 9
+    category: Core verbs
+    freq: 5
+    english: to lay / to put (down)
+    bangla: রাখা (শুইয়ে)
+    pron_bn: লেগেন
+    pron_en: LAY-gen
+    examples_de: |-
+      Ich lege das Buch auf den Tisch.
+      Sie legt großen Wert auf Pünktlichkeit.
+    examples_en: |-
+      I put the book on the table.
+      She places great value on punctuality.
+    ru:
+      meaning: класть / положить
+      pron: лЕгэн
+      examples: |-
+        Я кладу книгу на стол.
+        Она придаёт большое значение пунктуальности.
+    pl:
+      meaning: kłaść / położyć
+      pron: LE-gen
+      examples: |-
+        Kładę książkę na stół.
+        Przywiązuje dużą wagę do punktualności.
+
+  - german: lassen
+    forms: lässt · hat gelassen
+    pos: verb
+    level: A2
+    week: 9
+    category: Core verbs
+    freq: 5
+    english: to let / to leave
+    bangla: করতে দেওয়া / রেখে যাওয়া
+    pron_bn: লাসেন
+    pron_en: LAHSS-en
+    examples_de: |-
+      Lass mich bitte ausreden.
+      Ich habe meinen Schirm im Bus gelassen.
+    examples_en: |-
+      Please let me finish.
+      I left my umbrella on the bus.
+    ru:
+      meaning: позволять / оставлять
+      pron: лАсэн
+      examples: |-
+        Дай мне, пожалуйста, договорить.
+        Я оставил зонт в автобусе.
+    pl:
+      meaning: pozwalać / zostawiać
+      pron: LA-sen
+      examples: |-
+        Pozwól mi, proszę, skończyć.
+        Zostawiłem parasol w autobusie.
+
+  - german: halten
+    forms: hält · hat gehalten
+    pos: verb
+    level: A2
+    week: 9
+    category: Core verbs
+    freq: 5
+    english: to hold / to stop
+    bangla: ধরে রাখা / থামা
+    pron_bn: হাল্টেন
+    pron_en: HAHL-ten
+    examples_de: |-
+      Der Bus hält vor dem Bahnhof.
+      Kannst du kurz meine Tasche halten?
+    examples_en: |-
+      The bus stops in front of the station.
+      Can you hold my bag for a moment?
+    ru:
+      meaning: держать / останавливаться
+      pron: хАльтэн
+      examples: |-
+        Автобус останавливается перед вокзалом.
+        Можешь подержать мою сумку?
+    pl:
+      meaning: trzymać / zatrzymywać się
+      pron: HAL-ten
+      examples: |-
+        Autobus zatrzymuje się przed dworcem.
+        Możesz chwilę potrzymać moją torbę?
+
+  - german: nennen
+    forms: nennt · hat genannt
+    pos: verb
+    level: A2
+    week: 9
+    category: Core verbs
+    freq: 4
+    english: to name / to call
+    bangla: নাম দেওয়া / ডাকা
+    pron_bn: নেনেন
+    pron_en: NEN-en
+    examples_de: |-
+      Wir nennen ihn Tom.
+      Nennen Sie bitte drei Beispiele.
+    examples_en: |-
+      We call him Tom.
+      Please name three examples.
+    ru:
+      meaning: называть / назвать
+      pron: нЭнэн
+      examples: |-
+        Мы зовём его Том.
+        Назовите, пожалуйста, три примера.
+    pl:
+      meaning: nazywać / wymieniać
+      pron: NE-nen
+      examples: |-
+        Nazywamy go Tom.
+        Proszę podać trzy przykłady.
+
+  - german: Angestellte
+    article: der
+    forms: Angestellten (die Angestellte, f.)
+    pos: noun
+    level: A2
+    week: 10
+    category: Office & work
+    freq: 4
+    english: employee
+    bangla: কর্মচারী
+    pron_bn: আনগেশ্টেল্টে
+    pron_en: AHN-guh-shtel-tuh
+    examples_de: |-
+      Die Firma hat fünfzig Angestellte.
+      Ein Angestellter hat mir geholfen.
+    examples_en: |-
+      The company has fifty employees.
+      An employee helped me.
+    ru:
+      meaning: служащий / сотрудник
+      pron: Ангэштэльтэ
+      examples: |-
+        В фирме пятьдесят сотрудников.
+        Мне помог один сотрудник.
+    pl:
+      meaning: pracownik / pracownica
+      pron: AN-ge-sztel-te
+      examples: |-
+        Firma zatrudnia pięćdziesięciu pracowników.
+        Pomógł mi jeden z pracowników.
+
+  - german: bereit
+    pos: adj
+    level: A2
+    week: 10
+    category: Core adjectives & adverbs
+    freq: 4
+    english: ready / willing
+    bangla: প্রস্তুত / রাজি
+    pron_bn: বেরাইট
+    pron_en: buh-RITE
+    examples_de: |-
+      Sind Sie bereit?
+      Er ist bereit, am Samstag zu arbeiten.
+    examples_en: |-
+      Are you ready?
+      He is willing to work on Saturday.
+    ru:
+      meaning: готовый
+      pron: бэрАйт
+      examples: |-
+        Вы готовы?
+        Он готов работать в субботу.
+    pl:
+      meaning: gotowy
+      pron: be-RAJT
+      examples: |-
+        Czy jest pan gotowy?
+        Jest gotów pracować w sobotę.
+
+  - german: Fall
+    article: der
+    forms: Fälle
+    pos: noun
+    level: A2
+    week: 11
+    category: Everyday expressions & idioms
+    freq: 5
+    english: case
+    bangla: ক্ষেত্র / ঘটনা
+    pron_bn: ফাল
+    pron_en: FAHL
+    examples_de: |-
+      Auf jeden Fall komme ich mit.
+      In diesem Fall rufen Sie bitte an.
+    examples_en: |-
+      I'm definitely coming along.
+      In that case, please call.
+    ru:
+      meaning: случай
+      pron: фаль
+      examples: |-
+        Я в любом случае пойду с вами.
+        В этом случае, пожалуйста, позвоните.
+    pl:
+      meaning: przypadek
+      pron: FAL
+      examples: |-
+        Na pewno pójdę z wami.
+        W takim przypadku proszę zadzwonić.
+
+  - german: Sache
+    article: die
+    forms: Sachen
+    pos: noun
+    level: A2
+    week: 11
+    category: Feelings & opinions
+    freq: 5
+    english: thing / matter
+    bangla: জিনিস / বিষয়
+    pron_bn: জাখে
+    pron_en: ZAHKH-uh
+    examples_de: |-
+      Pack deine Sachen ein.
+      Das ist meine Sache.
+    examples_en: |-
+      Pack your things.
+      That's my business.
+    ru:
+      meaning: вещь / дело
+      pron: зАхэ
+      examples: |-
+        Собери свои вещи.
+        Это моё дело.
+    pl:
+      meaning: rzecz / sprawa
+      pron: ZA-che
+      examples: |-
+        Spakuj swoje rzeczy.
+        To moja sprawa.
+
+  - german: Situation
+    article: die
+    forms: Situationen
+    pos: noun
+    level: A2
+    week: 11
+    category: Feelings & opinions
+    freq: 4
+    english: situation
+    bangla: পরিস্থিতি
+    pron_bn: জিটুয়াৎসিওন
+    pron_en: zit-oo-ah-TSYOHN
+    examples_de: |-
+      Die Situation ist schwierig.
+      Was würdest du in meiner Situation machen?
+    examples_en: |-
+      The situation is difficult.
+      What would you do in my situation?
+    ru:
+      meaning: ситуация
+      pron: зитуацьОн
+      examples: |-
+        Ситуация сложная.
+        Что бы ты сделал в моей ситуации?
+    pl:
+      meaning: sytuacja
+      pron: zi-tu-a-CJON
+      examples: |-
+        Sytuacja jest trudna.
+        Co byś zrobił w mojej sytuacji?
+
+  - german: positiv
+    pos: adj
+    level: A2
+    week: 11
+    category: Feelings & opinions
+    freq: 4
+    english: positive
+    bangla: ইতিবাচক
+    pron_bn: পোজিটিফ
+    pron_en: POH-zee-teef
+    examples_de: |-
+      Das Ergebnis ist positiv.
+      Sie denkt immer positiv.
+    examples_en: |-
+      The result is positive.
+      She always thinks positively.
+    ru:
+      meaning: положительный / позитивный
+      pron: пОзитиф
+      examples: |-
+        Результат положительный.
+        Она всегда мыслит позитивно.
+    pl:
+      meaning: pozytywny
+      pron: PO-zi-tif
+      examples: |-
+        Wynik jest pozytywny.
+        Zawsze myśli pozytywnie.
+
+  - german: ziehen
+    forms: zieht · hat gezogen / ist gezogen
+    pos: verb
+    level: A2
+    week: 13
+    category: Bureaucracy & Amt
+    freq: 4
+    english: to pull / to move (house) / to take (a number)
+    bangla: টানা / বাসা বদলানো
+    pron_bn: ৎসিয়েন
+    pron_en: TSEE-en
+    examples_de: |-
+      Bitte ziehen Sie eine Wartenummer.
+      Wir ziehen nächsten Monat nach Leipzig.
+    examples_en: |-
+      Please take a queue number.
+      We're moving to Leipzig next month.
+    ru:
+      meaning: тянуть / переезжать
+      pron: цИэн
+      examples: |-
+        Пожалуйста, возьмите талон.
+        В следующем месяце мы переезжаем в Лейпциг.
+    pl:
+      meaning: ciągnąć / przeprowadzać się
+      pron: CI-en
+      examples: |-
+        Proszę pobrać numerek.
+        W przyszłym miesiącu przeprowadzamy się do Lipska.
+
+  - german: bieten
+    forms: bietet · hat geboten
+    pos: verb
+    level: A2
+    week: 13
+    category: Bureaucracy & Amt
+    freq: 4
+    english: to offer
+    bangla: প্রস্তাব দেওয়া / দেওয়া
+    pron_bn: বিটেন
+    pron_en: BEE-ten
+    examples_de: |-
+      Die Stadt bietet kostenlose Kurse.
+      Was bietet die Wohnung?
+    examples_en: |-
+      The city offers free courses.
+      What does the flat offer?
+    ru:
+      meaning: предлагать
+      pron: бИтэн
+      examples: |-
+        Город предлагает бесплатные курсы.
+        Что есть в этой квартире?
+    pl:
+      meaning: oferować
+      pron: BI-ten
+      examples: |-
+        Miasto oferuje bezpłatne kursy.
+        Co oferuje to mieszkanie?
+
+  - german: direkt
+    pos: adj
+    level: A2
+    week: 14
+    category: Transport & travel
+    freq: 4
+    english: direct / directly
+    bangla: সরাসরি
+    pron_bn: ডিরেক্ট
+    pron_en: dee-REKT
+    examples_de: |-
+      Der Zug fährt direkt nach Hamburg.
+      Rufen Sie mich direkt an.
+    examples_en: |-
+      The train goes directly to Hamburg.
+      Call me directly.
+    ru:
+      meaning: прямой / прямо
+      pron: дирЭкт
+      examples: |-
+        Поезд идёт прямо до Гамбурга.
+        Звоните мне напрямую.
+    pl:
+      meaning: bezpośredni / prosto
+      pron: di-REKT
+      examples: |-
+        Pociąg jedzie bezpośrednio do Hamburga.
+        Proszę dzwonić bezpośrednio do mnie.
+
+  - german: folgen
+    forms: folgt · ist gefolgt
+    pos: verb
+    level: A2
+    week: 14
+    category: Transport & travel
+    freq: 4
+    english: to follow
+    bangla: অনুসরণ করা
+    pron_bn: ফোলগেন
+    pron_en: FOL-gen
+    examples_de: |-
+      Folgen Sie den Schildern zum Ausgang.
+      Nach der Rechnung folgt eine Mahnung.
+    examples_en: |-
+      Follow the signs to the exit.
+      After the bill comes a reminder.
+    ru:
+      meaning: следовать
+      pron: фОльгэн
+      examples: |-
+        Следуйте указателям к выходу.
+        За счётом следует напоминание.
+    pl:
+      meaning: iść za / następować
+      pron: FOL-gen
+      examples: |-
+        Proszę iść za znakami do wyjścia.
+        Po rachunku następuje upomnienie.
+
+  - german: Besuch
+    article: der
+    forms: Besuche
+    pos: noun
+    level: A2
+    week: 17
+    category: Family & relationships
+    freq: 4
+    english: visit / visitors
+    bangla: সাক্ষাৎ / অতিথি
+    pron_bn: বেসুখ
+    pron_en: buh-ZOOKH
+    examples_de: |-
+      Am Wochenende bekommen wir Besuch.
+      Beim nächsten Besuch zeige ich dir die Stadt.
+    examples_en: |-
+      At the weekend we're having visitors.
+      On your next visit I'll show you the town.
+    ru:
+      meaning: визит / гости
+      pron: бэзУх
+      examples: |-
+        На выходных к нам придут гости.
+        В следующий твой приезд я покажу тебе город.
+    pl:
+      meaning: wizyta / goście
+      pron: be-ZUCH
+      examples: |-
+        W weekend przyjdą do nas goście.
+        Przy następnej wizycie pokażę ci miasto.
+
+  - german: begrenzt
+    pos: adj
+    level: A2
+    week: 19
+    category: Shopping & clothing
+    freq: 3
+    english: limited
+    bangla: সীমিত
+    pron_bn: বেগ্রেন্ৎস্ট
+    pron_en: buh-GRENTST
+    examples_de: |-
+      Das Angebot ist zeitlich begrenzt.
+      Die Plätze sind begrenzt.
+    examples_en: |-
+      The offer is for a limited time.
+      Places are limited.
+    ru:
+      meaning: ограниченный
+      pron: бэгрЭнцт
+      examples: |-
+        Предложение ограничено по времени.
+        Количество мест ограничено.
+    pl:
+      meaning: ograniczony
+      pron: be-GRENCT
+      examples: |-
+        Oferta jest ograniczona czasowo.
+        Liczba miejsc jest ograniczona.
+
+  - german: Tempo
+    article: das
+    forms: Tempos
+    pos: noun
+    level: A2
+    week: 20
+    category: Car, bike & driving
+    freq: 3
+    english: speed / pace
+    bangla: গতি
+    pron_bn: টেম্পো
+    pron_en: TEM-poh
+    examples_de: |-
+      In der Stadt gilt Tempo 30.
+      Er läuft in einem hohen Tempo.
+    examples_en: |-
+      There's a 30 km/h limit in town.
+      He runs at a fast pace.
+    ru:
+      meaning: скорость / темп
+      pron: тЭмпо
+      examples: |-
+        В городе ограничение 30 км/ч.
+        Он бежит в быстром темпе.
+    pl:
+      meaning: prędkość / tempo
+      pron: TEM-po
+      examples: |-
+        W mieście obowiązuje ograniczenie do 30 km/h.
+        Biegnie w szybkim tempie.

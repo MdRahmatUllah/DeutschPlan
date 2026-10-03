@@ -372,7 +372,9 @@ void main() {
         expect(await key('Wie viel kostet das?', 0), 'wie viel');
         // Not whole: "Dank" without "Vielen", "auf" before another word.
         const apart = 'Der Dank kommt auf den Tisch.';
-        expect(await key(apart, 1), isNull, reason: 'Dank alone');
+        // Dank is a word of its own since #1257: its own entry, not the
+        // phrase's.
+        expect(await key(apart, 1), 'dank', reason: 'Dank alone');
         expect(await key(apart, 3), 'auf', reason: 'the preposition');
         expect(await key('Er sagt Wiedersehen.', 2), isNull);
       },

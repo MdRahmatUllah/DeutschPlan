@@ -1,0 +1,671 @@
+# #1257 (the owner, 2026-10-03): everyday words the course used but never
+# taught, A1. tools/additions_workbook.py writes data/German_Everyday_Additions.xlsx
+# from content/additions/*.yaml. Each word takes its week's place in its step.
+words:
+  - german: Name
+    article: der
+    forms: Namen
+    pos: noun
+    level: A1
+    week: 1
+    category: Greetings & politeness
+    freq: 5
+    english: name
+    bangla: নাম
+    pron_bn: নামে
+    pron_en: NAH-muh
+    examples_de: |-
+      Wie ist Ihr Name?
+      Mein Name ist Anna Weber.
+    examples_en: |-
+      What is your name?
+      My name is Anna Weber.
+    ru:
+      meaning: имя / фамилия
+      pron: нАмэ
+      examples: |-
+        Как вас зовут?
+        Меня зовут Анна Вебер.
+    pl:
+      meaning: imię / nazwisko
+      pron: NA-me
+      examples: |-
+        Jak się pani nazywa?
+        Nazywam się Anna Weber.
+
+  - german: Dank
+    article: der
+    pos: noun
+    level: A1
+    week: 1
+    category: Greetings & politeness
+    freq: 4
+    english: thanks / gratitude
+    bangla: ধন্যবাদ / কৃতজ্ঞতা
+    pron_bn: ডাংক
+    pron_en: DAHNK
+    examples_de: |-
+      Vielen Dank für Ihre Hilfe!
+      Herzlichen Dank für die Einladung.
+    examples_en: |-
+      Many thanks for your help!
+      Thank you very much for the invitation.
+    ru:
+      meaning: благодарность / спасибо
+      pron: данк
+      examples: |-
+        Большое спасибо за вашу помощь!
+        Сердечное спасибо за приглашение.
+    pl:
+      meaning: podziękowanie / dzięki
+      pron: DANK
+      examples: |-
+        Bardzo dziękuję za pomoc!
+        Serdecznie dziękuję za zaproszenie.
+
+  - german: Gruß
+    article: der
+    forms: Grüße
+    pos: noun
+    level: A1
+    week: 1
+    category: Greetings & politeness
+    freq: 4
+    english: greeting / regards
+    bangla: শুভেচ্ছা / অভিবাদন
+    pron_bn: গ্রুস
+    pron_en: GROOSS
+    examples_de: |-
+      Viele Grüße aus Berlin!
+      Mit freundlichen Grüßen, Anna Weber
+    examples_en: |-
+      Best wishes from Berlin!
+      Kind regards, Anna Weber
+    ru:
+      meaning: привет / приветствие
+      pron: грус
+      examples: |-
+        Привет из Берлина!
+        С уважением, Анна Вебер
+    pl:
+      meaning: pozdrowienie
+      pron: GRUS
+      examples: |-
+        Pozdrowienia z Berlina!
+        Z poważaniem, Anna Weber
+
+  - german: Deutsch
+    article: das
+    pos: noun
+    level: A1
+    week: 2
+    category: Education & learning
+    freq: 5
+    english: German (the language)
+    bangla: জার্মান ভাষা
+    pron_bn: ডয়চ
+    pron_en: DOYCH
+    examples_de: |-
+      Ich spreche ein bisschen Deutsch.
+      Wie sagt man das auf Deutsch?
+    examples_en: |-
+      I speak a little German.
+      How do you say that in German?
+    ru:
+      meaning: немецкий язык
+      pron: дойч
+      examples: |-
+        Я немного говорю по-немецки.
+        Как это сказать по-немецки?
+    pl:
+      meaning: język niemiecki
+      pron: DOJCZ
+      examples: |-
+        Mówię trochę po niemiecku.
+        Jak to powiedzieć po niemiecku?
+
+  - german: Englisch
+    article: das
+    pos: noun
+    level: A1
+    week: 2
+    category: Education & learning
+    freq: 4
+    english: English (the language)
+    bangla: ইংরেজি ভাষা
+    pron_bn: এংলিশ
+    pron_en: ENG-lish
+    examples_de: |-
+      Sprechen Sie Englisch?
+      Meine Tochter lernt Englisch in der Schule.
+    examples_en: |-
+      Do you speak English?
+      My daughter is learning English at school.
+    ru:
+      meaning: английский язык
+      pron: Энглиш
+      examples: |-
+        Вы говорите по-английски?
+        Моя дочь учит английский в школе.
+    pl:
+      meaning: język angielski
+      pron: EN-glisz
+      examples: |-
+        Czy mówi pan po angielsku?
+        Moja córka uczy się angielskiego w szkole.
+
+  - german: tun
+    forms: tut · hat getan
+    pos: verb
+    level: A1
+    week: 2
+    category: Core verbs
+    freq: 5
+    english: to do
+    bangla: করা
+    pron_bn: টুন
+    pron_en: TOON
+    examples_de: |-
+      Was kann ich für Sie tun?
+      Es tut mir leid.
+    examples_en: |-
+      What can I do for you?
+      I'm sorry.
+    ru:
+      meaning: делать
+      pron: тун
+      examples: |-
+        Что я могу для вас сделать?
+        Мне жаль.
+    pl:
+      meaning: robić / czynić
+      pron: TUN
+      examples: |-
+        Co mogę dla pana zrobić?
+        Przykro mi.
+
+  - german: Zeit
+    article: die
+    forms: Zeiten
+    pos: noun
+    level: A1
+    week: 3
+    category: Numbers, time & dates
+    freq: 5
+    english: time
+    bangla: সময়
+    pron_bn: ৎসাইট
+    pron_en: TSITE
+    examples_de: |-
+      Hast du heute Zeit?
+      Ich habe leider keine Zeit.
+    examples_en: |-
+      Do you have time today?
+      Unfortunately I don't have time.
+    ru:
+      meaning: время
+      pron: цайт
+      examples: |-
+        У тебя есть сегодня время?
+        К сожалению, у меня нет времени.
+    pl:
+      meaning: czas
+      pron: CAJT
+      examples: |-
+        Masz dziś czas?
+        Niestety nie mam czasu.
+
+  - german: Leben
+    article: das
+    forms: Leben
+    pos: noun
+    level: A1
+    week: 4
+    category: Family & relationships
+    freq: 4
+    english: life
+    bangla: জীবন
+    pron_bn: লেবেন
+    pron_en: LAY-ben
+    examples_de: |-
+      Das Leben in der Stadt ist teuer.
+      Er wohnt sein ganzes Leben in Köln.
+    examples_en: |-
+      Life in the city is expensive.
+      He has lived in Cologne all his life.
+    ru:
+      meaning: жизнь
+      pron: лЕбэн
+      examples: |-
+        Жизнь в городе дорогая.
+        Он всю жизнь живёт в Кёльне.
+    pl:
+      meaning: życie
+      pron: LE-ben
+      examples: |-
+        Życie w mieście jest drogie.
+        Całe życie mieszka w Kolonii.
+
+  - german: zahlen
+    forms: zahlt · hat gezahlt
+    pos: verb
+    level: A1
+    week: 6
+    category: Grocery & supermarket
+    freq: 5
+    english: to pay
+    bangla: টাকা দেওয়া / দাম মেটানো
+    pron_bn: ৎসালেন
+    pron_en: TSAH-len
+    examples_de: |-
+      Ich möchte zahlen, bitte.
+      Wir zahlen getrennt.
+    examples_en: |-
+      I'd like to pay, please.
+      We're paying separately.
+    ru:
+      meaning: платить
+      pron: цАлэн
+      examples: |-
+        Я бы хотел заплатить, пожалуйста.
+        Мы платим раздельно.
+    pl:
+      meaning: płacić
+      pron: CA-len
+      examples: |-
+        Chciałbym zapłacić, proszę.
+        Płacimy osobno.
+
+  - german: einkaufen
+    forms: kauft ein · hat eingekauft
+    pos: verb
+    level: A1
+    week: 6
+    category: Grocery & supermarket
+    freq: 5
+    english: to shop / to go shopping
+    bangla: বাজার করা / কেনাকাটা করা
+    pron_bn: আইনকাউফেন
+    pron_en: INE-kow-fen
+    examples_de: |-
+      Wir müssen noch einkaufen.
+      Er kauft jeden Samstag ein.
+    examples_en: |-
+      We still have to do the shopping.
+      He goes shopping every Saturday.
+    ru:
+      meaning: делать покупки
+      pron: Айнкауфэн
+      examples: |-
+        Нам ещё нужно сходить за покупками.
+        Он ходит за покупками каждую субботу.
+    pl:
+      meaning: robić zakupy
+      pron: AJN-kau-fen
+      examples: |-
+        Musimy jeszcze zrobić zakupy.
+        Robi zakupy w każdą sobotę.
+
+  - german: Ordnung
+    article: die
+    pos: noun
+    level: A1
+    week: 7
+    category: Everyday expressions & idioms
+    freq: 4
+    english: order / tidiness
+    bangla: শৃঙ্খলা / গোছানো অবস্থা
+    pron_bn: অর্টনুং
+    pron_en: ORT-noong
+    examples_de: |-
+      Ist alles in Ordnung?
+      Sie hält ihr Zimmer immer in Ordnung.
+    examples_en: |-
+      Is everything all right?
+      She always keeps her room tidy.
+    ru:
+      meaning: порядок
+      pron: Ортнунг
+      examples: |-
+        Всё в порядке?
+        Она всегда держит свою комнату в порядке.
+    pl:
+      meaning: porządek
+      pron: ORT-nung
+      examples: |-
+        Czy wszystko w porządku?
+        Zawsze utrzymuje porządek w swoim pokoju.
+
+  - german: hängen
+    forms: hängt · hat gehangen / hat gehängt
+    pos: verb
+    level: A1
+    week: 7
+    category: Home & furniture
+    freq: 4
+    english: to hang
+    bangla: ঝোলা / ঝোলানো
+    pron_bn: হেঙেন
+    pron_en: HENG-en
+    examples_de: |-
+      Das Bild hängt an der Wand.
+      Ich hänge die Jacke an den Haken.
+    examples_en: |-
+      The picture is hanging on the wall.
+      I hang the jacket on the hook.
+    ru:
+      meaning: висеть / вешать
+      pron: хЕнгэн
+      examples: |-
+        Картина висит на стене.
+        Я вешаю куртку на крючок.
+    pl:
+      meaning: wisieć / wieszać
+      pron: HEN-gen
+      examples: |-
+        Obraz wisi na ścianie.
+        Wieszam kurtkę na haczyku.
+
+  - german: Ort
+    article: der
+    forms: Orte
+    pos: noun
+    level: A1
+    week: 9
+    category: City, places & directions
+    freq: 4
+    english: place / village
+    bangla: স্থান / জায়গা
+    pron_bn: অর্ট
+    pron_en: ORT
+    examples_de: |-
+      Treffen wir uns am selben Ort?
+      Er wohnt in einem kleinen Ort am See.
+    examples_en: |-
+      Shall we meet at the same place?
+      He lives in a small village by the lake.
+    ru:
+      meaning: место / населённый пункт
+      pron: орт
+      examples: |-
+        Встретимся на том же месте?
+        Он живёт в маленьком посёлке у озера.
+    pl:
+      meaning: miejsce / miejscowość
+      pron: ORT
+      examples: |-
+        Spotkamy się w tym samym miejscu?
+        Mieszka w małej miejscowości nad jeziorem.
+
+  - german: Bank
+    article: die
+    forms: Bänke
+    pos: noun
+    level: A1
+    week: 9
+    category: City, places & directions
+    freq: 3
+    english: bench
+    bangla: বেঞ্চ
+    pron_bn: বাংক
+    pron_en: BAHNK
+    examples_de: |-
+      Wir sitzen auf einer Bank im Park.
+      Im Hof stehen zwei Bänke.
+    examples_en: |-
+      We're sitting on a bench in the park.
+      There are two benches in the courtyard.
+    ru:
+      meaning: скамейка
+      pron: банк
+      examples: |-
+        Мы сидим на скамейке в парке.
+        Во дворе стоят две скамейки.
+    pl:
+      meaning: ławka
+      pron: BANK
+      examples: |-
+        Siedzimy na ławce w parku.
+        Na podwórku stoją dwie ławki.
+
+  - german: zurück
+    pos: adv
+    level: A1
+    week: 10
+    category: Transport & travel
+    freq: 5
+    english: back
+    bangla: ফিরে / পিছনে
+    pron_bn: ৎসুরুক
+    pron_en: tsoo-RUEK
+    examples_de: |-
+      Wann kommst du zurück?
+      Ich bringe die Flaschen zurück.
+    examples_en: |-
+      When are you coming back?
+      I'm taking the bottles back.
+    ru:
+      meaning: назад / обратно
+      pron: цурЮк
+      examples: |-
+        Когда ты вернёшься?
+        Я отношу бутылки обратно.
+    pl:
+      meaning: z powrotem
+      pron: cu-RYK
+      examples: |-
+        Kiedy wracasz?
+        Odnoszę butelki z powrotem.
+
+  - german: Pass
+    article: der
+    forms: Pässe
+    pos: noun
+    level: A1
+    week: 10
+    category: Transport & travel
+    freq: 4
+    english: passport
+    bangla: পাসপোর্ট
+    pron_bn: পাস
+    pron_en: PAHSS
+    examples_de: |-
+      Ist Ihr Pass noch gültig?
+      Ich muss einen neuen Pass beantragen.
+    examples_en: |-
+      Is your passport still valid?
+      I have to apply for a new passport.
+    ru:
+      meaning: паспорт
+      pron: пас
+      examples: |-
+        Ваш паспорт ещё действителен?
+        Мне нужно подать заявление на новый паспорт.
+    pl:
+      meaning: paszport
+      pron: PAS
+      examples: |-
+        Czy pana paszport jest jeszcze ważny?
+        Muszę złożyć wniosek o nowy paszport.
+
+  - german: fallen
+    forms: fällt · ist gefallen
+    pos: verb
+    level: A1
+    week: 11
+    category: Weather, seasons & nature
+    freq: 4
+    english: to fall
+    bangla: পড়া / পড়ে যাওয়া
+    pron_bn: ফালেন
+    pron_en: FAHL-en
+    examples_de: |-
+      Im Herbst fallen die Blätter.
+      Das Kind ist vom Fahrrad gefallen.
+    examples_en: |-
+      In autumn the leaves fall.
+      The child fell off the bike.
+    ru:
+      meaning: падать / упасть
+      pron: фАлэн
+      examples: |-
+        Осенью падают листья.
+        Ребёнок упал с велосипеда.
+    pl:
+      meaning: spadać / upaść
+      pron: FA-len
+      examples: |-
+        Jesienią spadają liście.
+        Dziecko spadło z roweru.
+
+  - german: weh
+    pos: adv
+    level: A1
+    week: 12
+    category: Body & health
+    freq: 4
+    english: sore / hurting (weh tun)
+    bangla: ব্যথা (weh tun — ব্যথা করা)
+    pron_bn: ভে
+    pron_en: VAY
+    examples_de: |-
+      Mein Bauch tut weh.
+      Tut es noch weh?
+    examples_en: |-
+      My stomach hurts.
+      Does it still hurt?
+    ru:
+      meaning: больно (weh tun — болеть)
+      pron: вэ
+      examples: |-
+        У меня болит живот.
+        Ещё болит?
+    pl:
+      meaning: boleć (weh tun)
+      pron: WE
+      examples: |-
+        Boli mnie brzuch.
+        Czy jeszcze boli?
+
+  - german: Idee
+    article: die
+    forms: Ideen
+    pos: noun
+    level: A1
+    week: 13
+    category: Feelings & opinions
+    freq: 5
+    english: idea
+    bangla: ধারণা / বুদ্ধি
+    pron_bn: ইডে
+    pron_en: ee-DAY
+    examples_de: |-
+      Das ist eine gute Idee.
+      Hast du eine Idee für das Wochenende?
+    examples_en: |-
+      That's a good idea.
+      Do you have an idea for the weekend?
+    ru:
+      meaning: идея
+      pron: идЭ
+      examples: |-
+        Это хорошая идея.
+        У тебя есть идея на выходные?
+    pl:
+      meaning: pomysł
+      pron: i-DE
+      examples: |-
+        To dobry pomysł.
+        Masz pomysł na weekend?
+
+  - german: Rad
+    article: das
+    forms: Räder
+    pos: noun
+    level: A1
+    week: 13
+    category: Hobbies & sport
+    freq: 4
+    english: bike / wheel
+    bangla: সাইকেল / চাকা
+    pron_bn: রাট
+    pron_en: RAHT
+    examples_de: |-
+      Im Sommer fahre ich viel Rad.
+      Das Auto hat vier Räder.
+    examples_en: |-
+      In summer I cycle a lot.
+      The car has four wheels.
+    ru:
+      meaning: велосипед / колесо
+      pron: рат
+      examples: |-
+        Летом я много катаюсь на велосипеде.
+        У машины четыре колеса.
+    pl:
+      meaning: rower / koło
+      pron: RAT
+      examples: |-
+        Latem dużo jeżdżę na rowerze.
+        Samochód ma cztery koła.
+
+  - german: Raum
+    article: der
+    forms: Räume
+    pos: noun
+    level: A1
+    week: 14
+    category: Office & work
+    freq: 4
+    english: room / space
+    bangla: কক্ষ / জায়গা
+    pron_bn: রাউম
+    pron_en: ROWM
+    examples_de: |-
+      Das Treffen ist in Raum 214.
+      Der Raum ist hell und groß.
+    examples_en: |-
+      The meeting is in room 214.
+      The room is bright and big.
+    ru:
+      meaning: помещение / комната
+      pron: раум
+      examples: |-
+        Встреча в помещении 214.
+        Помещение светлое и большое.
+    pl:
+      meaning: pomieszczenie / sala
+      pron: RAUM
+      examples: |-
+        Spotkanie jest w sali 214.
+        Pomieszczenie jest jasne i duże.
+
+  - german: klar
+    forms: klarer · am klarsten
+    pos: adj
+    level: A1
+    week: 16
+    category: Small talk & social phrases
+    freq: 5
+    english: clear / of course
+    bangla: পরিষ্কার / অবশ্যই
+    pron_bn: ক্লার
+    pron_en: KLAHR
+    examples_de: |-
+      Alles klar, bis morgen!
+      Das Wasser ist ganz klar.
+    examples_en: |-
+      All right, see you tomorrow!
+      The water is completely clear.
+    ru:
+      meaning: ясный / понятно
+      pron: клар
+      examples: |-
+        Всё понятно, до завтра!
+        Вода совсем прозрачная.
+    pl:
+      meaning: jasny / jasne
+      pron: KLAR
+      examples: |-
+        Jasne, do jutra!
+        Woda jest całkiem przejrzysta.

@@ -754,8 +754,12 @@ def derive(
         file=sys.stderr,
     )
 
-    # seq is the reading order across every workbook; seq_in_sublevel is what
-    # the step screen lists by.
+    # seq is the reading order across every workbook, each level's words in
+    # week order (#1257): a word the additions workbook brings takes its
+    # week's place among the trackers', whose rows are in that order already,
+    # so none of theirs moves. A stable sort: a week keeps its reading order.
+    # seq_in_sublevel is what the step screen lists by.
+    words.sort(key=lambda w: (LEVELS.index(w.level), -1 if w.week is None else w.week))
     per_step: dict[str, int] = {}
     for index, word in enumerate(words, start=1):
         word.seq = index

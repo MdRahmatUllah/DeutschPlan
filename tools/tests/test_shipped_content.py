@@ -54,6 +54,7 @@ def test_634_it_names_the_workbooks_it_was_built_from_by_their_sha256(course):
         "German_B2_Tracker.xlsx",
         "German_C1_Tracker.xlsx",
         "German_C2_Tracker.xlsx",
+        "German_Everyday_Additions.xlsx",  # #1257
     ]
     assert all(re.fullmatch(r"[0-9a-f]{64}", source["sha256"]) for source in sources)
 
