@@ -85,9 +85,8 @@ extension AuroraRoleColour on AuroraRole {
 /// #709: every drift step makes each glass panel on screen blur again, so the
 /// drift steps [stepsPerSecond] times a second, not at 60 fps; a step is under
 /// half a dp, too little to see. The screen sits in a `RepaintBoundary` of its
-/// own, so a step repaints the blobs and not the screen, and in a
-/// [BackdropGroup], so its panels in a list share one read of the backdrop
-/// (`SgSurface`).
+/// own, so a step repaints the blobs and not the screen. Its panels in a list
+/// draw over the blobs with no blur of their own (`SgSurface`).
 class AuroraBackdrop extends StatefulWidget {
   const AuroraBackdrop({
     required this.child,
@@ -145,10 +144,6 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
   /// Steps the drift while it runs. A timer, not a ticker: a ticker asks for
   /// a frame every vsync whether anything moved or not (#709).
   Timer? _drift;
-
-  /// The screen's panels share this one (`SgSurface`). Held, so a rebuild
-  /// does not hand every panel a new key.
-  final BackdropKey _backdropKey = BackdropKey();
 
   bool _backgrounded = false;
 
@@ -242,10 +237,7 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
                 : blob.role.from(tokens.color),
             peak: tokens.surface.auroraOpacity,
           ),
-        BackdropGroup(
-          backdropKey: _backdropKey,
-          child: RepaintBoundary(child: widget.child),
-        ),
+        RepaintBoundary(child: widget.child),
       ],
     );
   }

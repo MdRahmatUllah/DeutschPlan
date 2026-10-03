@@ -789,7 +789,13 @@ void main() {
       ).firstMatch(manifest)![0]!;
       expect(filter, contains('android.intent.action.SEND"'));
       expect(filter, contains('android:mimeType="text/plain"'));
-      expect(filter, contains('android:noHistory="true"'));
+      expect(
+        filter,
+        isNot(contains('noHistory')),
+        reason:
+            '#1386: D1 opens over it while it copies shared photos; '
+            "finished by D1 in front, it would take the sender's grant along",
+      );
       expect(
         filter,
         isNot(contains('BROWSABLE')),
@@ -807,6 +813,12 @@ void main() {
       expect(share, contains('.setData(Uri.parse(MainActivity.SHARE_LINK))'));
       expect(share, contains('pending = text'));
       expect(share, isNot(contains('putExtra')), reason: 'never on an intent');
+      // #1386: the window that stays while photos are copied lets touches
+      // and keys through to the sender, and an overtaken share's call to
+      // takeImages takes nothing.
+      expect(share, contains('WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE'));
+      expect(share, contains('WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE'));
+      expect(share, contains('if (number != shares) return null'));
       expect(
         share,
         contains('fun take(): String? = pending.also { pending = null }'),
@@ -845,7 +857,7 @@ void main() {
       ).readAsStringSync();
       // The sender's grant ends with ShareActivity: the copy comes first.
       expect(share, contains('File(cacheDir, "shared")'));
-      const copied = 'pendingPdf = runCatching { copyPdf(pdf) }.getOrNull()';
+      const copied = 'val path = runCatching { copyPdf(pdf) }.getOrNull()';
       expect(share, contains(copied));
       expect(
         share.indexOf(copied),
@@ -921,4 +933,7 @@ class _SharedTexts implements SharedText {
 
   @override
   Future<({List<String> pages, int of})?> takeImages() async => null;
+
+  @override
+  Future<int> receiving() async => 0;
 }

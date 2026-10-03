@@ -46,6 +46,7 @@ void main() {
     PagePhotos? photos,
     PdfText? pdf,
     StubSettings? settings,
+    bool settle = true,
   }) async {
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
       SystemChannels.platform,
@@ -104,7 +105,8 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    // A state with a sweeping bar never settles.
+    settle ? await tester.pumpAndSettle() : await tester.pump();
     return router;
   }
 
@@ -533,6 +535,152 @@ void main() {
       expect(router.state.uri.queryParameters['cut'], 'pages');
     });
 
+    testWidgets('#1386 FR-D1-01 photos shared while still being copied: '
+        '«Receiving 34 photos…» at once, never the choices, then read', (
+      tester,
+    ) async {
+      final copied = <String>[for (var i = 1; i <= 30; i++) '/s/$i.jpg'];
+      final photos = FakePhotos(
+        pages: <String, OcrPage>{for (final c in copied) c: page('Seite.')},
+      );
+      final docs = FakeDocuments();
+      final copying = Completer<void>();
+      await pump(
+        tester,
+        docs: docs,
+        photos: photos,
+        arrival: '1',
+        shared: FakeShared(
+          null,
+          images: (pages: copied, of: 34),
+          coming: 34,
+          copied: copying,
+        ),
+        settle: false,
+      );
+      await tester.pump();
+      expect(find.text(l10n.docImportReceiving(34)), findsOneWidget);
+      expect(find.text(l10n.docImportCancel), findsOneWidget);
+      for (final choice in <String>[
+        l10n.docImportTakePhotos,
+        l10n.docImportChooseImages,
+        l10n.docImportChoosePdf,
+        l10n.docImportPaste,
+      ]) {
+        expect(find.text(choice), findsNothing, reason: 'no choice to tap');
+      }
+      expect(photos.readPaths, isEmpty);
+
+      copying.complete();
+      await tester.pumpAndSettle();
+      expect(photos.readPaths, copied);
+      expect(docs.saved.single.pageCount, 30);
+    });
+
+    testWidgets('#1386 FR-D1-05 Cancel while shared photos are copied: the '
+        'choices, nothing read, and the copies dropped when they come '
+        '(BR-DOC-05)', (tester) async {
+      const copied = <String>['/s/01-a.jpg', '/s/02-b.jpg'];
+      final photos = FakePhotos(
+        pages: <String, OcrPage>{for (final c in copied) c: page('Seite.')},
+      );
+      final docs = FakeDocuments();
+      final copying = Completer<void>();
+      await pump(
+        tester,
+        docs: docs,
+        photos: photos,
+        arrival: '1',
+        shared: FakeShared(
+          null,
+          images: (pages: copied, of: 2),
+          coming: 2,
+          copied: copying,
+        ),
+        settle: false,
+      );
+      await tester.pump();
+      await tester.tap(find.text(l10n.docImportCancel));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportTakePhotos), findsOneWidget);
+
+      copying.complete();
+      await tester.pumpAndSettle();
+      expect(photos.readPaths, isEmpty);
+      expect(docs.saved, isEmpty);
+      expect(photos.discarded, copied);
+      expect(find.text(l10n.docImportTakePhotos), findsOneWidget);
+    });
+
+    testWidgets('#1386 a second share while the first is still copied: D1 '
+        "reads the second's pages only, and drops the first's late copies "
+        '(BR-DOC-05)', (tester) async {
+      const first = <String>['/s/01-a.jpg', '/s/02-b.jpg'];
+      const second = <String>['/s/01-c.jpg'];
+      final photos = FakePhotos(
+        pages: <String, OcrPage>{
+          for (final c in <String>[...first, ...second]) c: page('Seite.'),
+        },
+      );
+      final docs = FakeDocuments();
+      final copyingFirst = Completer<void>();
+      final shared = FakeShared(
+        null,
+        images: (pages: first, of: 2),
+        coming: 2,
+        copied: copyingFirst,
+      );
+      final router = await pump(
+        tester,
+        docs: docs,
+        photos: photos,
+        arrival: '1',
+        shared: shared,
+        settle: false,
+      );
+      await tester.pump();
+      expect(find.text(l10n.docImportReceiving(2)), findsOneWidget);
+
+      // The second share overtakes the first while it's copied.
+      final copyingSecond = Completer<void>();
+      shared
+        ..coming = 1
+        ..copied = copyingSecond;
+      router.go('/search/import?arrival=2');
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10n.docImportReceiving(1)), findsOneWidget);
+
+      shared.images = (pages: second, of: 1);
+      copyingSecond.complete();
+      await tester.pumpAndSettle();
+      // The first's copies come late, and go unread.
+      shared.images = (pages: first, of: 2);
+      copyingFirst.complete();
+      await tester.pumpAndSettle();
+      expect(photos.readPaths, second);
+      expect(docs.saved.single.pageCount, 1);
+      expect(photos.discarded, containsAll(first));
+    });
+
+    testWidgets('#1386 shared photos none of which could be copied: back to '
+        'the choices', (tester) async {
+      final copying = Completer<void>();
+      await pump(
+        tester,
+        docs: FakeDocuments(),
+        arrival: '1',
+        shared: FakeShared(null, coming: 3, copied: copying),
+        settle: false,
+      );
+      await tester.pump();
+      expect(find.text(l10n.docImportReceiving(3)), findsOneWidget);
+      copying.complete();
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.docImportReceiving(3)), findsNothing);
+      expect(find.text(l10n.docImportTakePhotos), findsOneWidget);
+    });
+
     testWidgets('FR-D1-02 more than 30 images: the first 30 are read, and the '
         'learner told', (tester) async {
       final chosen = <String>[for (var i = 1; i <= 32; i++) 'g$i.jpg'];
@@ -908,7 +1056,7 @@ class FakeDocuments extends Fake implements DocumentRepository {
 }
 
 class FakeShared implements SharedText {
-  FakeShared(this._text, {this.pdf, this.images});
+  FakeShared(this._text, {this.pdf, this.images, this.coming = 0, this.copied});
 
   String? _text;
 
@@ -932,8 +1080,17 @@ class FakeShared implements SharedText {
   /// Shared photos' copies, taken once.
   ({List<String> pages, int of})? images;
 
+  /// Shared photos still being copied (#1386): how many, until [copied].
+  int coming;
+  Completer<void>? copied;
+
+  @override
+  Future<int> receiving() async => coming;
+
   @override
   Future<({List<String> pages, int of})?> takeImages() async {
+    await copied?.future;
+    coming = 0;
     final taken = images;
     images = null;
     return taken;

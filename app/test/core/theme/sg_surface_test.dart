@@ -436,18 +436,11 @@ void main() {
     expect(decorationOf(tester).boxShadow, hasLength(1));
   });
 
-  group('#709: the screen reads its backdrop once for its list', () {
-    /// The key each blur on screen reads its backdrop with: null is a read of
-    /// its own.
-    List<BackdropKey?> reads(WidgetTester tester) => <BackdropKey?>[
-      for (final layer in tester.layers)
-        if (layer is BackdropFilterLayer) layer.backdropKey,
-    ];
-
-    /// How many times the engine reads the backdrop: once per shared key,
-    /// and once for each blur that has none.
-    int passes(List<BackdropKey?> keys) =>
-        keys.where((key) => key == null).length + keys.nonNulls.toSet().length;
+  group('#709: a panel in a list on the aurora draws with no blur of its '
+      'own', () {
+    /// The blurs on screen.
+    int blurs(WidgetTester tester) =>
+        tester.layers.whereType<BackdropFilterLayer>().length;
 
     Future<void> screen(WidgetTester tester, Widget body) async {
       await tester.pumpWidget(
@@ -470,18 +463,18 @@ void main() {
       child: const SizedBox(height: 80),
     );
 
-    testWidgets('a header, cards and bars in a list: one read', (tester) async {
+    testWidgets('a header, cards and bars in a list: no blur', (tester) async {
       // L1, Today and Me: a tinted header, then the list's panels.
       await screen(
         tester,
         ListView(children: <Widget>[tint, card, bar, card, bar, card, bar]),
       );
-      expect(reads(tester), hasLength(7), reason: 'every panel still blurs');
-      expect(passes(reads(tester)), 1);
+      expect(blurs(tester), 0);
     });
 
-    testWidgets('a bar outside the list reads its own: the list scrolls '
-        'under it', (tester) async {
+    testWidgets('a bar outside the list blurs: the list scrolls under it', (
+      tester,
+    ) async {
       await screen(
         tester,
         Column(
@@ -491,11 +484,12 @@ void main() {
           ],
         ),
       );
-      expect(passes(reads(tester)), 2);
+      expect(blurs(tester), 1);
     });
 
-    testWidgets('a panel inside a panel reads its own: the shared read has '
-        'not got the outer panel in it', (tester) async {
+    testWidgets('a panel inside a panel blurs: the outer panel is behind it', (
+      tester,
+    ) async {
       await screen(
         tester,
         ListView(
@@ -507,11 +501,10 @@ void main() {
           ],
         ),
       );
-      expect(reads(tester), hasLength(3));
-      expect(passes(reads(tester)), 2);
+      expect(blurs(tester), 1);
     });
 
-    testWidgets('a band pinned over the rows reads its own', (tester) async {
+    testWidgets('a band pinned over the rows blurs', (tester) async {
       // L3's level bands stay at the top while the rows scroll under them.
       await screen(
         tester,
@@ -522,8 +515,7 @@ void main() {
           ],
         ),
       );
-      expect(reads(tester), hasLength(4));
-      expect(passes(reads(tester)), 2);
+      expect(blurs(tester), 1);
     });
 
     testWidgets('a sheet, with no aurora of its own, blurs as before', (
@@ -535,7 +527,7 @@ void main() {
           home: ListView(children: const <Widget>[card, card]),
         ),
       );
-      expect(reads(tester), <BackdropKey?>[null, null]);
+      expect(blurs(tester), 2);
     });
   });
 }

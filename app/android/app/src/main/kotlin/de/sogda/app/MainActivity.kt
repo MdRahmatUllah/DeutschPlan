@@ -137,7 +137,12 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "take" -> result.success(ShareActivity.take())
                     "takePdf" -> result.success(ShareActivity.takePdf())
-                    "takeImages" -> result.success(ShareActivity.takeImages())
+                    // #1386: waits for a share's copies, so not on this thread.
+                    "takeImages" -> Thread {
+                        val images = ShareActivity.takeImages()
+                        runOnUiThread { result.success(images) }
+                    }.start()
+                    "receiving" -> result.success(ShareActivity.receiving())
                     else -> result.notImplemented()
                 }
             }
