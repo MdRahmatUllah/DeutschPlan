@@ -4,6 +4,7 @@ and the render need the emulator, ffmpeg and Chromium: the device check)."""
 from __future__ import annotations
 
 import sys
+from types import SimpleNamespace
 from pathlib import Path
 
 import pytest
@@ -96,3 +97,21 @@ def test_before_and_after_are_shell_commands():
     video.check(with_(before=["cmd connectivity airplane-mode enable"], after=["x"]))
     with pytest.raises(video.ScriptError, match="before must be"):
         video.check(with_(before=[["not", "a", "string"]]))
+
+
+def test_after_runs_however_the_recording_ends(monkeypatch):
+    # The shared emulator is left as it was: flight mode off again (#1245).
+    ran: list[str] = []
+    monkeypatch.setattr(video.device, "adb_path", lambda: "adb")
+    monkeypatch.setattr(video.subprocess, "run", lambda args, check: ran.append(args[-1]))
+    monkeypatch.setattr(video.subprocess, "Popen", lambda args: SimpleNamespace(wait=lambda timeout: 0))
+    monkeypatch.setattr(video.time, "sleep", lambda seconds: None)
+
+    def broken(*_):
+        raise SystemExit("a step failed")
+
+    monkeypatch.setattr(video, "walk", broken)
+    script = {"name": "t", "steps": ["sleep1"], "cut": [0, 1], "before": ["on"], "after": ["off"]}
+    with pytest.raises(SystemExit):
+        video.record(script)
+    assert ran == ["on", "screenrecord", "off"]
