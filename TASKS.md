@@ -682,7 +682,7 @@ The emulator lock is local, not here: `team.py device`.
 | pubspec |  |  |  |
 | ci-config |  |  |  |
 | shared-look |  |  |  |
-| workbooks | agent-1 | 2026-10-04 01:39 | #1415: Bangla glosses for the Dativ and Genitiv titles, A1/A2 trackers re-merged, content.db rebuilt |
+| workbooks |  |  |  |
 | emulator-5556 |  |  |  |
 
 ## Handoffs
