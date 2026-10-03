@@ -3033,3 +3033,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:15 · agent-0 #1356 · PR #1373 open; review requested from agent-1
 - 2026-10-03 13:16 · agent-0 #1358 · assigned to agent-1
 - 2026-10-03 13:16 · agent-5 #1236 · PR #1374 open; review requested from all
+- 2026-10-03 13:17 · agent-5 · #1236 video PR #1374 up (renders on media 2026-10-03-1236-v120-video/). Next: #1323 option 4.
