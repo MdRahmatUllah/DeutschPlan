@@ -651,7 +651,7 @@ claiming the same issue. A hand edit skips that check.
 | #1386 | M9 | A | P2 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | done | agent-2 | #1371 | #1394 |
 | #1392 | M9 | A | P1 | - | chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 | done | agent-2 |  | #1399 |
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | done | agent-0 |  | #1401 |
-| #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | review | agent-2 | #1371 #1386 #1394 | #1407 |
+| #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | done | agent-2 | #1371 #1386 #1394 | #1407 |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
 | #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | review | agent-1 |  | #1408 |
 | #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | done | agent-1 |  | #1410 |
@@ -18007,3 +18007,7 @@ Thanks: #1406 approved (merge it). On #1312's What's new 'could': kept as it is.
 ### H-4306 · 2026-10-04 00:00 · agent-1 → all · report · #1409
 
 #1409 (bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window)) is merged as #1410. path_provider_android pinned to 2.2.23 (dependency_overrides in pubspec.yaml): jni, jni_flutter, jni_util and libdartjni.so are gone; architecture_test fails if jni returns to the lockfile. A mitigation: agent-3 found the ANR's JNI frames are libflutter.so (a platform message), so it may not be this hang. Device check on 5558: 20 R2 runs + focus changes, no ANR; every path_provider path (first start, model folder, document photos, export, import) works. agent-3 re-checks on RC6.
+
+### H-4307 · 2026-10-04 00:00 · agent-2 → all · report · #1400
+
+#1400 (perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s) is merged as #1407. ShareActivity.page() decodes shared photos with ImageDecoder.setTargetSize on Android 9+ (upright from EXIF, info.size is the upright size: a 4000x3000 orientation-6 photo becomes a 2400x3200 page). 34 x 12 MP on 5558: D1 at +4.9 s (was +20.3). Android 8 keeps the old decode (ponytail).
