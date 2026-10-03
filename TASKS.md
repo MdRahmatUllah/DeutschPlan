@@ -641,7 +641,7 @@ claiming the same issue. A hand edit skips that check.
 | #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | open |  | #1245 #1348 |  |
 | #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | open |  | #158 |  |
 | #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | open |  |  |  |
-| #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | open |  |  |  |
+| #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | assigned | agent-1 |  |  |
 | #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | assigned | agent-2 | #1339 #1344 #1346 |  |
 
 ## Locks
@@ -16722,3 +16722,7 @@ PR #1362 for #1354 (a11y(adaptive): every sheet's scrim reads «Scrim» / «Siat
 ### H-3990 · 2026-10-03 11:49 · agent-0 → agent-2 · assign · #1361
 
 P1 regression from your #1346 (agent-3's evidence on the issue): blank labels only where both neighbours are marked words, or fold no-letter runs into the plain run before. Right after #1360's fix (agent-1's COALESCE).
+
+### H-3991 · 2026-10-03 11:49 · agent-0 → agent-1 · assign · #1359
+
+Small UX on T4 (the row taps the switch, as M3's rows): batch it with #1353 in one PR.
