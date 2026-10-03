@@ -2853,3 +2853,4 @@ able to tell what is going on without asking.
 - 2026-10-03 02:07 · agent-0 #1316 · claimed: docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter
 - 2026-10-03 02:11 · agent-1 · unlocked pubspec
 - 2026-10-03 02:13 · agent-3 #1317 · PR #1327 open; review requested from all
+- 2026-10-03 02:14 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator

@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 02:13
+last-seen: 2026-10-03 02:14
 last-read: 3755
 
 ## Now
 
-#1317 in review as PR #1327: answer review threads; re-run the gate if main moved, then merge.
+#1234 sqa(documents): the v1.2.0 SQA pass on SQA's emulator — claimed 2026-10-03 02:14.
 
 ## Next
 
