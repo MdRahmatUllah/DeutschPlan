@@ -18,7 +18,7 @@ https://play.google.com/store/apps/details?id={app.package}&referrer=utm_source%
 
 On L, the first Tuesday or Wednesday after the listing is live:
 
-1. [ ] **Morning (DE): open the listing on a phone,** in each listing language. Check the title, the screenshots, the feature graphic and the video.
+1. [ ] **Morning (DE): open the listing on a phone,** in each listing language. Check the title, the eight screenshots (the six, then the two documents screens), the feature graphic and the video.
 2. [ ] **Fill in every `<play-link …>`** below, and tell agent-4, who switches on sogda.de's Play badge (sogda-website #45).
 3. [ ] **Email the testers and the O4 list** (§1).
 4. [ ] **16:00 DE:** Sogda's Facebook Page and YouTube channel (§2, §3). Then Discord, at 14:00 UTC (16:00 DE until 25 Oct), only if its rules allow (§8).
@@ -28,8 +28,9 @@ On L, the first Tuesday or Wednesday after the listing is live:
 8. [ ] **Through the week:**
    - L+1: DaF – Lehrer (§7);
    - L+1: AlternativeTo's link (§11);
+   - L+1 to L+2: the documents video on the Facebook Page (bn), Shorts (ru) and TikTok or Shorts (pl) (§3b);
    - L+2: Show HN (§10);
-   - **a question for the owner, not a step:** r/languagelearning's rule 4 bans AI language-learning tools, and v1.2.0 includes on-device translation (Hy-MT2). Whether to post in its thread (§9) at all is the owner's call;
+   - the r/languagelearning thread (§9), **only if the moderators said yes** to the modmail sent before launch (§9);
    - the pitches (#1212).
 9. [ ] **Every evening:** answer every comment as the maker (§12). Forward bugs, questions and wishes to agent-5, who files each as an issue, with no name, handle or screenshot of the commenter: the repo is public. People who want to file one themselves can use *About › Report a problem on GitHub*.
 
@@ -91,6 +92,28 @@ The promises are `messaging.md`'s reviewed lines.
 - **Title:** Learn the German you meet: a letter, its new words, your plan
 - **Description:** Learn the German you actually meet: photograph a letter or paste a text, and Sogda marks the words you don't know yet, by level. On your phone, private. Google Play: <play-link youtube/video>
 
+## 3b. The documents video in bn, ru and pl (L+1 to L+2)
+
+**Asset:** each language's cut of the 20 s video (#1236), on the `media` branch, `2026-10-03-1236-v120-video/own-letter-<lang>-vertical.mp4`.
+
+- **L+1, bn 20:30, Sogda's Facebook Page:**
+
+  > যে জার্মান আপনি রোজ দেখেন, সেটাই শিখুন: চিঠির ছবি তুলুন বা লেখা পেস্ট করুন, Sogda আপনার অজানা শব্দগুলো লেভেল ধরে চিহ্নিত করবে। সবকিছু আপনার ফোনেই।
+  >
+  > Google Play: <play-link facebook-page/video>
+
+- **L+1, 17:30 DE, YouTube Shorts (ru):**
+
+  > Учи тот немецкий, который встречаешь: сфотографируй письмо или вставь текст — Sogda отметит незнакомые слова по уровням. Всё остаётся на телефоне.
+  >
+  > Google Play: <play-link youtube/video>
+
+- **L+2, 19:00 DE, TikTok if opened (D2), or Shorts (pl):**
+
+  > Ucz się niemieckiego, który spotykasz na co dzień: zrób zdjęcie listu albo wklej tekst, a Sogda zaznaczy nieznane słowa według poziomu. Wszystko zostaje na telefonie.
+  >
+  > Google Play: <play-link tiktok/video>
+
 ## 4. BDSAG and BSAAG (bn), 20:00–21:00 in Bangladesh, as the admins allowed
 
 **Asset:** the bn flight-mode clip, or the bn feature graphic (`docs/05-dev-guide/store/feature-graphic/bn.png`).
@@ -146,11 +169,11 @@ The promises are `messaging.md`'s reviewed lines.
 
 > (*draft*) Guten Tag, ich entwickle Sogda und poste hier einmal, nach Absprache mit den Moderatorinnen.
 >
-> Sogda ist eine Offline-Deutschkurs-App für Android: von A1 bis C2 in {totals.steps} Stufen, mit {totals.words} Wörtern, {totals.grammar_topics} Grammatikthemen und {totals.mock_exams} Probeprüfungen. Bedeutungen und eine Aussprachehilfe gibt es auf Englisch, Bangla, Russisch oder Polnisch. Ohne Konto und ohne Anmeldung: Der Fortschritt bleibt auf dem Handy.
+> Sogda ist eine Offline-Deutschkurs-App für Android: von A1 bis C2 in {totals.steps} Stufen, mit {totals.words} Wörtern, {totals.grammar_topics} Grammatikthemen und {totals.mock_exams} Probeprüfungen. Bedeutungen und eine Aussprachehilfe gibt es auf Englisch, Bangla, Russisch oder Polnisch. Ohne Konto und ohne Anmeldung; der Lernstand wird nur auf dem Gerät gespeichert.
 >
 > Lernende bringen ihre eigenen Texte mit: Brief fotografieren oder Text einfügen, und Sogda markiert die unbekannten Wörter nach Niveau. Alles bleibt auf dem Handy.
 >
-> Vielleicht ist sie etwas für Lernende, die zwischen den Unterrichtsstunden üben möchten. Die Probeprüfungen dienen der Übung; es sind keine offiziellen Goethe- oder telc-Prüfungen.
+> Vielleicht ist die App etwas für Lernende, die zwischen den Unterrichtsstunden üben möchten. Die Probeprüfungen dienen der Übung; es sind keine offiziellen Goethe- oder telc-Prüfungen.
 >
 > Google Play: <play-link facebook-daf/post>
 > Mehr: https://www.sogda.de/de
@@ -162,6 +185,12 @@ The promises are `messaging.md`'s reviewed lines.
 > I make Sogda, an offline German course for Android: A1 to C2 in {totals.steps} steps, with mock exams for every step (practice, not official papers). Meanings and a pronunciation guide in English, Bangla, Russian or Polish, and no account. It also reads the German you meet: share or photograph a letter, and it marks the words you don't know yet, by level, on the phone. If it's useful to anyone here: <play-link discord/post>. Feedback very welcome.
 
 ## 9. r/languagelearning, the "Share Your Resources" thread (en), while it's open
+
+**First, before launch: modmail the moderators** (the owner, 2026-10-03). Its rule 4 bans AI language-learning tools, and v1.2.0 has on-device translation, so ask, and post only with their OK:
+
+> Hello, I make Sogda, an offline German course app for Android: A1 to C2 in steps, with mock exams, and meanings in English, Bangla, Russian or Polish. It also has optional translation that runs on the phone (a downloaded model), for sentences and for words outside the course. It isn't an AI tutor or a chatbot. Would a comment in the monthly "Share Your Resources" thread be all right, saying that I made it? If not, no problem, and thank you either way.
+
+Then, only with their OK:
 
 The only place there that allows it ([rules](https://www.reddit.com/r/languagelearning/wiki/rules_for_promotion/)): one comment, saying "I made it", once in six months.
 
@@ -189,7 +218,7 @@ The only place there that allows it ([rules](https://www.reddit.com/r/languagele
 >
 > It also reads the German you meet: share or photograph a letter (the text recognition runs on the device), and it marks each new word by its level in the course; the words you pick join the plan with their sentence. Translation is optional and on the phone too (Hy-MT2, on phones with the memory for it).
 >
-> What it isn't: official exam papers, or an AI tutor. It's Android only for now.
+> What it isn't: official exam papers. It's Android only for now.
 >
 > Happy to answer anything about the course or how it's built.
 
@@ -220,7 +249,7 @@ The owner answers as the maker, kindly, in the commenter's language where possib
 | "Can it translate?" | Optionally, on the phone: Hy-MT2, a one-time download, offered on phones with the memory for it |
 | "I found a bug" | Thank them, and ask for the phone, the Android version and the app version (*About*). agent-5 files it the same day, with no name, handle or screenshot of theirs. They can also use *About › Report a problem on GitHub* |
 | "Where are the mock exams?" | They open at 90 % of a step's words introduced (BR-EXAM-01). *Settings › Unlock mock exams at* lowers that, and the locked Exams tab points there (#1364) |
-| "Why is there Bangla on my cards?" | Only if Bangla was chosen as a meaning language at setup: *Settings › meaning languages* changes it. An English app opens setup on English alone (#1363) |
+| "Why is there Bangla on my cards?" | Only if Bangla was chosen as a meaning language at setup: *Settings › Meaning language* changes it. An English app opens setup on English alone (#1363) |
 | "Can you add <language>?" | Thank them and note it. New meaning languages are the owner's call |
 | Anything angry or unfair | One calm, factual answer, then let it be. Never argue, and never ask anyone to change a rating |
 

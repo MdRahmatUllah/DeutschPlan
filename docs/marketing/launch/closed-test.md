@@ -174,7 +174,7 @@ The bn, pl, ru and de versions are in the launch kit (#1210). Until then, the ow
 
 agent-5 keeps it from what the owner forwards. **Codes only**, never a name or an address. A report made through the app's *Report a problem* is a public GitHub issue already: log it under the tester's code and link the issue.
 
-Each entry carries what a fix needs (agent-3, #1254): what they did, what happened and what they expected; the version (*Me › About and privacy*, 1.2.0 (build 10) in the first release); the phone and its Android version; and the app language with the meaning language(s), which half of 1.1.0's bugs depended on.
+Each entry carries what a fix needs (agent-3, #1254): what they did, what happened and what they expected; the version (*Me › About & privacy*, 1.2.0 (build 10) in the first release); the phone and its Android version; and the app language with the meaning language(s), which half of 1.1.0's bugs depended on.
 
 | Date | Tester | Version | Phone, Android | App / meaning languages | Where in the app | Did, happened, expected | Issue | Changed? |
 |---|---|---|---|---|---|---|---|---|

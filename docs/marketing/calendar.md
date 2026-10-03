@@ -56,6 +56,7 @@ Every asset row names its issue in lane M.
 | L−12 | — | germanprobashe.com | bn | The owner submits the Bangla guide through the contributor route | #1246 | idea |
 | L−12 | — | Facebook "Русские в Германии", germany.ru, Polish Telegram, mypolacy.de | — | The owner reads the rules and the life of each, logged in (the research couldn't), and agent-5 adds any that fit to `channels.md` | — | idea |
 | L−10 | — | Discord (German Learning and Discussion) | en | The owner reads the server's rules, logged in, and notes whether a launch post is allowed and where | — | idea |
+| L−10 | — | r/languagelearning modmail | en | The owner asks the moderators whether a comment in the "Share Your Resources" thread is all right (rule 4 bans AI tools; v1.2.0 has on-device translation). The message is drafted in the kit, §9 | #1210 | idea |
 
 ### Week −1 (L−7 … L−1): everything ready
 

@@ -44,7 +44,7 @@ Students, Ausbildung and job seekers who need A1 to B2 for a visa, a university 
   1. Every word has a Bangla meaning and a guide in Bangla letters (*Termin* → {featured.1.guide.bn}). An English meaning can show under it.
   2. {totals.steps} steps from A1.1 to C2.2, with {totals.mock_exams_per_step} mock exams for every step.
   3. The app runs in Bangla, offline, with no account.
-  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level; see *Learning from your own documents* below.
+  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level (each language's line: `messaging.md`, *Learning from your own documents*).
 - **Objection:** "The good apps teach German through English." **Answer:** here the meanings and the pronunciation are in Bangla, and the app itself is in Bangla. (The example lines and grammar rules are in English for Bangla learners: never claim them in Bangla.)
 - **Call to action:** sogda.de/bn/learn-german-in-bangla, then the Play link.
 
@@ -58,7 +58,7 @@ People living the paperwork: the Anmeldung, the Ausländerbehörde, a Termin.
   1. The words of daily life are in the course: {featured.0.article} {featured.0.german}, {featured.1.article} {featured.1.german} and {featured.4.article} {featured.4.german}, each with its article and a guide in Bangla letters.
   2. Spaced revision brings each word back just before you'd forget it.
   3. The path goes on past the paperwork, step by step to C2.
-  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level; see *Learning from your own documents* below.
+  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level (each language's line: `messaging.md`, *Learning from your own documents*).
 - **Objection:** "No time for a course." **Answer:** the plan for today is a few new words and what's due to revise. You choose the rest days.
 - **Call to action:** sogda.de/bn, then the Play link.
 
@@ -70,7 +70,7 @@ People living the paperwork: the Anmeldung, the Ausländerbehörde, a Termin.
   1. In Russian, the meanings, the example sentences' translations and the grammar rules are all Russian (`languages.grammar_in`), and the guide is in Cyrillic (*Termin* → {featured.1.guide.ru}).
   2. {totals.words} words and {totals.grammar_topics} grammar topics, from A1.1 to C2.2.
   3. {totals.mock_exams_per_step} mock exams for every step, with listening, writing and speaking.
-  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level; see *Learning from your own documents* below.
+  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level (each language's line: `messaging.md`, *Learning from your own documents*).
 - **Objection:** "Is it only for beginners?" (the most-watched Russian courses are). **Answer:** no. It goes from A1.1 to C2.2, with mock exams for every step.
 - **Care:** Russian copy goes to Russian-language spaces. In a Ukrainian or mixed community, the owner asks the admins which language they want: Russian only where the chat itself writes Russian, otherwise English (D8 in [`plan.md`](plan.md)).
 - **Call to action:** sogda.de/ru/learn-german-from-scratch, then the Play link.
@@ -85,7 +85,7 @@ Work in Germany, school German, and Poles already living there.
   1. The meanings, the example sentences' translations and the grammar rules are in Polish, and the guide is in Polish letters (*Termin* → {featured.1.guide.pl}).
   2. The course goes to C2. Polish-language apps found in the site review stop at A1 to B1.
   3. {totals.mock_exams_per_step} mock exams for every step.
-  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level; see *Learning from your own documents* below.
+  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level (each language's line: `messaging.md`, *Learning from your own documents*).
 - **Objection:** "Another vocabulary app." **Answer:** it's a course: {totals.grammar_topics} grammar topics with rules and practice, a plan for every day, and mock exams.
 - **Call to action:** sogda.de/pl/learn-german-from-scratch, then the Play link.
 
@@ -98,7 +98,7 @@ The biggest audience, and the most crowded.
   1. {totals.steps} steps, {totals.words} words, {totals.grammar_topics} grammar topics and {totals.mock_exams} mock exams.
   2. Spaced revision with {fsrs.version}: a word you know comes back after {fsrs.good_days.0} days, then {fsrs.good_days.1}, then {fsrs.good_days.2}.
   3. Two meaning languages at once, for people who learn from a second language.
-  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level; see *Learning from your own documents* below.
+  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level (each language's line: `messaging.md`, *Learning from your own documents*).
 - **Objection:** "I already use Duolingo or Anki." **Answer:** don't argue it. Point to the "Choose X if…" pages, which say when each one fits. Sogda fits when you want a path to C2 and exam practice, offline.
 - **Call to action:** sogda.de/en, then the Play link.
 
@@ -121,7 +121,7 @@ Teachers, integration-course staff, volunteers who help newcomers, and internati
   1. No account, and the progress stays on the phone (the listing's own words): nothing to set up for a class.
   2. Meanings and a pronunciation guide in the learner's own script.
   3. The vocabulary of arrival: {featured.0.article} {featured.0.german}, {featured.4.article} {featured.4.german}, {featured.3.article} {featured.3.german}.
-  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level; see *Learning from your own documents* below.
+  4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level (each language's line: `messaging.md`, *Learning from your own documents*).
 - **Objection:** "Does it replace the course?" **Answer:** no. It's practice between lessons, with spaced revision.
 - **Call to action:** sogda.de/de, plus the Play link to pass on.
 
@@ -159,7 +159,7 @@ What every documents line keeps:
   1. Ausländerbehörde-এর চিঠি, ভাড়ার চুক্তি, চাকরির বিজ্ঞাপন: Sogda ফোনেই সেটা পড়ে, আর কোর্সের নতুন শব্দগুলো লেভেল ধরে চিহ্নিত করে।
   2. যে শব্দগুলো বেছে নেবেন, সেগুলো যে বাক্যে পেয়েছেন সেই বাক্য আর বাংলা অর্থসহ আপনার পরিকল্পনায় যোগ হয়।
   3. এগুলোর আলাদা দৈনিক সীমা আছে, তাই লম্বা চিঠিও আপনার দিনটা ভারী করে না।
-- **Call to action:** Google Play-তে Sogda আপডেট করুন, অথবা ইনস্টল করুন: sogda.de/bn।
+- **Call to action:** Google Play থেকে Sogda ইনস্টল করুন: sogda.de/bn।
 
 ### 2. Russian speakers (ru)
 
@@ -169,7 +169,7 @@ What every documents line keeps:
   1. Письмо из Jobcenter, договор аренды, объявление о работе: Sogda читает такой текст прямо на телефоне и отмечает новые для тебя слова по уровням курса.
   2. Выбранные слова попадают в план вместе с предложением из твоего текста и значением на русском.
   3. У них свой дневной лимит, поэтому длинное письмо не перегрузит твой день.
-- **Call to action:** обнови Sogda в Google Play или установи с sogda.de/ru.
+- **Call to action:** установи Sogda из Google Play: sogda.de/ru.
 
 ### 3. Polish speakers (pl)
 
@@ -179,7 +179,7 @@ What every documents line keeps:
   1. List z urzędu, umowa najmu, ogłoszenie o pracy: Sogda czyta taki tekst na telefonie i zaznacza nowe słowa z kursu według poziomu.
   2. Wybrane słowa trafiają do planu razem ze zdaniem z twojego tekstu i ze znaczeniem po polsku.
   3. Mają własny dzienny limit, więc długi list nie zasypie ci dnia.
-- **Call to action:** zaktualizuj aplikację Sogda w Google Play albo ją zainstaluj: sogda.de/pl.
+- **Call to action:** zainstaluj aplikację Sogda z Google Play: sogda.de/pl.
 
 ### 4. English-speaking learners (en)
 
@@ -188,7 +188,7 @@ What every documents line keeps:
   1. Paste a text, share a text or a photo from another app, choose a PDF, or photograph a letter: Sogda reads it on the phone.
   2. The words you pick join your plan with the sentence you met them in.
   3. Optional, on phones with the memory for it: Hy-MT2 translates on the phone, for sentences and for words outside the course.
-- **Call to action:** update Sogda on Google Play, or install it: sogda.de/en.
+- **Call to action:** install Sogda from Google Play: sogda.de/en.
 
 ### 5. People in Germany who recommend (de)
 
