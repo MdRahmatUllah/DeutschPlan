@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 15:40
+last-seen: 2026-10-03 15:48
 last-read: 4184
 
 ## Now
 
-#709 perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame — claimed 2026-10-03 14:48.
+#709 in review as PR #1395: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
