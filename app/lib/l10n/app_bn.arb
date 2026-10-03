@@ -868,6 +868,7 @@
   "docImportPage": "পৃষ্ঠা {page}",
   "docImportAddPage": "আরেকটি পৃষ্ঠা যোগ করুন",
   "docImportDone": "শেষ",
+  "docImportReceiving": "{count, plural, other{{count}টি ছবি আসছে…}}",
   "docImportReadingPage": "{count}টির মধ্যে {page} নম্বর পৃষ্ঠা পড়া হচ্ছে…",
   "docImportCheckTitle": "লেখাটা দেখে নিন",
   "docImportCheckIntro": "{page} নম্বর ছবিটা পড়া কঠিন ছিল। চিহ্নিত শব্দগুলো ঠিক করে এগিয়ে যান।",
