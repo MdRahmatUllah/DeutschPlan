@@ -25,6 +25,24 @@ void main() {
     },
   );
 
+  // #1233: a word outside the course, with Hy-MT2's meaning, labelled.
+  goldenTest(
+    'doc_words_card_outside',
+    textAudit: false,
+    overrides: docWordsStub(
+      meanings: const <String, List<({String meaning, bool here})>>{
+        'en': <({String meaning, bool here})>[
+          (meaning: 'water meter', here: false),
+        ],
+      },
+    ),
+    builder: (_) => const DocWordsScreen(id: 7),
+    act: (tester) async {
+      await tester.tapOnText(find.textRange.ofSubstring('Wasserzähler').first);
+      await tester.pumpAndSettle();
+    },
+  );
+
   goldenTest(
     'doc_words_empty',
     textAudit: false,

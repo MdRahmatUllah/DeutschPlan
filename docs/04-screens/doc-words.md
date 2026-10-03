@@ -31,7 +31,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 3. **The bulk bar,** pinned at the bottom:
    - *Add my level* and *Add my level and one above*, side by side (one height for the pair), stacked above 100 % text. A button that would add what *Add all new* adds is left out (#1294);
    - *Add all new*, and the number each would add;
-   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes. This visit's adds that start today take their slots off it (#1294). When no day can be said, it says the words wait instead (#1334, `PlanEngine.docQueueHold`, the same rule as *Add*'s): at a cap of 0 (the setting, read at once: no later day takes them), "0 a day from documents: the other 16 wait in your queue until you raise it in Settings"; under the backlog pause (BR-PLAN-07), "Backlog first: what you add waits in your queue until it's cleared";
+   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes. This visit's adds that start today take their slots off it (#1294), and so do the words already waiting in the queue, which today's free slots take first (BR-PLAN-11, #1341): after the backlog pause lifts mid-day, those fill today, and the note says the rest start tomorrow or later. When no day can be said, it says the words wait instead (#1334, `PlanEngine.docQueueHold`, the same rule as *Add*'s): at a cap of 0 (the setting, read at once: no later day takes them), "0 a day from documents: the other 16 wait in your queue until you raise it in Settings"; under the backlog pause (BR-PLAN-07), "Backlog first: what you add waits in your queue until it's cleared";
    - an ambiguous word is in no bulk action: its card asks which it is.
 
 **The mini card (a sheet).**
@@ -46,19 +46,19 @@ The ink underline is what makes a word marked, and the fill says its level, whic
   - *Ignore*;
   - *Open* (W1).
 - **A word outside the course:**
-  - Hy-MT2's meaning, labelled "machine-translated", or "No meaning yet: download translation" (a link to M4);
+  - Hy-MT2's meaning, the first meaning language's bare-word answer, labelled "Machine-translated" (`docWordsCardMachine`). With none, and only while Hy-MT2 isn't on the phone and the phone has the memory for it (`translationDownloadableProvider`, #1300), the card offers "No meaning yet: download Hy-MT2 translation" (`docWordsCardNoMeaning`), a link to M4. With the model there (translation off in M3, or a run that found nothing) or below the floor, a download would bring nothing, so the card says nothing of a meaning. Nothing shows while it runs (#1233, `outsideMeaningProvider`);
   - *Add as my word* opens R2 pre-filled (BR-DOC-04);
   - a compound shows its parts as a hint: "Nebenkosten + Abrechnung".
 - **An ambiguous word** («Weg» or «weg») asks which one, before *Add*. Each choice says its step and first meaning, «ausfallen · A2.2 · to be cancelled», since two readings can share a spelling and an article. Its mark takes the lowest reading's level, the one a learner meets first (#1294).
 - **A word already mine** says so, and *Keep this sentence* keeps the document's sentence with it (FR-D2-06).
-- **Machine-translated meanings** come with #1279 (#1233): Hy-MT2's answers are tappable suggestions, never a pre-filled meaning (#1278). Until then, a word outside the course offers *Add as my word* with its German.
+- **Machine-translated meanings** (#1233, #1300): on the card, the first language's answer, labelled. In R2 they're tappable suggestions, never a pre-filled meaning (#1278): every language's bare-word answer, then the in-sentence ones as «here: …».
 
 **Functional requirements**
 - FR-D2-01 Each lemma is shown in its class from BR-DOC-03; stop words are never marked.
 - FR-D2-02 *Add* on a course word puts it in the document queue with its sentence (BR-DOC-04, BR-PLAN-11); the toast says when it starts: "Added der Termin: you'll learn it today" when it joined today's plan, or "… from Thursday" (BR-PLAN-11's *Today*).
 - FR-D2-03 The bulk actions add every new course word of the chosen levels in one write, under the cap, and say how many: "Added 9: 5 today, the rest later"; "Added 5, all for today" when every one starts today; "Added 25: they start tomorrow or later" when today's slots are taken; and "Added 25: they wait in your queue" while no day can be said (the backlog pause, a cap of 0), as a single *Add* says (#1311).
 - FR-D2-04 *I know this* rates the word Easy (W1's *Mark known*), with W1's Undo. *Ignore* takes the mark away for this visit only.
-- FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example* and the document's title as *Where I saw it*. The meaning is the learner's to write: Hy-MT2's answers come as labelled suggestions to pick from, never filled in (#1278, #1279).
+- FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example* and the document's title as *Where I saw it*. The meaning is the learner's to write: Hy-MT2's answers come as labelled suggestions under the empty meaning field, never filled in, and none without a model (#1278, #1279, #1300).
 - FR-D2-06 A word already mine gets the sentence added to its contexts, and no second word.
 - FR-D2-07 The document and what it found are saved (BR-DOC-05): D3 counts from `document_words`. Reopening it from D3 runs the matcher again on the saved text (under 500 ms), so its marks follow what the learner has learnt since, and what was added stays added.
 

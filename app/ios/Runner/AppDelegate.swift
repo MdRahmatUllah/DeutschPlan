@@ -58,6 +58,11 @@ import workmanager_apple
       name: AppDelegate.storageChannelName,
       binaryMessenger: engineBridge.applicationBinaryMessenger
     ).setMethodCallHandler { call, result in
+      // The phone's memory in all: Hy-MT2 needs 4 GB (#154).
+      if call.method == "memory" {
+        result(Int64(ProcessInfo.processInfo.physicalMemory))
+        return
+      }
       guard call.method == "space" else {
         result(FlutterMethodNotImplemented)
         return

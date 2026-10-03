@@ -234,7 +234,7 @@ stand-in for Play's one-ABI download (chapter 3, *Performance*):
 | v1.0.0 | 72.44 MB | The last `perf.py all` before the tag |
 | v1.1.0 | 51.2 MB at llamadart's removal, 2026-09-27 | llamadart removed while Hy-MT was off (ADR 29) |
 | v1.2.0, on main | 52.22 → 54.12 MB with pdfbox-android (ADR 31); ML Kit's text recognition adds about 12 MB a phone (`doc-import.md`) | Documents (#1228, #1229) |
-| v1.2.0, to come | llama.cpp's CPU libraries come back with Hy-MT2 (about 21 MB at ADR 29's measure); #1318 takes pdfbox's CJK CMaps (1.2 MB) out | #154, #1318 |
+| v1.2.0, with Hy-MT2 | 66.24 MB once #1318 took pdfbox's CJK CMaps out (−1.22 MB); 89.19 MB on 2026-10-03 with llama.cpp's CPU libraries back for Hy-MT2 (+22.95 MB) | #1318, #154 |
 
 v1.2.0's own figure, feature by feature, is #1306's, and goes into its
 release notes. A universal APK carries every ABI, so ML Kit alone adds 31 MB

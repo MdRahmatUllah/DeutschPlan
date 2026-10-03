@@ -711,6 +711,35 @@ void main() {
       }
     });
 
+    testWidgets('#154 below Hy-MT2\'s memory floor, translation can\'t be '
+        'turned on, and the row says why', (tester) async {
+      await pump(
+        tester,
+        model: downloadingModel(ModelStatus.ready),
+        extra: <Override>[
+          translationFitsProvider.overrideWith((ref) async => false),
+        ],
+      );
+      expect(
+        find.text(l10n.modelsNeedsMemory(l10n.modelsSizeGb('4'))),
+        findsOneWidget,
+      );
+      // Dimmed, as Material draws a disabled switch.
+      final dimmed = tester.widget<Opacity>(
+        find
+            .descendant(
+              of: switchFor(l10n.settingsTranslation),
+              matching: find.byType(Opacity),
+            )
+            .first,
+      );
+      expect(dimmed.opacity, 0.38);
+      await tester.tap(switchFor(l10n.settingsTranslation));
+      await tester.pumpAndSettle();
+      expect(settings.read(SettingKeys.mtEnabled), isFalse);
+      expect(went, isEmpty);
+    });
+
     testWidgets('on with the model ready, and off again', (tester) async {
       await pump(tester, model: downloadingModel(ModelStatus.ready));
 

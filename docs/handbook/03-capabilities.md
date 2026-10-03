@@ -281,8 +281,9 @@ owner checks cold and warm start on a real phone before each release.
   - **ML Kit's text recognition:** about 12 MB a phone through the App
     Bundle's per-ABI split, 11 MB of it the arm64 pipeline library
     (`doc-import.md`). A universal APK carries all three ABIs, +31 MB.
-  - **llama.cpp's CPU libraries,** back with Hy-MT2 (ADR 30): about 21 MB of
-    the arm64 APK when ADR 29 took them out.
+  - **llama.cpp's CPU libraries,** back with Hy-MT2 (ADR 30): +22.95 MB of
+    the arm64 APK, 89.19 MB in all on 2026-10-03 (#154; ADR 29 had measured
+    about 21 MB when it took them out).
 
   v1.2.0's own total, feature by feature, is #1306's measurement.
 - **The documents' budget:** a two-page letter (about 600 words) goes

@@ -41,6 +41,17 @@ void main() {
     ),
     devices: <GoldenDevice>[GoldenDevice.phone],
   );
+  // …a phone below Hy-MT2's memory floor (#154)…
+  goldenTest(
+    'model_manager_memory',
+    builder: (context) => ProviderScope(
+      overrides: modelManagerStub(
+        translation: cardOf(translationEntry, fits: false),
+      ),
+      child: const ModelManagerScreen(),
+    ),
+    devices: <GoldenDevice>[GoldenDevice.phone],
+  );
   // #1265: a download that failed with nothing on the phone, with Delete.
   goldenTest(
     'model_manager_failed',

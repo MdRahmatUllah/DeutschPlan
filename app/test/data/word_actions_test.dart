@@ -570,6 +570,8 @@ class _Translator implements Translator {
     String text, {
     required String from,
     required String to,
+    String? context,
+    Future<void>? abandoned,
   }) async {
     asked++;
     return answer;

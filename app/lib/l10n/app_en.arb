@@ -2186,7 +2186,32 @@
   },
   "wordTranslate": "Translate",
   "@wordTranslate": {
-    "description": "W1 action, only when on-device translation is on: the examples into the meaning language (FR-W1-05)."
+    "description": "W1 action, only when on-device translation is on: the examples a chosen meaning language has no line for, into it (FR-W1-05, #154)."
+  },
+  "translating": "Translating…",
+  "@translating": {
+    "description": "While the on-device translator works (T5's word sheet, R1's Translate sheet; #154)."
+  },
+  "searchTranslate": "Translate “{query}”",
+  "@searchTranslate": {
+    "description": "R1 no results, only with on-device translation on: opens a sheet with the query translated both ways (#154).",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "translateFromGerman": "From German",
+  "@translateFromGerman": {
+    "description": "R1's Translate sheet: the heading over the query translated from German into the first meaning language (#154)."
+  },
+  "translateIntoGerman": "Into German",
+  "@translateIntoGerman": {
+    "description": "R1's Translate sheet: the heading over the query translated from the first meaning language into German (#154)."
+  },
+  "translationNone": "No translation",
+  "@translationNone": {
+    "description": "R1's Translate sheet, when the translator gave nothing (#154)."
   },
   "wordAddedToday": "{word} is in today's plan",
   "@wordAddedToday": {
@@ -5491,6 +5516,19 @@
   "@addWordMeaning": {
     "description": "R2: the heading over the meaning field, shown upper-case."
   },
+  "addWordMeaningHere": "here: {meaning}",
+  "@addWordMeaningHere": {
+    "description": "R2, a chip under the meaning: Hy-MT2's meaning of the word as it reads in its document's sentence, when it differs from the bare word's (#1278). Tapped, it fills the meaning with the text alone.",
+    "placeholders": {
+      "meaning": {
+        "type": "String"
+      }
+    }
+  },
+  "addWordMachineTranslated": "Machine-translated: check it first",
+  "@addWordMachineTranslated": {
+    "description": "R2, for a word from a document: over Hy-MT2's suggested meanings, and under the meaning while it still holds one (BR-DOC-07, #1233, #1278). Goes once the learner edits the meaning."
+  },
   "addWordWhere": "Where I saw it",
   "@addWordWhere": {
     "description": "R2: the heading over where the learner came across the word, shown upper-case."
@@ -6575,6 +6613,19 @@
       }
     }
   },
+  "modelsStatusNoMemory": "Not available",
+  "@modelsStatusNoMemory": {
+    "description": "M4 pill: this phone has too little memory (RAM) for the model, so it isn't offered (#154)."
+  },
+  "modelsNeedsMemory": "Needs a phone with {size} of memory",
+  "@modelsNeedsMemory": {
+    "description": "M4 note under Hy-MT2, and M3's translation row, on a phone below its memory floor (#154). size is '4 GB'.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "modelsNotifyWhy": "It asks to show the download's progress in a notification",
   "@modelsNotifyWhy": {
     "description": "Under S2 page 5's Download now and M4's Download: why the download asks for the notification permission (Android 13+, iOS; #501, the owner's decision). A refusal still downloads."
@@ -6909,6 +6960,14 @@
   "docWordsCardOutside": "Not in the course",
   "@docWordsCardOutside": {
     "description": "D2's card for a word outside the course."
+  },
+  "docWordsCardMachine": "Machine-translated",
+  "@docWordsCardMachine": {
+    "description": "D2's card, under Hy-MT2's meaning for a word outside the course (#1233): the label that says a machine wrote it."
+  },
+  "docWordsCardNoMeaning": "No meaning yet: download Hy-MT2 translation",
+  "@docWordsCardNoMeaning": {
+    "description": "D2's card for a word outside the course with no meaning, while Hy-MT2 isn't on the phone and the phone has the memory for it (#1300): a link to M4, named as M4 names the model (modelsTranslationTitle)."
   },
   "docWordsCardMine": "Already one of my words",
   "@docWordsCardMine": {

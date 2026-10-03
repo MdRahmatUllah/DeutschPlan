@@ -538,6 +538,18 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
       expect(await paused(), isFalse, reason: 'off again, no restart');
     });
 
+    testWidgets('#1340 one node that says the pause once: the note, then '
+        "the switch's label", (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(tester);
+      final toggle = tester.getSemantics(find.byType(AdaptiveSwitch));
+      expect(
+        toggle.label,
+        '${l10n.backlogPauseNote}\n${l10n.backlogPauseLabel}',
+      );
+      semantics.dispose();
+    });
+
     testWidgets('writes pause_new_when_backlog', (tester) async {
       await pump(tester);
       expect(settings.read(SettingKeys.pauseNewWhenBacklog), isFalse);

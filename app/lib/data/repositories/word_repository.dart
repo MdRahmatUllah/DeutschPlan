@@ -207,6 +207,10 @@ typedef MyWordDraft = ({
   String meaning,
   String? whereSeen,
   String? example,
+
+  /// The meaning is Hy-MT2's, as it came (`custom_words.mt`, #1233): labelled
+  /// so until the learner edits it (BR-DOC-07).
+  bool mt,
 });
 
 /// One of the learner's own sentences for a word (`word_contexts`, #1232):
@@ -323,6 +327,7 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
             meaning: row.meaning,
             whereSeen: row.whereSeen,
             example: row.example,
+            mt: row.mt == 1,
           );
   }
 
@@ -347,6 +352,7 @@ class WordRepository extends DatabaseAccessor<AppDatabase>
       whereSeen: Value(blank(word.whereSeen)),
       example: Value(blank(word.example)),
       matchedUid: Value(matchedUid),
+      mt: Value(word.mt ? 1 : 0),
     );
     final saved =
         id ??

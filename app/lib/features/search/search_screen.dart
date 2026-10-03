@@ -26,6 +26,7 @@ import 'package:sogda/data/repositories/word_repository.dart';
 import 'package:sogda/domain/compare_set.dart' show comparesSet;
 import 'package:sogda/domain/text_norm.dart';
 import 'package:sogda/features/learn/step_words.dart';
+import 'package:sogda/features/words/translation_line.dart';
 import 'package:sogda/features/words/word_row.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/cross_tab.dart';
@@ -1269,6 +1270,23 @@ class _NoResults extends ConsumerWidget {
             },
           ),
         ],
+        // #154: with translation on, the query both ways, on the phone.
+        if (ref.watch(mtEnabledProvider)) ...[
+          const SizedBox(height: 10),
+          SgButton(
+            label: l10n.searchTranslate(breakable(query)),
+            kind: SgButtonKind.secondary,
+            onPressed: () {
+              onUse();
+              unawaited(
+                Adaptive.showSheet<void>(
+                  context: context,
+                  builder: (sheet) => _TranslateSheet(query),
+                ),
+              );
+            },
+          ),
+        ],
         const SizedBox(height: 14),
         SgText(
           l10n.searchNoneFootnote,
@@ -1319,4 +1337,59 @@ class _NotFound extends CustomPainter {
 
   @override
   bool shouldRepaint(_NotFound old) => old.ink != ink || old.fill != fill;
+}
+
+/// R1's *Translate «…»* (#154, `translation.md`): the query from German into
+/// the first meaning language, and from it into German, since a query can be
+/// either.
+class _TranslateSheet extends ConsumerWidget {
+  const _TranslateSheet(this.query);
+
+  final String query;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    final primary = ref.watch(meaningsProvider).choice.primary;
+    Widget heading(String text) => SgText(
+      text.toUpperCase(),
+      role: SgTextRole.caption,
+      weight: 700,
+      letterSpacing: 0.6,
+      color: tokens.color.textSecondary,
+    );
+    // Scrolls at large text with the keyboard up, where it can't fit.
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // A long compound at large text breaks only where it must (#165).
+            SgText(query, role: SgTextRole.title, breakTooWide: true),
+            const SizedBox(height: 14),
+            heading(l10n.translateFromGerman),
+            const SizedBox(height: 4),
+            TranslationLine(
+              query,
+              from: 'de',
+              to: primary,
+              none: l10n.translationNone,
+            ),
+            const SizedBox(height: 14),
+            heading(l10n.translateIntoGerman),
+            const SizedBox(height: 4),
+            TranslationLine(
+              query,
+              from: primary,
+              to: 'de',
+              none: l10n.translationNone,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

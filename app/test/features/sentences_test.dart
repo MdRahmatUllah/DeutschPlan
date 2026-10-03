@@ -10,8 +10,10 @@ import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/meaning_choice.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/sentence_store.dart';
+import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/data/repositories/settings_repository.dart';
 import 'package:sogda/domain/sentence_picker.dart';
 import 'package:sogda/features/sentences/sentences_screen.dart';
@@ -20,6 +22,7 @@ import 'package:sogda/features/words/word_detail_screen.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/services/translation/translator.dart';
 
 import '../db/content_fixture.dart';
 import '../services/fake_tts.dart';
@@ -566,6 +569,47 @@ INSERT INTO sentence_log (word_uid, ord, shown_on, self_rating) VALUES
       ]);
       expect(find.text(l10n.sentencesNotInCourse), findsNothing);
     });
+
+    testWidgets('#154 FR-T5-03 with translation on, a word the course lacks '
+        'shows its translation into the first meaning language, above '
+        'Duden', (tester) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          translatorProvider.overrideWithValue(const _Translator()),
+        ],
+      );
+      await settings.write(SettingKeys.mtEnabled, true);
+      await tester.runAsync(() async {
+        await tester.tapOnText(find.textRange.ofSubstring('lang'));
+        await pumpEventQueue();
+      });
+      await tester.pumpAndSettle();
+      await tester.runAsync(pumpEventQueue);
+      await tester.pumpAndSettle();
+      final primary = meaningChoiceOf(settings).primary;
+      expect(find.text('de→$primary: lang'), findsOneWidget);
+      expect(find.text(l10n.sentencesDuden), findsOneWidget);
+    });
+
+    testWidgets('#154 with translation off, no translation, only Duden', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        extra: <Override>[
+          translatorProvider.overrideWithValue(const _Translator()),
+        ],
+      );
+      await tester.runAsync(() async {
+        await tester.tapOnText(find.textRange.ofSubstring('lang'));
+        await pumpEventQueue();
+      });
+      await tester.pumpAndSettle();
+      expect(find.textContaining('→'), findsNothing);
+      expect(find.text(l10n.translating), findsNothing);
+      expect(find.text(l10n.sentencesDuden), findsOneWidget);
+    });
   });
 
   group('the page', () {
@@ -750,3 +794,20 @@ String _verb(String german, String english) =>
     'seq_in_sublevel, german, pos, english, search_key, search_key_alt, kind) '
     "VALUES ('uid-$german', 'A1.1', 'A1', 20, 20, '$german', 'verb', "
     "'$english', '$german', '$german', 'vocab')";
+
+/// A translator whose answer names its direction (#154).
+class _Translator implements Translator {
+  const _Translator();
+
+  @override
+  String get model => 'test';
+
+  @override
+  Future<String?> translate(
+    String text, {
+    required String from,
+    required String to,
+    String? context,
+    Future<void>? abandoned,
+  }) async => '$from→$to: $text';
+}

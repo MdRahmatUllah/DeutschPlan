@@ -618,7 +618,12 @@ class AdaptiveSwitch extends StatelessWidget {
       child: SgFocusable.around(
         radius: BorderRadius.circular(track.height / 2),
         size: track,
-        child: control,
+        // With no [onChanged] it reads as disabled, at Material's 38 %: the
+        // colours above are the same either way (#154, M3's translation row
+        // below Hy-MT2's memory floor).
+        child: onChanged == null
+            ? Opacity(opacity: 0.38, child: control)
+            : control,
       ),
     );
   }

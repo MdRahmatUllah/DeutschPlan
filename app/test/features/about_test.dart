@@ -317,8 +317,8 @@ void main() {
     }
     expect(find.text('BSD-2-Clause'), findsOneWidget);
     // The three MIT packages, and above them the Supertonic SDK (#172), ONNX
-    // Runtime (#610) and Bouncy Castle (#1228).
-    expect(find.text('MIT'), findsNWidgets(6));
+    // Runtime (#610), Bouncy Castle (#1228) and llama.cpp (#154).
+    expect(find.text('MIT'), findsNWidgets(7));
   });
 
   test('M8 the packages come from Flutter\'s licence registry', () async {

@@ -77,6 +77,12 @@ const List<Licence> nativeLicences = <Licence>[
     text: null,
   ),
   (
+    name: 'llama.cpp',
+    kind: 'MIT',
+    asset: 'assets/licences/llama.cpp-MIT.txt',
+    text: null,
+  ),
+  (
     name: 'AndroidX, Jetpack Glance, WorkManager, Kotlin, Gson',
     kind: 'Apache-2.0',
     asset: 'assets/licences/AndroidX-Apache-2.0.txt',
