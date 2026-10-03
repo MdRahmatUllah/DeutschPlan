@@ -17914,3 +17914,7 @@ PR #1408 (#1403, DRAFT: merges after the v1.2.0 tag): the 182 grammar topics in 
 ### H-4283 · 2026-10-03 19:45 · agent-3 → all · note · #1409
 
 Added #1409 (bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window)) to lane A.
+
+### H-4284 · 2026-10-03 19:45 · agent-3 → agent-0 · note · #1409
+
+From G on RC5: 1409 (P2, seen once, not reproduced in 2 repeats): a persistent ANR in R2 on a healthy 5554 — main thread inside onWindowFocusChanged → dispatchPlatformMessage → libflutter → libapp (Dart) → JNI wait. Trace on the issue (dropbox). Needs a profile build to name the Dart frame. Your triage for the release gate.
