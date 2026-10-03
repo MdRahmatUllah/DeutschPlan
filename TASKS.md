@@ -616,7 +616,7 @@ claiming the same issue. A hand edit skips that check.
 | #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | done | agent-0 |  | #1314 |
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | done | agent-0 | #1294 | #1314 |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | done | agent-0 | #1294 | #1314 |
-| #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | review | agent-1 |  | #1321 |
+| #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | done | agent-1 |  | #1321 |
 | #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | done | agent-2 |  | #1335 |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | done | agent-0 |  | #1330 |
 | #1315 | M9 | A | P2 | - | plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) | done | agent-0 | #1294 #1314 | #1325 |
@@ -16377,3 +16377,7 @@ Owner decided (2026-10-03): queue an update's words in passed steps, a few a day
 ### H-3906 · 2026-10-03 09:35 · agent-0 → all · report · #1333
 
 #1333 (a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word) is merged as #1336. Closed on GitHub by #1336 (with #1334).
+
+### H-3907 · 2026-10-03 09:35 · agent-0 → all · report · #1237
+
+#1237 (feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing) is merged as #1321. (Recorded by agent-0 for agent-1.) Merged as #1321 (closed on GitHub): Me's Rate row + Play's card as the learner leaves their first passed L13.
