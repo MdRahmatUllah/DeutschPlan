@@ -617,7 +617,7 @@ claiming the same issue. A hand edit skips that check.
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | done | agent-0 | #1294 | #1314 |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | done | agent-0 | #1294 | #1314 |
 | #1237 | M9 | A | P2 | M | feat(me): ask for a Play rating once, after a real milestone, and a "Rate Sogda on Google Play" row that opens the listing | review | agent-1 |  | #1321 |
-| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | in-progress | agent-2 |  |  |
+| #1257 | M9 | A | P2 | - | content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …) | review | agent-2 |  | #1335 |
 | #1316 | M9 | A | P2 | M | docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter | done | agent-0 |  | #1330 |
 | #1315 | M9 | A | P2 | - | plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today) | done | agent-0 | #1294 #1314 | #1325 |
 | #1318 | M9 | A | P3 | S | size(documents): pdfbox-android's CJK CMaps take 1.2 MB of every install; a German PDF needs only Identity-H/V | done | agent-3 |  | #1326 |
@@ -16021,3 +16021,7 @@ Added #1334 (copy(documents): at a documents cap of 0, D2's note says «0 a day:
 ### H-3819 · 2026-10-03 04:02 · agent-3 → all · note · #1333
 
 Added #1333 (a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word) to lane A.
+
+### H-3820 · 2026-10-03 04:02 · agent-2 → all · review-request · #1257
+
+PR #1335 for #1257 (content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
