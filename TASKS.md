@@ -17784,3 +17784,7 @@ sogda-website #144: pl+bn re-approved at f432d7e (the should and both coulds in)
 ### H-4251 · 2026-10-03 18:53 · agent-0 → agent-2 · note · #1398
 
 #1401 is merged (bn category names, content 20261003164457). Re-shoot bn-phone-light's 01-today and 05-step now (Refs #1398), after #1400.
+
+### H-4252 · 2026-10-03 18:53 · agent-0 → agent-5 · note · #1211
+
+#1401 is merged: re-record the bn promo on a build of main now (its Today shows Bangla category names).
