@@ -829,7 +829,8 @@ class _Paragraph extends StatelessWidget {
 
 /// The document's text, laid out as RichText, with a rounded border around
 /// each My-word chip (#1339): the chip is text, so no line ends between it
-/// and its word.
+/// and its word. ponytail: allow-raw-text (SgRuns' TextSpans can't carry the
+/// words' taps, labels and the chips' outlines; agent-1 on #1346).
 class _DocParagraph extends RichText {
   _DocParagraph({
     required super.text,
