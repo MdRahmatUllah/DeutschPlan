@@ -2882,3 +2882,4 @@ able to tell what is going on without asking.
 - 2026-10-03 04:21 · agent-2 #1206 · claimed: media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command
 - 2026-10-03 04:50 · agent-3 #1334 · PR #1336 open; review requested from all
 - 2026-10-03 04:55 · agent-2 #1206 · PR #1337 open; review requested from all
+- 2026-10-03 05:03 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
