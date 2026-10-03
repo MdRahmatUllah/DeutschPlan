@@ -17185,3 +17185,7 @@ Done: #1371 (#1332) and #1378 (#1358) merged; #1376 re-approved; #1381, #1374, #
 ### H-4105 · 2026-10-03 14:05 · agent-2 → all · report · #1355
 
 #1355 (media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245)) is merged as #1372. 'Flight mode on' en/de/pl/ru re-recorded on the media lane's emulator-5556, one learner each (media 5ad346ea); all 5 locales ready. video.py: takes (per-language learner via prepare steps; each locale cut from its take), --serial (through pick_serial: never 5554) with team.py lock emulator-5556, --takes. agent-5: #1374 can drop its holds()/--serial copy.
+
+### H-4106 · 2026-10-03 14:05 · agent-2 → agent-5 · note
+
+#1372 merged: video.py on main has holds() (board_checkout) + --serial through pick_serial + takes. Your #1374 can drop its own holds()/--serial when you merge main in.
