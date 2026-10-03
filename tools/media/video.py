@@ -320,6 +320,18 @@ def media_root() -> Path:
     return ROOT.parent / "dp-media"
 
 
+def holds(serial: str, agent: str) -> bool:
+    """Whether [agent] may record on [serial]: emulator-5558 under `team.py device`,
+    any other under the board's lock named after it (`team.py lock emulator-5556`,
+    the media lane's, #1236)."""
+    if serial == device.DEV_SERIAL:
+        from smoke import holds_device
+        return holds_device(agent)
+    import team
+    board = team.Board((team.board_checkout(agent) / "TASKS.md").read_text(encoding="utf-8"))
+    return any(lock.resource == serial and lock.owner == agent for lock in board.locks)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("script", help="a name in tools/media/videos/")
@@ -328,17 +340,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--locales", help="default: the script's")
     parser.add_argument("--formats", default=",".join(FORMATS))
     parser.add_argument("--out", type=Path, help="default: the media worktree's dated folder")
+    parser.add_argument("--serial", default=device.DEV_SERIAL,
+                        help="the emulator to record on: emulator-5558 under `team.py device` (the default), "
+                             "or another under `team.py lock <serial>`")
     args = parser.parse_args(argv)
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     script = load(args.script)
     both = not args.record and not args.render
     if args.record or both:
-        from smoke import holds_device
-        if not device.owner_checkout() and not holds_device(device.agent()):
-            print("refused: hold the emulator first: `python tools/team.py device`", file=sys.stderr)
+        if not device.owner_checkout() and not holds(args.serial, device.agent()):
+            how = "team.py device" if args.serial == device.DEV_SERIAL else f"team.py lock {args.serial} -m why"
+            print(f"refused: hold {args.serial} first: `python tools/{how}`", file=sys.stderr)
             return 2
-        record(script)
+        record(script, args.serial)
     if args.render or both:
         if not shutil.which("ffmpeg"):
             raise SystemExit("ffmpeg isn't on the PATH")
