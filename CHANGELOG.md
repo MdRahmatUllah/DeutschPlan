@@ -7,11 +7,12 @@ Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pu
 Learn from your own documents, 73 everyday words, and translation on the phone.
 
 ### Added
-- **Learn from a document** (D1): paste or share a text from any app (#1227), photograph pages or pick photos, read on the phone by ML Kit with *Check the text* for a hard page (#1229), or choose a PDF, read from its text layer up to 30 pages, a scan sent to the photos (#1228). Over 20,000 characters or 30 pages, D2 says what was left out (#1320).
+- **Learn from a document** (D1): paste or share a text from any app (#1227), photograph pages, pick photos or share them from the gallery or a messenger, one or several (#1332), read on the phone by ML Kit with *Check the text* for a hard page (#1229), or choose a PDF, read from its text layer up to 30 pages, a scan sent to the photos (#1228). Over 20,000 characters or 30 pages, D2 says what was left out (#1320).
 - **The words in your text** (D2): every word marked by its class, the new ones by level; a card to *Add*, mark *I know this*, or keep a word outside the course as your own; *Add all new* or your level at once, and a long press to add (#1230). An added word joins the plan, a few a day (BR-PLAN-11, #1272), with the sentence you met it in.
 - **My documents** (D3): the documents you kept, to reopen, rename or delete with their photos (#1295). Settings sets the words a day, whether photos are kept, and when documents delete themselves (#1296).
 - **Your own sentence** on the word's card, in W1 and as a cloze when it's short enough to gap (#1232).
 - **73 everyday words** the course used but never taught on their own: Zeit, Name, Dank, zahlen, Raum, bereit, the bench *Bank* and more, with meanings and guides in all four languages (#1257). The course is now 5,142 words.
+- **An update's words in steps you've passed are taught too,** a few a day from the day after the update (3, after the course's and your documents' words), and Today's update card says how many (BR-CONTENT-02, #1338). Before, they stayed To-do for anyone past their step.
 - **Rate Sogda on Google Play** in Me, and Play's own rating card once, as you leave your first passed mock exam (#1237).
 - **Translation on the phone** with Hy-MT2, an optional download for phones with at least 3.5 GiB of memory: W1's examples, T5's words outside the course and R1's *Translate* (#154), and suggested meanings for a word outside the course in D2 and R2, never filled in for you (#1233). *Add as my word* brings the sentence and the document's title (#1300). Timed on a Galaxy S24: two sentences in about 5 s.
 
@@ -23,7 +24,8 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
   - a word's level is its lowest reading's, and readings that share a spelling say their step and meaning (#1294);
   - an ambiguous word is classed as it's drawn (#1310) and wears a «?» until you choose (#1333);
   - a split verb's particle is never «outside the course», and a letter's salutation isn't part of its first sentence (#1297);
-  - the check and the «?» stay on their word's line, and a screen reader doesn't stop on bare spaces (#1339, #1344).
+  - the check and the «?» stay on their word's line, and a screen reader doesn't stop on bare spaces (#1339, #1344), while the plain text around known words keeps its spaces (#1361);
+  - at large text the bulk bar comes after the text, so the letter shows when it opens (#1353).
 - **D2's notes:**
   - the switch reads once (#1309), and so do Backlog's pause switch (#1340) and D1's privacy note, after the choices (#1343);
   - the bulk toast says what happened: all today, some, none, or waiting (#1311);
@@ -33,9 +35,12 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
   - a share during a running mock exam says it was held (#1282);
   - a share while a sheet is open lands on top (#1317).
 - A failed model download can be deleted in Voice & translation, and leaves no part-files behind (#1265).
+- **Opening Sogda just after midnight** while its nightly task ran could say it couldn't open your data: the start now waits out the task, and the task closes the data before it stops (#1356).
+- A tap anywhere on Backlog's pause row flips it, as Settings' rows do (#1359).
+- A sheet's scrim says «Dismiss» in the app's language to a screen reader, not «Scrim» (#1354).
 
 ### Privacy
-- A kept photo loses its metadata (location, camera, time) (BR-DOC-05, #1229), and the picker's and a shared PDF's copies are deleted once read (#1298, #1228).
+- A kept photo loses its metadata (location, camera, time) (BR-DOC-05, #1229), and the picker's, a shared PDF's and shared photos' copies are deleted once read (#1298, #1228, #1332).
 - A shared file is taken only as another app's content, never a path to Sogda's own files (#1228).
 - ML Kit's usage metrics are never sent (BR-PRIV-01): its DataTransport backend is removed from the app.
 
