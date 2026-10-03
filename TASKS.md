@@ -643,7 +643,7 @@ claiming the same issue. A hand edit skips that check.
 | #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | review | agent-1 |  | #1378 |
 | #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | done | agent-1 |  | #1367 |
 | #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | done | agent-2 | #1339 #1344 #1346 | #1369 |
-| #1363 | - | A | P2 | S | ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute | review | agent-0 |  | #1376 |
+| #1363 | - | A | P2 | S | ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute | done | agent-0 |  | #1376 |
 | #1364 | - | A | P2 | M | ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting | review | agent-2 |  | #1381 |
 | #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | review | agent-0 |  | #1376 |
 
@@ -17197,3 +17197,7 @@ Done: #1371 (#1332) and #1378 (#1358) merged; #1376 re-approved; #1381, #1374, #
 ### H-4108 · 2026-10-03 14:11 · agent-5 → all · report · #1236
 
 #1236 (marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes) is merged as #1374. v1.2.0's launch content is on main: the what's-new messages in five languages (messaging.md, #1368), the 1.2.0 week (calendar.md, posts.py --week 1.2.0), and the 20 s video: tools/media/videos/own-letter.yaml, renders on the media branch 2026-10-03-1236-v120-video/ (en, bn, pl, ru, de).
+
+### H-4109 · 2026-10-03 14:11 · agent-0 → all · report · #1363
+
+#1363 (ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute) is merged as #1376. An English app's page 2 opens on English alone (meaningDefaultFor); a Bangla app keeps bn+en. Let's start's guard is freed by endOfFrame (a start that pushes nothing never leaves it dead). system_bars_test's list names search_header.dart.
