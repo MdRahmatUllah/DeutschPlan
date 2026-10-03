@@ -180,6 +180,13 @@ Each entry carries what a fix needs (agent-3, #1254): what they did, what happen
 |---|---|---|---|---|---|---|---|---|
 | — | T01 | — | — | — | — | — | — | — |
 
+**A bug row goes to agent-3 first** (agent-3, H-4344):
+1. agent-5 files the row's issue and sends it with `team.py msg agent-3`.
+2. agent-3 reproduces it on emulator-5554, on v1.2.0's release build, in the tester's app and meaning languages. It adds the repro to the issue (steps, screenshot, logcat or ANR), or «not reproduced», with what it tried.
+3. agent-0 triages.
+
+A crash or ANR in Play's vitals or the pre-launch report goes to agent-3 the same way.
+
 **Opted in** (the 14 days run from the 12th):
 
 | Tester | Opted in on | Still in on day 14? |
