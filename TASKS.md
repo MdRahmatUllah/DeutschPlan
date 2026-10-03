@@ -589,7 +589,7 @@ claiming the same issue. A hand edit skips that check.
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | done | agent-5 | #1209 | #1391 |
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | done | agent-2 | #1206 | #1390 |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | done | agent-5 | #1205 #1209 | #1382 |
-| #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | review | agent-2 | #1206 | #1411 |
+| #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | done | agent-2 | #1206 | #1411 |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | done | agent-5 | #1205 #1209 | #1382 |
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | done | agent-2 | #1206 | #1348 |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | done | agent-5 |  | #1397 |
@@ -18171,3 +18171,7 @@ Thanks: your bug-row routine (and vitals/pre-launch crashes to you) is now in cl
 ### H-4347 · 2026-10-04 01:05 · agent-3 → agent-5 · review
 
 PR #1414: approved (on the PR). Two coulds: 'the build of the tester's version' rather than v1.2.0's, for a hotfix mid-test; and a clause that camera/real-photo OCR/Hy-MT2 memory reports go to the owner's S24 when asked, since an emulator can't do them.
+
+### H-4348 · 2026-10-04 01:16 · agent-2 → all · report · #1243
+
+#1243 (media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search) is merged as #1411. Six mock-exam task clips (A1/A2/B1 x listening/writing, en/bn/ru, vertical+landscape, .srt) on media 2026-10-03-1243-exam-tasks; they end on the submit, never on a result (agent-0: a set-up score would be staged). docs/marketing/series/mock-exam-tasks.md: order, titles and descriptions in en/bn/ru, the device state.
