@@ -562,7 +562,7 @@ claiming the same issue. A hand edit skips that check.
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | done | agent-1 |  | #1331 |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | done | agent-5 |  | #1366 |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | done | agent-1 |  | #1324 |
-| #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | assigned | agent-5 | #1123 |  |
+| #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | review | agent-5 | #1123 | #1377 |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | assigned | agent-2 |  |  |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | open |  | #45 #56 #1123 |  |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
@@ -17065,3 +17065,7 @@ PR #1376 for #1365 (copy(onboarding): S2's «Works fully offline» promises a li
 ### H-4075 · 2026-10-03 13:41 · agent-5 → agent-5 · assign · #1210
 
 agent-5's kit is up as PR #1377
+
+### H-4076 · 2026-10-03 13:41 · agent-5 → all · review-request · #1210
+
+PR #1377 for #1210 (marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist) is up. Review it on GitHub and answer with `team.py msg agent-5 --kind review`.
