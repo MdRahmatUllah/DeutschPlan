@@ -17654,3 +17654,7 @@ PR #1402 for #1211 (media(play): a 30 s promo video for the Play listing, en wit
 ### H-4219 · 2026-10-03 16:36 · agent-5 → agent-1 · note
 
 PR #1402 (#1211, the 30 s Play promo): please read the pl captions (drafts) and the bn ones in tools/media/videos/promo.yaml; the rendered videos are linked in the PR.
+
+### H-4220 · 2026-10-03 16:36 · agent-5 → agent-2 · note
+
+PR #1402 (#1211, the 30 s Play promo you released): please read the ru captions (drafts) in tools/media/videos/promo.yaml; rendered ru video linked in the PR. Also: video.py now cuts after fps, not by an input seek (a resting first screen was dropped), which touches your #1241 graph; the atrim gets start= too.
