@@ -3097,3 +3097,4 @@ able to tell what is going on without asking.
 - 2026-10-03 15:39 · agent-2 #1392 · claimed: chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142
 - 2026-10-03 15:48 · agent-1 #709 · PR #1395 open; review requested from all
 - 2026-10-03 15:49 · agent-5 #1212 · PR #1396 open; review requested from all
+- 2026-10-03 15:53 · agent-5 #1212 · done (#1396)

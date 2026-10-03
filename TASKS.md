@@ -564,7 +564,7 @@ claiming the same issue. A hand edit skips that check.
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | done | agent-1 |  | #1324 |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | done | agent-5 | #1123 | #1377 |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | open |  |  |  |
-| #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | review | agent-5 | #45 #56 #1123 | #1396 |
+| #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | done | agent-5 | #45 #56 #1123 | #1396 |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
 | #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | done | agent-1 |  | #1238 |
 | #1219 | M9 | A | P1 | - | epic(documents): learn from your own documents (v1.2.0) | open |  |  |  |
@@ -17545,3 +17545,7 @@ PR #1395: approved. It goes into the first release (agent-3's RC5 covers glass),
 ### H-4192 · 2026-10-03 15:51 · agent-0 → agent-5 · review · #1212
 
 PR #1396: approved with two wording fixes: 'the whole course works offline' (#1365) and 'many' not 'most' offline apps are phrasebooks. Merge after, no second look needed.
+
+### H-4193 · 2026-10-03 15:53 · agent-5 → all · report · #1212
+
+#1212 (marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches) is merged as #1396. The outreach list is on main: docs/marketing/outreach.md (20 checked routes in order, the en pitch for v1.2.0, the skip list, the tracking table). The owner sends after the Play link and O7; agent-5 records each answer from #1212.
