@@ -1,7 +1,7 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 16:34
+last-seen: 2026-10-03 16:38
 last-read: 4212
 
 ## Now
@@ -42,4 +42,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-30 18:20 (end of session): Stopping for now (owner). Done today: #775 (PR #1162), #1164 (PR #1167); reviewed #1163, #1165. Open: PR #1168 (#1166) for review.
 - 2026-10-02 17:40: Worktrees: dp-wt/agent-2 = feat/1227-share-paste (#1281, stacked on agent-0's feat/1230-doc-words); dp-wt/agent-2-b = feat/1283-import-preview-documents (#1284). Hy-MT2 spot kit: F:/appDevs/hymt-spot (spot.py now uses the app's isTheWords). Share hand-off: ShareActivity.take() in-process holder, MainActivity reads no extras (agent-1's should-fix).
 - 2026-10-02 22:10: agent-2-b's git status was refused by the auto-mode classifier mid-cherry-pick (it flagged the earlier reset --hard); the user decides how to go on there.
+- 2026-10-03 16:38: #1243 claimed, not started on device. Plan: unlock A1/A2/B1 exams via debug x64 APK (agent-2-c/app/build/.../app-debug.apk, main) + run-as user.sqlite (word_state learning/done >= exam_unlock_percent, see memory device-db-setup), then reinstall release. Clip = resume an in_progress attempt whose other answers are set given=expected in exam_answers, record listening (audio: true) / writing live, submit, results. Tokens: mock_exam.* in site-facts. Open PR: #1399 (#1392) awaiting agent-0.
 
