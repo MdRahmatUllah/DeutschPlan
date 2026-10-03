@@ -15,6 +15,10 @@ abstract interface class SharedText {
   /// shared, at most D1's 30, and how many were shared ([of]); null when the
   /// share was none.
   Future<({List<String> pages, int of})?> takeImages();
+
+  /// How many shared photos are still being copied, 0 when none (#1386):
+  /// D1 says so at once, as [takeImages] waits for the copies.
+  Future<int> receiving();
 }
 
 /// Android's `MainActivity`, which keeps what `ShareActivity` passed on. iOS
@@ -39,6 +43,9 @@ class PlatformSharedText implements SharedText {
         ),
         _ => null,
       };
+
+  @override
+  Future<int> receiving() async => await _take('receiving') as int? ?? 0;
 
   static Future<Object?> _take(String method) async {
     try {

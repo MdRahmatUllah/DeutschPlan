@@ -7,7 +7,8 @@ import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/domain/documents/ocr.dart';
 import 'package:sogda/features/documents/doc_import_screen.dart';
 
-import '../features/doc_import_test.dart' show FakeDocuments, FakePhotos;
+import '../features/doc_import_test.dart'
+    show FakeDocuments, FakePhotos, FakeShared;
 import 'golden_harness.dart';
 
 /// D1 · Learn from a document (#1227, #1229): the DocImport,
@@ -63,6 +64,17 @@ void main() {
       await tester.tap(find.text(tester.l10n.docImportFind));
       await tester.pumpAndSettle();
     },
+  );
+
+  // #1386: photos shared, still being copied.
+  goldenTest(
+    'doc_import_receiving',
+    overrides: [
+      sharedTextProvider.overrideWithValue(
+        FakeShared(null, coming: 34, copied: Completer<void>()),
+      ),
+    ],
+    builder: (_) => const DocImportScreen(arrival: '1'),
   );
 
   goldenTest(

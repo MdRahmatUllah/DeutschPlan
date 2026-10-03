@@ -868,6 +868,7 @@
   "docImportPage": "Strona {page}",
   "docImportAddPage": "Dodaj stronę",
   "docImportDone": "Gotowe",
+  "docImportReceiving": "{count, plural, one{Odbieranie {count} zdjęcia…} few{Odbieranie {count} zdjęć…} many{Odbieranie {count} zdjęć…} other{Odbieranie {count} zdjęcia…}}",
   "docImportReadingPage": "Odczyt strony {page} z {count}…",
   "docImportCheckTitle": "Sprawdź tekst",
   "docImportCheckIntro": "Zdjęcie {page} było trudne do odczytania. Popraw zaznaczone słowa i przejdź dalej.",
