@@ -71,12 +71,14 @@ Text and the logo stay inside the safe area. The background, and a screenshot's 
 | Portrait | 1080 × 1350 | feed posts, the tallest a feed shows whole | 6 % all round | Ours |
 | Vertical | 1080 × 1920 | Reels, Stories, TikTok, Shorts | 14 %, 6 %, 35 %, 6 % | [Meta's Reels guide](https://www.facebook.com/business/ads-guide/update/image/instagram-reels): "leave roughly 14 % of the top, 35 % of the bottom and 6 % of each side free" of text and logos, read 2026-10-03. TikTok's own safe-zone article no longer exists, so the same zone serves TikTok and Shorts |
 | Landscape | 1920 × 1080 | YouTube, the website, slides | 6 % all round | Ours |
+| YouTube banner | 2560 × 1440 | the channel's banner (#1240) | 38.3 % top and bottom, 25.9 % sides | [YouTube](https://support.google.com/youtube/answer/10456525): minimum 2048 × 1152, recommended 2560 × 1440, text and logos inside 1235 × 338 at the minimum, read 2026-10-03. We keep that box at 2560 too, so the group survives every crop |
+| Facebook cover | 1640 × 624 | the Page's cover (#1240) | 20 % top and bottom, 25 % sides | Ours: [Meta's page](https://www.facebook.com/help/125379114252045) needs scripts to read, so everything sits in the middle, which both crops keep. The owner checks the crop on upload |
 
 ### Play's feature graphic, from Play's page (read 2026-10-03)
 - **Size and format:** 1024 × 500, JPEG or 24-bit PNG (no alpha).
 - **Placement:** keep the focal point toward the centre. The logo, the app's name, the slogan and the main UI stay out of the cutoff zones.
 - **Background:** not pure white or dark grey, which blend into Play's background. Lagoon doesn't.
-- **Branding:** avoid "prominent branding that is similar to your app icon". Today's graphic (#1200) centres the tiles lockup, which *is* the icon's mark. This is filed as #1323, for whoever owns the graphic to weigh.
+- **Branding:** avoid "prominent branding that is similar to your app icon". The first graphic (#1200) centred the tiles lockup, the icon's own mark. Since #1375 (#1323), it shows the wordmark, the title and the listing's own card, and no tiles.
 
 ## What a template never says
 These are the owner's rules (`developer-agents/agent-5/README.md`):
