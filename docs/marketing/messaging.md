@@ -141,7 +141,7 @@ The story of the update: **learn the German you actually meet, on your phone, pr
 
 What every 1.2.0 message keeps:
 - **Only what ships:** paste a text, share one from another app, choose a PDF, or photograph a letter. Sharing *photos* from another app isn't built yet (#1332), so no post says it.
-- **Private, in the store notes' words:** it reads on the phone, and "nothing leaves your phone". Hy-MT2's translation is an optional download that then works on the phone.
+- **Private, in the store notes' words:** it reads on the phone, and "nothing leaves your phone". Hy-MT2's translation is an optional download, offered on phones with the memory for it, and then works on the phone (#154).
 - **No number for the daily limit:** the learner sets it, so we say "a daily limit of their own".
 - **Synthetic documents only** in every image and video, never a real person's letter.
 
@@ -181,7 +181,7 @@ What every 1.2.0 message keeps:
 - **Proof:**
   1. Paste a text, share one from another app, choose a PDF, or photograph a letter: Sogda reads it on the phone.
   2. The words you pick join your plan with the sentence you met them in.
-  3. Optional: Hy-MT2 translates on the phone, for sentences and for words outside the course.
+  3. Optional, on phones with the memory for it: Hy-MT2 translates on the phone, for sentences and for words outside the course.
 - **Call to action:** update Sogda on Google Play, or install it: sogda.de/en.
 
 ### 5. People in Germany who recommend (de)
