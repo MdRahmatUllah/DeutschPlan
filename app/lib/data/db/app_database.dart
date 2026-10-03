@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:drift/isolate.dart' show DriftRemoteException;
 import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -281,9 +282,20 @@ class AppDatabase extends _$AppDatabase {
 ///   `REFERENCES` clause is decoration.
 /// - **Busy timeout**: a background task (#158) writes on a connection of its
 ///   own, and a write that meets the app's waits for it rather than failing
-///   with "database is locked".
+///   with "database is locked". First (#1356): `journal_mode` reads the file,
+///   and before it there was no wait at all.
 void configureConnection(CommonDatabase db) {
+  db.execute('PRAGMA busy_timeout = 5000');
   db.execute('PRAGMA journal_mode = WAL');
   db.execute('PRAGMA foreign_keys = ON');
-  db.execute('PRAGMA busy_timeout = 5000');
 }
+
+/// Whether [error] is SQLite's "database is locked" (SQLITE_BUSY) or "table
+/// is locked" (SQLITE_LOCKED): another connection holds the file, which a
+/// wait can outlast (#1356). Through drift_flutter's isolate it comes
+/// wrapped.
+bool isDatabaseBusy(Object error) => switch (error) {
+  DriftRemoteException(:final remoteCause) => isDatabaseBusy(remoteCause),
+  SqliteException(:final resultCode) => resultCode == 5 || resultCode == 6,
+  _ => false,
+};

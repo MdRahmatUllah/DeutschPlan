@@ -48,6 +48,16 @@ LearnerSnapshot artboardLearner() => LearnerSnapshot(
   level: 'A2',
 );
 
+/// A learner who knows every word of the course (#1361): D2 draws nearly all
+/// of a text plain, its words joined by plain spaces.
+LearnerSnapshot allKnownLearner() => LearnerSnapshot(
+  status: <String, String>{for (final e in courseEntries()) e.uid: 'done'},
+  everPlanned: const <String>{},
+  mine: const <String>{},
+  activeStepOrder: 12,
+  level: 'C2',
+);
+
 /// The matcher's real run over [text], as D2 receives it.
 DocumentMatch docMatch(String text, [LearnerSnapshot? learner]) =>
     matchText(text, _lemmatiser, _course, learner ?? artboardLearner());
