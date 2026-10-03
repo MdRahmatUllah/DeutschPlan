@@ -1,9 +1,9 @@
 # #1243: format 3, "a mock-exam task in 15 seconds": A1 listening, from A1.1's
 # Mock 1, the real paper sat on emulator-5558. The learner (en, A1.1) has
 # A1.1, A2.1 and B1.1 introduced, so their mocks are open, and the attempt in
-# progress has every other answer given, so the result after the task is the
-# paper's own score (the device state: the PR). Captions are facts' tokens
-# where they state a number.
+# progress has every other answer given (the device state: the PR). The clip
+# ends on the submit, before the result screen: its score would be staged
+# (agent-0 on #1411). Captions are facts' tokens where they state a number.
 #   python tools/team.py device
 #   python tools/media/video.py exam-a1-listening --record
 locales: [en, bn, ru]
@@ -44,7 +44,7 @@ steps:
   - sleep1
   - "at:754,1367"
   - sleep5
-cut: [1.5, 21]
+cut: [1.5, 14.6]
 captions:
   - from: 0
     to: 6.5
@@ -53,14 +53,14 @@ captions:
       bn: "A1 লিসেনিং: শব্দটি শুনে লিখুন"
       ru: "A1, аудирование: послушай слово и напиши, что услышал"
   - from: 6.8
-    to: 13
+    to: 10.4
     text:
       en: "The timer runs, and there's no feedback until the end"
       bn: "টাইমার চলছে, আর শেষ না হওয়া পর্যন্ত কোনো ফিডব্যাক নেই"
       ru: "Таймер идёт, а оценки — только в конце"
-  - from: 13.3
-    to: 19.5
+  - from: 10.7
+    to: 13.1
     text:
-      en: "Then your result, section by section"
+      en: "Then the result, section by section"
       bn: "তারপর ফলাফল, প্রতিটি অংশ আলাদা করে"
       ru: "Потом — результат по каждому разделу"

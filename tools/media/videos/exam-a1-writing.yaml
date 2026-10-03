@@ -1,9 +1,9 @@
 # #1243: format 3, "a mock-exam task in 15 seconds": A1 writing, from A1.1's
 # Mock 2, the real paper sat on emulator-5558. The learner (en, A1.1) has
 # A1.1, A2.1 and B1.1 introduced, so their mocks are open, and the attempt in
-# progress has every other answer given, so the result after the task is the
-# paper's own score (the device state: the PR). Captions are facts' tokens
-# where they state a number.
+# progress has every other answer given (the device state: the PR). The clip
+# ends on the submit, before the result screen: its score would be staged
+# (agent-0 on #1411). Captions are facts' tokens where they state a number.
 #   python tools/team.py device
 #   python tools/media/video.py exam-a1-writing --record
 locales: [en, bn, ru]
@@ -42,7 +42,7 @@ steps:
   - sleep1
   - "at:754,1367"
   - sleep5
-cut: [1.5, 19]
+cut: [1.5, 13.7]
 captions:
   - from: 0
     to: 5.5
@@ -51,14 +51,14 @@ captions:
       bn: "A1 রাইটিং: দেওয়া শব্দগুলো দিয়ে একটি ছোট বার্তা"
       ru: "A1, письмо: короткое сообщение с заданными словами"
   - from: 5.8
-    to: 11
+    to: 9.5
     text:
       en: "The given words light up as you use them: at least {mock_exam.writing_min_words.A1} words"
       bn: "দেওয়া শব্দ লিখলেই জ্বলে ওঠে: অন্তত {mock_exam.writing_min_words.A1}টি শব্দ"
       ru: "Заданные слова загораются, когда ты их используешь: минимум {mock_exam.writing_min_words.A1} слов"
-  - from: 11.3
-    to: 17.5
+  - from: 9.8
+    to: 12.2
     text:
-      en: "Then your result, section by section"
+      en: "Then the result, section by section"
       bn: "তারপর ফলাফল, প্রতিটি অংশ আলাদা করে"
       ru: "Потом — результат по каждому разделу"

@@ -1,6 +1,6 @@
 # Format 3: a mock-exam task, one a week (#1243)
 
-The series `competitors.md` calls format 3: one task from Sogda's mock exam, the timer running, then the result. It goes on Sogda's YouTube channel, as Shorts (vertical) and in a playlist (landscape), on Wednesdays 14:00–16:00 (`calendar.md`).
+The series `competitors.md` calls format 3: one task from Sogda's mock exam, the timer running, up to the submit. It goes on Sogda's YouTube channel, as Shorts (vertical) and in a playlist (landscape), on Wednesdays 14:00–16:00 (`calendar.md`).
 
 **The clips** are on the `media` branch, `2026-10-03-1243-exam-tasks/`. Each is `exam-<level>-<task>-<lang>-<format>.mp4`, with `exam-<level>-<task>-<lang>.srt` beside it:
 - the levels: `a1`, `a2`, `b1`;
@@ -15,12 +15,11 @@ The app on screen is English. The captions are in the clip's language. Post them
 - **The real app** (release build, emulator-5558), one task each:
   - **Listening:** the question's word is played by the phone's German voice, and the answer is typed.
   - **Writing:** the message is finished, and its words light up and the count passes the level's minimum.
-- **Then the submit, and the result screen** with the score by section.
+- **Then the submit.** The clip ends there, before the result screen.
 - **The device state behind them:**
   - The learner is an English one at A1.1 whose A1.1, A2.1 and B1.1 words were marked as learned in the app's database, so those steps' mocks are open (BR-EXAM-01).
   - Each paper was started in the app. Every question but the filmed task was then given its correct answer in the database, and the writing text was written a few words short of the minimum.
-  - So the score shown (83 % for listening, 87 % for writing, with Speaking at 0) is the app's own grading of that paper.
-  - It isn't a learner's result, and no caption or description says it is.
+- **The clips never show a result** (agent-0 on #1411). A result screen reads as someone's result. Its score would come from a paper set up in the database, so it would be staged, even with the screen and the grading real; `calendar.md`'s rule is «never staged». Opening the mocks this way is fine: it shows the exam as it is, and nothing on screen claims progress.
 - **Re-recording:** one command per clip (`python tools/media/video.py exam-a1-listening --record`), on a device in that state.
 - **Captions** are the course's facts as `{tokens}` where they state a number: the writing minimum is `{mock_exam.writing_min_words.A1}` and so on.
 
@@ -47,7 +46,7 @@ The Play link is `<play-link youtube/exam>`, filled when the listing is live (`k
 
 Description (the writing line only on the writing clips):
 
-> One task from Sogda's mock exam for this level: listening or writing, with the timer running, then the result by section. The writing task asks for at least {mock_exam.writing_min_words.A1} words at A1, {mock_exam.writing_min_words.A2} at A2 and {mock_exam.writing_min_words.B1} at B1.
+> One task from Sogda's mock exam for this level: listening or writing, with the timer running, up to the submit. After it, the app gives the result section by section. The writing task asks for at least {mock_exam.writing_min_words.A1} words at A1, {mock_exam.writing_min_words.A2} at A2 and {mock_exam.writing_min_words.B1} at B1.
 >
 > It's a practice task, not an official Goethe or telc paper. Sogda's mock exams test listening, writing and speaking, plus vocabulary and grammar.
 >
@@ -64,7 +63,7 @@ Description (the writing line only on the writing clips):
 | B1 listening | B1 জার্মান লিসেনিং: শব্দটি শুনুন, লিখুন (একটি মক পরীক্ষার টাস্ক) |
 | B1 writing | B1 জার্মান রাইটিং: দেওয়া শব্দ দিয়ে ব্যক্তিগত চিঠি (একটি মক পরীক্ষার টাস্ক) |
 
-> এই লেভেলের জন্য Sogda-র মক পরীক্ষা থেকে একটি টাস্ক: লিসেনিং (শোনা) বা রাইটিং (লেখা), টাইমার চলছে, তারপর প্রতিটি অংশের ফলাফল। রাইটিং টাস্কে A1-এ অন্তত {mock_exam.writing_min_words.A1}টি, A2-তে {mock_exam.writing_min_words.A2}টি আর B1-এ {mock_exam.writing_min_words.B1}টি শব্দ লিখতে হয়।
+> এই লেভেলের জন্য Sogda-র মক পরীক্ষা থেকে একটি টাস্ক: লিসেনিং (শোনা) বা রাইটিং (লেখা), টাইমার চলছে, জমা দেওয়া পর্যন্ত। জমা দেওয়ার পর অ্যাপ প্রতিটি অংশের ফলাফল দেখায়। রাইটিং টাস্কে A1-এ অন্তত {mock_exam.writing_min_words.A1}টি, A2-তে {mock_exam.writing_min_words.A2}টি আর B1-এ {mock_exam.writing_min_words.B1}টি শব্দ লিখতে হয়।
 >
 > এটি অনুশীলনের টাস্ক, Goethe বা telc-এর অফিসিয়াল পরীক্ষা নয়। Sogda-র মক পরীক্ষায় থাকে লিসেনিং, রাইটিং ও স্পিকিং, সঙ্গে শব্দভান্ডার ও ব্যাকরণ।
 >
@@ -81,7 +80,7 @@ Description (the writing line only on the writing clips):
 | B1 listening | Немецкий B1, аудирование: послушай слово и напиши его (задание пробного экзамена) |
 | B1 writing | Немецкий B1, письмо: личное письмо с заданными словами (задание пробного экзамена) |
 
-> Одно задание из пробного экзамена Sogda для этого уровня: аудирование или письмо, с таймером, а потом результат по разделам. В письме нужно написать минимум: A1 — {mock_exam.writing_min_words.A1}, A2 — {mock_exam.writing_min_words.A2}, B1 — {mock_exam.writing_min_words.B1} слов.
+> Одно задание из пробного экзамена Sogda для этого уровня: аудирование или письмо, с таймером, до отправки. После неё приложение показывает результат по разделам. В письме нужно написать минимум: A1 — {mock_exam.writing_min_words.A1}, A2 — {mock_exam.writing_min_words.A2}, B1 — {mock_exam.writing_min_words.B1} слов.
 >
 > Это тренировочное задание, а не официальный экзамен Goethe или telc. Пробные экзамены Sogda проверяют аудирование, письмо и говорение, а также лексику и грамматику.
 >
