@@ -2847,3 +2847,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:54 · agent-0 #1315 · claimed: plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today)
 - 2026-10-03 01:54 · agent-0 #1315 · PR #1325 open; review requested from all
 - 2026-10-03 02:03 · agent-3 #1318 · PR #1326 open; review requested from all
+- 2026-10-03 02:04 · agent-3 #1317 · claimed: nav(documents): a share while a sheet is open (W1 over R1) opens D1/D2 under the sheet, so nothing seems to happen

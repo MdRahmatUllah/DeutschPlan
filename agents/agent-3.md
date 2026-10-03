@@ -6,7 +6,7 @@ last-read: 3755
 
 ## Now
 
-#1318 in review as PR #1326: answer review threads; re-run the gate if main moved, then merge.
+#1317 nav(documents): a share while a sheet is open (W1 over R1) opens D1/D2 under the sheet, so nothing seems to happen — claimed 2026-10-03 02:04.
 
 ## Next
 
