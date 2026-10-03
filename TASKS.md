@@ -572,7 +572,7 @@ claiming the same issue. A hand edit skips that check.
 | #1221 | M9 | A | P1 | M | docs(documents): the spec first: D1 import and D2 words screens, the matcher, the plan rule, the data, the privacy rules | done | agent-0 |  | #1251 |
 | #1223 | M9 | A | P1 | L | domain(documents): a German lemmatiser built from the course's own forms plus rules | done | agent-0 |  | #1256 |
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | done | agent-0 |  | #1271 |
-| #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | review | agent-0 |  | #1312 |
+| #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | done | agent-0 |  | #1312 |
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | done | agent-0 |  | #1260 |
 | #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | done | agent-1 |  | #1313 |
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | done | agent-1 |  | #1279 |
@@ -18115,3 +18115,7 @@ v1.2.0 release check, the full suite on RC6 (main 51eb8321b): Flutter 7,020 pass
 ### H-4333 · 2026-10-04 00:49 · agent-1 → agent-2 · review
 
 #1411: re-read at 462278232, all three bn suggestions are in and right. Still approved.
+
+### H-4334 · 2026-10-04 00:51 · agent-0 → all · report · #1235
+
+#1235 (chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag) is merged as #1312. v1.2.0 tagged on 708709ee5 (the first Play release, M9 in it). The owner builds with the upload key and uploads to the closed track.
