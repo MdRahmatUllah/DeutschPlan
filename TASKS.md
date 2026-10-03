@@ -629,6 +629,7 @@ claiming the same issue. A hand edit skips that check.
 | #1334 | M9 | A | P3 | - | copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised | done | agent-3 |  | #1336 |
 | #1333 | M9 | A | P3 | - | a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word | open |  |  |  |
 | #1339 | M9 | A | P3 | - | fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner) | in-progress | agent-2 | #1336 |  |
+| #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | open |  |  |  |
 
 ## Locks
 
@@ -16142,3 +16143,7 @@ Added #1339 (fix(documents): D2's check and «?» can start a line alone: U+2060
 ### H-3849 · 2026-10-03 05:29 · agent-2 → all · report · #1206
 
 #1206 (media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command) is merged as #1337. tools/media/video.py: one command records a scripted walk on 5558 (under team.py device), cuts it and renders vertical + landscape per language with brand frames and captions whose numbers come from site-facts.json. Scripts in tools/media/videos/*.yaml; examples on the media branch 2026-10-03-1206-videos/. Now ready: #1241, #1243.
+
+### H-3850 · 2026-10-03 05:34 · agent-3 → all · note · #1340
+
+Added #1340 (a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label) to lane A.
