@@ -14,7 +14,7 @@
 | **App access** | **All functionality is available without any special access.** There's no login or account. A download (the voice, the translator) is offered in the app and needs no credentials | `release.md` (*Data safety*: «There is no account») |
 | **Ads** | **No, my app does not contain ads** | `release.md` (*Data safety*: «no ads») |
 | **Content rating** | The IARC questionnaire, below | the course, checked on 2026-10-03 |
-| **Target audience and content** | **owner**, below | — |
+| **Target audience and content** | 13–15, 16–17 and 18 and over, **decided** (the owner, 2026-10-03), below | — |
 | **News apps** | **No** | — |
 | **Health apps** | **My app does not have any health features** | — |
 | **Government apps** | **No** | — |
@@ -52,7 +52,7 @@ Why that's true, and what agent-3 checks on the release build:
 
 ### Content rating (IARC)
 
-- **Email:** the address IARC writes to (**owner**).
+- **Email:** the address on sogda.de's Impressum, **decided** (the owner, 2026-10-03).
 - **Category:** **Reference, News, or Educational**.
 - **The answers:**
 
@@ -61,16 +61,16 @@ Why that's true, and what agent-3 checks on the release build:
 | Violence, blood, fear | **No** | No depiction. *Krieg* is a vocabulary word with history sentences («Nie wieder Krieg.») |
 | Sexuality, nudity | **No** | None |
 | Language (profanity, crude humour) | **No** | None of the course's {totals.words} words is a swear word |
-| Controlled substances | **owner**: answer **references, not encouraged** | Alcohol and tobacco appear only as everyday words in neutral sentences («Ich trinke nie Alkohol.», «Hier darf man nicht rauchen.», «Bayern ist bekannt für Bier.»). No drugs, and nothing shows use positively. IARC asks about references, so the honest answer is yes to a reference and no to use or encouragement. Expect a low age rating either way |
+| Controlled substances | **References, not encouraged**, **decided** (the owner, 2026-10-03) | Alcohol and tobacco appear only as everyday words in neutral sentences («Ich trinke nie Alkohol.», «Hier darf man nicht rauchen.», «Bayern ist bekannt für Bier.»). No drugs, and nothing shows use positively. IARC asks about references, so the honest answer is yes to a reference and no to use or encouragement. Expect a low age rating either way |
 | Gambling, simulated gambling | **No** | None |
 | Users interact or share content | **No** | There's no chat, no profiles and no sharing between learners. Documents stay on the phone |
 | Shares the user's location | **No** | No location permission |
 | Digital purchases | **No** | None |
 | Unrestricted internet or a web browser | **No** (agent-3 agrees; owner's to change) | Web look-ups open in a Chrome Custom Tab, the phone's own browser over the app, only on a tap and only at the dictionary's page. Sogda has no browser or WebView of its own |
 
-### Target audience and content (**owner**)
+### Target audience and content
 
-- **Age groups.** **Recommendation:** 13–15, 16–17 and 18 and over. The audiences include school learners (pl, `messaging.md`) as well as adults. Leave out every group under 13: including one puts the app under the Families policy (teacher-approved rules, a separate review), which a course for teens and adults doesn't need.
+- **Age groups:** 13–15, 16–17 and 18 and over, **decided** (the owner, 2026-10-03). The audiences include school learners (pl, `messaging.md`) as well as adults. Leave out every group under 13: including one puts the app under the Families policy (teacher-approved rules, a separate review), which a course for teens and adults doesn't need.
 - **Could the store listing unintentionally appeal to children?** **No.** It's a German course for exams, visas and work, with real screens and no mascots (`store-listing.md`).
 
 ## 2. The store listing (Grow → Store presence)
@@ -92,16 +92,16 @@ Why that's true, and what agent-3 checks on the release build:
 
 **Store settings:**
 - **App or game:** **App**; **category:** **Education**.
-- **Tags:** up to five from Play's list (**owner**). Recommendation: Language learning, then Education.
+- **Tags:** Language learning and Education, **decided** (the owner, 2026-10-03).
 - **Contact details:**
-  - **email (required, public): owner.** Use the address on sogda.de's Impressum, so one address answers both;
+  - **email (required, public):** the address on sogda.de's Impressum, so one address answers both, **decided** (the owner, 2026-10-03);
   - **website:** `https://sogda.de` (`store-listing.md`, *Website and icon*);
   - **phone:** optional, **owner**. Recommendation: leave it empty.
 
 ## 3. Pricing and distribution
 
 - **Price:** **Free** (a Console setting). No purchases, no ads. A free app can never become paid; that's fine, as there are no plans to charge. Marketing copy still never says "free" (`plan.md`).
-- **Countries and regions:** **owner**. Recommendation: every country Play offers. The audiences are in Bangladesh, Germany, Poland and Ukraine, Russian speakers in many countries, and English learners anywhere (`messaging.md`). The same list goes on the closed track and on Production.
+- **Countries and regions:** every country Play offers, **decided** (the owner, 2026-10-03). The audiences are in Bangladesh, Germany, Poland and Ukraine, Russian speakers in many countries, and English learners anywhere (`messaging.md`). The same list goes on the closed track and on Production.
 - **Declarations:** the content guidelines and US export laws checkboxes.
 
 ## 4. Release
@@ -117,12 +117,14 @@ Why that's true, and what agent-3 checks on the release build:
 3. **The pre-launch report:** Play runs it on every upload to a test track. Read it before Production: crashes, accessibility, and screenshots on real devices. agent-3 files anything it finds.
 4. **Apply for production:** after 14 days with 12 testers opted in. The questionnaire's drafts are in `closed-test.md`.
 5. **Production:** the same bundle (or a fix build), the same notes, the countries from §3.
-   - **Rollout: owner.** Recommendation: 100 %, since the launch posts send people straight to the listing (`calendar.md`, L).
+   - **Rollout:** 100 %, **decided** (the owner, 2026-10-03), since the launch posts send people straight to the listing (`calendar.md`, L).
    - **Managed publishing** isn't offered on a first release.
 
 ## 5. The owner's decisions, in one place
 
-| # | Decision | Recommendation |
+All six decided on 2026-10-03 as recommended (relayed by agent-0, H-4287). Still open: the optional phone number (§2).
+
+| # | Decision | Decided |
 |---|---|---|
 | 1 | The public contact email (Store settings, IARC) | sogda.de's Impressum address |
 | 2 | Target age groups | 13–15, 16–17, 18 and over |
