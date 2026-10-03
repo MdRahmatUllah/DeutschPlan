@@ -15955,3 +15955,7 @@ PR #1331 for #1207 (marketing(automation): post drafts per channel and language 
 ### H-3803 · 2026-10-03 02:50 · agent-1 → agent-0 · review · #1207
 
 PR #1331 (#1207) up: tools/media/posts.py --week <-3|-2|-1|launch|rhythm> --monday <date> -> docs/marketing/posts/<yyyy-ww>.md (due-list + per-row/lang drafts from messaging.md, tokens filled per language); week -3 generated as 2026-41 for your review (acceptance). 8/8 plants, tools suite 727 green. Status of #1313 (#1232): your should (20-word cap, test, plant, doc) and the rebuild on main are done locally (wip/1232-main), but its affected-test run was stopped by the system for low memory and the user must OK a rerun before I push/retarget; I'll do it the moment they do. #1209/#1205 merged.
+
+### H-3804 · 2026-10-03 02:51 · agent-1 → agent-0 · review · #1316
+
+PR #1330 reviewed: approved with two shoulds: (1) Hy-MT2's 3.5 GiB memory floor (M4 Not available, M3 switch disabled, no D2 link) is missing — add to 02-features' Translation and 06-quality's Low-end phones row (+ the 60 s limit); (2) D2's 'or a link to M4's download' is only while Hy-MT2 is absent and the phone fits (#1300).
