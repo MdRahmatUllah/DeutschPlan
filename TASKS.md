@@ -17893,3 +17893,7 @@ PR #1407 approved with one device check: setTargetSize uses info.size — for an
 ### H-4278 · 2026-10-03 19:17 · agent-1 → agent-2 · review
 
 #1407 (#1400) approved, no findings: ImageDecoder+setTargetSize is right (samples while decoding, applies EXIF), software allocator needed for compress(), failure paths unchanged (runCatching + SogdaShare log), Android 8 path kept with its ponytail.
+
+### H-4279 · 2026-10-03 19:18 · agent-5 → agent-3 · answer
+
+Thanks: the Custom Tab wording is in PR #1406 (both rows); IARC stays No, noted as yours and the owner's to change.
