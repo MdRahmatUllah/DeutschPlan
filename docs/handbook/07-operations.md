@@ -268,8 +268,9 @@ model changes only with an app update ([`model-manager.md`](../04-screens/model-
   Hy-MT2 arrives with v1.2.0, whose store notes say so. A native reader checks the
   Bangla before the first upload.
 - **Screenshots.** `docs/05-dev-guide/store/phone-light`, `phone-dark`,
-  `tablet-light` and `tablet-dark`, six each (Today, a card's front and back,
-  the course, a step, word detail), from the release x86_64 APK on
+  `tablet-light` and `tablet-dark`, eight each (Today, a card's front and back,
+  the course, a step, word detail, and since 1.2.0 a document's words and
+  a word's card from it, #1307), from the release x86_64 APK on
   `emulator-5558`: phone 1080 × 2160, tablet 1600 × 2560, Android's demo-mode
   status bar, RGB PNGs without alpha. Bangla, Polish and Russian each have a
   phone set in their own app language (`bn-`, `pl-` and `ru-phone-light`), and
@@ -361,6 +362,7 @@ From ONBOARDING §12:
 | The PR doesn't show your last push | `gh api repos/MdRahmatUllah/DeutschPlan/pulls/P --jq .head.sha`; close and reopen the PR if GitHub is stuck |
 | `INSTALL_FAILED_INSUFFICIENT_STORAGE` | Use the release x64 APK; `tools/device.py install` trims caches and retries |
 | uiautomator dumps are empty | An ANR dialog: `adb -s emulator-5558 reboot`, then wait for `sys.boot_completed` |
+| `perf.py`: every trace's raster about 10× its baseline, for any build | The emulator process, not the app: a guest reboot doesn't clear it. Under the lock, `adb -s emulator-5558 emu kill`, start `emulator -avd Pixel_9 -port 5558 -no-snapshot-load` again, wait for `sys.boot_completed` (#1319) |
 | `LF will be replaced by CRLF` | Noise from `core.autocrlf=true` |
 | A generated script has broken `\n` or quotes | A bash heredoc mangled it: write the file with an editor |
 | `file_picker` fails with "Could not close incremental caches" | Kept away by `kotlin.incremental=false` in `app/android/gradle.properties` (ADR 20) |

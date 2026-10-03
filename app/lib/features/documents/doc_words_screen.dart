@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/gestures.dart'
     show GestureRecognizer, TapGestureRecognizer;
 import 'package:flutter/rendering.dart' show RenderParagraph;
@@ -633,16 +634,40 @@ class _Paragraph extends StatelessWidget {
         : s;
     TextSpan plain(String s) {
       final shown = fit(s);
-      return TextSpan(text: shown, semanticsLabel: shown == s ? null : s);
+      return TextSpan(
+        text: shown,
+        // #1344: a run with nothing to hear (the space or full stop between
+        // two marked words) has no label, so a screen reader doesn't stop.
+        semanticsLabel: !_heard.hasMatch(s) ? '' : (shown == s ? null : s),
+      );
     }
 
     // Each word's tap, for the long press to find the word under it.
     final byTap = <GestureRecognizer, DocWord>{};
     final spans = <InlineSpan>[];
+    // The My-word chips' places in the text, for the paragraph's borders.
+    final chips = <TextRange>[];
+    var length = 0;
+    void add(InlineSpan span) {
+      spans.add(span);
+      length += span.toPlainText(includeSemanticsLabels: false).length;
+    }
+
+    // The chip's label as SgText draws it: Text merges the default style.
+    TextStyle bold(TextStyle style) =>
+        DefaultTextStyle.of(context).style
+            .merge(style.copyWith(fontVariations: AppFonts.weight(700)));
+    // A space [width] wide at 100 %, unread: the chip's padding and border
+    // inside its outline, and the gap after it, as the artboard's.
+    TextSpan space(double width) => TextSpan(
+      text: '\u00a0',
+      style: TextStyle(fontSize: 0.01, letterSpacing: scaler.scale(width)),
+      semanticsLabel: '',
+    );
     var at = from;
     for (final (start, end, word) in marks) {
       if (start < at) continue;
-      spans.add(plain(text.substring(at, start)));
+      add(plain(text.substring(at, start)));
       final surface = text.substring(start, end);
       final shown = switch (word.docClass) {
         _ when ignored.contains(word.key) => false,
@@ -651,7 +676,7 @@ class _Paragraph extends StatelessWidget {
         DocClass.known => word.mine,
       };
       if (!shown) {
-        spans.add(plain(surface));
+        add(plain(surface));
         at = end;
         continue;
       }
@@ -680,44 +705,39 @@ class _Paragraph extends StatelessWidget {
         // A word of my own: plain, its chip says what it is (the artboard).
         DocClass.mine || DocClass.known => const TextStyle(),
       };
+      // #1339: the chip and the marks are text, held to their word by
+      // no-break spaces and by being letters: SkParagraph may break a line
+      // on either side of any WidgetSpan, a word joiner or not. The word's
+      // label says what they show.
       if (word.mine) {
-        spans.add(
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 4),
-              child: ExcludeSemantics(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                    vertical: 1,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: tokens.color.ink),
-                  ),
-                  child: SgText(
-                    l10n.docWordsLegendMine,
-                    role: SgTextRole.caption,
-                    weight: 700,
-                  ),
-                ),
+        final chip = length;
+        add(space(6));
+        for (final run in SgScript.runs(
+          l10n.docWordsLegendMine.replaceAll(' ', '\u00a0'),
+        )) {
+          add(
+            TextSpan(
+              text: run.$1,
+              style: bold(
+                run.$2
+                    ? SgText.banglaStyleFor(tokens, SgTextRole.caption)
+                    : SgText.styleFor(tokens, SgTextRole.caption),
               ),
+              semanticsLabel: '',
             ),
-          ),
-        );
+          );
+        }
+        add(space(6));
+        chips.add(TextRange(start: chip, end: length));
+        add(space(4));
       }
       // #1333: two readings, asked on the card first; added, it's settled.
       final twoReadings = word.ambiguous && !added;
       final tap = tapOf(word);
       byTap[tap] = word;
-      spans.add(
+      add(
         TextSpan(
-          // A word joiner each side: the chip before, and the check or the
-          // "?" after, stay on the word's line (agent-3, #1294).
-          text:
-              '${word.mine ? '\u2060' : ''}${fit(surface)}'
-              '${added || twoReadings ? '\u2060' : ''}',
+          text: fit(surface),
           style: style,
           recognizer: tap,
           semanticsLabel: twoReadings
@@ -726,22 +746,25 @@ class _Paragraph extends StatelessWidget {
         ),
       );
       if (added || twoReadings) {
-        spans.add(
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: ExcludeSemantics(
-              child: Icon(
-                added ? Icons.check : Icons.help_outline,
-                size: 16,
-                color: tokens.color.ink,
-              ),
+        final icon = added ? Icons.check : Icons.help_outline;
+        add(
+          TextSpan(
+            text: String.fromCharCode(icon.codePoint),
+            style: TextStyle(
+              fontFamily: icon.fontFamily,
+              package: icon.fontPackage,
+              fontSize: 16,
+              // The icon font's box sits on the baseline: at the text's own
+              // line height it would make the line taller.
+              height: 1,
             ),
+            semanticsLabel: '',
           ),
         );
       }
       at = end;
     }
-    spans.add(plain(text.substring(at, to)));
+    add(plain(text.substring(at, to)));
     return GestureDetector(
       // A long press on a new word adds it at once (doc-words.md): a sighted
       // shortcut, so a screen reader hears the words' own taps only.
@@ -750,15 +773,16 @@ class _Paragraph extends StatelessWidget {
         final word = _wordAt(context, details.localPosition, byTap);
         if (word != null) onLongPress(word);
       },
-      // The words' taps and labels sit beside WidgetSpans (the My-word
-      // chip, the check), which SgRuns' TextSpans can't carry; too-wide
-      // words break by breakTooWide above. ponytail: allow-raw-text
-      child: RichText(
-        textScaler: scaler,
+      // The words' taps and labels, and the chips' borders, which SgRuns'
+      // TextSpans can't carry; too-wide words break by breakTooWide above.
+      child: _DocParagraph(
         text: TextSpan(
           style: base.copyWith(color: tokens.color.ink),
           children: spans,
         ),
+        textScaler: scaler,
+        chips: chips,
+        border: tokens.color.ink,
       ),
     );
   }
@@ -787,6 +811,8 @@ class _Paragraph extends StatelessWidget {
     return found;
   }
 
+  static final RegExp _heard = RegExp(r'[\p{L}\p{N}]', unicode: true);
+
   static String _label(
     AppLocalizations l10n,
     DocWord word,
@@ -799,6 +825,95 @@ class _Paragraph extends StatelessWidget {
     DocClass.outside => l10n.docWordsSemOutside(surface),
     DocClass.mine || DocClass.known => l10n.docWordsSemMine(surface),
   };
+}
+
+/// The document's text, laid out as RichText, with a rounded border around
+/// each My-word chip (#1339): the chip is text, so no line ends between it
+/// and its word. ponytail: allow-raw-text (SgRuns' TextSpans can't carry the
+/// words' taps, labels and the chips' outlines; agent-1 on #1346).
+class _DocParagraph extends RichText {
+  _DocParagraph({
+    required super.text,
+    required super.textScaler,
+    required this.chips,
+    required this.border,
+  });
+
+  final List<TextRange> chips;
+  final Color border;
+
+  @override
+  RenderParagraph createRenderObject(BuildContext context) =>
+      _RenderDocParagraph(
+        text,
+        chips,
+        border,
+        textDirection: Directionality.of(context),
+        textScaler: textScaler,
+        locale: Localizations.maybeLocaleOf(context),
+      );
+
+  @override
+  void updateRenderObject(BuildContext context, RenderParagraph renderObject) {
+    super.updateRenderObject(context, renderObject);
+    (renderObject as _RenderDocParagraph)
+      ..chips = chips
+      ..border = border;
+  }
+}
+
+class _RenderDocParagraph extends RenderParagraph {
+  _RenderDocParagraph(
+    super.text,
+    this._chips,
+    this._border, {
+    required super.textDirection,
+    required super.textScaler,
+    required super.locale,
+  });
+
+  List<TextRange> _chips;
+  set chips(List<TextRange> value) {
+    if (listEquals(value, _chips)) return;
+    _chips = value;
+    markNeedsPaint();
+  }
+
+  Color _border;
+  set border(Color value) {
+    if (value == _border) return;
+    _border = value;
+    markNeedsPaint();
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    super.paint(context, offset);
+    final pen = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = _border;
+    for (final chip in _chips) {
+      // One line (its spaces don't break), maybe in two scripts' runs;
+      // as tall as the artboard's chip, a caption line and 2 px each side,
+      // and its outline drawn inside that box.
+      final box = getBoxesForSelection(
+        TextSelection(baseOffset: chip.start, extentOffset: chip.end),
+      ).map((box) => box.toRect()).reduce((a, b) => a.expandToInclude(b));
+      final height = textScaler.scale(20);
+      context.canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: box.center,
+            width: box.width,
+            height: height,
+          ).shift(offset).deflate(0.5),
+          const Radius.circular(6),
+        ),
+        pen,
+      );
+    }
+  }
 }
 
 /// The bulk bar (FR-D2-03), pinned at the foot.

@@ -68,13 +68,13 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 - **Processing** happens in D1.
 - **No new words:** "You know every word in this text" plus the counts, with *Show words I probably know*.
 - **Not German:** a warning from D1, with *Continue anyway*.
-- **Ambiguous words** are marked with a "?" (a small circled one after the word, kept on its line by a word joiner, #1333), and a screen reader hears "fällt, new, A2, two readings". Once a reading is added the word is settled: the check takes the "?"'s place.
+- **Ambiguous words** are marked with a "?" (a small circled one after the word, on the word's line, #1333), and a screen reader hears "fällt, new, A2, two readings". Once a reading is added the word is settled: the check takes the "?"'s place.
 - **A very long text** shows its first 20,000 characters, with a note (BR-DOC-02).
 
 **Interactions & motion.**
 - Tapping a word opens its card.
 - A long press on a new word adds it directly, with haptic feedback: a sighted shortcut, kept out of semantics (a screen reader adds from the card). On a word already added it does nothing.
-- A word's chip and its check stay on the word's line (word joiners).
+- A word's chip and its check or "?" stay on the word's line, at any width and text size, unless the chip and its word together are wider than a line (#1339). They are text, not widgets inside the text, since a line may always break on either side of one of those: the check and the "?" are the icon font's glyphs, and the chip is its label between no-break spaces, its outline drawn around it, the artboard's size. A screen reader doesn't read them: the word's label says what they show.
 - Back from R2 after *Add as my word*, the document is read again, so the word shows as mine.
 - *Add* marks the word "added" with a check. It doesn't animate (#1230): the check needs no motion, so reduce motion has nothing to skip.
 
@@ -83,7 +83,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 - Write: `doc_queue`, `word_contexts`, `word_state` (*Mark known*), and `custom_words` through R2.
 
 **Developer notes.**
-- The text is built lazily, a paragraph per item of a list, so a 20,000-character text (about 3,000 words) never builds at once. Each marked word is its own semantics node, read as "Termin, new, A1", and TalkBack adds its own "Double-tap to activate", once (agent-1's review: a "double tap" in the label would repeat it). `perf.py` measures the long text's first frame (`03-domain/document-matcher.md`, *Tests*).
+- The text is built lazily, a paragraph per item of a list, so a 20,000-character text (about 3,000 words) never builds at once. Each marked word is its own semantics node, read as "Termin, new, A1", and TalkBack adds its own "Double-tap to activate", once (agent-1's review: a "double tap" in the label would repeat it). The plain text between two marked words is a node too, unless it has nothing to hear (a space or a full stop): then it has no label, and a screen reader doesn't stop on it (#1344). `perf.py` measures the long text's first frame (`03-domain/document-matcher.md`, *Tests*).
 - The bulk bar keeps its height at 200 %, with its counts on a second line.
 - Routes and providers are added to `navigation.md` and `state-management.md` with the code.
 
