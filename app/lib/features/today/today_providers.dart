@@ -197,13 +197,18 @@ Future<TodayView> todayView(Ref ref) async {
   // #1280: the document queue's words (BR-PLAN-11) are no step's. Today's
   // are counted apart, and a category is the course's words' alone.
   final fromDocuments = (await queue.docPlannedOn(date)).toSet();
+  // #1338: the update queue's (BR-CONTENT-02) are a passed step's.
+  final notTheStep = <String>{
+    ...fromDocuments,
+    ...await queue.updatePlannedOn(date),
+  };
   List<String> course(List<String> uids, Set<String> documents) => <String>[
     for (final uid in uids)
       if (!documents.contains(uid)) uid,
   ];
   final names = await categoryNames;
   final category = switch (await content.mainCategory(
-    course(plan.newToday, fromDocuments),
+    course(plan.newToday, notTheStep),
   )) {
     final String english => names.of(english),
     null => null,
@@ -234,6 +239,12 @@ Future<TodayView> todayView(Ref ref) async {
               added: update.added.length,
               removed: update.removed.length,
               changed: update.changed.length,
+              queued: update.added
+                  .toSet()
+                  .intersection(
+                    (await queue.updateWaiting(limit: 1 << 20)).toSet(),
+                  )
+                  .length,
             ),
       backlog: backlog.length,
       dailyNew: settings.read(SettingKeys.dailyNew),
@@ -300,8 +311,12 @@ Future<TodayView> todayView(Ref ref) async {
 
   // #96: tomorrow as opening it will make it, without making it.
   final ahead = await engine.previewDay(addDays(date, 1));
-  // Tomorrow's document words are among those still waiting.
-  final waitingDocuments = (await queue.docWaiting(limit: 1 << 20)).toSet();
+  // Tomorrow's queued words (the documents', the update's) are among those
+  // still waiting.
+  final queued = <String>{
+    ...await queue.docWaiting(limit: 1 << 20),
+    ...await queue.updateWaiting(limit: 1 << 20),
+  };
   return build(
     tomorrow: TomorrowPreview(
       revise: ahead.revise.length,
@@ -309,7 +324,7 @@ Future<TodayView> todayView(Ref ref) async {
       grammar: ahead.grammarDue.length,
       estimate: await engine.estimate(ahead, remember: false),
       category: switch (await content.mainCategory(
-        course(ahead.newToday, waitingDocuments),
+        course(ahead.newToday, queued),
       )) {
         final String english => names.of(english),
         null => null,

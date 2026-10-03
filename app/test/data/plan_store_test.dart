@@ -1311,6 +1311,89 @@ ORDER BY w.seq_in_sublevel
     });
   });
 
+  group('BR-CONTENT-02 the update queue (#1338)', () {
+    Future<List<String>> stepWords() async => <String>[
+      for (final row
+          in await db
+              .customSelect(
+                "SELECT uid FROM c.words WHERE sublevel_code = 'A1.1' "
+                "AND kind = 'vocab' ORDER BY seq",
+              )
+              .get())
+        row.read<String>('uid'),
+    ];
+
+    test("a finished step's words still To-do and in no plan wait, in "
+        "teaching order; not one planned, learning or the documents', nor "
+        'in a step left part-way (#1047) or under way', () async {
+      final words = await stepWords();
+      await enroll(completedOn: '2026-02-27');
+      // Ended before v4: no record of how, read as L2 does, part-way.
+      expect(await store.updateWaiting(limit: 10), isEmpty);
+      await db.customStatement('UPDATE enrollments SET left_part_way = 0');
+      // The plan took every word it had; an update brought the last three.
+      await store.addToPlan(
+        '2026-02-20',
+        PlanKind.newWord,
+        words.sublist(0, words.length - 3),
+      );
+      final added = words.sublist(words.length - 3);
+      expect(await store.updateWaiting(limit: 10), added);
+      expect(await store.updateWaiting(limit: 2), added.take(2));
+
+      await wordState(added[0]);
+      await store.queueDocWords(<String>[added[1]], '2026-03-01T09:00:00Z');
+      expect(await store.updateWaiting(limit: 10), <String>[added[2]]);
+      expect(await store.docWaiting(limit: 10), <String>[
+        added[1],
+      ], reason: "the documents' queue keeps its own");
+
+      await db.customStatement('UPDATE enrollments SET left_part_way = 1');
+      expect(
+        await store.updateWaiting(limit: 10),
+        isEmpty,
+        reason: 'left part-way: the learner skipped them',
+      );
+      await db.customStatement(
+        'UPDATE enrollments SET left_part_way = 0, completed_on = NULL',
+      );
+      expect(
+        await store.updateWaiting(limit: 10),
+        isEmpty,
+        reason: 'under way: the course plans them',
+      );
+    });
+
+    test("a day's update words: a finished step's, planned after it "
+        "finished, never the documents' nor the course's", () async {
+      final words = await stepWords();
+      await enroll(completedOn: '2026-02-27');
+      await store.addToPlan('2026-02-20', PlanKind.newWord, <String>[words[0]]);
+      await store.addToPlan(monday, PlanKind.newWord, <String>[
+        words[1],
+        words[2],
+      ]);
+      await store.queueDocWords(<String>[words[2]], '2026-03-01T09:00:00Z');
+      await store.markDocPlanned(monday, <String>[words[2]]);
+      expect(await store.updatePlannedOn(monday), <String>[words[1]]);
+      expect(await store.updatePlannedOn('2026-02-20'), isEmpty);
+    });
+
+    test('the day this phone last installed words', () async {
+      expect(await store.courseUpdatedOn(), isNull);
+      await db.customStatement(
+        "INSERT INTO content_updates (version, added, removed, recorded_at) "
+        "VALUES ('v1', 73, 0, '2026-03-02T09:00:00Z'), "
+        "('v2', 0, 0, '2026-03-05T09:00:00Z')",
+      );
+      expect(
+        await store.courseUpdatedOn(),
+        planDate(DateTime.parse('2026-03-02T09:00:00Z').toLocal()),
+        reason: 'v2 added nothing',
+      );
+    });
+  });
+
   group('BR-PLAN-09 — the measured timings', () {
     // Every rating below is before it.
     const later = '2026-04-01';
