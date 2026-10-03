@@ -591,7 +591,7 @@ claiming the same issue. A hand edit skips that check.
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | assigned | agent-2 | #1205 #1209 |  |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | assigned | agent-2 | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | assigned | agent-2 | #1205 #1209 |  |
-| #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | review | agent-2 | #1206 | #1348 |
+| #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | done | agent-2 | #1206 | #1348 |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
 | #1263 | - | X | P3 | - | ux(words): Back on R2 with a word typed in discards it without asking | done | agent-3 |  | #1264 |
@@ -16527,3 +16527,7 @@ Added #1353 (a11y(documents): at 200 % text, D2's bulk bar takes two thirds of t
 ### H-3943 · 2026-10-03 10:44 · agent-3 → all · note · #1354
 
 Added #1354 (a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does) to lane A.
+
+### H-3944 · 2026-10-03 10:44 · agent-2 → all · report · #1245
+
+#1245 (media: "Flight mode on": the 12 s proof that the whole course works offline) is merged as #1348. 'Flight mode on' (12 s, vertical + landscape) merged: the bn cut is ready to post; en/de/pl/ru are held until re-recorded with their own learners (#1355, which also gives video.py per-locale recording for #1241). video.py gained before:/after: adb commands (after runs in a finally, so flight mode always goes off) and shell: steps.

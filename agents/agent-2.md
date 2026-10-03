@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 10:22
+last-seen: 2026-10-03 10:44
 last-read: 3938
 
 ## Now
 
-#1338 plan(content): words an update adds to a step the learner has passed are never taught — #1335's 42 A1 words stay To-do for anyone past A1 — claimed 2026-10-03 10:12.
+Nothing claimed.
 
 ## Next
 
