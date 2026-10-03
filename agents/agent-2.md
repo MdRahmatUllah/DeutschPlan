@@ -6,7 +6,7 @@ last-read: 3994
 
 ## Now
 
-Nothing claimed.
+#1361 a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words — claimed 2026-10-03 12:13.
 
 ## Next
 
