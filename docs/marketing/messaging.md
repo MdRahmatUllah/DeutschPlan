@@ -140,7 +140,7 @@ Until the app is on Play, every draft says `<play-link>`.
 The story of the update: **learn the German you actually meet, on your phone, private.** The store notes are #1312's *What's new* (`store-listing.md`); the blocks below are for posts (`tools/media/posts.py --week 1.2.0`). Every promise is a *draft* until its native review, and the referrer's campaign is `v1.2.0`.
 
 What every 1.2.0 message keeps:
-- **Only what ships:** paste a text, share one from another app, choose a PDF, or photograph a letter. Sharing *photos* from another app isn't built yet (#1332), so no post says it.
+- **Only what ships:** paste a text; share a text, a PDF or photos from another app (photos since #1332); choose a PDF; or photograph a letter.
 - **Private, in the store notes' words:** it reads on the phone, and "nothing leaves your phone". Hy-MT2's translation is an optional download, offered on phones with the memory for it, and then works on the phone (#154).
 - **No number for the daily limit:** the learner sets it, so we say "a daily limit of their own".
 - **Synthetic documents only** in every image and video, never a real person's letter.
@@ -179,7 +179,7 @@ What every 1.2.0 message keeps:
 
 - **Promise** (*draft*): Learn the German you actually meet: photograph a letter or paste a text, and Sogda marks the words you don't know yet, by level. On your phone, private.
 - **Proof:**
-  1. Paste a text, share one from another app, choose a PDF, or photograph a letter: Sogda reads it on the phone.
+  1. Paste a text, share a text or a photo from another app, choose a PDF, or photograph a letter: Sogda reads it on the phone.
   2. The words you pick join your plan with the sentence you met them in.
   3. Optional, on phones with the memory for it: Hy-MT2 translates on the phone, for sentences and for words outside the course.
 - **Call to action:** update Sogda on Google Play, or install it: sogda.de/en.

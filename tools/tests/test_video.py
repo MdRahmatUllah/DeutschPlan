@@ -169,3 +169,27 @@ def test_an_unknown_take_is_named_not_a_key_error_1372(monkeypatch):
     monkeypatch.setattr(video, "record", lambda *_: pytest.fail("recorded"))
     with pytest.raises(SystemExit, match="has no take xx"):
         video.main(["flight-mode", "--record", "--serial", "emulator-5556", "--takes", "en,xx"])
+
+
+def test_another_emulator_records_only_under_its_board_lock_1236(tmp_path, monkeypatch):
+    # The media lane's emulator-5556 is held with `team.py lock emulator-5556`, not `team.py device`.
+    (tmp_path / "agent-5").mkdir()
+    (tmp_path / "agent-5" / "TASKS.md").write_text(
+        "## Tasks\n\n| # | MS | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |\n"
+        "|---|---|---|---|---|---|---|---|---|---|\n\n"
+        "## Locks\n\n| Resource | Owner | Since | Why |\n|---|---|---|---|\n"
+        "| emulator-5556 | agent-5 | 2026-10-03 13:00 | #1236 |\n| pubspec |  |  |  |\n\n## Handoffs\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("DP_TEAM_ROOT", str(tmp_path))
+    assert video.holds("emulator-5556", "agent-5")
+    assert not video.holds("emulator-5556", "agent-2")
+    assert not video.holds("emulator-5560", "agent-5")
+
+
+def test_the_serial_reaches_the_recording_1236(monkeypatch):
+    seen = {}
+    monkeypatch.setattr(video, "holds", lambda serial, agent: True)
+    monkeypatch.setattr(video, "record", lambda script, serial=None, take=None: seen.setdefault("serial", serial))
+    assert video.main(["own-letter", "--record", "--serial", "emulator-5556"]) == 0
+    assert seen["serial"] == "emulator-5556"
