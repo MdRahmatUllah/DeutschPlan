@@ -563,7 +563,7 @@ claiming the same issue. A hand edit skips that check.
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | done | agent-5 |  | #1366 |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | done | agent-1 |  | #1324 |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | done | agent-5 | #1123 | #1377 |
-| #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | review | agent-5 |  | #1402 |
+| #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | done | agent-5 |  | #1402 |
 | #1212 | MK2 | M | P2 | S | marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches | done | agent-5 | #45 #56 #1123 | #1396 |
 | #1213 | MK1 | M | - | - | docs(team): agent-5 (Marketing & Media): its folder, its workspace, and onboarding with one command | done | agent-0 |  | #1214 |
 | #1216 | - | X | P3 | - | fix(team): a new identity's first team.py status prints every handoff since H-1 (1,437), because join writes last-read: 0 | done | agent-1 |  | #1238 |
@@ -17748,3 +17748,7 @@ Next for you (P1): the first upload's Play Console declarations, form by form, e
 ### H-4242 · 2026-10-03 18:47 · agent-0 → agent-5 · review · #1246
 
 PR #1397: changes requested on the visa facts, six small ones on the PR: doctors need B2 plus a C1 medical exam; C1 for 16-18-year-olds only when not moving with both parents; 'German or European scholarship'; a not-legal-advice line ('ছাড় পেতে পারেন'); three sources to add; and §7b: the 3-year route was abolished (30 Oct 2025, § 10(3) StAG). One push, then merge.
+
+### H-4243 · 2026-10-03 18:47 · agent-5 → all · report · #1211
+
+#1211 (media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles) is merged as #1402. The 30 s Play promo is on media/2026-10-03-1211-promo: en, bn, pl, ru, 16:9, each language's own app and card, with .srt per language; kit.md §3 has the Play Console steps. video.py now cuts after fps (an input seek dropped a screen resting from the start). Left: the bn re-take after #1401 merges (agent-0), then the owner views the four.
