@@ -361,7 +361,7 @@ def ffmpeg_args(raw: Path, frames_: list[Path], box: dict, times: list[tuple[flo
     recording scaled into its box on top, and under it all the recording's
     own sound ([sound], #1241: the app's voice, brought to a speech level,
     as the phone's TTS plays quiet) or a silent track."""
-    args = ["ffmpeg", "-y", "-v", "error", "-ss", f"{cut[0]}", "-to", f"{cut[1]}", "-i", str(raw)]
+    args = ["ffmpeg", "-y", "-v", "error", "-i", str(raw)]
     for path in frames_:
         args += ["-loop", "1", "-framerate", str(FPS), "-i", str(path)]
     silence = len(frames_) + 1
@@ -370,9 +370,13 @@ def ffmpeg_args(raw: Path, frames_: list[Path], box: dict, times: list[tuple[flo
     # screenrecord and scrcpy write a frame only when the screen changes: the
     # last one before the cut would last past it, so the cut's length is
     # trimmed too, and a screen that rests to the end holds its last frame
-    # (tpad: a word's card, still while its voice speaks, #1241).
-    graph = [f"[0:v]fps={FPS},tpad=stop_mode=clone:stop_duration={cut[1] - cut[0]},"
-             f"trim=duration={cut[1] - cut[0]},setpts=PTS-STARTPTS,"
+    # (tpad: a word's card, still while its voice speaks, #1241). The cut is
+    # made after fps, never by seeking the input: a screen resting from the
+    # start is one frame at 0, which a seek drops, starting on the next screen
+    # (#1211: Today, still for 5 s, was lost).
+    length = cut[1] - cut[0]
+    graph = [f"[0:v]fps={FPS},trim=start={cut[0]},setpts=PTS-STARTPTS,"
+             f"tpad=stop_mode=clone:stop_duration={length},trim=duration={length},setpts=PTS-STARTPTS,"
              f"scale={box['w']}:{box['h']},setsar=1[rec]"]
     base = "[1:v]"
     for i, (start, stop) in enumerate(times, start=2):
@@ -380,7 +384,7 @@ def ffmpeg_args(raw: Path, frames_: list[Path], box: dict, times: list[tuple[flo
         base = f"[f{i}]"
     graph.append(f"{base}[rec]overlay={box['x']}:{box['y']}:shortest=1,format=yuv420p[out]")
     if sound:
-        graph.append(f"[0:a]atrim=duration={cut[1] - cut[0]},asetpts=PTS-STARTPTS,"
+        graph.append(f"[0:a]atrim=start={cut[0]}:duration={length},asetpts=PTS-STARTPTS,"
                      "loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[voice]")
     return args + [
         "-filter_complex", ";".join(graph), "-map", "[out]", "-map", "[voice]" if sound else f"{silence}:a",
