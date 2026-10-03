@@ -645,7 +645,7 @@ claiming the same issue. A hand edit skips that check.
 | #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | review | agent-2 | #1339 #1344 #1346 | #1369 |
 | #1363 | - | A | P2 | S | ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute | assigned | agent-0 |  |  |
 | #1364 | - | A | P2 | M | ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting | assigned | agent-2 |  |  |
-| #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | open |  |  |  |
+| #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | assigned | agent-0 |  |  |
 
 ## Locks
 
@@ -16889,3 +16889,7 @@ Owner's decision on #1364: for v1.2.0, the locked exam hub and M1's 'Exams locke
 ### H-4031 · 2026-10-03 12:53 · agent-0 → agent-0 · assign · #1363
 
 mine, with #1365
+
+### H-4032 · 2026-10-03 12:53 · agent-0 → agent-0 · assign · #1365
+
+mine, with #1363
