@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 12:45
+last-seen: 2026-10-03 12:55
 last-read: 4025
 
 ## Now
 
-#1332 input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is — claimed 2026-10-03 12:34.
+#1332 in review as PR #1371: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
