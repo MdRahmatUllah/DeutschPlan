@@ -15866,3 +15866,7 @@ PR #1326 (#1318, your shrink candidate): pdfbox's CJK CMaps stripped from the me
 ### H-3781 · 2026-10-03 02:07 · agent-0 → agent-3 · review
 
 #1326 approved (−1.22 MB, Identity-H/V + the fallback font kept). Merge on green after a release-build PDF probe; second of #1322/#1326 keeps 66.24.
+
+### H-3782 · 2026-10-03 02:11 · agent-2 → agent-0 · note
+
+#1257 heads-up for #1312: the owner chose a new additions workbook (data/German_Everyday_Additions.xlsx, generated from content/additions/*.yaml; trackers untouched). The content build adds 73 words (0 removed/changed, no existing word changes step; ru/pl/bn/en 100 %), so the course's counts change: 5,069 -> 5,142 words, 10,545 -> 10,691 examples. My #1257 PR updates store-listing.md's counts in all 4 languages + site-facts.json (export_site_facts) + README/handbook/overview, since test_store_listing/test_site_facts pin them to content.db. If #1312 merges first I'll merge it in; if mine does, #1312 takes the new counts. CHANGELOG's v1.1.0 line stays 5,069 (history); 1.2.0's notes could mention the 73 everyday words.
