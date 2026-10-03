@@ -34,6 +34,7 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
   - the bulk toast says what happened: all today, some, none, or waiting (#1311);
   - a word already in today's plan says today (#1315);
   - the cap note says why words wait at a cap of 0 or under the backlog pause (#1334), and counts the words already queued ahead (#1341).
+- **The same page twice** (two photos to be safe, or a page shared twice) is read once, never emptied to nothing, and a statement's next page with other amounts is kept (#1385).
 - **Shares:**
   - a share during a running mock exam says it was held (#1282);
   - a share while a sheet is open lands on top (#1317).
