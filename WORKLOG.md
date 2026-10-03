@@ -2973,3 +2973,4 @@ able to tell what is going on without asking.
 - 2026-10-03 11:21 · agent-0 #1236 · assigned to agent-0
 - 2026-10-03 11:21 · agent-0 #1354 · claimed: a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does
 - 2026-10-03 11:22 · agent-1 #1353 · claimed: a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height
+- 2026-10-03 11:32 · agent-3 #1356 · added to the board, lane A
