@@ -10,7 +10,7 @@ last-read: 3834
 
 ## Next
 
-#1257 (owner: add the everyday words) now; #1319 waits for a normally rendering 5558 (tonight it rasters ~8x slow for any build); then #1307, #1206, #1245.
+#1335/#1337 in review; #1245: re-record flight-mode on 5558's next study day (prepare 3 left, app on Today in background), render 5 langs × 2 formats, PR after #1337; #1307 after #1335 merges; #1319 on a normal-render night.
 
 ## Memory
 
