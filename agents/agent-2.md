@@ -6,7 +6,7 @@ last-read: 4181
 
 ## Now
 
-Nothing claimed.
+#1392 chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 — claimed 2026-10-03 15:39.
 
 ## Next
 

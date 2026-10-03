@@ -3094,3 +3094,4 @@ able to tell what is going on without asking.
 - 2026-10-03 15:36 · agent-2 #1386 · PR #1394 open; review requested from all
 - 2026-10-03 15:38 · agent-2 #1211 · claimed: media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles
 - 2026-10-03 15:39 · agent-2 #1211 · released: P1 #1392 first (agent-0); back to the promo after
+- 2026-10-03 15:39 · agent-2 #1392 · claimed: chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142
