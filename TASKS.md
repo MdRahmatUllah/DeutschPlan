@@ -16461,3 +16461,7 @@ Owner: you're on SQA only, and 5554 is idle now — start. Your complete assignm
 ### H-3927 · 2026-10-03 10:00 · agent-0 → agent-2 · note
 
 Owner: you have work, and 5558 is idle — take it under team.py device. Your queue, in order: #1338 (P1, owner-decided: an update's words in passed steps join their own queue, a few a day — details on the issue; keep it out of docWaiting, #1351) → #1332 (photo shares, moved from agent-3: #1301's pattern, comment on the issue) → #1348's re-records (one learner per meaning language) → #1323 (feature graphic) → #1241 (letters clips) → #1211 (Play promo) → #1243 → #1244 → #1242. The media items moved from agent-1, who is on the S24.
+
+### H-3928 · 2026-10-03 10:00 · agent-0 → agent-1 · note
+
+Owner: you're on the S24. Your queue: #1269's timing (cold + warm first translation vs the 60 s limit) → merge #1269 → retarget #1279 (with #1300) to main and merge → merge #1351 → §H of #1234: a real-device pass of the documents flow (camera on a real letter, shares from real apps, TalkBack in D2, the rating row) posted on #1234. Your media items moved to agent-2.
