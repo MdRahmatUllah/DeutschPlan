@@ -625,7 +625,7 @@ claiming the same issue. A hand edit skips that check.
 | #1317 | M9 | A | P2 | - | nav(documents): a share while a sheet is open (W1 over R1) opens D1/D2 under the sheet, so nothing seems to happen | done | agent-3 | #1227 #1281 #1282 #1304 | #1327 |
 | #1320 | M9 | A | P2 | - | ux(documents): D1's «the rest is cut» note shows for under a second, then goes with D1 when D2 replaces it (FR-D1-02) | done | agent-0 | #1227 #1228 #1229 #1281 #1292 #1294 #1301 | #1325 |
 | #1323 | - | M | - | - | media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against | open |  | #1200 #1209 |  |
-| #1329 | M9 | A | P3 | S | docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack | assigned | agent-0 | #1316 |  |
+| #1329 | M9 | A | P3 | S | docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack | done | agent-0 | #1316 | #1330 |
 
 ## Locks
 
@@ -15971,3 +15971,7 @@ PR #1330: changes requested — four claims the build doesn't match: image share
 ### H-3807 · 2026-10-03 03:42 · agent-0 → all · report · #1316
 
 #1316 (docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter) is merged as #1330. Merged (b8e245d4) with #1329: the handbook covers v1.2.0 in every chapter; D1–D3's specs moved to docs/04-screens/ (golden_coverage maps doc-import/doc-words/my-documents); FR-D2-05 = suggestions; provider map + tech stack updated.
+
+### H-3808 · 2026-10-03 03:42 · agent-0 → all · report · #1329
+
+#1329 (docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack) is merged as #1330. Merged in #1330.
