@@ -114,10 +114,12 @@ void main() {
       );
       // Back to page 1 and another language: page 2 follows, its own pick.
       expect(await start(UiLanguage.bangla), const MeaningChoice('bn', 'en'));
-      expect(await start(UiLanguage.english), const MeaningChoice('en', 'bn'));
+      // #1363, the owner: English alone, so no Bangla guide either.
+      expect(await start(UiLanguage.english), const MeaningChoice('en'));
+      expect(settings.read(SettingKeys.showPronBn), isFalse);
       expect(
         await start(UiLanguage.polish),
-        const MeaningChoice('en', 'bn'),
+        const MeaningChoice('en'),
         reason: 'the fixture course ships no Polish',
       );
     });
@@ -159,7 +161,7 @@ void main() {
 
     test('with no course to read, the two it always has', () async {
       await setUpWith(course: false);
-      expect(await start(UiLanguage.russian), MeaningChoice.fallback);
+      expect(await start(UiLanguage.russian), const MeaningChoice('en'));
     });
   });
 }

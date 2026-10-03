@@ -66,8 +66,10 @@ Future<void> writeMeaningChoice(
 
 /// #1156, the owner: the meaning languages setup's page 2 opens on, from
 /// the app language page 1 set. Russian or Polish alone, where the course
-/// ships it ([shipped], its languages' codes); English then Bangla for an
-/// English app, Bangla then English for a Bangla one.
+/// ships it ([shipped], its languages' codes); Bangla then English for a
+/// Bangla app; English alone otherwise (the owner, #1363: an English speaker
+/// who keeps the defaults never meets Bangla, and a Bangla speaker in an
+/// English app picks it on the same page).
 MeaningChoice meaningDefaultFor(
   UiLanguage ui,
   Set<String> shipped,
@@ -75,7 +77,7 @@ MeaningChoice meaningDefaultFor(
   UiLanguage.russian when shipped.contains('ru') => const MeaningChoice('ru'),
   UiLanguage.polish when shipped.contains('pl') => const MeaningChoice('pl'),
   UiLanguage.bangla => const MeaningChoice('bn', 'en'),
-  _ => MeaningChoice.fallback,
+  _ => const MeaningChoice('en'),
 };
 
 /// The setting `meaning_primary` and `meaning_secondary` replaced (#1081),
