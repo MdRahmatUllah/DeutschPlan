@@ -511,41 +511,51 @@ class _PauseRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.tokens;
     final l10n = AppLocalizations.of(context);
+    final on = ref.watch(backlogPauseProvider);
+    void set(bool on) =>
+        unawaited(ref.read(backlogPauseProvider.notifier).set(on: on));
     // The row is the switch, as a settings row is (#345), and a node of its
     // own (#912): the toggle merged up into the card, over *Study all*.
     return Semantics(
       container: true,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // The switch says the title, as M3's rows do (#1340).
-                ExcludeSemantics(
-                  child: SgText(
-                    l10n.backlogPause,
-                    role: SgTextRole.body,
-                    weight: 500,
+      // A tap anywhere on it flips it, as M3's rows (#1359). The switch is
+      // the Tab stop (#1021), and a screen reader has it.
+      // ponytail: allow-bare-tap
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        excludeFromSemantics: true,
+        onTap: () => set(!on),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  // The switch says the title, as M3's rows do (#1340).
+                  ExcludeSemantics(
+                    child: SgText(
+                      l10n.backlogPause,
+                      role: SgTextRole.body,
+                      weight: 500,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 1),
-                SgText(
-                  l10n.backlogPauseNote,
-                  role: SgTextRole.caption,
-                  color: tokens.color.textSecondary,
-                ),
-              ],
+                  const SizedBox(height: 1),
+                  SgText(
+                    l10n.backlogPauseNote,
+                    role: SgTextRole.caption,
+                    color: tokens.color.textSecondary,
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          AdaptiveSwitch(
-            value: ref.watch(backlogPauseProvider),
-            semanticLabel: l10n.backlogPauseLabel,
-            onChanged: (on) =>
-                unawaited(ref.read(backlogPauseProvider.notifier).set(on: on)),
-          ),
-        ],
+            const SizedBox(width: 12),
+            AdaptiveSwitch(
+              value: on,
+              semanticLabel: l10n.backlogPauseLabel,
+              onChanged: set,
+            ),
+          ],
+        ),
       ),
     );
   }

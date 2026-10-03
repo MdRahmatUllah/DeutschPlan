@@ -112,6 +112,29 @@ class DryRunPlanStore implements PlanStore {
   @override
   Future<void> queueDocWords(List<String> uids, String at) async {}
 
+  /// The update queue's words this run was given (#1338): the ones it then
+  /// planned are its picks.
+  final Set<String> _updateOffered = <String>{};
+
+  @override
+  Future<List<String>> updateWaiting({required int limit}) async {
+    final taken = _addedNew.toSet();
+    final words = await _inner.updateWaiting(limit: limit + taken.length);
+    final offered = words.where((uid) => !taken.contains(uid)).take(limit);
+    _updateOffered.addAll(offered);
+    return offered.toList();
+  }
+
+  @override
+  Future<List<String>> updatePlannedOn(PlanDate date) async => <String>[
+    ...await _inner.updatePlannedOn(date),
+    for (final uid in _added[(date, PlanKind.newWord)] ?? const <String>[])
+      if (_updateOffered.contains(uid)) uid,
+  ];
+
+  @override
+  Future<PlanDate?> courseUpdatedOn() => _inner.courseUpdatedOn();
+
   @override
   Future<List<String>> backlogBefore(PlanDate today) async {
     // A row this run planned is never done, so any before [today] is open.
