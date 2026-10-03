@@ -30,11 +30,12 @@ def with_(**change) -> dict:
 
 
 def test_the_committed_scripts_load_and_fill_their_facts():
-    for name in ("study-day", "bangla-guide"):
+    names = [path.stem for path in video.SCRIPTS.glob("*.yaml") if path != video.LEARNERS]
+    assert {"study-day", "bangla-guide", "promo"} <= set(names)
+    for name in names:
         script = video.load(name)
-        assert {"en", "bn"} <= set(script["locales"])
         for lang in script["locales"]:
-            assert all(text for _, _, text in video.captions(script, lang))
+            assert all(text for _, _, text in video.captions(script, lang)), f"{name} ({lang})"
 
 
 def test_a_caption_takes_its_numbers_from_the_facts_each_languages_way():
@@ -88,7 +89,16 @@ def test_the_graph_switches_the_frames_on_the_captions_and_trims_to_the_cut(tmp_
     assert "overlay=enable='between(t,4.5,10)'" in graph
     assert graph.endswith("overlay=210:500:shortest=1,format=yuv420p[out]")
     assert args[args.index("-map", args.index("[out]")) + 1] == "4:a", "the silent track"
-    assert ["-ss", "1", "-to", "11"] == args[4:8]
+    assert "[0:v]fps=30,trim=start=1,setpts=PTS-STARTPTS," in graph
+
+
+def test_a_screen_resting_from_the_start_is_cut_after_fps_never_by_a_seek_1211(tmp_path):
+    # A seek drops the first screen's only frame (pts 0) and starts on the next.
+    args = video.ffmpeg_args(tmp_path / "raw.mp4", [tmp_path / "0.png"], {"x": 0, "y": 0, "w": 9, "h": 9},
+                             [], [1.5, 31.5], tmp_path / "out.mp4")
+    assert "-ss" not in args and "-to" not in args
+    graph = args[args.index("-filter_complex") + 1]
+    assert graph.index("fps=30") < graph.index("trim=start=1.5")
 
 
 def test_the_caption_block_is_the_same_size_whatever_the_caption():
@@ -228,7 +238,7 @@ def test_a_script_with_sound_keeps_the_apps_voice_at_a_speech_level_1241(tmp_pat
     args = video.ffmpeg_args(tmp_path / "raw.mp4", [tmp_path / "0.png"], {"x": 0, "y": 0, "w": 9, "h": 9},
                              [], [1.5, 9.5], tmp_path / "out.mp4", sound=True)
     graph = args[args.index("-filter_complex") + 1]
-    assert "[0:a]atrim=duration=8.0,asetpts=PTS-STARTPTS,loudnorm" in graph
+    assert "[0:a]atrim=start=1.5:duration=8.0,asetpts=PTS-STARTPTS,loudnorm" in graph
     assert args[args.index("-map", args.index("[out]")) + 1] == "[voice]"
     assert "anullsrc=r=48000:cl=stereo" not in args, "no silent track"
 

@@ -77,6 +77,12 @@ The promises are `messaging.md`'s reviewed lines.
 ## 3. YouTube: the promo video (en), 16:00 DE
 
 **Asset:** the promo video (#1211), unlisted or public, ads off. It's also the listing's video.
+- **The files:** on the `media` branch, `2026-10-03-1211-promo/`. Each is 30 s, 16:9, with no voice and the captions in the picture:
+  - `promo-en-landscape.mp4`;
+  - one take per listing language, each showing its own app and card: `promo-bn-landscape.mp4`, `promo-pl-landscape.mp4` and `promo-ru-landscape.mp4`;
+  - `promo-<lang>.srt`, each language's captions, for YouTube's subtitles on any of them.
+- **Play Console:** the main listing gets the en video's YouTube URL, and each translation (bn, pl, ru) its own language's video.
+- **Re-record:** for the release build, one command per language ([`tools/media/videos/promo.yaml`](../../../tools/media/videos/promo.yaml)).
 
 - **Title:** Sogda: German A1–C2, offline (a 30-second look)
 - **Description:**

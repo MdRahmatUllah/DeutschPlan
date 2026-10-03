@@ -3,6 +3,34 @@
 # language and the first meaning language that language, no second (Bangla's
 # setup default keeps English second, #1156), at A1.1. A take names one
 # (`learner: bn`); `video.py --skip-prepare` keeps it for the next clip.
+# en (#1211): English's setup may default to a Bangla meaning (#1363), so it
+# picks English and None, as pl and ru do.
+en:
+  - "shell:pm clear de.sogda.app"
+  - launch
+  - sleep4
+  - "tap:English"
+  - "tap:Let's start"
+  - sleep2
+  - "tap:English"
+  - "shell:input swipe 540 1300 540 600 400"
+  - "tap:None"
+  - "tap:Continue"
+  - sleep2
+  - "tap:A1.1"
+  - "tap:Continue"
+  - sleep2
+  - "tap:Continue"
+  - sleep2
+  - "tap:Later"
+  - "tap:Start learning"
+  - sleep4
+  # The voice's first word, off camera: its engine starts, and the
+  # «Supertonic isn't ready» toast shows here, not in the clip.
+  - "shell:am start -a android.intent.action.VIEW -d 'sogda://word/40d490b785f2ddb1?speak=1' de.sogda.app"
+  - sleep6
+  - back
+  - sleep2
 bn:
   - "shell:pm clear de.sogda.app"
   - launch
