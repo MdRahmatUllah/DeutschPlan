@@ -1328,6 +1328,9 @@ ORDER BY w.seq_in_sublevel
         'in a step left part-way (#1047) or under way', () async {
       final words = await stepWords();
       await enroll(completedOn: '2026-02-27');
+      // Ended before v4: no record of how, read as L2 does, part-way.
+      expect(await store.updateWaiting(limit: 10), isEmpty);
+      await db.customStatement('UPDATE enrollments SET left_part_way = 0');
       // The plan took every word it had; an update brought the last three.
       await store.addToPlan(
         '2026-02-20',

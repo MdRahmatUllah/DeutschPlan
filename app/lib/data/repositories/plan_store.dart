@@ -407,8 +407,8 @@ LIMIT ?1
   }
 
   /// BR-CONTENT-02's update queue (#1338): words of a step the plan finished
-  /// (`left_part_way` 0, #1047; NULL, a step ended before v4, read the same
-  /// way) still To-do and in no day's plan, in teaching order. A step the
+  /// (`left_part_way` 0, #1047; NULL, a step ended before v4, is read as
+  /// L2 reads it with unplanned words, left part-way: agent-1 on #1360) still To-do and in no day's plan, in teaching order. A step the
   /// plan finished had planned every word it had (`completeStepSql`), so
   /// these came later, with a content update, or are words *Reset* sent
   /// back to To-do there. The document queue's words wait in their own.
@@ -417,7 +417,7 @@ LIMIT ?1
 SELECT w.uid AS uid
 FROM words w
 JOIN enrollments e ON e.sublevel_code = w.sublevel_code
-  AND e.completed_on IS NOT NULL AND COALESCE(e.left_part_way, 0) = 0
+  AND e.completed_on IS NOT NULL AND COALESCE(e.left_part_way, 1) = 0
 LEFT JOIN word_state s ON s.word_uid = w.uid
 WHERE w.kind = 'vocab' AND COALESCE(s.status, 'todo') = 'todo'
   AND w.uid NOT IN (SELECT word_uid FROM plan_items WHERE kind = 'new')

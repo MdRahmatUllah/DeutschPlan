@@ -311,8 +311,9 @@ Future<TodayView> todayView(Ref ref) async {
 
   // #96: tomorrow as opening it will make it, without making it.
   final ahead = await engine.previewDay(addDays(date, 1));
-  // Tomorrow's document words are among those still waiting.
-  final waitingDocuments = <String>{
+  // Tomorrow's queued words (the documents', the update's) are among those
+  // still waiting.
+  final queued = <String>{
     ...await queue.docWaiting(limit: 1 << 20),
     ...await queue.updateWaiting(limit: 1 << 20),
   };
@@ -323,7 +324,7 @@ Future<TodayView> todayView(Ref ref) async {
       grammar: ahead.grammarDue.length,
       estimate: await engine.estimate(ahead, remember: false),
       category: switch (await content.mainCategory(
-        course(ahead.newToday, waitingDocuments),
+        course(ahead.newToday, queued),
       )) {
         final String english => names.of(english),
         null => null,
