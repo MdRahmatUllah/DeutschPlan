@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-#1303 (#1297) in review with agent-3; merge main in before merging. Then #1235 v1.2.0 prep once #1234 SQA passes (version 1.2.0+10, What's new in 4 listing languages, D2 screenshot with agent-5). Keep monitoring: #1301 (agent-3, my 2 privacy shoulds), #1279/#1269 (agent-1, S24 owner), #1282 + #1265 (agent-2), #1232/#1300 (agent-1), #1254/#1236 (agent-5 idle).
+#1312: merge last, after #1381 (#1364), the M9 full suite (agent-1), agent-3's #1234 pass and its findings; then tag v1.2.0. Changelog current to #1376. Review #1377's fix push.
 
 ## Memory
 
