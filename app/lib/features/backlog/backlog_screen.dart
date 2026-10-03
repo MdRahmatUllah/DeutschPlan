@@ -521,7 +521,14 @@ class _PauseRow extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SgText(l10n.backlogPause, role: SgTextRole.body, weight: 500),
+                // The switch says the title, as M3's rows do (#1340).
+                ExcludeSemantics(
+                  child: SgText(
+                    l10n.backlogPause,
+                    role: SgTextRole.body,
+                    weight: 500,
+                  ),
+                ),
                 const SizedBox(height: 1),
                 SgText(
                   l10n.backlogPauseNote,

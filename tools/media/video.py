@@ -83,6 +83,9 @@ def check(script: dict) -> None:
     steps, cut, locales = script.get("steps"), script.get("cut"), script.get("locales")
     if not steps or not all(isinstance(s, str) for s in steps):
         raise ScriptError(f"{name}: steps must be device.py steps")
+    for part in ("before", "after"):
+        if not all(isinstance(c, str) for c in script.get(part) or []):
+            raise ScriptError(f"{name}: {part} must be adb shell commands")
     if not (isinstance(cut, list) and len(cut) == 2 and 0 <= cut[0] < cut[1]):
         raise ScriptError(f"{name}: cut must be [from, to] seconds, from < to")
     if not locales:
@@ -116,21 +119,50 @@ def captions(script: dict, lang: str) -> list[tuple[float, float, str]]:
 # Recording
 
 
+def walk(script: dict, shell: list[str], serial: str) -> None:
+    """The steps in order: device.py's, and a `shell:` step as an adb shell
+    command between them (`shell:am start -n …`: Sogda brought back warm,
+    #1245)."""
+    batch: list[str] = []
+
+    def flush() -> None:
+        if batch and device.main(["--serial", serial, *batch]):
+            raise SystemExit(f"{script['name']}: a step failed: no recording kept")
+        batch.clear()
+
+    for step in script["steps"]:
+        if step.startswith("shell:"):
+            flush()
+            subprocess.run([*shell, step.removeprefix("shell:")], check=True)
+        else:
+            batch.append(step)
+    flush()
+
+
 def record(script: dict, serial: str = device.DEV_SERIAL) -> Path:
-    """`screenrecord` while device.py walks the steps; the file in build/media/."""
+    """`screenrecord` while device.py walks the steps; the file in build/media/.
+    The script's `before` adb shell commands run first (flight mode on, #1245)
+    and its `after` ones last, however the recording ends, so the shared
+    emulator is left as it was."""
     adb = device.adb_path()
     remote = f"/sdcard/sogda-{script['name']}.mp4"
     limit = math.ceil(script["cut"][1]) + 30
-    recorder = subprocess.Popen(
-        [adb, "-s", serial, "shell", "screenrecord", "--bit-rate", "8000000",
-         "--time-limit", str(min(limit, 180)), remote])
-    time.sleep(1.5)  # screenrecord's first frame
+    shell = [adb, "-s", serial, "shell"]
     try:
-        if device.main(["--serial", serial, *script["steps"]]):
-            raise SystemExit(f"{script['name']}: a step failed: no recording kept")
+        for command in script.get("before") or []:
+            subprocess.run([*shell, command], check=True)
+        recorder = subprocess.Popen(
+            [*shell, "screenrecord", "--bit-rate", "8000000",
+             "--time-limit", str(min(limit, 180)), remote])
+        time.sleep(1.5)  # screenrecord's first frame
+        try:
+            walk(script, shell, serial)
+        finally:
+            subprocess.run([*shell, "pkill", "-INT", "screenrecord"], check=False)
+            recorder.wait(timeout=30)
     finally:
-        subprocess.run([adb, "-s", serial, "shell", "pkill", "-INT", "screenrecord"], check=False)
-        recorder.wait(timeout=30)
+        for command in script.get("after") or []:
+            subprocess.run([*shell, command], check=False)
     time.sleep(1)  # the file closes on the device
     RAW.mkdir(parents=True, exist_ok=True)
     local = RAW / f"{script['name']}.mp4"
