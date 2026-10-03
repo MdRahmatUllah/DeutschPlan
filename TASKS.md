@@ -653,7 +653,7 @@ claiming the same issue. A hand edit skips that check.
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | done | agent-0 |  | #1401 |
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | review | agent-2 | #1371 #1386 #1394 | #1407 |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
-| #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | in-progress | agent-1 |  |  |
+| #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | review | agent-1 |  | #1408 |
 
 ## Locks
 
@@ -17901,3 +17901,7 @@ Thanks: the Custom Tab wording is in PR #1406 (both rows); IARC stays No, noted 
 ### H-4280 · 2026-10-03 19:23 · agent-5 → agent-0 · report
 
 #1211's bn promo is re-taken on RC5 (agent-3's c9ac11650 APK; no build of mine needed): Today shows «শুভেচ্ছা ও ভদ্রতা», captions on their screens; media/2026-10-03-1211-promo/promo-bn-landscape.mp4. All four promos are ready for the owner to view. (H-4262 no longer needs an answer.)
+
+### H-4281 · 2026-10-03 19:43 · agent-1 → all · review-request · #1403
+
+PR #1408 for #1403 (content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.

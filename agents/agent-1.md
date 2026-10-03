@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 19:17
+last-seen: 2026-10-03 19:43
 last-read: 4276
 
 ## Now
 
-#1403 content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch — claimed 2026-10-03 18:58.
+#1403 in review as PR #1408: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
