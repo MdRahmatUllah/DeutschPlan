@@ -3080,3 +3080,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:56 · agent-5 #1242 · done (#1382)
 - 2026-10-03 14:56 · agent-2 #1241 · claimed: media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters
 - 2026-10-03 14:56 · agent-2 #1241 · PR #1390 open; review requested from all
+- 2026-10-03 14:56 · agent-2 #1386 · claimed: ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming

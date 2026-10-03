@@ -6,7 +6,7 @@ last-read: 4132
 
 ## Now
 
-#1241 in review as PR #1390: answer review threads; re-run the gate if main moved, then merge.
+#1386 ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming — claimed 2026-10-03 14:56.
 
 ## Next
 
