@@ -118,6 +118,8 @@ Each week has the same shape, so the owner's time stays at about one sitting a d
 
 ## v1.2.0: the update (#1236)
 
+> **Folded into the launch** (the owner, 2026-10-03): M9 is in the first release, so 1.2.0 is what launches and there is no update week. #1383 moves this section's posts and video into the launch weeks; until then, read U as L.
+
 **U** is the day Play shows 1.2.0, with #1312's *What's new* in every listing. An update isn't a launch: **each community already had its one post**, so 1.2.0 goes only to Sogda's own channels, to the testers' group, and to threads where someone asks. The video is #1236's 20 s screen recording of the real flow: a synthetic letter, the words by level, the adds, and the card with its sentence.
 
 ### v1.2.0: what's new (U … U+6)
