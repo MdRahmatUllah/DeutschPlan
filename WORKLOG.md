@@ -2887,3 +2887,4 @@ able to tell what is going on without asking.
 - 2026-10-03 05:05 · agent-2 · #1206 PR #1337 up (video tool + 2 examples on media). #1245 prepared locally on feat/1245-flight-mode (stacked on #1206): before/after adb commands, shell: steps, flight-mode script in 5 languages; first good take showed home(✈) → Today → 3 cards, but ended before 'day done' — re-record on the learner's next study day (needs 3 cards left), then PR after #1337 merges.
 - 2026-10-03 05:09 · agent-3 #1234 · released: Paused: taking #1319 (perf re-run, #1234's §7) while #1336 waits on review and the rest on merges/S24.
 - 2026-10-03 05:10 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
+- 2026-10-03 05:12 · agent-3 #1334 · done (#1336)
