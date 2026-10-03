@@ -6,23 +6,62 @@ import 'package:sogda/domain/text_norm.dart';
 
 /// [pages] as one text: spaces and ligatures normalised, words hyphenated
 /// across a line end joined («Ver-↵waltung» → Verwaltung, «E-↵Mail» →
-/// E-Mail), and page numbers and the headers and footers repeated on most
-/// pages dropped. Pages are separated by a blank line.
+/// E-Mail), a page that repeats an earlier one read once, and page numbers
+/// and the headers and footers repeated on most pages dropped. Pages are
+/// separated by a blank line.
 String cleanPages(List<String> pages) {
-  final lines = <List<String>>[
+  final lines = _distinct(<List<String>>[
     for (final page in pages) _normalise(page).split('\n'),
-  ];
-  final repeated = pages.length < 2 ? const <String>{} : _repeated(lines);
-  final kept = <String>[
-    for (final page in lines)
-      page
-          .where(
-            (l) => !_pageNumber.hasMatch(l) && !repeated.contains(_shape(l)),
-          )
-          .join('\n')
-          .trim(),
-  ];
+  ]);
+  final repeated = lines.length < 2 ? const <String>{} : _repeated(lines);
+  final kept = <String>[for (final page in lines) _keep(page, repeated)];
   return _joinHyphens(kept.where((p) => p.isNotEmpty).join('\n\n'));
+}
+
+/// [page] without its page number and the repeated header and footer. A
+/// page those would leave empty keeps its lines (#1385): the clean-up never
+/// empties a page OCR read.
+String _keep(List<String> page, Set<String> repeated) {
+  final text = <String>[
+    for (final l in page)
+      if (!_pageNumber.hasMatch(l)) l,
+  ];
+  final body = <String>[
+    for (final l in text)
+      if (!repeated.contains(_shape(l))) l,
+  ];
+  return (body.join('\n').trim().isEmpty ? text : body).join('\n').trim();
+}
+
+/// [pages] without a page that repeats an earlier one (#1385): the same
+/// photo shared or picked twice, or two shots of one page whose OCR differs
+/// by a line or two. Otherwise every line would repeat, and [_repeated] would
+/// take each page's edges for a header and a footer. A copy shares four in
+/// five of the lines the two pages have between them: a page 2 that is a
+/// letterhead and one line of text is no copy of page 1. The lines as read,
+/// digits included: a statement's next page, the same words with other
+/// dates and amounts, is no copy either (agent-2).
+List<List<String>> _distinct(List<List<String>> pages) {
+  Set<String> lines(List<String> page) => <String>{
+    for (final l in page)
+      if (l.isNotEmpty) l,
+  };
+  final kept = <List<String>>[];
+  final seen = <Set<String>>[];
+  for (final page in pages) {
+    final mine = lines(page);
+    final copy =
+        mine.isNotEmpty &&
+        seen.any(
+          (earlier) =>
+              mine.intersection(earlier).length >=
+              0.8 * mine.union(earlier).length,
+        );
+    if (copy) continue;
+    kept.add(page);
+    seen.add(mine);
+  }
+  return kept;
 }
 
 const Map<String, String> _replacements = <String, String>{

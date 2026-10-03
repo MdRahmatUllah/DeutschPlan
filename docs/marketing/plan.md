@@ -179,7 +179,7 @@ Answer here or on the issue named. Each one has a recommendation.
 
 | # | Question | Recommendation |
 |---|---|---|
-| **D1** | **Is the Play developer account personal, and was it created after 13 Nov 2023?** (#1239) | **Answered on 2026-10-02: yes.** The closed test comes first, and 1.1.0's first upload goes to the Closed testing track. The steps and the call for testers: [`launch/closed-test.md`](launch/closed-test.md) |
+| **D1** | **Is the Play developer account personal, and was it created after 13 Nov 2023?** (#1239) | **Answered on 2026-10-02: yes.** The closed test comes first, and the first upload goes to the Closed testing track: **v1.2.0, with M9 in it** (the owner, 2026-10-03; it was 1.1.0, #1383). The steps and the call for testers: [`launch/closed-test.md`](launch/closed-test.md) |
 | D2 | Which accounts to open | **A Facebook Page and a YouTube channel first.** Telegram and Discord as a person (for the admins and the rules), with **no Sogda Telegram channel at launch:** a new channel has no readers, and the reach is in the existing chats. **TikTok** for Polish and English once Shorts show the clips work |
 | D3 | Pay for anything? Easy German and others take app sponsors | **Not at launch.** Look again after week 2's numbers. Never pay for reviews, ratings or installs |
 | D4 | Show HN on L+2, and Product Hunt (only as an app, never a "course") | **Show HN yes**, written as the maker's story. **Product Hunt only if the owner wants a launch day there:** it's a badge, not an install channel |

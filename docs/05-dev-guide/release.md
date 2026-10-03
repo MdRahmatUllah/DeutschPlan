@@ -4,6 +4,7 @@
 `pubspec.yaml` `version: MAJOR.MINOR.PATCH+BUILD`. Content has its own `content_version` (build timestamp) shown in About; a content-only release bumps PATCH.
 
 ## Android (#170)
+- **The first release is v1.2.0** (`1.2.0+10`, #1235): the owner, 2026-10-03, put M9 (the learner's own documents, with Hy-MT2) in it. The closed test and the Production launch carry 1.2.0, not 1.1.0; v1.0.x and v1.1.0 stay tags in the history.
 - **The app id** is `de.sogda.app`, the owner's (ADR 28; it replaced `io.github.rahmatullah.deutschplan`, #170, before the first upload). It can never change once the app is on Play. The Kotlin sources live in `android/app/src/main/kotlin/de/sogda/app/`.
 - **Signing.** Release builds use the owner's upload key when `app/android/key.properties` exists. It is gitignored, as are keystores, so it's never committed:
   ```
