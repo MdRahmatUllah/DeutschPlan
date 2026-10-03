@@ -191,6 +191,9 @@ class SettingsScreen extends ConsumerWidget {
           ? tokens.surface.paper.withValues(alpha: 0)
           : tokens.surface.paper,
       body: ListView(
+        // A row to show on opening (#1364) must be built to be scrolled to:
+        // the whole list then, a few dozen rows, not only the first screen's.
+        cacheExtent: row == null ? null : 100000,
         // Where the learner had scrolled to survives a change of theme: glass
         // wraps the screen in its aurora, which builds the list anew (#345).
         key: const PageStorageKey<String>('settings'),

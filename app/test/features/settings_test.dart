@@ -146,10 +146,10 @@ void main() {
       'at, down the page', (tester) async {
     bool onScreen(WidgetTester tester) {
       final top = tester.getRect(find.text(l10n.settingsUnlockAt)).top;
-      return top >= 0 && top < 2400 / 3;
+      return top >= 0 && top < 600;
     }
 
-    await pump(tester, size: const Size(1080, 2400));
+    await pump(tester, size: const Size(1080, 1200));
     expect(
       find.text(l10n.settingsUnlockAt).hitTestable(),
       findsNothing,
@@ -157,7 +157,7 @@ void main() {
     );
     await pump(
       tester,
-      size: const Size(1080, 2400),
+      size: const Size(1080, 1200),
       row: SettingsRoute.examUnlock,
     );
     expect(onScreen(tester), isTrue);
