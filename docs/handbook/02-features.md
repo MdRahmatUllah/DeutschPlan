@@ -723,7 +723,7 @@ The full table is in [`accessibility-performance.md`](../01-architecture/accessi
 | **On-device translation before v1.2.0** | Hy-MT 1.5's licence excludes the EU, UK and South Korea, so v1.0 and v1.1 shipped with it off (ADR 9, #173). Hy-MT2 (Apache-2.0) brings it back in v1.2.0 (ADR 30, #154) |
 | **A PDF's password, or a scanned PDF as text** | Sogda asks for no password; a scan has no text layer, so D1 sends it to the photos (`doc-import.md`) |
 | **Documents on iOS** | Out of v1.2.0's scope, as iOS is (epic #1219) |
-| **Bangla translations of example sentences and grammar rules** | The course has none in Bangla: Bangla learners read examples and rules in English (#598). Russian and Polish have their own since v1.1.0 |
+| **Bangla translations of example sentences** | The course has none in Bangla: Bangla learners read examples in English (#598). Russian and Polish have their own since v1.1.0. Bangla's grammar topics come in the first update after v1.2.0 (#1403) |
 | **Category names in Bangla before v1.2.0** | Kept in English for Bangla learners in v1.0 and v1.1 (#425). v1.2.0 ships them (#1398, the owner, 2026-10-03), as v1.1.0 did Russian's and Polish's (#1128) |
 | **Speech recognition or scoring of speaking** | Speaking and writing are self-assessed with app checks (BR-EXAM-06) |
 | **Sync between devices, accounts, cloud backup** | Not a goal: moving progress is an export file (ADR 13) |

@@ -447,8 +447,8 @@
     "C1.2": 21,
     "C2.2": 21
   },
-  "built_at": "2026-10-03T16:44:57+00:00",
-  "content_version": "20261003164457",
+  "built_at": "2026-10-03T22:55:17+00:00",
+  "content_version": "20261003225517",
   "counts": {
     "examples": 10691,
     "grammar": 182,
@@ -5954,31 +5954,31 @@
   "sources": [
     {
       "file": "German_A1_Tracker.xlsx",
-      "sha256": "9f271c81e320e5dfb33f55af2be85ce827b105ca39948eaf1ada504677534077"
+      "sha256": "dcdf7bea01bd00263eaa0a64e078300f2393e6f8eff94a59faea36492bfb9329"
     },
     {
       "file": "German_A2_Tracker.xlsx",
-      "sha256": "49b895b0a2e7d9d11c31bbd32ff6ec4a6fd308a2c743f6afea75d5bb00595373"
+      "sha256": "e341900127b7c7468cd7f3f8875564198bcd0f9b434f1b0ab2559d552949faba"
     },
     {
       "file": "German_B1_Tracker.xlsx",
-      "sha256": "8d155b8bb72529f73041ba376a011d872e7a6dcf70387c25439401489e2e8953"
+      "sha256": "60483688a635da43202454ffad638b4a8030feb92f5a62fdc64ff73495e444ac"
     },
     {
       "file": "German_B2_Tracker.xlsx",
-      "sha256": "4d88efd66fd84a61d9e16bb036032853af437715b8780de575266e36aed053cb"
+      "sha256": "4eab7a0bf38fe9ee51c29def3082356b45d63c69cda87990b362346cdf8189ea"
     },
     {
       "file": "German_C1_Tracker.xlsx",
-      "sha256": "29493662d37586f596d70ca4852e02c388d40ad5d32cdec5730b69277bae655a"
+      "sha256": "914954e76aca07a35a190128510cbc15b2aadeb25da71fbb0ce8cfb5ea1b5e62"
     },
     {
       "file": "German_C2_Tracker.xlsx",
-      "sha256": "c18bacbc8706d4af13ede8bbcdebee6cd997eb149bcd090b50f2ecefdbaff2eb"
+      "sha256": "27fd4313d44415426b05ba542dd76c53565c5b6fa1930b331cde453e43222ddd"
     },
     {
       "file": "German_Everyday_Additions.xlsx",
-      "sha256": "13411f28801672b357e5c56abd9ab929080ccf44db5a51b2996213e6e35c2594"
+      "sha256": "5a65e1a131958562b875d3614acb098ddb162778f471653dc55db620d8b7fcf8"
     }
   ],
   "steps": {

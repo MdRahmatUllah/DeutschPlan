@@ -65,7 +65,7 @@ def test_1174_each_step_is_its_own_counts_and_topics():
         assert [g["uid"] for g in step["grammar"]] == topics, step["code"]
         assert step["grammar_topics"] == len(topics), step["code"]
         # Russian and Polish carry the grammar's names; Bangla has none (#1147).
-        assert all(set(g["topic"]) == {"en", "ru", "pl"} for g in step["grammar"]), step["code"]
+        assert all(set(g["topic"]) == {"en", "bn", "ru", "pl"} for g in step["grammar"]), step["code"]  # bn: #1403
 
 
 def test_1174_the_sample_is_the_steps_words_in_every_language():
