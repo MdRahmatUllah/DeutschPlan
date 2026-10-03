@@ -123,6 +123,22 @@ void main() {
         '\n\nGruß.',
       );
     });
+
+    test("a statement's next page, the same words with other numbers, is "
+        'no copy (agent-2)', () {
+      // With digits blurred the two pages are one shape, line for line.
+      const september =
+          'Kontoauszug Nr. 9\n01.09. Miete 450,00\n03.09. Telefon 19,99\n'
+          '15.09. Strom 62,10\n20.09. Einkauf 84,30\n28.09. Gehalt 1.850,00\n'
+          'Kontostand 2.140,55';
+      const october =
+          'Kontoauszug Nr. 10\n01.10. Miete 450,00\n03.10. Telefon 19,99\n'
+          '15.10. Strom 58,40\n20.10. Einkauf 91,75\n28.10. Gehalt 1.850,00\n'
+          'Kontostand 2.390,10';
+      final text = cleanPages(<String>[september, october]);
+      expect(text, contains('15.10. Strom 58,40'));
+      expect(text, contains('15.09. Strom 62,10'));
+    });
   });
 
   test('#1227 FR-D2-01 a document is named by its first line, cut at a word '

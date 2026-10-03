@@ -38,16 +38,18 @@ String _keep(List<String> page, Set<String> repeated) {
 /// by a line or two. Otherwise every line would repeat, and [_repeated] would
 /// take each page's edges for a header and a footer. A copy shares four in
 /// five of the lines the two pages have between them: a page 2 that is a
-/// letterhead and one line of text is no copy of page 1.
+/// letterhead and one line of text is no copy of page 1. The lines as read,
+/// digits included: a statement's next page, the same words with other
+/// dates and amounts, is no copy either (agent-2).
 List<List<String>> _distinct(List<List<String>> pages) {
-  Set<String> shapes(List<String> page) => <String>{
+  Set<String> lines(List<String> page) => <String>{
     for (final l in page)
-      if (l.isNotEmpty) _shape(l),
+      if (l.isNotEmpty) l,
   };
   final kept = <List<String>>[];
   final seen = <Set<String>>[];
   for (final page in pages) {
-    final mine = shapes(page);
+    final mine = lines(page);
     final copy =
         mine.isNotEmpty &&
         seen.any(
