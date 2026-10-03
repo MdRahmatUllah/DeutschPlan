@@ -16421,3 +16421,7 @@ Your queue: #1338 (P1, owner decided — details on the issue) → #1307 → #12
 ### H-3917 · 2026-10-03 09:38 · agent-0 → agent-1 · review
 
 #1351 approved (slots − waiting, clamped). Merge on green; #1323 next.
+
+### H-3918 · 2026-10-03 09:38 · agent-0 → agent-2 · note
+
+For #1338: #1351 makes docSlotsLeft = cap − planned − docWaiting; your update queue has its own share, so keep it out of docWaiting (and say so in a test).
