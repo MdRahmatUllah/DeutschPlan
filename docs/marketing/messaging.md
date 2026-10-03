@@ -135,8 +135,8 @@ https://play.google.com/store/apps/details?id={app.package}&referrer=utm_source%
 
 | Part | Values |
 |---|---|
-| `<source>` | `reddit`; `facebook-page`, `facebook-bdsag`, `facebook-bsaag`, `facebook-polacy`, `facebook-daf` (one per community, so each counts on its own); `telegram-ukrainer`; `discord`, `youtube`, `instagram`, `tiktok`, `email` (outreach), `alternativeto`, `sogda.de` (the site's own, #45) |
-| `<medium>` | `post`, `comment`, `pitch`, `video`, `bio` |
+| `<source>` | `reddit`; `facebook-page`, `facebook-bdsag`, `facebook-bsaag`, `facebook-polacy`, `facebook-daf` (one per community, so each counts on its own); `telegram-ukrainer`; `discord`, `youtube`, `instagram`, `tiktok`, `email` (outreach), `alternativeto`, `germanprobashe` (the guide, #1246), `sogda.de` (the site's own, #45) |
+| `<medium>` | `post`, `comment`, `pitch`, `video`, `bio`, `article` |
 | `<campaign>` | `launch` (weeks −2 to +1), then `w2` … `w6`, then `evergreen` |
 
 Until the app is on Play, every draft says `<play-link>`.
