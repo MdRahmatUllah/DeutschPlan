@@ -179,7 +179,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 
 ## Screenshots
 
-`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, six each, from the release x86_64 APK of 1.1.0+4 on emulator-5558 (wiped, API 36), English UI and English meanings, the course's own content (re-shot 2026-10-01: the 1.0 set counted 5,594 words):
+`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, eight each: the first six from the release x86_64 APK of 1.1.0+4 on emulator-5558 (wiped, API 36), English UI and English meanings, the course's own content (re-shot 2026-10-01: the 1.0 set counted 5,594 words):
 
 | File | Screen |
 |---|---|
@@ -189,16 +189,19 @@ Sogda — приложение с офлайн-курсом немецкого: 
 | `04-course.png` | L1, the course by level |
 | `05-step.png` | L2, a step's words |
 | `06-word.png` | W1 over L2 (a sheet on the phone, a side pane on the tablet) |
+| `07-document.png` | D2 over the landlord's letter, «Nebenkosten 2025»: its words marked by level, the *Show words I probably know* switch, the bulk bar (1.2.0, #1307) |
+| `08-document-card.png` | D2's card for *die Nachzahlung*: its step, meaning and the sentence under *In your text* (1.2.0, #1307) |
 
 - **Phone:** 1080 × 2160 (`wm size`), since Play takes at most 2:1.
 - **Tablet:** 1600 × 2560 at density 320, a 10-inch tablet.
 - **The status bar** is Android's demo mode (10:00, full Wi-Fi and battery). Light and dark follow the system setting.
 - **Format:** RGB PNGs without alpha, as Play asks. `test_store_listing.py` checks the format, the sizes and the ratio.
+- **D2 and its card (1.2.0, #1307):** in every set, from the release x86_64 APK of main at 1.2.0's content (5,142 words), after #1346. A fresh install, onboarded at A2.1 with the set's languages; the landlord's letter (D2's widget fixture, `artboardLetter`) shared in through `ShareActivity`, renamed «Nebenkosten 2025» in D3, as the artboard titles it, and opened again from D3. Nothing added, so every new word shows its level.
 - **Not included:** a mock exam (L12), which unlocks only once 90 % of a step is introduced; day 1 can't reach it. Take one on a device with progress before the upload if the owner wants it.
 
 ### Polish and Russian (#1123)
 
-`store/pl-phone-light` and `store/ru-phone-light`, the same six screens, taken as the English ones were (the release x86_64 APK on emulator-5558, wiped, API 36, 1080 × 2160, the demo status bar), from the course with Russian and Polish (#1100):
+`store/pl-phone-light` and `store/ru-phone-light`, the same eight screens, taken as the English ones were (the release x86_64 APK on emulator-5558, wiped, API 36, 1080 × 2160, the demo status bar), from the course with Russian and Polish (#1100):
 
 - **The app language and the first meaning language** are Polish for `pl-phone-light` and Russian for `ru-phone-light`, with no second meaning. So each card shows that language's meaning, its pronunciation guide and its example lines: *danke* → *dziękuję / dzięki*, `/DAN-ke/`; → *спасибо*, `/дАнкэ/`.
 - **Upload them** under the Polish (pl-PL) and Russian (ru-RU) listings. The English phone and tablet sets serve English and any listing without its own set.
@@ -206,7 +209,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 
 ### Bangla (#1175)
 
-`store/bn-phone-light`, the same six screens, taken the same way (the release x86_64 APK on emulator-5558, a fresh install, API 36, 1080 × 2160, the demo status bar with full Wi-Fi):
+`store/bn-phone-light`, the same eight screens, taken the same way (the release x86_64 APK on emulator-5558, a fresh install, API 36, 1080 × 2160, the demo status bar with full Wi-Fi):
 
 - **The app language is Bangla, and the meanings are Bangla first and English second**, setup's default for a Bangla app (#1156). So *danke* shows *ধন্যবাদ* with *thanks / thank you* under it, and the Bangla-letter guide `/ডাংকে/`. The course has no Bangla example lines, grammar rules or topic names, so those show in English, as every Bangla learner sees them.
 - **Upload them** under the Bangla (bn-BD) listing. sogda.de's `/bn` shows them too (sogda-website #66).
