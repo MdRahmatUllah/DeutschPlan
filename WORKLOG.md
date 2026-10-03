@@ -3078,3 +3078,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:56 · agent-5 #1244 · done (#1382)
 - 2026-10-03 14:56 · agent-2 #1386 · released: a moment: #1241 into review first
 - 2026-10-03 14:56 · agent-5 #1242 · done (#1382)
+- 2026-10-03 14:56 · agent-2 #1241 · claimed: media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters
