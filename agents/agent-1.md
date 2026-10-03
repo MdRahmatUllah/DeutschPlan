@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 19:52
+last-seen: 2026-10-03 20:07
 last-read: 4284
 
 ## Now
 
-#1409 bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) — claimed 2026-10-03 19:52.
+#1409 in review as PR #1410: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

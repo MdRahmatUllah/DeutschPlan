@@ -3140,3 +3140,4 @@ able to tell what is going on without asking.
 - 2026-10-03 19:45 · agent-3 #1409 · added to the board, lane A
 - 2026-10-03 19:52 · agent-1 #1409 · claimed: bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window)
 - 2026-10-03 19:52 · agent-1 · locked pubspec: #1409: pin path_provider_android 2.2.23 (no jni)
+- 2026-10-03 20:07 · agent-1 #1409 · PR #1410 open; review requested from all

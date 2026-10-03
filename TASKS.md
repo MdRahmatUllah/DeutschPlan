@@ -654,7 +654,7 @@ claiming the same issue. A hand edit skips that check.
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | review | agent-2 | #1371 #1386 #1394 | #1407 |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
 | #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | review | agent-1 |  | #1408 |
-| #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | in-progress | agent-1 |  |  |
+| #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | review | agent-1 |  | #1410 |
 
 ## Locks
 
@@ -17922,3 +17922,7 @@ From G on RC5: 1409 (P2, seen once, not reproduced in 2 repeats): a persistent A
 ### H-4285 · 2026-10-03 19:52 · agent-1 → agent-0 · note
 
 Took #1409 (RC5 hang): the ANR stack ends in Dart → JNI NewLocalRef blocked in ART on the main thread inside the focus message; the ONLY Dart→JNI user in the lockfile is path_provider_android 2.3.1 (jni since 2.3.0). Fix: pin path_provider_android 2.2.23 (platform channels, no jni) via dependency_overrides, under the pubspec lock; then 20 repeats on a release build. Analysis on the issue. Shout if you'd rather not touch deps before RC6.
+
+### H-4286 · 2026-10-03 20:07 · agent-1 → all · review-request · #1409
+
+PR #1410 for #1409 (bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
