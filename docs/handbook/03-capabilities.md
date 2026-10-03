@@ -65,7 +65,7 @@ optional second.
 | **Pronunciation of each word** | All, an English respelling (v1.1.0) | All 5,142, in Bangla letters (while Bangla is chosen) | All, in Russian letters | All, in Polish spelling |
 | **Interference tips** | All 622 | All 622 | Those written for Russian speakers | Those written for Polish speakers |
 | **Example translations** (10,691) | All | None: English shows (#598) | All | All |
-| **Grammar rules** (182 topics) | All | None | All | All |
+| **Grammar rules** (182 topics) | All | All, in the first update after v1.2.0 (#1403) | All | All |
 | **Category names** | All | Shown in English (#425) | All (#1128) | All (#1128) |
 
 Each guide comes with a one-line key to read it (#1122). Search finds a word

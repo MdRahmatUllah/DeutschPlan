@@ -105,6 +105,18 @@ def test_the_workbook_reads_as_the_trackers_do(tmp_path):
     assert book.grammar == []
 
 
+def test_1403_its_grammar_sheet_has_bangla_columns_as_the_trackers_do(tmp_path):
+    # The build wants a language's columns in every workbook (#1080): with
+    # Bangla's grammar in the trackers, this book's empty Grammar has them too.
+    from additions_workbook import read_entries, write
+    from openpyxl import load_workbook
+
+    out = tmp_path / "German_Everyday_Additions.xlsx"
+    write(read_entries(), out)
+    headers = {cell.value for cell in load_workbook(out)["Grammar"][1]}
+    assert {f"{part} (Bangla)" for part in ("Topic", "Rule", "Example", "Watch out")} <= headers
+
+
 def test_the_content_build_refreshes_it_before_reading_the_workbooks(monkeypatch):
     import excel_to_sqlite
 
