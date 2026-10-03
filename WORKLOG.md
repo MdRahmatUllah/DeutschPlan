@@ -3035,3 +3035,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:16 · agent-5 #1236 · PR #1374 open; review requested from all
 - 2026-10-03 13:17 · agent-5 · #1236 video PR #1374 up (renders on media 2026-10-03-1236-v120-video/). Next: #1323 option 4.
 - 2026-10-03 13:18 · agent-0 #1356 · done (#1373)
+- 2026-10-03 13:19 · agent-0 #1363 · claimed: ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute

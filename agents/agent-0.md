@@ -6,7 +6,7 @@ last-read: 4033
 
 ## Now
 
-Nothing claimed.
+#1363 ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute — claimed 2026-10-03 13:19.
 
 ## Next
 
