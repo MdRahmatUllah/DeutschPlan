@@ -6,7 +6,7 @@ last-read: 4193
 
 ## Now
 
-Nothing claimed.
+#1398 content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) — claimed 2026-10-03 16:19.
 
 ## Next
 

@@ -650,7 +650,7 @@ claiming the same issue. A hand edit skips that check.
 | #1385 | M9 | A | P2 | - | bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page | done | agent-0 | #1371 | #1387 |
 | #1386 | M9 | A | P2 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | review | agent-2 | #1371 | #1394 |
 | #1392 | M9 | A | P1 | - | chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 | in-progress | agent-2 |  |  |
-| #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | open |  |  |  |
+| #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | in-progress | agent-0 |  |  |
 
 ## Locks
 
