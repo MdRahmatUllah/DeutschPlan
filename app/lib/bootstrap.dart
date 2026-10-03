@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' show Locale, PlatformDispatcher;
 
-import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/foundation.dart' show debugPrint, immutable;
 // `Override` is not in the main barrel in Riverpod 3.
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:go_router/go_router.dart';
@@ -162,6 +162,12 @@ const int courseInstallMegabytes = 10;
 /// it. A slice of FR-S1-02's 500 ms, not the whole of it.
 const Duration glassTimeout = Duration(milliseconds: 150);
 
+/// #1356: how long a start waits out a user.db another connection holds (a
+/// background task's, #158, on a slow phone) before it says it could not
+/// open the data, and the pause between tries.
+const Duration busyPatience = Duration(seconds: 20);
+const Duration busyPause = Duration(milliseconds: 500);
+
 /// FR-S1-01, in the order the doc gives it.
 ///
 /// Open user.db (creating the schema if absent) · copy content.db when the
@@ -195,7 +201,40 @@ Future<BootstrapResult> bootstrap({
   void Function()? onCourseUpdate,
 }) async {
   final watch = Stopwatch()..start();
+  while (true) {
+    final result = await _start(
+      watch,
+      openDatabase: openDatabase,
+      glass: glass,
+      phoneLocale: phoneLocale,
+      onUiLanguage: onUiLanguage,
+      onCourseUpdate: onCourseUpdate,
+    );
+    if (result case BootstrapFailed(:final failure)) {
+      // In a release build too: the error screen says what, not why, and
+      // #1356 had no cause to name.
+      debugPrint('bootstrap: ${failure.step.name}: ${failure.error}');
+      // #1356: a database held by another connection is waited out, as the
+      // learner's Retry would, for a while; what it opened goes first.
+      if (isDatabaseBusy(failure.error) && watch.elapsed < busyPatience) {
+        await _closeQuietly(failure.db);
+        await Future<void>.delayed(busyPause);
+        continue;
+      }
+    }
+    return result;
+  }
+}
 
+/// One try of [bootstrap], timed on its [watch].
+Future<BootstrapResult> _start(
+  Stopwatch watch, {
+  required AppDatabase Function()? openDatabase,
+  required GlassCapability? glass,
+  required Locale? phoneLocale,
+  required void Function(UiLanguage)? onUiLanguage,
+  required void Function()? onCourseUpdate,
+}) async {
   // Only set once the file is genuinely open. Constructing an `AppDatabase`
   // touches nothing, so handing that object to the failure would have the
   // error screen offer *Export progress* for a database that never opened —
