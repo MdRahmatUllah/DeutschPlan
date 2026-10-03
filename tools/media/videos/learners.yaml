@@ -1,0 +1,80 @@
+# #1241: the learners a video's takes record with, one per meaning language,
+# made by onboarding on the media lane's emulator-5556 (1080 x 1920): the app
+# language and the first meaning language that language, no second (Bangla's
+# setup default keeps English second, #1156), at A1.1. A take names one
+# (`learner: bn`); `video.py --skip-prepare` keeps it for the next clip.
+bn:
+  - "shell:pm clear de.sogda.app"
+  - launch
+  - sleep4
+  - "tap:বাংলা"
+  - "tap:শুরু করি"
+  - sleep2
+  - "tap:চালিয়ে যান"
+  - sleep2
+  - "tap:A1.1"
+  - "tap:চালিয়ে যান"
+  - sleep2
+  - "tap:চালিয়ে যান"
+  - sleep2
+  - "tap:পরে"
+  - "tap:শেখা শুরু করুন"
+  - sleep4
+  # The voice's first word, off camera: its engine starts, and the
+  # «Supertonic isn't ready» toast shows here, not in the clip.
+  - "shell:am start -a android.intent.action.VIEW -d 'sogda://word/40d490b785f2ddb1?speak=1' de.sogda.app"
+  - sleep6
+  - back
+  - sleep2
+ru:
+  - "shell:pm clear de.sogda.app"
+  - launch
+  - sleep4
+  - "tap:Русский"
+  - "tap:Начнём"
+  - sleep2
+  - "tap:Русский"
+  - "shell:input swipe 540 1300 540 600 400"
+  - "tap:Нет"
+  - "tap:Далее"
+  - sleep2
+  - "tap:A1.1"
+  - "tap:Далее"
+  - sleep2
+  - "tap:Далее"
+  - sleep2
+  - "tap:Позже"
+  - "tap:Начать учёбу"
+  - sleep4
+  # The voice's first word, off camera: its engine starts, and the
+  # «Supertonic isn't ready» toast shows here, not in the clip.
+  - "shell:am start -a android.intent.action.VIEW -d 'sogda://word/40d490b785f2ddb1?speak=1' de.sogda.app"
+  - sleep6
+  - back
+  - sleep2
+pl:
+  - "shell:pm clear de.sogda.app"
+  - launch
+  - sleep4
+  - "tap:Polski"
+  - "tap:Zaczynajmy"
+  - sleep2
+  - "tap:Polski"
+  - "shell:input swipe 540 1300 540 600 400"
+  - "tap:Brak"
+  - "tap:Dalej"
+  - sleep2
+  - "tap:A1.1"
+  - "tap:Dalej"
+  - sleep2
+  - "tap:Dalej"
+  - sleep2
+  - "tap:Później"
+  - "tap:Zacznij naukę"
+  - sleep4
+  # The voice's first word, off camera: its engine starts, and the
+  # «Supertonic isn't ready» toast shows here, not in the clip.
+  - "shell:am start -a android.intent.action.VIEW -d 'sogda://word/40d490b785f2ddb1?speak=1' de.sogda.app"
+  - sleep6
+  - back
+  - sleep2
