@@ -2865,3 +2865,4 @@ able to tell what is going on without asking.
 - 2026-10-03 02:44 · agent-3 #1318 · done (#1326)
 - 2026-10-03 02:49 · agent-1 #1207 · PR #1331 open; review requested from all
 - 2026-10-03 02:49 · agent-3 #1317 · done (#1327)
+- 2026-10-03 02:50 · agent-1 · #1209 merged (#1324), #1205 merged (#1328), #1237 merged (#1321); #1207 PR #1331 up; #1313 rework ready locally, gate rerun waits on the user
