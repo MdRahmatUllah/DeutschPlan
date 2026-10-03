@@ -6,7 +6,7 @@ last-read: 3789
 
 ## Now
 
-#1316 docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter — claimed 2026-10-03 02:07.
+#1316 in review as PR #1330: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
