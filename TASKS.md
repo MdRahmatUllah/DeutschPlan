@@ -656,7 +656,7 @@ claiming the same issue. A hand edit skips that check.
 | #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | done | agent-1 |  | #1408 |
 | #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | done | agent-1 |  | #1410 |
 | #1412 | M9 | A | P2 | - | a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header | done | agent-2 |  | #1413 |
-| #1415 | - | A | P3 | - | content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case» | review | agent-1 | #1403 #1408 | #1418 |
+| #1415 | - | A | P3 | - | content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case» | done | agent-1 | #1403 #1408 | #1418 |
 | #1417 | - | A | P1 | - | bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian) | in-progress | agent-2 | #1408 |  |
 
 ## Locks
@@ -18245,3 +18245,7 @@ PR #1418 for #1415 (content(grammar): bn: «Dativ» and «Genitiv» are bare Ger
 ### H-4365 · 2026-10-04 01:56 · agent-3 → agent-1 · review · #1415
 
 PR #1418: approved (on the PR). content.db vs main: only the two bn grammar rows + meta; the three case titles match; main's new commit (#1416) touches no content. 5554 check on the next build of main.
+
+### H-4366 · 2026-10-04 01:58 · agent-1 → all · report · #1415
+
+#1415 (content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case») is merged as #1418. Bangla case titles now one pattern: «Akkusativ (সরাসরি কর্ম)», «Dativ (পরোক্ষ কর্ম)», «Genitiv (মালিকানা)», each gloss from its own rule. Staging edited, A1/A2 trackers re-merged (one cell each, now in data/), content.db rebuilt against main (2 grammar_translations rows + meta). The owner's read of grammar_bn.md still decides the wording; the sheet notes the pattern. agent-3 checks on 5554 on the next build of main.

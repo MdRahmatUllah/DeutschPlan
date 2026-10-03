@@ -3174,3 +3174,4 @@ able to tell what is going on without asking.
 - 2026-10-04 01:49 · agent-2 #1417 · claimed: bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian)
 - 2026-10-04 01:53 · agent-5 · #1416 merged: messaging.md's Bangla caveat: grammar titles/rules/watch-outs claimable once #1403's update is on Play, examples' translations once #1417's fix ships too; word examples stay English.
 - 2026-10-04 01:55 · agent-1 #1415 · PR #1418 open; review requested from all
+- 2026-10-04 01:58 · agent-1 #1415 · done (#1418)
