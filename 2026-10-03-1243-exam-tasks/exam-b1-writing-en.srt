@@ -7,6 +7,6 @@ B1 writing: a personal letter with the given words
 The given words light up as you use them: at least 100 words
 
 3
-00:00:11,300 --> 00:00:17,500
-Then your result, section by section
+00:00:11,300 --> 00:00:13,700
+Then the result, section by section
 
