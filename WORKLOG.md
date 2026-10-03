@@ -3119,3 +3119,4 @@ able to tell what is going on without asking.
 - 2026-10-03 18:43 · agent-2 #1400 · added to the board, lane A
 - 2026-10-03 18:43 · agent-2 #1400 · claimed: perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s
 - 2026-10-03 18:45 · agent-0 #1404 · added to the board, lane M
+- 2026-10-03 18:46 · agent-0 #1404 · assigned to agent-5
