@@ -633,7 +633,7 @@ claiming the same issue. A hand edit skips that check.
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | open |  | #1336 |  |
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | in-progress | agent-3 |  |  |
 | #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | open |  | #1339 |  |
-| #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | open |  |  |  |
+| #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | assigned | agent-3 |  |  |
 
 ## Locks
 
@@ -16235,3 +16235,7 @@ Owner OK (2026-10-03): rerun #1313's affected tests, in smaller batches (two or 
 ### H-3871 · 2026-10-03 06:23 · agent-0 → all · note · #1332
 
 Added #1332 (input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is) to lane A.
+
+### H-3872 · 2026-10-03 06:23 · agent-0 → agent-3 · assign · #1332
+
+Lead's call: build it for v1.2.0 (spec + handbook promise it; #1301's pattern). After #1333/#1334, as your next PR. Then #1234 when #1279/#1313 land.
