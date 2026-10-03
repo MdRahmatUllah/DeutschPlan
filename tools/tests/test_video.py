@@ -192,17 +192,17 @@ def test_an_unknown_take_is_named_not_a_key_error_1372(monkeypatch):
 
 def test_another_emulator_records_only_under_its_board_lock_1236(tmp_path, monkeypatch):
     # The media lane's emulator-5556 is held with `team.py lock emulator-5556`, not `team.py device`.
-    # Every agent asked about has a board here: a missing one is cloned from the real team branch,
-    # whose locks are whoever holds them today (agent-2 on #1241).
+    # Every agent asked about gets this fixture board: a missing one would be
+    # cloned from the real team branch, and the test would read live locks.
+    board = (
+        "## Tasks\n\n| # | MS | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |\n"
+        "|---|---|---|---|---|---|---|---|---|---|\n\n"
+        "## Locks\n\n| Resource | Owner | Since | Why |\n|---|---|---|---|\n"
+        "| emulator-5556 | agent-5 | 2026-10-03 13:00 | #1236 |\n| pubspec |  |  |  |\n\n## Handoffs\n"
+    )
     for agent in ("agent-5", "agent-2"):
         (tmp_path / agent).mkdir()
-        (tmp_path / agent / "TASKS.md").write_text(
-            "## Tasks\n\n| # | MS | Lane | Pri | Size | Title | Status | Owner | Blocked by | PR |\n"
-            "|---|---|---|---|---|---|---|---|---|---|\n\n"
-            "## Locks\n\n| Resource | Owner | Since | Why |\n|---|---|---|---|\n"
-            "| emulator-5556 | agent-5 | 2026-10-03 13:00 | #1236 |\n| pubspec |  |  |  |\n\n## Handoffs\n",
-            encoding="utf-8",
-        )
+        (tmp_path / agent / "TASKS.md").write_text(board, encoding="utf-8")
     monkeypatch.setenv("DP_TEAM_ROOT", str(tmp_path))
     assert video.holds("emulator-5556", "agent-5")
     assert not video.holds("emulator-5556", "agent-2")
@@ -270,3 +270,9 @@ def test_a_take_names_a_shared_learner_and_a_next_clip_keeps_it_1241(monkeypatch
     monkeypatch.setattr(video, "record", lambda script, serial, take, prepare: seen.append((take, prepare)))
     video.main(["say-termin", "--record", "--serial", "emulator-5556", "--takes", "ru", "--skip-prepare"])
     assert seen == [("ru", False)]
+
+
+def test_a_lock_check_never_clones_the_live_board_1389(tmp_path, monkeypatch):
+    monkeypatch.setenv("DP_TEAM_ROOT", str(tmp_path))
+    assert not video.holds("emulator-5556", "agent-3")
+    assert not (tmp_path / "agent-3").exists()

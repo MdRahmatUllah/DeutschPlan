@@ -4,8 +4,7 @@
     python tools/media/posts.py --week launch --monday 2026-11-02 --due   # the due-list only
 
 `--week` names a section of docs/marketing/calendar.md: -3, -2, -1, launch or
-rhythm (weeks 2 to 6), or an update, 1.2.0, whose drafts come from its own
-section of messaging.md. `--monday` is the real week's Monday: it names the file,
+rhythm (weeks 2 to 6). `--monday` is the real week's Monday: it names the file,
 `docs/marketing/posts/<yyyy>-<ww>.md` (ISO week), and heads it. The calendar's
 days stay as it writes them (T0, L−14): only the owner knows when T0 and L are.
 
@@ -34,10 +33,7 @@ ROOT = Path(__file__).resolve().parents[2]
 MARKETING = ROOT / "docs" / "marketing"
 POSTS = MARKETING / "posts"
 FACTS = json.loads((ROOT / "docs" / "05-dev-guide" / "site-facts.json").read_text(encoding="utf-8"))
-WEEKS = {"-3": "Week −3", "-2": "Week −2", "-1": "Week −1", "launch": "Launch week", "rhythm": "Weeks 2 to 6",
-         "1.2.0": "v1.2.0: what's new"}
-# An update's weeks take their audiences from its own section of messaging.md (#1236).
-UPDATES = {"1.2.0": "## What's new in 1.2.0"}
+WEEKS = {"-3": "Week −3", "-2": "Week −2", "-1": "Week −1", "launch": "Launch week", "rhythm": "Weeks 2 to 6"}
 LANGS = ("en", "de", "bn", "pl", "ru")
 TOKEN = re.compile(r"\{([a-z_]+(?:\.\w+)+)\}")
 BANGLA_DIGITS = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
@@ -121,8 +117,6 @@ def drafts(week: str, monday: datetime.date) -> tuple[str, list[str]]:
     """The week's file and its due-list."""
     calendar = (MARKETING / "calendar.md").read_text(encoding="utf-8")
     messaging = (MARKETING / "messaging.md").read_text(encoding="utf-8")
-    if week in UPDATES:
-        messaging = messaging[messaging.index(UPDATES[week]):]
     heading = WEEKS[week]
     table = rows(section(calendar, heading))
     year, number_, _ = monday.isocalendar()
