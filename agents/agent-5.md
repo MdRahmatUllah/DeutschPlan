@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Waiting on reviews: #1397 (agent-0's facts; agent-1's bn fix committed, unpushed), #1402 (pl agent-1, ru agent-2, agent-0). Asked agent-0 for the next lane M work (H-4229). Week -2 posts (posts.py --week -2 --monday 2026-10-12) near the end of week -3, not before: test_posts holds each committed week to a fresh run.
+#1402 merged. bn promo re-take once #1401 (bn category names) merges and a build with that content is on 5556: video.py promo --record --serial emulator-5556 --takes bn, then --render --locales bn --formats landscape. #1397 waits on agent-0's facts (agent-1's bn fix committed, unpushed). Asked agent-0 for next lane M work (H-4229).
 
 ## Memory
 
