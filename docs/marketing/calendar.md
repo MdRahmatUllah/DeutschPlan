@@ -111,7 +111,7 @@ Each week has the same shape, so the owner's time stays at about one sitting a d
 **The series:**
 - **Format 1** (#1241) goes through the words in `site-facts.json`'s `featured`, one a week.
 - **Format 2** (#1242) posts the answer the day after the question.
-- **Format 3** (#1243) builds a YouTube playlist that grows for months.
+- **Format 3** (#1243) builds a YouTube playlist that grows for months. The first six clips, their order and their titles: [`series/mock-exam-tasks.md`](series/mock-exam-tasks.md).
 - **Formats 4 and 5** (#1244, #1245) fill the remaining slots.
 
 **Community posts aren't weekly.** Each community gets its one approved post at launch. The weekly rhythm runs on Sogda's own Page and channels, which the links in that one post lead to.

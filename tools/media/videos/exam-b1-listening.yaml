@@ -1,0 +1,68 @@
+# #1243: format 3, "a mock-exam task in 15 seconds": B1 listening, from B1.1's
+# Mock 1, the real paper sat on emulator-5558. The learner (en, A1.1) has
+# A1.1, A2.1 and B1.1 introduced, so their mocks are open, and the attempt in
+# progress has every other answer given (the device state: the PR). The clip
+# ends on the submit, before the result screen: its score would be staged
+# (agent-0 on #1411). Captions are facts' tokens where they state a number.
+#   python tools/team.py device
+#   python tools/media/video.py exam-b1-listening --record
+locales: [en, bn, ru]
+audio: true
+takes:
+  en:
+    locales: [en, bn, ru]
+    prepare:
+      - "shell:am force-stop de.sogda.app"
+      - launch
+      - sleep5
+      - "shell:am start -a android.intent.action.VIEW -d 'sogda://word/40d490b785f2ddb1?speak=1' de.sogda.app"
+      - sleep6
+      - "shell:input keyevent BACK"
+      - sleep2
+      - "tap:Learn"
+      - sleep2
+      - "shell:input swipe 540 1700 540 1000 600"
+      - sleep2
+      - "tap:B1.1"
+      - sleep2
+      - "tap:Exams"
+      - sleep2
+      - "at:875,877"
+      - sleep4
+      - "at:540,936"
+      - sleep4
+      - "shell:input keyevent BACK"
+      - sleep2
+steps:
+  - sleep3
+  - "at:540,637"
+  - sleep1
+  - "at:540,936"
+  - "type:vorlegen"
+  - sleep1
+  - "at:1006,216"
+  - sleep1
+  - "at:540,2224"
+  - sleep1
+  - "at:754,1367"
+  - sleep5
+cut: [1.5, 14.7]
+captions:
+  - from: 0
+    to: 6.5
+    text:
+      en: "B1 listening: hear the word, write what you hear"
+      bn: "B1 লিসেনিং: শব্দটি শুনে লিখুন"
+      ru: "B1, аудирование: послушай слово и напиши, что услышал"
+  - from: 6.8
+    to: 10.5
+    text:
+      en: "The timer runs, and there's no feedback until the end"
+      bn: "টাইমার চলছে, আর শেষ না হওয়া পর্যন্ত কোনো ফিডব্যাক নেই"
+      ru: "Таймер идёт, а оценки — только в конце"
+  - from: 10.8
+    to: 13.2
+    text:
+      en: "Then the result, section by section"
+      bn: "তারপর ফলাফল, প্রতিটি অংশ আলাদা করে"
+      ru: "Потом — результат по каждому разделу"
