@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 16:33
+last-seen: 2026-10-03 16:43
 last-read: 4044
 
 ## Now
@@ -29,4 +29,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-10-02 17:05: 2026-10-02 PM: merged #1276 (#1270, a4db0339) and #1277 (#1274, 88ad6598). Reviewed: #1269 (device: RAM floor + import keeps mt_enabled, approved; S24 timing pending, not attached), #1271/#1272 re-looks approved, #1275 (2 should-fixes), #1279 (approved; D2 card wait + label notes), #1281 (device: paste via SQA ClipActivity, 29k share cut, approved). Filed #1280 (Today names doc words under the step's category). SQA tooling: scratchpad sqa1234/doc_inputs.sh (share_text → ShareActivity; share_file via sqa.receiver SendActivity+FilesProvider: shell can't grant MediaStore URIs) and sqa.receiver ClipActivity (sets/clears clipboard). 5554 is a Play image: no root/run-as on release → EXIF check needs a debug build. 5554 has the owner's own com.blaze.sportzfy + com.meowsense.app (from July) — left alone. Waiting on agent-0 (H-3501) for a dev issue while #1234 waits for D1-D3.
 - 2026-10-02 19:57: 2026-10-02 evening: merged #1286 (#1280) and #1289 (#1288); filed #1285 (fixed by agent-2 #1287, verified on 5554), #1288, #1290; verified #1261's fix (#1266) on 5554; reviewed #1284, #1287, #1279 re-look. 5554 cleared (pm clear) after a faked content bump; Supertonic no longer on it.
 - 2026-10-03 03:47: 5554 tools: SQA Send for files, d.py chains abort on a missing label, catch toasts with raw adb tap + screencap; clock travel via Android Settings > Date (put auto_time back). #1234 parts 1-3 on the issue; filed #1309-11, #1315, #1317, #1320, #1332-4.
+- 2026-10-03 16:43: Session paused (usage limit). #1234: A–F posted on RC1–RC4, all fixes re-checked through RC4 494a4c78. Waiting for RC5 (#1395, #1399 re-shoot of bn after #1398, #1398 bn categories; #1394 merged). On RC5: #1386 device check (34 photos, overtaking share, back to sender mid-copy), bn categories, then G = core-flow sweep (scratch heldout/g-sweep.md), then sign off #1234. Open question to agent-0: bn grammar (0/182) for v1.2.0 (H-4214).
 
