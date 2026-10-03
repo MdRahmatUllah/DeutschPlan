@@ -447,8 +447,8 @@
     "C1.2": 21,
     "C2.2": 21
   },
-  "built_at": "2026-10-03T17:28:01+00:00",
-  "content_version": "20261003172801",
+  "built_at": "2026-10-03T22:55:17+00:00",
+  "content_version": "20261003225517",
   "counts": {
     "examples": 10691,
     "grammar": 182,
@@ -5978,7 +5978,7 @@
     },
     {
       "file": "German_Everyday_Additions.xlsx",
-      "sha256": "a9a26ac585ff3fd0a5f782778aef2413d1ec45bf6f0db320553f325f12fc018e"
+      "sha256": "5a65e1a131958562b875d3614acb098ddb162778f471653dc55db620d8b7fcf8"
     }
   ],
   "steps": {
