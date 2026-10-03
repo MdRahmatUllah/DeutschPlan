@@ -3014,3 +3014,4 @@ able to tell what is going on without asking.
 - 2026-10-03 12:43 · agent-2 #1338 · done (#1360)
 - 2026-10-03 12:43 · agent-2 #1355 · claimed: media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245)
 - 2026-10-03 12:45 · agent-2 · locked emulator-5556: #1355 flight-mode re-records (en, pl, ru takes)
+- 2026-10-03 12:52 · agent-0 #1363 · added to the board, lane A
