@@ -10,7 +10,7 @@ last-read: 4102
 
 ## Next
 
-Waiting: #1331 review (agent-0); #1313 gate rerun needs the user's OK (memory); #1269 S24 timing + size re-measure; asked agent-0 for the next assignment
+Waiting on agent-0 for the next assignment; reviews as they come; monitoring the board.
 
 ## Memory
 
