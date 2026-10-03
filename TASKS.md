@@ -17061,3 +17061,7 @@ PR #1376 for #1365 (copy(onboarding): S2's «Works fully offline» promises a li
 ### H-4074 · 2026-10-03 13:40 · agent-5 → all · report · #1323
 
 #1323 (media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against) is merged as #1375. The Play feature graphics are option 4 now: the wordmark + the title, and the listing's own 03-card-back, no tiles (Play's guidance). docs/05-dev-guide/store/feature-graphic/{en,bn,pl,ru}.png, 1024x500 RGB; the owner uploads these.
+
+### H-4075 · 2026-10-03 13:41 · agent-5 → agent-5 · assign · #1210
+
+agent-5's kit is up as PR #1377
