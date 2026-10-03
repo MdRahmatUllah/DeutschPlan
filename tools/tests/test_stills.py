@@ -57,3 +57,37 @@ def test_png_size_reads_the_header():
 
 def test_renders_never_go_to_main():
     assert stills.MEDIA == ROOT.parent / "dp-media"
+
+
+
+@pytest.mark.parametrize("card", sorted(__import__("yaml").safe_load(stills.CARDS.read_text(encoding="utf-8"))))
+def test_every_card_fills_its_course_words_in_each_of_its_languages_1244(card):
+    for locale in stills.card_locales(card):
+        headline, line = stills.card_copy(card, locale)
+        assert headline and line and "{" not in headline + line, (card, locale)
+
+
+def test_a_card_takes_its_words_and_meaning_from_the_course_1244():
+    import sqlite3
+    db = sqlite3.connect(f"{stills.CONTENT.as_uri()}?mode=ro", uri=True)
+    meaning = db.execute("select meaning from word_meanings where word_uid = ? and lang = 'ru'", ("4a51e6804d593c0b",)).fetchone()[0]
+    article, german = db.execute("select article, german from words where uid = ?", ("4a51e6804d593c0b",)).fetchone()
+    db.close()
+    headline, line = stills.card_copy("termin-ru", "ru")
+    assert headline.startswith(f"{article} {german} ") and line.endswith(meaning)
+    page = stills.page_html("card", "ru", "square", card="termin-ru")
+    assert "«термин»" in page and meaning in page
+
+
+def test_a_card_with_a_word_the_course_lacks_is_refused_1244(tmp_path, monkeypatch):
+    (tmp_path / "cards.yaml").write_text("bad:\n  text:\n    en:\n      headline: '{word:ffffffffffffffff}'\n      line: x\n", encoding="utf-8")
+    monkeypatch.setattr(stills, "CARDS", tmp_path / "cards.yaml")
+    with pytest.raises(SystemExit):
+        stills.card_copy("bad", "en")
+
+
+def test_a_card_with_a_malformed_token_is_refused_1244(tmp_path, monkeypatch):
+    (tmp_path / "cards.yaml").write_text("bad:\n  text:\n    en:\n      headline: '{word:Termin}'\n      line: x\n", encoding="utf-8")
+    monkeypatch.setattr(stills, "CARDS", tmp_path / "cards.yaml")
+    with pytest.raises(SystemExit):
+        stills.card_copy("bad", "en")
