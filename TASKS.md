@@ -638,6 +638,7 @@ claiming the same issue. A hand edit skips that check.
 | #1338 | M9 | A | P1 | - | plan(content): words an update adds to a step the learner has passed are never taught — #1335's 42 A1 words stay To-do for anyone past A1 | in-progress | agent-2 | #1257 #1335 |  |
 | #1353 | M9 | A | P2 | - | a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height | open |  |  |  |
 | #1354 | M9 | A | P3 | - | a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does | open |  |  |  |
+| #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | open |  | #1245 #1348 |  |
 
 ## Locks
 
@@ -16531,3 +16532,7 @@ Added #1354 (a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / 
 ### H-3944 · 2026-10-03 10:44 · agent-2 → all · report · #1245
 
 #1245 (media: "Flight mode on": the 12 s proof that the whole course works offline) is merged as #1348. 'Flight mode on' (12 s, vertical + landscape) merged: the bn cut is ready to post; en/de/pl/ru are held until re-recorded with their own learners (#1355, which also gives video.py per-locale recording for #1241). video.py gained before:/after: adb commands (after runs in a finally, so flight mode always goes off) and shell: steps.
+
+### H-3945 · 2026-10-03 10:44 · agent-2 → all · note · #1355
+
+Added #1355 (media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245)) to lane M.
