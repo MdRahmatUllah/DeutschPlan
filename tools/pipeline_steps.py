@@ -1176,7 +1176,10 @@ def gate_languages(
     language ships when it is 100 % complete in every part it has, meaning
     and pronunciation always among them; one that is not is held back, and
     `--allow-partial <code>` ([allow_partial]) builds it anyway, for testing.
-    English always ships: it is the course's own text.
+    English always ships: it is the course's own text. English and Bangla
+    ship a part they never had (English's guide, #1099; Bangla's grammar,
+    #1403) only once it is complete, and are never held back for it: a blank
+    Bangla rule must not take Bangla's meanings out of the course.
     """
     allow_partial = set(allow_partial)
     if allow_partial - set(found):
@@ -1208,16 +1211,19 @@ def gate_languages(
                 short.append(f"{book}: {', '.join(gaps)}")
 
         held = ""
-        if language.code == "en" and short and "en" not in allow_partial:
-            # #1099: English always ships (it is the course's own text), but a part
-            # it never had, as the pronunciation guide, only once it is complete.
-            new_parts = parts - {part for part, code in LEGACY_FIELDS if code == "en"}
-            partial = sorted(part for part in new_parts if totals[part][0] < totals[part][1])
+        own = {part for part, code in LEGACY_FIELDS if code == language.code}
+        if language.code in ("en", "bn") and short and language.code not in allow_partial:
+            # #1099, #1403: a part the course's own language never had, as
+            # English's guide or Bangla's grammar, only once it is complete.
+            partial = sorted(part for part in parts - own if totals[part][0] < totals[part][1])
             for row in (*words, *grammar):
                 for part in partial:
-                    row.texts.pop((part, "en"), None)
+                    row.texts.pop((part, language.code), None)
             if partial:
                 held = "; " + ", ".join(PART_NAMES[part] for part in partial) + " held back"
+                # Bangla's own columns gate it as before.
+                if language.code == "bn":
+                    short = [] if all(totals[p][0] == totals[p][1] for p in own & parts) else short
         complete = language.code == "en" or not short
         if complete:
             verdict = "ships" + held

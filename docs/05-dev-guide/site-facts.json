@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "content_version": "20261003164457",
+ "content_version": "20261003172801",
  "app": {
   "version": "1.1.0",
   "package": "de.sogda.app",
@@ -42,7 +42,8 @@
   "grammar_in": [
    "en",
    "ru",
-   "pl"
+   "pl",
+   "bn"
   ]
  },
  "mock_exam": {
@@ -182,6 +183,7 @@
      "uid": "8fa9a1fcc61340d5",
      "topic": {
       "en": "Pronunciation & Sie vs du",
+      "bn": "উচ্চারণ; Sie ও du",
       "pl": "Wymowa; Sie i du",
       "ru": "Произношение; Sie и du"
      }
@@ -190,6 +192,7 @@
      "uid": "3a28d924c8b52e20",
      "topic": {
       "en": "Personal pronouns + sein",
+      "bn": "ব্যক্তিবাচক সর্বনাম + sein",
       "pl": "Zaimki osobowe + sein",
       "ru": "Личные местоимения + sein"
      }
@@ -198,6 +201,7 @@
      "uid": "aadbdf99db9671c4",
      "topic": {
       "en": "haben & regular present tense",
+      "bn": "haben ও নিয়মিত ক্রিয়ার বর্তমান কাল",
       "pl": "haben i czas teraźniejszy czasowników regularnych",
       "ru": "haben и настоящее время правильных глаголов"
      }
@@ -206,6 +210,7 @@
      "uid": "e128589449c03c31",
      "topic": {
       "en": "Vowel-change verbs",
+      "bn": "স্বর বদলানো ক্রিয়া",
       "pl": "Czasowniki ze zmianą samogłoski",
       "ru": "Глаголы с чередованием гласной"
      }
@@ -214,6 +219,7 @@
      "uid": "2052f0ee00750759",
      "topic": {
       "en": "W-questions & yes/no questions",
+      "bn": "W-প্রশ্ন ও হ্যাঁ/না প্রশ্ন",
       "pl": "Pytania szczegółowe (W-Fragen) i pytania tak/nie",
       "ru": "Вопросы с вопросительным словом и вопросы «да/нет»"
      }
@@ -222,6 +228,7 @@
      "uid": "d42bc08b8eeed4c8",
      "topic": {
       "en": "Word order: verb second (V2)",
+      "bn": "শব্দক্রম: ক্রিয়া দ্বিতীয় স্থানে (V2)",
       "pl": "Szyk zdania: czasownik na drugim miejscu (V2)",
       "ru": "Порядок слов: глагол на втором месте (V2)"
      }
@@ -230,6 +237,7 @@
      "uid": "f52d9384945e2894",
      "topic": {
       "en": "Clock time & dates",
+      "bn": "ঘড়ির সময় ও তারিখ",
       "pl": "Godziny i daty",
       "ru": "Время по часам и даты"
      }
@@ -238,6 +246,7 @@
      "uid": "feeed4df0b42c8ee",
      "topic": {
       "en": "Nouns, gender & articles",
+      "bn": "বিশেষ্য, লিঙ্গ ও আর্টিকেল",
       "pl": "Rzeczowniki, rodzaj i rodzajniki",
       "ru": "Существительные, род и артикли"
      }
@@ -246,6 +255,7 @@
      "uid": "6737b99fa0b0d961",
      "topic": {
       "en": "Plural forms",
+      "bn": "বহুবচনের রূপ",
       "pl": "Liczba mnoga",
       "ru": "Множественное число"
      }
@@ -254,6 +264,7 @@
      "uid": "5ca879096d9239cc",
      "topic": {
       "en": "Accusative (direct object)",
+      "bn": "Akkusativ (সরাসরি কর্ম)",
       "pl": "Biernik (dopełnienie bliższe)",
       "ru": "Винительный падеж (прямое дополнение)"
      }
@@ -262,6 +273,7 @@
      "uid": "6cd99d2240382cfa",
      "topic": {
       "en": "Negation: nicht vs kein",
+      "bn": "না-বোধক: nicht বনাম kein",
       "pl": "Przeczenie: nicht czy kein",
       "ru": "Отрицание: nicht и kein"
      }
@@ -756,6 +768,7 @@
      "uid": "a00b280d375c4e61",
      "topic": {
       "en": "Possessive articles",
+      "bn": "অধিকারবাচক আর্টিকেল",
       "pl": "Zaimki dzierżawcze",
       "ru": "Притяжательные местоимения"
      }
@@ -764,6 +777,7 @@
      "uid": "81b22a185c6f613b",
      "topic": {
       "en": "Separable verbs",
+      "bn": "বিচ্ছেদযোগ্য ক্রিয়া",
       "pl": "Czasowniki rozdzielnie złożone",
       "ru": "Глаголы с отделяемой приставкой"
      }
@@ -772,6 +786,7 @@
      "uid": "024c4b770eaf47d5",
      "topic": {
       "en": "Modal verbs",
+      "bn": "মোডাল ক্রিয়া",
       "pl": "Czasowniki modalne",
       "ru": "Модальные глаголы"
      }
@@ -780,6 +795,7 @@
      "uid": "9a9cf2aa97ab982f",
      "topic": {
       "en": "Local prepositions",
+      "bn": "স্থানবাচক পদান্বয়ী অব্যয়",
       "pl": "Przyimki miejsca",
       "ru": "Предлоги места"
      }
@@ -788,6 +804,7 @@
      "uid": "7e4bfa55d298edb8",
      "topic": {
       "en": "Dative case",
+      "bn": "Dativ",
       "pl": "Celownik (Dativ)",
       "ru": "Дательный падеж"
      }
@@ -796,6 +813,7 @@
      "uid": "fe3edb62be10b7ee",
      "topic": {
       "en": "Imperative",
+      "bn": "আদেশসূচক রূপ (Imperativ)",
       "pl": "Tryb rozkazujący",
       "ru": "Повелительное наклонение"
      }
@@ -804,6 +822,7 @@
      "uid": "f3f83a0b26299b69",
      "topic": {
       "en": "Perfekt with haben",
+      "bn": "haben দিয়ে Perfekt",
       "pl": "Perfekt z haben",
       "ru": "Перфект (Perfekt) с haben"
      }
@@ -812,6 +831,7 @@
      "uid": "97ae2951ee9b24bc",
      "topic": {
       "en": "Perfekt with sein",
+      "bn": "sein দিয়ে Perfekt",
       "pl": "Perfekt z sein",
       "ru": "Перфект (Perfekt) с sein"
      }
@@ -820,6 +840,7 @@
      "uid": "fd30dee61c40d99a",
      "topic": {
       "en": "Präteritum of sein, haben & modals",
+      "bn": "sein, haben ও মোডাল ক্রিয়ার Präteritum",
       "pl": "Präteritum czasowników sein, haben i modalnych",
       "ru": "Претерит (Präteritum) sein, haben и модальных глаголов"
      }
@@ -828,6 +849,7 @@
      "uid": "5cd214cabdf94ac7",
      "topic": {
       "en": "Pronouns in Akk & Dat, dative verbs",
+      "bn": "Akk ও Dat-এ সর্বনাম, Dativ নেওয়া ক্রিয়া",
       "pl": "Zaimki w bierniku i celowniku, czasowniki z celownikiem",
       "ru": "Местоимения в винительном и дательном падеже, глаголы с дательным падежом"
      }
@@ -836,6 +858,7 @@
      "uid": "e2573d1c2268733d",
      "topic": {
       "en": "Time prepositions & expressions",
+      "bn": "সময়বাচক পদান্বয়ী অব্যয় ও প্রকাশভঙ্গি",
       "pl": "Przyimki i określenia czasu",
       "ru": "Предлоги и выражения времени"
      }
@@ -1330,6 +1353,7 @@
      "uid": "b654b55956b118f3",
      "topic": {
       "en": "Adjective endings (nominative)",
+      "bn": "বিশেষণের শেষাংশ (Nominativ)",
       "pl": "Końcówki przymiotnika w mianowniku",
       "ru": "Окончания прилагательных (именительный падеж)"
      }
@@ -1338,6 +1362,7 @@
      "uid": "09a5abbd2c8199bb",
      "topic": {
       "en": "Subordinate clauses: weil, dass, wenn",
+      "bn": "অধীন বাক্য: weil, dass, wenn",
       "pl": "Zdania podrzędne: weil, dass, wenn",
       "ru": "Придаточные предложения: weil, dass, wenn"
      }
@@ -1346,6 +1371,7 @@
      "uid": "d94b9d0ff248d6c9",
      "topic": {
       "en": "Reflexive verbs",
+      "bn": "আত্মবাচক ক্রিয়া",
       "pl": "Czasowniki zwrotne",
       "ru": "Возвратные глаголы"
      }
@@ -1354,6 +1380,7 @@
      "uid": "9967522f0531832d",
      "topic": {
       "en": "Comparative & superlative",
+      "bn": "তুলনা: Komparativ ও Superlativ",
       "pl": "Stopień wyższy i najwyższy",
       "ru": "Сравнительная и превосходная степень"
      }
@@ -1362,6 +1389,7 @@
      "uid": "fe6a6cd5c705f0e6",
      "topic": {
       "en": "sollen, advice & modals in Präteritum",
+      "bn": "sollen, পরামর্শ ও Präteritum-এ মোডাল ক্রিয়া",
       "pl": "sollen, rady i czasowniki modalne w Präteritum",
       "ru": "sollen, советы и модальные глаголы в претерите (Präteritum)"
      }
@@ -1370,6 +1398,7 @@
      "uid": "3fb7be2c488064d1",
      "topic": {
       "en": "Adjective endings (accusative & dative)",
+      "bn": "বিশেষণের শেষাংশ (Akkusativ ও Dativ)",
       "pl": "Końcówki przymiotnika w bierniku i celowniku",
       "ru": "Окончания прилагательных (винительный и дательный падеж)"
      }
@@ -1378,6 +1407,7 @@
      "uid": "1c9f02a0204dbfbf",
      "topic": {
       "en": "Konjunktiv II: polite requests & wishes",
+      "bn": "Konjunktiv II: ভদ্র অনুরোধ ও ইচ্ছা",
       "pl": "Konjunktiv II: uprzejme prośby i życzenia",
       "ru": "Сослагательное наклонение (Konjunktiv II): вежливые просьбы и желания"
      }
@@ -1386,6 +1416,7 @@
      "uid": "74b0590bc4eb3110",
      "topic": {
       "en": "Two-way prepositions (Wechselpräpositionen)",
+      "bn": "দুই দিকের পদান্বয়ী অব্যয় (Wechselpräpositionen)",
       "pl": "Przyimki dwuprzypadkowe (Wechselpräpositionen)",
       "ru": "Предлоги двойного управления (Wechselpräpositionen)"
      }
@@ -1394,6 +1425,7 @@
      "uid": "b646c097bb98d405",
      "topic": {
       "en": "Genitive",
+      "bn": "Genitiv",
       "pl": "Dopełniacz (Genitiv)",
       "ru": "Родительный падеж (Genitiv)"
      }
@@ -1402,6 +1434,7 @@
      "uid": "d6226bff7f6cf9ff",
      "topic": {
       "en": "Infinitive with zu",
+      "bn": "zu সহ Infinitiv",
       "pl": "Bezokolicznik z zu",
       "ru": "Инфинитив с zu"
      }
@@ -1896,6 +1929,7 @@
      "uid": "431ab41f86ccb6ef",
      "topic": {
       "en": "Verbs with prepositions & da-/wo-compounds",
+      "bn": "পদান্বয়ী অব্যয়সহ ক্রিয়া ও da-/wo-যুক্ত শব্দ",
       "pl": "Czasowniki z przyimkami, zaimki przysłowne da-/wo-",
       "ru": "Глаголы с предлогами и местоименные наречия da-/wo-"
      }
@@ -1904,6 +1938,7 @@
      "uid": "7b560a1294c77df2",
      "topic": {
       "en": "Indirect questions",
+      "bn": "পরোক্ষ প্রশ্ন",
       "pl": "Pytania zależne",
       "ru": "Косвенные вопросы"
      }
@@ -1912,6 +1947,7 @@
      "uid": "e21f09b05dda1ec3",
      "topic": {
       "en": "Futur I & plans",
+      "bn": "Futur I ও পরিকল্পনা",
       "pl": "Futur I i plany",
       "ru": "Будущее время (Futur I) и планы"
      }
@@ -1920,6 +1956,7 @@
      "uid": "c78b96d37f578e82",
      "topic": {
       "en": "Ordinal numbers & dates",
+      "bn": "পূরণবাচক সংখ্যা ও তারিখ",
       "pl": "Liczebniki porządkowe i daty",
       "ru": "Порядковые числительные и даты"
      }
@@ -1928,6 +1965,7 @@
      "uid": "973ed862788b8a28",
      "topic": {
       "en": "Relative clauses",
+      "bn": "সম্বন্ধবাচক উপবাক্য (Relativsätze)",
       "pl": "Zdania względne",
       "ru": "Определительные придаточные предложения"
      }
@@ -1936,6 +1974,7 @@
      "uid": "96b67d518a98824b",
      "topic": {
       "en": "Connectors: 3 word-order groups",
+      "bn": "সংযোজক: শব্দক্রমের ৩টি দল",
       "pl": "Spójniki: trzy grupy szyku zdania",
       "ru": "Союзы и связующие слова: 3 группы по порядку слов"
      }
@@ -1944,6 +1983,7 @@
      "uid": "9cf11ac2dd84ef26",
      "topic": {
       "en": "als / wenn / nachdem / bevor / während",
+      "bn": "als / wenn / nachdem / bevor / während",
       "pl": "als / wenn / nachdem / bevor / während",
       "ru": "Союзы времени: als / wenn / nachdem / bevor / während"
      }
@@ -1952,6 +1992,7 @@
      "uid": "89634e53c6eb5ea9",
      "topic": {
       "en": "Passive (Präsens)",
+      "bn": "কর্মবাচ্য (Passiv, Präsens)",
       "pl": "Strona bierna (Präsens)",
       "ru": "Пассив (страдательный залог) в настоящем времени (Präsens)"
      }
@@ -1960,6 +2001,7 @@
      "uid": "963b65d56e8fa5b5",
      "topic": {
       "en": "Plusquamperfekt",
+      "bn": "Plusquamperfekt",
       "pl": "Plusquamperfekt (czas zaprzeszły)",
       "ru": "Плюсквамперфект (Plusquamperfekt)"
      }
@@ -1968,6 +2010,7 @@
      "uid": "7fc3c51b43cb30d1",
      "topic": {
       "en": "A2 review",
+      "bn": "A2 পুনরালোচনা",
       "pl": "Powtórka A2",
       "ru": "Повторение A2"
      }
@@ -2462,6 +2505,7 @@
      "uid": "08c04e0371e276aa",
      "topic": {
       "en": "Konjunktiv II past & irreal conditions",
+      "bn": "অতীতের Konjunktiv II ও অবাস্তব শর্ত",
       "pl": "Konjunktiv II czasu przeszłego i zdania warunkowe nierzeczywiste",
       "ru": "Сослагательное наклонение (Konjunktiv II) в прошедшем времени и нереальные условия"
      }
@@ -2470,6 +2514,7 @@
      "uid": "2998513b58c872a1",
      "topic": {
       "en": "Passive (past) & Zustandspassiv",
+      "bn": "অতীতের কর্মবাচ্য ও Zustandspassiv",
       "pl": "Strona bierna w czasie przeszłym i strona bierna stanu (Zustandspassiv)",
       "ru": "Пассив в прошедшем времени и пассив состояния (Zustandspassiv)"
      }
@@ -2478,6 +2523,7 @@
      "uid": "c6511ff9da960f88",
      "topic": {
       "en": "n-Deklination",
+      "bn": "n-Deklination",
       "pl": "Odmiana słaba rzeczowników (n-Deklination)",
       "ru": "Слабое склонение существительных (n-Deklination)"
      }
@@ -2486,6 +2532,7 @@
      "uid": "9afa2a872fc0af6b",
      "topic": {
       "en": "Relative clauses with prepositions & wo",
+      "bn": "পদান্বয়ী অব্যয় ও wo সহ সম্বন্ধবাচক উপবাক্য",
       "pl": "Zdania względne z przyimkami i z wo",
       "ru": "Определительные придаточные предложения с предлогами и wo"
      }
@@ -2494,6 +2541,7 @@
      "uid": "9a5bc6f190609f52",
      "topic": {
       "en": "Adjective declension (full) & participles as adjectives",
+      "bn": "বিশেষণের পূর্ণ রূপান্তর ও বিশেষণ হিসেবে Partizip",
       "pl": "Odmiana przymiotnika (pełna) i imiesłowy jako przymiotniki",
       "ru": "Склонение прилагательных (полностью) и причастия в роли прилагательных"
      }
@@ -2502,6 +2550,7 @@
      "uid": "e73306c4d3871d0d",
      "topic": {
       "en": "um…zu, ohne…zu, (an)statt…zu, damit",
+      "bn": "um…zu, ohne…zu, (an)statt…zu, damit",
       "pl": "um…zu, ohne…zu, (an)statt…zu, damit",
       "ru": "Конструкции um…zu, ohne…zu, (an)statt…zu и союз damit"
      }
@@ -2510,6 +2559,7 @@
      "uid": "2872f17d240d7f59",
      "topic": {
       "en": "Indirect speech (recognition)",
+      "bn": "পরোক্ষ উক্তি (চিনতে পারা)",
       "pl": "Mowa zależna (rozpoznawanie)",
       "ru": "Косвенная речь (распознавание)"
      }
@@ -2518,6 +2568,7 @@
      "uid": "0a61b3574c649412",
      "topic": {
       "en": "Genitive prepositions",
+      "bn": "Genitiv নেওয়া পদান্বয়ী অব্যয়",
       "pl": "Przyimki z dopełniaczem",
       "ru": "Предлоги с родительным падежом"
      }
@@ -2526,6 +2577,7 @@
      "uid": "14b3115c79e441b5",
      "topic": {
       "en": "Word formation & nominalisation",
+      "bn": "শব্দগঠন ও বিশেষ্যকরণ",
       "pl": "Słowotwórstwo i nominalizacja",
       "ru": "Словообразование и субстантивация"
      }
@@ -2534,6 +2586,7 @@
      "uid": "35140c34a3e8ddf1",
      "topic": {
       "en": "Formal letters & emails",
+      "bn": "আনুষ্ঠানিক চিঠি ও ইমেইল",
       "pl": "Listy i e-maile formalne",
       "ru": "Официальные письма (бумажные и электронные)"
      }
@@ -3028,6 +3081,7 @@
      "uid": "65520765470452ea",
      "topic": {
       "en": "Two-part connectors",
+      "bn": "দুই অংশের সংযোজক",
       "pl": "Spójniki dwuczęściowe",
       "ru": "Двойные союзы"
      }
@@ -3036,6 +3090,7 @@
      "uid": "3a694c62c296a79b",
      "topic": {
       "en": "lassen, brauchen…zu & modal alternatives",
+      "bn": "lassen, brauchen…zu ও মোডালের বিকল্প",
       "pl": "lassen, brauchen…zu i zamienniki czasowników modalnych",
       "ru": "lassen, brauchen…zu и замена модальных глаголов"
      }
@@ -3044,6 +3099,7 @@
      "uid": "17e9d8346bc64dd3",
      "topic": {
       "en": "Vermutung & modal particles",
+      "bn": "অনুমান (Vermutung) ও মোডাল পার্টিকেল",
       "pl": "Przypuszczenie (Vermutung) i partykuły modalne",
       "ru": "Предположение (Vermutung) и модальные частицы"
      }
@@ -3052,6 +3108,7 @@
      "uid": "cbcada1e32a79873",
      "topic": {
       "en": "Reflexive with dative & reciprocal",
+      "bn": "Dativ-সহ আত্মবাচক ও পারস্পরিক ক্রিয়া",
       "pl": "Zaimek zwrotny w celowniku i znaczenie wzajemne",
       "ru": "Возвратные глаголы с дательным падежом и взаимное действие"
      }
@@ -3060,6 +3117,7 @@
      "uid": "d79441ab077a770d",
      "topic": {
       "en": "Verbs with fixed prepositions (B1 list)",
+      "bn": "নির্দিষ্ট পদান্বয়ী অব্যয়সহ ক্রিয়া (B1 তালিকা)",
       "pl": "Czasowniki ze stałymi przyimkami (lista B1)",
       "ru": "Глаголы с устойчивыми предлогами (список B1)"
      }
@@ -3068,6 +3126,7 @@
      "uid": "831f3bb2263031ec",
      "topic": {
       "en": "Text connectors for writing",
+      "bn": "লেখার জন্য সংযোজক শব্দ",
       "pl": "Wyrażenia łączące w wypowiedzi pisemnej",
       "ru": "Связующие слова для письменной речи"
      }
@@ -3076,6 +3135,7 @@
      "uid": "e9abc995f2d1da95",
      "topic": {
       "en": "Speaking Redemittel",
+      "bn": "বলার জন্য Redemittel",
       "pl": "Zwroty przydatne w mówieniu (Redemittel)",
       "ru": "Речевые обороты для устной речи (Redemittel)"
      }
@@ -3084,6 +3144,7 @@
      "uid": "8e775672f6d238f8",
      "topic": {
       "en": "Exam strategy: Lesen",
+      "bn": "পরীক্ষার কৌশল: Lesen",
       "pl": "Strategia egzaminacyjna: Lesen (czytanie)",
       "ru": "Стратегия на экзамене: чтение (Lesen)"
      }
@@ -3092,6 +3153,7 @@
      "uid": "4d99f0ed96b8097e",
      "topic": {
       "en": "Exam strategy: Hören",
+      "bn": "পরীক্ষার কৌশল: Hören",
       "pl": "Strategia egzaminacyjna: Hören (słuchanie)",
       "ru": "Стратегия на экзамене: аудирование (Hören)"
      }
@@ -3100,6 +3162,7 @@
      "uid": "14590c8291f7d0f3",
      "topic": {
       "en": "Exam strategy: Schreiben & Sprechen",
+      "bn": "পরীক্ষার কৌশল: Schreiben ও Sprechen",
       "pl": "Strategia egzaminacyjna: Schreiben i Sprechen (pisanie i mówienie)",
       "ru": "Стратегия на экзамене: письмо (Schreiben) и говорение (Sprechen)"
      }
@@ -3594,6 +3657,7 @@
      "uid": "f44e3d94848d054a",
      "topic": {
       "en": "Satzklammer & Nebensatz (review)",
+      "bn": "Satzklammer ও Nebensatz (পুনরালোচনা)",
       "pl": "Ramka zdaniowa (Satzklammer) i zdanie podrzędne (powtórka)",
       "ru": "Рамочная конструкция и придаточное предложение (Satzklammer, повторение)"
      }
@@ -3602,6 +3666,7 @@
      "uid": "00eb8ef9e7b7bcbe",
      "topic": {
       "en": "Konjunktiv II (deepening)",
+      "bn": "Konjunktiv II (আরও গভীরে)",
       "pl": "Konjunktiv II (pogłębienie)",
       "ru": "Konjunktiv II (углублённо)"
      }
@@ -3610,6 +3675,7 @@
      "uid": "6754bc2602e1149e",
      "topic": {
       "en": "Konjunktiv I – indirekte Rede",
+      "bn": "Konjunktiv I – পরোক্ষ উক্তি",
       "pl": "Konjunktiv I – mowa zależna",
       "ru": "Konjunktiv I — косвенная речь"
      }
@@ -3618,6 +3684,7 @@
      "uid": "6f83db2705192f70",
      "topic": {
       "en": "Passiv in allen Zeiten",
+      "bn": "সব কালে Passiv",
       "pl": "Strona bierna we wszystkich czasach",
       "ru": "Пассив во всех временах (Passiv)"
      }
@@ -3626,6 +3693,7 @@
      "uid": "49509e11f09a615d",
      "topic": {
       "en": "Passiv mit Modalverben & Passiversatz",
+      "bn": "মোডাল ক্রিয়াসহ Passiv ও তার বিকল্প",
       "pl": "Strona bierna z czasownikami modalnymi i konstrukcje zastępcze (Passiversatz)",
       "ru": "Пассив с модальными глаголами и заменители пассива"
      }
@@ -3634,6 +3702,7 @@
      "uid": "b4724c839d56d564",
      "topic": {
       "en": "Vorgangspassiv vs. Zustandspassiv",
+      "bn": "Vorgangspassiv বনাম Zustandspassiv",
       "pl": "Strona bierna czynności (Vorgangspassiv) a strona bierna stanu (Zustandspassiv)",
       "ru": "Пассив действия и пассив состояния (Vorgangspassiv / Zustandspassiv)"
      }
@@ -3642,6 +3711,7 @@
      "uid": "447229ad1829d4d4",
      "topic": {
       "en": "Subjektive Modalverben",
+      "bn": "ব্যক্তিনিষ্ঠ মোডাল ক্রিয়া",
       "pl": "Subiektywne użycie czasowników modalnych",
       "ru": "Субъективные модальные глаголы"
      }
@@ -3650,6 +3720,7 @@
      "uid": "bdcb0fa8f831b374",
      "topic": {
       "en": "Partizipialattribute",
+      "bn": "Partizip দিয়ে বিশেষণ (Partizipialattribute)",
       "pl": "Przydawki imiesłowowe (Partizipialattribute)",
       "ru": "Причастные определения (Partizipialattribute)"
      }
@@ -3658,6 +3729,7 @@
      "uid": "fa7ec9b8b0f44b81",
      "topic": {
       "en": "Relativsätze (deepening)",
+      "bn": "সম্বন্ধবাচক উপবাক্য (আরও গভীরে)",
       "pl": "Zdania względne (pogłębienie)",
       "ru": "Относительные предложения (углублённо)"
      }
@@ -3666,6 +3738,7 @@
      "uid": "287915aece50b54b",
      "topic": {
       "en": "Nominalstil ↔ Verbalstil",
+      "bn": "Nominalstil ↔ Verbalstil",
       "pl": "Styl nominalny ↔ styl werbalny",
       "ru": "Именной и глагольный стиль (Nominalstil ↔ Verbalstil)"
      }
@@ -3674,6 +3747,7 @@
      "uid": "ea1ab568d1e51342",
      "topic": {
       "en": "Genitivpräpositionen",
+      "bn": "Genitiv নেওয়া পদান্বয়ী অব্যয়",
       "pl": "Przyimki z dopełniaczem (Genitivpräpositionen)",
       "ru": "Предлоги с родительным падежом (Genitivpräpositionen)"
      }
@@ -3682,6 +3756,7 @@
      "uid": "9d72d670e7050316",
      "topic": {
       "en": "Kausal & konsekutiv",
+      "bn": "কারণ ও ফল (kausal ও konsekutiv)",
       "pl": "Zdania przyczynowe i skutkowe",
       "ru": "Причина и следствие (kausal & konsekutiv)"
      }
@@ -3690,6 +3765,7 @@
      "uid": "1afcf59828207d01",
      "topic": {
       "en": "Konzessiv & adversativ",
+      "bn": "বিরোধ ও বৈপরীত্য (konzessiv ও adversativ)",
       "pl": "Zdania przyzwalające i przeciwstawne",
       "ru": "Уступка и противопоставление (konzessiv & adversativ)"
      }
@@ -3698,6 +3774,7 @@
      "uid": "20d08bc0d0ca17e3",
      "topic": {
       "en": "Final & modal",
+      "bn": "উদ্দেশ্য ও উপায় (final ও modal)",
       "pl": "Zdania celowe i zdania sposobu",
       "ru": "Цель и образ действия (final & modal)"
      }
@@ -3706,6 +3783,7 @@
      "uid": "9fa1edf9be200c97",
      "topic": {
       "en": "Temporal & Tempusfolge",
+      "bn": "সময় ও কালের ক্রম (Tempusfolge)",
       "pl": "Zdania czasowe i następstwo czasów",
       "ru": "Временные предложения и последовательность времён (Tempusfolge)"
      }
@@ -3714,6 +3792,7 @@
      "uid": "56296c8d35dc202d",
      "topic": {
       "en": "Konditional ohne wenn; sofern; je…desto",
+      "bn": "wenn ছাড়া শর্ত; sofern; je…desto",
       "pl": "Zdania warunkowe bez wenn; sofern; je…desto",
       "ru": "Условие без wenn; sofern; je … desto"
      }
@@ -3722,6 +3801,7 @@
      "uid": "fbf35161040f66e8",
      "topic": {
       "en": "Nomen-Verb-Verbindungen",
+      "bn": "Nomen-Verb-Verbindungen",
       "pl": "Połączenia rzeczownikowo-czasownikowe (Nomen-Verb-Verbindungen)",
       "ru": "Именно-глагольные сочетания (Nomen-Verb-Verbindungen)"
      }
@@ -3730,6 +3810,7 @@
      "uid": "4232c1ea32367643",
      "topic": {
       "en": "Präpositionalobjekt & Pronominaladverbien",
+      "bn": "Präpositionalobjekt ও Pronominaladverbien",
       "pl": "Dopełnienie przyimkowe i zaimki przysłowne (Pronominaladverbien)",
       "ru": "Предложное дополнение и местоименные наречия (Pronominaladverbien)"
      }
@@ -3738,6 +3819,7 @@
      "uid": "8d3035e4ad730fd3",
      "topic": {
       "en": "Infinitivsätze; lassen; doppelter Infinitiv",
+      "bn": "Infinitiv-বাক্য; lassen; দ্বৈত Infinitiv",
       "pl": "Konstrukcje bezokolicznikowe; lassen; podwójny bezokolicznik",
       "ru": "Инфинитивные обороты; lassen; двойной инфинитив"
      }
@@ -3746,6 +3828,7 @@
      "uid": "3925154239e578c6",
      "topic": {
       "en": "Adjektivdeklination komplett",
+      "bn": "বিশেষণের পূর্ণ রূপান্তর",
       "pl": "Odmiana przymiotnika – wszystkie typy",
       "ru": "Склонение прилагательных полностью (Adjektivdeklination)"
      }
@@ -4240,6 +4323,7 @@
      "uid": "ee702da8fbd7c4e6",
      "topic": {
       "en": "n-Deklination & Genitiv in Texten",
+      "bn": "n-Deklination ও লেখায় Genitiv",
       "pl": "Odmiana słaba rzeczowników (n-Deklination) i dopełniacz w tekstach",
       "ru": "Слабое склонение (n-Deklination) и родительный падеж в текстах"
      }
@@ -4248,6 +4332,7 @@
      "uid": "9d62cd59801e5240",
      "topic": {
       "en": "Wortbildung: Präfixe",
+      "bn": "শব্দগঠন: উপসর্গ",
       "pl": "Słowotwórstwo: przedrostki",
       "ru": "Словообразование: приставки"
      }
@@ -4256,6 +4341,7 @@
      "uid": "6baa66add4be8f67",
      "topic": {
       "en": "Wortbildung: Suffixe & Komposita",
+      "bn": "শব্দগঠন: প্রত্যয় ও যৌগিক শব্দ",
       "pl": "Słowotwórstwo: przyrostki i złożenia",
       "ru": "Словообразование: суффиксы и сложные слова"
      }
@@ -4264,6 +4350,7 @@
      "uid": "cb2b3f55c5b53405",
      "topic": {
       "en": "Futur I/II, Vermutung, Modalpartikeln",
+      "bn": "Futur I/II, অনুমান, মোডাল পার্টিকেল",
       "pl": "Futur I i II, przypuszczenie, partykuły modalne",
       "ru": "Futur I/II, предположение, модальные частицы"
      }
@@ -4272,6 +4359,7 @@
      "uid": "aa0bc7aee268f263",
      "topic": {
       "en": "Temporale Präpositionen schriftlich",
+      "bn": "লেখায় সময়বাচক পদান্বয়ী অব্যয়",
       "pl": "Przyimki czasowe w języku pisanym",
       "ru": "Временные предлоги в письменной речи"
      }
@@ -4280,6 +4368,7 @@
      "uid": "de6a65037751a221",
      "topic": {
       "en": "Vergleichssätze",
+      "bn": "তুলনামূলক বাক্য",
       "pl": "Zdania porównawcze",
       "ru": "Сравнительные предложения (Vergleichssätze)"
      }
@@ -4288,6 +4377,7 @@
      "uid": "5fd3dddde1a040f9",
      "topic": {
       "en": "Verben mit festen Präpositionen – Bedeutung",
+      "bn": "নির্দিষ্ট পদান্বয়ী অব্যয়সহ ক্রিয়া – অর্থ",
       "pl": "Czasowniki ze stałymi przyimkami – znaczenie",
       "ru": "Глаголы с устойчивыми предлогами — значение"
      }
@@ -4296,6 +4386,7 @@
      "uid": "4b3417bba8b9e610",
      "topic": {
       "en": "Textgrammatik: Verweise & Kohärenz",
+      "bn": "লেখার ব্যাকরণ: নির্দেশ ও সংহতি",
       "pl": "Gramatyka tekstu: odesłania i spójność",
       "ru": "Грамматика текста: отсылки и связность"
      }
@@ -4304,6 +4395,7 @@
      "uid": "c42b09c11d009c33",
      "topic": {
       "en": "Stil: unpersönliche Ausdrücke",
+      "bn": "শৈলী: নৈর্ব্যক্তিক প্রকাশ",
       "pl": "Styl: wyrażenia bezosobowe",
       "ru": "Стиль: безличные выражения"
      }
@@ -4312,6 +4404,7 @@
      "uid": "0c8a527a526712b2",
      "topic": {
       "en": "Formelle Briefe",
+      "bn": "আনুষ্ঠানিক চিঠি",
       "pl": "Listy formalne",
       "ru": "Официальные письма (Formelle Briefe)"
      }
@@ -4320,6 +4413,7 @@
      "uid": "949944ce3d4eb122",
      "topic": {
       "en": "Argumentation",
+      "bn": "যুক্তি উপস্থাপন",
       "pl": "Argumentacja",
       "ru": "Аргументация"
      }
@@ -4328,6 +4422,7 @@
      "uid": "9f9e008c20b6cb27",
      "topic": {
       "en": "Stellungnahme & Diskussion",
+      "bn": "মতামত প্রকাশ ও আলোচনা",
       "pl": "Zajęcie stanowiska i dyskusja",
       "ru": "Высказывание мнения и дискуссия (Stellungnahme & Diskussion)"
      }
@@ -4336,6 +4431,7 @@
      "uid": "5e2bf0a7abfe6e45",
      "topic": {
       "en": "Präsentation & Grafiken",
+      "bn": "উপস্থাপনা ও গ্রাফ",
       "pl": "Prezentacja i wykresy",
       "ru": "Презентация и графики"
      }
@@ -4344,6 +4440,7 @@
      "uid": "1670aadc5b60e64f",
      "topic": {
       "en": "Indirekte Rede: Fragen & Aufforderungen",
+      "bn": "পরোক্ষ উক্তি: প্রশ্ন ও নির্দেশ",
       "pl": "Mowa zależna: pytania i polecenia",
       "ru": "Косвенная речь: вопросы и побуждения"
      }
@@ -4352,6 +4449,7 @@
      "uid": "5558fa43a7cf8c15",
      "topic": {
       "en": "Redewendungen & Sprichwörter",
+      "bn": "বাগধারা ও প্রবাদ",
       "pl": "Zwroty idiomatyczne i przysłowia",
       "ru": "Идиомы и пословицы (Redewendungen & Sprichwörter)"
      }
@@ -4360,6 +4458,7 @@
      "uid": "db4c2cffb3ab0d78",
      "topic": {
       "en": "Wortstellung: Ausklammerung & Betonung",
+      "bn": "শব্দক্রম: Ausklammerung ও জোর",
       "pl": "Szyk zdania: wyłączenie poza ramę (Ausklammerung) i akcent",
       "ru": "Порядок слов: вынос за рамку и выделение"
      }
@@ -4368,6 +4467,7 @@
      "uid": "8b93ebe000229cad",
      "topic": {
       "en": "Prüfungstraining Lesen",
+      "bn": "পরীক্ষার প্রস্তুতি: Lesen",
       "pl": "Trening egzaminacyjny: Lesen (czytanie)",
       "ru": "Подготовка к экзамену: Lesen (чтение)"
      }
@@ -4376,6 +4476,7 @@
      "uid": "dabe417ef08ac443",
      "topic": {
       "en": "Prüfungstraining Hören & Schreiben",
+      "bn": "পরীক্ষার প্রস্তুতি: Hören ও Schreiben",
       "pl": "Trening egzaminacyjny: Hören i Schreiben (słuchanie i pisanie)",
       "ru": "Подготовка к экзамену: Hören и Schreiben (аудирование и письмо)"
      }
@@ -4384,6 +4485,7 @@
      "uid": "f972560631df2cef",
      "topic": {
       "en": "Prüfungstraining Sprechen; Modelltest 1",
+      "bn": "পরীক্ষার প্রস্তুতি: Sprechen; Modelltest 1",
       "pl": "Trening egzaminacyjny: Sprechen (mówienie); Modelltest 1",
       "ru": "Подготовка к экзамену: Sprechen (говорение); Modelltest 1"
      }
@@ -4392,6 +4494,7 @@
      "uid": "2ba3857698862c48",
      "topic": {
       "en": "Modelltest 2 & Lückenanalyse",
+      "bn": "Modelltest 2 ও দুর্বলতা বিশ্লেষণ",
       "pl": "Modelltest 2 i analiza luk",
       "ru": "Modelltest 2 и анализ пробелов"
      }
@@ -4886,6 +4989,7 @@
      "uid": "b8fabd9927f9c2dd",
      "topic": {
       "en": "Textgrammatik: Kohäsion und Thema-Rhema",
+      "bn": "লেখার ব্যাকরণ: সংহতি ও Thema-Rhema",
       "pl": "Gramatyka tekstu: spójność i układ temat–remat (Thema-Rhema)",
       "ru": "Грамматика текста: связность и тема–рема (Thema-Rhema)"
      }
@@ -4894,6 +4998,7 @@
      "uid": "26662caae4b15981",
      "topic": {
       "en": "Nominalstil ↔ Verbalstil bewusst steuern",
+      "bn": "Nominalstil ↔ Verbalstil সচেতনভাবে বাছাই",
       "pl": "Świadomy wybór: styl nominalny ↔ styl werbalny",
       "ru": "Осознанный выбор: именной ↔ глагольный стиль"
      }
@@ -4902,6 +5007,7 @@
      "uid": "57a3983414ab2c6f",
      "topic": {
       "en": "Erweiterte Partizipialattribute aktiv bilden",
+      "bn": "বিস্তৃত Partizipialattribute নিজে তৈরি করা",
       "pl": "Rozbudowane przydawki imiesłowowe – samodzielne tworzenie",
       "ru": "Распространённые причастные определения — активное использование"
      }
@@ -4910,6 +5016,7 @@
      "uid": "8001e28c085bafd2",
      "topic": {
       "en": "Partizipialkonstruktionen und verkürzte Nebensätze",
+      "bn": "Partizip-গঠন ও সংক্ষিপ্ত অধীন বাক্য",
       "pl": "Konstrukcje imiesłowowe i skrócone zdania podrzędne",
       "ru": "Причастные обороты и сокращённые придаточные"
      }
@@ -4918,6 +5025,7 @@
      "uid": "90d45b3d2c9e2787",
      "topic": {
       "en": "Funktionsverbgefüge im Schriftdeutsch",
+      "bn": "লিখিত জার্মানে Funktionsverbgefüge",
       "pl": "Konstrukcje z czasownikiem funkcyjnym (Funktionsverbgefüge) w języku pisanym",
       "ru": "Именно-глагольные сочетания (Funktionsverbgefüge) в письменной речи"
      }
@@ -4926,6 +5034,7 @@
      "uid": "edeec4d9b2617a02",
      "topic": {
       "en": "Passiversatzformen",
+      "bn": "Passiv-এর বিকল্প রূপ",
       "pl": "Konstrukcje zastępcze strony biernej (Passiversatz)",
       "ru": "Заменители пассива (Passiversatz)"
      }
@@ -4934,6 +5043,7 @@
      "uid": "5c3a12e5ac039804",
      "topic": {
       "en": "Konjunktiv I in längerer indirekter Rede",
+      "bn": "দীর্ঘ পরোক্ষ উক্তিতে Konjunktiv I",
       "pl": "Konjunktiv I w dłuższej mowie zależnej",
       "ru": "Konjunktiv I в развёрнутой косвенной речи"
      }
@@ -4942,6 +5052,7 @@
      "uid": "bcff3f0afa3ecd83",
      "topic": {
       "en": "Konjunktiv II: Distanz, Höflichkeit, irreale Vergleiche",
+      "bn": "Konjunktiv II: দূরত্ব, ভদ্রতা, অবাস্তব তুলনা",
       "pl": "Konjunktiv II: dystans, uprzejmość, porównania nierzeczywiste",
       "ru": "Konjunktiv II: дистанция, вежливость, нереальные сравнения"
      }
@@ -4950,6 +5061,7 @@
      "uid": "4e03ce67e311e280",
      "topic": {
       "en": "Modalpartikeln präzise",
+      "bn": "মোডাল পার্টিকেলের সূক্ষ্ম ব্যবহার",
       "pl": "Partykuły modalne – precyzyjnie",
       "ru": "Модальные частицы — точно"
      }
@@ -4958,6 +5070,7 @@
      "uid": "8b02de770d94318a",
      "topic": {
       "en": "Subjektive Modalität",
+      "bn": "ব্যক্তিনিষ্ঠ মোডালিটি",
       "pl": "Modalność subiektywna",
       "ru": "Субъективная модальность"
      }
@@ -4966,6 +5079,7 @@
      "uid": "50adee1336c85d03",
      "topic": {
       "en": "Genitiv im gehobenen Stil",
+      "bn": "উঁচু শৈলীতে Genitiv",
       "pl": "Dopełniacz w stylu wysokim",
       "ru": "Родительный падеж в книжном стиле"
      }
@@ -4974,6 +5088,7 @@
      "uid": "8cc0a24a3ccdae30",
      "topic": {
       "en": "Präfixverben mit Bedeutungsnuancen",
+      "bn": "অর্থের সূক্ষ্ম ভিন্নতাসহ উপসর্গ-ক্রিয়া",
       "pl": "Czasowniki z przedrostkami – odcienie znaczeniowe",
       "ru": "Приставочные глаголы и оттенки значения"
      }
@@ -4982,6 +5097,7 @@
      "uid": "1415afbe5b55e7b3",
      "topic": {
       "en": "Mehrfachunterordnung steuern",
+      "bn": "একাধিক স্তরের অধীন বাক্য সামলানো",
       "pl": "Kontrola wielostopniowej podrzędności",
       "ru": "Управление многоступенчатым подчинением"
      }
@@ -4990,6 +5106,7 @@
      "uid": "cdc63ee2c1c18485",
      "topic": {
       "en": "Konnektoren der Schriftsprache",
+      "bn": "লিখিত ভাষার সংযোজক",
       "pl": "Wyrazy łączące (Konnektoren) języka pisanego",
       "ru": "Связки письменной речи (Konnektoren)"
      }
@@ -4998,6 +5115,7 @@
      "uid": "f31c75c5befbc211",
      "topic": {
       "en": "Satzstellung zur Fokussierung",
+      "bn": "গুরুত্ব বোঝাতে শব্দক্রম",
       "pl": "Szyk zdania a wyeksponowanie informacji",
       "ru": "Порядок слов для выделения"
      }
@@ -5006,6 +5124,7 @@
      "uid": "9b033723c13f3940",
      "topic": {
       "en": "Negation: Skopus und Teilnegation",
+      "bn": "না-বোধকতা: পরিধি ও আংশিক না-বোধকতা",
       "pl": "Przeczenie: zasięg negacji i przeczenie częściowe",
       "ru": "Отрицание: сфера действия и частичное отрицание"
      }
@@ -5014,6 +5133,7 @@
      "uid": "8f1dddcb67931cb1",
      "topic": {
       "en": "Vergleichs- und Proportionalsätze",
+      "bn": "তুলনা ও অনুপাতের বাক্য",
       "pl": "Zdania porównawcze i proporcjonalne",
       "ru": "Сравнительные и пропорциональные предложения"
      }
@@ -5022,6 +5142,7 @@
      "uid": "1c19f707e53cae4c",
      "topic": {
       "en": "Konzessive und restriktive Konstruktionen",
+      "bn": "স্বীকারমূলক ও সীমাবদ্ধকারী গঠন",
       "pl": "Konstrukcje przyzwalające i ograniczające",
       "ru": "Уступительные и ограничительные конструкции"
      }
@@ -5030,6 +5151,7 @@
      "uid": "6a790bc64df89eb1",
      "topic": {
       "en": "Nominalisierung und Informationsverdichtung",
+      "bn": "বিশেষ্যকরণ ও তথ্য সংকোচন",
       "pl": "Nominalizacja i kondensacja informacji",
       "ru": "Номинализация и сжатие информации"
      }
@@ -5038,6 +5160,7 @@
      "uid": "db78c7fc46980444",
      "topic": {
       "en": "Verweisstrukturen",
+      "bn": "নির্দেশক কাঠামো",
       "pl": "Struktury odsyłające",
       "ru": "Структуры отсылки"
      }
@@ -5532,6 +5655,7 @@
      "uid": "835014707955b450",
      "topic": {
       "en": "Fachsprachliche Syntax",
+      "bn": "পরিভাষাগত বাক্যগঠন (Fachsprachliche Syntax)",
       "pl": "Składnia języka specjalistycznego",
       "ru": "Синтаксис научной и профессиональной речи"
      }
@@ -5540,6 +5664,7 @@
      "uid": "e24ebcfe65ccb307",
      "topic": {
       "en": "Zitieren, Paraphrasieren, Referieren",
+      "bn": "উদ্ধৃতি, ভাবান্তর ও প্রতিবেদন",
       "pl": "Cytowanie, parafrazowanie, referowanie",
       "ru": "Цитирование, пересказ, реферирование"
      }
@@ -5548,6 +5673,7 @@
      "uid": "0cf9beba9e5a44c8",
      "topic": {
       "en": "Idiomatik kontrolliert einsetzen",
+      "bn": "বাগধারার নিয়ন্ত্রিত ব্যবহার",
       "pl": "Idiomy – świadomie i z umiarem",
       "ru": "Идиомы — осознанно и в меру"
      }
@@ -5556,6 +5682,7 @@
      "uid": "42cad9bcc2d15829",
      "topic": {
       "en": "Stilebenen unterscheiden",
+      "bn": "শৈলীর স্তর চেনা",
       "pl": "Rozróżnianie rejestrów stylistycznych",
       "ru": "Различение стилистических регистров"
      }
@@ -5564,6 +5691,7 @@
      "uid": "3deb0e40fd9579ca",
      "topic": {
       "en": "Textsorten: Erörterung und Zusammenfassung",
+      "bn": "লেখার ধরন: Erörterung ও সারসংক্ষেপ",
       "pl": "Rodzaje tekstów: rozprawka (Erörterung) i streszczenie (Zusammenfassung)",
       "ru": "Типы текстов: рассуждение (Erörterung) и резюме (Zusammenfassung)"
      }
@@ -5572,6 +5700,7 @@
      "uid": "da8f29899ebe6503",
      "topic": {
       "en": "Argumentationsaufbau",
+      "bn": "যুক্তির গঠন",
       "pl": "Budowa argumentacji",
       "ru": "Построение аргументации"
      }
@@ -5580,6 +5709,7 @@
      "uid": "86530b65c341e05d",
      "topic": {
       "en": "Präsentation C1",
+      "bn": "C1 উপস্থাপনা",
       "pl": "Prezentacja C1",
       "ru": "Презентация C1"
      }
@@ -5588,6 +5718,7 @@
      "uid": "ae3e80ad2b6b30c0",
      "topic": {
       "en": "Diskussion C1",
+      "bn": "C1 আলোচনা",
       "pl": "Dyskusja C1",
       "ru": "Дискуссия C1"
      }
@@ -5596,6 +5727,7 @@
      "uid": "aba4aaef9c26160f",
      "topic": {
       "en": "Hedging: absichern und abschwächen",
+      "bn": "Hedging: সতর্ক ও নরম করে বলা",
       "pl": "Hedging: asekuracja i łagodzenie sądów",
       "ru": "Хеджирование: оговорки и смягчение"
      }
@@ -5604,6 +5736,7 @@
      "uid": "320a6a48dda61181",
      "topic": {
       "en": "Präzision: Synonyme differenzieren",
+      "bn": "নির্ভুলতা: সমার্থক শব্দের পার্থক্য",
       "pl": "Precyzja: rozróżnianie synonimów",
       "ru": "Точность: различение синонимов"
      }
@@ -5612,6 +5745,7 @@
      "uid": "f1287da8b7ffab14",
      "topic": {
       "en": "Typische Interferenzfehler",
+      "bn": "সাধারণ Interferenz-ভুল",
       "pl": "Typowe błędy interferencyjne",
       "ru": "Типичные ошибки интерференции"
      }
@@ -5620,6 +5754,7 @@
      "uid": "67919948e94f0a46",
      "topic": {
       "en": "Komplexe Fachtexte erschließen",
+      "bn": "জটিল পরিভাষাগত লেখা বোঝা",
       "pl": "Rozumienie złożonych tekstów specjalistycznych",
       "ru": "Понимание сложных специальных текстов"
      }
@@ -5628,6 +5763,7 @@
      "uid": "a2f95c2a87028f28",
      "topic": {
       "en": "Hörverstehen C1",
+      "bn": "C1 শ্রবণ",
       "pl": "Rozumienie ze słuchu C1",
       "ru": "Аудирование C1"
      }
@@ -5636,6 +5772,7 @@
      "uid": "47fe7077a02392fc",
      "topic": {
       "en": "Schreiben C1",
+      "bn": "C1 লেখা",
       "pl": "Pisanie C1",
       "ru": "Письмо C1"
      }
@@ -5644,6 +5781,7 @@
      "uid": "13f757c8843bf794",
      "topic": {
       "en": "Sprechen C1",
+      "bn": "C1 বলা",
       "pl": "Mówienie C1",
       "ru": "Говорение C1"
      }
@@ -5652,6 +5790,7 @@
      "uid": "0c0593a8d26c45c5",
      "topic": {
       "en": "Eigene Texte überarbeiten",
+      "bn": "নিজের লেখা সংশোধন",
       "pl": "Poprawianie własnych tekstów",
       "ru": "Редактирование собственных текстов"
      }
@@ -5660,6 +5799,7 @@
      "uid": "b49bbdd3c7e07cb4",
      "topic": {
       "en": "Prüfungstraining Lesen",
+      "bn": "পরীক্ষার প্রস্তুতি: Lesen",
       "pl": "Trening egzaminacyjny: Lesen (czytanie)",
       "ru": "Подготовка к экзамену: Lesen (чтение)"
      }
@@ -5668,6 +5808,7 @@
      "uid": "3d5f18ff955bd8a5",
      "topic": {
       "en": "Prüfungstraining Hören und Schreiben",
+      "bn": "পরীক্ষার প্রস্তুতি: Hören ও Schreiben",
       "pl": "Trening egzaminacyjny: Hören i Schreiben (słuchanie i pisanie)",
       "ru": "Подготовка к экзамену: Hören и Schreiben (аудирование и письмо)"
      }
@@ -5676,6 +5817,7 @@
      "uid": "b753a7ad02a9d4cc",
      "topic": {
       "en": "Prüfungstraining Sprechen; Modelltest 1",
+      "bn": "পরীক্ষার প্রস্তুতি: Sprechen; Modelltest 1",
       "pl": "Trening egzaminacyjny: Sprechen (mówienie); Modelltest 1",
       "ru": "Подготовка к экзамену: Sprechen (говорение); Modelltest 1"
      }
@@ -5684,6 +5826,7 @@
      "uid": "579f5bd59ff87c4d",
      "topic": {
       "en": "Modelltest 2 und Lückenanalyse",
+      "bn": "Modelltest 2 ও দুর্বলতা বিশ্লেষণ",
       "pl": "Modelltest 2 i analiza luk",
       "ru": "Modelltest 2 и анализ пробелов"
      }
@@ -6178,6 +6321,7 @@
      "uid": "4ac62f2a3906d171",
      "topic": {
       "en": "Denotation und Konnotation",
+      "bn": "আভিধানিক অর্থ ও ব্যঞ্জনা",
       "pl": "Denotacja i konotacja",
       "ru": "Денотация и коннотация (Denotation und Konnotation)"
      }
@@ -6186,6 +6330,7 @@
      "uid": "69a3be09be521347",
      "topic": {
       "en": "Synonymdifferenzierung",
+      "bn": "সমার্থক শব্দের পার্থক্য",
       "pl": "Rozróżnianie synonimów",
       "ru": "Различение синонимов (Synonymdifferenzierung)"
      }
@@ -6194,6 +6339,7 @@
      "uid": "40638f3eec5f5201",
      "topic": {
       "en": "Modalpartikeln: Kombination und Stellung",
+      "bn": "মোডাল পার্টিকেল: সমন্বয় ও অবস্থান",
       "pl": "Partykuły modalne: łączenie i miejsce w zdaniu",
       "ru": "Модальные частицы: сочетание и позиция"
      }
@@ -6202,6 +6348,7 @@
      "uid": "3bc79bfa24d465e8",
      "topic": {
       "en": "Verbvalenz und seltene Rektionen",
+      "bn": "ক্রিয়ার ভ্যালেন্সি ও বিরল Rektion",
       "pl": "Walencja czasowników i rzadka rekcja",
       "ru": "Валентность глаголов и редкое управление"
      }
@@ -6210,6 +6357,7 @@
      "uid": "fd611b712dc40dae",
      "topic": {
       "en": "Präpositionen im gehobenen Stil",
+      "bn": "উঁচু শৈলীতে পদান্বয়ী অব্যয়",
       "pl": "Przyimki w stylu wysokim",
       "ru": "Предлоги высокого стиля"
      }
@@ -6218,6 +6366,7 @@
      "uid": "232b3cf16c1dac4b",
      "topic": {
       "en": "Vorfeld, Ausklammerung, Nachfeld",
+      "bn": "Vorfeld, Ausklammerung, Nachfeld",
       "pl": "Pole początkowe, wyniesienie poza ramkę, pole końcowe",
       "ru": "Первое поле, вынос за рамку, конечное поле (Vorfeld, Ausklammerung, Nachfeld)"
      }
@@ -6226,6 +6375,7 @@
      "uid": "c89d119ad3901274",
      "topic": {
       "en": "Stilebenen und Stilbruch",
+      "bn": "শৈলীর স্তর ও Stilbruch",
       "pl": "Poziomy stylu i zgrzyt stylistyczny",
       "ru": "Стилистические уровни и стилистический сбой (Stilebenen und Stilbruch)"
      }
@@ -6234,6 +6384,7 @@
      "uid": "dc447e0b249d602a",
      "topic": {
       "en": "Kollokationen erweitern",
+      "bn": "কোলোকেশন বাড়ানো",
       "pl": "Poszerzanie kolokacji",
       "ru": "Расширение сочетаемости (Kollokationen erweitern)"
      }
@@ -6242,6 +6393,7 @@
      "uid": "5c9be79181e59369",
      "topic": {
       "en": "Idiomatik: Bild und Gebrauchsgrenze",
+      "bn": "বাগধারা: চিত্রকল্প ও ব্যবহারের সীমা",
       "pl": "Idiomatyka: obraz i granice użycia",
       "ru": "Идиоматика: образ и границы употребления"
      }
@@ -6250,6 +6402,7 @@
      "uid": "30c00ccbf970bb51",
      "topic": {
       "en": "Sprichwörter und ihre Brechung",
+      "bn": "প্রবাদ ও তার ভাঙা রূপ",
       "pl": "Przysłowia i ich przekształcanie",
       "ru": "Пословицы и их обыгрывание (Sprichwörter und ihre Brechung)"
      }
@@ -6258,6 +6411,7 @@
      "uid": "a627a4252d103da6",
      "topic": {
       "en": "Litotes und Understatement",
+      "bn": "Litotes ও কম করে বলা",
       "pl": "Litota i niedopowiedzenie",
       "ru": "Литота и преуменьшение (Litotes und Understatement)"
      }
@@ -6266,6 +6420,7 @@
      "uid": "ed194d47e92fc71b",
      "topic": {
       "en": "Rhetorische Figuren",
+      "bn": "অলংকার",
       "pl": "Figury retoryczne",
       "ru": "Риторические фигуры"
      }
@@ -6274,6 +6429,7 @@
      "uid": "1d7c55f181efca3c",
      "topic": {
       "en": "Textsorten der Presse",
+      "bn": "সংবাদমাধ্যমের লেখার ধরন",
       "pl": "Gatunki prasowe",
       "ru": "Жанры прессы (Textsorten der Presse)"
      }
@@ -6282,6 +6438,7 @@
      "uid": "a17cf962f9717747",
      "topic": {
       "en": "Erzähltextanalyse",
+      "bn": "কথাসাহিত্য বিশ্লেষণ",
       "pl": "Analiza tekstu narracyjnego",
       "ru": "Анализ повествовательного текста (Erzähltextanalyse)"
      }
@@ -6290,6 +6447,7 @@
      "uid": "c491bc1b5673d841",
      "topic": {
       "en": "Wissenschaftssprache: Präzision und Hecken",
+      "bn": "বিজ্ঞানের ভাষা: নির্ভুলতা ও সতর্কতা",
       "pl": "Język naukowy: precyzja i asekuracja",
       "ru": "Научный язык: точность и оговорки (Präzision und Hecken)"
      }
@@ -6298,6 +6456,7 @@
      "uid": "cf8884625d75ff1b",
      "topic": {
       "en": "Rechtssprache entschlüsseln",
+      "bn": "আইনের ভাষার পাঠোদ্ধার",
       "pl": "Rozszyfrowywanie języka prawniczego",
       "ru": "Расшифровка юридического языка (Rechtssprache entschlüsseln)"
      }
@@ -6306,6 +6465,7 @@
      "uid": "432d952cfbfdc6f4",
      "topic": {
       "en": "Archaismen und poetische Formen",
+      "bn": "প্রাচীন ও কাব্যিক রূপ",
       "pl": "Archaizmy i formy poetyckie",
       "ru": "Архаизмы и поэтические формы"
      }
@@ -6314,6 +6474,7 @@
      "uid": "12ef0a5c4f4c8b12",
      "topic": {
       "en": "Anglizismen im Deutschen",
+      "bn": "জার্মানে ইংরেজি থেকে আসা শব্দ",
       "pl": "Anglicyzmy w niemieckim",
       "ru": "Англицизмы в немецком (Anglizismen im Deutschen)"
      }
@@ -6322,6 +6483,7 @@
      "uid": "1199b4b2b93d16c3",
      "topic": {
       "en": "Interferenzfehler abbauen",
+      "bn": "Interferenz-ভুল কমানো",
       "pl": "Eliminowanie błędów interferencji",
       "ru": "Устранение ошибок интерференции (Interferenzfehler abbauen)"
      }
@@ -6330,6 +6492,7 @@
      "uid": "0306dbad023fa131",
      "topic": {
       "en": "Umgangssprache: Struktur",
+      "bn": "কথ্য ভাষা: গঠন",
       "pl": "Język potoczny: struktura",
       "ru": "Разговорный язык: структура (Umgangssprache: Struktur)"
      }
@@ -6824,6 +6987,7 @@
      "uid": "37b6619d94a2d283",
      "topic": {
       "en": "Österreichisches und Schweizer Hochdeutsch",
+      "bn": "অস্ট্রিয়া ও সুইজারল্যান্ডের মান জার্মান",
       "pl": "Austriacki i szwajcarski niemiecki standardowy",
       "ru": "Австрийский и швейцарский литературный немецкий"
      }
@@ -6832,6 +6996,7 @@
      "uid": "e60083494c1dcf75",
      "topic": {
       "en": "Dialekt verstehen",
+      "bn": "আঞ্চলিক ভাষা বোঝা",
       "pl": "Rozumienie dialektów",
       "ru": "Понимание диалектов (Dialekt verstehen)"
      }
@@ -6840,6 +7005,7 @@
      "uid": "9fd5bd206f3a3011",
      "topic": {
       "en": "Jugendsprache: Mechanismen",
+      "bn": "তরুণদের ভাষা: কৌশল",
       "pl": "Język młodzieżowy: mechanizmy",
       "ru": "Молодёжный язык: механизмы (Jugendsprache: Mechanismen)"
      }
@@ -6848,6 +7014,7 @@
      "uid": "47de7fd9afafc243",
      "topic": {
       "en": "Neologismen und Zeitgeist",
+      "bn": "নতুন শব্দ ও Zeitgeist",
       "pl": "Neologizmy i duch czasu",
       "ru": "Неологизмы и дух времени (Neologismen und Zeitgeist)"
      }
@@ -6856,6 +7023,7 @@
      "uid": "afac657cf0db5f63",
      "topic": {
       "en": "Aussprache auf C2-Niveau",
+      "bn": "C2 স্তরে উচ্চারণ",
       "pl": "Wymowa na poziomie C2",
       "ru": "Произношение на уровне C2"
      }
@@ -6864,6 +7032,7 @@
      "uid": "cbb42e73d7108546",
      "topic": {
       "en": "Begriffsgeschichte",
+      "bn": "ধারণার ইতিহাস",
       "pl": "Historia pojęć",
       "ru": "История понятий (Begriffsgeschichte)"
      }
@@ -6872,6 +7041,7 @@
      "uid": "7578db24ae886828",
      "topic": {
       "en": "Wirtschaftsdiskurs kritisch lesen",
+      "bn": "অর্থনৈতিক আলোচনা সমালোচনামূলকভাবে পড়া",
       "pl": "Krytyczna lektura dyskursu gospodarczego",
       "ru": "Критическое чтение экономического дискурса"
      }
@@ -6880,6 +7050,7 @@
      "uid": "196971aa45e16b21",
      "topic": {
       "en": "Wissenschaftskommunikation",
+      "bn": "বিজ্ঞান যোগাযোগ",
       "pl": "Komunikacja naukowa",
       "ru": "Научная коммуникация (Wissenschaftskommunikation)"
      }
@@ -6888,6 +7059,7 @@
      "uid": "c0803e0143605236",
      "topic": {
       "en": "Essayistik",
+      "bn": "প্রবন্ধ রচনা (Essayistik)",
       "pl": "Eseistyka",
       "ru": "Эссеистика (Essayistik)"
      }
@@ -6896,6 +7068,7 @@
      "uid": "5529b68b16ca6e56",
      "topic": {
       "en": "Zeichensetzung als Stilmittel",
+      "bn": "শৈলীর উপাদান হিসেবে যতিচিহ্ন",
       "pl": "Interpunkcja jako środek stylistyczny",
       "ru": "Пунктуация как стилистическое средство"
      }
@@ -6904,6 +7077,7 @@
      "uid": "b97d71c8e551df37",
      "topic": {
       "en": "Zweifelsfälle der Kongruenz",
+      "bn": "কর্তা-ক্রিয়ার মিলের দ্বিধার ক্ষেত্র",
       "pl": "Wątpliwe przypadki zgody",
       "ru": "Спорные случаи согласования (Zweifelsfälle der Kongruenz)"
      }
@@ -6912,6 +7086,7 @@
      "uid": "a355465d95b0c3eb",
      "topic": {
       "en": "Genus- und Pluralschwankungen",
+      "bn": "লিঙ্গ ও বহুবচনের দোদুল্যমানতা",
       "pl": "Wahania rodzaju i liczby mnogiej",
       "ru": "Колебания рода и множественного числа"
      }
@@ -6920,6 +7095,7 @@
      "uid": "b9ad5ef67300606f",
      "topic": {
       "en": "Nominalkomposita",
+      "bn": "যৌগিক বিশেষ্য",
       "pl": "Złożenia rzeczownikowe",
       "ru": "Именные сложные слова (Nominalkomposita)"
      }
@@ -6928,6 +7104,7 @@
      "uid": "fca0919080cf8914",
      "topic": {
       "en": "Kohäsion auf Textsortenebene",
+      "bn": "লেখার ধরন অনুযায়ী সংহতি",
       "pl": "Spójność na poziomie gatunku",
       "ru": "Связность на уровне жанра (Kohäsion auf Textsortenebene)"
      }
@@ -6936,6 +7113,7 @@
      "uid": "54291bb5a725dc01",
      "topic": {
       "en": "Redigieren",
+      "bn": "সম্পাদনা (Redigieren)",
       "pl": "Redagowanie",
       "ru": "Редактирование (Redigieren)"
      }
@@ -6944,6 +7122,7 @@
      "uid": "bf445c748d83507d",
      "topic": {
       "en": "Sprechen auf C2-Niveau",
+      "bn": "C2 স্তরে বলা",
       "pl": "Mówienie na poziomie C2",
       "ru": "Говорение на уровне C2"
      }
@@ -6952,6 +7131,7 @@
      "uid": "4b85c70fa865687b",
      "topic": {
       "en": "Prüfungstraining Lesen (GDS)",
+      "bn": "পরীক্ষার প্রস্তুতি: Lesen (GDS)",
       "pl": "Trening egzaminacyjny: Lesen (czytanie, GDS)",
       "ru": "Подготовка к экзамену: Lesen (чтение, GDS)"
      }
@@ -6960,6 +7140,7 @@
      "uid": "917f6c2142854ad8",
      "topic": {
       "en": "Prüfungstraining Hören und Schreiben (GDS)",
+      "bn": "পরীক্ষার প্রস্তুতি: Hören ও Schreiben (GDS)",
       "pl": "Trening egzaminacyjny: Hören i Schreiben (słuchanie i pisanie, GDS)",
       "ru": "Подготовка к экзамену: Hören и Schreiben (аудирование и письмо, GDS)"
      }
@@ -6968,6 +7149,7 @@
      "uid": "5e271cb24b1d9fc0",
      "topic": {
       "en": "Prüfungstraining Sprechen; Modellsatz 1",
+      "bn": "পরীক্ষার প্রস্তুতি: Sprechen; Modellsatz 1",
       "pl": "Trening egzaminacyjny: Sprechen (mówienie); Modellsatz 1",
       "ru": "Подготовка к экзамену: Sprechen (говорение); Modellsatz 1"
      }
@@ -6976,6 +7158,7 @@
      "uid": "19bcb9602469f242",
      "topic": {
       "en": "Modellsatz 2 und Lückenanalyse",
+      "bn": "Modellsatz 2 ও দুর্বলতা বিশ্লেষণ",
       "pl": "Modellsatz 2 i analiza luk",
       "ru": "Modellsatz 2 и анализ пробелов"
      }

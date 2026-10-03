@@ -57,11 +57,13 @@ WORD_HEADERS = [
     *FIELDS.values(),
     *[f"{part} ({name})" for name in LANGUAGES.values() for part in LANGUAGE_PARTS.values()],
 ]
+#: The trackers' Grammar columns, which this book has too (it has no topics).
+#: Bangla's grammar has columns of its own (#1403), its words the legacy ones.
 GRAMMAR_HEADERS = [
     "Week", "Level", "Topic", "Rule", "Example (DE)", "Example (EN)", "Watch out",
     *[
         f"{part} ({name})"
-        for name in LANGUAGES.values()
+        for name in (*LANGUAGES.values(), "Bangla")
         for part in ("Topic", "Rule", "Example", "Watch out")
     ],
 ]

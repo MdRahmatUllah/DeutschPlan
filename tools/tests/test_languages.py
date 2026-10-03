@@ -246,6 +246,53 @@ class TestTheGate:
         assert all(("pronunciation", "en") in word.texts for word in words)
         assert report[0].endswith("pronunciations 180/180, ships")
 
+    @staticmethod
+    def bangla_grammar(russian, filled: int | None):
+        """The fixture's words and grammar, the first [filled] topics (all, for
+        None) with Bangla's four grammar texts (#1403)."""
+        from excel_to_sqlite import derive
+
+        sources = [read_workbook(russian / name) for name in BOOK_LEVELS]
+        derive(sources)
+        words = [word for source in sources for word in source.words]
+        grammar = [row for source in sources for row in source.grammar]
+        for row in grammar[:filled]:
+            for part in ("topic", "rule", "example", "watch_out"):
+                row.texts[(part, "bn")] = "বাংলা"
+        return words, grammar
+
+    BANGLA = {"bn": {"meaning", "pronunciation", "topic", "rule", "example", "watch_out"}}
+
+    def test_1403_a_partial_bangla_grammar_is_held_back_but_bangla_ships(self, russian):
+        from pipeline_steps import gate_languages
+
+        words, grammar = self.bangla_grammar(russian, 10)
+        shipped, report = gate_languages(words, grammar, self.BANGLA)
+        # A blank rule never takes Bangla's meanings out of the course.
+        assert "bn" in [language.code for language in shipped]
+        assert not any(("topic", "bn") in row.texts for row in grammar)
+        assert "grammar topics 10/36" in report[0]
+        assert report[0].endswith("ships; grammar examples, rules, grammar topics, watch-outs held back")
+
+    def test_1403_a_complete_bangla_grammar_ships(self, russian):
+        from pipeline_steps import gate_languages
+
+        words, grammar = self.bangla_grammar(russian, None)
+        shipped, report = gate_languages(words, grammar, self.BANGLA)
+        assert "bn" in [language.code for language in shipped]
+        assert all(row.texts[("rule", "bn")] == "বাংলা" for row in grammar)
+        assert "grammar topics 36/36" in report[0] and report[0].endswith(", ships")
+
+    def test_1403_bangla_missing_a_meaning_is_still_held_back(self, russian):
+        from pipeline_steps import gate_languages
+
+        words, grammar = self.bangla_grammar(russian, 10)
+        words[0].bangla = None
+        shipped, report = gate_languages(words, grammar, self.BANGLA)
+        # Its own columns gate it as before #1403.
+        assert "bn" not in [language.code for language in shipped]
+        assert "held back" in report[0]
+
     def test_1080_allow_partial_names_a_language_the_workbooks_carry(self, russian, tmp_path, capsys):
         out = tmp_path / "content.db"
         argv = ["--manifest", str(manifest(russian)), "--out", str(out), "--previous", str(tmp_path / "none")]
