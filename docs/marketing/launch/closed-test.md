@@ -113,7 +113,7 @@ One message per community or person. bn and pl had agent-1's native review, ru a
 
 > **Pomóż przetestować Sogdę, zanim trafi do Google Play**
 >
-> Tworzę Sogdę, aplikację z kursem niemieckiego offline na Androida: od A1 do C2 w {totals.steps} etapach, {totals.words} słów, {totals.grammar_topics} tematy gramatyczne i {totals.mock_exams} egzaminów próbnych. Znaczenia, tłumaczenia przykładów i reguły są po polsku, a wymowa jest zapisana polskimi literami. Bez konta.
+> Tworzę Sogdę, aplikację z kursem niemieckiego offline na Androida: od A1 do C2 w {totals.steps} etapach; słowa: {totals.words}, tematy gramatyczne: {totals.grammar_topics}, egzaminy próbne: {totals.mock_exams}. Znaczenia, tłumaczenia przykładów i reguły są po polsku, a wymowa jest zapisana polskimi literami. Bez konta.
 >
 > Zanim nowa aplikacja stanie się dostępna dla wszystkich, Google Play wymaga, by przez 14 dni testowali ją prawdziwi ludzie. Szukam osób, które uczą się niemieckiego i chcą korzystać z niej jako pierwsze, a potem powiedzieć mi, co nie działa albo czego brakuje.
 >
@@ -124,13 +124,13 @@ One message per community or person. bn and pl had agent-1's native review, ru a
 >
 > Potrzebny jest Android {app.min_android} lub nowszy. Dziękuję!
 
-*The tokens fill numbers, not forms (agent-1): «{totals.grammar_topics} tematy gramatyczne» holds while the count takes Polish's *few* form (ending in 2–4, but not 12–14); one ending in 0, 1 or 5–9, such as 185, needs «tematów gramatycznych». The other three hold for today's counts. A count that changes gets a native re-read.*
+*The tokens fill numbers, not forms, so Polish and Russian write a count as «label: count» («słowa: {totals.words}», «слов: {totals.words}»), which agrees with any number (agent-1, #1377). A typed «słów» after the count turns wrong whenever the count ends in 2–4 (not 12–14), which takes «słowa». `test_marketing_docs.py` stops a noun typed after a count.*
 
 ### ru
 
 > **Помоги протестировать Sogda до выхода в Google Play**
 >
-> Я делаю Sogda — приложение с офлайн-курсом немецкого для Android: от A1 до C2 за {totals.steps} этапов, {totals.words} слов, {totals.grammar_topics} грамматические темы и {totals.mock_exams} пробных экзаменов. Значения, примеры и правила — на русском, а произношение записано кириллицей. Без аккаунта.
+> Я делаю Sogda — приложение с офлайн-курсом немецкого для Android: от A1 до C2 за {totals.steps} этапов; слов: {totals.words}, грамматических тем: {totals.grammar_topics}, пробных экзаменов: {totals.mock_exams}. Значения, переводы примеров и правила — на русском, а произношение записано кириллицей. Без аккаунта.
 >
 > Прежде чем открыть новое приложение для всех, Google Play требует, чтобы его 14 дней тестировали живые люди. Ищу тех, кто учит немецкий, хочет первым попробовать Sogda, а потом рассказать, что не так или чего не хватает.
 >
