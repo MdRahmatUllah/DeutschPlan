@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:material_ui/material_ui.dart';
+import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/glass_capability.dart';
 import 'package:sogda/core/theme/sg_focusable.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
@@ -57,18 +58,17 @@ final class _Tint extends SgSurfaceKind {
 /// change a single screen file. Keep it that way: a screen that reaches for
 /// `BoxDecoration` itself is a screen that will need editing for the next mode.
 ///
-/// **Blur budget.** Under glass every panel is a `BackdropFilter`, and
-/// `accessibility-performance.md` caps a screen at three blur passes — header,
-/// one panel, tab bar. So the panels in a screen's list share one read of the
-/// backdrop (#709): `AuroraBackdrop` puts the screen in a [BackdropGroup], and
-/// a panel in a scroll view takes `BackdropFilter.grouped`. The engine then
-/// reads the backdrop once, at the first grouped panel it draws, and blurs it
-/// once if their blurs are equal.
+/// **Blur budget.** `accessibility-performance.md` caps a screen at three
+/// blur passes — header, one panel, tab bar — and L1 drew 19 (#709). A panel
+/// in a screen's list has only the aurora behind it, whose blobs are soft
+/// gradients that a blur leaves as they are: the glass goldens didn't change
+/// over a card. So it draws its frosted fill over the aurora with no
+/// `BackdropFilter` of its own.
 ///
-/// A grouped panel blurs that one read, not what was drawn after it, so a
-/// panel over something drawn later keeps a filter of its own: one outside a
-/// scroll view (a bar the list scrolls under), one inside another panel, and
-/// one in a sliver header (a band pinned over the rows).
+/// A panel over something else keeps its blur: one outside a scroll view (a
+/// bar the list scrolls under), one inside another panel, one in a sliver
+/// header (a band pinned over the rows), and one with no `AuroraBackdrop`
+/// under it (a sheet over the screen).
 class SgSurface extends StatefulWidget {
   const SgSurface({
     required this.child,
@@ -308,24 +308,20 @@ class _SgSurfaceState extends State<SgSurface> {
     );
   }
 
-  /// The screen's shared backdrop read when this panel may use it (#709),
-  /// its own otherwise: see the blur budget on [SgSurface].
+  /// The panel's blur, or none for a panel in a list on the aurora alone
+  /// (#709): see the blur budget on [SgSurface].
   Widget _backdropFilter(ImageFilter filter, {required Widget child}) {
     if (Scrollable.maybeOf(context) == null) {
       return BackdropFilter(filter: filter, child: child);
     }
-    var shares = true;
+    var onAurora = false;
     context.visitAncestorElements((ancestor) {
       final widget = ancestor.widget;
-      if (widget is SgSurface || widget is SliverPersistentHeader) {
-        shares = false;
-      }
-      // Nothing above the screen's group matters.
-      return shares && widget is! BackdropGroup;
+      if (widget is SgSurface || widget is SliverPersistentHeader) return false;
+      onAurora = widget is AuroraBackdrop;
+      return !onAurora;
     });
-    return shares
-        ? BackdropFilter.grouped(filter: filter, child: child)
-        : BackdropFilter(filter: filter, child: child);
+    return onAurora ? child : BackdropFilter(filter: filter, child: child);
   }
 }
 

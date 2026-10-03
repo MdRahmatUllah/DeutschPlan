@@ -383,7 +383,9 @@ surface renderer differ ([`theming.md`](../01-architecture/theming.md), ADR 11).
   glass it is a clipped `BackdropFilter` with a border and top highlight.
   Adding glass changed no screen file.
 - **Glass budget and fallback.** At most three blur layers on screen (header,
-  one panel, tab bar), so scrolling lists use `SgSurfaceKind.bar`.
+  one panel, tab bar), so scrolling lists use `SgSurfaceKind.bar`. A panel in
+  a screen's list blurs nothing: it has only the aurora's soft blobs behind
+  it, and draws its frosted fill over them (#709).
   `GlassCapability` falls back to a 92 %-opaque tint below Android 12 (API
   31), after 2 s of missed frame budgets, or when the OS asks to reduce
   transparency. `AuroraBackdrop` drifts its blobs on 18–24 s loops, with the
