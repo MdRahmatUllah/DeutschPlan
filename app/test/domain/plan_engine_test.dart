@@ -764,6 +764,31 @@ void main() {
       );
     });
 
+    test("#687 AN-7 a day topped up by the next step counts only the "
+        "course's words against daily_new, not the update queue's", () async {
+      store.wordsByStep
+        ..['A1.1'] = <String>['a1']
+        ..['A1.2'] = <String>['b1', 'b2', 'b3'];
+      final engine = engineWith(autoAdvance: false, updateDailyCap: 2);
+      expect((await engine.openDay(monday)).newToday, <String>[
+        'a1',
+        'u1',
+        'u2',
+      ]);
+      await engine.startNextStep(
+        monday,
+        dailyNew: 3,
+        studyDaysMask: PlanEngine.allDays,
+      );
+      expect((await engine.openDay(monday)).newToday, <String>[
+        'a1',
+        'u1',
+        'u2',
+        'b1',
+        'b2',
+      ]);
+    });
+
     test('a learner past their last step, with none under way, still gets '
         "them: agent-3's year learner (Step complete)", () async {
       final finished = store.enrollment!;
@@ -772,6 +797,24 @@ void main() {
         ..enrolled.add(finished);
       final plan = await engineWith(updateDailyCap: 3).openDay(monday);
       expect(plan.newToday, <String>['u1', 'u2', 'u3']);
+    });
+
+    test('with no step under way, which opens a day on every visit, a day '
+        'opened already takes none when reopened (BR-PLAN-04)', () async {
+      final finished = store.enrollment!;
+      store
+        ..enrollment = null
+        ..enrolled.add(finished)
+        ..updatedOn = monday;
+      final engine = engineWith(updateDailyCap: 3);
+      expect((await engine.openDay(monday)).newToday, isEmpty);
+      store.updatedOn = null;
+      expect((await engine.openDay(monday)).newToday, isEmpty);
+      expect((await engine.openDay(tuesday)).newToday, <String>[
+        'u1',
+        'u2',
+        'u3',
+      ]);
     });
 
     test('a missed day takes none, the backlog pause and a rest day hold '
