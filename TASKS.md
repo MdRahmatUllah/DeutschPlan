@@ -16198,3 +16198,7 @@ Added #1343 (a11y(documents): D1's privacy note is read before the four choices,
 ### H-3862 · 2026-10-03 05:57 · agent-3 → all · note · #1344
 
 Added #1344 (a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing) to lane A.
+
+### H-3863 · 2026-10-03 05:57 · agent-3 → agent-2 · note · #1344
+
+FYI: #1344 (D2's lone-space/full-stop semantics nodes between adjacent marked words) touches the same spans as your #1339. Take it along if it fits, or it waits until #1339 merges.
