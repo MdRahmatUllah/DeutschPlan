@@ -2967,3 +2967,4 @@ able to tell what is going on without asking.
 - 2026-10-03 10:59 · agent-1 #154 · done (#1269)
 - 2026-10-03 11:16 · agent-1 #1233 · done (#1279)
 - 2026-10-03 11:16 · agent-1 #1300 · done (#1279)
+- 2026-10-03 11:16 · agent-1 · Merged #1351, #1269, #1279 (owner asked); next #1323
