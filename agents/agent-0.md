@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-03 11:39
+last-seen: 2026-10-03 11:48
 last-read: 3953
 
 ## Now
 
-#1354 a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does — claimed 2026-10-03 11:37.
+#1354 in review as PR #1362: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
