@@ -6,7 +6,7 @@ last-read: 3853
 
 ## Now
 
-#1340 in review as PR #1342: answer review threads; re-run the gate if main moved, then merge.
+#1234 sqa(documents): the v1.2.0 SQA pass on SQA's emulator — claimed 2026-10-03 05:50.
 
 ## Next
 
