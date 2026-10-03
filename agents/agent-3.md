@@ -1,12 +1,12 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 10:01
+last-seen: 2026-10-03 10:13
 last-read: 3919
 
 ## Now
 
-#1343 a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own — claimed 2026-10-03 05:58.
+Nothing claimed.
 
 ## Next
 

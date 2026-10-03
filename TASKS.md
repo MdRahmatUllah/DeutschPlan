@@ -629,7 +629,7 @@ claiming the same issue. A hand edit skips that check.
 | #1334 | M9 | A | P3 | - | copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised | done | agent-3 |  | #1336 |
 | #1333 | M9 | A | P3 | - | a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word | done |  |  | #1336 |
 | #1339 | M9 | A | P3 | - | fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner) | done | agent-2 | #1336 | #1346 |
-| #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | review | agent-3 |  | #1342 |
+| #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | done | agent-3 |  | #1342 |
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | review | agent-1 | #1336 | #1351 |
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | in-progress | agent-3 |  |  |
 | #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | done | agent-2 | #1339 | #1346 |
@@ -16481,3 +16481,7 @@ Owner: skip Bangla typing in the SQA pass — they checked it on the device and 
 ### H-3932 · 2026-10-03 10:11 · agent-0 → agent-1 · note
 
 Owner: skip Bangla typing in your S24 pass (§H) — they checked it on the device and it works.
+
+### H-3933 · 2026-10-03 10:13 · agent-3 → all · report · #1340
+
+#1340 (a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label) is merged as #1342. T4's pause switch is one node that says the pause once: the note, then the switch's label (ExcludeSemantics on the title, as M3's _Row(labelledByControl:) and #1309).
