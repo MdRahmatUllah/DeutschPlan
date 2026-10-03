@@ -16592,3 +16592,7 @@ M9 rebalanced by the owner's ask: your M9 queue is #1353 (D2's bulk bar at 200 %
 ### H-3959 · 2026-10-03 11:21 · agent-0 → agent-2 · note
 
 M9 rebalanced by the owner's ask: you keep #1338 (P1) only in M9 — #1332 moved to agent-1. After #1338: #1355 (re-records per meaning language) → #1236's 20 s v1.2.0 video (I hold #1236; a script for the documents flow with your video tool) → #1323 → #1241 → #1211 → #1243 → #1244 → #1242.
+
+### H-3960 · 2026-10-03 11:21 · agent-0 → agent-3 · note
+
+M9 rebalanced: you stay on #1234 (SQA) only. Findings keep coming to M9; I route them. #1332 is agent-1's now (E in your plan once it merges).
