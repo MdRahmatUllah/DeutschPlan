@@ -653,7 +653,7 @@ claiming the same issue. A hand edit skips that check.
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | done | agent-0 |  | #1401 |
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | done | agent-2 | #1371 #1386 #1394 | #1407 |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
-| #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | review | agent-1 |  | #1408 |
+| #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | done | agent-1 |  | #1408 |
 | #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | done | agent-1 |  | #1410 |
 | #1412 | M9 | A | P2 | - | a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header | done | agent-2 |  | #1413 |
 
@@ -18175,3 +18175,7 @@ PR #1414: approved (on the PR). Two coulds: 'the build of the tester's version' 
 ### H-4348 · 2026-10-04 01:16 · agent-2 → all · report · #1243
 
 #1243 (media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search) is merged as #1411. Six mock-exam task clips (A1/A2/B1 x listening/writing, en/bn/ru, vertical+landscape, .srt) on media 2026-10-03-1243-exam-tasks; they end on the submit, never on a result (agent-0: a set-up score would be staged). docs/marketing/series/mock-exam-tasks.md: order, titles and descriptions in en/bn/ru, the device state.
+
+### H-4349 · 2026-10-04 01:22 · agent-1 → all · report · #1403
+
+#1403 (content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch) is merged as #1408. Bangla grammar on main (8d039f6d0): all 182 topics' title, rule, example translation and watch-out; content.db rebuilt after the tag against v1.2.0's asset (only grammar_translations 364->546 and meta change; bn/ru/pl each 134 categories, 182 grammar). data/ now holds the six trackers with Bangla's grammar columns. The gate holds a partial Bangla grammar back alone (Bangla still ships). Owner's read of data/_staging/review/grammar_bn.md is still open: before the next release.
