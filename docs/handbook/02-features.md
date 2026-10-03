@@ -724,7 +724,7 @@ The full table is in [`accessibility-performance.md`](../01-architecture/accessi
 | **A PDF's password, or a scanned PDF as text** | Sogda asks for no password; a scan has no text layer, so D1 sends it to the photos (`doc-import.md`) |
 | **Documents on iOS** | Out of v1.2.0's scope, as iOS is (epic #1219) |
 | **Bangla translations of example sentences and grammar rules** | The course has none in Bangla: Bangla learners read examples and rules in English (#598). Russian and Polish have their own since v1.1.0 |
-| **Category names in Bangla** | Course content, kept in English for Bangla learners (#425). Russian and Polish have theirs since v1.1.0 (#1128) |
+| **Category names in Bangla before v1.2.0** | Kept in English for Bangla learners in v1.0 and v1.1 (#425). v1.2.0 ships them (#1398, the owner, 2026-10-03), as v1.1.0 did Russian's and Polish's (#1128) |
 | **Speech recognition or scoring of speaking** | Speaking and writing are self-assessed with app checks (BR-EXAM-06) |
 | **Sync between devices, accounts, cloud backup** | Not a goal: moving progress is an export file (ADR 13) |
 | **A German UI (immersion mode)** | "German UI is a possible later immersion mode" ([`accessibility-performance.md`](../01-architecture/accessibility-performance.md), *Localisation*) |
