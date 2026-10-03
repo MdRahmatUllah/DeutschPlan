@@ -171,12 +171,14 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
       });
     }
     final run = _run;
+    // Read now: D1 may be gone when the copies come.
+    final photos = _pagePhotos;
     // Shared photos (#1332): their copies, read as chosen ones are.
     final images = await ref.read(sharedTextProvider).takeImages();
-    if (!mounted) return;
-    if (run != _run) {
-      // Cancelled while they came: the copies go unread (BR-DOC-05).
-      if (images != null) unawaited(_pagePhotos.discard(images.pages));
+    if (!mounted || run != _run) {
+      // Cancelled, overtaken or left while they came: the copies go unread
+      // (BR-DOC-05).
+      if (images != null) unawaited(photos.discard(images.pages));
       return;
     }
     // None could be copied: back to the choices.

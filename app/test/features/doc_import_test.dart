@@ -612,6 +612,57 @@ void main() {
       expect(find.text(l10n.docImportTakePhotos), findsOneWidget);
     });
 
+    testWidgets('#1386 a second share while the first is still copied: D1 '
+        "reads the second's pages only, and drops the first's late copies "
+        '(BR-DOC-05)', (tester) async {
+      const first = <String>['/s/01-a.jpg', '/s/02-b.jpg'];
+      const second = <String>['/s/01-c.jpg'];
+      final photos = FakePhotos(
+        pages: <String, OcrPage>{
+          for (final c in <String>[...first, ...second]) c: page('Seite.'),
+        },
+      );
+      final docs = FakeDocuments();
+      final copyingFirst = Completer<void>();
+      final shared = FakeShared(
+        null,
+        images: (pages: first, of: 2),
+        coming: 2,
+        copied: copyingFirst,
+      );
+      final router = await pump(
+        tester,
+        docs: docs,
+        photos: photos,
+        arrival: '1',
+        shared: shared,
+        settle: false,
+      );
+      await tester.pump();
+      expect(find.text(l10n.docImportReceiving(2)), findsOneWidget);
+
+      // The second share overtakes the first while it's copied.
+      final copyingSecond = Completer<void>();
+      shared
+        ..coming = 1
+        ..copied = copyingSecond;
+      router.go('/search/import?arrival=2');
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10n.docImportReceiving(1)), findsOneWidget);
+
+      shared.images = (pages: second, of: 1);
+      copyingSecond.complete();
+      await tester.pumpAndSettle();
+      // The first's copies come late, and go unread.
+      shared.images = (pages: first, of: 2);
+      copyingFirst.complete();
+      await tester.pumpAndSettle();
+      expect(photos.readPaths, second);
+      expect(docs.saved.single.pageCount, 1);
+      expect(photos.discarded, containsAll(first));
+    });
+
     testWidgets('#1386 shared photos none of which could be copied: back to '
         'the choices', (tester) async {
       final copying = Completer<void>();
@@ -1031,7 +1082,7 @@ class FakeShared implements SharedText {
 
   /// Shared photos still being copied (#1386): how many, until [copied].
   int coming;
-  final Completer<void>? copied;
+  Completer<void>? copied;
 
   @override
   Future<int> receiving() async => coming;
