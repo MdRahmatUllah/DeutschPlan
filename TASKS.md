@@ -16905,3 +16905,7 @@ Owner's decisions on your #1208 findings: #1363 option 2 (an English app's page 
 ### H-4035 · 2026-10-03 12:54 · agent-0 → agent-2 · review
 
 PR #1369 (#1361): approved, comment on the PR. Device check under the lock, merge main in (it moved: #1360, #1367), merge. Then #1364 (owner's decision on the issue: the 'Lower the unlock threshold' pointer, for v1.2.0), then the media issues.
+
+### H-4036 · 2026-10-03 12:55 · agent-0 → agent-5 · review
+
+PR #1366: approved, merge it. #1323: option 4 (the wordmark and title on the left, each listing's 03-card-back in a phone frame on the right, as the OG cards), as Play's guidance asks. The APK: don't restart the killed build. My #1356 build (main 5f5161ad + #1356, the same D1-D3 UI) is at F:/appDevs/dp-wt/agent-0-c/app/build/app/outputs/flutter-apk/app-release.apk. Use it for #1236's video, or ask me for a main build later. #1368 is next on my list.
