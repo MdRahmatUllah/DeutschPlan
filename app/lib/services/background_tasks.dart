@@ -293,37 +293,54 @@ Future<void> runInBackground(
 /// no app around it.
 @pragma('vm:entry-point')
 void backgroundDispatcher() {
-  Workmanager().executeTask((name, _) async {
-    final task = BackgroundTask.byId(name);
-    if (task == null) return true;
-    debugPrint('background: ${task.id}');
-    try {
-      const work = WorkmanagerWork();
-      await runInBackground(
-        task,
-        work: work,
-        // The one clock, read before any database is open.
-        clock: ProviderContainer().read(clockProvider),
-        run: (container) async {
-          final notifications = PlatformReminderNotifications();
-          // A tap is the app's to handle, in its own engine.
-          await notifications.init((_) {});
-          await runBackgroundTask(
-            task,
-            container,
-            notifications: notifications,
-            work: work,
-            widgets: const HomeWidgetStore(),
-          );
-        },
+  Future<bool>? running;
+  Workmanager().executeTask(
+    (name, _) => running = _runTask(name),
+    // #1356: WorkManager destroys this engine once a stopped run's handler
+    // returns: a REPLACE cancels the run (the app's at its start, or this
+    // task's own, queuing tomorrow's), and so may the system. Waiting for the
+    // run lets it close user.db first; an engine gone mid-run left its
+    // connection open beside the app's.
+    onTaskStopped: (name, reason) async {
+      debugPrint('background: $name stopped ($reason), finishing its run');
+      await running?.timeout(
+        const Duration(seconds: 8),
+        onTimeout: () => false,
       );
-      return true;
-    } on Object catch (error, stackTrace) {
-      debugPrint('background ${task.id}: $error\n$stackTrace');
-      // WorkManager retries it, later.
-      return false;
-    }
-  });
+    },
+  );
+}
+
+Future<bool> _runTask(String name) async {
+  final task = BackgroundTask.byId(name);
+  if (task == null) return true;
+  debugPrint('background: ${task.id}');
+  try {
+    const work = WorkmanagerWork();
+    await runInBackground(
+      task,
+      work: work,
+      // The one clock, read before any database is open.
+      clock: ProviderContainer().read(clockProvider),
+      run: (container) async {
+        final notifications = PlatformReminderNotifications();
+        // A tap is the app's to handle, in its own engine.
+        await notifications.init((_) {});
+        await runBackgroundTask(
+          task,
+          container,
+          notifications: notifications,
+          work: work,
+          widgets: const HomeWidgetStore(),
+        );
+      },
+    );
+    return true;
+  } on Object catch (error, stackTrace) {
+    debugPrint('background ${task.id}: $error\n$stackTrace');
+    // WorkManager retries it, later.
+    return false;
+  }
 }
 
 /// Whether user.db at [file] is at this build's schema, read without drift.

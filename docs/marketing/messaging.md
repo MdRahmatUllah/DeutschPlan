@@ -134,3 +134,62 @@ https://play.google.com/store/apps/details?id={app.package}&referrer=utm_source%
 | `<campaign>` | `launch` (weeks −2 to +1), then `w2` … `w6`, then `evergreen` |
 
 Until the app is on Play, every draft says `<play-link>`.
+
+## What's new in 1.2.0: learn from the German you meet (#1236)
+
+The story of the update: **learn the German you actually meet, on your phone, private.** The store notes are #1312's *What's new* (`store-listing.md`); the blocks below are for posts (`tools/media/posts.py --week 1.2.0`). Every promise is a *draft* until its native review, and the referrer's campaign is `v1.2.0`.
+
+What every 1.2.0 message keeps:
+- **Only what ships:** paste a text, share one from another app, choose a PDF, or photograph a letter. Sharing *photos* from another app isn't built yet (#1332), so no post says it.
+- **Private, in the store notes' words:** it reads on the phone, and "nothing leaves your phone". Hy-MT2's translation is an optional download, offered on phones with the memory for it, and then works on the phone (#154).
+- **No number for the daily limit:** the learner sets it, so we say "a daily limit of their own".
+- **Synthetic documents only** in every image and video, never a real person's letter.
+
+### 1. Bangla speakers (bn)
+
+- **Promise** (*draft*): যে জার্মান আপনি রোজ দেখেন, সেটাই শিখুন: চিঠির ছবি তুলুন বা লেখা পেস্ট করুন, Sogda আপনার অজানা শব্দগুলো লেভেল ধরে চিহ্নিত করবে। সবকিছু আপনার ফোনেই।
+  *(Learn the German you see every day: photograph a letter or paste a text, and Sogda marks the words you don't know yet, by level. All on your phone.)*
+- **Proof:**
+  1. Ausländerbehörde-এর চিঠি, ভাড়ার চুক্তি, চাকরির বিজ্ঞাপন: Sogda ফোনেই সেটা পড়ে, আর কোর্সের নতুন শব্দগুলো লেভেল ধরে চিহ্নিত করে।
+  2. যে শব্দগুলো বেছে নেবেন, সেগুলো যে বাক্যে পেয়েছেন সেই বাক্য আর বাংলা অর্থসহ আপনার পরিকল্পনায় যোগ হয়।
+  3. এগুলোর আলাদা দৈনিক সীমা আছে, তাই লম্বা চিঠিও আপনার দিনটা ভারী করে না।
+- **Call to action:** Google Play-তে Sogda আপডেট করুন, অথবা ইনস্টল করুন: sogda.de/bn।
+
+### 2. Russian speakers (ru)
+
+- **Promise** (*draft*): Учи тот немецкий, который встречаешь: сфотографируй письмо или вставь текст — Sogda отметит незнакомые слова по уровням. Всё остаётся на телефоне.
+  *(Learn the German you meet: photograph a letter or paste a text, and Sogda marks the unknown words by level. Everything stays on the phone.)*
+- **Proof:**
+  1. Письмо из Jobcenter, договор аренды, объявление о работе: Sogda читает такой текст прямо на телефоне и отмечает новые для тебя слова по уровням курса.
+  2. Выбранные слова попадают в план вместе с предложением из твоего текста и значением на русском.
+  3. У них свой дневной лимит, поэтому длинное письмо не перегрузит твой день.
+- **Call to action:** обнови Sogda в Google Play или установи с sogda.de/ru.
+
+### 3. Polish speakers (pl)
+
+- **Promise** (*draft*): Ucz się niemieckiego, który spotykasz na co dzień: zrób zdjęcie listu albo wklej tekst, a Sogda zaznaczy nieznane słowa według poziomu. Wszystko zostaje na telefonie.
+  *(Learn the German you meet every day: photograph a letter or paste a text, and Sogda marks the unknown words by level. Everything stays on the phone.)*
+- **Proof:**
+  1. List z urzędu, umowa najmu, ogłoszenie o pracy: Sogda czyta taki tekst na telefonie i zaznacza nowe słowa z kursu według poziomu.
+  2. Wybrane słowa trafiają do planu razem ze zdaniem z twojego tekstu i ze znaczeniem po polsku.
+  3. Mają własny dzienny limit, więc długi list nie zasypie ci dnia.
+- **Call to action:** zaktualizuj aplikację Sogda w Google Play albo ją zainstaluj: sogda.de/pl.
+
+### 4. English-speaking learners (en)
+
+- **Promise** (*draft*): Learn the German you actually meet: photograph a letter or paste a text, and Sogda marks the words you don't know yet, by level. On your phone, private.
+- **Proof:**
+  1. Paste a text, share one from another app, choose a PDF, or photograph a letter: Sogda reads it on the phone.
+  2. The words you pick join your plan with the sentence you met them in.
+  3. Optional, on phones with the memory for it: Hy-MT2 translates on the phone, for sentences and for words outside the course.
+- **Call to action:** update Sogda on Google Play, or install it: sogda.de/en.
+
+### 5. People in Germany who recommend (de)
+
+- **Promise** (*draft*): Lernende bringen ihre eigenen Texte mit: Brief fotografieren oder Text einfügen, und Sogda markiert die unbekannten Wörter nach Niveau. Alles bleibt auf dem Handy.
+  *(Learners bring their own texts: photograph a letter or paste a text, and Sogda marks the unknown words by level. Everything stays on the phone.)*
+- **Proof:**
+  1. Ein Brief vom Amt, ein Arbeitsvertrag, ein Text aus dem Unterricht: Sogda liest ihn auf dem Handy und markiert die neuen Wörter aus dem Kurs nach ihrem Niveau.
+  2. Die gewählten Wörter kommen mit ihrem Satz in den Lernplan, mit einem eigenen Tageslimit.
+  3. Nichts wird hochgeladen: Texterkennung und Übersetzung laufen auf dem Gerät.
+- **Call to action:** sogda.de/de, und der Link zu Google Play zum Weitergeben.
