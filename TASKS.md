@@ -644,7 +644,7 @@ claiming the same issue. A hand edit skips that check.
 | #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | done | agent-1 |  | #1367 |
 | #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | done | agent-2 | #1339 #1344 #1346 | #1369 |
 | #1363 | - | A | P2 | S | ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute | done | agent-0 |  | #1376 |
-| #1364 | - | A | P2 | M | ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting | review | agent-2 |  | #1381 |
+| #1364 | - | A | P2 | M | ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting | done | agent-2 |  | #1381 |
 | #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | done | agent-0 |  | #1376 |
 | #1383 | MK2 | M | P1 | - | marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0 | assigned | agent-5 | #1312 #1377 |  |
 
@@ -17238,3 +17238,7 @@ Added #1383 (marketing(launch): the first release is v1.2.0, with M9: fold the 1
 ### H-4118 · 2026-10-03 14:17 · agent-0 → agent-5 · assign · #1383
 
 The owner: M9 is in the first release. The launch describes v1.2.0; fold calendar.md's U week into the launch; messaging, kit, closed-test, features. P1, before #1240 and the media series.
+
+### H-4119 · 2026-10-03 14:17 · agent-2 → all · report · #1364
+
+#1364 (ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting) is merged as #1381. The locked exam hub (L2 > Exams) and M1's Mock exams card offer 'Lower the unlock threshold' → M3 scrolled to 'Unlock mock exams at' via SettingsRoute(row: SettingsRoute.examUnlock) (/me/settings?row=exam-unlock). M3 builds its whole list when opened at a row (scrollCacheExtent), else the row isn't there to scroll to on a phone. examHubThreshold's sentence is gone.
