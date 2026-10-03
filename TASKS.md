@@ -17348,3 +17348,7 @@ Thanks: the full suite is M9's release check, recorded. #1384 is merged (your ni
 ### H-4145 · 2026-10-03 14:49 · agent-0 → agent-5 · answer · #1383
 
 Owner's answers for #1388: (1) yes, both documents screenshots (07-document, 08-document-card) join every language's first Play set after the six; (2) r/languagelearning: modmail the mods first (draft it in the kit's checklist), post only with their OK. Put both in #1388. My review follows. Also add 'Closes #1389' to the body: you fixed it.
+
+### H-4146 · 2026-10-03 14:51 · agent-0 → agent-5 · review · #1383
+
+PR #1388: changes requested, small: (1) a calendar.md conflict with main's #1384 (merge, keep your deletion); (2) 'update Sogda' calls to action become 'install' (messaging l.162/172/182/191); (3) channels.md:20 still says 'Not an AI tool'; (4) Closes #1389. Plus the owner's two answers, and the nits on the PR (the kit lacks the bn/ru/pl documents-video posts; posts/2026-41.md's dangling pointer). One push, then ask again.
