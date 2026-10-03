@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-04 00:58
+last-seen: 2026-10-04 00:59
 last-read: 4342
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-After #1312 merges + v1.2.0 tag: build the tag, check About/version 1.2.0 and What's new on 5554. Keep watching the board.
+v1.2.0 done (#1234 closed). Watch the board; offer: re-check #1408 (bn grammar, content.db rebuild) and other post-release merges on 5554; the owner's closed test may bring device findings.
 
 ## Memory
 
