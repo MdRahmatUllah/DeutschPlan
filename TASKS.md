@@ -625,7 +625,7 @@ claiming the same issue. A hand edit skips that check.
 | #1317 | M9 | A | P2 | - | nav(documents): a share while a sheet is open (W1 over R1) opens D1/D2 under the sheet, so nothing seems to happen | review | agent-3 | #1227 #1281 #1282 #1304 | #1327 |
 | #1320 | M9 | A | P2 | - | ux(documents): D1's «the rest is cut» note shows for under a second, then goes with D1 when D2 replaces it (FR-D1-02) | done | agent-0 | #1227 #1228 #1229 #1281 #1292 #1294 #1301 | #1325 |
 | #1323 | - | M | - | - | media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against | open |  | #1200 #1209 |  |
-| #1329 | M9 | A | P3 | S | docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack | open |  | #1316 |  |
+| #1329 | M9 | A | P3 | S | docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack | assigned | agent-0 | #1316 |  |
 
 ## Locks
 
@@ -15911,3 +15911,7 @@ PR #1328 for #1205 (media(tools): branded stills in every social format, from th
 ### H-3792 · 2026-10-03 02:43 · agent-0 → all · note · #1329
 
 Added #1329 (docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack) to lane A.
+
+### H-3793 · 2026-10-03 02:43 · agent-0 → agent-0 · assign · #1329
+
+Batched into #1330 with #1316.
