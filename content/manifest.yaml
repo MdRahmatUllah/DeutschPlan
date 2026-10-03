@@ -13,6 +13,11 @@ workbooks:
   - file: data/German_B2_Tracker.xlsx
   - file: data/German_C1_Tracker.xlsx
   - file: data/German_C2_Tracker.xlsx
+  # #1257 (the owner, 2026-10-03): words the course adds, written by
+  # tools/additions_workbook.py from content/additions/*.yaml; the trackers
+  # are never written by a tool.
+  - file: data/German_Everyday_Additions.xlsx
+    without: [collocations, synonyms_register]
 
 tips: content/interference_tips.csv
 

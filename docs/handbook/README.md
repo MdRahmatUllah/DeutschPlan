@@ -20,7 +20,7 @@ Sogda is a complete German course on the phone, from the first word
 (A1.1) to mastery (C2.2), for people who think in **Bangla** or **English**,
 and since v1.1.0 in **Russian** or **Polish**.
 
-- **The course.** 12 steps, 5,069 words and 182 grammar topics. Every meaning is in the learner's language (a first and an optional second), and so is the pronunciation guide: Bangla, Russian or Polish letters, or an English respelling.
+- **The course.** 12 steps, 5,142 words and 182 grammar topics. Every meaning is in the learner's language (a first and an optional second), and so is the pronunciation guide: Bangla, Russian or Polish letters, or an English respelling.
 - **The daily plan.** It decides each day's revision (scheduled by FSRS), the new words, the week's grammar topic and practice sentences. It respects rest days and keeps a backlog when a day is missed.
 - **The practice.**
   - Word cards, and cloze cards once a word is known.
