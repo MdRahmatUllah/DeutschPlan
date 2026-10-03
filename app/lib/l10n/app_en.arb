@@ -5516,6 +5516,19 @@
   "@addWordMeaning": {
     "description": "R2: the heading over the meaning field, shown upper-case."
   },
+  "addWordMeaningHere": "here: {meaning}",
+  "@addWordMeaningHere": {
+    "description": "R2, a chip under the meaning: Hy-MT2's meaning of the word as it reads in its document's sentence, when it differs from the bare word's (#1278). Tapped, it fills the meaning with the text alone.",
+    "placeholders": {
+      "meaning": {
+        "type": "String"
+      }
+    }
+  },
+  "addWordMachineTranslated": "Machine-translated: check it first",
+  "@addWordMachineTranslated": {
+    "description": "R2, for a word from a document: over Hy-MT2's suggested meanings, and under the meaning while it still holds one (BR-DOC-07, #1233, #1278). Goes once the learner edits the meaning."
+  },
   "addWordWhere": "Where I saw it",
   "@addWordWhere": {
     "description": "R2: the heading over where the learner came across the word, shown upper-case."
@@ -6947,6 +6960,14 @@
   "docWordsCardOutside": "Not in the course",
   "@docWordsCardOutside": {
     "description": "D2's card for a word outside the course."
+  },
+  "docWordsCardMachine": "Machine-translated",
+  "@docWordsCardMachine": {
+    "description": "D2's card, under Hy-MT2's meaning for a word outside the course (#1233): the label that says a machine wrote it."
+  },
+  "docWordsCardNoMeaning": "No meaning yet: download Hy-MT2 translation",
+  "@docWordsCardNoMeaning": {
+    "description": "D2's card for a word outside the course with no meaning, while Hy-MT2 isn't on the phone and the phone has the memory for it (#1300): a link to M4, named as M4 names the model (modelsTranslationTitle)."
   },
   "docWordsCardMine": "Already one of my words",
   "@docWordsCardMine": {

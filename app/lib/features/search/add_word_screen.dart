@@ -16,6 +16,7 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/repositories/search_repository.dart';
 import 'package:sogda/data/repositories/word_repository.dart';
+import 'package:sogda/domain/documents/excerpt.dart';
 import 'package:sogda/features/search/search_header.dart';
 import 'package:sogda/features/search/search_screen.dart'
     show myWordsProvider, sameWord, savedAs;
@@ -56,17 +57,85 @@ typedef _Fields = ({
   String example,
 });
 
+/// Hy-MT2's suggestions for a word from a document (#1278), under the
+/// meaning: labelled machine-translated, and each a chip that fills the
+/// field. The one the field holds is ticked.
+class _Suggestions extends StatelessWidget {
+  const _Suggestions({
+    required this.suggestions,
+    required this.chosen,
+    required this.onPick,
+  });
+
+  final List<({String label, String meaning})> suggestions;
+  final String chosen;
+  final ValueChanged<String> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SgText(
+            l10n.addWordMachineTranslated,
+            role: SgTextRole.caption,
+            color: tokens.color.textSecondary,
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: <Widget>[
+              for (final suggestion in suggestions)
+                SgChip(
+                  label: suggestion.label,
+                  kind: SgChipKind.filter,
+                  selected: chosen == suggestion.meaning,
+                  onTap: () => onPick(suggestion.meaning),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// R2 · Add / edit my word (`add-word.md`, the AddWord artboards). [german]
 /// comes filled in from R1's no-results page; [id] is edit mode, from R1's
 /// *My words*.
 class AddWordScreen extends ConsumerStatefulWidget {
-  const AddWordScreen({super.key, this.german, this.id});
+  const AddWordScreen({
+    super.key,
+    this.german,
+    this.id,
+    this.example,
+    this.where,
+    this.meanings = const <String>[],
+    this.meaningsHere = const <String>[],
+  });
 
   final String? german;
   final int? id;
 
+  /// D2's word outside the course (FR-D2-05, #1233): its sentence, the
+  /// document's title, and Hy-MT2's suggestions for its meaning, never
+  /// filled in (#1278): the bare word's, then the sentence's, offered as
+  /// chips. A tap fills the field, machine-translated until edited.
+  final String? example;
+  final String? where;
+  final List<String> meanings;
+  final List<String> meaningsHere;
+
   /// FR-R2-01's debounce.
   static const Duration debounce = Duration(milliseconds: 300);
+
+  /// The most a meaning, a place or a sentence takes (#691 EX-13).
+  static const int fieldLength = 200;
 
   /// The articles in the order the artboard draws them; null is *none*.
   static const List<String?> articles = <String?>['der', 'die', 'das', null];
@@ -91,6 +160,33 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
   /// One write at a time: a double tap on *Save* saves once.
   bool _busy = false;
 
+  /// Hy-MT2's meaning as it came (#1233): while the field still holds it,
+  /// it's labelled machine-translated and saved as such (BR-DOC-07).
+  String? _machine;
+
+  bool get _machineTranslated =>
+      _machine != null && _meaning.text.trim() == _machine;
+
+  /// Hy-MT2's suggestions, each as its chip says it and as it fills the
+  /// field: the bare word's, then the sentence's as *here* (#1278).
+  List<({String label, String meaning})> get _suggestions {
+    final l10n = AppLocalizations.of(context);
+    String fit(String text) => excerpt(text, max: AddWordScreen.fieldLength);
+    return <({String label, String meaning})>[
+      for (final meaning in widget.meanings)
+        (label: meaning, meaning: fit(meaning)),
+      for (final meaning in widget.meaningsHere)
+        (label: l10n.addWordMeaningHere(meaning), meaning: fit(meaning)),
+    ];
+  }
+
+  /// A suggestion picked: the field holds it, machine-translated until the
+  /// learner edits it (BR-DOC-07).
+  void _pick(String meaning) {
+    _meaning.text = meaning;
+    _machine = meaning;
+  }
+
   /// What the fields held when R2 opened: the search's German, or the word
   /// being edited once it has loaded. Leaving with anything else asks first
   /// (#1263).
@@ -100,6 +196,15 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
   void initState() {
     super.initState();
     _german.text = widget.german?.trim() ?? '';
+    // From a document (#1233): fitted to the fields, so the learner's first
+    // edit cuts nothing; the sentence around its word.
+    const fits = AddWordScreen.fieldLength;
+    _where.text = excerpt(widget.where ?? '', max: fits);
+    _example.text = excerpt(
+      widget.example ?? '',
+      max: fits,
+      around: widget.german,
+    );
     _checked = _german.text.trim();
     _baseline = _fields;
     _german.addListener(_changed);
@@ -143,6 +248,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
     _example.text = word.example ?? '';
     _debounce?.cancel();
     setState(() {
+      _machine = word.mt ? word.meaning.trim() : null;
       _article = word.article;
       _checked = word.german;
       _baseline = _fields;
@@ -204,6 +310,7 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
           meaning: _meaning.text,
           whereSeen: _where.text,
           example: _example.text,
+          mt: _machineTranslated,
         ),
         now: now,
         id: widget.id,
@@ -391,6 +498,21 @@ class _AddWordState extends ConsumerState<AddWordScreen> {
                 const SizedBox(height: 14),
                 _Label(l10n.addWordMeaning),
                 _Field(controller: _meaning, label: l10n.addWordMeaning),
+                if (_suggestions.isNotEmpty)
+                  _Suggestions(
+                    suggestions: _suggestions,
+                    chosen: _meaning.text.trim(),
+                    onPick: _pick,
+                  )
+                else if (_machineTranslated)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: SgText(
+                      l10n.addWordMachineTranslated,
+                      role: SgTextRole.caption,
+                      color: tokens.color.textSecondary,
+                    ),
+                  ),
                 const SizedBox(height: 14),
                 _Label(l10n.addWordWhere),
                 _Field(controller: _where, label: l10n.addWordWhere),
@@ -478,7 +600,7 @@ class _Field extends StatelessWidget {
     this.hint,
     this.german = false,
     this.scrollPadding = const EdgeInsets.all(20),
-    this.maxLength = 200,
+    this.maxLength = AddWordScreen.fieldLength,
   });
 
   final TextEditingController controller;

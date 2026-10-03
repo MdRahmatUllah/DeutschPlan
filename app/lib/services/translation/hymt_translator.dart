@@ -58,11 +58,18 @@ class HyMtTranslator implements Translator {
   };
 
   /// The model card's prompt for every pair that isn't Chinese, with no
-  /// system prompt (`translation.md`).
-  static String promptFor(String text, {required String to}) =>
-      'Translate the following text into ${languageNames[to]}. Note that '
-      'you should only output the translated result without any additional '
-      'explanation:\n\n$text';
+  /// system prompt (`translation.md`). With a [context], the card's
+  /// background-information prompt ("Structured Data 2"): the word is
+  /// translated in its sentence, so the right sense comes back (#1233).
+  static String promptFor(String text, {required String to, String? context}) =>
+      context == null
+      ? 'Translate the following text into ${languageNames[to]}. Note that '
+            'you should only output the translated result without any '
+            'additional explanation:\n\n$text'
+      : '[Background Information]\n$context\n\n'
+            'Please translate the following text into ${languageNames[to]}, '
+            'taking the provided background information into '
+            'consideration.\n\n[Source Text]\n$text';
 
   @override
   String get model => 'hymt2-1.8b-q4km';
@@ -101,6 +108,7 @@ class HyMtTranslator implements Translator {
     String text, {
     required String from,
     required String to,
+    String? context,
     Future<void>? abandoned,
   }) {
     if (!languageNames.containsKey(from) || !languageNames.containsKey(to)) {
@@ -149,7 +157,7 @@ class HyMtTranslator implements Translator {
           });
           final out = (await _runner.complete(
             path,
-            promptFor(text, to: to),
+            promptFor(text, to: to, context: context),
           )).trim();
           // Stopped part-way: half a translation is none, and isn't cached.
           say(dropped() || out.isEmpty ? null : out);

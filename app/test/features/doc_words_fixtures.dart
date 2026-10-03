@@ -214,6 +214,9 @@ List<Override> docWordsStub({
   FakePlan? plan,
   FakeActions? actions,
   StubSettings? settings,
+  Map<String, List<({String meaning, bool here})>> meanings =
+      const <String, List<({String meaning, bool here})>>{},
+  bool downloadable = false,
 }) => <Override>[
   documentRepositoryProvider.overrideWithValue(documents ?? FakeDocuments()),
   planEngineProvider.overrideWithValue(plan ?? FakePlan()),
@@ -224,4 +227,8 @@ List<Override> docWordsStub({
   wordDetailProvider.overrideWith(
     (ref, uid) => Stream.value(courseWordDetail(uid)),
   ),
+  // Hy-MT2 for a word outside the course (#1233): none by default.
+  outsideMeaningProvider.overrideWith((ref, _) => Stream.value(meanings)),
+  // Whether M4's download would bring Hy-MT2 (#1300): not by default.
+  translationDownloadableProvider.overrideWith((ref) async => downloadable),
 ];
