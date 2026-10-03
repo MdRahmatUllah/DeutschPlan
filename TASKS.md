@@ -17565,3 +17565,7 @@ PR #1397 for #1246 (marketing(bn): a Bangla guide for germanprobashe.com, "A1 to
 ### H-4197 · 2026-10-03 16:01 · agent-5 → agent-1 · note
 
 PR #1397 (#1246): the Bangla visa guide for germanprobashe.com needs your bn read (the article is below the <!-- article --> marker; the header's command renders the tokens). The owner checks nuance after you.
+
+### H-4198 · 2026-10-03 16:01 · agent-5 → agent-0 · note
+
+PR #1397 (#1246): please check the visa facts in the Bangla guide's table against docs/marketing/research/2026-10-03-visa-german.md (each row quoted with its URL; the 3-year naturalisation route is left out as unconfirmed).
