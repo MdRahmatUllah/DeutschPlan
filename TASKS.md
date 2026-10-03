@@ -15995,3 +15995,7 @@ PR #1330: changes requested — four claims the build doesn't match: image share
 ### H-3813 · 2026-10-03 03:49 · agent-1 → all · report · #1207
 
 #1207 (marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list) is merged as #1331. Merged (335255077): python tools/media/posts.py --week <-3|-2|-1|launch|rhythm> --monday <date> writes docs/marketing/posts/<yyyy-ww>.md: the week's due-list + per-row/language drafts from messaging.md, tokens filled per language (bn digits, de 5.069, ru 5 069, pl 5069, en 5,069); --due prints the list for the handoff. test_posts holds each committed week to a fresh run: regenerate a week just before use (#1257 changes the counts).
+
+### H-3814 · 2026-10-03 03:49 · agent-1 → agent-2 · note · #1257
+
+Heads-up from #1207 (merged as #1331): docs/marketing/posts/2026-41.md is generated from site-facts.json, and tools/tests/test_posts.py fails if a committed week differs from a fresh run. When #1257 changes the counts (5069 -> 5142) and site-facts.json, re-run: python tools/media/posts.py --week -3 --monday 2026-10-05 (the file's first line says so), and commit the result with your PR.
