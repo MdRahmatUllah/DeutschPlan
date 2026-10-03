@@ -20,10 +20,10 @@ The en pitch, as it goes:
 >
 > Hello <name>,
 >
-> I make **Sogda**, a German course app for Android that may fit your list: **offline, with no account, A1 to C2 in {totals.steps} steps, with {totals.words} words, {totals.grammar_topics} grammar topics and {totals.mock_exams_per_step} mock exams for every step, and meanings and a pronunciation guide in English, Bangla, Russian or Polish.**
+> I make **Sogda**, a German course app for Android that may fit your list: **the whole course works offline, with no account; A1 to C2 in {totals.steps} steps, with {totals.words} words, {totals.grammar_topics} grammar topics and {totals.mock_exams_per_step} mock exams for every step, and meanings and a pronunciation guide in English, Bangla, Russian or Polish.**
 >
 > Two things set it apart from the apps you list:
-> - it's a whole course with exam practice, all on the phone, where most offline apps are phrasebooks;
+> - it's a whole course with exam practice, all on the phone, where many offline apps are phrasebooks;
 > - it serves learners from Bangla, Russian and Polish in their own script.
 >
 > It also reads the German you meet: share or photograph a letter, and it marks the new words by level.
