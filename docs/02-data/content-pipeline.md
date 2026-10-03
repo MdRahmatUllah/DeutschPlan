@@ -88,7 +88,7 @@ German is the language learnt; a meaning language is one its words are explained
 
 ## The additions workbook (#1257)
 
-Words the course adds go into `content/additions/*.yaml`, never into a tracker: the trackers are the owner's study files, each row wired into its week, category and Dashboard sheets (the owner, 2026-10-03). `python tools/additions_workbook.py` writes `data/German_Everyday_Additions.xlsx` from them, the manifest's last workbook, so it is regenerated, never edited; `--check` checks the YAML alone.
+Words the course adds go into `content/additions/*.yaml`, never into a tracker: the trackers are the owner's study files, each row wired into its week, category and Dashboard sheets (the owner, 2026-10-03). The content build writes `data/German_Everyday_Additions.xlsx` from them afresh each time it runs, before it reads the manifest's workbooks, the additions workbook last among them. So it is regenerated, never edited, and a YAML edit can't ship stale (agent-1, #1335). `python tools/additions_workbook.py` writes it alone; `--check` checks the YAML alone. Each level is read in week order, and a word with no week sits in week 1, as its step does.
 
 - **An entry** has the tracker's fields by name (`german`, `article`, `forms`, `pos`, `level`, `week`, `category`, `freq`, `english`, `bangla`, `pron_bn`, `pron_en`, `examples_de`, `examples_en`) and a block per meaning language (`ru:`, `pl:` with `meaning`, `pron`, `examples`). The tool refuses a missing field, an unknown level, a category `category_names.csv` doesn't name, examples that don't pair line for line, and a word twice.
 - **Its place:** its `level` and `week` put it in its step (PIPE-02) and at its week's place there (`seq`, below), as a tracker row would.
