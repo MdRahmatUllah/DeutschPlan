@@ -1,0 +1,59 @@
+# #1236: v1.2.0's 20 s video, "learn the German you meet". A letter shared in
+# from another app, D2 marking its new words by level, the mini card of one
+# (its meaning and the letter's own sentence under «In your text»), and Add.
+# The letter is D2's artboard letter (app/test/features/doc_words_fixtures.dart:
+# a team-written landlord's note, never a real person's). Prepare the learner
+# first, as #1307's shots: a fresh install onboarded at A2.1, English with no
+# second meaning, on Today. Shot on the media lane's emulator-5556 (1080 x 1920):
+#   python tools/team.py lock emulator-5556 -m "#1236 video"
+#   python tools/media/video.py own-letter --serial emulator-5556
+# Captions: en from messaging.md's 1.2.0 block; bn, pl, ru and de are drafts
+# for their native review (bn and pl agent-1, ru agent-2, de agent-0).
+locales: [en, bn, pl, ru, de]
+before:
+  - am start -n de.sogda.app/.MainActivity
+steps:
+  - sleep2
+  - "shell:am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT 'Sehr geehrte Damen und Herren,\n\nhier ist die Nebenkostenabrechnung für 2025. Bitte überweisen Sie die Nachzahlung bis zum 15. November auf unser Konto.\n\nAm Dienstag kommt der Hausmeister. Er will die Heizkörper kontrollieren und den Wasserzähler ablesen. Bitte seien Sie zwischen 9 und 12 Uhr erreichbar.\n\nBei Fragen zur Abrechnung rufen Sie uns an.' de.sogda.app"
+  - "wait:hier ist die"
+  - sleep3
+  - tap:Nachzahlung
+  - sleep4
+  - tap:Add
+  - sleep3
+cut: [2.3, 22.3]
+captions:
+  # Over Today and «Finding your words…» to 2.6 s, D2's marks to 9.6, the card
+  # with the letter's sentence to 17.6, and the «Added …» toast to the end.
+  - from: 0
+    to: 2.6
+    text:
+      en: Share a letter you got in German
+      bn: জার্মান ভাষায় পাওয়া একটি চিঠি শেয়ার করুন
+      pl: Udostępnij list po niemiecku
+      ru: Поделись письмом на немецком
+      de: Einen Brief auf Deutsch teilen
+  - from: 2.9
+    to: 9.5
+    text:
+      en: Its new words, marked by level
+      bn: কোর্সের নতুন শব্দগুলো, লেভেল ধরে চিহ্নিত
+      pl: Nowe słowa z kursu, zaznaczone według poziomu
+      ru: Новые слова, отмеченные по уровням
+      de: Die neuen Wörter, nach Niveau markiert
+  - from: 9.8
+    to: 17.5
+    text:
+      en: Add a word with the sentence you met it in
+      bn: যে বাক্যে পেয়েছেন, সেই বাক্যসহ শব্দটি যোগ করুন
+      pl: Dodaj słowo razem ze zdaniem z tekstu
+      ru: Добавь слово вместе с предложением из текста
+      de: Wörter mit ihrem Satz übernehmen
+  - from: 17.8
+    to: 20
+    text:
+      en: On your phone, private
+      bn: সবকিছু আপনার ফোনেই
+      pl: Wszystko zostaje na telefonie
+      ru: Всё остаётся на телефоне
+      de: Alles bleibt auf dem Handy

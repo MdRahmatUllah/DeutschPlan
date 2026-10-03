@@ -10,12 +10,17 @@ recording runs, the seconds of it kept (`cut`: start it after screenrecord's
 first ~1.5 s, its warm-up, which may be black or frozen), and timed captions in each of
 its `locales`. A caption's numbers come from `site-facts.json` as `{tokens}`
 (`{totals.words}`), each language's way (posts.py's `fill`): a digit typed in a
-caption stops the run, as the marketing rules ask.
+caption stops the run, as the marketing rules ask. A script's `takes`
+(#1355) record one learner per meaning language, each made by its unrecorded
+`prepare` steps, so a language's cut shows that language's card; a locale no
+take names is cut from the one recording.
 
-**Recording** needs the emulator held (`python tools/team.py device`): it runs
-`screenrecord` on emulator-5558 while device.py walks the steps, and keeps
-the recording in `build/media/` (git-ignored: a raw recording is too big for
-the media branch).
+**Recording** needs the emulator held: `python tools/team.py device` for
+emulator-5558, `team.py lock emulator-5556` for `--serial emulator-5556`,
+the media lane's. Neither is ever SQA's emulator-5554 (`device.pick_serial`).
+It runs `screenrecord` while device.py walks the steps,
+and keeps the recording in `build/media/` (git-ignored: a raw recording is
+too big for the media branch).
 
 **Rendering** draws each caption's frame (`videos/frame.html`, every
 value from brand.json through brand.py) with Playwright, and ffmpeg puts the
@@ -90,6 +95,16 @@ def check(script: dict) -> None:
         raise ScriptError(f"{name}: cut must be [from, to] seconds, from < to")
     if not locales:
         raise ScriptError(f"{name}: no locales")
+    taken: list[str] = []
+    for take, spec in (script.get("takes") or {}).items():
+        if not (isinstance(spec, dict) and spec.get("locales")
+                and set(spec["locales"]) <= set(locales)):
+            raise ScriptError(f"{name}: take {take} must name some of the script's locales")
+        if not all(isinstance(s, str) for s in spec.get("prepare") or []):
+            raise ScriptError(f"{name}: take {take}'s prepare must be device.py steps")
+        taken += spec["locales"]
+    if len(taken) != len(set(taken)):
+        raise ScriptError(f"{name}: a locale is in two takes")
     length = cut[1] - cut[0]
     end = 0.0
     for i, caption in enumerate(script.get("captions") or []):
@@ -139,15 +154,29 @@ def walk(script: dict, shell: list[str], serial: str) -> None:
     flush()
 
 
-def record(script: dict, serial: str = device.DEV_SERIAL) -> Path:
+def raw_of(script: dict, lang: str | None = None, take: str | None = None) -> Path:
+    """The recording [lang]'s cut is made from: its take's (#1355), or the
+    script's one when no take names it."""
+    if take is None and lang is not None:
+        take = next((name for name, spec in (script.get("takes") or {}).items()
+                     if lang in spec["locales"]), None)
+    return RAW / (f"{script['name']}-{take}.mp4" if take else f"{script['name']}.mp4")
+
+
+def record(script: dict, serial: str = device.DEV_SERIAL, take: str | None = None) -> Path:
     """`screenrecord` while device.py walks the steps; the file in build/media/.
-    The script's `before` adb shell commands run first (flight mode on, #1245)
-    and its `after` ones last, however the recording ends, so the shared
-    emulator is left as it was."""
+    A [take] first walks its `prepare` steps, unrecorded: its own learner, so
+    each language's cut shows that language's card (#1355). The script's
+    `before` adb shell commands run next (flight mode on, #1245) and its
+    `after` ones last, however the recording ends, so the shared emulator is
+    left as it was."""
     adb = device.adb_path()
     remote = f"/sdcard/sogda-{script['name']}.mp4"
     limit = math.ceil(script["cut"][1]) + 30
     shell = [adb, "-s", serial, "shell"]
+    if take:
+        walk({"name": f"{script['name']} {take}", "steps": script["takes"][take].get("prepare") or []},
+             shell, serial)
     try:
         for command in script.get("before") or []:
             subprocess.run([*shell, command], check=True)
@@ -165,7 +194,7 @@ def record(script: dict, serial: str = device.DEV_SERIAL) -> Path:
             subprocess.run([*shell, command], check=False)
     time.sleep(1)  # the file closes on the device
     RAW.mkdir(parents=True, exist_ok=True)
-    local = RAW / f"{script['name']}.mp4"
+    local = raw_of(script, take=take)
     subprocess.run([adb, "-s", serial, "pull", remote, str(local)], check=True, capture_output=True)
     subprocess.run([adb, "-s", serial, "shell", "rm", remote], check=False)
     print(f"recorded {local} ({local.stat().st_size / 1e6:.1f} MB)")
@@ -290,14 +319,15 @@ def ffmpeg_args(raw: Path, frames_: list[Path], box: dict, times: list[tuple[flo
 
 
 def render(script: dict, locales: list[str], formats: list[str], out: Path) -> list[Path]:
-    raw = RAW / f"{script['name']}.mp4"
-    if not raw.exists():
-        raise SystemExit(f"{raw} isn't there: record it first (--record, under the device lock)")
-    recording = video_size(raw)
+    for lang in locales:
+        if not raw_of(script, lang).exists():
+            raise SystemExit(f"{raw_of(script, lang)} isn't there: record it first (--record, under the device lock)")
     out.mkdir(parents=True, exist_ok=True)
     made: list[Path] = []
     with tempfile.TemporaryDirectory() as tmp:
         for lang in locales:
+            raw = raw_of(script, lang)
+            recording = video_size(raw)
             for fmt in formats:
                 frames_, box = frames(script, lang, fmt, recording, Path(tmp))
                 target = out / f"{script['name']}-{lang}-{fmt}.mp4"
@@ -308,6 +338,18 @@ def render(script: dict, locales: list[str], formats: list[str], out: Path) -> l
                       + (f": over {MAX_MB} MB, for the owner's drive, not the media branch" if mb > MAX_MB else ""))
                 made.append(target)
     return made
+
+
+def holds(serial: str, agent: str) -> bool:
+    """Whether [agent] may record on [serial]: `team.py device` for the
+    developers' 5558, a lock named after any other (`team.py lock
+    emulator-5556`, the media lane's, #1355)."""
+    import team
+    from smoke import holds_device
+    if serial == device.DEV_SERIAL:
+        return holds_device(agent)
+    board = team.Board((team.board_checkout(agent) / "TASKS.md").read_text(encoding="utf-8"))
+    return bool(agent) and any(lock.resource == serial and lock.owner == agent for lock in board.locks)
 
 
 def media_root() -> Path:
@@ -328,17 +370,29 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--locales", help="default: the script's")
     parser.add_argument("--formats", default=",".join(FORMATS))
     parser.add_argument("--out", type=Path, help="default: the media worktree's dated folder")
+    parser.add_argument("--serial", default=device.DEV_SERIAL,
+                        help="the emulator to record on: emulator-5558 under `team.py device`, "
+                             "or the media lane's emulator-5556 under `team.py lock emulator-5556`")
+    parser.add_argument("--takes", help="the takes to record, default: all, or the one recording")
     args = parser.parse_args(argv)
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     script = load(args.script)
     both = not args.record and not args.render
     if args.record or both:
-        from smoke import holds_device
-        if not device.owner_checkout() and not holds_device(device.agent()):
-            print("refused: hold the emulator first: `python tools/team.py device`", file=sys.stderr)
+        if not device.owner_checkout() and not holds(args.serial, device.agent()):
+            lock = "device" if args.serial == device.DEV_SERIAL else f"lock {args.serial}"
+            print(f"refused: hold the emulator first: `python tools/team.py {lock}`", file=sys.stderr)
             return 2
-        record(script)
+        # agent-1 on #1372: never SQA's emulator-5554, whatever lock is held:
+        # `before` and a take's `prepare` (pm clear) run raw adb on it.
+        serial = device.pick_serial(args.serial, device.agent())
+        takes = args.takes.split(",") if args.takes else list(script.get("takes") or {}) or [None]
+        unknown = [take for take in takes if take and take not in (script.get("takes") or {})]
+        if unknown:
+            raise SystemExit(f"{script['name']} has no take {', '.join(unknown)}")
+        for take in takes:
+            record(script, serial, take)
     if args.render or both:
         if not shutil.which("ffmpeg"):
             raise SystemExit("ffmpeg isn't on the PATH")

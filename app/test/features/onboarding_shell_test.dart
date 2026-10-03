@@ -1,6 +1,8 @@
 @TestOn('vm')
 library;
 
+import 'dart:async';
+
 import 'package:flutter/services.dart' show MethodChannel;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -499,7 +501,7 @@ void main() {
     // The app's own wiring: the locale follows `ui_language`, as the root's.
     Future<void> pumpWelcome(
       WidgetTester tester, {
-      VoidCallback? onStart,
+      FutureOr<void> Function()? onStart,
     }) async {
       final db = AppDatabase.memory();
       addTearDown(db.close);
@@ -540,6 +542,34 @@ void main() {
       await pumpWelcome(tester);
       expect(calls, <String>['fullyDrawn']);
     });
+
+    testWidgets(
+      '#1158 #1376 a start that pushes nothing leaves the start button '
+      'live: the guard is freed by a frame it asks for',
+      (tester) async {
+        var starts = 0;
+        late Completer<void> running;
+        await pumpWelcome(
+          tester,
+          onStart: () {
+            starts++;
+            return (running = Completer<void>()).future;
+          },
+        );
+        await tester.tap(find.text(l10n.onboardingWelcomeStart));
+        // The busy frame and the press's animation, all drawn before the
+        // start ends: after it, nothing else asks for a frame.
+        await tester.pumpAndSettle();
+        running.complete();
+        await tester.pump(); // the start ends, and asks for its frame
+        await tester.pump(); // that frame, which frees the button
+        await tester.pump(); // the button, drawn live
+
+        await tester.tap(find.text(l10n.onboardingWelcomeStart));
+        await tester.pump();
+        expect(starts, 2);
+      },
+    );
 
     testWidgets('states the three promises', (tester) async {
       await pumpWelcome(tester);
