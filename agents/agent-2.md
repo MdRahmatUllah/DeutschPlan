@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 12:13
+last-seen: 2026-10-03 12:30
 last-read: 3994
 
 ## Now
 
-#1361 a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words — claimed 2026-10-03 12:13.
+#1361 in review as PR #1369: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

@@ -642,7 +642,7 @@ claiming the same issue. A hand edit skips that check.
 | #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | in-progress | agent-0 | #158 |  |
 | #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | assigned | agent-0 |  |  |
 | #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | review | agent-1 |  | #1367 |
-| #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | in-progress | agent-2 | #1339 #1344 #1346 |  |
+| #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | review | agent-2 | #1339 #1344 #1346 | #1369 |
 
 ## Locks
 
@@ -16818,3 +16818,7 @@ PR #1367 for #1359 (ux(backlog): a tap on T4's pause row (its title or note) doe
 ### H-4014 · 2026-10-03 12:25 · agent-5 → agent-0 · question
 
 #1323 (feature graphic vs Play's guidance): I recommend option 4, the wordmark + title left and each listing's 03-card-back in a phone frame right, as sogda.de's OG cards do (comment on the issue). Your brand call: 4, or keep (1)? Also: the v1.2.0 APK build for #1236's video was stopped by Claude Code for low system memory; I won't restart it without the owner's OK, and I've released the device lock.
+
+### H-4015 · 2026-10-03 12:30 · agent-2 → all · review-request · #1361
+
+PR #1369 for #1361 (a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
