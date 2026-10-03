@@ -57,6 +57,90 @@ void main() {
     expect(cleanPages(<String>['$head\nEin Brief.']), '$head\nEin Brief.');
   });
 
+  group('#1385 FR-D1-02 the same page twice', () {
+    const page =
+        'Zweite Seite.\nDie Rechnung kommt mit der Post.\nBitte zahlen '
+        'Sie bis Freitag.';
+
+    test('is read once, never emptied', () {
+      expect(cleanPages(<String>[page, page]), page);
+      expect(cleanPages(List<String>.filled(30, page)), page);
+    });
+
+    test('beside another page, is read once, after it', () {
+      const first = 'Erste Seite.\nWir schreiben Ihnen heute.';
+      expect(cleanPages(<String>[first, page, page]), '$first\n\n$page');
+    });
+
+    test(
+      'in two shots whose OCR differs by a few characters, is read once',
+      () {
+        const lines = <String>[
+          'Sehr geehrte Frau Okafor,',
+          'hier ist die Nebenkostenabrechnung für 2025.',
+          'Bitte überweisen Sie die Nachzahlung bis zum 15. November.',
+          'Am Dienstag kommt der Hausmeister.',
+          'Er will die Heizkörper kontrollieren.',
+          'Bitte seien Sie zwischen 9 und 12 Uhr erreichbar.',
+          'Bei Fragen rufen Sie uns an.',
+          'Mit freundlichen Grüßen',
+          'Ihre Hausverwaltung',
+        ];
+        final shot = lines.join('\n');
+        final other = <String>[
+          ...lines.take(4),
+          'Er wil die Heizkörper kontrolieren.', // OCR's slips
+          ...lines.skip(5),
+        ].join('\n');
+        expect(cleanPages(<String>[shot, other]), shot);
+      },
+    );
+
+    test('short pages that differ in a line still keep their text', () {
+      expect(
+        cleanPages(<String>['Kopf\nEins.\nFuß', 'Kopf\nZwei.\nFuß']),
+        'Eins.\n\nZwei.',
+      );
+      expect(
+        cleanPages(<String>['Kopf\nFuß', 'Kopf\nFuß\nNoch etwas.']),
+        'Kopf\nFuß\n\nNoch etwas.',
+        reason: 'a page that is all header and footer keeps them',
+      );
+    });
+
+    test('a page 2 of letterhead and one line is no copy of page 1', () {
+      // Two lines each: page 2 shares four of its five lines with page 1,
+      // but the two pages share four of eight.
+      const head = 'Hausverwaltung Hansen\nLindenstraße 4, 12345 Berlin';
+      const foot = 'Bankverbindung: Musterbank\nTelefon 030 1234567';
+      expect(
+        cleanPages(<String>[
+          '$head\nDer Brief beginnt hier.\nEr geht lange weiter.\n'
+              'Und noch weiter.\n$foot',
+          '$head\nGruß.\n$foot',
+        ]),
+        'Der Brief beginnt hier.\nEr geht lange weiter.\nUnd noch weiter.'
+        '\n\nGruß.',
+      );
+    });
+
+    test("a statement's next page, the same words with other numbers, is "
+        'no copy (agent-2)', () {
+      // With digits blurred the two pages are one shape, line for line.
+      const september =
+          'Kontoauszug Nr. 9\n01.09. Miete 450,00\n03.09. Telefon 19,99\n'
+          '15.09. Strom 62,10\n20.09. Einkauf 84,30\n28.09. Gehalt 1.850,00\n'
+          'Kontostand 2.140,55';
+      const october =
+          'Kontoauszug Nr. 10\n01.10. Miete 450,00\n03.10. Telefon 19,99\n'
+          '15.10. Strom 58,40\n20.10. Einkauf 91,75\n28.10. Gehalt 1.850,00\n'
+          'Kontostand 2.390,10';
+      final text = cleanPages(<String>[september, october]);
+      expect(text, contains('15.10. Strom 58,40'));
+      expect(text, contains('15.09. Strom 62,10'));
+    });
+  });
+
   test('#1227 FR-D2-01 a document is named by its first line, cut at a word '
       'end', () {
     expect(

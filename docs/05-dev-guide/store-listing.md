@@ -192,6 +192,8 @@ Sogda — приложение с офлайн-курсом немецкого: 
 | `07-document.png` | D2 over the landlord's letter, «Nebenkosten 2025»: its words marked by level, the *Show words I probably know* switch, the bulk bar (1.2.0, #1307) |
 | `08-document-card.png` | D2's card for *die Nachzahlung*: its step, meaning and the sentence under *In your text* (1.2.0, #1307) |
 
+**Upload all eight in every listing's first set** (the owner, 2026-10-03, #1383): the six, then `07-document.png` and `08-document-card.png`.
+
 - **Phone:** 1080 × 2160 (`wm size`), since Play takes at most 2:1.
 - **Tablet:** 1600 × 2560 at density 320, a 10-inch tablet.
 - **The status bar** is Android's demo mode (10:00, full Wi-Fi and battery). Light and dark follow the system setting.
