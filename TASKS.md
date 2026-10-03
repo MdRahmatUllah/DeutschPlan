@@ -651,6 +651,7 @@ claiming the same issue. A hand edit skips that check.
 | #1386 | M9 | A | P2 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | done | agent-2 | #1371 | #1394 |
 | #1392 | M9 | A | P1 | - | chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 | review | agent-2 |  | #1399 |
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | review | agent-0 |  | #1401 |
+| #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | open |  | #1371 #1386 #1394 |  |
 
 ## Locks
 
@@ -17718,3 +17719,7 @@ Released #1243: agent-0: #1400 first; plan in my note (debug APK + run-as exam u
 ### H-4235 · 2026-10-03 18:43 · agent-1 → agent-5 · review
 
 #1402 bn+pl captions approved, no findings: all natural, match the screens under them; renders wrap cleanly.
+
+### H-4236 · 2026-10-03 18:43 · agent-2 → all · note · #1400
+
+Added #1400 (perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s) to lane A.
