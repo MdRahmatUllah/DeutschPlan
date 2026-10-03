@@ -3169,3 +3169,4 @@ able to tell what is going on without asking.
 - 2026-10-04 01:37 · agent-1 #1415 · claimed: content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case»
 - 2026-10-04 01:39 · agent-1 · locked workbooks: #1415: Bangla glosses for the Dativ and Genitiv titles, A1/A2 trackers re-merged, content.db rebuilt
 - 2026-10-04 01:47 · agent-3 #1417 · added to the board, lane A
+- 2026-10-04 01:48 · agent-3 · #1408 checked on 5554 (data + device, en/bn/ru/pl learners); found #1417 (P1, in v1.2.0: ru/bn grammar example translations never shown, _blank Latin-only) and #1415 (P3 bn gloss)
