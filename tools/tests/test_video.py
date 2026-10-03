@@ -58,6 +58,25 @@ def test_a_broken_script_is_refused(script, why):
         video.check(script)
 
 
+def test_each_language_has_its_captions_as_a_subrip_file_the_frames_text_1241():
+    words = video.fill("{totals.words}", "en")
+    first, second, rest = video.srt(GOOD, "en").split("\n\n")
+    assert first.splitlines() == ["1", "00:00:00,000 --> 00:00:04,000", "From A1 to C2.2"]
+    assert second.splitlines() == ["2", "00:00:04,500 --> 00:00:10,000", f"{words} words"]
+    assert rest == ""
+
+
+def test_a_render_leaves_each_languages_caption_file_beside_its_clips_1241(monkeypatch, tmp_path):
+    raw = tmp_path / "raw.mp4"
+    raw.write_bytes(b"mp4")
+    monkeypatch.setattr(video, "raw_of", lambda script, lang=None, take=None: raw)
+    monkeypatch.setattr(video, "video_size", lambda path: (1080, 1920))
+    monkeypatch.setattr(video, "frames", lambda *_: ([], {"x": 0, "y": 0, "w": 1, "h": 1}))
+    monkeypatch.setattr(video.subprocess, "run", lambda args, check: Path(args[-1]).write_bytes(b"mp4"))
+    video.render(GOOD, ["en", "bn"], ["vertical"], tmp_path / "out")
+    assert (tmp_path / "out" / "t-bn.srt").read_text(encoding="utf-8") == video.srt(GOOD, "bn")
+
+
 def test_the_graph_switches_the_frames_on_the_captions_and_trims_to_the_cut(tmp_path):
     frames = [tmp_path / f"{i}.png" for i in range(3)]
     box = {"x": 210, "y": 500, "w": 640, "h": 1436}
@@ -159,14 +178,14 @@ def test_a_take_prepares_its_learner_unrecorded_before_flight_mode_goes_on(monke
 def test_the_recording_never_reaches_sqas_emulator_whatever_the_lock_1372(monkeypatch):
     monkeypatch.setattr(video, "holds", lambda serial, agent: True)
     monkeypatch.setattr(video.device, "agent", lambda: "agent-2")
-    monkeypatch.setattr(video, "record", lambda *_: pytest.fail("recorded on SQA's emulator"))
+    monkeypatch.setattr(video, "record", lambda *_, **__: pytest.fail("recorded on SQA's emulator"))
     with pytest.raises(SystemExit, match="emulator-5554 is agent-3's"):
         video.main(["flight-mode", "--record", "--serial", "emulator-5554"])
 
 
 def test_an_unknown_take_is_named_not_a_key_error_1372(monkeypatch):
     monkeypatch.setattr(video, "holds", lambda serial, agent: True)
-    monkeypatch.setattr(video, "record", lambda *_: pytest.fail("recorded"))
+    monkeypatch.setattr(video, "record", lambda *_, **__: pytest.fail("recorded"))
     with pytest.raises(SystemExit, match="has no take xx"):
         video.main(["flight-mode", "--record", "--serial", "emulator-5556", "--takes", "en,xx"])
 
@@ -193,9 +212,64 @@ def test_another_emulator_records_only_under_its_board_lock_1236(tmp_path, monke
 def test_the_serial_reaches_the_recording_1236(monkeypatch):
     seen = {}
     monkeypatch.setattr(video, "holds", lambda serial, agent: True)
-    monkeypatch.setattr(video, "record", lambda script, serial=None, take=None: seen.setdefault("serial", serial))
+    monkeypatch.setattr(video, "record", lambda script, serial=None, take=None, prepare=True: seen.setdefault("serial", serial))
     assert video.main(["own-letter", "--record", "--serial", "emulator-5556"]) == 0
     assert seen["serial"] == "emulator-5556"
+
+
+def test_a_resting_screen_holds_its_last_frame_to_the_cut_1241(tmp_path):
+    args = video.ffmpeg_args(tmp_path / "raw.mp4", [tmp_path / "0.png"], {"x": 0, "y": 0, "w": 9, "h": 9},
+                             [], [1.5, 9.5], tmp_path / "out.mp4")
+    graph = args[args.index("-filter_complex") + 1]
+    assert "tpad=stop_mode=clone:stop_duration=8.0,trim=duration=8.0" in graph
+
+
+def test_a_script_with_sound_keeps_the_apps_voice_at_a_speech_level_1241(tmp_path):
+    args = video.ffmpeg_args(tmp_path / "raw.mp4", [tmp_path / "0.png"], {"x": 0, "y": 0, "w": 9, "h": 9},
+                             [], [1.5, 9.5], tmp_path / "out.mp4", sound=True)
+    graph = args[args.index("-filter_complex") + 1]
+    assert "[0:a]atrim=duration=8.0,asetpts=PTS-STARTPTS,loudnorm" in graph
+    assert args[args.index("-map", args.index("[out]")) + 1] == "[voice]"
+    assert "anullsrc=r=48000:cl=stereo" not in args, "no silent track"
+
+
+def test_a_script_with_sound_records_with_scrcpy_through_the_sdks_adb_1241(monkeypatch, tmp_path):
+    ran: list[list[str]] = []
+    started: dict = {}
+
+    def popen(args, **kwargs):
+        started["args"], started["env"] = args, kwargs.get("env") or {}
+        return SimpleNamespace(wait=lambda timeout: 0)
+
+    monkeypatch.setattr(video, "RAW", tmp_path)
+    monkeypatch.setattr(video.device, "adb_path", lambda: "sdk-adb")
+    monkeypatch.setattr(video, "scrcpy", lambda: "scrcpy.exe")
+    monkeypatch.setattr(video.subprocess, "Popen", popen)
+    monkeypatch.setattr(video.subprocess, "run", lambda args, check, **_: ran.append(args))
+    monkeypatch.setattr(video.time, "sleep", lambda seconds: None)
+    monkeypatch.setattr(video, "walk", lambda *_: (tmp_path / "t.mp4").write_bytes(b"mp4"))
+    script = with_(audio=True)
+    local = video.record(script, "emulator-5556")
+    assert local == tmp_path / "t.mp4"
+    assert started["args"][:4] == ["scrcpy.exe", "-s", "emulator-5556", "--no-window"]
+    assert f"--record={local}" in started["args"]
+    limit = [int(a.split("=")[1]) for a in started["args"] if a.startswith("--time-limit=")]
+    assert limit and limit[0] >= script["cut"][1], "scrcpy stops itself after the cut: a killed one's file is unfinished"
+    assert started["env"]["ADB"] == "sdk-adb", "the shared adb server, not scrcpy's own"
+    assert not any("screenrecord" in a or "pull" in a for args in ran for a in args)
+
+
+def test_a_take_names_a_shared_learner_and_a_next_clip_keeps_it_1241(monkeypatch):
+    script = with_(locales=["bn"], takes={"bn": {"locales": ["bn"], "learner": "bn"}})
+    video.check(script)
+    assert video.prepare_of(script, "bn")[0] == "shell:pm clear de.sogda.app"
+    with pytest.raises(video.ScriptError, match="isn't in learners.yaml"):
+        video.check(with_(locales=["bn"], takes={"bn": {"locales": ["bn"], "learner": "xx"}}))
+    seen = []
+    monkeypatch.setattr(video, "holds", lambda serial, agent: True)
+    monkeypatch.setattr(video, "record", lambda script, serial, take, prepare: seen.append((take, prepare)))
+    video.main(["say-termin", "--record", "--serial", "emulator-5556", "--takes", "ru", "--skip-prepare"])
+    assert seen == [("ru", False)]
 
 
 def test_a_lock_check_never_clones_the_live_board_1389(tmp_path, monkeypatch):
