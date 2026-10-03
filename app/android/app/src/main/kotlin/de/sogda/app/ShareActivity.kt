@@ -12,6 +12,7 @@ import android.util.Log
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.view.WindowManager
 import java.io.File
 
 /**
@@ -35,6 +36,16 @@ class ShareActivity : Activity() {
         @Volatile private var pendingPdf: String? = null
         @Volatile private var pendingImages: Map<String, Any>? = null
 
+        /**
+         * #1386: the last share's number, the photos it is still copying, and
+         * the last copy. Copies run one at a time, each after the one before
+         * (they share `cache/shared/`), and one a newer share overtook stops,
+         * publishes nothing and deletes what it wrote.
+         */
+        @Volatile private var shares = 0
+        @Volatile private var incoming = 0
+        @Volatile private var copying: Thread? = null
+
         /** D1's page limit (`docMaxPages`, BR-DOC-02). */
         private const val MAX_PAGES = 30
 
@@ -53,12 +64,29 @@ class ShareActivity : Activity() {
          * the cache in the order shared, at most [MAX_PAGES], and `of`, how
          * many were shared.
          */
-        fun takeImages(): Map<String, Any>? = pendingImages.also { pendingImages = null }
+        fun takeImages(): Map<String, Any>? {
+            // #1386: D1 opened before the copies were made; it waits for them.
+            // A call a newer share overtook while it waited takes nothing.
+            val number = shares
+            copying?.join()
+            if (number != shares) return null
+            return pendingImages.also { pendingImages = null }
+        }
 
+        /**
+         * How many photos a share is still copying, 0 when none (#1386): D1
+         * says «Receiving 34 photos…» at once, then [takeImages] waits for
+         * them (off the main thread: it blocks).
+         */
+        fun receiving(): Int = incoming
+
+        /** A new share: whatever an older one left, or is still copying, is dropped. */
         private fun clear() {
             pending = null
             pendingPdf = null
             pendingImages = null
+            incoming = 0
+            shares++
         }
     }
 
@@ -71,24 +99,57 @@ class ShareActivity : Activity() {
         val images = share?.takeIf { it.type?.startsWith("image/") == true }
             ?.let(::streams)
             .orEmpty()
+        // The copies, off the main thread: the sender's grant to read the
+        // URIs lasts while this activity does, so it finishes after (and
+        // isn't `noHistory`: D1 in front would finish it, the grant with it).
+        // A copy that fails (the grant revoked, the disk full) still opens
+        // D1, on its choices: the share wasn't lost unseen.
         if (pdf != null || images.isNotEmpty()) {
-            // The copies, off the main thread: the sender's grant to read the
-            // URIs lasts while this activity does, so it finishes after.
-            Thread {
-                // A copy that fails (the grant revoked, the disk full) still
-                // opens D1, on its choices: the share wasn't lost unseen.
-                clear()
-                if (pdf != null) {
-                    pendingPdf = runCatching { copyPdf(pdf) }.getOrNull()
-                } else {
-                    val pages = copyImages(images.take(MAX_PAGES))
-                    if (pages.isNotEmpty()) {
-                        pendingImages = mapOf("pages" to pages, "of" to images.size)
+            // #1386: the invisible window stays for the whole copy, over the
+            // sender: touches and keys go through to it, never to this one.
+            window.addFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            )
+            clear()
+            val number = shares
+            val current = { number == shares }
+            val before = copying
+            val copy = Thread {
+                before?.join()
+                try {
+                    if (pdf != null) {
+                        val path = runCatching { copyPdf(pdf) }.getOrNull()
+                        if (current()) {
+                            pendingPdf = path
+                            open()
+                        } else {
+                            path?.let { File(it).delete() }
+                        }
+                    } else {
+                        val pages = copyImages(images.take(MAX_PAGES), current)
+                        if (!current()) {
+                            pages.forEach { File(it).delete() }
+                        } else if (pages.isNotEmpty()) {
+                            pendingImages = mapOf("pages" to pages, "of" to images.size)
+                        }
                     }
+                } finally {
+                    if (current()) incoming = 0
+                    runOnUiThread { finish() }
                 }
-                open()
-                runOnUiThread { finish() }
-            }.start()
+            }
+            copying = copy
+            if (images.isEmpty()) {
+                copy.start()
+                return
+            }
+            // #1386: D1 first, told how many are coming, and the copies behind
+            // it: 34 photos took ~14 s, D1's idle choices on screen meanwhile.
+            // A PDF, one file, is copied before D1 opens.
+            incoming = images.size
+            copy.start()
+            open()
             return
         }
         val text = share?.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()
@@ -167,9 +228,10 @@ class ShareActivity : Activity() {
      * name stay two, the share before deleted. Each is the picker's page
      * ([page]); one that can't be read is left out.
      */
-    private fun copyImages(uris: List<Uri>): List<String> {
+    private fun copyImages(uris: List<Uri>, current: () -> Boolean): List<String> {
         val folder = sharedFolder()
-        return uris.mapIndexedNotNull { i, uri ->
+        // Overtaken by a newer share (#1386): no more pages.
+        return uris.asSequence().takeWhile { current() }.withIndex().mapNotNull { (i, uri) ->
             runCatching {
                 val number = (i + 1).toString().padStart(2, '0')
                 val name = (displayName(uri) ?: "photo").substringBeforeLast('.')
@@ -178,7 +240,7 @@ class ShareActivity : Activity() {
                 file.path
             }.onFailure { Log.w("SogdaShare", "shared page ${i + 1} not read", it) }
                 .getOrNull()
-        }
+        }.toList()
     }
 
     /**

@@ -868,6 +868,7 @@
   "docImportPage": "Страница {page}",
   "docImportAddPage": "Добавить страницу",
   "docImportDone": "Готово",
+  "docImportReceiving": "{count, plural, one{Получаем {count} фото…} few{Получаем {count} фото…} many{Получаем {count} фото…} other{Получаем {count} фото…}}",
   "docImportReadingPage": "Читаем страницу {page} из {count}…",
   "docImportCheckTitle": "Проверь текст",
   "docImportCheckIntro": "Фото {page} читалось с трудом. Исправь отмеченные слова и продолжай.",

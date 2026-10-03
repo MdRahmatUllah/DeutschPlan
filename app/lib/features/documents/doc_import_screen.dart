@@ -39,6 +39,7 @@ class DocImportScreen extends ConsumerStatefulWidget {
 
 enum _Stage {
   choose,
+  receiving,
   paste,
   camera,
   reading,
@@ -104,6 +105,9 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   /// The page being read, from 1, for «Reading page 2 of 4…».
   int _readingPage = 0;
 
+  /// How many shared photos are still being copied (#1386).
+  int _receiving = 0;
+
   /// The page *Check the text* shows.
   int _checkPage = 0;
 
@@ -155,9 +159,32 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   /// FR-D1-01: the shared text, straight into processing. None (a restored
   /// launch, or a second read of the same share) leaves D1 as it is.
   Future<void> _takeShare() async {
+    // #1386: shared photos still being copied are said at once, the choices
+    // gone, rather than seconds of choices a share then lands over.
+    final coming = await ref.read(sharedTextProvider).receiving();
+    if (!mounted) return;
+    if (coming > 0) {
+      setState(() {
+        _run++;
+        _receiving = coming;
+        _stage = _Stage.receiving;
+      });
+    }
+    final run = _run;
+    // Read now: D1 may be gone when the copies come.
+    final photos = _pagePhotos;
     // Shared photos (#1332): their copies, read as chosen ones are.
     final images = await ref.read(sharedTextProvider).takeImages();
-    if (!mounted) return;
+    if (!mounted || run != _run) {
+      // Cancelled, overtaken or left while they came: the copies go unread
+      // (BR-DOC-05).
+      if (images != null) unawaited(photos.discard(images.pages));
+      return;
+    }
+    // None could be copied: back to the choices.
+    if (_stage == _Stage.receiving && (images?.pages.isEmpty ?? true)) {
+      setState(() => _stage = _Stage.choose);
+    }
     if (images != null && images.pages.isNotEmpty) {
       _dropPdf();
       _dropPhotos(keep: images.pages);
@@ -478,6 +505,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
       _Stage.check => l10n.docImportCheckIntro(_checkPage + 1),
       _Stage.scan || _Stage.locked => _pdfName,
       _Stage.reading when _source == 'pdf' => _pdfName,
+      _Stage.receiving => l10n.docImportPhotos(_receiving),
       _Stage.camera ||
       _Stage.reading ||
       _Stage.noText => l10n.docImportPhotos(_photos.length),
@@ -506,6 +534,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
             : null,
         onDone: () => unawaited(_readPhotos()),
       ),
+      _Stage.receiving => _Processing(receiving: _receiving, onCancel: _cancel),
       _Stage.reading => _Processing(
         reading: (
           page: _readingPage,
@@ -807,12 +836,15 @@ class _PasteBox extends StatelessWidget {
   }
 }
 
-/// "Reading page 2 of 4…" or "Finding your words…", with *Cancel*
-/// (FR-D1-05).
+/// "Receiving 34 photos…", "Reading page 2 of 4…" or "Finding your
+/// words…", with *Cancel* (FR-D1-05).
 class _Processing extends StatelessWidget {
-  const _Processing({required this.onCancel, this.reading});
+  const _Processing({required this.onCancel, this.reading, this.receiving = 0});
 
   final VoidCallback onCancel;
+
+  /// Shared photos still being copied (#1386), 0 once they're all here.
+  final int receiving;
 
   /// The photo being read, of how many; null once the words are being found.
   final ({int page, int of})? reading;
@@ -846,6 +878,7 @@ class _Processing extends StatelessWidget {
                 liveRegion: true,
                 child: SgText(
                   switch (reading) {
+                    _ when receiving > 0 => l10n.docImportReceiving(receiving),
                     (:final page, :final of) => l10n.docImportReadingPage(
                       page,
                       of,
