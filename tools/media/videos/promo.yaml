@@ -1,0 +1,85 @@
+# #1211: the Play listing's 30 s promo video, 16:9, voice-free with on-screen
+# text: Today, a new word's card (its meaning and guide in the learner's
+# language), a rating, then a letter shared in and its new words marked by
+# level, and «Add my level». One take per listing language, each with its own
+# learner (learners.yaml), so each language's cut shows its own card. Every
+# step is a point, a link or the letter's German, never a label, so one list
+# of steps walks the app in any of its languages. The letter is own-letter's
+# (#1236: a team-written landlord's note, never a real person's).
+# `before` closes Today's «A better voice» card for a clean first frame.
+#   python tools/team.py lock emulator-5556 -m "#1211"
+#   python tools/media/video.py promo --record --serial emulator-5556 --takes en
+#   python tools/media/video.py promo --render --formats landscape
+# Captions: en, bn and the closing line from messaging.md's promises and the
+# reviewed study-day and own-letter lines; pl read by agent-1, ru by agent-2
+# (#1402).
+locales: [en, bn, pl, ru]
+takes:
+  en:
+    locales: [en]
+    learner: en
+  bn:
+    locales: [bn]
+    learner: bn
+  pl:
+    locales: [pl]
+    learner: pl
+  ru:
+    locales: [ru]
+    learner: ru
+before:
+  - input tap 976 1227
+steps:
+  - sleep4
+  - "at:540,1531"
+  - sleep2
+  - "at:540,1699"
+  - sleep5
+  - "at:667,1694"
+  - sleep2
+  - "shell:am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT 'Sehr geehrte Damen und Herren,\n\nhier ist die Nebenkostenabrechnung für 2025. Bitte überweisen Sie die Nachzahlung bis zum 15. November auf unser Konto.\n\nAm Dienstag kommt der Hausmeister. Er will die Heizkörper kontrollieren und den Wasserzähler ablesen. Bitte seien Sie zwischen 9 und 12 Uhr erreichbar.\n\nBei Fragen zur Abrechnung rufen Sie uns an.' de.sogda.app"
+  - "wait:hier ist die"
+  - sleep4
+  - "at:540,1185"
+  - sleep5
+cut: [1.5, 31.5]
+captions:
+  # Today to 3.4 s (en; bn, pl and ru about a second later), the card to 13.2
+  # (pl's rating starts ~12.5), the rating to 17.2, «Finding your words…» and
+  # D2's marks to 25.2, «Added …» to the end (a take that ends early holds its
+  # last frame).
+  - from: 0
+    to: 3.4
+    text:
+      en: Your plan for today, ready when you open the app
+      bn: অ্যাপ খুললেই আজকের পরিকল্পনা তৈরি থাকে
+      pl: Plan na dziś czeka, gdy tylko otworzysz aplikację
+      ru: План на сегодня готов, как только откроешь приложение
+  - from: 3.7
+    to: 13.2
+    text:
+      en: Every word with its meaning and a pronunciation guide
+      bn: প্রতিটি শব্দের অর্থ বাংলায় আর উচ্চারণ বাংলা অক্ষরে
+      pl: Każde słowo ze znaczeniem po polsku i wymową zapisaną polskimi literami
+      ru: Каждое слово — со значением на русском и произношением кириллицей
+  - from: 13.5
+    to: 17.2
+    text:
+      en: "Say how well you knew it: spaced revision brings it back in time"
+      bn: "কতটা মনে ছিল বলুন: রিভিশন শব্দটিকে ঠিক সময়ে ফিরিয়ে আনবে"
+      pl: "Oceń, jak dobrze pamiętasz słowo: powtórka przyjdzie w porę"
+      ru: "Оцени, насколько хорошо помнишь слово: оно вернётся на повторение вовремя"
+  - from: 17.5
+    to: 25.2
+    text:
+      en: "Share a letter you got in German: its new words, marked by level"
+      bn: "জার্মান ভাষায় পাওয়া একটি চিঠি শেয়ার করুন: কোর্সের নতুন শব্দগুলো, লেভেল ধরে চিহ্নিত"
+      pl: "Udostępnij list po niemiecku: nowe słowa z kursu, zaznaczone według poziomu"
+      ru: "Поделись письмом на немецком: новые слова из курса, отмеченные по уровням"
+  - from: 25.5
+    to: 30
+    text:
+      en: "A whole German course, A1 to C2: offline, no account"
+      bn: "A1 থেকে C2 পর্যন্ত পুরো কোর্স, ইন্টারনেট আর অ্যাকাউন্ট ছাড়াই"
+      pl: "Cały kurs od A1 do C2. Offline, bez konta"
+      ru: "Полный курс немецкого от A1 до C2: без интернета и без аккаунта"
