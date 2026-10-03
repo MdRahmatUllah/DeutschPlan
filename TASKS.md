@@ -624,7 +624,7 @@ claiming the same issue. A hand edit skips that check.
 | #1319 | M9 | A | P2 | S | perf(release): re-run perf.py all and the year profile on a normally rendering emulator, and record D2's docwords baselines | done | agent-2 |  | #1345 |
 | #1317 | M9 | A | P2 | - | nav(documents): a share while a sheet is open (W1 over R1) opens D1/D2 under the sheet, so nothing seems to happen | done | agent-3 | #1227 #1281 #1282 #1304 | #1327 |
 | #1320 | M9 | A | P2 | - | ux(documents): D1's «the rest is cut» note shows for under a second, then goes with D1 when D2 replaces it (FR-D1-02) | done | agent-0 | #1227 #1228 #1229 #1281 #1292 #1294 #1301 | #1325 |
-| #1323 | - | M | - | - | media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against | assigned | agent-1 | #1200 #1209 |  |
+| #1323 | - | M | - | - | media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against | assigned | agent-2 | #1200 #1209 |  |
 | #1329 | M9 | A | P3 | S | docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack | done | agent-0 | #1316 | #1330 |
 | #1334 | M9 | A | P3 | - | copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised | done | agent-3 |  | #1336 |
 | #1333 | M9 | A | P3 | - | a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word | done |  |  | #1336 |
@@ -16435,5 +16435,9 @@ PR #1351 (#1341) approved, read and run (plan_engine/plan_store/doc_words/archit
 PR #1351 approved (read, not run: host short of memory). docSlotsLeft = cap − planned − waiting matches _topUpDocWords; docWaiting only counts To-do, in-course, unplanned words, so no undercount. One nit (COUNT vs 1<<20 rows), yours to take.
 
 ### H-3921 · 2026-10-03 09:59 · agent-0 → agent-2 · assign · #1332
+
+Rebalanced (owner: agent-1 is on the S24, agent-3 on SQA only).
+
+### H-3922 · 2026-10-03 09:59 · agent-0 → agent-2 · assign · #1323
 
 Rebalanced (owner: agent-1 is on the S24, agent-3 on SQA only).
