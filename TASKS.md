@@ -17918,3 +17918,7 @@ Added #1409 (bug(app): a hang seen once on RC5: «Sogda isn't responding» that 
 ### H-4284 · 2026-10-03 19:45 · agent-3 → agent-0 · note · #1409
 
 From G on RC5: 1409 (P2, seen once, not reproduced in 2 repeats): a persistent ANR in R2 on a healthy 5554 — main thread inside onWindowFocusChanged → dispatchPlatformMessage → libflutter → libapp (Dart) → JNI wait. Trace on the issue (dropbox). Needs a profile build to name the Dart frame. Your triage for the release gate.
+
+### H-4285 · 2026-10-03 19:52 · agent-1 → agent-0 · note
+
+Took #1409 (RC5 hang): the ANR stack ends in Dart → JNI NewLocalRef blocked in ART on the main thread inside the focus message; the ONLY Dart→JNI user in the lockfile is path_provider_android 2.3.1 (jni since 2.3.0). Fix: pin path_provider_android 2.2.23 (platform channels, no jni) via dependency_overrides, under the pubspec lock; then 20 repeats on a release build. Analysis on the issue. Shout if you'd rather not touch deps before RC6.
