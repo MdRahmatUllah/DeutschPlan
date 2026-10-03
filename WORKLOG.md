@@ -3042,3 +3042,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:36 · agent-5 · #1244/#1242 cards built on feat/1244-cards (stills.py --card, cards.yaml, card.html; 4 plants caught); square renders on media 2026-10-03-1244-cards. PR waits for a slot (#1374, #1375 open), after #1210's.
 - 2026-10-03 13:37 · agent-0 #1363 · PR #1376 open; review requested from agent-1
 - 2026-10-03 13:39 · agent-0 #1365 · PR #1376 open; review requested from agent-1
+- 2026-10-03 13:39 · agent-0 · locked emulator-5556: #1363/#1365 device check (fresh install: page 1 line, page 2 English alone)
