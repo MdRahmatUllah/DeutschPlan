@@ -656,13 +656,18 @@ class _Paragraph extends StatelessWidget {
     String fit(String s) => SgScript.scaled(context)
         ? SgScript.breakTooWide(s, style: base, width: width, scaler: scaler)
         : s;
-    TextSpan plain(String s) {
+    // [alone]: a run between two marked words, or one and the paragraph's
+    // edge, which a screen reader would stop on by itself.
+    TextSpan plain(String s, {bool alone = false}) {
       final shown = fit(s);
       return TextSpan(
         text: shown,
-        // #1344: a run with nothing to hear (the space or full stop between
-        // two marked words) has no label, so a screen reader doesn't stop.
-        semanticsLabel: !_heard.hasMatch(s) ? '' : (shown == s ? null : s),
+        // #1344: such a run with nothing to hear (a space, a full stop) has
+        // no label, so a screen reader doesn't stop. Beside plain text it
+        // joins that node, and keeps its space there (#1361).
+        semanticsLabel: alone && !_heard.hasMatch(s)
+            ? ''
+            : (shown == s ? null : s),
       );
     }
 
@@ -689,9 +694,11 @@ class _Paragraph extends StatelessWidget {
       semanticsLabel: '',
     );
     var at = from;
+    // Whether the last span is a marked word's, its own node: the
+    // paragraph's start is a node's edge too.
+    var afterMark = true;
     for (final (start, end, word) in marks) {
       if (start < at) continue;
-      add(plain(text.substring(at, start)));
       final surface = text.substring(start, end);
       final shown = switch (word.docClass) {
         _ when ignored.contains(word.key) => false,
@@ -699,8 +706,10 @@ class _Paragraph extends StatelessWidget {
         DocClass.probablyKnown => showProbable,
         DocClass.known => word.mine,
       };
+      add(plain(text.substring(at, start), alone: afterMark && shown));
       if (!shown) {
         add(plain(surface));
+        afterMark = false;
         at = end;
         continue;
       }
@@ -786,9 +795,10 @@ class _Paragraph extends StatelessWidget {
           ),
         );
       }
+      afterMark = true;
       at = end;
     }
-    add(plain(text.substring(at, to)));
+    add(plain(text.substring(at, to), alone: afterMark));
     return GestureDetector(
       // A long press on a new word adds it at once (doc-words.md): a sighted
       // shortcut, so a screen reader hears the words' own taps only.

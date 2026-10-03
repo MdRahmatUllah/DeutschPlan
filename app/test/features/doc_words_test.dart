@@ -560,6 +560,54 @@ void main() {
     });
   }
 
+  for (final (name, learner) in <(String, LearnerSnapshot Function())>[
+    ('an A2.1 learner, A1 probably known and hidden', artboardLearner),
+    ('a learner who knows every word', allKnownLearner),
+  ]) {
+    testWidgets('#1361 #1344 FR-D2-01 plain text keeps its spaces for a '
+        'screen reader, and no stop is a lone space: $name', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await pump(
+        tester,
+        docWordsStub(
+          documents: FakeDocuments(
+            body:
+                'Liebe Eltern, am kommenden Montag, fällt, sagt die '
+                'Lehrerin, der Unterricht aus. Mit freundlichen Grüßen',
+            learner: learner(),
+          ),
+        ),
+      );
+      // Its commas too, beside a marked word («fällt», new for the A2.1
+      // learner, known for the other).
+      for (final words in <String>[
+        'am kommenden Montag,',
+        ', sagt die',
+        'Mit freundlichen',
+      ]) {
+        expect(
+          find.semantics.byPredicate((node) => node.label.contains(words)),
+          findsOne,
+          reason: words,
+        );
+      }
+      // Two words run together: a small letter, then a capital, no space.
+      final joined = RegExp(r'\p{Ll}\p{Lu}', unicode: true);
+      expect(
+        find.semantics.byPredicate((node) => joined.hasMatch(node.label)),
+        findsNothing,
+      );
+      final heard = RegExp(r'[\p{L}\p{N}]', unicode: true);
+      expect(
+        find.semantics.byPredicate(
+          (node) => node.label.isNotEmpty && !heard.hasMatch(node.label),
+        ),
+        findsNothing,
+      );
+      semantics.dispose();
+    });
+  }
+
   testWidgets('#1339 #1344 FR-D2-01 a screen reader stops only where there '
       'is something to say: the marks and the chip are drawn, not read, and '
       'no stop is a lone space or full stop', (tester) async {
