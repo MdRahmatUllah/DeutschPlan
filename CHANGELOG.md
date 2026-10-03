@@ -9,7 +9,7 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
 ### Added
 - **Learn from a document** (D1): paste or share a text from any app (#1227), photograph pages, pick photos or share them from the gallery or a messenger, one or several (#1332), read on the phone by ML Kit with *Check the text* for a hard page (#1229), or choose a PDF, read from its text layer up to 30 pages, a scan sent to the photos (#1228). Over 20,000 characters or 30 pages, D2 says what was left out (#1320).
 - **The words in your text** (D2): every word marked by its class, the new ones by level; a card to *Add*, mark *I know this*, or keep a word outside the course as your own; *Add all new* or your level at once, and a long press to add (#1230). An added word joins the plan, a few a day (BR-PLAN-11, #1272), with the sentence you met it in.
-- **My documents** (D3): the documents you kept, to reopen, rename or delete with their photos (#1295). Settings sets the words a day, whether photos are kept, and when documents delete themselves (#1296).
+- **My documents** (D3): the documents you kept, to reopen, rename or delete with their photos (#1295); a document you haven't added from yet says «no words added yet», never «nothing new» (#1358). Settings sets the words a day, whether photos are kept, and when documents delete themselves (#1296).
 - **Your own sentence** on the word's card, in W1 and as a cloze when it's short enough to gap (#1232).
 - **73 everyday words** the course used but never taught on their own: Zeit, Name, Dank, zahlen, Raum, bereit, the bench *Bank* and more, with meanings and guides in all four languages (#1257). The course is now 5,142 words.
 - **An update's words in steps you've passed are taught too,** a few a day from the day after the update (3, after the course's and your documents' words), and Today's update card says how many (BR-CONTENT-02, #1338). Before, they stayed To-do for anyone past their step.
@@ -17,6 +17,8 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
 - **Translation on the phone** with Hy-MT2, an optional download for phones with at least 3.5 GiB of memory: W1's examples, T5's words outside the course and R1's *Translate* (#154), and suggested meanings for a word outside the course in D2 and R2, never filled in for you (#1233). *Add as my word* brings the sentence and the document's title (#1300). Timed on a Galaxy S24: two sentences in about 5 s.
 
 ### Changed
+- **Setup in English opens on English meanings alone.** Bangla is one tap away on the same page; a Bangla app keeps Bangla then English (#1363). Before, an English speaker who kept the defaults got a Bangla line and the Bangla-script guide on every card.
+- **Setup's first promise says what's offline:** «The whole course works offline · no account needed». The sound needs the phone's German voice or Supertonic (#1365).
 - **A bigger download for reading and translating on the phone:** arm64 52.15 → 89.19 MB. llama.cpp for Hy-MT2 +22.95 MB (#154; the model itself is the optional 1.1 GB download), ML Kit's text recogniser and its Latin models +12.33 MB, pdfbox +0.40 MB once its CJK maps went (#1318), the code +1.20 MB (#1306).
 
 ### Fixed
