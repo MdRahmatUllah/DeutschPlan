@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import sys
 from pathlib import Path
 
@@ -64,6 +65,18 @@ GRAMMAR_HEADERS = [
         for part in ("Topic", "Rule", "Example", "Watch out")
     ],
 ]
+
+
+def digest(sources: Path = SOURCES) -> str:
+    """What `sources` records for this workbook (#634): the SHA-256 of the
+    YAML it is written from, file by file in name order, with LF line ends
+    so every checkout agrees. The xlsx's own bytes change with every save
+    (#1347)."""
+    sha = hashlib.sha256()
+    for path in sorted(sources.glob("*.yaml")):
+        sha.update(path.name.encode("utf-8") + b"\0")
+        sha.update(path.read_bytes().replace(b"\r\n", b"\n"))
+    return sha.hexdigest()
 
 
 def read_entries(sources: Path = SOURCES) -> list[dict]:

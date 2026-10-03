@@ -268,8 +268,9 @@ model changes only with an app update ([`model-manager.md`](../04-screens/model-
   Hy-MT2 arrives with v1.2.0, whose store notes say so. A native reader checks the
   Bangla before the first upload.
 - **Screenshots.** `docs/05-dev-guide/store/phone-light`, `phone-dark`,
-  `tablet-light` and `tablet-dark`, six each (Today, a card's front and back,
-  the course, a step, word detail), from the release x86_64 APK on
+  `tablet-light` and `tablet-dark`, eight each (Today, a card's front and back,
+  the course, a step, word detail, and since 1.2.0 a document's words and
+  a word's card from it, #1307), from the release x86_64 APK on
   `emulator-5558`: phone 1080 × 2160, tablet 1600 × 2560, Android's demo-mode
   status bar, RGB PNGs without alpha. Bangla, Polish and Russian each have a
   phone set in their own app language (`bn-`, `pl-` and `ru-phone-light`), and
