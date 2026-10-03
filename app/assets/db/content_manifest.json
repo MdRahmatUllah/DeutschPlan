@@ -447,8 +447,8 @@
     "C1.2": 21,
     "C2.2": 21
   },
-  "built_at": "2026-10-03T22:55:17+00:00",
-  "content_version": "20261003225517",
+  "built_at": "2026-10-03T23:41:28+00:00",
+  "content_version": "20261003234128",
   "counts": {
     "examples": 10691,
     "grammar": 182,
@@ -5954,11 +5954,11 @@
   "sources": [
     {
       "file": "German_A1_Tracker.xlsx",
-      "sha256": "dcdf7bea01bd00263eaa0a64e078300f2393e6f8eff94a59faea36492bfb9329"
+      "sha256": "f2802d43d3b3e6dd3effb2c7a59c92d435d81597eec9448dbd1a1a8d8f78e56a"
     },
     {
       "file": "German_A2_Tracker.xlsx",
-      "sha256": "e341900127b7c7468cd7f3f8875564198bcd0f9b434f1b0ab2559d552949faba"
+      "sha256": "bad985ad26464643b4079e8cd3aaeba0d720a0f98d13f7c6a90af4aa442ee346"
     },
     {
       "file": "German_B1_Tracker.xlsx",
@@ -5978,7 +5978,7 @@
     },
     {
       "file": "German_Everyday_Additions.xlsx",
-      "sha256": "5a65e1a131958562b875d3614acb098ddb162778f471653dc55db620d8b7fcf8"
+      "sha256": "a18695ba898b7dd3f375bfe12308328ebb28004aceabcf5c36634d2178d7e3b5"
     }
   ],
   "steps": {
