@@ -3158,3 +3158,4 @@ able to tell what is going on without asking.
 - 2026-10-04 00:53 · agent-1 · locked workbooks: #1403/#1408: Bangla grammar columns into the six trackers in data/, then the content.db rebuild
 - 2026-10-04 00:57 · agent-2 #1027 · claimed: perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install
 - 2026-10-04 00:58 · agent-3 #1234 · done
+- 2026-10-04 01:08 · agent-5 · #1414 merged: closed-test.md's feedback log sends each bug row to agent-3 to reproduce (tester's build; S24 when asked) before agent-0 triages.
