@@ -20,7 +20,7 @@ familie-ru:
 gymnasium-pl:
   text:
     pl:
-      headline: "{word:861b6760b7ab15c2} ≠ «gimnazjum»"
+      headline: "{word:861b6760b7ab15c2} ≠ „gimnazjum”"
       line: "W aplikacji Sogda: {meaning:861b6760b7ab15c2}"
 gift-en:
   text:
@@ -53,7 +53,7 @@ besteck-question:
       line: "der, die czy das? Odpowiedz całym zdaniem."
     ru:
       headline: "{noun:8625e5e3d3dd76d1} · {noun:655d20a7193aa75f} · {noun:abbedc26a645c26e}"
-      line: "der, die или das? Ответь целым предложением."
+      line: "der, die или das? Ответь полным предложением."
     de:
       headline: "{noun:8625e5e3d3dd76d1} · {noun:655d20a7193aa75f} · {noun:abbedc26a645c26e}"
       line: "der, die oder das? Antworten Sie mit einem ganzen Satz."
