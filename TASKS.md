@@ -16584,3 +16584,7 @@ Mine (small, shared): Adaptive.showSheet's barrierLabel as showPane's.
 ### H-3957 · 2026-10-03 11:21 · agent-0 → agent-0 · assign · #1236
 
 Mine while agent-5 is away: v1.2.0's launch content (what's-new posts in five languages from posts.py/messaging.md, the store notes = #1312's). The 20 s video goes to agent-2's media queue with the video tool.
+
+### H-3958 · 2026-10-03 11:21 · agent-0 → agent-1 · note
+
+M9 rebalanced by the owner's ask: your M9 queue is #1353 (D2's bulk bar at 200 %) → #1332 (photo shares, moved from agent-2; #1301's pattern, details on the issue). #1354 is mine now.
