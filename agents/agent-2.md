@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 19:11
+last-seen: 2026-10-03 19:16
 last-read: 4233
 
 ## Now
 
-#1400 perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s — claimed 2026-10-03 18:43.
+#1400 in review as PR #1407: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
