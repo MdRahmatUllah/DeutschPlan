@@ -62,7 +62,7 @@ In order. **Kind:**
 |---|---|---|---|---|---|
 | 10 | Ekushey TV | bn | [how to learn German easily](https://www.ekushey-tv.com/education/1360873111111122494) | `etvonline@ekushey-tv.com` (online desk) | A how-to naming two apps: pitch "a German course in Bangla, for students going to Germany" |
 | 11 | The Daily Campus | bn | [learn German online in eight steps](https://thedailycampus.com/technology-news/111638/) | `news@thedailycampus.com` | A student portal; the ad desk is separate, so never pitch it |
-| 12 | German Probashe | bn | [the magazine](https://www.germanprobashe.com/) | the magazine's contact page | Also the guide's route (#1246); one message covers both |
+| 12 | German Probashe | bn | [the magazine](https://www.germanprobashe.com/) | the magazine's contact page | Also the route of [the guide](launch/germanprobashe-bn.md) (#1246); one message covers both |
 | 13 | Geex (x-kom) | pl | [apps to learn German](https://geex.x-kom.pl/lifestyle/aplikacje-do-nauki-jezyka-niemieckiego/) | `geex@x-kom.pl` (editorial) | The list is from 2022, so pitch it as an app tip |
 
 ### Last: weaker fit (send if there's time)
