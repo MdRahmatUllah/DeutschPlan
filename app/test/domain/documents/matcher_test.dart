@@ -215,12 +215,13 @@ void main() {
   test("#1270 a capital after an inflected adjective is a noun, so it's "
       'offered, not dropped as a name', () {
     final m = matchText(
-      'Das ist ein wichtiger Schritt.',
+      // Not «Schritt», a word of the course since #1257.
+      'Das ist ein wichtiger Meilenstein.',
       lemmatiser,
       course,
       learner(),
     );
-    expect(word(m, 'Schritt').docClass, DocClass.outside);
+    expect(word(m, 'Meilenstein').docClass, DocClass.outside);
   });
 
   test('#1225 BR-DOC-03: a lemma once per document, with all its sentences '

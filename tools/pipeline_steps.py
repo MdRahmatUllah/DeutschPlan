@@ -91,9 +91,9 @@ def split_level(words: Sequence, level: str, boundary: int | None = None) -> Lev
             f"wrong Level column rather than a split to fix."
         )
 
-    weeks = sorted({_week_of(w) for w in of_level})
+    weeks = sorted({week_of(w) for w in of_level})
     if boundary is not None:
-        in_first = sum(1 for w in of_level if _week_of(w) < boundary)
+        in_first = sum(1 for w in of_level if week_of(w) < boundary)
         if in_first in (0, len(of_level)):
             raise SplitError(
                 f"{level}'s shipped boundary, week {boundary}, would leave "
@@ -114,7 +114,7 @@ def split_level(words: Sequence, level: str, boundary: int | None = None) -> Lev
             f"this level cannot become two steps."
         )
 
-    counts = {week: sum(1 for w in of_level if _week_of(w) == week) for week in weeks}
+    counts = {week: sum(1 for w in of_level if week_of(w) == week) for week in weeks}
     total = len(of_level)
 
     # Every boundary that leaves both halves non-empty: the first week can
@@ -141,7 +141,7 @@ def split_level(words: Sequence, level: str, boundary: int | None = None) -> Lev
     )
 
 
-def _week_of(word) -> int:
+def week_of(word) -> int:
     """A word with no Week sits in week 1.
 
     The column is optional, and a level where nobody filled it in is one big
@@ -170,7 +170,7 @@ def assign_sublevels(
             if word.level != level:
                 continue
             word.sublevel_code = (
-                split.first if _week_of(word) < split.boundary_week else split.second
+                split.first if week_of(word) < split.boundary_week else split.second
             )
     return splits
 
