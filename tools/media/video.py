@@ -12,21 +12,28 @@ its `locales`. A caption's numbers come from `site-facts.json` as `{tokens}`
 (`{totals.words}`), each language's way (posts.py's `fill`): a digit typed in a
 caption stops the run, as the marketing rules ask. A script's `takes`
 (#1355) record one learner per meaning language, each made by its unrecorded
-`prepare` steps, so a language's cut shows that language's card; a locale no
-take names is cut from the one recording.
+`prepare` steps, or by a shared `learner:` from `videos/learners.yaml`
+(#1241), so a language's cut shows that language's card; a locale no take
+names is cut from the one recording. `--skip-prepare` keeps the take's
+learner for the next script. `audio: true` (#1241) records the app's own
+sound, the voice saying a word, with scrcpy 2.x (`SCRCPY`, the PATH, or a
+portable copy in `F:/appDevs/scrcpy/`).
 
 **Recording** needs the emulator held: `python tools/team.py device` for
 emulator-5558, `team.py lock emulator-5556` for `--serial emulator-5556`,
 the media lane's. Neither is ever SQA's emulator-5554 (`device.pick_serial`).
-It runs `screenrecord` while device.py walks the steps,
+It runs `screenrecord` (scrcpy for `audio`) while device.py walks the steps,
 and keeps the recording in `build/media/` (git-ignored: a raw recording is
 too big for the media branch).
 
 **Rendering** draws each caption's frame (`videos/frame.html`, every
 value from brand.json through brand.py) with Playwright, and ffmpeg puts the
 recording into the frame's screen and switches the frames on the captions'
-times: H.264 and a silent AAC track, MP4, 30 fps. The files go to the media
-worktree, `<yyyy-mm-dd>-1206-videos/<script>-<locale>-<format>.mp4`, or
+times: H.264 and a silent AAC track (`audio`: the recording's, at a
+speech level), MP4, 30 fps; a screen that rests holds its last frame to the
+cut's end. The files go to the media
+worktree, `<yyyy-mm-dd>-1206-videos/<script>-<locale>-<format>.mp4`, with each
+locale's captions as `<script>-<locale>.srt`, or
 `--out`; one over 20 MB is said to belong on the owner's drive (media README).
 """
 
@@ -37,6 +44,7 @@ import base64
 import datetime
 import json
 import math
+import os
 import re
 import shutil
 import string
@@ -81,6 +89,18 @@ def load(name: str, scripts: Path = SCRIPTS) -> dict:
     return script
 
 
+LEARNERS = SCRIPTS / "learners.yaml"
+
+
+def prepare_of(script: dict, take: str) -> list[str]:
+    """[take]'s prepare steps: its own, or its `learner:`'s from
+    `videos/learners.yaml` (#1241), one onboarding shared by every script."""
+    spec = script["takes"][take]
+    if "learner" in spec:
+        return yaml.safe_load(LEARNERS.read_text(encoding="utf-8"))[spec["learner"]]
+    return spec.get("prepare") or []
+
+
 def check(script: dict) -> None:
     """What stops a script: no steps, a cut that isn't one, a caption out of
     the cut, overlapping or missing a locale, and a digit typed in one."""
@@ -102,6 +122,8 @@ def check(script: dict) -> None:
             raise ScriptError(f"{name}: take {take} must name some of the script's locales")
         if not all(isinstance(s, str) for s in spec.get("prepare") or []):
             raise ScriptError(f"{name}: take {take}'s prepare must be device.py steps")
+        if "learner" in spec and spec["learner"] not in yaml.safe_load(LEARNERS.read_text(encoding="utf-8")):
+            raise ScriptError(f"{name}: take {take}'s learner {spec['learner']} isn't in learners.yaml")
         taken += spec["locales"]
     if len(taken) != len(set(taken)):
         raise ScriptError(f"{name}: a locale is in two takes")
@@ -128,6 +150,16 @@ def check(script: dict) -> None:
 def captions(script: dict, lang: str) -> list[tuple[float, float, str]]:
     """Each caption's times and its text in [lang], the facts filled in."""
     return [(c["from"], c["to"], fill(c["text"][lang], lang)) for c in script.get("captions") or []]
+
+
+def srt(script: dict, lang: str) -> str:
+    """[lang]'s captions as SubRip (#1241): the caption file a channel shows
+    as its own subtitles, the frames' text exactly."""
+    def at(seconds: float) -> str:
+        ms = round(seconds * 1000)
+        return f"{ms // 3_600_000:02}:{ms // 60_000 % 60:02}:{ms // 1000 % 60:02},{ms % 1000:03}"
+    return "".join(f"{i}\n{at(start)} --> {at(stop)}\n{text}\n\n"
+                   for i, (start, stop, text) in enumerate(captions(script, lang), 1))
 
 
 # ---------------------------------------------------------------------------
@@ -163,7 +195,22 @@ def raw_of(script: dict, lang: str | None = None, take: str | None = None) -> Pa
     return RAW / (f"{script['name']}-{take}.mp4" if take else f"{script['name']}.mp4")
 
 
-def record(script: dict, serial: str = device.DEV_SERIAL, take: str | None = None) -> Path:
+def scrcpy() -> str:
+    """scrcpy (2.0 or later records Android 11+'s sound): `SCRCPY`, the PATH,
+    or the portable copy beside the checkouts (`F:/appDevs/scrcpy/*/`, #1241)."""
+    found = os.environ.get("SCRCPY") or shutil.which("scrcpy")
+    if not found:
+        for parent in ROOT.parents:
+            found = next((str(p) for p in sorted((parent / "scrcpy").glob("*/scrcpy.exe"))), None)
+            if found:
+                break
+    if not found:
+        raise SystemExit("an audio script records with scrcpy: put it on the PATH or set SCRCPY")
+    return found
+
+
+def record(script: dict, serial: str = device.DEV_SERIAL, take: str | None = None,
+           prepare: bool = True) -> Path:
     """`screenrecord` while device.py walks the steps; the file in build/media/.
     A [take] first walks its `prepare` steps, unrecorded: its own learner, so
     each language's cut shows that language's card (#1355). The script's
@@ -174,27 +221,41 @@ def record(script: dict, serial: str = device.DEV_SERIAL, take: str | None = Non
     remote = f"/sdcard/sogda-{script['name']}.mp4"
     limit = math.ceil(script["cut"][1]) + 30
     shell = [adb, "-s", serial, "shell"]
-    if take:
-        walk({"name": f"{script['name']} {take}", "steps": script["takes"][take].get("prepare") or []},
-             shell, serial)
+    if take and prepare:
+        walk({"name": f"{script['name']} {take}", "steps": prepare_of(script, take)}, shell, serial)
+    sound = bool(script.get("audio"))
+    local = raw_of(script, take=take)
+    RAW.mkdir(parents=True, exist_ok=True)
     try:
         for command in script.get("before") or []:
             subprocess.run([*shell, command], check=True)
-        recorder = subprocess.Popen(
-            [*shell, "screenrecord", "--bit-rate", "8000000",
-             "--time-limit", str(min(limit, 180)), remote])
-        time.sleep(1.5)  # screenrecord's first frame
+        if sound:
+            # #1241: scrcpy records the screen and the app's voice straight to
+            # [local], and stops itself at the cut's end: a killed one leaves
+            # an unfinished file. The SDK's adb, so the shared server isn't
+            # restarted under the other agents.
+            limit = math.ceil(script["cut"][1]) + 2
+            recorder = subprocess.Popen(
+                [scrcpy(), "-s", serial, "--no-window", f"--record={local}", f"--time-limit={limit}"],
+                env={**os.environ, "ADB": adb}, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        else:
+            recorder = subprocess.Popen(
+                [*shell, "screenrecord", "--bit-rate", "8000000",
+                 "--time-limit", str(min(limit, 180)), remote])
+        time.sleep(1.5)  # the recorder's first frame
         try:
             walk(script, shell, serial)
         finally:
-            subprocess.run([*shell, "pkill", "-INT", "screenrecord"], check=False)
-            recorder.wait(timeout=30)
+            if not sound:
+                subprocess.run([*shell, "pkill", "-INT", "screenrecord"], check=False)
+            recorder.wait(timeout=limit + 30)
     finally:
         for command in script.get("after") or []:
             subprocess.run([*shell, command], check=False)
+    if sound:
+        print(f"recorded {local} ({local.stat().st_size / 1e6:.1f} MB, with sound)")
+        return local
     time.sleep(1)  # the file closes on the device
-    RAW.mkdir(parents=True, exist_ok=True)
-    local = raw_of(script, take=take)
     subprocess.run([adb, "-s", serial, "pull", remote, str(local)], check=True, capture_output=True)
     subprocess.run([adb, "-s", serial, "shell", "rm", remote], check=False)
     print(f"recorded {local} ({local.stat().st_size / 1e6:.1f} MB)")
@@ -295,25 +356,34 @@ def frames(script: dict, lang: str, fmt: str, recording: tuple[int, int],
 
 
 def ffmpeg_args(raw: Path, frames_: list[Path], box: dict, times: list[tuple[float, float]],
-                cut: list[float], out: Path) -> list[str]:
+                cut: list[float], out: Path, sound: bool = False) -> list[str]:
     """The frames in turn (the captionless one under the others), the
-    recording scaled into its box on top, a silent track under it all."""
+    recording scaled into its box on top, and under it all the recording's
+    own sound ([sound], #1241: the app's voice, brought to a speech level,
+    as the phone's TTS plays quiet) or a silent track."""
     args = ["ffmpeg", "-y", "-v", "error", "-ss", f"{cut[0]}", "-to", f"{cut[1]}", "-i", str(raw)]
     for path in frames_:
         args += ["-loop", "1", "-framerate", str(FPS), "-i", str(path)]
     silence = len(frames_) + 1
-    args += ["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"]
-    # screenrecord writes a frame only when the screen changes: the last one
-    # before the cut would last past it, so the cut's length is trimmed too.
-    graph = [f"[0:v]fps={FPS},trim=duration={cut[1] - cut[0]},setpts=PTS-STARTPTS,"
+    if not sound:
+        args += ["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"]
+    # screenrecord and scrcpy write a frame only when the screen changes: the
+    # last one before the cut would last past it, so the cut's length is
+    # trimmed too, and a screen that rests to the end holds its last frame
+    # (tpad: a word's card, still while its voice speaks, #1241).
+    graph = [f"[0:v]fps={FPS},tpad=stop_mode=clone:stop_duration={cut[1] - cut[0]},"
+             f"trim=duration={cut[1] - cut[0]},setpts=PTS-STARTPTS,"
              f"scale={box['w']}:{box['h']},setsar=1[rec]"]
     base = "[1:v]"
     for i, (start, stop) in enumerate(times, start=2):
         graph.append(f"{base}[{i}:v]overlay=enable='between(t,{start},{stop})'[f{i}]")
         base = f"[f{i}]"
     graph.append(f"{base}[rec]overlay={box['x']}:{box['y']}:shortest=1,format=yuv420p[out]")
+    if sound:
+        graph.append(f"[0:a]atrim=duration={cut[1] - cut[0]},asetpts=PTS-STARTPTS,"
+                     "loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[voice]")
     return args + [
-        "-filter_complex", ";".join(graph), "-map", "[out]", "-map", f"{silence}:a",
+        "-filter_complex", ";".join(graph), "-map", "[out]", "-map", "[voice]" if sound else f"{silence}:a",
         "-shortest", "-c:v", "libx264", "-crf", "20", "-preset", "medium", "-r", str(FPS),
         "-c:a", "aac", "-b:a", "64k", "-movflags", "+faststart", str(out)]
 
@@ -328,11 +398,13 @@ def render(script: dict, locales: list[str], formats: list[str], out: Path) -> l
         for lang in locales:
             raw = raw_of(script, lang)
             recording = video_size(raw)
+            (out / f"{script['name']}-{lang}.srt").write_text(srt(script, lang), encoding="utf-8")
             for fmt in formats:
                 frames_, box = frames(script, lang, fmt, recording, Path(tmp))
                 target = out / f"{script['name']}-{lang}-{fmt}.mp4"
                 times = [(start, stop) for start, stop, _ in captions(script, lang)]
-                subprocess.run(ffmpeg_args(raw, frames_, box, times, script["cut"], target), check=True)
+                subprocess.run(ffmpeg_args(raw, frames_, box, times, script["cut"], target,
+                                           sound=bool(script.get("audio"))), check=True)
                 mb = target.stat().st_size / 1e6
                 print(f"{target.parent.name}/{target.name} ({mb:.1f} MB)"
                       + (f": over {MAX_MB} MB, for the owner's drive, not the media branch" if mb > MAX_MB else ""))
@@ -374,6 +446,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="the emulator to record on: emulator-5558 under `team.py device`, "
                              "or the media lane's emulator-5556 under `team.py lock emulator-5556`")
     parser.add_argument("--takes", help="the takes to record, default: all, or the one recording")
+    parser.add_argument("--skip-prepare", action="store_true",
+                        help="keep the learner on the device: another clip of the same take (#1241)")
     args = parser.parse_args(argv)
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -392,7 +466,7 @@ def main(argv: list[str] | None = None) -> int:
         if unknown:
             raise SystemExit(f"{script['name']} has no take {', '.join(unknown)}")
         for take in takes:
-            record(script, serial, take)
+            record(script, serial, take, prepare=not args.skip_prepare)
     if args.render or both:
         if not shutil.which("ffmpeg"):
             raise SystemExit("ffmpeg isn't on the PATH")
