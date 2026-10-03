@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-03 15:31
+last-seen: 2026-10-03 15:49
 last-read: 4000
 
 ## Now
 
-#1212 marketing(launch): the outreach send-list and its tracking, with sogda-website #76's pitches — claimed 2026-10-03 15:31.
+#1212 in review as PR #1396: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
