@@ -654,7 +654,7 @@ claiming the same issue. A hand edit skips that check.
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | review | agent-2 | #1371 #1386 #1394 | #1407 |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
 | #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | review | agent-1 |  | #1408 |
-| #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | open |  |  |  |
+| #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | in-progress | agent-1 |  |  |
 
 ## Locks
 

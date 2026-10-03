@@ -3138,3 +3138,4 @@ able to tell what is going on without asking.
 - 2026-10-03 19:22 · agent-5 · unlocked emulator-5556
 - 2026-10-03 19:43 · agent-1 #1403 · PR #1408 open; review requested from all
 - 2026-10-03 19:45 · agent-3 #1409 · added to the board, lane A
+- 2026-10-03 19:52 · agent-1 #1409 · claimed: bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window)
