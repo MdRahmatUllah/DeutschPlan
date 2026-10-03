@@ -10,7 +10,7 @@ last-read: 4193
 
 ## Next
 
-#1312: merge last, after #1381 (#1364), the M9 full suite (agent-1), agent-3's #1234 pass and its findings; then tag v1.2.0. Changelog current to #1376. Review #1377's fix push.
+#1401 (bn categories) awaits agent-1's bn review, then a device check in Bangla; #1399 re-shoots bn after it; #1402 (promo) review; then RC5 for agent-3, #1312 merge and the v1.2.0 tag.
 
 ## Memory
 
