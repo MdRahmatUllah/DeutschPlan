@@ -39,6 +39,11 @@ PRACTISE AND TEST YOURSELF
 • Three mock exams for every step: vocabulary, grammar, listening, writing and speaking, with a result by section
 • Compare near-synonyms side by side, and add the words you meet in daily life
 
+THE GERMAN YOU MEET
+• Paste or share a text, photograph a letter, or choose a PDF: Sogda reads it on the phone and marks the words you don't know yet, by level
+• Add the ones you pick to your plan, with the sentence you met them in; My documents keeps your texts to reopen
+• Optional: Hy-MT2 translates on the phone, for example sentences and words outside the course, where the phone has the memory
+
 HEAR IT
 • Every word and example is spoken with your phone's German voice
 • Optional: Supertonic speaks German more naturally and works offline. About 400 MB, over Wi-Fi, downloaded once
@@ -48,8 +53,8 @@ MADE FOR YOU
 • Light, dark and glass themes, text up to 200 %, and screen-reader support
 • The app in English, Bangla, Polish or Russian
 
-### What's new (1.1.0)
-New: the app in Polish and Russian, and meanings in English, Bangla, Russian or Polish: pick one, and a second to show under it. The pronunciation guide follows your meaning language, with a one-line key to read it, and search, quizzes and mock exams use your languages. Also the first release as Sogda, with a new icon and a smaller download, and about a hundred fixes: fairer answer checking, a mock exam that keeps every answer, and restoring a backup at setup.
+### What's new (1.2.0)
+New: learn from the German you meet. Paste or share a text, photograph a letter, or choose a PDF: Sogda reads it on your phone, marks the words you don't know yet by level, and adds the ones you pick to your plan with the sentence you met them in. My documents keeps them to reopen. And translation on the phone with Hy-MT2, an optional download: example sentences, and meanings for words outside the course. Nothing leaves your phone.
 
 ## Bangla (bn-BD)
 
@@ -81,6 +86,11 @@ Sogda একটি অফলাইন জার্মান কোর্স অ�
 • প্রতিটি ধাপের জন্য তিনটি মক পরীক্ষা: শব্দভান্ডার, ব্যাকরণ, শোনা, লেখা আর বলা, প্রতিটি অংশের ফলসহ
 • কাছাকাছি অর্থের শব্দ পাশাপাশি তুলনা করুন, আর দৈনন্দিন জীবনে পাওয়া শব্দ নিজে যোগ করুন
 
+চারপাশের জার্মান থেকে
+• একটি লেখা পেস্ট বা শেয়ার করুন, চিঠির ছবি তুলুন, বা একটি PDF বেছে নিন: Sogda ফোনেই সেটি পড়ে আর যে শব্দগুলো এখনো জানেন না সেগুলো লেভেল অনুযায়ী চিহ্নিত করে
+• বাছাই করা শব্দগুলো যে বাক্যে পেয়েছেন সেটিসহ প্ল্যানে যোগ করুন; "আমার ডকুমেন্ট"-এ লেখাগুলো থাকে, আবার খোলার জন্য
+• ঐচ্ছিক: Hy-MT2 ফোনেই অনুবাদ করে, উদাহরণ বাক্য আর কোর্সের বাইরের শব্দ, যদি ফোনে যথেষ্ট মেমরি থাকে
+
 শুনুন
 • প্রতিটি শব্দ আর উদাহরণ আপনার ফোনের জার্মান কণ্ঠে শোনা যায়
 • ঐচ্ছিক: Supertonic আরও স্বাভাবিকভাবে জার্মান বলে এবং অফলাইনে চলে। প্রায় ৪০০ MB, ওয়াই-ফাইতে, একবারই ডাউনলোড।
@@ -90,8 +100,8 @@ Sogda একটি অফলাইন জার্মান কোর্স অ�
 • লাইট, ডার্ক আর গ্লাস থিম, ২০০ % পর্যন্ত বড় লেখা, আর স্ক্রিন রিডার সাপোর্ট
 • অ্যাপ ইংরেজি, বাংলা, পোলিশ বা রুশ ভাষায়
 
-### What's new (1.1.0)
-নতুন: অ্যাপ এখন পোলিশ ও রুশ ভাষায়, আর অর্থ ইংরেজি, বাংলা, রুশ বা পোলিশে: একটি বেছে নিন, চাইলে তার নিচে আরেকটি। উচ্চারণ লেখা হয় আপনার অর্থের ভাষায়, সঙ্গে "উচ্চারণ কীভাবে পড়বেন" এক লাইনে; সার্চ, কুইজ আর মক পরীক্ষাও আপনার ভাষায়। সঙ্গে Sogda নামে প্রথম রিলিজ: নতুন আইকন, আরও ছোট ডাউনলোড, আর প্রায় একশোটি সংশোধন: উত্তর আরও ন্যায্যভাবে যাচাই হয়, মক পরীক্ষা প্রতিটি উত্তর রাখে, আর সেটআপের সময় ব্যাকআপ ফেরানো যায়।
+### What's new (1.2.0)
+নতুন: চারপাশের জার্মান থেকে শিখুন। একটি লেখা পেস্ট বা শেয়ার করুন, চিঠির ছবি তুলুন, বা একটি PDF বেছে নিন: Sogda আপনার ফোনেই সেটি পড়ে, যে শব্দগুলো এখনো জানেন না সেগুলো লেভেল অনুযায়ী চিহ্নিত করে, আর আপনি যেগুলো বাছেন সেগুলো যে বাক্যে পেয়েছেন সেটিসহ আপনার প্ল্যানে যোগ করে। "আমার ডকুমেন্ট"-এ সেগুলো থাকে, আবার খোলার জন্য। সঙ্গে ফোনেই অনুবাদ, Hy-MT2 দিয়ে (ঐচ্ছিক ডাউনলোড): উদাহরণ বাক্য, আর কোর্সের বাইরের শব্দের অর্থ। কিছুই আপনার ফোনের বাইরে যায় না।
 
 ## Polish (pl-PL)
 
@@ -108,7 +118,7 @@ Sogda to aplikacja z kursem niemieckiego offline: od A1 do C2 w 12 etapach, z 51
 
 CZEGO SIĘ NAUCZYSZ
 • 12 etapów od A1.1 do C2.2, ułożonych pod kątem egzaminów
-• 5142 słów, każde z przykładami, z rodzajnikiem i formami tam, gdzie je ma, oraz z wymową zapisaną polskimi literami
+• 5142 słowa, każde z przykładami, z rodzajnikiem i formami tam, gdzie je ma, oraz z wymową zapisaną polskimi literami
 • 182 tematy gramatyczne, każdy z regułą i krótkim ćwiczeniem; reguły i przykłady są po polsku
 • Znaczenia po polsku, a pod nimi, jeśli chcesz, drugi język: angielski, bengalski lub rosyjski
 
@@ -123,6 +133,11 @@ CODZIENNIE
 • Trzy egzaminy próbne dla każdego etapu: słownictwo, gramatyka, słuchanie, pisanie i mówienie, z wynikiem dla każdej części
 • Porównuj bliskie synonimy obok siebie i dodawaj słowa, które spotykasz na co dzień
 
+NIEMIECKI Z CODZIENNOŚCI
+• Wklej lub udostępnij tekst, zrób zdjęcie listu albo wybierz PDF: Sogda czyta go na telefonie i zaznacza według poziomu słowa, których jeszcze nie znasz
+• Dodaj wybrane do planu razem ze zdaniem, z którego pochodzą; „Moje dokumenty” przechowują Twoje teksty
+• Opcjonalnie: Hy-MT2 tłumaczy na telefonie przykładowe zdania i słowa spoza kursu, jeśli telefon ma dość pamięci
+
 POSŁUCHAJ
 • Każde słowo i każdy przykład czyta niemiecki głos Twojego telefonu
 • Opcjonalnie: Supertonic mówi po niemiecku naturalniej i działa offline. Około 400 MB, przez Wi-Fi, pobierane raz
@@ -132,8 +147,8 @@ DLA CIEBIE
 • Motyw jasny, ciemny i szklany, tekst do 200 % i obsługa czytników ekranu
 • Aplikacja po polsku, angielsku, bengalsku lub rosyjsku
 
-### What's new (1.1.0)
-Nowość: aplikacja po polsku i po rosyjsku, a znaczenia po angielsku, bengalsku, rosyjsku lub polsku: wybierz jeden język i, jeśli chcesz, drugi pod spodem. Wymowa jest zapisana w języku Twoich znaczeń, z jednym wierszem „Jak czytać wymowę”, a wyszukiwanie, quizy i egzaminy próbne działają w Twoich językach. To także pierwsze wydanie jako Sogda: nowa ikona, mniejszy plik do pobrania i około stu poprawek.
+### What's new (1.2.0)
+Nowość: ucz się z własnych tekstów. Wklej lub udostępnij tekst, zrób zdjęcie listu albo wybierz PDF: Sogda czyta go na Twoim telefonie, zaznacza według poziomu słowa, których jeszcze nie znasz, i dodaje wybrane do planu razem ze zdaniem, z którego pochodzą. „Moje dokumenty” przechowują je na później. Do tego tłumaczenie na telefonie z Hy-MT2 (opcjonalne pobranie): przykładowe zdania i znaczenia słów spoza kursu. Nic nie opuszcza Twojego telefonu.
 
 ## Russian (ru-RU)
 
@@ -146,11 +161,11 @@ Sogda: немецкий с нуля до C2
 ### Full description
 Учи немецкий день за днём, с ясным планом.
 
-Sogda — приложение с офлайн-курсом немецкого: от A1 до C2 за 12 этапов: 5 142 слов, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети: твой прогресс остаётся на этом телефоне.
+Sogda — приложение с офлайн-курсом немецкого: от A1 до C2 за 12 этапов: 5 142 слова, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети: твой прогресс остаётся на этом телефоне.
 
 ЧТО ТЫ ВЫУЧИШЬ
 • 12 этапов от A1.1 до C2.2, по структуре экзаменов
-• 5 142 слов, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами
+• 5 142 слова, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами
 • 182 грамматические темы, у каждой — правило и короткая практика; правила и примеры на русском
 • Значения на русском, а под ними, если хочешь, второй язык: английский, бенгальский или польский
 
@@ -165,6 +180,11 @@ Sogda — приложение с офлайн-курсом немецкого: 
 • Три пробных экзамена на каждый этап: лексика, грамматика, аудирование, письмо и говорение, с результатом по каждой части
 • Сравнивай близкие синонимы рядом и добавляй слова, которые встречаешь в жизни
 
+НЕМЕЦКИЙ, КОТОРЫЙ ТЫ ВСТРЕЧАЕШЬ
+• Вставь текст или поделись им, сфотографируй письмо или выбери PDF: Sogda прочитает его на телефоне и отметит по уровням слова, которых ты ещё не знаешь
+• Добавляй выбранные в план вместе с предложением, из которого они взяты; «Мои документы» хранят твои тексты
+• По желанию: Hy-MT2 переводит на телефоне примеры предложений и слова вне курса, если у телефона хватает памяти
+
 СЛУШАЙ
 • Каждое слово и каждый пример звучат немецким голосом твоего телефона
 • По желанию: Supertonic говорит по-немецки естественнее и работает офлайн. Около 400 МБ, по Wi-Fi, скачивается один раз
@@ -174,8 +194,8 @@ Sogda — приложение с офлайн-курсом немецкого: 
 • Светлая, тёмная и стеклянная тема, текст до 200 % и поддержка программ экранного доступа
 • Приложение на русском, английском, бенгальском или польском
 
-### What's new (1.1.0)
-Новое: приложение на польском и русском, а значения — на английском, бенгальском, русском или польском: выбери один язык и, если хочешь, второй под ним. Произношение записано на языке твоих значений, с одной строкой «Как читать произношение», а поиск, тесты и пробные экзамены работают на твоих языках. Это и первый выпуск под именем Sogda: новая иконка, меньший размер загрузки и около ста исправлений.
+### What's new (1.2.0)
+Новое: учись на немецком, который встречаешь. Вставь текст или поделись им, сфотографируй письмо или выбери PDF: Sogda прочитает его на телефоне, отметит по уровням слова, которых ты ещё не знаешь, и добавит выбранные в план вместе с предложением, из которого они взяты. «Мои документы» хранят их, чтобы открыть снова. А ещё перевод на телефоне с Hy-MT2 (по желанию, отдельная загрузка): примеры предложений и значения слов вне курса. Ничего не покидает твой телефон.
 
 ## Screenshots
 
