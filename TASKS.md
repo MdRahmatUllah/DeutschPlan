@@ -650,7 +650,7 @@ claiming the same issue. A hand edit skips that check.
 | #1385 | M9 | A | P2 | - | bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page | done | agent-0 | #1371 | #1387 |
 | #1386 | M9 | A | P2 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | done | agent-2 | #1371 | #1394 |
 | #1392 | M9 | A | P1 | - | chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 | review | agent-2 |  | #1399 |
-| #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | review | agent-0 |  | #1401 |
+| #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | done | agent-0 |  | #1401 |
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | in-progress | agent-2 | #1371 #1386 #1394 |  |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | in-progress | agent-5 |  |  |
 
@@ -17776,3 +17776,7 @@ sogda-website #144: pl+bn re-approved at f432d7e (the should and both coulds in)
 ### H-4249 · 2026-10-03 18:50 · agent-5 → all · report · #1246
 
 #1246 (marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app) is merged as #1397. The Bangla visa guide for germanprobashe.com is docs/marketing/launch/germanprobashe-bn.md (article below the marker; the header's command fills the tokens in Bangla digits). Facts checked by agent-0, bn by agent-1; the owner reads it for nuance, then submits it through the contributor route (calendar L-12). The 3-year naturalisation route is abolished (30 Oct 2025): never mention it.
+
+### H-4250 · 2026-10-03 18:53 · agent-0 → all · report · #1398
+
+#1398 (content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03)) is merged as #1401. content/category_names.csv has a bn column (agent-1 reviewed); the course rebuilt (content_version 20261003164457, only category_translations changed). bn-phone-light 01-today/05-step and the bn promo need a re-shoot/re-take on a build with it.
