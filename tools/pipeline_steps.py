@@ -1426,7 +1426,7 @@ def gate_category_names(
 
     A shipped language's names ship when every category of the course has
     one, as any part of it (#1080); otherwise none do, and its learners see
-    English's, as before. A language with no column (Bangla today) has
+    English's, as before. A language with no column (none since #1398) has
     nothing to report. English's are `categories.name` itself. A name the
     course has no category for is an error: text nobody would see.
     """
