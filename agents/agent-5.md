@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-03 15:57
+last-seen: 2026-10-03 16:01
 last-read: 4000
 
 ## Now
 
-#1246 marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app — claimed 2026-10-03 15:57.
+#1246 in review as PR #1397: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
