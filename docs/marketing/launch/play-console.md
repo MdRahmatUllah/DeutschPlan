@@ -46,7 +46,7 @@ Why that's true, and what agent-3 checks on the release build:
 | The voice and the translator | The learner starts the download. It fetches files from huggingface.co (Supertonic 3, Hy-MT2) and sends nothing about the learner; *Wi-Fi only* is on by default. Like any request, it shows Hugging Face's server the phone's IP address. Sogda never receives that address or derives a location from it, so there's no data type to declare. sogda.de's privacy page says the same (sogda-website #146) | BR-PRIV-01; `app/assets/models/manifest.json` |
 | The Speaking exam's recording | Recorded with `RECORD_AUDIO`, kept on the phone | `release.md` (*Permissions*) |
 | *Report a problem* | Opens a pre-filled GitHub issue page in the phone's browser. The learner sends it there, or doesn't; the app sends nothing | `release.md` (*Data safety*) |
-| Look a word up on the web (Duden, Wiktionary, DWDS, Linguee, Google) | Opens the phone's browser, on the learner's tap | BR-PRIV-01 |
+| Look a word up on the web (Duden, Wiktionary, DWDS, Linguee, Google) | Opens, on the learner's tap, in a Chrome Custom Tab: the phone's browser, shown over the app. Sogda has no browser or WebView of its own | BR-PRIV-01; agent-3 on RC5 (#1404) |
 | The review card | Play's own In-App Review UI, after a pass. Sogda sends nothing about the learner | BR-RATE-01 |
 | Export | A JSON file the learner shares themselves | BR-PRIV-02 |
 
@@ -66,7 +66,7 @@ Why that's true, and what agent-3 checks on the release build:
 | Users interact or share content | **No** | There's no chat, no profiles and no sharing between learners. Documents stay on the phone |
 | Shares the user's location | **No** | No location permission |
 | Digital purchases | **No** | None |
-| Unrestricted internet or a web browser | **No** | Web look-ups open the phone's own browser. There's no in-app browser |
+| Unrestricted internet or a web browser | **No** (agent-3 agrees; owner's to change) | Web look-ups open in a Chrome Custom Tab, the phone's own browser over the app, only on a tap and only at the dictionary's page. Sogda has no browser or WebView of its own |
 
 ### Target audience and content (**owner**)
 
