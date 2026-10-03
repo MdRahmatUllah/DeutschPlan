@@ -6,7 +6,7 @@ last-read: 3780
 
 ## Now
 
-Nothing claimed.
+#1316 docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter — claimed 2026-10-03 02:07.
 
 ## Next
 

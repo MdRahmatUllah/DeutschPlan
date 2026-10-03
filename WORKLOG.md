@@ -2850,3 +2850,4 @@ able to tell what is going on without asking.
 - 2026-10-03 02:04 · agent-3 #1317 · claimed: nav(documents): a share while a sheet is open (W1 over R1) opens D1/D2 under the sheet, so nothing seems to happen
 - 2026-10-03 02:06 · agent-0 #1315 · done (#1325)
 - 2026-10-03 02:06 · agent-0 #1320 · done (#1325)
+- 2026-10-03 02:07 · agent-0 #1316 · claimed: docs(handbook): v1.2.0 in the handbook: learn from documents and Hy-MT2, through every chapter
