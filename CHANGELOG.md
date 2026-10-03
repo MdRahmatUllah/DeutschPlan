@@ -2,7 +2,7 @@
 
 Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pubspec.yaml`'s; each entry is dated in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
 
-## [1.2.0] — unreleased
+## [1.2.0] — 2026-10-04
 
 Learn from your own documents, 73 everyday words, and translation on the phone.
 
