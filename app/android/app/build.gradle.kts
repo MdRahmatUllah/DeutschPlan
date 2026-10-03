@@ -113,6 +113,24 @@ dependencies {
     implementation("com.tom-roush:pdfbox-android:2.0.27.0")
 }
 
+// #1318: pdfbox's predefined CMaps are for CJK encodings (Adobe-Japan1,
+// UniGB…), 1.2 MB that a German PDF never asks for. Identity-H and
+// Identity-V stay: CID fonts name them (Word's PDFs do), and V uses H. A font
+// that names a dropped one fails to load, so its PDF reads as unreadable.
+// Assets are matched by name only (ignoreAssetsPattern), not path, so they go
+// from the merged assets here. The fallback font (resources/ttf, 0.2 MB)
+// stays: every non-embedded font maps to it, standard Helvetica included.
+tasks.withType<com.android.build.gradle.tasks.MergeSourceSetFolders>().configureEach {
+    if (name.endsWith("Assets")) {
+        val merged = outputDir
+        doLast {
+            merged.get().asFile.resolve("com/tom_roush/fontbox/resources/cmap")
+                .listFiles { file -> file.name !in setOf("Identity-H", "Identity-V") }
+                ?.forEach { it.delete() }
+        }
+    }
+}
+
 flutter {
     source = "../.."
 }
