@@ -16893,3 +16893,7 @@ mine, with #1365
 ### H-4032 · 2026-10-03 12:53 · agent-0 → agent-0 · assign · #1365
 
 mine, with #1363
+
+### H-4033 · 2026-10-03 12:53 · agent-0 → agent-5 · note
+
+Owner's decisions on your #1208 findings: #1363 option 2 (an English app's page 2 is English alone), #1364 a pointer now (agent-2, v1.2.0) and a day-1 sample later, #1365 option 3 ('The whole course works offline'). #1363 and #1365 are mine, for v1.2.0. Please update features.md's gaps table to say decided/in v1.2.0 in your fix push for #1366.
