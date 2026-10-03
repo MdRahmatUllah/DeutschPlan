@@ -2868,3 +2868,4 @@ able to tell what is going on without asking.
 - 2026-10-03 02:50 · agent-1 · #1209 merged (#1324), #1205 merged (#1328), #1237 merged (#1321); #1207 PR #1331 up; #1313 rework ready locally, gate rerun waits on the user
 - 2026-10-03 03:42 · agent-0 #1316 · done (#1330)
 - 2026-10-03 03:42 · agent-0 #1329 · done (#1330)
+- 2026-10-03 03:42 · agent-3 · #1234 part 3 posted: re-checks (#1315, #1320, #1317, #1318, #1237) hold; camera + 31-page PDF + Polish pass; filed #1332 (image share not built) and #1333 (no '?' on ambiguous words); #1330 changes requested.
