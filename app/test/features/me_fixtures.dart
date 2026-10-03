@@ -101,10 +101,13 @@ MeView artboardMe({
 List<Override> meStub([
   MeView? view,
   List<DocumentEntry> documents = const <DocumentEntry>[],
+  OpenWeb? openApp,
 ]) => <Override>[
   meViewProvider.overrideWith((ref) async => view ?? artboardMe()),
   learnerNameProvider.overrideWith(StubLearnerName.new),
   myDocumentsProvider.overrideWith((ref) => Stream.value(documents)),
+  // FR-M1-05: nothing opens for real (#1237).
+  openAppProvider.overrideWithValue(openApp ?? (_) async => true),
 ];
 
 /// The artboard's name, renamed in memory.

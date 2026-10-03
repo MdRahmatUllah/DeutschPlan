@@ -26,6 +26,7 @@ void main() {
   });
 
   late StubExamResult stub;
+  late FakePlayReview review;
   late List<String> hub;
   late List<String> step;
 
@@ -37,6 +38,7 @@ void main() {
     Locale? locale,
   }) async {
     stub = with_ ?? StubExamResult();
+    review = FakePlayReview();
     hub = <String>[];
     step = <String>[];
     tester.view
@@ -46,7 +48,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          ...examResultStub(stub),
+          ...examResultStub(stub, review),
           clockProvider.overrideWithValue(() => DateTime(2026, 9, 21, 20)),
         ],
         child: MaterialApp(
@@ -70,6 +72,23 @@ void main() {
       if (frames > 1) await tester.pump(const Duration(milliseconds: 16));
     }
   }
+
+  testWidgets("BR-RATE-01 FR-L13-04 a passed mock exam asks for Play's "
+      'review card as the learner leaves L13, not over the score', (
+    tester,
+  ) async {
+    await pump(tester);
+    expect(review.asked, 0, reason: 'the score shows, uncovered');
+    await tester.pumpWidget(const SizedBox());
+    expect(review.asked, 1);
+  });
+
+  testWidgets('BR-RATE-01 one that did not pass asks nothing, then or on '
+      'leaving', (tester) async {
+    await pump(tester, with_: StubExamResult(result: failedResult()));
+    await tester.pumpWidget(const SizedBox());
+    expect(review.asked, 0);
+  });
 
   Future<void> tap(WidgetTester tester, String text) async {
     await tester.tap(find.text(text).last);
