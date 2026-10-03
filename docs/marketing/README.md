@@ -24,7 +24,7 @@ The full rules are in agent-5's README.
 | [`messaging.md`](messaging.md) | One message per audience and channel, with its proof points | #1203 |
 | [`calendar.md`](calendar.md) | What goes out, where, in which language and when, around launch day | #1204 |
 | [`brand.md`](brand.md), [`brand.json`](brand.json) | Frames, type, colours and safe areas per format: the values in `brand.json`, which the tools read through `tools/media/brand.py` | #1209 |
-| `features.md` | The app's selling points and gaps, seen as a learner | #1208 |
+| [`features.md`](features.md) | The app's selling points and gaps, seen as a learner | #1208 |
 | [`posts/<yyyy-ww>.md`](posts/) | Each week's post drafts and the owner's due-list, made by `tools/media/posts.py --week <-3…rhythm> --monday <date>` from the calendar and the messaging, every number filled from `site-facts.json` | #1207 |
 | `launch/` | The launch-day kit | #1210 |
 | `outreach.md` | The send-list and its tracking | #1212 |
