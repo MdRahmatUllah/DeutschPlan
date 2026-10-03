@@ -496,7 +496,9 @@ languages, and the document's sentence with the word in bold.
   **Ignore** takes the mark away for this visit; **Open** is W1.
 - **A word outside the course** offers *Add as my word* (R2, pre-filled), a
   compound's parts as a hint ("Nebenkosten + Abrechnung"), and Hy-MT2's
-  meaning, labelled machine-translated, or a link to M4's download.
+  meaning, labelled machine-translated. With no meaning, a link to M4's
+  download shows only while Hy-MT2 isn't on the phone and the phone has the
+  memory for it (#1300).
   Hy-MT2's meanings are suggestions to tap, never a pre-filled meaning
   (#1278); they come with #1233.
 - **A word already mine** keeps the new sentence with it (*Keep this
@@ -660,9 +662,14 @@ build offers it (ADR 30). It appears in four places:
 - **D2's card and R2,** a meaning for a word outside the course, labelled
   machine-translated until the learner edits it (BR-DOC-07, #1233).
 
-The first translation loads the model, which takes a few seconds; it is
-released in the background and under memory pressure, as the voice is. An
-answer is cached, so a second ask doesn't run the model again. Spec:
+It needs a phone with **at least 3.5 GiB of memory** (`HyMtTranslator.memoryFloor`,
+#154): below it M4 says *Not available*, M3's switch is disabled and D2
+offers no download, since the 1.1 GB model can't stay resident beside
+Android in less. The first translation loads the model, which takes a few
+seconds; it is released in the background and under memory pressure, as the
+voice is. A translation stops after **60 s** (`HyMtTranslator.limit`), and
+the screen shows none. An answer is cached, so a second ask doesn't run the
+model again. These arrive with #1269, timed on a real phone. Spec:
 [`translation.md`](../03-domain/translation.md).
 
 ## Reminders and the widget
