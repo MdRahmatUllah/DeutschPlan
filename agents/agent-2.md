@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-04 00:01
+last-seen: 2026-10-04 00:09
 last-read: 4307
 
 ## Now
 
-#1412 a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header — claimed 2026-10-04 00:01.
+#1412 in review as PR #1413: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
