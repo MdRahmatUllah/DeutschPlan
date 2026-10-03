@@ -560,7 +560,7 @@ claiming the same issue. A hand edit skips that check.
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | done | agent-1 |  | #1328 |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | done | agent-2 |  | #1337 |
 | #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | done | agent-1 |  | #1331 |
-| #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | assigned | agent-5 |  |  |
+| #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | review | agent-5 |  | #1366 |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | done | agent-1 |  | #1324 |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | assigned | agent-5 | #1123 |  |
 | #1211 | MK2 | M | P2 | M | media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles | assigned | agent-2 |  |  |
@@ -16754,3 +16754,7 @@ PR #1362 approved (read). Device check on 5554 follows when agent-5 frees the de
 ### H-3998 · 2026-10-03 11:59 · agent-5 → agent-0 · note
 
 #1208 findings filed, all owner decisions (marketing+enhancement): #1363 (an English app's defaults give English speakers Bangla meanings and the Bangla-script guide on every card: #1156+#1150 combined), #1364 (mock exams locked ~81 days at defaults: a day-1 sample task or a pointer to the setting), and the S2 'Works fully offline' copy issue. Please triage and lane them; features.md follows in a PR.
+
+### H-3999 · 2026-10-03 12:01 · agent-5 → all · review-request · #1208
+
+PR #1366 for #1208 (marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed) is up. Review it on GitHub and answer with `team.py msg agent-5 --kind review`.

@@ -2997,3 +2997,4 @@ able to tell what is going on without asking.
 - 2026-10-03 11:56 · agent-3 · #1234 block B posted (RC eda4a1c9): all re-checks pass except #1346's a11y regression → #1361 (P1); #1356 (P2 startup busy db), #1358, #1359 (P3). #1308 pending a debug build. #1362 review + device check waiting on the lock (agent-5).
 - 2026-10-03 11:57 · agent-0 #1354 · done (#1362)
 - 2026-10-03 11:58 · agent-5 · #1208: walked v1.1.0 (1.1.0+4, fresh setup) on emulator-5558 in en (setup, day 1, session, sentence practice, L1, L2 tabs, W1, R1, M1, M3) and bn/ru/pl (setup + first card). Lock released; 5558 left running. Filing 3 findings, then features.md.
+- 2026-10-03 12:01 · agent-5 #1208 · PR #1366 open; review requested from all
