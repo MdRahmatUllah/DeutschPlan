@@ -4,25 +4,39 @@ Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pu
 
 ## [1.2.0] — unreleased
 
-Learn from your own documents, and translation on the phone.
+Learn from your own documents, 73 everyday words, and translation on the phone.
 
 ### Added
-- **Learn from a document** (D1): paste or share a text from any app (#1227), photograph pages or pick photos, read on the phone by ML Kit with *Check the text* for a hard page (#1229), or choose a PDF, read from its text layer up to 30 pages, a scan sent to the photos (#1228).
+- **Learn from a document** (D1): paste or share a text from any app (#1227), photograph pages or pick photos, read on the phone by ML Kit with *Check the text* for a hard page (#1229), or choose a PDF, read from its text layer up to 30 pages, a scan sent to the photos (#1228). Over 20,000 characters or 30 pages, D2 says what was left out (#1320).
 - **The words in your text** (D2): every word marked by its class, the new ones by level; a card to *Add*, mark *I know this*, or keep a word outside the course as your own; *Add all new* or your level at once, and a long press to add (#1230). An added word joins the plan, a few a day (BR-PLAN-11, #1272), with the sentence you met it in.
 - **My documents** (D3): the documents you kept, to reopen, rename or delete with their photos (#1295). Settings sets the words a day, whether photos are kept, and when documents delete themselves (#1296).
-- **Your own sentence** on the word's card, in W1 and as a cloze (#1232).
+- **Your own sentence** on the word's card, in W1 and as a cloze when it's short enough to gap (#1232).
+- **73 everyday words** the course used but never taught on their own: Zeit, Name, Dank, zahlen, Raum, bereit, the bench *Bank* and more, with meanings and guides in all four languages (#1257). The course is now 5,142 words.
+- **Rate Sogda on Google Play** in Me, and Play's own rating card once, as you leave your first passed mock exam (#1237).
 - **Translation on the phone** with Hy-MT2, an optional download where the phone has the memory: W1's examples and T5's sentences (#154), and suggested meanings for a word outside the course, never filled in for you (#1233).
 
 ### Changed
-- The download grows with the on-device reader: ML Kit's Latin text recogniser and pdfbox (#1306 has the numbers).
+- **A bigger download for the on-device reader:** arm64 52.15 → 66.24 MB. ML Kit's text recogniser and its Latin models +12.33 MB, pdfbox +0.40 MB once its CJK maps went (#1318), the code +1.20 MB (#1306).
 
 ### Fixed
-- A word's level in D2 is its lowest reading's, and readings that share a spelling say their step and meaning (#1294); a split verb's particle is never "outside the course", and a letter's salutation isn't part of its first sentence (#1297).
-- A share during a running mock exam says it was held (#1282).
+- **D2's marks:**
+  - a word's level is its lowest reading's, and readings that share a spelling say their step and meaning (#1294);
+  - an ambiguous word is classed as it's drawn (#1310) and wears a «?» until you choose (#1333);
+  - a split verb's particle is never «outside the course», and a letter's salutation isn't part of its first sentence (#1297);
+  - the check and the «?» stay on their word's line, and a screen reader doesn't stop on bare spaces (#1339, #1344).
+- **D2's notes:**
+  - the switch reads once (#1309);
+  - the bulk toast says what happened: all today, some, none, or waiting (#1311);
+  - a word already in today's plan says today (#1315);
+  - the cap note says why words wait at a cap of 0 or under the backlog pause (#1334), and counts the words already queued ahead (#1341).
+- **Shares:**
+  - a share during a running mock exam says it was held (#1282);
+  - a share while a sheet is open lands on top (#1317).
 - A failed model download can be deleted in Voice & translation, and leaves no part-files behind (#1265).
 
 ### Privacy
 - A kept photo loses its metadata (location, camera, time) (BR-DOC-05, #1229), and the picker's and a shared PDF's copies are deleted once read (#1298, #1228).
+- A shared file is taken only as another app's content, never a path to Sogda's own files (#1228).
 - ML Kit's usage metrics are never sent (BR-PRIV-01): its DataTransport backend is removed from the app.
 
 ## [1.1.0] — 2026-10-02
