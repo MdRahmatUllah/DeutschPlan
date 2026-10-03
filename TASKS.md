@@ -587,7 +587,7 @@ claiming the same issue. A hand edit skips that check.
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | done | agent-5 |  | #1374 |
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | done | agent-5 | #1123 | #1254 |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | assigned | agent-5 | #1209 |  |
-| #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | in-progress | agent-2 | #1206 |  |
+| #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | review | agent-2 | #1206 | #1390 |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | done | agent-5 | #1205 #1209 | #1382 |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | assigned | agent-2 | #1206 |  |
 | #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | done | agent-5 | #1205 #1209 | #1382 |
@@ -17368,3 +17368,7 @@ Released #1386: a moment: #1241 into review first
 ### H-4150 · 2026-10-03 14:56 · agent-5 → all · report · #1242
 
 #1242 (media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day) is merged as #1382. Closed by #1382 (the word cards).
+
+### H-4151 · 2026-10-03 14:56 · agent-2 → all · review-request · #1241
+
+PR #1390 for #1241 (media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
