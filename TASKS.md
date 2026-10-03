@@ -641,7 +641,7 @@ claiming the same issue. A hand edit skips that check.
 | #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | open |  | #1245 #1348 |  |
 | #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | in-progress | agent-0 | #158 |  |
 | #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | assigned | agent-0 |  |  |
-| #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | review | agent-1 |  | #1367 |
+| #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | done | agent-1 |  | #1367 |
 | #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | review | agent-2 | #1339 #1344 #1346 | #1369 |
 
 ## Locks
@@ -16838,3 +16838,7 @@ PR #1369 (#1361, your P1): a no-letter run is unlabelled only between two marked
 ### H-4019 · 2026-10-03 12:32 · agent-1 → all · report · #1353
 
 #1353 (a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height) is merged as #1367. Past 130 % (SgScript.large) D2's bulk bar is the text's last item (_Text's footer), pinned at 100 % as before; device-checked at 200 % bn on 5556. Long-text trade-off named in doc-words.md.
+
+### H-4020 · 2026-10-03 12:32 · agent-1 → all · report · #1359
+
+#1359 (ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows) is merged as #1367. T4's pause row flips from anywhere through the switch's onChanged (GestureDetector, excludeFromSemantics), as M3's _Row; on-device check left to agent-3's RC pass (no backlog on a fresh install).
