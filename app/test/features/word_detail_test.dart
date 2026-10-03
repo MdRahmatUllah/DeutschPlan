@@ -1120,6 +1120,39 @@ void main() {
     }
   });
 
+  testWidgets("#1232 W1 lists every sentence the learner met the word in, "
+      'newest first, marked as theirs, with the document they came from', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      extra: <Override>[
+        wordContextsProvider.overrideWith(
+          (ref, uid) async => <OwnSentence>[
+            (
+              sentence: 'Die Straße vor dem Amt ist neu.',
+              document: 'Mietvertrag',
+            ),
+            (sentence: 'Die Straße war gesperrt.', document: null),
+          ],
+        ),
+      ],
+    );
+    await tester.scrollUntilVisible(
+      find.text(l10n.studyWhereYouSaw.toUpperCase()),
+      200,
+    );
+    expect(find.text(l10n.studyWhereYouSaw.toUpperCase()), findsOneWidget);
+    expect(find.text('Die Straße vor dem Amt ist neu.'), findsOneWidget);
+    expect(find.text('Die Straße war gesperrt.'), findsOneWidget);
+    expect(find.text(l10n.studyFromDocument('Mietvertrag')), findsOneWidget);
+    final newest = tester.getTopLeft(
+      find.text('Die Straße vor dem Amt ist neu.'),
+    );
+    final older = tester.getTopLeft(find.text('Die Straße war gesperrt.'));
+    expect(newest.dy, lessThan(older.dy));
+  });
+
   testWidgets('#912 no tappable node wraps another', (tester) async {
     final semantics = tester.ensureSemantics();
     await pump(tester);
