@@ -31,9 +31,9 @@
 
 | Gap | What the learner sees | Filed |
 |---|---|---|
-| **The mock exams are out of reach for months at the defaults** | L2 › Exams (v1.1.0): "Unlocks when 90% of A1.1 is introduced … about 81 days at 7 a day", then "Change the unlock threshold in Settings" on that same tab; M1 lists every step as "Exams locked". The headline feature can't be tried on day 1, and nothing points to the setting *before* the Exams tab | **#1364** (owner's decision: a day-1 sample task, or a pointer before the tab) |
-| **An English speaker who keeps the defaults gets Bangla** | An English app pre-selects বাংলা as the second meaning (#1156), and then shows the Bangla-script guide on every card (#1150). The English launch audience can't read either | **#1363** (owner's decision) |
-| **"Works fully offline" is a little broader than the audio** | S2 page 1 promises it, but the sound needs the phone's German voice, or Supertonic once downloaded | **#1365** (owner's decision: say "the course") |
+| **The mock exams are out of reach for months at the defaults** | L2 › Exams (v1.1.0): "Unlocks when 90% of A1.1 is introduced … about 81 days at 7 a day", then "Change the unlock threshold in Settings" on that same tab; M1 lists every step as "Exams locked". The headline feature can't be tried on day 1, and nothing points to the setting *before* the Exams tab | **#1364**, decided (2026-10-03): a pointer before the Exams tab in v1.2.0 (agent-2), and a day-1 sample later |
+| **An English speaker who keeps the defaults gets Bangla** | An English app pre-selects বাংলা as the second meaning (#1156), and then shows the Bangla-script guide on every card (#1150). The English launch audience can't read either | **#1363**, decided (2026-10-03): an English app's setup page 2 opens on English alone, in v1.2.0 (agent-0) |
+| **"Works fully offline" is a little broader than the audio** | S2 page 1 promises it, but the sound needs the phone's German voice, or Supertonic once downloaded | **#1365**, decided (2026-10-03): "The whole course works offline", in v1.2.0 (agent-0) |
 | **Some steps look thin next to their neighbours** | Placement and L1 show B1.1 at {steps.4.words} and B1.2 at {steps.5.words} words, and C2.1 at {steps.10.words} and C2.2 at {steps.11.words}, against about 500 for an A2 or B2 step. A learner may read that as "B1 is short". It isn't: A1 and A2 carry most of the everyday words, and every later step builds on them | Not a bug. **For messaging:** say how many words a learner has met by the end of a level (the sum of `site-facts.json`'s `steps` up to it), never one step's count |
 | **Day 1 has no quiz** | L2 › Quiz: "Quizzes open once 10 words of this step are learned · 7 so far" | Not a bug: day 2 opens it. Don't promise quizzes in day-1 posts |
 
@@ -48,6 +48,6 @@ The screen reader's «Scrim» on W1's sheet was already #1354, and it's fixed on
 ## What it means for the plan
 
 - **Lead with points 1–4 and 10.** They're true on day 1, and the Play sets already show them. For point 10, say the course is offline, and leave the sound out of the promise (#1365).
-- **Show the exams only through #1243's task videos,** and say how they unlock until #1364 is decided.
-- **English posts should point at Settings › meaning languages,** or wait for #1363, so English speakers don't meet Bangla on their first card.
+- **Show the exams only through #1243's task videos,** and say how they unlock. v1.2.0 adds a pointer to the setting (#1364).
+- **Until v1.2.0 ships #1363,** English posts on 1.1.0 should say that the meaning languages are picked on setup's page 2, so English speakers don't meet Bangla on their first card.
 - **Use the honest pace as a contrast:** a step's days, never "fluent in N weeks". It's the opposite of what competitors promise (`competitors.md`).
