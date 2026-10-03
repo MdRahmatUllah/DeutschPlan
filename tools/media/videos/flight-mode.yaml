@@ -1,0 +1,53 @@
+# #1245: "Flight mode on": the home screen with flight mode on, Sogda
+# opened warm (its task brought back, as a learner's tap does: a cold start
+# would take the clip's whole length on the emulator), three cards reviewed,
+# the day done. Prepare the learner first: three cards left today, the app on
+# Today in the background. Taps by position (at:), as label taps wait for a
+# UI dump: Today's primary button, then Show meaning and Good, where the study
+# screen draws them on emulator-5558 (1080 x 2424). Captions in the
+# listing's own words (de: messaging.md's, a draft).
+locales: [en, bn, pl, ru, de]
+before:
+  - cmd connectivity airplane-mode enable
+  - input keyevent KEYCODE_HOME
+after:
+  - cmd connectivity airplane-mode disable
+steps:
+  - sleep2
+  - "shell:am start -n de.sogda.app/.MainActivity"
+  - sleep2
+  - "at:540,2035"
+  - "at:540,2203"
+  - "at:667,2198"
+  - "at:540,2203"
+  - "at:667,2198"
+  - "at:540,2203"
+  - "at:667,2198"
+  # The session holds its last rating's undo for a few seconds, then the day is done.
+  - sleep9
+cut: [1, 13]
+captions:
+  - from: 0
+    to: 3.5
+    text:
+      en: Flight mode on
+      bn: ফ্লাইট মোড চালু
+      pl: Tryb samolotowy włączony
+      ru: Режим полёта включён
+      de: Flugmodus an
+  - from: 3.8
+    to: 8
+    text:
+      en: No account and no signal needed
+      bn: অ্যাকাউন্ট বা ইন্টারনেট লাগে না
+      pl: Bez konta i bez zasięgu
+      ru: Без аккаунта и без сети
+      de: Ohne Konto, ohne Netz
+  - from: 8.3
+    to: 12
+    text:
+      en: Your progress stays on this phone
+      bn: আপনার অগ্রগতি এই ফোনেই থাকে
+      pl: Twoje postępy zostają na tym telefonie
+      ru: Твой прогресс остаётся на этом телефоне
+      de: Dein Fortschritt bleibt auf diesem Handy
