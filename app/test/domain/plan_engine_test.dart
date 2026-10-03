@@ -835,6 +835,24 @@ void main() {
       );
     });
 
+    test("#1315 FR-D2-02 a word today's plan has by the course's route "
+        'starts today, even with the cap taken, and takes no slot', () async {
+      store.queue.clear();
+      final engine = engineWith(docDailyCap: 1);
+      await engine.openDay(monday); // the course's w1, w2, w3
+      await engine.addDocWords(<String>['d1'], monday, at: at); // the cap
+      expect(
+        await engine.addDocWords(<String>['w2', 'd2'], monday, at: at),
+        <String, PlanDate?>{'w2': monday, 'd2': tuesday},
+      );
+      expect(await engine.plannedToday(monday), <String>{
+        'w1',
+        'w2',
+        'w3',
+        'd1',
+      });
+    });
+
     test("#687 AN-7 a day topped up by the next step counts only the course's "
         "words against daily_new, not the queue's", () async {
       store.wordsByStep

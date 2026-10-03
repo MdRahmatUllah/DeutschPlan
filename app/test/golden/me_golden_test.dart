@@ -20,6 +20,25 @@ void main() {
         ProviderScope(overrides: meStub(), child: const MeScreen()),
   );
 
+  // FR-M1-05 (#1237): the list's end, *Rate Sogda on Google Play* in full.
+  goldenTest(
+    'me_rate',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    builder: (context) =>
+        ProviderScope(overrides: meStub(), child: const MeScreen()),
+    act: (tester) async {
+      final l10n = lookupAppLocalizations(
+        Localizations.localeOf(tester.element(find.byType(MeScreen))),
+      );
+      await tester.scrollUntilVisible(
+        find.text(l10n.meRatePlay),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+    },
+  );
+
   // #584: M1's name sheet, its field focused, so the audit's keyboard pass
   // reaches a field that only opens behind a tap.
   goldenTest(
