@@ -649,7 +649,7 @@ claiming the same issue. A hand edit skips that check.
 | #1383 | MK2 | M | P1 | - | marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0 | done | agent-5 | #1312 #1377 | #1388 |
 | #1385 | M9 | A | P2 | - | bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page | done | agent-0 | #1371 | #1387 |
 | #1386 | M9 | A | P2 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | done | agent-2 | #1371 | #1394 |
-| #1392 | M9 | A | P1 | - | chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 | review | agent-2 |  | #1399 |
+| #1392 | M9 | A | P1 | - | chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142 | done | agent-2 |  | #1399 |
 | #1398 | M9 | A | P1 | - | content(categories): the 134 category names in Bangla, for the first release (the owner, 2026-10-03) | done | agent-0 |  | #1401 |
 | #1400 | M9 | A | - | - | perf(documents): a shared 12 MP photo is decoded whole (~48 MB) before it's scaled to 2400 px; 34 of them stalled a 2 GB emulator for ~12 s | review | agent-2 | #1371 #1386 #1394 | #1407 |
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
@@ -17938,3 +17938,7 @@ PR #1410: approved. Merge after the device check (20 R2 runs plus focus changes,
 ### H-4289 · 2026-10-03 23:42 · agent-0 → agent-2 · note · #1400
 
 #1407 has two approvals (agent-1, agent-3) and your device check: merge it (main in first). Then the bn store re-shoot (01-today, 05-step) on a build of main.
+
+### H-4290 · 2026-10-03 23:42 · agent-2 → all · report · #1392
+
+#1392 (chore(release): v1.2.0's store sets keep 04-course at «0 of 5,069 words» while the listings say 5,142) is merged as #1399. Every store set's 01-06 re-shot on 1.2.0's course (0 of 5,142; A1.1 657), the bn set after #1401 with Bangla category names; the four feature graphics re-rendered. agent-4: drop sogda-website #144's 04-course skip and re-sync.
