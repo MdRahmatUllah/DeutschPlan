@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="$lang"><head><meta charset="utf-8"><style>
+@font-face{font-family:Inter;src:url(data:font/ttf;base64,$inter);font-weight:100 900}
+@font-face{font-family:Bengali;src:url(data:font/ttf;base64,$bengali);font-weight:100 900}
+*{margin:0;box-sizing:border-box}
+body{width:${width}px;height:${height}px;background:$ground;color:$ink;font-family:Inter,Bengali,sans-serif;position:relative;overflow:hidden}
+.safe{position:absolute;left:${left}px;top:${top}px;width:${safe_width}px;height:${safe_height}px;display:flex;align-items:center;justify-content:center;gap:${gap}px}
+.logo svg{display:block;width:${logo_width}px;height:auto;border-radius:${radius}px;box-shadow:${shadow}px ${shadow}px 0 $ink}
+.words{display:flex;flex-direction:column;gap:${gap}px;min-width:0}
+h1{font-size:${headline}px;font-weight:$headline_weight;letter-spacing:${headline_tracking}em;line-height:$line_height}
+p{font-size:${body}px;font-weight:$body_weight;line-height:$line_height}
+</style></head>
+<body><div class="safe">
+<div class="logo">$logo</div>
+<div class="words"><h1>$headline_text</h1><p>$body_text</p></div>
+</div></body></html>

@@ -1,0 +1,41 @@
+# #1241: "Say it in your letters", featured word 1 of twelve
+# (site-facts.json's `featured`): its card in W1, the guide in the learner's
+# script, and the phone's German voice saying it. W1 opens by the widget's
+# link, `sogda://word/<uid>?speak=1`, which speaks on opening; a tap on
+# Pronounce (943, 280 on emulator-5556, W1 as a page) says it again. Captions are the facts'
+# tokens only: the app's own text, never retyped.
+#   python tools/team.py lock emulator-5556 -m "#1241"
+#   python tools/media/video.py say-anmeldung --record --serial emulator-5556 --takes bn
+#   (the next word of the same take: --skip-prepare)
+locales: [bn, ru, pl]
+audio: true
+takes:
+  bn:
+    locales: [bn]
+    learner: bn
+  ru:
+    locales: [ru]
+    learner: ru
+  pl:
+    locales: [pl]
+    learner: pl
+steps:
+  - sleep1
+  - "shell:am start -a android.intent.action.VIEW -d 'sogda://word/aa43cde805b59ad2?speak=1' de.sogda.app"
+  - sleep4
+  - "at:943,280"
+  - sleep4
+cut: [1.5, 9.5]
+captions:
+  - from: 0
+    to: 4
+    text:
+      bn: "{featured.0.article} {featured.0.german} · /{featured.0.guide.bn}/"
+      ru: "{featured.0.article} {featured.0.german} · /{featured.0.guide.ru}/"
+      pl: "{featured.0.article} {featured.0.german} · /{featured.0.guide.pl}/"
+  - from: 4.3
+    to: 8
+    text:
+      bn: "{featured.0.meaning.bn}"
+      ru: "{featured.0.meaning.ru}"
+      pl: "{featured.0.meaning.pl}"

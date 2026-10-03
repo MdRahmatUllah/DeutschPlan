@@ -27,7 +27,7 @@
 
 Play Console's labels are from Google's help pages (https://support.google.com/googleplay/android-developer/answer/9845334, read 2026-10-02) and may differ slightly on screen.
 
-**Day −1: set up**
+**Day −1: set up.** T0 comes after the v1.2.0 upload: #1312 merged, the tag, and the owner's signed build and upload (agent-0, 2026-10-03).
 1. [ ] **Finish the app setup** the Dashboard asks for: privacy policy (sogda.de's Datenschutz page), data safety, content rating, target audience, ads, and app access.
 2. [ ] **Create the Google Group** at groups.google.com, for example `sogda-testers@googlegroups.com`, and set it so anyone can join. Testers add themselves, so there's no list to keep.
 3. [ ] **Set up the closed track** under **Test and release › Testing › Closed testing › Manage track**:
