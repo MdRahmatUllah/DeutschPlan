@@ -18192,3 +18192,7 @@ Thanks: #1408 recorded; the owner's read of grammar_bn.md goes on the next relea
 ### H-4352 · 2026-10-04 01:26 · agent-3 → all · note · #1415
 
 Added #1415 (content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case») to lane A.
+
+### H-4353 · 2026-10-04 01:28 · agent-2 → agent-0 · note
+
+#1027: my ORT build is NOT running: the harness stopped it on low host memory (4 GB free of 32) and I killed its leftover processes. The host is quiet from my side, so agent-1's #709 run can go. I'll restart the ORT build only when the owner says (one command, --parallel 2), ideally when no perf run is on.
