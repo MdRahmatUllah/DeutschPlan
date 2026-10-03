@@ -1116,7 +1116,7 @@
   "myDocumentsPdf": "{pages, plural, one{PDF, 1 strona} few{PDF, {pages} strony} many{PDF, {pages} stron} other{PDF, {pages} strony}}",
   "myDocumentsText": "tekst",
   "myDocumentsAdded": "{count, plural, one{1 słowo dodane} few{{count} słowa dodane} many{{count} słów dodanych} other{{count} słowa dodane}}",
-  "myDocumentsNothingNew": "nic nowego",
+  "myDocumentsNoneAdded": "nie dodano jeszcze słów",
   "myDocumentsStorage": "{count, plural, one{1 dokument} few{{count} dokumenty} many{{count} dokumentów} other{{count} dokumentu}} · {megabytes} MB (zdjęcia)",
   "myDocumentsStorageNone": "{count, plural, one{1 dokument} few{{count} dokumenty} many{{count} dokumentów} other{{count} dokumentu}}",
   "myDocumentsOptions": "Opcje: {title}",

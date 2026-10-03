@@ -158,10 +158,11 @@ class _Row extends ConsumerWidget {
         locale,
       ).format(DateTime.parse(document.createdAt).toLocal()),
       source,
+      // At none, what the learner did, never what it holds (#1358).
       if (entry.added > 0)
         l10n.myDocumentsAdded(entry.added)
       else
-        l10n.myDocumentsNothingNew,
+        l10n.myDocumentsNoneAdded,
     ].join(' · ');
     final menu = l10n.myDocumentsOptions(document.title);
 
