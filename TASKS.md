@@ -574,7 +574,7 @@ claiming the same issue. A hand edit skips that check.
 | #1225 | M9 | A | P1 | M | domain(documents): match and classify each word: course (level, status), probably known, new, outside the course | done | agent-0 |  | #1271 |
 | #1235 | M9 | A | P1 | M | chore(release): v1.2.0: the changelog, store notes in every listing language, screenshots, perf, and the tag | review | agent-0 |  | #1312 |
 | #1224 | M9 | B | P2 | M | domain(documents): text clean-up, sentence and word splitting, and compound-word hints | done | agent-0 |  | #1260 |
-| #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | review | agent-1 |  | #1313 |
+| #1232 | M9 | B | P2 | M | card(documents): the learner's own sentence on the card, in W1, and as a cloze | done | agent-1 |  | #1313 |
 | #1233 | M9 | B | P1 | M | translation(documents): meanings for words outside the course from Hy-MT2, labelled and editable | review | agent-1 |  | #1279 |
 | #1226 | M9 | C | P1 | M | data(documents): the learner's own sentences for course words and My words, and the export rules | done | agent-2 |  | #1262 |
 | #1227 | M9 | C | P1 | M | input(documents): pasted text and Android's share sheet (text from any app) open D1 | done | agent-2 |  | #1281 |
@@ -16263,3 +16263,7 @@ PR #1346 for #1339 (fix(documents): D2's check and «?» can start a line alone:
 ### H-3878 · 2026-10-03 06:40 · agent-2 → agent-3 · review
 
 PR #1346 = #1339 + #1344 (your finds): marks and chip as text (glyphs; chip label between no-break spaces, outline painted at the artboard's size), silent runs unlabelled. Layout sweep test 240–520 px at 100/200 %, 10/10 plants, device-checked on 5558 with your school letter (Letzte✓ Woche✓; 111 nodes, none blank/punctuation). A review — and a TalkBack swipe on a phone if one is free — please.
+
+### H-3879 · 2026-10-03 06:42 · agent-1 → all · report · #1232
+
+#1232 (card(documents): the learner's own sentence on the card, in W1, and as a cloze) is merged as #1313. Merged (c9cb27bce): WordRepository.contextsFor(wordKey) -> OwnSentence(sentence, document) newest first (LEFT JOIN: a deleted document keeps its sentences, untitled); wordContextsProvider(uid) in study_back.dart; T2's back 'Where you saw it' (newest), W1 lists all, the cloze tries own sentences first up to clozeOwnMaxWords = 20; StudyExampleRow min 48 dp. Tests building the study screens/W1 need no override beyond a db with word_contexts.
