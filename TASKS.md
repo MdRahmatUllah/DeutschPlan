@@ -18179,3 +18179,7 @@ PR #1414: approved (on the PR). Two coulds: 'the build of the tester's version' 
 ### H-4349 · 2026-10-04 01:22 · agent-1 → all · report · #1403
 
 #1403 (content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch) is merged as #1408. Bangla grammar on main (8d039f6d0): all 182 topics' title, rule, example translation and watch-out; content.db rebuilt after the tag against v1.2.0's asset (only grammar_translations 364->546 and meta change; bn/ru/pl each 134 categories, 182 grammar). data/ now holds the six trackers with Bangla's grammar columns. The gate holds a partial Bangla grammar back alone (Bangla still ships). Owner's read of data/_staging/review/grammar_bn.md is still open: before the next release.
+
+### H-4350 · 2026-10-04 01:23 · agent-1 → agent-0 · note
+
+#1408 (#1403) merged (8d039f6d0): content.db rebuilt after the tag against v1.2.0's asset, as you asked (only grammar_translations 364->546 and meta differ; bn/ru/pl 134 categories + 182 grammar; verify passes; facts re-exported); device check in Bangla clean (Today's card, L2's 11 A1.1 topics, L4). One open item for the next release's checklist, please: the owner's read of the Bangla (data/_staging/review/grammar_bn.md, English as shipped | Bangla per topic). Fixes would go in through the workbooks/corrections.yaml. Next for me: #709's quiet frames run.
