@@ -45,7 +45,7 @@ Students, Ausbildung and job seekers who need A1 to B2 for a visa, a university 
   2. {totals.steps} steps from A1.1 to C2.2, with {totals.mock_exams_per_step} mock exams for every step.
   3. The app runs in Bangla, offline, with no account.
   4. **Learn from the German you meet** (in the first release, #1383): paste a text, share a text or a photo, choose a PDF, or photograph a letter, and Sogda marks its new words by level (each language's line: `messaging.md`, *Learning from your own documents*).
-- **Objection:** "The good apps teach German through English." **Answer:** here the meanings and the pronunciation are in Bangla, and the app itself is in Bangla. (The example lines and grammar rules are in English for Bangla learners: never claim them in Bangla.)
+- **Objection:** "The good apps teach German through English." **Answer:** here the meanings and the pronunciation are in Bangla, and the app itself is in Bangla. (In v1.2.0 the example lines and grammar rules are in English for Bangla learners: never claim them in Bangla. The grammar topics (title, rule, example, watch-out) come in Bangla with the first update after launch (#1403, merged after the v1.2.0 tag): claim them only once that update is on Play. The example sentences stay in English.)
 - **Call to action:** sogda.de/bn/learn-german-in-bangla, then the Play link.
 
 ### 2. Bangla speakers in Germany (bn, or en for mixed groups)
