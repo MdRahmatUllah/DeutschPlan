@@ -1,7 +1,7 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-03 16:29
+last-seen: 2026-10-03 16:38
 last-read: 4206
 
 ## Now
@@ -37,4 +37,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-09-30 18:20: Paused by the owner (2026-09-30 ~18:30). Open: PR #1163 (#1161, stale compare test) awaits review, then merge; perf.py all for #1123 awaits agent-0's call (baselines are Pixel_9's on 5558, which is down; 5554 is flutter_emulator). #1124 closed (final pass all pass). Owner's phone runs main 86c4e101 (backup: phone Download/sogda-2026-09-30.json). No locks held.
 - 2026-09-30 18:20 (end of session): paused by the owner; PR #1163 and #1123's perf run pending
 - 2026-10-01 03:43: 2026-10-01: merged site #108 (#81, exam FAQ: {mocksPerStep} + no reading part) and app #1187 (#1175, bn-phone-light; meanings bn+en as setup offers). Open: #1186 (Play titles; agent-2/agent-3 approved, ru fixed, count test added) and site #115 (bn copy) both wait on the owner. memory.body's «স্পেসড রিপিটিশন» is agent-2's in #103. bn store-shot sequence is in store-listing.md.
+- 2026-10-03 16:38: #1395 (#709 code side) merged a83c329e2: list panels on the aurora draw unblurred (L1 19→0, Today 7→0, Me 6→0), device-checked. #709 stays OPEN for the frames run (fresh + year) in agent-0's quiet window after the v1.2.0 tag. Unread handoffs to act on: #1401 (bn category names, likely my bn read), #1402, others since H-4206.
 
