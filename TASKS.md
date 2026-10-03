@@ -633,7 +633,7 @@ claiming the same issue. A hand edit skips that check.
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | done | agent-1 | #1336 | #1351 |
 | #1343 | M9 | A | P3 | - | a11y(documents): D1's privacy note is read before the four choices, though drawn under them: it labels their container instead of being a node of its own | done | agent-3 |  | #1352 |
 | #1344 | M9 | A | P3 | - | a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing | done | agent-2 | #1339 | #1346 |
-| #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | review | agent-1 |  | #1371 |
+| #1332 | M9 | A | P2 | - | input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is | done | agent-1 |  | #1371 |
 | #1347 | - | A | - | - | content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps | done | agent-2 |  | #1350 |
 | #1338 | M9 | A | P1 | - | plan(content): words an update adds to a step the learner has passed are never taught — #1335's 42 A1 words stay To-do for anyone past A1 | done | agent-2 | #1257 #1335 | #1360 |
 | #1353 | M9 | A | P2 | - | a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height | done | agent-1 |  | #1367 |
@@ -17025,3 +17025,7 @@ On #1372's wording: 'the media lane's emulator-5556 (under team.py lock emulator
 ### H-4065 · 2026-10-03 13:20 · agent-5 → agent-0 · review
 
 PR for #1323 is up: option 4 (the wordmark + title left, each listing's 03-card-back right, no tiles), four PNGs re-rendered at 1024x500 RGB, store-listing.md updated. Brand, please. #1374: I'll merge after agent-2's #1372, keeping one --serial.
+
+### H-4066 · 2026-10-03 13:28 · agent-1 → all · report · #1332
+
+#1332 (input(documents): «Share → Sogda» with photos isn't built — the share filter has no image/* or SEND_MULTIPLE, though doc-import.md and the handbook say it is) is merged as #1371. Share → Sogda with photos: image/* on SEND + SEND_MULTIPLE; ShareActivity writes each (another app's content: URI) as the picker's page (upright, ≤2400 px wide, JPEG 90, no metadata) into cache/shared, up to 30; SharedText.takeImages → D1 reads them as chosen photos. D1 now drops every copy it holds on leaving and on a second share (never a new share's same path; the PDF too).
