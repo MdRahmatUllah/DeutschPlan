@@ -30,6 +30,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/l10n/ui_language_locale.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/router/routes.dart' show SettingsRoute;
 import 'package:sogda/services/model_downloads.dart' show DownloadPhase;
 
 import '../core/semantics_checks.dart';
@@ -68,11 +69,14 @@ void main() {
     // Null reads it as the app does, from [extra]'s models and downloads.
     bool? voiceInstalled = true,
     List<Override> extra = const <Override>[],
+    // `SettingsRoute.row` (#1364).
+    String? row,
+    Size size = const Size(1200, 9000),
   }) async {
     // Tall enough that every row is built: the table below reaches all of
     // them without scrolling.
     tester.view
-      ..physicalSize = const Size(1200, 9000)
+      ..physicalSize = size
       ..devicePixelRatio = 2;
     addTearDown(tester.view.reset);
 
@@ -111,7 +115,7 @@ void main() {
                 routes: <RouteBase>[
                   GoRoute(
                     path: 'settings',
-                    builder: (_, _) => const SettingsScreen(),
+                    builder: (_, _) => SettingsScreen(row: row),
                     routes: <RouteBase>[
                       GoRoute(
                         path: 'reminder',
@@ -137,6 +141,27 @@ void main() {
   Finder sliderFor(String label) => find.byWidgetPredicate(
     (widget) => widget is SgSlider && widget.label == label,
   );
+
+  testWidgets('#1364 opened from a locked exam, M3 shows Unlock mock exams '
+      'at, down the page', (tester) async {
+    bool onScreen(WidgetTester tester) {
+      final top = tester.getRect(find.text(l10n.settingsUnlockAt)).top;
+      return top >= 0 && top < 2400 / 3;
+    }
+
+    await pump(tester, size: const Size(1080, 2400));
+    expect(
+      find.text(l10n.settingsUnlockAt).hitTestable(),
+      findsNothing,
+      reason: 'below the fold on its own',
+    );
+    await pump(
+      tester,
+      size: const Size(1080, 2400),
+      row: SettingsRoute.examUnlock,
+    );
+    expect(onScreen(tester), isTrue);
+  });
 
   testWidgets('every row in settings.md is there', (tester) async {
     // Translation's with a model on the phone (#513).

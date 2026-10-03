@@ -464,7 +464,7 @@
   "examHubIntroduced": "{target}টির মধ্যে {introduced}টি শব্দ পরিচিত",
   "examHubDaysAt": "{days, plural, other{দিনে {pace}টি করে প্রায় {days} দিন}}",
   "examHubStudyNow": "এখন পড়ুন",
-  "examHubThreshold": "খোলার সীমা সেটিংসে বদলানো যায়।",
+  "examUnlockLower": "খোলার সীমা কমান",
   "examHubStart": "শুরু",
   "examHubResume": "চালিয়ে যান",
   "examHubContents": "এই পরীক্ষাগুলোতে যা আছে",

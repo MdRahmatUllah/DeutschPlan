@@ -788,6 +788,19 @@ class MeExamsCard extends StatelessWidget {
               ],
             ],
           ),
+          // #1364 (the owner): the step under way's mocks locked, a tap from
+          // the setting that locks them.
+          if (current != null && !current.passed && !current.unlocked)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: SgButton(
+                label: l10n.examUnlockLower,
+                kind: SgButtonKind.text,
+                onPressed: () => context.jumpToTab(
+                  const SettingsRoute(row: SettingsRoute.examUnlock),
+                ),
+              ),
+            ),
         ],
       ),
     );

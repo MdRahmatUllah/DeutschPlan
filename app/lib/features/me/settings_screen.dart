@@ -122,7 +122,10 @@ class SettingsEditor extends _$SettingsEditor {
 /// M3 · Settings: every learner-facing setting, in nine groups
 /// (`settings.md`). Material headers on Android, inset groups on iOS.
 class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, this.row});
+
+  /// `SettingsRoute.row`: the row to scroll to on opening (#1364).
+  final String? row;
 
   /// Speech speed in quarters: 0.5× to 1.5×, around the 1.0× the artboard
   /// draws at the middle, on the grid the study menu's 0.75 / 1 / 1.25 use.
@@ -500,6 +503,7 @@ class SettingsScreen extends ConsumerWidget {
             title: l10n.settingsGroupExams,
             rows: <Widget>[
               _Row(
+                shown: row == SettingsRoute.examUnlock,
                 title: l10n.settingsUnlockAt,
                 subtitle: l10n.settingsUnlockAtNote,
                 value: l10n.settingsPercent(unlock),
@@ -929,6 +933,7 @@ class _Row extends StatelessWidget {
     this.onTap,
     this.labelledByControl = false,
     this.controlValue,
+    this.shown = false,
   });
 
   final String title;
@@ -945,6 +950,9 @@ class _Row extends StatelessWidget {
   /// with it too: a screen reader hears the subtitle without it, so the value
   /// is said once (#1190).
   final String? controlValue;
+
+  /// Scrolled into view as M3 opens, for a pointer to it (#1364).
+  final bool shown;
 
   @override
   Widget build(BuildContext context) {
@@ -1019,7 +1027,7 @@ class _Row extends StatelessWidget {
           ),
           _ => null,
         };
-    return Semantics(
+    final tile = Semantics(
       container: true,
       button: onTap != null,
       child: onTap != null
@@ -1035,6 +1043,7 @@ class _Row extends StatelessWidget {
               child: row,
             ),
     );
+    return shown ? _ShownOnOpen(child: tile) : tile;
   }
 
   /// The subtitle as a screen reader hears it: without the leading value the
@@ -1049,4 +1058,30 @@ class _Row extends StatelessWidget {
         ? ExcludeSemantics(child: text)
         : Semantics(label: rest, excludeSemantics: true, child: text);
   }
+}
+
+/// [child] scrolled into view once, after M3's first frame: the row a
+/// pointer elsewhere opened M3 at (#1364, `SettingsRoute.row`).
+class _ShownOnOpen extends StatefulWidget {
+  const _ShownOnOpen({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_ShownOnOpen> createState() => _ShownOnOpenState();
+}
+
+class _ShownOnOpenState extends State<_ShownOnOpen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        unawaited(Scrollable.ensureVisible(context, alignment: 0.3));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

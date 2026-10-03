@@ -9,7 +9,7 @@
 ## L10 layout
 - Locked: card "Unlocks when 90% of A2.1 is introduced · 184 of 486 words introduced · about 43 days at 7 a day" + *Study now* (→ T2).
 - Unlocked: three cards *Mock 1 / 2 / 3*: status pill (*Passed 78%* Lime · *62% — not yet* Coral · *Not attempted*), "40 questions · ≈ 20 min · 2 attempts" (Mock 3: "seed 3 · no repeats within the step"), *Start*.
-- "What's in these exams": "Vocabulary 10 · Reverse 8 · Articles 6 · Word forms 4 · Gap fill 6 · Grammar 4 · Listening 2 · Writing · Speaking" and the note "Generated practice exams from this step's words and grammar — not official Goethe or telc papers. Pass mark 60%." (locked variant adds "Change the unlock threshold in Settings").
+- "What's in these exams": "Vocabulary 10 · Reverse 8 · Articles 6 · Word forms 4 · Gap fill 6 · Grammar 4 · Listening 2 · Writing · Speaking" and the note "Generated practice exams from this step's words and grammar — not official Goethe or telc papers. Pass mark 60%.".
 
 ## L11 layout
 "A1.2 · Mock 2 · 40 questions · ≈ 20 min · pass mark 60% · your best: 62% (1 attempt)"; sections list in order with counts (Writing and Speaking marked *self-assessed*); Rules: no feedback until the end · you can flag questions and come back · the timer can be paused; *Timer on* switch ("≈ 20 min · turns Coral in the last 2 minutes"); *Begin exam*.
@@ -36,7 +36,8 @@
   - The days are FR-L2-01's reckoning (`courseDays`): the words left ÷ `daily_new` × 7 ÷ the study days, rounded up. A pace with no study days gives no days.
   - *Study now* opens today's session, as L1's *Study* does, or Today once the day is done. It shows only on the step being studied: today's session is that step's, and L1 offers *Study* on its tile alone (lead decision on #308).
   - The locked card draws from the three settings alone, never waiting on the papers the unlocked hub works out.
-  - The panel is the unlocked one's, and its footnote adds "Change the unlock threshold in Settings." The artboard's differently worded footnote isn't used: its "no repeated items" is not true of every step.
+  - The panel is the unlocked one's. The artboard's differently worded footnote isn't used: its "no repeated items" is not true of every step.
+  - **Lower the unlock threshold** (#1364, the owner): a text button at the foot of the locked card, on every locked step, opens M3 at *Unlock mock exams at* (`SettingsRoute(row: 'exam-unlock')`, scrolled to it), so a learner who came for the mocks can try one now. It replaces the footnote's "Change the unlock threshold in Settings." A day-1 sample task per step comes later (its own issue).
   - Solid Sun with an ink border on paper and dark, the bar in the page's ink, and *Study now* a raised white button (the dark card colour in dark); a Sun wash with a Lagoon *Study now* under glass.
 
 **Business rules.** BR-EXAM-01…06.

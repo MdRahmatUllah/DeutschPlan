@@ -3063,9 +3063,9 @@
   "@examHubStudyNow": {
     "description": "L10 locked card button: today's session (T2)."
   },
-  "examHubThreshold": "Change the unlock threshold in Settings.",
-  "@examHubThreshold": {
-    "description": "L10 locked panel, after examHubDisclaimer."
+  "examUnlockLower": "Lower the unlock threshold",
+  "@examUnlockLower": {
+    "description": "L2 Exams tab while locked, and M1 under the exam badges while the current step's are locked: a link that opens M3 at 'Unlock mock exams at', so a learner can try a mock now (#1364, the owner's decision). Replaces 'Change the unlock threshold in Settings.'"
   },
   "examHubStart": "Start",
   "@examHubStart": {

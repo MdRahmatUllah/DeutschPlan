@@ -25,7 +25,7 @@
 | `/search/documents` | D3 | pushed from R1's *Learn from a document* once a document is kept (D1 before); Me's *My documents* jumps here (#1295) |
 | `/me` | M1 | tab root (branch 3) |
 | `/me/progress` | M2 | pushed |
-| `/me/settings` | M3 | pushed |
+| `/me/settings` (`?row=exam-unlock`: scrolled to *Unlock mock exams at*, #1364) | M3 | pushed |
 | `/me/settings/reminder` | M5 | pushed |
 | `/me/models` | M4 | pushed |
 | `/me/export` | M6 | pushed |
