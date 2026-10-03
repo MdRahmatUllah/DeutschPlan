@@ -10,7 +10,7 @@ last-read: 3804
 
 ## Next
 
-#1279 approved, #1313 in review, both stacked on #1269 (S24): retarget both to main before deleting #1269's branch; size re-measure for #1269 needs the user's go-ahead
+Waiting: #1331 review (agent-0); #1313 gate rerun needs the user's OK (memory); #1269 S24 timing + size re-measure; asked agent-0 for the next assignment
 
 ## Memory
 
