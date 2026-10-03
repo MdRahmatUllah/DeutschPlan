@@ -193,8 +193,9 @@ Two databases, by design (ADR 2): content updates must never touch progress.
   both the DDL and the source drift generates typed tables from (ADR 22). It
   lives in app-support storage and opens on a background isolate
   (`DriftNativeOptions(shareAcrossIsolates: true)`), so writes stay off the UI
-  isolate. Every connection sets `journal_mode = WAL`, `foreign_keys = ON` and
-  `busy_timeout = 5000` (`configureConnection`). The schema version is
+  isolate. Every connection sets `busy_timeout = 5000` first, then
+  `journal_mode = WAL` and `foreign_keys = ON` (`configureConnection`); a start
+  that still finds the file locked tries again for up to 20 s (#1356). The schema version is
   `PRAGMA user_version` (ADR 23), now 6: v4 recorded how an enrolment ended
   (#1047), v5 an exam's meaning language (#1120), and v6 added the
   documents' four tables and `custom_words.mt` (#1226).

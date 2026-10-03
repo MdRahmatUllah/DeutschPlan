@@ -659,6 +659,42 @@ void main() {
       expect(await _version(ready), ContentFixture.version);
     });
 
+    test(
+      '#1356 FR-S1-03 a user.db another connection holds past busy_timeout '
+      'is waited out: the start opens, never «could not open your data»',
+      () async {
+        await (await run()).dispose();
+
+        // A background task's connection (#158) holding the file: exclusive,
+        // so even a read waits. It lets go at the first turn after the first
+        // try: that try's NativeDatabase waits out busy_timeout (5 s) on this
+        // isolate's thread, so the hold outlasts it.
+        final holder = sqlite3.open('${support.path}/user.db')
+          ..execute('PRAGMA locking_mode = EXCLUSIVE')
+          ..execute('BEGIN EXCLUSIVE');
+        var released = false;
+        final release = Timer(const Duration(milliseconds: 100), () {
+          holder
+            ..execute('COMMIT')
+            ..close();
+          released = true;
+        });
+        addTearDown(release.cancel);
+        var tries = 0;
+
+        final ready = await run(
+          open: () {
+            tries++;
+            return openReal();
+          },
+        );
+        addTearDown(ready.dispose);
+
+        expect(released, isTrue, reason: 'it opened once the holder let go');
+        expect(tries, greaterThan(1), reason: 'the first try met the lock');
+      },
+    );
+
     test('#617 FR-S1-03 an update whose copy fails starts on the old course, '
         'and the next launch installs it', () async {
       final first = await run();
