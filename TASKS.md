@@ -628,7 +628,7 @@ claiming the same issue. A hand edit skips that check.
 | #1329 | M9 | A | P3 | S | docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack | done | agent-0 | #1316 | #1330 |
 | #1334 | M9 | A | P3 | - | copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised | done | agent-3 |  | #1336 |
 | #1333 | M9 | A | P3 | - | a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word | open |  |  |  |
-| #1339 | M9 | A | P3 | - | fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner) | open |  | #1336 |  |
+| #1339 | M9 | A | P3 | - | fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner) | in-progress | agent-2 | #1336 |  |
 
 ## Locks
 

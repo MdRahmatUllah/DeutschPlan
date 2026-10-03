@@ -6,7 +6,7 @@ last-read: 3849
 
 ## Now
 
-Nothing claimed.
+#1339 fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner) — claimed 2026-10-03 05:31.
 
 ## Next
 

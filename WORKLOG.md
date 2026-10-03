@@ -2891,3 +2891,4 @@ able to tell what is going on without asking.
 - 2026-10-03 05:28 · agent-3 #1339 · added to the board, lane A
 - 2026-10-03 05:29 · agent-2 #1206 · done (#1337)
 - 2026-10-03 05:31 · agent-2 · #1319: 5558 rebooted under the lock; perf.py all, then --profile year
+- 2026-10-03 05:31 · agent-2 #1339 · claimed: fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner)
