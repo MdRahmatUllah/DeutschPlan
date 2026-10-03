@@ -789,7 +789,13 @@ void main() {
       ).firstMatch(manifest)![0]!;
       expect(filter, contains('android.intent.action.SEND"'));
       expect(filter, contains('android:mimeType="text/plain"'));
-      expect(filter, contains('android:noHistory="true"'));
+      expect(
+        filter,
+        isNot(contains('noHistory')),
+        reason:
+            '#1386: D1 opens over it while it copies shared photos; '
+            "finished by D1 in front, it would take the sender's grant along",
+      );
       expect(
         filter,
         isNot(contains('BROWSABLE')),
@@ -921,4 +927,7 @@ class _SharedTexts implements SharedText {
 
   @override
   Future<({List<String> pages, int of})?> takeImages() async => null;
+
+  @override
+  Future<int> receiving() async => 0;
 }

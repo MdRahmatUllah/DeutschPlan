@@ -35,6 +35,10 @@ class ShareActivity : Activity() {
         @Volatile private var pendingPdf: String? = null
         @Volatile private var pendingImages: Map<String, Any>? = null
 
+        /** The photos a share is still copying (#1386): how many, and the copy. */
+        @Volatile private var incoming = 0
+        @Volatile private var copying: Thread? = null
+
         /** D1's page limit (`docMaxPages`, BR-DOC-02). */
         private const val MAX_PAGES = 30
 
@@ -53,7 +57,18 @@ class ShareActivity : Activity() {
          * the cache in the order shared, at most [MAX_PAGES], and `of`, how
          * many were shared.
          */
-        fun takeImages(): Map<String, Any>? = pendingImages.also { pendingImages = null }
+        fun takeImages(): Map<String, Any>? {
+            // #1386: D1 opened before the copies were made; it waits for them.
+            copying?.join()
+            return pendingImages.also { pendingImages = null }
+        }
+
+        /**
+         * How many photos a share is still copying, 0 when none (#1386): D1
+         * says «Receiving 34 photos…» at once, then [takeImages] waits for
+         * them (off the main thread: it blocks).
+         */
+        fun receiving(): Int = incoming
 
         private fun clear() {
             pending = null
@@ -71,24 +86,37 @@ class ShareActivity : Activity() {
         val images = share?.takeIf { it.type?.startsWith("image/") == true }
             ?.let(::streams)
             .orEmpty()
-        if (pdf != null || images.isNotEmpty()) {
-            // The copies, off the main thread: the sender's grant to read the
-            // URIs lasts while this activity does, so it finishes after.
+        // The copies, off the main thread: the sender's grant to read the
+        // URIs lasts while this activity does, so it finishes after (and
+        // isn't `noHistory`: D1 in front would finish it, the grant with it).
+        // A copy that fails (the grant revoked, the disk full) still opens
+        // D1, on its choices: the share wasn't lost unseen.
+        if (pdf != null) {
             Thread {
-                // A copy that fails (the grant revoked, the disk full) still
-                // opens D1, on its choices: the share wasn't lost unseen.
                 clear()
-                if (pdf != null) {
-                    pendingPdf = runCatching { copyPdf(pdf) }.getOrNull()
-                } else {
+                pendingPdf = runCatching { copyPdf(pdf) }.getOrNull()
+                open()
+                runOnUiThread { finish() }
+            }.start()
+            return
+        }
+        if (images.isNotEmpty()) {
+            // #1386: D1 first, told how many are coming, and the copies behind
+            // it: 34 photos took ~14 s, D1's idle choices on screen meanwhile.
+            clear()
+            incoming = images.size
+            copying = Thread {
+                try {
                     val pages = copyImages(images.take(MAX_PAGES))
                     if (pages.isNotEmpty()) {
                         pendingImages = mapOf("pages" to pages, "of" to images.size)
                     }
+                } finally {
+                    incoming = 0
+                    runOnUiThread { finish() }
                 }
-                open()
-                runOnUiThread { finish() }
-            }.start()
+            }.apply { start() }
+            open()
             return
         }
         val text = share?.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()

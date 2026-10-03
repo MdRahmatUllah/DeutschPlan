@@ -5442,6 +5442,16 @@
   "@docImportDone": {
     "description": "D1: the pages are all photographed; read them."
   },
+  "docImportReceiving": "{count, plural, =1{Receiving 1 photo…} other{Receiving {count} photos…}}",
+  "@docImportReceiving": {
+    "description": "#1386: D1 at once after photos are shared to Sogda, while they're copied, before the first is read; count is how many were shared.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "docImportReadingPage": "Reading page {page} of {count}…",
   "@docImportReadingPage": {
     "description": "D1 processing a photo: page is the one being read, count all of them.",
