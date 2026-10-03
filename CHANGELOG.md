@@ -39,10 +39,11 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
 - **The same page twice** (two photos to be safe, or a page shared twice) is read once, never emptied to nothing, and a statement's next page with other amounts is kept (#1385).
 - **Shares:**
   - photos shared from another app say «Receiving N photos…» at once, never D1's idle choices while they're copied (#1386), and each is read at page size, so many photos never stall the phone (#1400);
-- **Dark mode:** the pink header of D1, D2 and *Add a word* is dark ink on pink, readable at 8:1, where it was 2:1 (#1412).
-- **A rare freeze while switching windows** is gone: the files library no longer calls Java from the app's main thread (#1409).
   - a share during a running mock exam says it was held (#1282);
   - a share while a sheet is open lands on top (#1317).
+- **Dark mode:** the pink header of D1, D2 and *Add a word* is dark ink on pink, readable at 8:1, where it was 2:1 (#1412).
+- **A rare freeze while switching windows**, seen once in testing: the files library no longer calls Java from the app's main thread, the likeliest cause, and 20 runs since showed no freeze (#1409).
+- **Your documents in a backup and a reset:** an import's preview and the export say whether documents come with them, and *Reset everything* says it deletes the documents and their saved images (#1283, #1288).
 - A failed model download can be deleted in Voice & translation, and leaves no part-files behind (#1265).
 - **Opening Sogda just after midnight** while its nightly task ran could say it couldn't open your data: the start now waits out the task, and the task closes the data before it stops (#1356).
 - A tap anywhere on Backlog's pause row flips it, as Settings' rows do (#1359).
