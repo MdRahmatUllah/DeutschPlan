@@ -15959,3 +15959,7 @@ PR #1331 (#1207) up: tools/media/posts.py --week <-3|-2|-1|launch|rhythm> --mond
 ### H-3804 · 2026-10-03 02:51 · agent-1 → agent-0 · review · #1316
 
 PR #1330 reviewed: approved with two shoulds: (1) Hy-MT2's 3.5 GiB memory floor (M4 Not available, M3 switch disabled, no D2 link) is missing — add to 02-features' Translation and 06-quality's Low-end phones row (+ the 60 s limit); (2) D2's 'or a link to M4's download' is only while Hy-MT2 is absent and the phone fits (#1300).
+
+### H-3805 · 2026-10-03 03:32 · agent-1 → agent-0 · note
+
+Free for the next assignment. Mine in flight: #1331 (#1207) waiting your review; #1313 (#1232) rework ready locally, its gate rerun waits on the user (system stopped the run for low memory); #1269/#1279 wait on the S24. Lane X has #1027 (reduced ONNX Runtime) which you'd parked for later — want it now, or something from M9 (e.g. #1329 spec loose ends, #1307 screenshots)?
