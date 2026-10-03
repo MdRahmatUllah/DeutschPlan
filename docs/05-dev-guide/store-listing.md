@@ -118,7 +118,7 @@ Sogda to aplikacja z kursem niemieckiego offline: od A1 do C2 w 12 etapach, z 51
 
 CZEGO SIĘ NAUCZYSZ
 • 12 etapów od A1.1 do C2.2, ułożonych pod kątem egzaminów
-• 5142 słów, każde z przykładami, z rodzajnikiem i formami tam, gdzie je ma, oraz z wymową zapisaną polskimi literami
+• 5142 słowa, każde z przykładami, z rodzajnikiem i formami tam, gdzie je ma, oraz z wymową zapisaną polskimi literami
 • 182 tematy gramatyczne, każdy z regułą i krótkim ćwiczeniem; reguły i przykłady są po polsku
 • Znaczenia po polsku, a pod nimi, jeśli chcesz, drugi język: angielski, bengalski lub rosyjski
 
@@ -161,11 +161,11 @@ Sogda: немецкий с нуля до C2
 ### Full description
 Учи немецкий день за днём, с ясным планом.
 
-Sogda — приложение с офлайн-курсом немецкого: от A1 до C2 за 12 этапов: 5 142 слов, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети: твой прогресс остаётся на этом телефоне.
+Sogda — приложение с офлайн-курсом немецкого: от A1 до C2 за 12 этапов: 5 142 слова, 182 грамматические темы и 36 пробных экзаменов, а значения и подсказки произношения — на английском, бенгальском, русском или польском. Без аккаунта и без сети: твой прогресс остаётся на этом телефоне.
 
 ЧТО ТЫ ВЫУЧИШЬ
 • 12 этапов от A1.1 до C2.2, по структуре экзаменов
-• 5 142 слов, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами
+• 5 142 слова, у каждого — примеры, артикль и формы, где они есть, и произношение, записанное русскими буквами
 • 182 грамматические темы, у каждой — правило и короткая практика; правила и примеры на русском
 • Значения на русском, а под ними, если хочешь, второй язык: английский, бенгальский или польский
 
