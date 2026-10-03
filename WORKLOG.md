@@ -3072,3 +3072,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:39 · agent-2 #1241 · released: M9 first: #1386 before the media; #1241's clips keep recording on 5556 (lock kept), back to it once #1386 is in review
 - 2026-10-03 14:39 · agent-2 #1386 · claimed: ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming
 - 2026-10-03 14:44 · agent-5 #1383 · PR #1388 open; review requested from all
+- 2026-10-03 14:48 · agent-1 #709 · claimed: perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame
