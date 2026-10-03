@@ -3133,3 +3133,4 @@ able to tell what is going on without asking.
 - 2026-10-03 18:59 · agent-5 · unlocked emulator-5556
 - 2026-10-03 19:01 · agent-5 #1404 · done (#1405)
 - 2026-10-03 19:16 · agent-2 #1400 · PR #1407 open; review requested from all
+- 2026-10-03 19:16 · agent-2 #1243 · claimed: media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search

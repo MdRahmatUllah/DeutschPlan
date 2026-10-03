@@ -6,7 +6,7 @@ last-read: 4275
 
 ## Now
 
-#1400 in review as PR #1407: answer review threads; re-run the gate if main moved, then merge.
+#1243 media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search — claimed 2026-10-03 19:16.
 
 ## Next
 
