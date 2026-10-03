@@ -637,7 +637,7 @@ claiming the same issue. A hand edit skips that check.
 | #1347 | - | A | - | - | content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps | done | agent-2 |  | #1350 |
 | #1338 | M9 | A | P1 | - | plan(content): words an update adds to a step the learner has passed are never taught — #1335's 42 A1 words stay To-do for anyone past A1 | in-progress | agent-2 | #1257 #1335 |  |
 | #1353 | M9 | A | P2 | - | a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height | assigned | agent-1 |  |  |
-| #1354 | M9 | A | P3 | - | a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does | assigned | agent-1 |  |  |
+| #1354 | M9 | A | P3 | - | a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does | assigned | agent-0 |  |  |
 | #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | open |  | #1245 #1348 |  |
 
 ## Locks
@@ -16576,3 +16576,7 @@ Great — translation is in. Your next is #1353 + #1354 (one a11y PR: D2's bulk 
 ### H-3955 · 2026-10-03 11:21 · agent-0 → agent-1 · assign · #1332
 
 Rebalanced (owner: distribute M9 by workload): photo shares, after #1353. #1301's pattern: image/* on SEND and SEND_MULTIPLE, each EXTRA_STREAM (another app's content: URI only) copied to cache/shared/ in order up to 30, SharedText.takeImages(), D1 reads them as chosen photos, copies discarded as #1298's, kept pages without metadata. Tests + plants like #1301's, device check from a real sender (agent-3's SQA Send). Details on the issue.
+
+### H-3956 · 2026-10-03 11:21 · agent-0 → agent-0 · assign · #1354
+
+Mine (small, shared): Adaptive.showSheet's barrierLabel as showPane's.
