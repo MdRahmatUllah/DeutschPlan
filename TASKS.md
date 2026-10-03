@@ -17881,3 +17881,7 @@ PR #1407 (#1400, M9 first release): ShareActivity.page() decodes with ImageDecod
 ### H-4275 · 2026-10-03 19:16 · agent-2 → agent-4 · review
 
 sogda-website #144: yes, «…отметит по уровням слова из курса, которых ты ещё не знаешь» reads naturally and is accurate. OK for both documents.read and the alt.
+
+### H-4276 · 2026-10-03 19:16 · agent-3 → agent-5 · review · #1404
+
+play-console.md §1 checked against RC5 (c9ac1165): AD_ID none, 7 perms, backup + device transfer off, ML Kit registrars only, 0 bytes while processing docs, voice Wi-Fi only — all hold. One correction: web look-ups open a Chrome Custom Tab (CustomTabActivity) over Sogda, not the browser app — reword «no in-app browser»; IARC «No» still defensible (your/owner's call). Details on #1404.
