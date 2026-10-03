@@ -465,13 +465,17 @@ class DocImportRoute extends GoRouteData with $DocImportRoute {
 
 /// D2 · The words in your text (#1230): D1's end, and D3's row.
 class DocWordsRoute extends GoRouteData with $DocWordsRoute {
-  const DocWordsRoute({required this.id});
+  const DocWordsRoute({required this.id, this.cut});
 
   final int id;
 
+  /// What D1 cut (FR-D1-02, #1320): `text` past 20,000 characters, `pages`
+  /// past 30. D2 says so once it's open: D1's own note went with D1.
+  final String? cut;
+
   /// D1's end: D2 takes its place, so back returns to the search.
-  static void instead(BuildContext context, int id) =>
-      context.pushReplacement(DocWordsRoute(id: id).location);
+  static void instead(BuildContext context, int id, {String? cut}) =>
+      context.pushReplacement(DocWordsRoute(id: id, cut: cut).location);
 
   /// D3's row: pushed over D3, so back returns to the list.
   static void open(BuildContext context, int id) =>
@@ -479,7 +483,7 @@ class DocWordsRoute extends GoRouteData with $DocWordsRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      DocWordsScreen(id: id);
+      DocWordsScreen(id: id, cut: cut);
 }
 
 /// D3 · My documents (#1295): in the search's stack with D1 and D2, so a

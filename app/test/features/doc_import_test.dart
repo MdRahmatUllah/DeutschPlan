@@ -151,10 +151,12 @@ void main() {
   });
 
   testWidgets('FR-D1-02 a text over 20,000 characters is cut at a sentence '
-      'end, with a note', (tester) async {
+      'end, with a note, which D2 says again once open (#1320)', (
+    tester,
+  ) async {
     final long = 'Das ist ein Satz. ' * 1200; // 21,600 characters
     final docs = FakeDocuments();
-    await pump(tester, docs: docs, clipboard: long);
+    final router = await pump(tester, docs: docs, clipboard: long);
 
     await tester.tap(find.text(l10n.docImportPaste));
     await tester.pumpAndSettle();
@@ -171,6 +173,7 @@ void main() {
     final body = docs.saved.single.body;
     expect(body.length, lessThanOrEqualTo(docMaxChars));
     expect(body, endsWith('Satz.'));
+    expect(router.state.uri.queryParameters['cut'], 'text');
   });
 
   testWidgets('FR-D1-04 a text that isn\'t German warns before anything is '
@@ -408,7 +411,7 @@ void main() {
         pages: <String, OcrPage>{for (final c in chosen) c: page('Seite.')},
       );
       final docs = FakeDocuments();
-      await pump(tester, docs: docs, photos: photos);
+      final router = await pump(tester, docs: docs, photos: photos);
       await tester.tap(find.text(l10n.docImportChooseImages));
       await tester.pump();
       expect(
@@ -418,6 +421,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(photos.readPaths, hasLength(30));
       expect(docs.saved.single.pageCount, 30);
+      // #1320: D2 says it again once open.
+      expect(router.state.uri.queryParameters['cut'], 'pages');
     });
 
     testWidgets('photos with no text say so, and nothing is saved', (
