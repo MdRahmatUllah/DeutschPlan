@@ -104,7 +104,7 @@ Each week has the same shape, so the owner's time stays at about one sitting a d
 | Daily | The owner answers comments, as the maker | | | | |
 
 **The series:**
-- **Format 1** (#1241) goes through the twelve featured words, one a week.
+- **Format 1** (#1241) goes through the words in `site-facts.json`'s `featured`, one a week.
 - **Format 2** (#1242) posts the answer the day after the question.
 - **Format 3** (#1243) builds a YouTube playlist that grows for months.
 - **Formats 4 and 5** (#1244, #1245) fill the remaining slots.

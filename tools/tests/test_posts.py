@@ -41,7 +41,7 @@ def test_every_audience_fills_from_the_facts(lang):
 def test_a_draft_promise_says_so_and_a_reviewed_one_does_not():
     messaging = (posts.MARKETING / "messaging.md").read_text(encoding="utf-8")
     assert posts.audience(messaging, "en")["draft"] is False
-    assert posts.audience(messaging, "bn")["draft"] is True
+    assert posts.audience(messaging, "de")["draft"] is True  # de waits for its review; bn was reviewed (#1252)
 
 
 @pytest.mark.parametrize("week", list(posts.WEEKS))
