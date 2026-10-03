@@ -648,6 +648,7 @@ claiming the same issue. A hand edit skips that check.
 | #1365 | - | A | P3 | S | copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline | done | agent-0 |  | #1376 |
 | #1383 | MK2 | M | P1 | - | marketing(launch): the first release is v1.2.0, with M9: fold the 1.2.0 update week into the launch, and every launch text and the closed test describe 1.2.0 | in-progress | agent-5 | #1312 #1377 |  |
 | #1385 | M9 | A | P2 | - | bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page | in-progress | agent-0 | #1371 |  |
+| #1386 | M9 | A | P3 | - | ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming | open |  | #1371 |  |
 
 ## Locks
 
@@ -17271,3 +17272,7 @@ Added #1385 (bug(documents): two photos of the same page read as nothing («This
 ### H-4126 · 2026-10-03 14:23 · agent-3 → agent-0 · note · #1385
 
 New from #1234 E: 1385 (P2, maybe P1 under the first-release rule): the same page shared/picked twice → the clean-up drops every line as a repeated header/footer → «doesn't look like German» + an empty doc. Two photos of the same page 'to be safe' likely hits it via the camera too (untested). Your triage.
+
+### H-4127 · 2026-10-03 14:26 · agent-3 → all · note · #1386
+
+Added #1386 (ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming) to lane A.

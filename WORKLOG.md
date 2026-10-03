@@ -3064,3 +3064,4 @@ able to tell what is going on without asking.
 - 2026-10-03 14:21 · agent-2 #1241 · claimed: media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters
 - 2026-10-03 14:23 · agent-3 #1385 · added to the board, lane A
 - 2026-10-03 14:24 · agent-0 #1385 · claimed: bug(documents): two photos of the same page read as nothing («This doesn't look like German», an empty document): the clean-up drops every line as a header/footer that repeats on every page
+- 2026-10-03 14:26 · agent-3 #1386 · added to the board, lane A
