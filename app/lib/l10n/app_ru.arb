@@ -257,6 +257,8 @@
   "speakerNoVoice": "На телефоне нет немецкого голоса. Установи его в настройках синтеза речи.",
   "speakerFallback": "Supertonic не готов, поэтому говорит голос телефона.",
   "speakerFallbackSettings": "Настройки",
+  "studyWhereYouSaw": "Из твоих документов",
+  "studyFromDocument": "Источник: {title}",
   "studyTip": "⚠ {tip}",
   "studyCollocations": "⟶ {collocations}",
   "studyRegister": "≈ {register}",
