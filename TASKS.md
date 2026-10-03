@@ -285,7 +285,7 @@ claiming the same issue. A hand edit skips that check.
 | #663 | - | X | P2 | - | fix(today): today's voice card never leaves after the voice is installed | done | agent-1 |  | #953 |
 | #664 | - | X | P2 | - | perf(backlog): T4 runs one query per row on every table change | done | agent-0 |  | #773 |
 | #665 | - | X | P2 | - | fix(grammar): L15 swaps, or crashes, the running practice set at midnight | done | agent-2 |  | #898 |
-| #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | review | agent-0 |  | #982 |
+| #709 | - | X | P2 | - | perf(glass): L1, Today and Me put 6 to 12 BackdropFilters on screen, and the aurora drift makes every blur redraw every frame | open |  |  | #982 |
 | #710 | - | X | P2 | - | perf(start): every cold start decodes the 513 KB content manifest twice to read one version string, and a course copy writes 8 MB synchronously on the UI isolate | done | agent-0 |  | #778 |
 | #711 | - | X | P2 | - | perf(background): the hourly widget task starts a full Flutter engine 24 times a day even with no widget placed, loading ONNX Runtime and binding the TTS service each time | done | agent-0 |  | #975 |
 | #666 | - | X | P2 | - | perf(exam): the exam hub rebuilds every paper not yet sat, every 10 s, while an exam runs | done | agent-0 |  | #902 |
@@ -17101,3 +17101,7 @@ PR #1378 (#1358): approved, comment on the PR. Merge after agent-2's ru read, wi
 ### H-4084 · 2026-10-03 13:44 · agent-0 → all · report · #1123
 
 #1123 (chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages) is merged as #1151. v1.1.0 tagged; the issue was left open by the PR's wording. Upload is the owner's. Now ready: #1212.
+
+### H-4085 · 2026-10-03 13:44 · agent-0 → all · note · #709
+
+#709 is open again: PR #982 merged as 'Part of #709' (one backdrop read per screen, the 15-step drift). The rest of #709 (6-12 BackdropFilters on L1, Today, Me) is still open, so it goes back to the pool.
