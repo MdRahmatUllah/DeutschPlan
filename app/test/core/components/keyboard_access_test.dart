@@ -439,6 +439,7 @@ void main() {
       'lib/features/learn/grammar_topic_screen.dart',
       'lib/features/learn/grammar_practice_screen.dart',
       'lib/features/search/search_screen.dart',
+      'lib/features/search/search_header.dart',
       'lib/features/words/word_detail_screen.dart',
     ]) {
       expect(

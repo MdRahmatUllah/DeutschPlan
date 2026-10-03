@@ -2,7 +2,7 @@ name: sogda
 description: "An exam-structured, fully offline German study plan from A1.1 to C2.2."
 publish_to: 'none'
 
-version: 1.1.0+4
+version: 1.2.0+10
 
 environment:
   sdk: ^3.13.0
@@ -101,6 +101,16 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   # riverpod_lint 3.1.4+ is a native analyzer plugin; it no longer needs custom_lint
   riverpod_lint: ^3.1.9
+
+# #1409: path_provider_android 2.3 resolves its directories through JNI
+# (package:jni), synchronously on the calling thread. With Flutter's merged
+# platform and UI threads that's the main thread, inside whatever platform
+# message is running: an RC5 ANR hung there, in a window-focus change. 2.2.23
+# is the last release on platform channels, and nothing else here calls JNI
+# from Dart. Lift the pin once path_provider_android's JNI path is fixed
+# upstream (or Sogda resolves its directories off the main thread).
+dependency_overrides:
+  path_provider_android: 2.2.23
 
 # llamadart's native-assets hook bundles only llama.cpp's CPU backend (ADR 27,
 # back with ADR 30). Hy-MT2 runs on the CPU; by default the hook also ships the

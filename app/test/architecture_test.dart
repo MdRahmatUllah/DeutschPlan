@@ -847,6 +847,19 @@ void main() {
     );
   });
 
+  test('#1409 nothing in the app calls JNI from Dart', () {
+    // package:jni calls Java synchronously on the calling thread, which with
+    // Flutter's merged threads is the main one, inside whatever platform
+    // message is running: an RC5 ANR hung there (path_provider_android 2.3,
+    // pinned to 2.2.23 in pubspec.yaml's dependency_overrides).
+    final lock = File('pubspec.lock').readAsStringSync();
+    expect(
+      RegExp(r'^  jni(_flutter)?:$', multiLine: true).hasMatch(lock),
+      isFalse,
+      reason: 'package:jni is back in the lockfile: see #1409',
+    );
+  });
+
   test('#706 every business rule is named by a test', () {
     // testing.md: test names carry FR/BR ids. Not every name can (an issue
     // number serves where no rule applies), but no rule goes untested by
