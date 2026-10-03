@@ -34,6 +34,7 @@ from content_manifest import (
     write_manifest,
 )
 from content_writer import BuildInputs, build
+import additions_workbook
 from pipeline_steps import (
     GRAMMAR_PARTS,
     GRAMMAR_TEXT_FIELDS,
@@ -44,6 +45,7 @@ from pipeline_steps import (
     gate_languages,
     assign_tags,
     LEVELS,
+    week_of,
     check_formula_prefixes,
     comma_lists,
     read_tips,
@@ -237,6 +239,14 @@ class Manifest:
     #: entry's `without:` (#714). B1 has no Collocations column, and that is
     #: the book, not a rename.
     without: dict[str, set[str]] = field(default_factory=dict)
+
+
+def refresh_additions(manifest: Manifest) -> None:
+    """#1257: the additions workbook is the YAML's, written afresh by every
+    build that reads it, so a YAML edit can't ship stale (agent-1, #1335)."""
+    out = additions_workbook.OUT.resolve()
+    if out in (book.resolve() for book in manifest.workbooks) and additions_workbook.main(["--out", str(out)]):
+        raise PipelineError("content/additions/*.yaml has problems (above)")
 
 
 def read_manifest(path: Path) -> Manifest:
@@ -754,8 +764,13 @@ def derive(
         file=sys.stderr,
     )
 
-    # seq is the reading order across every workbook; seq_in_sublevel is what
-    # the step screen lists by.
+    # seq is the reading order across every workbook, each level's words in
+    # week order (#1257): a word the additions workbook brings takes its
+    # week's place among the trackers', whose rows are in that order already,
+    # so none of theirs moves. A stable sort: a week keeps its reading order.
+    # A word with no week sits in week 1, as its step does (agent-1, #1335).
+    # seq_in_sublevel is what the step screen lists by.
+    words.sort(key=lambda w: (LEVELS.index(w.level), week_of(w)))
     per_step: dict[str, int] = {}
     for index, word in enumerate(words, start=1):
         word.seq = index
@@ -1050,6 +1065,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         manifest = read_manifest(args.manifest)
+        refresh_additions(manifest)
         previous = previous_build(args.previous)
         sources = read_sources(manifest, args.allow_missing_columns)
         correct(sources, read_corrections(manifest.corrections))

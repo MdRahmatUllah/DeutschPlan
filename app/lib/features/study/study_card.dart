@@ -14,7 +14,8 @@ import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/core/typography/sg_text.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
-import 'package:sogda/data/repositories/word_repository.dart' show customId;
+import 'package:sogda/data/repositories/word_repository.dart'
+    show OwnSentence, customId;
 import 'package:sogda/features/study/study_back.dart';
 import 'package:sogda/features/words/speak.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
@@ -294,6 +295,9 @@ class _StudyWordCardState extends ConsumerState<StudyWordCard> {
                   pronKeySeen: settings.read(SettingKeys.pronKeySeen),
                   extras: extras,
                   updated: updated,
+                  mine:
+                      ref.watch(wordContextsProvider(word.uid)).value ??
+                      const <OwnSentence>[],
                   onPlay: (sentence) => unawaited(_speak(text: sentence)),
                 ),
               ),

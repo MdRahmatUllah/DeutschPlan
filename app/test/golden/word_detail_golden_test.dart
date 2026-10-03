@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart';
 import 'package:sogda/core/providers/app_providers.dart';
@@ -6,6 +7,8 @@ import 'package:sogda/core/theme/aurora_backdrop.dart';
 import 'package:sogda/core/theme/sg_tokens.dart';
 import 'package:sogda/data/repositories/course_meanings.dart';
 import 'package:sogda/data/repositories/meaning_choice.dart';
+import 'package:sogda/data/repositories/word_repository.dart' show OwnSentence;
+import 'package:sogda/features/study/study_back.dart' show wordContextsProvider;
 import 'package:sogda/features/words/word_detail_screen.dart';
 
 import '../features/word_fixtures.dart';
@@ -117,6 +120,32 @@ void main() {
     devices: <GoldenDevice>[GoldenDevice.phone],
     overrides: overrides(),
     builder: (_) => const WordDetailScreen(uid: 'uid-strasse'),
+  );
+
+  // #1232: the learner's own sentences, under the course's examples.
+  goldenTest(
+    'word_detail_own',
+    devices: <GoldenDevice>[GoldenDevice.phone],
+    overrides: <Override>[
+      ...overrides(),
+      wordContextsProvider.overrideWith(
+        (ref, uid) async => const <OwnSentence>[
+          (
+            sentence: 'Die Straße vor dem Amt ist neu.',
+            document: 'Mietvertrag',
+          ),
+          (sentence: 'Die Straße war am Montag gesperrt.', document: null),
+        ],
+      ),
+    ],
+    builder: (_) => const WordDetailScreen(uid: 'uid-strasse'),
+    act: (tester) async {
+      await tester.scrollUntilVisible(
+        find.text('Die Straße war am Montag gesperrt.'),
+        200,
+      );
+      await tester.pumpAndSettle();
+    },
   );
 }
 
