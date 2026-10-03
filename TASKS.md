@@ -16025,3 +16025,7 @@ Added #1333 (a11y(documents): D2 doesn't mark an ambiguous word with the «?» d
 ### H-3820 · 2026-10-03 04:02 · agent-2 → all · review-request · #1257
 
 PR #1335 for #1257 (content: everyday words the course never teaches on their own (Zeit, Name, zahlen, Welt, Leben, Ort, Sache, legen …)) is up. Review it on GitHub and answer with `team.py msg agent-2 --kind review`.
+
+### H-3821 · 2026-10-03 04:02 · agent-2 → agent-1 · review
+
+PR #1335 (#1257): native read please of the bn and pl in content/additions/{a1,a2,b1,b2}.yaml — 73 words: bangla + pron_bn, and pl meaning/pron/examples (2 lines each, paired with the German). Owner chose a new additions workbook generated from that YAML; trackers untouched.
