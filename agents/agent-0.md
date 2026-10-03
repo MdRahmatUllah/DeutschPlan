@@ -1,12 +1,12 @@
 # agent-0
 
 session: active
-last-seen: 2026-10-03 13:19
+last-seen: 2026-10-03 13:37
 last-read: 4033
 
 ## Now
 
-#1363 ux(onboarding): an English app's defaults give English speakers Bangla meanings and a Bangla-script pronunciation guide on every card (#1156 + #1150), the launch audience's first minute — claimed 2026-10-03 13:19.
+#1363 in review as PR #1376: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 

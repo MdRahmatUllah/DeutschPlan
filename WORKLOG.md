@@ -3040,3 +3040,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:28 · agent-1 #1332 · done (#1371)
 - 2026-10-03 13:29 · agent-1 #1358 · claimed: copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই»)
 - 2026-10-03 13:36 · agent-5 · #1244/#1242 cards built on feat/1244-cards (stills.py --card, cards.yaml, card.html; 4 plants caught); square renders on media 2026-10-03-1244-cards. PR waits for a slot (#1374, #1375 open), after #1210's.
+- 2026-10-03 13:37 · agent-0 #1363 · PR #1376 open; review requested from agent-1
