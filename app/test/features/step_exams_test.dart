@@ -15,6 +15,7 @@ import 'package:sogda/features/today/today_view.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/main.dart'
     show appLocalizationsDelegates, supportedLocales;
+import 'package:sogda/router/routes.dart' show SettingsRoute;
 
 import 'exam_fixtures.dart';
 import 'today_fixtures.dart';
@@ -117,7 +118,7 @@ void main() {
                 path: '/exam/:attemptId',
                 builder: (_, state) => away(state),
               ),
-              for (final path in <String>['/study', '/today'])
+              for (final path in <String>['/study', '/today', '/me/settings'])
                 GoRoute(path: path, builder: (_, state) => away(state)),
             ],
           ),
@@ -439,7 +440,7 @@ void main() {
     ) async {
       await pump(tester, progress: locked(), hubPending: true);
       expect(find.text(l10n.examHubUnlocksWhen(90, 'A1.2')), findsOneWidget);
-      expect(find.textContaining(l10n.examHubThreshold), findsOneWidget);
+      expect(find.text(l10n.examUnlockLower), findsOneWidget);
     });
 
     testWidgets('Study now only on the step being studied', (tester) async {
@@ -484,17 +485,15 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets('the panel says where the threshold is changed', (
-      tester,
-    ) async {
+    testWidgets('#1364 a locked hub offers to lower the unlock threshold: '
+        "a tap opens M3 at its row; an unlocked hub doesn't", (tester) async {
       await pump(tester, progress: locked());
-      expect(
-        find.text('${l10n.examHubDisclaimer(60)} ${l10n.examHubThreshold}'),
-        findsOneWidget,
-      );
+      await tester.tap(find.text(l10n.examUnlockLower));
+      await tester.pumpAndSettle();
+      expect(went, const SettingsRoute(row: SettingsRoute.examUnlock).location);
 
       await pump(tester);
-      expect(find.textContaining(l10n.examHubThreshold), findsNothing);
+      expect(find.text(l10n.examUnlockLower), findsNothing);
     });
   });
 

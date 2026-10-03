@@ -464,7 +464,7 @@
   "examHubIntroduced": "Wprowadzone słowa: {introduced} z {target}",
   "examHubDaysAt": "{days, plural, one{ok. {days} dzień po {pace} dziennie} few{ok. {days} dni po {pace} dziennie} many{ok. {days} dni po {pace} dziennie} other{ok. {days} dni po {pace} dziennie}}",
   "examHubStudyNow": "Ucz się teraz",
-  "examHubThreshold": "Próg odblokowania zmienisz w Ustawieniach.",
+  "examUnlockLower": "Obniż próg odblokowania",
   "examHubStart": "Zacznij",
   "examHubResume": "Wznów",
   "examHubContents": "Co zawierają te egzaminy",

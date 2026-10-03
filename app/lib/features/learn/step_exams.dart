@@ -386,10 +386,7 @@ class ExamContents extends StatelessWidget {
           SgText(sections, role: SgTextRole.label, weight: 400),
           const SizedBox(height: 6),
           SgText(
-            <String>[
-              l10n.examHubDisclaimer(passPercent),
-              if (locked) l10n.examHubThreshold,
-            ].join(' '),
+            l10n.examHubDisclaimer(passPercent),
             role: SgTextRole.caption,
             color: tokens.color.textSecondary,
           ),
@@ -522,6 +519,21 @@ class LockedExams extends ConsumerWidget {
               ),
             ),
           ],
+          // #1364 (the owner): try one now, a tap from the setting that
+          // locks them, on every locked step: the threshold is all steps'.
+          // Its own node, as *Study now*'s.
+          const SizedBox(height: 4),
+          Semantics(
+            container: true,
+            child: SgButton(
+              label: l10n.examUnlockLower,
+              kind: SgButtonKind.text,
+              onColour: ink,
+              onPressed: () => context.jumpToTab(
+                const SettingsRoute(row: SettingsRoute.examUnlock),
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -464,7 +464,7 @@
   "examHubIntroduced": "Пройдено слов: {introduced} из {target}",
   "examHubDaysAt": "{days, plural, one{около {days} дня по {pace} в день} few{около {days} дней по {pace} в день} many{около {days} дней по {pace} в день} other{около {days} дня по {pace} в день}}",
   "examHubStudyNow": "Заниматься",
-  "examHubThreshold": "Порог открытия можно изменить в настройках.",
+  "examUnlockLower": "Снизить порог открытия",
   "examHubStart": "Начать",
   "examHubResume": "Продолжить",
   "examHubContents": "Что входит в экзамены",
