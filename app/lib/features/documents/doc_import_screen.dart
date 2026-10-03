@@ -22,7 +22,7 @@ import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
 import 'package:sogda/services/pdf_text.dart';
 
-/// D1, Learn from a document (`docs/04-screens/planned/doc-import.md`):
+/// D1, Learn from a document (`docs/04-screens/doc-import.md`):
 /// text in, pasted or shared from another app (#1227), or photographed and
 /// read on the phone (#1229), or a PDF's text layer (#1228).
 class DocImportScreen extends ConsumerStatefulWidget {

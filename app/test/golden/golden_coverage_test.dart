@@ -15,6 +15,8 @@ void main() {
     'categories': <String>['categories', 'category_words'],
     'compare': <String>['compare'],
     'day-complete': <String>['day_complete'],
+    'doc-import': <String>['doc_import'],
+    'doc-words': <String>['doc_words'],
     'exam-hub': <String>['step_detail'],
     'exam-results': <String>['exam_results', 'exam_review'],
     'exam-runner': <String>['exam_runner', 'exam_intro'],
@@ -26,6 +28,7 @@ void main() {
     'learn': <String>['learn'],
     'me': <String>['me'],
     'model-manager': <String>['model_manager'],
+    'my-documents': <String>['my_documents'],
     'onboarding': <String>[
       'onboarding_welcome',
       'onboarding_meaning',

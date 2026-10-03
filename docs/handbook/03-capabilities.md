@@ -126,7 +126,7 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
   have labels, verdicts have icons and words. D2's level marks are a fill and
   an ink underline, with the level named on the card; ink on every level's
   fill is at least 6.4:1 in all eight canvases
-  ([`doc-words.md`](../04-screens/planned/doc-words.md)).
+  ([`doc-words.md`](../04-screens/doc-words.md)).
 - **Alternatives.** Every swipe has a button. Timers can be paused or turned
   off. Listening questions can be switched off in Settings. Every sound has
   its text on screen.
@@ -322,7 +322,7 @@ v1.2.0 adds no permission: *Take photos* opens the phone's own camera app
 and *Choose images* the system photo picker (both through `image_picker`),
 so Sogda holds neither the camera nor the gallery. A shared or chosen PDF
 is read from Sogda's own copy in its cache, deleted once its text is out
-([`doc-import.md`](../04-screens/planned/doc-import.md)).
+([`doc-import.md`](../04-screens/doc-import.md)).
 
 ## Background behaviour
 

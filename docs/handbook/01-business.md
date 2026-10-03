@@ -85,7 +85,7 @@ In numbers, at v1.0.1:
 
 v1.2.0 adds two things on the same terms:
 
-- **The learner's own German** ([`doc-import.md`](../04-screens/planned/doc-import.md)).
+- **The learner's own German** ([`doc-import.md`](../04-screens/doc-import.md)).
   Pasted, shared from another app, a PDF of up to 30 pages, or photographed:
   up to 20,000 characters a document (BR-DOC-02). Its words join the day
   under their own cap, 5 a day by default, on top of the course's new words
@@ -210,7 +210,7 @@ ADR.
   the first Speaking recording, notifications when the reminder is switched on
   or a model download starts. v1.2.0 adds none: *Take photos* opens the
   phone's camera app and *Choose images* the system photo picker, so Sogda
-  holds neither ([`doc-import.md`](../04-screens/planned/doc-import.md),
+  holds neither ([`doc-import.md`](../04-screens/doc-import.md),
   *States*). The full list is in
   [chapter 3](03-capabilities.md#privacy-and-permissions).
 

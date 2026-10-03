@@ -8,8 +8,7 @@ search and the learner's own words, the learner's own documents (v1.2.0), Me
 that reach outside the app. Each feature names its screen id (S1, T2, L12,
 D2…) and links to its spec, which has the full layout, functional
 requirements (FR-*), business rules (BR-*) and states. Every screen in the
-route table is built: none is a placeholder. The three document screens'
-specs are still in [`04-screens/planned/`](../04-screens/planned/README.md).
+route table is built: none is a placeholder.
 
 > The detailed specs in [`docs/`](../README.md) are the source of truth. If
 > anything here disagrees with them, the spec wins and this page is wrong.
@@ -56,9 +55,9 @@ on tablets) and W2 compare.
 | L13 / L14 | Exam results · review | [`exam-results.md`](../04-screens/exam-results.md) |
 | R1 | Search | [`search.md`](../04-screens/search.md) |
 | R2 | Add / edit my word | [`add-word.md`](../04-screens/add-word.md) |
-| D1 | Learn from a document | [`doc-import.md`](../04-screens/planned/doc-import.md) |
-| D2 | The words in your text | [`doc-words.md`](../04-screens/planned/doc-words.md) |
-| D3 | My documents | [`my-documents.md`](../04-screens/planned/my-documents.md) |
+| D1 | Learn from a document | [`doc-import.md`](../04-screens/doc-import.md) |
+| D2 | The words in your text | [`doc-words.md`](../04-screens/doc-words.md) |
+| D3 | My documents | [`my-documents.md`](../04-screens/my-documents.md) |
 | W1 | Word detail | [`word-detail.md`](../04-screens/word-detail.md) |
 | W2 | Compare words | [`compare.md`](../04-screens/compare.md) |
 | M1 | Me | [`me.md`](../04-screens/me.md) |
@@ -469,7 +468,7 @@ interrupted: a toast says «Finish the exam first, then share it again.»
 - **The title** is the text's first line with a letter in it, passing over
   a letter's salutation, or "Text of 2 Oct"; D2 can change it.
 
-Spec: [`doc-import.md`](../04-screens/planned/doc-import.md).
+Spec: [`doc-import.md`](../04-screens/doc-import.md).
 
 ### The words in your text · D2
 
@@ -511,7 +510,7 @@ languages, and the document's sentence with the word in bold.
 A document reopened from D3 is matched again, so its marks follow what the
 learner has learnt since, and what was added stays added (FR-D2-07). With
 nothing new: "You know every word in this text". Spec:
-[`doc-words.md`](../04-screens/planned/doc-words.md).
+[`doc-words.md`](../04-screens/doc-words.md).
 
 ### My documents · D3
 
@@ -523,7 +522,7 @@ found, never the words or their sentences (FR-D3-02). *New document* is at
 the top, and a storage line ("4 documents · 18 MB (images)") with *Settings*
 at the bottom. D3 sits in the Search tab with D1 and D2, reached from R1 and
 from Me's *My documents · N*. Spec:
-[`my-documents.md`](../04-screens/planned/my-documents.md).
+[`my-documents.md`](../04-screens/my-documents.md).
 
 ### Document words in the plan
 

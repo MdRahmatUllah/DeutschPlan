@@ -122,4 +122,4 @@ The result is labelled *machine-translated* (`custom_words.mt = 1`) and can be e
 **The shared fixtures,** in `app/test/fixtures/documents/`, written or photographed by the team (no real person's document). The unit tests and SQA's device pass (#1234) use the same files:
 - `corpus/`: the six texts, the held-out seventh and SQA's three held-out ones (#1267), each with a `.labels.json` of its course words, plus `english.txt` and `bangla.txt` (the not-German check, #1225);
 - `text_layer.pdf` and `scanned.pdf` (the same letter, with and without a text layer);
-- `photo_1.jpg`, `photo_2.jpg` and `photo_blurred.jpg`: a printed team letter, the last one deliberately blurred (FR-D1-03).
+- No photo files: `ocr_test` builds its pages in code, a sharp one and a blurred one, for FR-D1-03's confidence check, and #1229's on-device check drew a letter sharp, lightly and heavily blurred.
