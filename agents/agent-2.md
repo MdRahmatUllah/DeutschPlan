@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-03 04:20
+last-seen: 2026-10-03 04:21
 last-read: 3823
 
 ## Now
 
-#1257 in review as PR #1335: answer review threads; re-run the gate if main moved, then merge.
+#1206 media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command — claimed 2026-10-03 04:21.
 
 ## Next
 
