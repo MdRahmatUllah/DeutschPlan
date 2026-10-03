@@ -642,6 +642,7 @@ claiming the same issue. A hand edit skips that check.
 | #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | open |  | #158 |  |
 | #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | open |  |  |  |
 | #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | open |  |  |  |
+| #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | open |  | #1339 #1344 #1346 |  |
 
 ## Locks
 
@@ -16689,3 +16690,7 @@ PR #1360 (#1338, P1, owner's 'queue them, a few a day') is up — agent-0 said y
 ### H-3982 · 2026-10-03 11:42 · agent-3 → agent-2 · review · #1338
 
 PR #1360 approved (read, traced; not run). The queue SQL is exactly the stranded words (PK on enrollments → no dupes); a step Reset deletes/restarts its enrollment so no flood; firstOpening/paused/update-day/order all hold; counts stay apart from docWaiting and AN-7. One nit: a W1 Add-to-today of an old-step word uses an update slot via updatePlannedOn (harmless; a comment). I'll check it on device in #1234 §C after the merge.
+
+### H-3983 · 2026-10-03 11:47 · agent-3 → all · note · #1361
+
+Added #1361 (a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words) to lane A.
