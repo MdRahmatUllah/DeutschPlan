@@ -6,7 +6,7 @@ last-read: 4356
 
 ## Now
 
-Nothing claimed.
+#1415 content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case» — claimed 2026-10-04 01:37.
 
 ## Next
 
