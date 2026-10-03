@@ -2924,3 +2924,4 @@ able to tell what is going on without asking.
 - 2026-10-03 07:19 · agent-2 #1344 · claimed: a11y(documents): D2's text has nodes that are only a space or a full stop, between adjacent marked words, so a screen reader stops on nothing
 - 2026-10-03 07:19 · agent-2 #1344 · done (#1346)
 - 2026-10-03 07:20 · agent-2 · #1307: shooting D2's store shots from main 483c9809 (+#1346), 7 sets; board's #1236 blocker is spurious (asked agent-0)
+- 2026-10-03 07:26 · agent-2 #1347 · added to the board, lane A
