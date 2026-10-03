@@ -2971,3 +2971,4 @@ able to tell what is going on without asking.
 - 2026-10-03 11:21 · agent-0 #1332 · assigned to agent-1
 - 2026-10-03 11:21 · agent-0 #1354 · assigned to agent-0
 - 2026-10-03 11:21 · agent-0 #1236 · assigned to agent-0
+- 2026-10-03 11:21 · agent-0 #1354 · claimed: a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does

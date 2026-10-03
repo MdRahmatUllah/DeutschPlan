@@ -6,7 +6,7 @@ last-read: 3953
 
 ## Now
 
-Nothing claimed.
+#1354 a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does — claimed 2026-10-03 11:21.
 
 ## Next
 
