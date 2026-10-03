@@ -358,6 +358,29 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
         final words = view.match.words;
         int count(DocClass c) => words.where((w) => w.docClass == c).length;
         final fresh = _fresh(view);
+        final bulk = fresh.isEmpty
+            ? null
+            : _BulkBar(
+                level: view.match.level,
+                fresh: fresh,
+                plannedToday: view.plannedToday,
+                slotsLeft: math.max(
+                  0,
+                  view.slotsLeft -
+                      (identical(view, _countedOn) ? _startedToday : 0),
+                ),
+                cap: ref
+                    .watch(settingsSourceProvider)
+                    .read(SettingKeys.docDailyCap),
+                hold: view.hold,
+                busy: _busy,
+                onAdd: (words) => unawaited(_add(view, words)),
+              );
+        // #1353: past 130 % text the bar is the text's last item: pinned, at
+        // 200 % it took two thirds of the screen and hid the text under the
+        // title. The text is read first, then what to add.
+        final pinned = !SgScript.large(context);
+        if (pinned) bar = bulk;
         body = _Text(
           view: view,
           showProbable: showProbable,
@@ -393,25 +416,8 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
                 fresh.isEmpty &&
                 !words.any((w) => w.docClass == DocClass.outside),
           ),
+          footer: pinned ? null : bulk,
         );
-        if (fresh.isNotEmpty) {
-          bar = _BulkBar(
-            level: view.match.level,
-            fresh: fresh,
-            plannedToday: view.plannedToday,
-            slotsLeft: math.max(
-              0,
-              view.slotsLeft -
-                  (identical(view, _countedOn) ? _startedToday : 0),
-            ),
-            cap: ref
-                .watch(settingsSourceProvider)
-                .read(SettingKeys.docDailyCap),
-            hold: view.hold,
-            busy: _busy,
-            onAdd: (words) => unawaited(_add(view, words)),
-          );
-        }
       case AsyncData():
         body = Center(child: SgText(l10n.docWordsGone, role: SgTextRole.body));
       case AsyncError():
@@ -550,6 +556,7 @@ class _Text extends StatelessWidget {
     required this.onLongPress,
     required this.header,
     required this.controls,
+    this.footer,
   });
 
   final DocWordsView view;
@@ -560,6 +567,9 @@ class _Text extends StatelessWidget {
   final ValueChanged<DocWord> onLongPress;
   final Widget header;
   final Widget controls;
+
+  /// The bulk bar, past 130 % text (#1353).
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -578,10 +588,11 @@ class _Text extends StatelessWidget {
     ]..sort((a, b) => a.$1.compareTo(b.$1));
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 24),
-      itemCount: paragraphs.length + 2,
+      itemCount: paragraphs.length + (footer == null ? 2 : 3),
       itemBuilder: (context, i) {
         if (i == 0) return header;
         if (i == 1) return controls;
+        if (i == paragraphs.length + 2) return footer;
         final (from, to) = paragraphs[i - 2];
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -939,7 +950,8 @@ class _RenderDocParagraph extends RenderParagraph {
   }
 }
 
-/// The bulk bar (FR-D2-03), pinned at the foot.
+/// The bulk bar (FR-D2-03), pinned at the foot; past 130 % text, after the
+/// text (#1353).
 class _BulkBar extends StatelessWidget {
   const _BulkBar({
     required this.level,

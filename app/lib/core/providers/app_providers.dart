@@ -715,6 +715,7 @@ PlanEngine planEngine(Ref ref) {
     SettingKeys.autoAdvance,
     SettingKeys.pauseNewWhenBacklog,
     SettingKeys.docDailyCap,
+    SettingKeys.updateDailyCap,
   });
   return PlanEngine(
     store: DriftPlanStore(ref.watch(appDatabaseProvider), settings),
@@ -723,6 +724,7 @@ PlanEngine planEngine(Ref ref) {
     autoAdvance: settings.read(SettingKeys.autoAdvance),
     pauseNewWhenBacklog: settings.read(SettingKeys.pauseNewWhenBacklog),
     docDailyCap: settings.read(SettingKeys.docDailyCap),
+    updateDailyCap: settings.read(SettingKeys.updateDailyCap),
   );
 }
 

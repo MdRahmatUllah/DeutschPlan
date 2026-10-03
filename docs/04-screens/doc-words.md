@@ -28,8 +28,8 @@ The ink underline is what makes a word marked, and the fill says its level, whic
    - words outside the course get a dotted underline;
    - probably-known words are dimmed when the switch is on, and plain otherwise;
    - a word that appears several times is marked each time, and its card lists every sentence.
-3. **The bulk bar,** pinned at the bottom:
-   - *Add my level* and *Add my level and one above*, side by side (one height for the pair), stacked above 100 % text. A button that would add what *Add all new* adds is left out (#1294);
+3. **The bulk bar,** pinned at the bottom; past 130 % text, after the text instead (#1353):
+   - *Add my level* and *Add my level and one above*, side by side (one height for the pair), stacked when a label doesn't fit half a row on one line (large text, or a long label: Bangla and Polish already at 100 %). A button that would add what *Add all new* adds is left out (#1294);
    - *Add all new*, and the number each would add;
    - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes. This visit's adds that start today take their slots off it (#1294), and so do the words already waiting in the queue, which today's free slots take first (BR-PLAN-11, #1341): after the backlog pause lifts mid-day, those fill today, and the note says the rest start tomorrow or later. When no day can be said, it says the words wait instead (#1334, `PlanEngine.docQueueHold`, the same rule as *Add*'s): at a cap of 0 (the setting, read at once: no later day takes them), "0 a day from documents: the other 16 wait in your queue until you raise it in Settings"; under the backlog pause (BR-PLAN-07), "Backlog first: what you add waits in your queue until it's cleared";
    - an ambiguous word is in no bulk action: its card asks which it is.
@@ -84,7 +84,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 
 **Developer notes.**
 - The text is built lazily, a paragraph per item of a list, so a 20,000-character text (about 3,000 words) never builds at once. Each marked word is its own semantics node, read as "Termin, new, A1", and TalkBack adds its own "Double-tap to activate", once (agent-1's review: a "double tap" in the label would repeat it). The plain text between two marked words is a node too, unless it has nothing to hear (a space or a full stop): then it has no label, and a screen reader doesn't stop on it (#1344). Only there: beside plain text (a known word, or a probably known one while hidden) such a run is part of that node, and keeps its spaces and commas, «am kommenden Montag, fällt» (#1361). `perf.py` measures the long text's first frame (`03-domain/document-matcher.md`, *Tests*).
-- The bulk bar keeps its height at 200 %, with its counts on a second line.
+- Past 130 % text (`SgScript.large`) the bulk bar is the text's last item, not pinned (#1353). Pinned at 200 %, it took two thirds of the screen, and with the title, the switch and the legend above, not a line of the document showed on opening. The text is read first, then what to add; a word's own *Add* (its card) and the long press stay where the word is. Its buttons wrap their labels and counts. The trade-off (agent-3 on #1367): on a long text the bulk actions are reached by scrolling to its end; if that matters, a jump to them from the header is the cheap next step.
 - Routes and providers are added to `navigation.md` and `state-management.md` with the code.
 
 **Tests.**

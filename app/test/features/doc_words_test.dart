@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sogda/core/adaptive/adaptive.dart' show AdaptiveSwitch;
+import 'package:sogda/core/components/sg_button.dart';
 import 'package:sogda/core/theme/app_theme.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/documents/matcher.dart';
@@ -34,6 +35,7 @@ void main() {
     WidgetTester tester,
     List<Override> overrides, {
     String location = '/search/document/7',
+    Locale? locale,
   }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
@@ -80,6 +82,7 @@ void main() {
         child: MaterialApp.router(
           routerConfig: router,
           theme: AppTheme.light(),
+          locale: locale,
           localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: supportedLocales,
         ),
@@ -813,6 +816,50 @@ void main() {
       expect(find.text(note(fresh)), findsOneWidget);
       expect(find.text(l10n.docWordsCapNote(5, fresh)), findsNothing);
       expect(find.text(l10n.docWordsCapNote(0, fresh)), findsNothing);
+    });
+  }
+
+  for (final (language, scale) in <(String, double)>[
+    ('en', 1),
+    ('bn', 2),
+    ('ru', 2),
+  ]) {
+    testWidgets('#1353 FR-D2-03 in $language at ${(scale * 100).round()} % '
+        'the text shows on opening, with the bulk bar pinned at 100 % and '
+        'after the text past 130 %', (tester) async {
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      // Three buttons and the longest note: the tallest bar.
+      await pump(
+        tester,
+        docWordsStub(plan: FakePlan(slots: 0, capZero: true)),
+        locale: Locale(language),
+      );
+      final screen = tester.view.physicalSize.height / 3;
+      final text = find.byType(ListView);
+      // The text keeps at least half the screen, its first line in it.
+      expect(tester.getSize(text).height, greaterThan(screen / 2));
+      expect(
+        wordAt(tester, 'Sehr').dy,
+        inExclusiveRange(0, tester.getBottomLeft(text).dy),
+      );
+      final buttons = find.byType(SgButton);
+      if (scale == 1) {
+        expect(buttons, findsNWidgets(3));
+        // Pinned: under the text, not in it.
+        expect(find.descendant(of: text, matching: buttons), findsNothing);
+        expect(tester.getTopLeft(buttons.first).dy, greaterThan(screen / 2));
+        return;
+      }
+      // Not pinned: after the text, its last line above the buttons.
+      expect(buttons, findsNothing);
+      await tester.drag(text, const Offset(0, -100000));
+      await tester.pumpAndSettle();
+      expect(find.descendant(of: text, matching: buttons), findsNWidgets(3));
+      expect(
+        wordAt(tester, 'Abrechnung').dy,
+        lessThan(tester.getTopLeft(buttons.first).dy),
+      );
     });
   }
 
