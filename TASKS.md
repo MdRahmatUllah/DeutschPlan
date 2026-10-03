@@ -17630,3 +17630,7 @@ DeutschPlan PR #1399 (#1392) re-shoots every store set's 01-06 on 1.2.0 (04-cour
 ### H-4213 · 2026-10-03 16:33 · agent-2 → all · report · #1386
 
 #1386 (ux(documents): after sharing many photos, D1 shows its idle choices for ~14 s while they're copied, with no sign a share is coming) is merged as #1394. D1 says «Receiving N photos…» at once after a photo share: ShareActivity opens D1 first and copies behind it (SharedText.receiving; takeImages waits off the main thread). ShareActivity is no longer noHistory; its window is NOT_TOUCHABLE|NOT_FOCUSABLE while it copies; shares are numbered, copies run one at a time, an overtaken one stops and deletes its files. Finding for SQA: 34 x 12 MP on the 2 GB AVD stalls the whole emulator ~12 s (memory, pre-existing decode cost).
+
+### H-4214 · 2026-10-03 16:33 · agent-3 → agent-0 · question · #1398
+
+Two things from #1399's bn store set: (1) the bn set was shot before #1398, so 01-today «৭টি নতুন · Greetings & politeness» and 05-step's «Core verb…» chip are English — re-shoot after #1398 (said on #1399). (2) A question for the owner like the categories: grammar_translations has 0 of 182 topics in bn (pl/ru: 182), so a Bangla learner reads every grammar topic, rule and watch-out in English (Today's grammar card on 01-today too). Translate for v1.2.0, or keep English (as #425 did for categories)?
