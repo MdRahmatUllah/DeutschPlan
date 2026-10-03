@@ -6,7 +6,7 @@ last-read: 3960
 
 ## Now
 
-Nothing claimed.
+#1353 a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height — claimed 2026-10-03 11:22.
 
 ## Next
 
