@@ -717,10 +717,13 @@ class PlanEngine {
     ...await _store.plannedOn(today, PlanKind.newWord),
   };
 
-  /// D2's cap note before *Add* (FR-D2-02, BR-PLAN-11): how many more words
-  /// [today] can take from the document queue. None on a rest day, while
-  /// the backlog pause holds (BR-PLAN-07), before setup, or with a cap of 0.
-  /// A finished step doesn't close it: document words aren't the step's.
+  /// D2's cap note before *Add* (FR-D2-02, BR-PLAN-11): how many of the
+  /// words added now [today] can still take. Today's free slots go to the
+  /// queue's oldest words first, so the ones already waiting come before
+  /// any added now (#1341): after the backlog pause lifts mid-day, say, they
+  /// fill today. None on a rest day, while the pause holds (BR-PLAN-07),
+  /// before setup, or with a cap of 0. A finished step doesn't close it:
+  /// document words aren't the step's.
   Future<int> docSlotsLeft(PlanDate today) async {
     final step = await _store.activeStep();
     if (step == null && !await _store.hasEverEnrolled()) return 0;
@@ -733,7 +736,9 @@ class PlanEngine {
         : days;
     if (!isStudyDay(today, mask) || await _isPaused(today)) return 0;
     final left =
-        await _docCapOn(today) - (await _store.docPlannedOn(today)).length;
+        await _docCapOn(today) -
+        (await _store.docPlannedOn(today)).length -
+        (await _store.docWaiting(limit: 1 << 20)).length;
     return left < 0 ? 0 : left;
   }
 
