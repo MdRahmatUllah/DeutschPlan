@@ -348,8 +348,13 @@ def holds(serial: str, agent: str) -> bool:
     from smoke import holds_device
     if serial == device.DEV_SERIAL:
         return holds_device(agent)
-    board = team.Board((team.board_checkout(agent) / "TASKS.md").read_text(encoding="utf-8"))
-    return bool(agent) and any(lock.resource == serial and lock.owner == agent for lock in board.locks)
+    # The agent's own board clone, read as it is: never cloned here (#1389),
+    # so a missing one means no lock, not a fetch of the live board.
+    tasks = team.team_root() / agent / "TASKS.md"
+    if not agent or not tasks.exists():
+        return False
+    board = team.Board(tasks.read_text(encoding="utf-8"))
+    return any(lock.resource == serial and lock.owner == agent for lock in board.locks)
 
 
 def media_root() -> Path:

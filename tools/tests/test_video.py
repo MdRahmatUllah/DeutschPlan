@@ -196,3 +196,9 @@ def test_the_serial_reaches_the_recording_1236(monkeypatch):
     monkeypatch.setattr(video, "record", lambda script, serial=None, take=None: seen.setdefault("serial", serial))
     assert video.main(["own-letter", "--record", "--serial", "emulator-5556"]) == 0
     assert seen["serial"] == "emulator-5556"
+
+
+def test_a_lock_check_never_clones_the_live_board_1389(tmp_path, monkeypatch):
+    monkeypatch.setenv("DP_TEAM_ROOT", str(tmp_path))
+    assert not video.holds("emulator-5556", "agent-3")
+    assert not (tmp_path / "agent-3").exists()

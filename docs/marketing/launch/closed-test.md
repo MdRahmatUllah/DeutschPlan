@@ -34,7 +34,7 @@ Play Console's labels are from Google's help pages (https://support.google.com/g
    - **Testers tab:** choose **Google Groups** and enter the group's address.
    - **Feedback:** the contact address from sogda.de's Impressum. It shows on the testers' opt-in page.
    - **Countries:** at least Bangladesh, Germany, Poland, and the other countries where testers live.
-4. [ ] **Build the signed AAB** with the upload key (#1123's steps, including `release_android.py --require-upload-key`).
+4. [ ] **Build the signed AAB** with the upload key (the release's steps: v1.2.0, 1.2.0+10, #1312; including `release_android.py --require-upload-key`).
 5. [ ] **Create a release on the closed track,** upload the AAB, and roll it out. Google reviews it. The opt-in link appears only once the status reads "Published".
 
 **Day 0: open the test**
@@ -164,7 +164,7 @@ The bn, pl, ru and de versions are in the launch kit (#1210). Until then, the ow
 
 ## The three messages to the group
 
-> **Day 1:** Thank you for testing Sogda! If anything looks wrong or confusing, or something's missing, write to <feedback-address>, or use Play's private feedback. The app's own *Report a problem* opens a public GitHub page, so use it only if you're happy to be seen there. Every report becomes a fix or a reply. Please stay in the test for 14 days in a row: leaving resets the count.
+> **Day 1:** Thank you for testing Sogda! Besides the course, try learning from your own German: paste or share a text, choose a PDF, or photograph a letter (*Search › Learn from a document*), and see its new words marked by level. If anything looks wrong or confusing, or something's missing, write to <feedback-address>, or use Play's private feedback. The app's own *Report a problem* opens a public GitHub page, so use it only if you're happy to be seen there. Every report becomes a fix or a reply. Please stay in the test for 14 days in a row: leaving resets the count.
 >
 > **Day 7:** Halfway there. If you've tried a mock exam, the speaking task or the voice, I'd love to hear how it went. Thank you for staying in.
 >
@@ -174,7 +174,7 @@ The bn, pl, ru and de versions are in the launch kit (#1210). Until then, the ow
 
 agent-5 keeps it from what the owner forwards. **Codes only**, never a name or an address. A report made through the app's *Report a problem* is a public GitHub issue already: log it under the tester's code and link the issue.
 
-Each entry carries what a fix needs (agent-3, #1254): what they did, what happened and what they expected; the version (*Me › About and privacy*, «Version 1.1.0 (build 4) · content 2026.09»); the phone and its Android version; and the app language with the meaning language(s), which half of 1.1.0's bugs depended on.
+Each entry carries what a fix needs (agent-3, #1254): what they did, what happened and what they expected; the version (*Me › About & privacy*, 1.2.0 (build 10) in the first release); the phone and its Android version; and the app language with the meaning language(s), which half of 1.1.0's bugs depended on.
 
 | Date | Tester | Version | Phone, Android | App / meaning languages | Where in the app | Did, happened, expected | Issue | Changed? |
 |---|---|---|---|---|---|---|---|---|
@@ -202,6 +202,7 @@ agent-5 fills these from the log on day 14; the owner checks and submits.
   - the mock exams with writing and speaking;
   - search;
   - the voice.
+  - learning from a document: paste, share, a PDF, photos, D2's marks, and *My documents* (D3).
 - **Did engagement match what you expected?** *(from the log)*
 - **How was feedback collected?** One email address on the opt-in page, Play's private feedback, and messages in the testers' group. Every report was logged, and each bug or idea became a GitHub issue.
 
@@ -213,6 +214,6 @@ agent-5 fills these from the log on day 14; the owner checks and submits.
 **About your production readiness**
 - **What changed after the test?** *(from the log: the issues fixed, with their numbers)*
 - **How did you decide it's ready?**
-  - The 1.1.0 release candidate passed SQA on an emulator in all four app languages (#1124, #1123).
+  - The release candidate, v1.2.0, passed SQA on an emulator in all four app languages (#1234; v1.1.0's was #1124).
   - Every bug from the closed test is fixed or triaged.
   - The fixes are in the build being released.
