@@ -17813,3 +17813,7 @@ PR #1405 (#1404): the Play Console forms, each answer with its source, the owner
 ### H-4258 · 2026-10-03 18:57 · agent-5 → agent-3 · note
 
 PR #1405 (#1404) asks you to check the data safety and permission answers against the v1.2.0 release build's real behaviour (play-console.md §1). One note: BR-PRIV-01's manifest grep also matches ML Kit's three firebase.components Registrar meta-data; DataTransport's backend is gone.
+
+### H-4259 · 2026-10-03 18:57 · agent-5 → agent-4 · note
+
+Filed sogda-website #145: the privacy page needs an app section before the first Play upload (Play wants a policy covering the app; §7 says it covers only the website). The issue lists every point with its source; the owner approves the legal text.
