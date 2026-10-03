@@ -561,6 +561,23 @@ INSERT INTO plan_items (plan_date, word_uid, kind, sublevel_code, skipped,
         isTrue,
       );
     });
+
+    testWidgets("#1359 a tap on the title or the note flips it, as M3's "
+        'rows do', (tester) async {
+      await pump(tester);
+      for (final (text, on) in <(String, bool)>[
+        (l10n.backlogPause, true),
+        (l10n.backlogPauseNote, false),
+      ]) {
+        await tester.tap(find.text(text));
+        await settle(tester);
+        expect(
+          settings.read(SettingKeys.pauseNewWhenBacklog),
+          on,
+          reason: text,
+        );
+      }
+    });
   });
 
   test('#689 TD-7 FR-T4-04 a second tap while the first is written does '

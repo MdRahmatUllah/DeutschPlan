@@ -97,10 +97,12 @@ FROM seed_ratings GROUP BY uid
     await db.customStatement(
       '''
 INSERT INTO enrollments
-  (sublevel_code, started_on, daily_new, study_days_mask, completed_on)
+  (sublevel_code, started_on, daily_new, study_days_mask, completed_on,
+   left_part_way)
 SELECT step, date(?1, '+' || (MIN(n) / ?3) || ' days'), ?3, ?5,
        CASE WHEN MAX(n) = ?2 * ?3 - 1 THEN NULL
-            ELSE date(?1, '+' || (MAX(n) / ?3) || ' days') END
+            ELSE date(?1, '+' || (MAX(n) / ?3) || ' days') END,
+       CASE WHEN MAX(n) = ?2 * ?3 - 1 THEN NULL ELSE 0 END
 FROM seed_words GROUP BY step
 ''',
       <Object>[...perDay, choice.studyDaysMask],
