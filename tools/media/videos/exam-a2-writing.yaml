@@ -1,0 +1,64 @@
+# #1243: format 3, "a mock-exam task in 15 seconds": A2 writing, from A2.1's
+# Mock 2, the real paper sat on emulator-5558. The learner (en, A1.1) has
+# A1.1, A2.1 and B1.1 introduced, so their mocks are open, and the attempt in
+# progress has every other answer given (the device state: the PR). The clip
+# ends on the submit, before the result screen: its score would be staged
+# (agent-0 on #1411). Captions are facts' tokens where they state a number.
+#   python tools/team.py device
+#   python tools/media/video.py exam-a2-writing --record
+locales: [en, bn, ru]
+takes:
+  en:
+    locales: [en, bn, ru]
+    prepare:
+      - "shell:am force-stop de.sogda.app"
+      - launch
+      - sleep5
+      - "tap:Learn"
+      - sleep2
+      - "tap:A2.1"
+      - sleep2
+      - "tap:Exams"
+      - sleep2
+      - "at:875,1103"
+      - sleep4
+      - "tap:Previous"
+      - sleep3
+      - "at:540,1300"
+      - sleep4
+      - "shell:input keyevent BACK"
+      - sleep2
+steps:
+  - sleep1
+  - "at:540,1300"
+  - "shell:input keyevent 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 123"
+  - "type: Heute bin ich stolz auf unser Team und lache wieder."
+  - sleep2
+  - "shell:input keyevent BACK"
+  - sleep1
+  - "at:1006,216"
+  - sleep1
+  - "at:540,2224"
+  - sleep1
+  - "at:754,1367"
+  - sleep5
+cut: [1.5, 14.4]
+captions:
+  - from: 0
+    to: 5.5
+    text:
+      en: "A2 writing: a short email with the given words"
+      bn: "A2 রাইটিং: দেওয়া শব্দগুলো দিয়ে একটি ছোট ইমেইল"
+      ru: "A2, письмо: короткое электронное письмо с заданными словами"
+  - from: 5.8
+    to: 10.2
+    text:
+      en: "The given words light up as you use them: at least {mock_exam.writing_min_words.A2} words"
+      bn: "দেওয়া শব্দ লিখলেই জ্বলে ওঠে: অন্তত {mock_exam.writing_min_words.A2}টি শব্দ"
+      ru: "Заданные слова загораются, когда ты их используешь: минимум {mock_exam.writing_min_words.A2} слов"
+  - from: 10.5
+    to: 12.9
+    text:
+      en: "Then the result, section by section"
+      bn: "তারপর ফলাফল, প্রতিটি অংশ আলাদা করে"
+      ru: "Потом — результат по каждому разделу"
