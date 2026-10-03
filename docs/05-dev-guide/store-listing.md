@@ -179,7 +179,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 
 ## Screenshots
 
-`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, eight each: the first six from the release x86_64 APK of 1.1.0+4 on emulator-5558 (wiped, API 36), English UI and English meanings, the course's own content (re-shot 2026-10-01: the 1.0 set counted 5,594 words):
+`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, eight each: the first six from the release x86_64 APK of main at 1.2.0's content (5,142 words) on emulator-5558 (a fresh install, API 36), English UI and English meanings, the course's own content (re-shot 2026-10-03, #1392: 1.1.0's set counted 5,069 words, and 1.0's 5,594):
 
 | File | Screen |
 |---|---|
@@ -213,7 +213,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 
 `store/bn-phone-light`, the same eight screens, taken the same way (the release x86_64 APK on emulator-5558, a fresh install, API 36, 1080 × 2160, the demo status bar with full Wi-Fi):
 
-- **The app language is Bangla, and the meanings are Bangla first and English second**, setup's default for a Bangla app (#1156). So *danke* shows *ধন্যবাদ* with *thanks / thank you* under it, and the Bangla-letter guide `/ডাংকে/`. The course has no Bangla example lines, grammar rules or topic names, so those show in English, as every Bangla learner sees them.
+- **The app language is Bangla, and the meanings are Bangla first and English second**, setup's default for a Bangla app (#1156). So *danke* shows *ধন্যবাদ* with *thanks / thank you* under it, and the Bangla-letter guide `/ডাংকে/`. The course has no Bangla example lines or grammar rules, so those show in English, as every Bangla learner sees them; the category names are Bangla (#1398, re-shot 2026-10-03 on #1392).
 - **Upload them** under the Bangla (bn-BD) listing. sogda.de's `/bn` shows them too (sogda-website #66).
 - **The sequence**, which gives the states the Polish set shows: onboarding with the defaults (the meanings as setup offers them, A1.1, 7 new words a day), no name, the voice card dismissed. Then:
   1. Rate the first three new cards *Good*. The fourth, *danke* (4 / 7), is `02-card-front`, and turned over it is `03-card-back`.
