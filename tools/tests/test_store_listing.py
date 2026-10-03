@@ -27,6 +27,29 @@ LIMITS = {
 }
 
 
+def plural_ru(n: int, one: str, few: str, many: str) -> str:
+    """CLDR's Russian forms: 1, 21, 101 one; 2-4, 22-24 few; the rest many."""
+    if n % 10 == 1 and n % 100 != 11:
+        return one
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return few
+    return many
+
+
+def plural_pl(n: int, one: str, few: str, many: str) -> str:
+    """CLDR's Polish forms: 1 alone one; 2-4, 22-24 few; the rest (21 too) many."""
+    if n == 1:
+        return one
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return few
+    return many
+
+
+def test_the_plural_forms_follow_cldr():
+    assert [plural_ru(n, "o", "f", "m") for n in (1, 2, 5, 11, 12, 21, 22, 25, 5142)] == list("ofmmmofmf")
+    assert [plural_pl(n, "o", "f", "m") for n in (1, 2, 5, 12, 21, 22, 5142)] == list("ofmmmff")
+
+
 def texts() -> dict[tuple[str, str], str]:
     """(language, field) -> the text under its heading (the site's facts read it too, #1174)."""
     return listing_texts(LISTING)
@@ -44,13 +67,15 @@ def test_every_field_is_there_and_fits_plays_limit_175(language):
         assert len(text) <= limit, f"{language} {field}: {len(text)} > {limit}"
 
 
-def test_the_listing_offers_no_translation_which_v1_leaves_out_175():
-    # ADR 9: Hy-MT is off in every v1.0 build.
+def test_translation_is_named_as_hymt2_on_the_phone_175_1235():
+    # v1 left translation out (ADR 9); from 1.2.0 Hy-MT2 is an optional
+    # download that runs on the phone (ADR 30, #154). Wherever the listing
+    # names translation it names Hy-MT2 too, so no text promises a cloud
+    # translator.
     for (language, field), text in texts().items():
-        assert "translat" not in text.lower(), f"{language} {field}"
-        assert "অনুবাদ" not in text, f"{language} {field}"
-        assert "tłumacz" not in text.lower(), f"{language} {field}"
-        assert "перевод" not in text.lower(), f"{language} {field}"
+        low = text.lower()
+        if any(word in low for word in ("translat", "অনুবাদ", "tłumacz", "перевод")):
+            assert "Hy-MT2" in text, f"{language} {field}"
 
 
 def test_the_counts_are_abouts_175_631_1176():
@@ -73,13 +98,24 @@ def test_the_counts_are_abouts_175_631_1176():
     bn = listing[("Bangla (bn-BD)", "Full description")]
     assert f"{words.translate(bangla)}টি শব্দ" in bn and f"{topics.translate(bangla)}টি ব্যাকরণ" in bn
     # CLDR's forms (#1194): Polish writes four digits solid, Russian groups
-    # them with a no-break space, as the app and sogda.de write it.
+    # them with a no-break space, as the app and sogda.de write it. And the
+    # noun agrees with the number (#1380): «5 142 слова», not «слов».
     plain = words.replace(",", "")
+    count = int(plain)
     pl = listing[("Polish (pl-PL)", "Full description")]
-    assert f"{plain} słów" in pl and f"{topics} tematy gramatyczne" in pl
+    pl_word = plural_pl(count, "słowo", "słowa", "słów")
+    assert f"{plain} {pl_word}," in pl and f"{topics} tematy gramatyczne" in pl
     ru = listing[("Russian (ru-RU)", "Full description")]
     grouped = words.replace(",", " ")
-    assert f"{grouped} слов" in ru and f"{topics} грамматические темы" in ru
+    ru_word = plural_ru(count, "слово", "слова", "слов")
+    assert f"{grouped} {ru_word}," in ru and f"{topics} грамматические темы" in ru
+    # And no other form after the count, anywhere in the text (#1380).
+    for text, number, forms, right in (
+        (pl, plain, ("słowo", "słowa", "słów"), pl_word),
+        (ru, grouped, ("слово", "слова", "слов"), ru_word),
+    ):
+        for wrong in set(forms) - {right}:
+            assert not re.search(rf"{number} {wrong}\b", text), f"«{number} {wrong}»"
     assert plain not in ru, "Russian groups the count: «5 069», not «5069»"
     assert words.replace(",", " ") not in ru, "a no-break space, so the count never breaks"
     # The short descriptions state the steps and the mock exams (#1176).
