@@ -45,7 +45,8 @@ class LearnerSnapshot {
   /// `word_state.status` by uid; a uid that isn't there is `todo`.
   final Map<String, String> status;
 
-  /// Every uid any day's plan has held (`plan_items`).
+  /// Every uid any day's plan has held (`plan_items`), or the update queue
+  /// holds for one (BR-CONTENT-02, #1338).
   final Set<String> everPlanned;
 
   /// *My words*, by `searchKey` of their German.

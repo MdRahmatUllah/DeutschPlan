@@ -6,6 +6,7 @@ import 'package:drift/drift.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/db/content_dao.dart';
+import 'package:sogda/data/repositories/plan_store.dart' show DriftPlanStore;
 import 'package:sogda/domain/documents/lemmatiser.dart';
 import 'package:sogda/domain/documents/matcher.dart';
 import 'package:sogda/domain/documents/photo_privacy.dart';
@@ -162,9 +163,13 @@ class DocumentRepository {
           for (final row in await _db.select(_db.wordState).get())
             row.wordUid: row.status,
         },
+        // BR-DOC-03: a word the update queue holds is planned too (#1338).
         everPlanned: <String>{
           for (final row in await planned.get())
             row.read(_db.planItems.wordUid)!,
+          for (final row
+              in await _db.customSelect(DriftPlanStore.updateQueueSql).get())
+            row.read<String>('uid'),
         },
         mine: <String>{for (final row in custom) searchKey(row.german)},
         mineUids: <String>{for (final row in custom) ?row.matchedUid},

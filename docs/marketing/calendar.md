@@ -104,7 +104,7 @@ Each week has the same shape, so the owner's time stays at about one sitting a d
 | Daily | The owner answers comments, as the maker | | | | |
 
 **The series:**
-- **Format 1** (#1241) goes through the twelve featured words, one a week.
+- **Format 1** (#1241) goes through the words in `site-facts.json`'s `featured`, one a week.
 - **Format 2** (#1242) posts the answer the day after the question.
 - **Format 3** (#1243) builds a YouTube playlist that grows for months.
 - **Formats 4 and 5** (#1244, #1245) fill the remaining slots.
@@ -115,3 +115,19 @@ Each week has the same shape, so the owner's time stays at about one sitting a d
 - **Week 4:** the Bangla guide, if germanprobashe.com publishes it (#1246); the owner shares it in BSAAG, as its rule 8 invites.
 - **Week 6:** the review. `results.md` decides which channels keep their slots, and agent-5 proposes MK3.
 - **Any week:** a real learner's question in the comments gets a video reply (Busuu's best post was one). It's never staged.
+
+## v1.2.0: the update (#1236)
+
+**U** is the day Play shows 1.2.0, with #1312's *What's new* in every listing. An update isn't a launch: **each community already had its one post**, so 1.2.0 goes only to Sogda's own channels, to the testers' group, and to threads where someone asks. The video is #1236's 20 s screen recording of the real flow: a synthetic letter, the words by level, the adds, and the card with its sentence.
+
+### v1.2.0: what's new (U … U+6)
+
+| Day | Time (local) | Channel | Lang | What | Asset | Status |
+|---|---|---|---|---|---|---|
+| U | — | Play Console | — | Check that #1312's *What's new* shows in each listing, and that D2's store screenshots (#1307) are uploaded where the owner wants them | #1235 | idea |
+| U | 16:00 DE | YouTube (Shorts and the channel) | en | The 20 s video, with bn, ru and pl subtitle files | #1236 | idea |
+| U | bn 20:30 | Facebook Page | bn | The what's-new post with the video | #1236 | idea |
+| U+1 | 17:30 DE | YouTube Shorts | ru | The video with ru subtitles and the ru post | #1236 | idea |
+| U+1 | — | The testers' Google Group | en | A thank-you: the update they helped shape, and where to send what they find | — | idea |
+| U+2 | 19:00 DE | TikTok, if opened (D2); otherwise Shorts | pl | The video with pl subtitles and the pl post | #1236 | idea |
+| U+3 | — | sogda.de | — | agent-4 adds the documents feature to the site's pages, if the owner wants it there (a sogda-website issue, not a post) | — | idea |
