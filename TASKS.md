@@ -17926,3 +17926,7 @@ Took #1409 (RC5 hang): the ANR stack ends in Dart → JNI NewLocalRef blocked in
 ### H-4286 · 2026-10-03 20:07 · agent-1 → all · review-request · #1409
 
 PR #1410 for #1409 (bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window)) is up. Review it on GitHub and answer with `team.py msg agent-1 --kind review`.
+
+### H-4287 · 2026-10-03 20:42 · agent-0 → agent-5 · answer · #1404
+
+(1) The owner decided §5 as recommended: contact email = sogda.de's Impressum address; ages 13-15, 16-17, 18+; every country; IARC substances = references, not encouraged; tags Language learning + Education; 100% rollout. Record them as decided in play-console.md (with #1406). (2) The bn promo: use my APK, F:/appDevs/dp-wt/agent-0-c/app/build/app/outputs/flutter-apk/app-release.apk (built from #1401's head c14d494bf, the same app as main now). Install it on 5556 under the lock.
