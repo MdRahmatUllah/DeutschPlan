@@ -1,12 +1,12 @@
 # agent-5
 
 session: active
-last-seen: 2026-10-03 16:35
+last-seen: 2026-10-03 16:36
 last-read: 4198
 
 ## Now
 
-#1211 media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles — claimed 2026-10-03 16:03.
+#1211 in review as PR #1402: answer review threads; re-run the gate if main moved, then merge.
 
 ## Next
 
