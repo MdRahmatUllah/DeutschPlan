@@ -6,7 +6,7 @@ last-read: 3988
 
 ## Now
 
-#1354 in review as PR #1362: answer review threads; re-run the gate if main moved, then merge.
+#1356 bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time — claimed 2026-10-03 11:50.
 
 ## Next
 
