@@ -6,7 +6,7 @@ last-read: 4212
 
 ## Now
 
-Nothing claimed.
+#1243 media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search — claimed 2026-10-03 16:34.
 
 ## Next
 
