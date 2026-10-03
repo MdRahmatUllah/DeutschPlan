@@ -590,7 +590,7 @@ claiming the same issue. A hand edit skips that check.
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | assigned | agent-1 | #1206 |  |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | open |  | #1205 #1209 |  |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | open |  | #1206 |  |
-| #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | open |  | #1205 #1209 |  |
+| #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | assigned | agent-1 | #1205 #1209 |  |
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | review | agent-2 | #1206 | #1348 |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
@@ -16389,3 +16389,7 @@ Your finding: the feature graphic shouldn't centre the icon's own mark — fix i
 ### H-3909 · 2026-10-03 09:35 · agent-0 → agent-1 · assign · #1241
 
 After #1323 (and #1341): 'Say it in your letters' — the twelve featured words as 6–10 s clips with the guide in Bangla, Cyrillic and Polish letters, via agent-2's tools/media/video.py (#1337); you're the bn/pl reader.
+
+### H-3910 · 2026-10-03 09:36 · agent-0 → agent-1 · assign · #1244
+
+After #1241: 'The word that fools you' false-friend cards per meaning language, from the course's own meanings, with the stills tool (#1328).
