@@ -987,6 +987,13 @@ void main() {
         'A2.1',
         reason: 'this phone says where the learner is',
       );
+      expect(
+        rows.firstWhere(
+          (row) => row['sublevel_code'] == 'A1.2',
+        )['left_part_way'],
+        1,
+        reason: "closed part-way: #1338's update queue doesn't take its words",
+      );
     });
 
     test('a finished step from the other phone comes in as finished', () async {
@@ -1468,6 +1475,7 @@ void main() {
         'done_stability_days': (3, 60),
         'exam_unlock_percent': (50, 100),
         'exam_pass_percent': (50, 90),
+        'update_daily_cap': (0, 20),
         'doc_daily_cap': (0, 20),
         'doc_autodelete_days': (0, 365),
         'doc_save_images': (0, 1),

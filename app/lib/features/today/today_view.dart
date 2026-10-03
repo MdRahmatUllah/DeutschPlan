@@ -99,6 +99,7 @@ class ContextualOffer {
     this.added = 0,
     this.removed = 0,
     this.changed = 0,
+    this.queued = 0,
     this.version,
     this.backlog = 0,
     this.percent = 0,
@@ -114,6 +115,10 @@ class ContextualOffer {
   final int added;
   final int removed;
   final int changed;
+
+  /// The added words in steps the learner had finished, which the update
+  /// queue teaches a few a day (BR-CONTENT-02, #1338).
+  final int queued;
   final String? version;
 
   final int backlog;
@@ -158,7 +163,8 @@ class ContextualFacts {
   final Set<String> dismissed;
   final bool stepComplete;
   final String? nextStep;
-  final ({String version, int added, int removed, int changed})? contentUpdate;
+  final ({String version, int added, int removed, int changed, int queued})?
+  contentUpdate;
   final int backlog;
   final int dailyNew;
   final bool pauseOn;
@@ -203,6 +209,7 @@ ContextualOffer? contextualFor(ContextualFacts facts) {
       added: update.added,
       removed: update.removed,
       changed: update.changed,
+      queued: update.queued,
     );
   }
   final offers = <ContextualOffer>[

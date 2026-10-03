@@ -207,6 +207,7 @@ void main() {
         added: 12,
         removed: 3,
         changed: 40,
+        queued: 0,
       ),
       backlog: 30,
       step: 'A2.1',
@@ -224,7 +225,13 @@ void main() {
       expect(
         kind(
           const ContextualFacts(
-            contentUpdate: (version: 'v', added: 1, removed: 0, changed: 0),
+            contentUpdate: (
+              version: 'v',
+              added: 1,
+              removed: 0,
+              changed: 0,
+              queued: 0,
+            ),
             backlog: 30,
             step: 'A2.1',
             introduced: 500,
@@ -275,7 +282,13 @@ void main() {
         'what is waiting shows first, the completion card after', () {
       const finished = ContextualFacts(
         stepComplete: true,
-        contentUpdate: (version: 'v', added: 1, removed: 2, changed: 0),
+        contentUpdate: (
+          version: 'v',
+          added: 1,
+          removed: 2,
+          changed: 0,
+          queued: 0,
+        ),
         backlog: 30,
         systemVoice: true,
       );
@@ -308,7 +321,13 @@ void main() {
     test('BR-CONTENT-03 the update carries its counts', () {
       final offer = contextualFor(
         const ContextualFacts(
-          contentUpdate: (version: 'v1', added: 12, removed: 3, changed: 40),
+          contentUpdate: (
+            version: 'v1',
+            added: 12,
+            removed: 3,
+            changed: 40,
+            queued: 0,
+          ),
         ),
       )!;
       expect(

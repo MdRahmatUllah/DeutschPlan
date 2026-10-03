@@ -979,6 +979,28 @@ void main() {
       expect(settings.read(SettingKeys.dismissedCards), isNull);
     });
 
+    testWidgets("#1338 BR-CONTENT-02 an update's words in steps already "
+        'done get a line of their own: a few a day from tomorrow', (
+      tester,
+    ) async {
+      await show(
+        tester,
+        const ContextualOffer(
+          ContextualKind.contentUpdate,
+          version: '202610031200',
+          added: 73,
+          queued: 42,
+        ),
+      );
+      expect(
+        find.text(
+          '${l10n.todayCardUpdateBody(73, 0, 0)}\n'
+          '${l10n.todayCardUpdateQueued(42)}',
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets("BR-EXAM-01 exams open the step's exams tab", (tester) async {
       await show(
         tester,

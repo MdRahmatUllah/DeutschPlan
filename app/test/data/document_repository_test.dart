@@ -70,6 +70,38 @@ void main() {
     expect(input.learner.mineUids, <String>{uid['Miete']!});
   });
 
+  test('#1338 BR-DOC-03: a word the update queue holds is planned, so D2 '
+      'offers it rather than calling it probably known', () async {
+    // «Vermieter»'s earlier step, finished by the plan: a word of it still
+    // To-do and never planned came with an update.
+    final step =
+        (await db
+                .customSelect(
+                  "SELECT sublevel_code FROM c.words WHERE uid = '${uid['Vermieter']}'",
+                )
+                .getSingle())
+            .read<String>('sublevel_code');
+    await db.customStatement(
+      'INSERT INTO enrollments (sublevel_code, started_on, daily_new, '
+      'study_days_mask, completed_on, left_part_way) VALUES '
+      "('$step', '2026-08-01', 10, 127, '2026-08-30', 0)",
+    );
+    expect(
+      (await documents.matcherInput()).learner.everPlanned,
+      contains(uid['Vermieter']),
+    );
+    final id = await documents.create(
+      title: 'Letter',
+      source: 'paste',
+      body: letter,
+    );
+    final match = (await documents.match(id))!;
+    expect(
+      match.words.singleWhere((w) => w.surface == 'Vermieter').docClass,
+      DocClass.newInCourse,
+    );
+  });
+
   test('#1230 BR-DOC-03 FR-D2-07: a document\'s words are matched in an '
       'isolate and saved, one row per lemma and sentence', () async {
     final id = await documents.create(

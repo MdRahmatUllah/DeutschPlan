@@ -507,7 +507,9 @@ languages, and the document's sentence with the word in bold.
   screen reader adds from the card.
 - **The bulk bar:** *Add my level*, *Add my level and one above* and *Add
   all new*, each with its count, and the cap's note ("5 a day: the other 7
-  start tomorrow or later"). An ambiguous word is in no bulk action.
+  start tomorrow or later"). An ambiguous word is in no bulk action. It is
+  pinned at the foot; past 130 % text it comes after the text, which keeps
+  the screen (#1353).
 
 A document reopened from D3 is matched again, so its marks follow what the
 learner has learnt since, and what was added stays added (FR-D2-07). With

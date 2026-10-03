@@ -41,7 +41,7 @@ def test_every_audience_fills_from_the_facts(lang):
 def test_a_draft_promise_says_so_and_a_reviewed_one_does_not():
     messaging = (posts.MARKETING / "messaging.md").read_text(encoding="utf-8")
     assert posts.audience(messaging, "en")["draft"] is False
-    assert posts.audience(messaging, "bn")["draft"] is True
+    assert posts.audience(messaging, "de")["draft"] is True  # de waits for its review; bn was reviewed (#1252)
 
 
 @pytest.mark.parametrize("week", list(posts.WEEKS))
@@ -55,6 +55,14 @@ def test_every_row_is_due_and_every_language_gets_a_draft(week):
             assert f"### {row.get('Day', '')} · {row.get('Channel', '')} · {lang}" in text
     assert "{" not in text.split("## Drafts", 1)[1], "a token reached a draft"
     assert text.startswith(f"<!-- python tools/media/posts.py --week {week} --monday {MONDAY} -->")
+
+
+def test_an_update_drafts_from_its_own_section_1236():
+    messaging = (posts.MARKETING / "messaging.md").read_text(encoding="utf-8")
+    update = messaging[messaging.index(posts.UPDATES["1.2.0"]):]
+    text, _ = posts.drafts("1.2.0", MONDAY)
+    assert posts.fill(posts.audience(update, "en")["promise"], "en") in text
+    assert posts.fill(posts.audience(messaging, "en")["promise"], "en") not in text
 
 
 def test_the_file_is_named_by_the_iso_week():
