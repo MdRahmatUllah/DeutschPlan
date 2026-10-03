@@ -2855,3 +2855,4 @@ able to tell what is going on without asking.
 - 2026-10-03 02:13 · agent-3 #1317 · PR #1327 open; review requested from all
 - 2026-10-03 02:14 · agent-3 #1234 · claimed: sqa(documents): the v1.2.0 SQA pass on SQA's emulator
 - 2026-10-03 02:20 · agent-1 #1205 · PR #1328 open; review requested from all
+- 2026-10-03 02:20 · agent-1 #1207 · claimed: marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list

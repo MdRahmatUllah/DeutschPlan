@@ -6,7 +6,7 @@ last-read: 3786
 
 ## Now
 
-#1205 in review as PR #1328: answer review threads; re-run the gate if main moved, then merge.
+#1207 marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list — claimed 2026-10-03 02:20.
 
 ## Next
 
