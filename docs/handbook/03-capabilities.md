@@ -64,7 +64,7 @@ optional second.
 | **Word meanings** | All 5,142 | All 5,142 | All 5,142 | All 5,142 |
 | **Pronunciation of each word** | All, an English respelling (v1.1.0) | All 5,142, in Bangla letters (while Bangla is chosen) | All, in Russian letters | All, in Polish spelling |
 | **Interference tips** | All 622 | All 622 | Those written for Russian speakers | Those written for Polish speakers |
-| **Example translations** (10,545) | All | None: English shows (#598) | All | All |
+| **Example translations** (10,691) | All | None: English shows (#598) | All | All |
 | **Grammar rules** (182 topics) | All | None | All | All |
 | **Category names** | All | Shown in English (#425) | All (#1128) | All (#1128) |
 
@@ -196,7 +196,7 @@ The target is WCAG 2.2 AA ([`accessibility-performance.md`](../01-architecture/a
 |---|---|
 | Course steps | 12 (A1.1 … C2.2), in 6 CEFR levels |
 | Words and phrases | 5,142 to learn: A1 1,337 · A2 1,067 · B1 396 · B2 1,025 · C1 819 · C2 498, plus 167 lesson notes and comparisons |
-| Example sentences | 10,545 (two for almost every word) |
+| Example sentences | 10,691 (two for almost every word) |
 | Grammar topics | 182: 10 or 11 per step from A1.1 to B1.2, 20 per step from B2.1 |
 | Word categories | 159 |
 | Interference tips | 622, in English and Bangla |
