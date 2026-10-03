@@ -2870,3 +2870,4 @@ able to tell what is going on without asking.
 - 2026-10-03 03:42 · agent-0 #1329 · done (#1330)
 - 2026-10-03 03:42 · agent-3 · #1234 part 3 posted: re-checks (#1315, #1320, #1317, #1318, #1237) hold; camera + 31-page PDF + Polish pass; filed #1332 (image share not built) and #1333 (no '?' on ambiguous words); #1330 changes requested.
 - 2026-10-03 03:46 · agent-2 #1306 · done (#1322)
+- 2026-10-03 03:49 · agent-1 #1207 · done (#1331)

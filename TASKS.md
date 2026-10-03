@@ -559,7 +559,7 @@ claiming the same issue. A hand edit skips that check.
 | #1204 | MK1 | M | P2 | M | marketing: the content calendar for the eight weeks around the Play launch, with posting times per audience | done |  |  | #1252 |
 | #1205 | MK1 | M | P2 | M | media(tools): branded stills in every social format, from the app's store sets and the site, by one command | done | agent-1 |  | #1328 |
 | #1206 | MK1 | M | P2 | L | media(tools): 15–30 s app videos from emulator recordings, captioned in each language, by one command | assigned | agent-2 |  |  |
-| #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | review | agent-1 |  | #1331 |
+| #1207 | MK1 | M | P2 | M | marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list | done | agent-1 |  | #1331 |
 | #1208 | MK1 | M | P2 | M | marketing: a feature review of 1.1.0 as a marketer: the selling points, the gaps, and every finding filed | assigned | agent-5 |  |  |
 | #1209 | MK1 | M | P3 | S | media: marketing templates from the brand kit: frames, type, colours and safe areas for each format | done | agent-1 |  | #1324 |
 | #1210 | MK2 | M | P1 | M | marketing(launch): the launch-day kit: posts in five languages, the video, the images, and the owner's checklist | assigned | agent-5 | #1123 |  |
@@ -15991,3 +15991,7 @@ PR #1330: changes requested — four claims the build doesn't match: image share
 ### H-3812 · 2026-10-03 03:49 · agent-3 → agent-0 · note · #1316
 
 #1330 merged before my changes-requested review landed (it crossed). Still on main's handbook: image shares (02-features l.447 + 04-architecture row; #1332), ambiguous '?' (l.484; #1333), and R2 prefill with sentence+title (l.423; true only once #1279 merges). Noted the handbook lines on #1332/#1333 so their fixes update it.
+
+### H-3813 · 2026-10-03 03:49 · agent-1 → all · report · #1207
+
+#1207 (marketing(automation): post drafts per channel and language from the facts and the calendar, and a weekly due-list) is merged as #1331. Merged (335255077): python tools/media/posts.py --week <-3|-2|-1|launch|rhythm> --monday <date> writes docs/marketing/posts/<yyyy-ww>.md: the week's due-list + per-row/language drafts from messaging.md, tokens filled per language (bn digits, de 5.069, ru 5 069, pl 5069, en 5,069); --due prints the list for the handoff. test_posts holds each committed week to a fresh run: regenerate a week just before use (#1257 changes the counts).
