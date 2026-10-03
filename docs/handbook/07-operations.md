@@ -126,7 +126,9 @@ nullable columns or new tables; never drop a column with data.
 `app/pubspec.yaml` carries `version: MAJOR.MINOR.PATCH+BUILD` (v1.0.1 was
 `1.0.1+2`; the first Sogda build was `1.1.0+3`, #739, and v1.1.0 ships as `1.1.0+4`, #1123); `versionCode` and `versionName` come from it. The course has its
 own `content_version` (the pipeline's build time), shown in About. A
-content-only release bumps PATCH.
+content-only release bumps PATCH. v1.2.0's release commit is #1235's, a
+draft PR (#1312) that merges last, after SQA's pass (#1234), the size and
+performance measurement (#1306) and the screenshots (#1307).
 
 ### The checklist
 
@@ -142,7 +144,11 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    missing or has no source, if a pubspec font family has no licence text
    (#719), or if a package ships no LICENSE file (which
    Flutter's `LicenseRegistry`, and so M8, would silently leave out).
-   `python tools/licences.py update` fetches the texts again.
+   `python tools/licences.py update` fetches the texts again. Since v1.2.0
+   it also holds PdfBox-Android's licence and NOTICE and Bouncy Castle's.
+   ML Kit and Play's in-app review library come under Google's terms, not a
+   licence text, so M8 names them with links written in the app, and
+   nothing fetches them ([`about-licences.md`](../04-screens/about-licences.md)).
 4. **No translation flag.** Hy-MT2's download is offered in every build
    (ADR 30); ADR 9's `ENABLE_HYMT_DOWNLOAD` is gone.
 5. **The bundle.** `python tools/release_android.py --require-upload-key` (in an
@@ -160,10 +166,17 @@ From [`release.md`](../05-dev-guide/release.md), with the real commands:
    - **key:** it says which certificate signed the bundle;
    - `--check` checks the last build without building. On 2026-09-26 it passed
      with AGP 9.1, and the bundle was 272 MB with all four ABIs.
+   - **No library reports home** (BR-PRIV-01): after a dependency update,
+     the release APK's merged manifest is read for `datatransport`,
+     `firebase`, `clearcut` and `measurement`
+     (`aapt2 dump xmltree --file AndroidManifest.xml`). ML Kit's DataTransport
+     backend and schedulers are removed in the app's manifest (#1229).
 6. **Performance.** `python tools/perf.py all`, then `all --profile year` (a
    year of study, #818), against the baselines; the owner's checkout takes no
    lock, and perf.py refuses while an agent holds the emulator (#845). Then the
-   owner times cold and warm start by hand on a real mid-range phone.
+   owner times cold and warm start by hand on a real mid-range phone. For
+   v1.2.0, #1306 measures what each feature adds to the size, and D2's first
+   frame on a 20,000-character text.
 7. **Tag and notes.** The release commit bumps `pubspec.yaml`, adds the
    `CHANGELOG.md` entry, and updates *What's new* in English, Bangla, Polish
    and Russian in
@@ -203,12 +216,56 @@ anyway. The owner provides the upload key; the agents' worktrees have no
 - R8 must keep `ai.onnxruntime.**` (`app/android/app/proguard-rules.pro`):
   ONNX Runtime finds its Java classes by name, and without the rule the first
   Supertonic synthesis crashes the release app.
+- R8 must also keep `com.google.mlkit.**` and
+  `com.google.android.gms.internal.mlkit_**` (#1229): without them the first
+  photo read failed in its pipeline. ML Kit's other scripts, whose models
+  aren't bundled, are `-dontwarn`, and so is pdfbox's optional JPEG 2000
+  decoder (`com.gemalto.jp2.JP2Decoder`, ADR 31). A debug run shows none of
+  this, so the documents' device checks use a release build.
+
+### The size, release by release
+
+The arm64-v8a APK of `flutter build apk --release --split-per-abi`, the
+stand-in for Play's one-ABI download (chapter 3, *Performance*):
+
+| Build | arm64 APK | What moved it |
+|---|---|---|
+| Before v1.0.0 | 159.5 → 72.3 MB | llama.cpp cut to its CPU backend (ADR 27) |
+| v1.0.0 | 72.44 MB | The last `perf.py all` before the tag |
+| v1.1.0 | 51.2 MB at llamadart's removal, 2026-09-27 | llamadart removed while Hy-MT was off (ADR 29) |
+| v1.2.0, on main | 52.22 → 54.12 MB with pdfbox-android (ADR 31); ML Kit's text recognition adds about 12 MB a phone (`doc-import.md`) | Documents (#1228, #1229) |
+| v1.2.0, to come | llama.cpp's CPU libraries come back with Hy-MT2 (about 21 MB at ADR 29's measure); #1318 takes pdfbox's CJK CMaps (1.2 MB) out | #154, #1318 |
+
+v1.2.0's own figure, feature by feature, is #1306's, and goes into its
+release notes. A universal APK carries every ABI, so ML Kit alone adds 31 MB
+to one (`doc-import.md`).
+
+### Model downloads
+
+The models are not in the app: `app/assets/models/manifest.json`, which
+ships in it, pins each file's URL at a fixed revision and its SHA-256, so a
+model changes only with an app update ([`model-manager.md`](../04-screens/model-manager.md)).
+
+| Model | Where it comes from | Size |
+|---|---|---|
+| Supertonic 3 voice | `Supertone/supertonic-3` on Hugging Face, nine files | 399 MB |
+| Hy-MT2 translation (v1.2.0) | `tencent/Hy-MT2-1.8B-GGUF` on Hugging Face, `Hy-MT2-1.8B-Q4_K_M.gguf` (ADR 30) | 1.1 GB (1,133,080,448 bytes) |
+
+- **Both download the same way:** resumable, *Wi-Fi only* by default, a
+  100 MB free-space margin, verified by checksum before they are used, and
+  side by side under one notification (#1255). The space check counts the
+  downloads still to come (#1261), and a failed download's part-files go
+  once nothing is in flight (#1265).
+- **If a file moves upstream,** downloads fail until an app update ships a
+  new manifest (chapter 1, *Risks*). Mirroring the files is an open idea,
+  not a decision.
 
 ### The Play listing and declarations
 
 - **Texts.** Title, short and full description and *What's new*, in English
   (en-US) and Bangla (bn-BD), are in [`store-listing.md`](../05-dev-guide/store-listing.md).
-  Translation isn't mentioned, since it is off. A native reader checks the
+  v1.1.0's listing doesn't mention translation, which it didn't have;
+  Hy-MT2 arrives with v1.2.0, whose store notes say so. A native reader checks the
   Bangla before the first upload.
 - **Screenshots.** `docs/05-dev-guide/store/phone-light`, `phone-dark`,
   `tablet-light` and `tablet-dark`, six each (Today, a card's front and back,
@@ -220,13 +277,16 @@ anyway. The owner provides the upload key; the agents' worktrees have no
 - **Data safety:** no data collected or shared; no account, analytics or ads.
   Model downloads fetch files and send nothing; *Report a problem* opens a
   pre-filled GitHub issue in the browser, which the learner sends or doesn't.
+  A document's text and photos are read and kept on the phone (BR-DOC-01).
 - **Permissions** (the merged manifest): `RECORD_AUDIO` (the Speaking exam,
   asked on the first Record), `POST_NOTIFICATIONS` (the reminder, asked when
   switched on), `RECEIVE_BOOT_COMPLETED` (reminders after a restart),
   `INTERNET` and `ACCESS_NETWORK_STATE` (model downloads and their Wi-Fi rule),
   `WAKE_LOCK` (WorkManager carrying a download on in the background), and
   `VIBRATE` (the reminder). No foreground service, so no foreground-service
-  form (#611); `tools/release_android.py` checks this list.
+  form (#611); `tools/release_android.py` checks this list. v1.2.0 adds
+  none: the camera and the photos are the phone's own apps, through
+  `image_picker`.
 
 ### iOS
 
@@ -305,6 +365,8 @@ From ONBOARDING §12:
 | A generated script has broken `\n` or quotes | A bash heredoc mangled it: write the file with an editor |
 | `file_picker` fails with "Could not close incremental caches" | Kept away by `kotlin.incremental=false` in `app/android/gradle.properties` (ADR 20) |
 | A release build crashes on the first Supertonic clip | The R8 keep rule for `ai.onnxruntime.**` is missing |
+| A release build crashes at launch, or its first photo read fails | ML Kit's R8 keep rules are missing (`proguard-rules.pro`, #1229) |
+| A PDF fixture won't open on a Windows checkout | Its line ends were converted: `.gitattributes` marks `*.pdf` binary (#1228) |
 
 ## The team's working loop
 

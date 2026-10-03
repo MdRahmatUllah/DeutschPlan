@@ -58,7 +58,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 - FR-D2-02 *Add* on a course word puts it in the document queue with its sentence (BR-DOC-04, BR-PLAN-11); the toast says when it starts: "Added der Termin: you'll learn it today" when it joined today's plan, or "… from Thursday" (BR-PLAN-11's *Today*).
 - FR-D2-03 The bulk actions add every new course word of the chosen levels in one write, under the cap, and say how many: "Added 9: 5 today, the rest later"; "Added 5, all for today" when every one starts today; "Added 25: they start tomorrow or later" when today's slots are taken; and "Added 25: they wait in your queue" while no day can be said (the backlog pause, a cap of 0), as a single *Add* says (#1311).
 - FR-D2-04 *I know this* rates the word Easy (W1's *Mark known*), with W1's Undo. *Ignore* takes the mark away for this visit only.
-- FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example*, the document's title as *Where I saw it*, and the meaning (Hy-MT2's, labelled, or empty).
+- FR-D2-05 A word outside the course opens R2 with the German, the sentence as *Example* and the document's title as *Where I saw it*. The meaning is the learner's to write: Hy-MT2's answers come as labelled suggestions to pick from, never filled in (#1278, #1279).
 - FR-D2-06 A word already mine gets the sentence added to its contexts, and no second word.
 - FR-D2-07 The document and what it found are saved (BR-DOC-05): D3 counts from `document_words`. Reopening it from D3 runs the matcher again on the saved text (under 500 ms), so its marks follow what the learner has learnt since, and what was added stays added.
 
