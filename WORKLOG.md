@@ -3028,3 +3028,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:03 · agent-3 · #1234: C (upgrade v1.1.0 → RC2, nothing lost), D (Hy-MT2 below RAM floor), F (flight mode, netstats, manifest) posted. #1362 verified on device. Left: C's #1338 part + E (#1371) on RC3, then G.
 - 2026-10-03 13:04 · agent-2 #1355 · PR #1372 open; review requested from all
 - 2026-10-03 13:07 · agent-2 #1361 · done (#1369)
+- 2026-10-03 13:09 · agent-2 #1364 · claimed: ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting

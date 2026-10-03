@@ -6,7 +6,7 @@ last-read: 4044
 
 ## Now
 
-Nothing claimed.
+#1364 ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting — claimed 2026-10-03 13:09.
 
 ## Next
 
