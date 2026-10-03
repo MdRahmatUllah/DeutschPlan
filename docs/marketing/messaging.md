@@ -150,10 +150,10 @@ What every 1.2.0 message keeps:
 - **Promise** (*draft*): যে জার্মান আপনি রোজ দেখেন, সেটাই শিখুন: চিঠির ছবি তুলুন বা লেখা পেস্ট করুন, Sogda আপনার অজানা শব্দগুলো লেভেল ধরে চিহ্নিত করবে। সবকিছু আপনার ফোনেই।
   *(Learn the German you see every day: photograph a letter or paste a text, and Sogda marks the words you don't know yet, by level. All on your phone.)*
 - **Proof:**
-  1. Ausländerbehörde-এর চিঠি, ভাড়ার চুক্তি, চাকরির বিজ্ঞাপন: Sogda ফোনেই সেটা পড়ে, আর আপনার অজানা শব্দগুলো কোর্সের লেভেল ধরে চিহ্নিত করে।
+  1. Ausländerbehörde-এর চিঠি, ভাড়ার চুক্তি, চাকরির বিজ্ঞাপন: Sogda ফোনেই সেটা পড়ে, আর কোর্সের নতুন শব্দগুলো লেভেল ধরে চিহ্নিত করে।
   2. যে শব্দগুলো বেছে নেবেন, সেগুলো যে বাক্যে পেয়েছেন সেই বাক্য আর বাংলা অর্থসহ আপনার পরিকল্পনায় যোগ হয়।
   3. এগুলোর আলাদা দৈনিক সীমা আছে, তাই লম্বা চিঠিও আপনার দিনটা ভারী করে না।
-- **Call to action:** update Sogda on Google Play, or install it: sogda.de/bn.
+- **Call to action:** Google Play-তে Sogda আপডেট করুন, অথবা ইনস্টল করুন: sogda.de/bn।
 
 ### 2. Russian speakers (ru)
 
@@ -170,10 +170,10 @@ What every 1.2.0 message keeps:
 - **Promise** (*draft*): Ucz się niemieckiego, który spotykasz na co dzień: zrób zdjęcie listu albo wklej tekst, a Sogda zaznaczy nieznane słowa według poziomu. Wszystko zostaje na telefonie.
   *(Learn the German you meet every day: photograph a letter or paste a text, and Sogda marks the unknown words by level. Everything stays on the phone.)*
 - **Proof:**
-  1. List z urzędu, umowa najmu, ogłoszenie o pracę: Sogda czyta taki tekst na telefonie i zaznacza nowe dla ciebie słowa według poziomów kursu.
+  1. List z urzędu, umowa najmu, ogłoszenie o pracy: Sogda czyta taki tekst na telefonie i zaznacza nowe słowa z kursu według poziomu.
   2. Wybrane słowa trafiają do planu razem ze zdaniem z twojego tekstu i ze znaczeniem po polsku.
   3. Mają własny dzienny limit, więc długi list nie zasypie ci dnia.
-- **Call to action:** zaktualizuj Sogdę w Google Play albo ją zainstaluj: sogda.de/pl.
+- **Call to action:** zaktualizuj aplikację Sogda w Google Play albo ją zainstaluj: sogda.de/pl.
 
 ### 4. English-speaking learners (en)
 
@@ -189,7 +189,7 @@ What every 1.2.0 message keeps:
 - **Promise** (*draft*): Lernende bringen ihre eigenen Texte mit: Brief fotografieren oder Text einfügen, und Sogda markiert die unbekannten Wörter nach Niveau. Alles bleibt auf dem Handy.
   *(Learners bring their own texts: photograph a letter or paste a text, and Sogda marks the unknown words by level. Everything stays on the phone.)*
 - **Proof:**
-  1. Ein Brief vom Amt, ein Arbeitsvertrag, ein Text aus dem Unterricht: Sogda liest ihn auf dem Handy und markiert die neuen Wörter nach den Niveaus des Kurses.
+  1. Ein Brief vom Amt, ein Arbeitsvertrag, ein Text aus dem Unterricht: Sogda liest ihn auf dem Handy und markiert die neuen Wörter aus dem Kurs nach ihrem Niveau.
   2. Die gewählten Wörter kommen mit ihrem Satz in den Lernplan, mit einem eigenen Tageslimit.
   3. Nichts wird hochgeladen: Texterkennung und Übersetzung laufen auf dem Gerät.
 - **Call to action:** sogda.de/de, und der Link zu Google Play zum Weitergeben.
