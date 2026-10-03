@@ -44,9 +44,9 @@ On L, the first Tuesday or Wednesday after the listing is live:
 >
 > <name>
 
-- **bn** (*draft*): «Sogda এখন Google Play-তে: <play-link email/post>। <আগে পরীক্ষা করার | জানাতে বলার> জন্য ধন্যবাদ। ব্যবহার করে থাকলে Play-তে আপনার সৎ মতামত অন্যদের অ্যাপটি খুঁজে পেতে সাহায্য করবে। কিছু ভুল থাকলে বা কিছু না থাকলে, এই ইমেইলের উত্তরে জানান।»
+- **bn** (*draft*): «হ্যালো, Sogda এখন Google Play-তে: <play-link email/post>। <আগে পরীক্ষা করার | জানাতে বলার> জন্য ধন্যবাদ। ব্যবহার করে থাকলে Play-তে আপনার সৎ মতামত অন্যদের অ্যাপটি খুঁজে পেতে সাহায্য করবে। কিছু ভুল থাকলে বা কোনো কিছুর অভাব মনে হলে, এই ইমেইলের উত্তরে জানান। <name>»
 - **ru** (*draft*): «Sogda уже в Google Play: <play-link email/post>. Спасибо, что <тестировал(а) её первым | попросил(а) сообщить>. Если ты уже пользуешься, честный отзыв в Google Play поможет другим найти приложение. А если что-то не так или чего-то не хватает, просто ответь на это письмо.»
-- **pl** (*draft*): «Aplikacja Sogda jest już w Google Play: <play-link email/post>. Dziękuję za <testowanie jej jako pierwsi | prośbę o wiadomość>. Jeśli już z niej korzystasz, szczera opinia w Google Play pomoże innym ją znaleźć. A jeśli coś nie działa albo czegoś brakuje, po prostu odpowiedz na tego maila.»
+- **pl** (*draft*): «Cześć, aplikacja Sogda jest już w Google Play: <play-link email/post>. Dziękuję za <przetestowanie jej przed premierą | prośbę o powiadomienie>. Jeśli już z niej korzystasz, szczera opinia w Google Play pomoże innym ją znaleźć. A jeśli coś nie działa albo czegoś brakuje, po prostu odpowiedz na tego maila. <name>»
 
 **Never** offer anything for a review, and never ask for five stars (Play's policy).
 
@@ -84,7 +84,7 @@ The promises are `messaging.md`'s reviewed lines.
 
 **Asset:** the bn flight-mode clip, or the bn feature graphic (`docs/05-dev-guide/store/feature-graphic/bn.png`).
 
-> (*draft*) আমি Sogda তৈরি করি, আর এই গ্রুপের অ্যাডমিনদের অনুমতি নিয়ে একবার জানাচ্ছি।
+> (*draft*) আমি Sogda তৈরি করেছি, আর গ্রুপের অ্যাডমিনদের অনুমতি নিয়ে একবারই জানাচ্ছি।
 >
 > Sogda হলো Android-এর জন্য একটি অফলাইন জার্মান কোর্স: A1 থেকে C2 পর্যন্ত {totals.steps}টি ধাপ, {totals.words}টি শব্দ, {totals.grammar_topics}টি ব্যাকরণ বিষয় আর {totals.mock_exams}টি মক পরীক্ষা। প্রতিটি শব্দের অর্থ বাংলায়, উচ্চারণ বাংলা অক্ষরে, আর অ্যাপটিও বাংলায় চালানো যায়। অ্যাকাউন্ট লাগে না।
 >
@@ -101,7 +101,7 @@ The promises are `messaging.md`'s reviewed lines.
 
 > **ru** (*draft*): Я делаю Sogda и пишу сюда один раз, с разрешения администраторов.
 >
-> Sogda — приложение с офлайн-курсом немецкого для Android: от A1 до C2 за {totals.steps} этапов, {totals.words} слов, {totals.grammar_topics} грамматические темы и {totals.mock_exams} пробных экзаменов. Значения, переводы примеров и правила — на русском, произношение записано кириллицей. Без аккаунта.
+> Sogda — приложение с офлайн-курсом немецкого для Android: от A1 до C2 за {totals.steps} этапов; слов: {totals.words}, грамматических тем: {totals.grammar_topics}, пробных экзаменов: {totals.mock_exams}. Значения, переводы примеров и правила — на русском, произношение записано кириллицей. Без аккаунта.
 >
 > Пробные экзамены — для практики, это не официальные задания Goethe или telc.
 >
@@ -116,7 +116,7 @@ The promises are `messaging.md`'s reviewed lines.
 
 > (*draft*) Tworzę aplikację Sogda i piszę tu raz, za zgodą administratorów.
 >
-> Sogda to kurs niemieckiego offline na Androida: od A1 do C2 w {totals.steps} etapach, {totals.words} słów, {totals.grammar_topics} tematy gramatyczne i {totals.mock_exams} egzaminów próbnych. Znaczenia, tłumaczenia przykładów i reguły są po polsku, a wymowa jest zapisana polskimi literami. Bez konta.
+> Sogda to kurs niemieckiego offline na Androida: od A1 do C2 w {totals.steps} etapach; słowa: {totals.words}, tematy gramatyczne: {totals.grammar_topics}, egzaminy próbne: {totals.mock_exams}. Znaczenia, tłumaczenia przykładów i reguły są po polsku, a wymowa jest zapisana polskimi literami. Bez konta.
 >
 > Egzaminy próbne są do ćwiczenia, to nie są oficjalne arkusze Goethe ani telc.
 >
