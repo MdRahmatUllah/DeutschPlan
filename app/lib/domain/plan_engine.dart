@@ -289,6 +289,11 @@ enum PlanKind {
   final String wire;
 }
 
+/// Why the document queue can't say when a word starts (BR-PLAN-11, #1334):
+/// *Words a day from documents* is 0, or the backlog pause holds new words
+/// back (BR-PLAN-07). The word waits in the queue either way.
+enum DocQueueHold { capZero, backlog }
+
 /// A day's plan, in BR-PLAN-02 order.
 class DailyPlan {
   const DailyPlan({
@@ -730,6 +735,14 @@ class PlanEngine {
     final left =
         await _docCapOn(today) - (await _store.docPlannedOn(today)).length;
     return left < 0 ? 0 : left;
+  }
+
+  /// D2's cap note (#1334): why a word added now has no start day, as
+  /// [addDocWords] answers null for it, or null while one can be said.
+  Future<DocQueueHold?> docQueueHold(PlanDate today) async {
+    if (_docDailyCap <= 0) return DocQueueHold.capZero;
+    if (await _isPaused(today)) return DocQueueHold.backlog;
+    return null;
   }
 
   /// [day]'s document cap. An opened day keeps the one it was opened with,

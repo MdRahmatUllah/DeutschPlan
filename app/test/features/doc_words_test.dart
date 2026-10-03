@@ -324,7 +324,9 @@ void main() {
       ),
     );
     expect(
-      find.semantics.byLabel(l10n.docWordsSemNew('fällt', 'A2')),
+      find.semantics.byLabel(
+        l10n.docWordsSemTwoReadings(l10n.docWordsSemNew('fällt', 'A2')),
+      ),
       findsOne,
     );
     await tapWord(tester, 'fällt');
@@ -501,6 +503,66 @@ void main() {
       await tester.pump();
       expect(find.text(message()), findsOneWidget);
       await tester.pump(const Duration(seconds: 3));
+    });
+  }
+
+  testWidgets('#1333 an ambiguous word wears a "?" and says it has two '
+      'readings, until a reading is added', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(
+      tester,
+      docWordsStub(
+        documents: FakeDocuments(body: 'Am Montag fällt der Unterricht aus.'),
+      ),
+    );
+    expect(find.byIcon(Icons.help_outline), findsOneWidget);
+
+    await tapWord(tester, 'fällt');
+    await tester.tap(find.textContaining('ausfallen · A2.2 · '));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.docWordsCardAdd));
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.help_outline), findsNothing);
+    expect(find.byIcon(Icons.check), findsOneWidget);
+    // Settled: it says added, no longer two readings.
+    expect(find.semantics.byLabel(l10n.docWordsSemAdded('fällt')), findsOne);
+    await tester.pump(const Duration(seconds: 3));
+    semantics.dispose();
+  });
+
+  testWidgets('#1333 a text with no ambiguous word has no "?"', (tester) async {
+    await pump(
+      tester,
+      docWordsStub(
+        documents: FakeDocuments(body: 'Die Kündigung und die Nebenkosten.'),
+      ),
+    );
+    expect(find.byIcon(Icons.help_outline), findsNothing);
+  });
+
+  for (final (name, plan, note)
+      in <(String, FakePlan, String Function(int later))>[
+        (
+          'a cap of 0',
+          FakePlan(slots: 0, capZero: true),
+          (later) => l10n.docWordsCapZero(later),
+        ),
+        (
+          'the backlog pause',
+          FakePlan(slots: 0, paused: true),
+          (_) => l10n.docWordsHeldByBacklog,
+        ),
+      ]) {
+    testWidgets('#1334 BR-PLAN-11 under $name the note says the words wait, '
+        'never that they start later', (tester) async {
+      await pump(tester, docWordsStub(plan: plan));
+      final fresh = docMatch(artboardLetter).words
+          .where((w) => w.docClass == DocClass.newInCourse && !w.ambiguous)
+          .length;
+      // No slot today, so every new word is one of the others.
+      expect(find.text(note(fresh)), findsOneWidget);
+      expect(find.text(l10n.docWordsCapNote(5, fresh)), findsNothing);
+      expect(find.text(l10n.docWordsCapNote(0, fresh)), findsNothing);
     });
   }
 

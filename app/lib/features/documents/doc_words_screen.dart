@@ -22,6 +22,7 @@ import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/setting_keys.dart';
 import 'package:sogda/domain/documents/matcher.dart';
 import 'package:sogda/domain/documents/tokens.dart' show docMaxChars;
+import 'package:sogda/domain/plan_engine.dart' show DocQueueHold;
 import 'package:sogda/features/documents/doc_import_screen.dart'
     show docMaxPages;
 import 'package:sogda/features/search/search_header.dart';
@@ -42,6 +43,7 @@ class DocWordsView {
     required this.added,
     required this.slotsLeft,
     this.plannedToday = const <String>{},
+    this.hold,
   });
 
   final Document document;
@@ -54,6 +56,10 @@ class DocWordsView {
   /// The words today's plan has already, by any route (#1315): they take no
   /// slot, so the cap note leaves them out.
   final Set<String> plannedToday;
+
+  /// Why no start day can be said for a word added now (#1334): a cap of 0,
+  /// or the backlog pause. Null while one can.
+  final DocQueueHold? hold;
 }
 
 /// FR-D2-07: every opening runs the matcher again on the saved text, so the
@@ -72,6 +78,7 @@ Future<DocWordsView?> docWords(Ref ref, int id) async {
     added: await documents.added(id),
     slotsLeft: await engine.docSlotsLeft(today),
     plannedToday: await engine.plannedToday(today),
+    hold: await engine.docQueueHold(today),
   );
 }
 
@@ -386,6 +393,7 @@ class _DocWordsScreenState extends ConsumerState<DocWordsScreen> {
             cap: ref
                 .watch(settingsSourceProvider)
                 .read(SettingKeys.docDailyCap),
+            hold: view.hold,
             busy: _busy,
             onAdd: (words) => unawaited(_add(view, words)),
           );
@@ -699,26 +707,34 @@ class _Paragraph extends StatelessWidget {
           ),
         );
       }
+      // #1333: two readings, asked on the card first; added, it's settled.
+      final twoReadings = word.ambiguous && !added;
       final tap = tapOf(word);
       byTap[tap] = word;
       spans.add(
         TextSpan(
-          // A word joiner each side: the chip before and the check after
-          // stay on the word's line (agent-3, #1294).
+          // A word joiner each side: the chip before, and the check or the
+          // "?" after, stay on the word's line (agent-3, #1294).
           text:
               '${word.mine ? '\u2060' : ''}${fit(surface)}'
-              '${added ? '\u2060' : ''}',
+              '${added || twoReadings ? '\u2060' : ''}',
           style: style,
           recognizer: tap,
-          semanticsLabel: _label(l10n, word, surface, added),
+          semanticsLabel: twoReadings
+              ? l10n.docWordsSemTwoReadings(_label(l10n, word, surface, added))
+              : _label(l10n, word, surface, added),
         ),
       );
-      if (added) {
+      if (added || twoReadings) {
         spans.add(
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: ExcludeSemantics(
-              child: Icon(Icons.check, size: 16, color: tokens.color.ink),
+              child: Icon(
+                added ? Icons.check : Icons.help_outline,
+                size: 16,
+                color: tokens.color.ink,
+              ),
             ),
           ),
         );
@@ -795,6 +811,7 @@ class _BulkBar extends StatelessWidget {
     required this.busy,
     required this.onAdd,
     this.plannedToday = const <String>{},
+    this.hold,
   });
 
   final String? level;
@@ -802,6 +819,9 @@ class _BulkBar extends StatelessWidget {
   final int slotsLeft;
   final Set<String> plannedToday;
   final int cap;
+
+  /// No day takes them now (#1334): they wait, rather than start later.
+  final DocQueueHold? hold;
   final bool busy;
   final ValueChanged<List<DocWord>> onAdd;
 
@@ -889,7 +909,11 @@ class _BulkBar extends StatelessWidget {
             if (later > 0) ...<Widget>[
               const SizedBox(height: 6),
               SgText(
-                l10n.docWordsCapNote(cap, later),
+                switch (hold) {
+                  DocQueueHold.capZero => l10n.docWordsCapZero(later),
+                  DocQueueHold.backlog => l10n.docWordsHeldByBacklog,
+                  null => l10n.docWordsCapNote(cap, later),
+                },
                 role: SgTextRole.caption,
                 color: tokens.color.textSecondary,
                 textAlign: TextAlign.center,

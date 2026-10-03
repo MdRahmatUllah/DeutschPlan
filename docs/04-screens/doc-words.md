@@ -31,7 +31,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 3. **The bulk bar,** pinned at the bottom:
    - *Add my level* and *Add my level and one above*, side by side (one height for the pair), stacked above 100 % text. A button that would add what *Add all new* adds is left out (#1294);
    - *Add all new*, and the number each would add;
-   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes. This visit's adds that start today take their slots off it (#1294);
+   - the cap note, "5 a day: the other 7 start tomorrow or later" (BR-PLAN-11), when more are new than today takes. This visit's adds that start today take their slots off it (#1294). When no day can be said, it says the words wait instead (#1334, `PlanEngine.docQueueHold`, the same rule as *Add*'s): at a cap of 0 (the setting, read at once: no later day takes them), "0 a day from documents: the other 16 wait in your queue until you raise it in Settings"; under the backlog pause (BR-PLAN-07), "Backlog first: what you add waits in your queue until it's cleared";
    - an ambiguous word is in no bulk action: its card asks which it is.
 
 **The mini card (a sheet).**
@@ -68,7 +68,7 @@ The ink underline is what makes a word marked, and the fill says its level, whic
 - **Processing** happens in D1.
 - **No new words:** "You know every word in this text" plus the counts, with *Show words I probably know*.
 - **Not German:** a warning from D1, with *Continue anyway*.
-- **Ambiguous words** are marked with a "?".
+- **Ambiguous words** are marked with a "?" (a small circled one after the word, kept on its line by a word joiner, #1333), and a screen reader hears "fällt, new, A2, two readings". Once a reading is added the word is settled: the check takes the "?"'s place.
 - **A very long text** shows its first 20,000 characters, with a note (BR-DOC-02).
 
 **Interactions & motion.**

@@ -6712,6 +6712,29 @@
       }
     }
   },
+  "docWordsCapZero": "0 a day from documents: the other {later} wait in your queue until you raise it in Settings",
+  "@docWordsCapZero": {
+    "description": "D2's note under the bulk bar when Words a day from documents is 0 (#1334, BR-PLAN-11): no later day takes document words, so the later ones wait in the queue until M3's setting is raised. later is how many would not fit today.",
+    "placeholders": {
+      "later": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsHeldByBacklog": "Backlog first: what you add waits in your queue until it's cleared",
+  "@docWordsHeldByBacklog": {
+    "description": "D2's note under the bulk bar while the backlog pause holds new words (#1334, BR-PLAN-07): what is added waits in the queue until the backlog is cleared."
+  },
+  "docWordsSemTwoReadings": "{label}, two readings",
+  "@docWordsSemTwoReadings": {
+    "description": "Screen reader (#1333): a word in D2's text with two readings, marked with a ?; its card asks which one first. label is the word's own label, e.g. «fällt, new, A2».",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "docWordsAddedToday": "Added {word}: you'll learn it today",
   "@docWordsAddedToday": {
     "description": "D2's toast (FR-D2-02): the word joined today's plan. word is the word as it stands in the text.",
