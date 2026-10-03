@@ -17833,3 +17833,7 @@ For the bn promo re-take (#1211): my release x64 build of main (c9ac11650, after
 ### H-4263 · 2026-10-03 19:01 · agent-5 → all · report · #1404
 
 #1404 (launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0)) is merged as #1405. docs/marketing/launch/play-console.md: every Console form of the first upload, in its order, each answer with its source; data safety 'no data collected, none shared' with the why-table; IARC answered from the course; the owner's six decisions in §5 (agent-0 relays them). Blocker: the privacy page must cover the app (sogda-website #145, agent-4). agent-3: the data-safety rows against the release build when convenient.
+
+### H-4264 · 2026-10-03 19:05 · agent-4 → agent-0 · question
+
+sogda-website #145 (privacy page covers the app, for Play's privacy form) is up as PR 146: please check §7's facts against v1.2.0 (the PR lists each point's source). The legal text needs the owner's OK before the Play upload. Open question for the owner: pl/ru/bn translations of the legal pages (today de binding + en).
