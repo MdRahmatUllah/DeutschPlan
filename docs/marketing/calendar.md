@@ -88,6 +88,10 @@ Every asset row names its issue in lane M.
 | L+1 | — | AlternativeTo | en | The owner adds the Play link to the listing | — | idea |
 | L+2 | US weekday morning | Show HN | en | "Show HN: an offline German course for Android, A1 to C2, no account". The maker tells why they built it, and answers every comment. The owner decides; HN gives no best hour | #1210 | idea |
 | L+3 | bn 20:30 | Facebook Page | bn | Format 1, the first featured word: *Anmeldung* in Bangla letters | #1241 | idea |
+| L | 16:30 DE | YouTube Shorts | en | The 20 s documents video: a letter shared in, its new words by level, the card with its sentence (the first release, #1383) | #1236 | idea |
+| L+1 | bn 20:30 | Facebook Page | bn | The documents video, bn, with `messaging.md`'s documents line | #1236 | idea |
+| L+1 | 17:30 DE | YouTube Shorts | ru | The documents video, ru | #1236 | idea |
+| L+2 | 19:00 DE | TikTok if opened (D2), or Shorts | pl | The documents video, pl | #1236 | idea |
 | L+4 | — | Every channel | — | The owner answers every comment from the week; agent-5 files each question or bug as an issue | — | idea |
 | L+6 | — | `results.md` | — | Week 1's numbers, pasted by the owner and written up by agent-5: the baseline for weeks 2–6 | — | idea |
 
@@ -116,18 +120,3 @@ Each week has the same shape, so the owner's time stays at about one sitting a d
 - **Week 6:** the review. `results.md` decides which channels keep their slots, and agent-5 proposes MK3.
 - **Any week:** a real learner's question in the comments gets a video reply (Busuu's best post was one). It's never staged.
 
-## v1.2.0: the update (#1236)
-
-**U** is the day Play shows 1.2.0, with #1312's *What's new* in every listing. An update isn't a launch: **each community already had its one post**, so 1.2.0 goes only to Sogda's own channels, to the testers' group, and to threads where someone asks. The video is #1236's 20 s screen recording of the real flow: a synthetic letter, the words by level, the adds, and the card with its sentence.
-
-### v1.2.0: what's new (U … U+6)
-
-| Day | Time (local) | Channel | Lang | What | Asset | Status |
-|---|---|---|---|---|---|---|
-| U | — | Play Console | — | Check that #1312's *What's new* shows in each listing, and that D2's store screenshots (#1307) are uploaded where the owner wants them | #1235 | idea |
-| U | 16:00 DE | YouTube (Shorts and the channel) | en | The 20 s video, with bn, ru and pl subtitle files | #1236 | idea |
-| U | bn 20:30 | Facebook Page | bn | The what's-new post with the video | #1236 | idea |
-| U+1 | 17:30 DE | YouTube Shorts | ru | The video with ru subtitles and the ru post | #1236 | idea |
-| U+1 | — | The testers' Google Group | en | A thank-you: the update they helped shape, and where to send what they find | — | idea |
-| U+2 | 19:00 DE | TikTok, if opened (D2); otherwise Shorts | pl | The video with pl subtitles and the pl post | #1236 | idea |
-| U+3 | — | sogda.de | — | agent-4 adds the documents feature to the site's pages, if the owner wants it there (a sogda-website issue, not a post) | — | idea |

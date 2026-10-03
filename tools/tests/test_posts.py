@@ -57,14 +57,6 @@ def test_every_row_is_due_and_every_language_gets_a_draft(week):
     assert text.startswith(f"<!-- python tools/media/posts.py --week {week} --monday {MONDAY} -->")
 
 
-def test_an_update_drafts_from_its_own_section_1236():
-    messaging = (posts.MARKETING / "messaging.md").read_text(encoding="utf-8")
-    update = messaging[messaging.index(posts.UPDATES["1.2.0"]):]
-    text, _ = posts.drafts("1.2.0", MONDAY)
-    assert posts.fill(posts.audience(update, "en")["promise"], "en") in text
-    assert posts.fill(posts.audience(messaging, "en")["promise"], "en") not in text
-
-
 def test_the_file_is_named_by_the_iso_week():
     assert posts.week_file(MONDAY).name == "2026-41.md"
 

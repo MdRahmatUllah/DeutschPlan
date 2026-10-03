@@ -14,7 +14,7 @@
   6. the teachers who recommend.
 
   The order follows where Sogda's edge is sharpest, and where an honest post is allowed.
-- **What we say:** the combination nobody else has. Offline, no account, A1 to C2, mock exams for every step, and meanings and pronunciation in the learner's own script. We show it with real screens, never claim it with superlatives. **No price, "free", rating, user count, testimonial or pass promise**, ever.
+- **What we say:** the combination nobody else has, and, new in the first release (v1.2.0, #1383), learning from the German you meet: share or photograph a letter, and Sogda marks its new words by level. Offline, no account, A1 to C2, mock exams for every step, and meanings and pronunciation in the learner's own script. We show it with real screens, never claim it with superlatives. **No price, "free", rating, user count, testimonial or pass promise**, ever.
 - **Where:**
   - **One approved post in each of about eight communities,** with the admins asked first. The biggest are the Bangla student groups in Germany (62.1K and 124.8K members), the largest Ukrainian diaspora chat that allows it, and the most active Polish group in Germany.
   - **Pitches** to the roundups, DW Russian and four creators.
@@ -53,7 +53,7 @@ The listing can't go live, or can't be worth announcing, until these are done. T
 | # | Gate | Why it matters | Who | Where |
 |---|---|---|---|---|
 | **1** | **Check the Play account's type and creation date.** A personal account created after 13 Nov 2023 must run a closed test with **at least 12 testers opted in for 14 days in a row** before it may apply for Production. Google's review then "usually takes seven days or less". | If it applies, **launch is about three weeks after the 12th tester opts in** (14 days, plus the review), and recruiting testers becomes the first campaign. Production, pre-registration and open testing all stay locked until then (https://support.google.com/googleplay/android-developer/answer/14151465, read 2026-10-02) | The owner | #1239 |
-| 2 | Sign and upload 1.1.0, with the listing in en, bn, pl and ru: titles, texts, screenshots per locale and the feature graphics, all on `main` | The listing itself | The owner | #1123 |
+| 2 | Sign and upload v1.2.0 (1.2.0+10, #1312), the first release (#1383), with the listing in en, bn, pl and ru: titles, texts, screenshots per locale and the feature graphics, all on `main` | The listing itself | The owner | #1123 |
 | 3 | The promo video on YouTube (unlisted, ads off), linked in the listing | Play autoplays its first 30 s on the listing | agent-5 makes it, the owner uploads it | #1211 |
 | 4 | Search Console, Bing and Yandex for sogda.de | Without them, G4 can't be measured | The owner | O1 on sogda-website #56 |
 | 5 | The accounts the plan uses (§5) | The Bangla groups need a real profile; the Page and the channel are where links point | The owner, from agent-5's kit | #1240 |
@@ -121,7 +121,7 @@ The dated version is [`calendar.md`](calendar.md), weeks −3 to +6.
 
 | Phase | When | What happens | The owner's part |
 |---|---|---|---|
-| **0. Gates** | Now | D1; 1.1.0 uploaded (#1123); Search Console (O1) | Check the account; upload; verify the site |
+| **0. Gates** | Now | D1; v1.2.0 uploaded to the closed track (#1312); Search Console (O1) | Check the account; upload; verify the site |
 | **1. Test and ask** | Week −3 (only with the testing rule) and week −2 | The closed test with real learners (#1239); the accounts from the kit (#1240); every admin asked once; AlternativeTo suggested; the Bangla guide submitted (#1246) | Open the test track and the Group; claim the handles; message the admins |
 | **2. Ready** | Week −1 | The launch kit, reviewed in five languages (#1210); the promo video (#1211); the outreach list re-checked (#1212); the site's badge ready (sogda-website #45); r/German's moderators asked about the wiki | Approve the kit; upload the video, unlisted |
 | **3. Launch week** | L to L+6 | L: the testers and the O4 list first, then Sogda's own channels, then each community in its evening. L+1, L+2: the pitches. L+2: Show HN. L+3 to L+7: the creators | About an hour on L, then one sitting a day. Answer every comment as the maker |
@@ -185,7 +185,7 @@ Answer here or on the issue named. Each one has a recommendation.
 | D4 | Show HN on L+2, and Product Hunt (only as an app, never a "course") | **Show HN yes**, written as the maker's story. **Product Hunt only if the owner wants a launch day there:** it's a badge, not an install channel |
 | D5 | How to answer "is it free?" or "what does it cost?" in comments | The owner's answer. Our copy never says "free" or a price, and r/German's rule turns on "non-free and/or proprietary" |
 | D6 | Ask for a Play rating inside the app (#1237) | **Yes, once, after a real milestone**, in the first update after launch |
-| D7 | A German (de-DE) Play listing, though the app has no German interface | **Not for 1.1.0.** Play falls back to the English listing. Revisit with the site's German audience |
+| D7 | A German (de-DE) Play listing, though the app has no German interface | **Not for the first release.** Play falls back to the English listing. Revisit with the site's German audience |
 | D8 | The language for Ukrainian and mixed communities (the app has no Ukrainian) | **Ask the admins.** Russian only where the chat itself writes Russian, otherwise English. A Ukrainian note would need a native reviewer the team doesn't have |
 
 ## 11. The work, as issues
@@ -199,7 +199,7 @@ Every piece of the plan is an issue in lane M on the board, label `marketing`.
 | **Now (D1: yes)** | **#1239** | **The closed test: the call for testers in five languages, the Group, the feedback log, the production form** |
 | Before launch | #1209 → #1205 → #1206 | Templates, then the stills and video tools every series needs |
 | Before launch | #1240 | The profile kit for the owner's accounts |
-| Before launch | #1208 | The feature review of 1.1.0, as a marketer. Every finding becomes an issue (the first: #1237) |
+| Done | #1208 | The feature review (of v1.1.0), as a marketer. Every finding becomes an issue (the first: #1237) |
 | Before launch | #1207 | Post drafts and the weekly due-list, from the calendar and the facts |
 | Week −1 | #1210, #1211, #1212 | The launch kit, the promo video, and the outreach list with sogda-website #76's pitches |
 | From launch | #1241, #1242, #1243, #1244, #1245 | The five formats as series: your letters, der/die/das, the mock-exam task, false friends, flight mode |
