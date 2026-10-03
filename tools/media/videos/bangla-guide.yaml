@@ -1,0 +1,34 @@
+# #1206: a word looked up, its page with the pronunciation in Bangla letters,
+# and spoken. Recorded in the app's English, meanings in English and Bangla
+# (emulator-5558's learner); captions in en and bn.
+locales: [en, bn]
+steps:
+  - launch
+  - sleep5
+  - "tap:Search"
+  - sleep2
+  - "type:Zeit"
+  - sleep3
+  - "tap:die Zeit"
+  - sleep4
+  - "tap:Pronounce"
+  - sleep4
+  - back
+  - sleep2
+cut: [10, 34]
+captions:
+  - from: 0
+    to: 9
+    text:
+      en: Look up any word of the course
+      bn: কোর্সের যেকোনো শব্দ খুঁজুন
+  - from: 9.5
+    to: 17
+    text:
+      en: Its meaning in your language, its pronunciation in Bangla letters
+      bn: অর্থ আপনার ভাষায়, উচ্চারণ বাংলা হরফে
+  - from: 17.5
+    to: 24
+    text:
+      en: Heard on your phone, without internet
+      bn: ফোনেই শুনুন, ইন্টারনেট ছাড়া

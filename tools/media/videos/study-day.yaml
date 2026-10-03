@@ -1,0 +1,41 @@
+# #1206: a study day, from Today to two cards rated. Recorded in the app's
+# English, on emulator-5558's learner (day 1, A1.1); captions in en and bn.
+# Times are seconds of the cut video. Numbers only as {tokens} of site-facts.json.
+locales: [en, bn]
+steps:
+  - launch
+  - sleep6
+  - "tap:Start today"
+  - sleep3
+  - "tap:Show meaning"
+  - sleep4
+  - "tap:Good"
+  - sleep3
+  - "tap:Show meaning"
+  - sleep4
+  - "tap:Good"
+  - sleep3
+  - "tap:Close the session"
+  - sleep2
+cut: [9, 36]
+captions:
+  - from: 0
+    to: 6.5
+    text:
+      en: Your plan for today, ready when you open the app
+      bn: অ্যাপ খুললেই আজকের পরিকল্পনা তৈরি
+  - from: 7
+    to: 12
+    text:
+      en: A word, its example and its sound
+      bn: শব্দ, তার উদাহরণ আর উচ্চারণ
+  - from: 12.5
+    to: 19
+    text:
+      en: "Say how well you knew it: spaced revision brings it back in time"
+      bn: "কতটা মনে ছিল বলুন: স্পেসড রিভিশন ঠিক সময়ে আবার দেখাবে"
+  - from: 19.5
+    to: 27
+    text:
+      en: "{totals.words} words from A1 to C2, offline"
+      bn: "A1 থেকে C2 পর্যন্ত {totals.words}টি শব্দ, অফলাইনে"

@@ -1,0 +1,77 @@
+"""#1206: the video tool's scripts, captions and ffmpeg graph (the recording
+and the render need the emulator, ffmpeg and Chromium: the device check)."""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "media"))
+
+import video  # noqa: E402
+
+GOOD = {
+    "name": "t",
+    "locales": ["en", "bn"],
+    "steps": ["launch", "sleep2"],
+    "cut": [1, 11],
+    "captions": [
+        {"from": 0, "to": 4, "text": {"en": "From A1 to C2.2", "bn": "A1 থেকে C2"}},
+        {"from": 4.5, "to": 10, "text": {"en": "{totals.words} words", "bn": "{totals.words}টি শব্দ"}},
+    ],
+}
+
+
+def with_(**change) -> dict:
+    return {**GOOD, **change}
+
+
+def test_the_committed_scripts_load_and_fill_their_facts():
+    for name in ("study-day", "bangla-guide"):
+        script = video.load(name)
+        assert {"en", "bn"} <= set(script["locales"])
+        for lang in script["locales"]:
+            assert all(text for _, _, text in video.captions(script, lang))
+
+
+def test_a_caption_takes_its_numbers_from_the_facts_each_languages_way():
+    video.check(GOOD)
+    words = video.fill("{totals.words}", "en")
+    assert video.captions(GOOD, "en")[1][2] == f"{words} words"
+    assert video.captions(GOOD, "bn")[1][2].startswith(words.translate(str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")))
+
+
+@pytest.mark.parametrize("script, why", [
+    (with_(captions=[{"from": 0, "to": 4, "text": {"en": "5142 words", "bn": "শব্দ"}}]), "types a number"),
+    (with_(captions=[{"from": 0, "to": 4, "text": {"en": "Words"}}]), "has no bn"),
+    (with_(captions=[{"from": 0, "to": 4, "text": {"en": "a", "bn": "b"}},
+                     {"from": 3, "to": 6, "text": {"en": "a", "bn": "b"}}]), "must follow"),
+    (with_(captions=[{"from": 8, "to": 12, "text": {"en": "a", "bn": "b"}}]), "stay in the cut"),
+    (with_(cut=[5, 5]), "cut must be"),
+    (with_(steps=[]), "steps must be"),
+])
+def test_a_broken_script_is_refused(script, why):
+    with pytest.raises(video.ScriptError, match=why):
+        video.check(script)
+
+
+def test_the_graph_switches_the_frames_on_the_captions_and_trims_to_the_cut(tmp_path):
+    frames = [tmp_path / f"{i}.png" for i in range(3)]
+    box = {"x": 210, "y": 500, "w": 640, "h": 1436}
+    args = video.ffmpeg_args(tmp_path / "raw.mp4", frames, box, [(0, 4), (4.5, 10)], [1, 11],
+                             tmp_path / "out.mp4")
+    graph = args[args.index("-filter_complex") + 1]
+    assert "trim=duration=10" in graph
+    assert "[1:v][2:v]overlay=enable='between(t,0,4)'" in graph
+    assert "overlay=enable='between(t,4.5,10)'" in graph
+    assert graph.endswith("overlay=210:500:shortest=1,format=yuv420p[out]")
+    assert args[args.index("-map", args.index("[out]")) + 1] == "4:a", "the silent track"
+    assert ["-ss", "1", "-to", "11"] == args[4:8]
+
+
+def test_the_caption_block_is_the_same_size_whatever_the_caption():
+    vertical, landscape = video.layout("vertical", "bn"), video.layout("landscape", "en")
+    assert vertical["direction"] == "column" and landscape["direction"] == "row"
+    assert vertical["caption_extent"] >= video.CAPTION_LINES * vertical["caption"] * vertical["line_height"]
