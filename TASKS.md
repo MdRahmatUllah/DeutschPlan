@@ -655,7 +655,7 @@ claiming the same issue. A hand edit skips that check.
 | #1404 | MK2 | M | P1 | - | launch(play): the first upload's Play Console declarations, form by form, with each answer and its source (v1.2.0) | done | agent-5 |  | #1405 |
 | #1403 | - | A | P2 | - | content(grammar): the 182 grammar topics in Bangla (title, rule, example, watch-out), the first update after launch | review | agent-1 |  | #1408 |
 | #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | done | agent-1 |  | #1410 |
-| #1412 | M9 | A | P2 | - | a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header | open |  |  |  |
+| #1412 | M9 | A | P2 | - | a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header | in-progress | agent-2 |  |  |
 
 ## Locks
 
