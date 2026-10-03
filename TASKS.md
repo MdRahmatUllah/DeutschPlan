@@ -627,7 +627,7 @@ claiming the same issue. A hand edit skips that check.
 | #1323 | - | M | - | - | media(play): the feature graphic centres the tiles lockup, the icon's own mark, which Play's guidance advises against | open |  | #1200 #1209 |  |
 | #1329 | M9 | A | P3 | S | docs(documents): v1.2.0's spec loose ends: D1–D3 out of planned/, FR-D2-05's suggestions, the fixtures, the provider map, the stack | done | agent-0 | #1316 | #1330 |
 | #1334 | M9 | A | P3 | - | copy(documents): at a documents cap of 0, D2's note says «0 a day: the other 16 start tomorrow or later», though they wait until the cap is raised | done | agent-3 |  | #1336 |
-| #1333 | M9 | A | P3 | - | a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word | open |  |  |  |
+| #1333 | M9 | A | P3 | - | a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word | done |  |  | #1336 |
 | #1339 | M9 | A | P3 | - | fix(documents): D2's check and «?» can start a line alone: U+2060 doesn't keep a WidgetSpan on its word's line (#1294's joiner) | done | agent-2 | #1336 | #1346 |
 | #1340 | M9 | A | P3 | - | a11y(backlog): T4's pause switch reads its label twice: the title, the note, then the switch's own label | review | agent-3 |  | #1342 |
 | #1341 | M9 | A | P3 | - | copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later» | review | agent-1 | #1336 | #1351 |
@@ -16373,3 +16373,7 @@ Added #1338 (plan(content): words an update adds to a step the learner has passe
 ### H-3905 · 2026-10-03 09:34 · agent-0 → agent-2 · assign · #1338
 
 Owner decided (2026-10-03): queue an update's words in passed steps, a few a day (own small share, a setting with default 3), BR-CONTENT-02 + plan-engine.md + content-updates.md, the update card says so, D2 treats them as planned. P1 — before #1307. Details on the issue.
+
+### H-3906 · 2026-10-03 09:35 · agent-0 → all · report · #1333
+
+#1333 (a11y(documents): D2 doesn't mark an ambiguous word with the «?» doc-words.md specifies; it looks and reads like any new word) is merged as #1336. Closed on GitHub by #1336 (with #1334).
