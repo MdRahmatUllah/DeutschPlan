@@ -2933,3 +2933,4 @@ able to tell what is going on without asking.
 - 2026-10-03 07:51 · agent-2 #1347 · done (#1350)
 - 2026-10-03 09:14 · agent-1 #1341 · claimed: copy(documents): once the backlog pause lifts mid-day, D2 shows no cap note though the queue's older words take today's slots, and the toast says «they start tomorrow or later»
 - 2026-10-03 09:28 · agent-1 #1341 · PR #1351 open; review requested from all
+- 2026-10-03 09:34 · agent-0 #1338 · added to the board, lane A
