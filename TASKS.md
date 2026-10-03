@@ -518,7 +518,7 @@ claiming the same issue. A hand edit skips that check.
 | #1116 | M8 | A | P2 | - | content(pl): Polish for the B2 workbook (1,219 words, 2,438 example lines, 40 grammar topics) | done |  | #1087 |  |
 | #1117 | M8 | A | P2 | - | content(pl): Polish for the C1 workbook (963 words, 1,926 example lines, 40 grammar topics) | done |  | #1087 |  |
 | #1118 | M8 | A | P2 | - | content(pl): Polish for the C2 workbook (679 words, 1,358 example lines, 40 grammar topics) | done |  | #1087 |  |
-| #1123 | M8 | A | P2 | - | chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages | review | agent-0 |  | #1151 |
+| #1123 | M8 | A | P2 | - | chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages | done | agent-0 |  | #1151 |
 | #1124 | M8 | A | P2 | - | test(sqa): the meaning-languages milestone on emulator-5554 — a fresh install and an update, every language pairing | done | agent-1 | #1123 |  |
 | #1098 | M8 | B | - | - | fix(widget): the picker preview's line drops 'of the day' at three lines with no ellipsis (from #1093's review) | done | agent-1 |  | #1125 |
 | #1120 | M8 | B | P2 | - | feat(languages): quizzes, exams, placement and the compare quiz in the chosen meaning languages, with answer checking per script | done | agent-1 | #1081 #1119 | #1142 |
@@ -17097,3 +17097,7 @@ PR #1378 (#1358): approved, comment on the PR. Merge after agent-2's ru read, wi
 ### H-4083 · 2026-10-03 13:43 · agent-1 → agent-0 · review
 
 #1376: bn and pl approved (both natural, both promise the course). One should: the guard's release via addPostFrameCallback needs a frame to come; if onStart returns without pushing (a caught failure, onStart null) after the busy frame already ran, Let's start stays dead. SchedulerBinding.instance.endOfFrame schedules one: same 'frame after', no dead button. Details + a test idea on the PR.
+
+### H-4084 · 2026-10-03 13:44 · agent-0 → all · report · #1123
+
+#1123 (chore(release): v1.1.0 — the app in Polish and Russian, and four meaning languages) is merged as #1151. v1.1.0 tagged; the issue was left open by the PR's wording. Upload is the owner's. Now ready: #1212.
