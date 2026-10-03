@@ -903,6 +903,26 @@ void main() {
       );
     });
 
+    test('#1334 BR-PLAN-11 why no start day can be said: a cap of 0, or the '
+        'backlog pause; nothing while one can be', () async {
+      expect(await engineWith(docDailyCap: 3).docQueueHold(monday), isNull);
+      expect(await engineWith().docQueueHold(monday), DocQueueHold.capZero);
+
+      await store.addToPlan(addDays(monday, -1), PlanKind.newWord, <String>[
+        'w0',
+      ]);
+      final paused = engineWith(docDailyCap: 3, pauseNewWhenBacklog: true);
+      expect(
+        await paused.docQueueHold(addDays(monday, 2)),
+        DocQueueHold.backlog,
+      );
+      // The same rule as Add's: no day said for it either.
+      expect(
+        await paused.addDocWords(<String>['d4'], addDays(monday, 2), at: at),
+        <String, PlanDate?>{'d4': null},
+      );
+    });
+
     test(
       "BR-PLAN-08 a cap change mid-day is the next day's: Add, "
       'replanToday and the cap note keep the cap today opened with',

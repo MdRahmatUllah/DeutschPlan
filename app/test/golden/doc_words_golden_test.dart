@@ -37,6 +37,23 @@ void main() {
     builder: (_) => const DocWordsScreen(id: 7),
   );
 
+  // #1333's "?" on the ambiguous words («fällt», «verschieben») and #1334's
+  // note at a cap of 0: what's added waits.
+  goldenTest(
+    'doc_words_held',
+    devices: const <GoldenDevice>[GoldenDevice.phone],
+    overrides: docWordsStub(
+      documents: FakeDocuments(
+        body:
+            'Am Montag fällt der Unterricht aus, und wir müssen den Termin '
+            'verschieben. Die Kündigung und die Nebenkosten kommen später.',
+        title: 'Elternbrief',
+      ),
+      plan: FakePlan(slots: 0, capZero: true),
+    ),
+    builder: (_) => const DocWordsScreen(id: 7),
+  );
+
   // doc-words.md, *A very long text*: its first 20,000 characters, built a
   // paragraph at a time.
   goldenTest(
