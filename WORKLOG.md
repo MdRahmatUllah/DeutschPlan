@@ -2920,3 +2920,4 @@ able to tell what is going on without asking.
 - 2026-10-03 07:03 · agent-2 #1257 · done (#1335)
 - 2026-10-03 07:05 · agent-2 #1245 · PR #1348 open; review requested from all
 - 2026-10-03 07:10 · agent-2 · #1307: dry run of D2's store shots on 5558 (share → rename in D3 → D2 → card): flow works; real shots wait for #1346 to merge (D2's marks), from main's release build
+- 2026-10-03 07:18 · agent-2 #1339 · done (#1346)
