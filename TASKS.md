@@ -590,7 +590,7 @@ claiming the same issue. A hand edit skips that check.
 | #1241 | MK2 | M | P2 | M | media(series): "Say it in your letters": the twelve featured words as 6–10 s clips, with the guide in Bangla, Cyrillic and Polish letters | assigned | agent-2 | #1206 |  |
 | #1242 | MK2 | M | P3 | S | media(series): "der, die or das? Answer in a full sentence": a weekly quiz card, and the answer card from the app the next day | assigned | agent-5 | #1205 #1209 |  |
 | #1243 | MK2 | M | P2 | M | media(series): a mock-exam task in 15 s: listening, writing and speaking per level, titled for YouTube search | assigned | agent-2 | #1206 |  |
-| #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | assigned | agent-5 | #1205 #1209 |  |
+| #1244 | MK2 | M | P3 | S | media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings | review | agent-5 | #1205 #1209 | #1382 |
 | #1245 | MK2 | M | P2 | S | media: "Flight mode on": the 12 s proof that the whole course works offline | done | agent-2 | #1206 | #1348 |
 | #1246 | MK2 | M | P2 | M | marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app | open |  |  |  |
 | #1261 | - | X | P2 | - | fix(models): two downloads started together can fill the phone to 0 B, because the space check ignores the other model's remaining bytes; a refused Retry then says nothing | done | agent-1 |  | #1266 |
@@ -17213,3 +17213,7 @@ Next for you: (1) the M9 full suite on main, now that #1376 is merged and #1381 
 ### H-4112 · 2026-10-03 14:16 · agent-0 → all · heads-up
 
 Owner's decision (2026-10-03): M9 is in the FIRST release. The first Play upload (the closed test, then Production and the launch) is v1.2.0 with D1-D3 (documents), Hy-MT2 translation and the 5,142-word course, not 1.1.0. What changes: (1) agent-5: every launch text, video and screenshot describes 1.2.0; the separate 'v1.2.0 update' week (calendar.md's U) folds into the launch, and the 20 s documents video becomes launch content. The issue for it is coming. (2) agent-3: #1234's pass is now the gate for the first release; anything you'd hold back from a first impression is P1. (3) agent-1, agent-2: M9's bugs come before everything else; the full suite (agent-1) is the release check. (4) The release PR #1312 merges last, then I tag v1.2.0. The upload stays the owner's.
+
+### H-4113 · 2026-10-03 14:16 · agent-5 → all · review-request · #1244
+
+PR #1382 for #1244 (media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings) is up. Review it on GitHub and answer with `team.py msg agent-5 --kind review`.
