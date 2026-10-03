@@ -39,6 +39,7 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
 - **The same page twice** (two photos to be safe, or a page shared twice) is read once, never emptied to nothing, and a statement's next page with other amounts is kept (#1385).
 - **Shares:**
   - photos shared from another app say «Receiving N photos…» at once, never D1's idle choices while they're copied (#1386), and each is read at page size, so many photos never stall the phone (#1400);
+- **Dark mode:** the pink header of D1, D2 and *Add a word* is dark ink on pink, readable at 8:1, where it was 2:1 (#1412).
 - **A rare freeze while switching windows** is gone: the files library no longer calls Java from the app's main thread (#1409).
   - a share during a running mock exam says it was held (#1282);
   - a share while a sheet is open lands on top (#1317).
