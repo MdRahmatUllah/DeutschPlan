@@ -20,6 +20,7 @@ import 'package:sogda/domain/documents/tokens.dart';
 import 'package:sogda/features/search/search_header.dart';
 import 'package:sogda/l10n/generated/app_localizations.dart';
 import 'package:sogda/router/routes.dart';
+import 'package:sogda/services/page_photos.dart';
 import 'package:sogda/services/pdf_text.dart';
 
 /// D1, Learn from a document (`docs/04-screens/doc-import.md`):
@@ -89,6 +90,10 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   /// can't be read: a copy to drop there means it was read already.
   late final PdfText _pdf = ref.read(pdfTextProvider);
 
+  /// The camera, the gallery and OCR, kept for [dispose] as [_pdf] is: a
+  /// photo to drop there means it was read already.
+  late final PagePhotos _pagePhotos = ref.read(pagePhotosProvider);
+
   /// The photos, in page order, as they were taken or chosen (#1229).
   List<String> _photos = const <String>[];
 
@@ -124,8 +129,10 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
 
   @override
   void dispose() {
-    // Left from an error panel: the copy a Retry would have read goes too.
+    // Left from an error panel: the copy a Retry would have read goes too,
+    // and so do the photos' (agent-3 on #1371).
     _dropPdf();
+    _dropPhotos();
     _lifecycle.dispose();
     _paste.dispose();
     _check.dispose();
@@ -153,6 +160,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     if (!mounted) return;
     if (images != null && images.pages.isNotEmpty) {
       _dropPdf();
+      _dropPhotos(keep: images.pages);
       _readChosen(images.pages, images.of);
       return;
     }
@@ -160,7 +168,9 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     final pdf = await ref.read(sharedTextProvider).takePdf();
     if (!mounted) return;
     if (pdf != null) {
-      _dropPdf();
+      // A file of the same name shared again is copied to the same path.
+      if (pdf != _pdfPath) _dropPdf();
+      _dropPhotos();
       _pdfPath = pdf;
       _pdfName = pdf.split(RegExp(r'[/\\]')).last;
       unawaited(_readPdf());
@@ -190,7 +200,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
 
   /// *Take photos*: the camera, a page at a time, up to [docMaxPages].
   Future<void> _takePage() async {
-    final photo = await ref.read(pagePhotosProvider).take();
+    final photo = await _pagePhotos.take();
     if (!mounted) return;
     if (photo != null && _photos.length < docMaxPages) {
       _photos = <String>[..._photos, photo];
@@ -200,7 +210,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
 
   /// *Choose images*: several from the phone, then straight to reading.
   Future<void> _chooseImages() async {
-    final chosen = await ref.read(pagePhotosProvider).choose();
+    final chosen = await _pagePhotos.choose();
     if (!mounted || chosen.isEmpty) return;
     _readChosen(chosen, chosen.length);
   }
@@ -294,7 +304,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     try {
       for (final (i, photo) in _photos.indexed) {
         setState(() => _readingPage = i + 1);
-        final page = await ref.read(pagePhotosProvider).read(photo);
+        final page = await _pagePhotos.read(photo);
         if (!mounted || run != _run) return;
         _pages.add(page);
         _texts.add(page.text);
@@ -335,17 +345,17 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
   /// *Take again*: the hard page photographed again, then read.
   Future<void> _retake() async {
     final i = _checkPage;
-    final photo = await ref.read(pagePhotosProvider).take();
+    final photo = await _pagePhotos.take();
     if (!mounted || photo == null) return;
     final run = ++_run;
-    unawaited(ref.read(pagePhotosProvider).discard(<String>[_photos[i]]));
+    unawaited(_pagePhotos.discard(<String>[_photos[i]]));
     setState(() {
       _photos = <String>[..._photos]..[i] = photo;
       _readingPage = i + 1;
       _stage = _Stage.reading;
     });
     try {
-      final page = await ref.read(pagePhotosProvider).read(photo);
+      final page = await _pagePhotos.read(photo);
       if (!mounted || run != _run) return;
       _pages[i] = page;
       _texts[i] = page.text;
@@ -414,9 +424,7 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
       }
     }
     // The copies image_picker made, metadata and all, aren't kept twice.
-    if (_source == 'photo') {
-      unawaited(ref.read(pagePhotosProvider).discard(_photos));
-    }
+    if (_source == 'photo') _dropPhotos();
     if (!mounted || run != _run) return;
     // #1320: D2 says what was cut; this screen's note goes with it.
     DocWordsRoute.instead(
@@ -439,15 +447,25 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
     _pdfPath = '';
   }
 
+  /// BR-DOC-05: the photos' copies (the camera's, the gallery's, a share's
+  /// with all their metadata) go once D1 is done with them, but [keep], a
+  /// new share's: a photo of the same name shared again is copied to the
+  /// same path.
+  void _dropPhotos({List<String> keep = const <String>[]}) {
+    final gone = <String>[
+      for (final photo in _photos)
+        if (!keep.contains(photo)) photo,
+    ];
+    if (gone.isNotEmpty) unawaited(_pagePhotos.discard(gone));
+    _photos = const <String>[];
+  }
+
   /// FR-D1-05: back to the choices, with nothing saved.
   void _cancel() {
-    if (_photos.isNotEmpty) {
-      unawaited(ref.read(pagePhotosProvider).discard(_photos));
-    }
+    _dropPhotos();
     _dropPdf();
     setState(() {
       _run++;
-      _photos = const <String>[];
       _stage = _Stage.choose;
     });
   }

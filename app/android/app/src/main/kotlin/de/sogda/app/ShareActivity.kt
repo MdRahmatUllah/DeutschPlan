@@ -3,7 +3,12 @@ package de.sogda.app
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
+import android.util.Log
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -32,6 +37,10 @@ class ShareActivity : Activity() {
 
         /** D1's page limit (`docMaxPages`, BR-DOC-02). */
         private const val MAX_PAGES = 30
+
+        /** The picker's page (`page_photos.dart`): at most 2400 px wide, JPEG 90. */
+        private const val MAX_WIDTH = 2400
+        private const val QUALITY = 90
 
         /** The text the last share brought, once (`sogda/share`). */
         fun take(): String? = pending.also { pending = null }
@@ -118,7 +127,9 @@ class ShareActivity : Activity() {
     /**
      * The photos shared (#1332): one on `SEND`, several on `SEND_MULTIPLE`,
      * in the sender's order, each another app's `content:` URI ([stream]'s
-     * rule), and an image as its provider says, when it says.
+     * rule). Not the type its provider names: some say
+     * `application/octet-stream` for a WebP; [page] decodes each, and one
+     * that isn't an image is left out there.
      */
     @Suppress("DEPRECATION")
     private fun streams(intent: Intent): List<Uri> =
@@ -130,10 +141,7 @@ class ShareActivity : Activity() {
             } else {
                 intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
             }
-        ).orEmpty().filter { uri ->
-            fromAnotherApp(uri) &&
-                contentResolver.getType(uri)?.startsWith("image/") != false
-        }
+        ).orEmpty().filter(::fromAnotherApp)
 
     private fun fromAnotherApp(uri: Uri): Boolean =
         uri.scheme == ContentResolver.SCHEME_CONTENT &&
@@ -155,24 +163,70 @@ class ShareActivity : Activity() {
     }
 
     /**
-     * [uris] copied to `cache/shared/` in order, numbered so two of one name
-     * stay two, the share before deleted. One that fails to copy is left out.
-     * D1 drops the copies once read (#1298); a kept page is rewritten
-     * without its metadata (BR-DOC-05).
+     * [uris] as pages in `cache/shared/`, in order, numbered so two of one
+     * name stay two, the share before deleted. Each is the picker's page
+     * ([page]); one that can't be read is left out.
      */
-    // ponytail: copied as sent, not resized like the picker's 2400 px: a
-    // 12 MP photo is read and kept at full size. Resize here if kept pages
-    // grow too big.
     private fun copyImages(uris: List<Uri>): List<String> {
         val folder = sharedFolder()
         return uris.mapIndexedNotNull { i, uri ->
             runCatching {
                 val number = (i + 1).toString().padStart(2, '0')
-                val file = File(folder, "$number-${displayName(uri) ?: "photo.jpg"}")
-                copy(uri, file)
+                val name = (displayName(uri) ?: "photo").substringBeforeLast('.')
+                val file = File(folder, "$number-$name.jpg")
+                page(uri, file)
                 file.path
-            }.getOrNull()
+            }.onFailure { Log.w("SogdaShare", "shared page ${i + 1} not read", it) }
+                .getOrNull()
         }
+    }
+
+    /**
+     * [uri] written to [file] as the picker writes a chosen page (agent-2 on
+     * #1371): upright, at most [MAX_WIDTH] wide, a JPEG at [QUALITY]. ML Kit
+     * then never decodes a 200 MP photo whole (~800 MB), a HEIC or WebP page
+     * becomes one D1 can keep, and the copy carries no metadata at all (no
+     * GPS, BR-DOC-05), even one left behind. Decoded at the smallest power
+     * of two that stays at least [MAX_WIDTH] wide.
+     */
+    // ponytail: the width alone bounds it, as the picker's maxWidth: a very
+    // long screenshot (1080 x 20000) is decoded whole, ~90 MB. Cap the
+    // height too if one ever runs out of memory.
+    private fun page(uri: Uri, file: File) {
+        // A format with no EXIF (or none this phone reads) stands as drawn.
+        val degrees = runCatching {
+            contentResolver.openInputStream(uri)!!.use { input ->
+                when (ExifInterface(input).getAttributeInt(ExifInterface.TAG_ORIENTATION, 0)) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                    ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                    ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                    else -> 0
+                }
+            }
+        }.getOrDefault(0)
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        contentResolver.openInputStream(uri)!!.use { BitmapFactory.decodeStream(it, null, bounds) }
+        // The page's width as it stands, once turned upright.
+        val width = if (degrees % 180 == 0) bounds.outWidth else bounds.outHeight
+        require(width > 0) { "not an image" }
+        var sample = 1
+        while (width / (sample * 2) >= MAX_WIDTH) sample *= 2
+        val decoded = contentResolver.openInputStream(uri)!!.use {
+            BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply { inSampleSize = sample })
+        } ?: error("not an image")
+        val scale = MAX_WIDTH.toFloat() / (if (degrees % 180 == 0) decoded.width else decoded.height)
+        val matrix = Matrix().apply {
+            if (scale < 1) postScale(scale, scale)
+            postRotate(degrees.toFloat())
+        }
+        val upright = if (matrix.isIdentity) {
+            decoded
+        } else {
+            Bitmap.createBitmap(decoded, 0, 0, decoded.width, decoded.height, matrix, true)
+        }
+        file.outputStream().use { upright.compress(Bitmap.CompressFormat.JPEG, QUALITY, it) }
+        if (upright !== decoded) upright.recycle()
+        decoded.recycle()
     }
 
     /** `cache/shared/`, emptied: one share's copies at a time. */

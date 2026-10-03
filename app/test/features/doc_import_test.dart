@@ -460,6 +460,60 @@ void main() {
       expect(router.state.uri.queryParameters['cut'], isNull);
     });
 
+    testWidgets('#1332 BR-DOC-05 leaving D1 from a failed read, the shared '
+        "photos' copies go too (agent-3 on #1371)", (tester) async {
+      const shared = <String>['/s/01-a.jpg', '/s/02-b.jpg'];
+      final photos = FakePhotos(failures: 1);
+      final router = await pump(
+        tester,
+        docs: FakeDocuments(),
+        photos: photos,
+        arrival: '1',
+        shared: FakeShared(null, images: (pages: shared, of: 2)),
+      );
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+      expect(photos.discarded, isEmpty, reason: 'kept for Retry');
+
+      router.go('/search');
+      await tester.pumpAndSettle();
+      expect(find.text('R1'), findsOneWidget);
+      expect(photos.discarded, shared);
+    });
+
+    testWidgets("#1332 BR-DOC-05 a second share over the first: the first's "
+        "copies go, never the second's own path (agent-3 on #1371)", (
+      tester,
+    ) async {
+      final docs = FakeDocuments();
+      final photos = FakePhotos(
+        failures: 1,
+        pages: <String, OcrPage>{'/s/01-a.jpg': page('Die Miete ist da.')},
+      );
+      final shared = FakeShared(
+        null,
+        images: (pages: <String>['/s/01-a.jpg', '/s/02-b.jpg'], of: 2),
+      );
+      final router = await pump(
+        tester,
+        docs: docs,
+        photos: photos,
+        arrival: '1',
+        shared: shared,
+      );
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+
+      // A photo of the same name shared again is copied to the same path.
+      shared.images = (pages: <String>['/s/01-a.jpg'], of: 1);
+      router.go('/search/import?arrival=2');
+      await tester.pumpAndSettle();
+      expect(docs.saved.single.source, 'photo');
+      expect(docs.saved.single.body, 'Die Miete ist da.');
+      expect(photos.discarded, <String>[
+        '/s/02-b.jpg',
+        '/s/01-a.jpg',
+      ], reason: "the first's other copy, then the second's once saved, once");
+    });
+
     testWidgets('#1332 FR-D1-02 more than 30 photos shared: the 30 copied are '
         'read, and the learner told', (tester) async {
       final copied = <String>[for (var i = 1; i <= 30; i++) '/s/$i.jpg'];
@@ -757,6 +811,29 @@ void main() {
         '/cache/shared/A.pdf',
         '/cache/shared/B.pdf',
       ]);
+    });
+
+    testWidgets('BR-DOC-05 the same PDF shared again over a failed read: its '
+        'new copy, at the same path, is read, not dropped (#1371)', (
+      tester,
+    ) async {
+      final docs = FakeDocuments();
+      final pdf = FakePdf(path: null, pages: brief, failures: 1);
+      final shared = FakeShared(null, pdf: '/cache/shared/A.pdf');
+      final router = await pump(
+        tester,
+        docs: docs,
+        pdf: pdf,
+        arrival: '1',
+        shared: shared,
+      );
+      expect(find.text(l10n.docImportFailed), findsOneWidget);
+
+      shared.pdf = '/cache/shared/A.pdf';
+      router.go('/search/import?arrival=2');
+      await tester.pumpAndSettle();
+      expect(docs.saved.single.source, 'pdf');
+      expect(pdf.discarded, <String>['/cache/shared/A.pdf']);
     });
 
     testWidgets('backing out of the picker stays on the choices', (
