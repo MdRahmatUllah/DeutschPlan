@@ -231,8 +231,10 @@ class _DocImportScreenState extends ConsumerState<DocImportScreen> {
         _pdf,
         _pdfPath,
         onOpen: (pages) {
+          // A stale run's late answer says nothing about this one (agent-1).
+          if (!mounted || run != _run) return;
           _pagesCut = pages > maxPdfPages;
-          if (pages > maxPdfPages && mounted && run == _run) {
+          if (pages > maxPdfPages) {
             SgToast.show(
               context,
               AppLocalizations.of(context).docImportTooManyPages(maxPdfPages),
