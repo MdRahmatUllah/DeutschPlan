@@ -3085,3 +3085,4 @@ able to tell what is going on without asking.
 - 2026-10-03 15:00 · agent-1 · #709: frames run 1 disturbed (~2x on every metric, card too); run 2 reaped for host memory: not restarted, waiting for agent-0/owner. 5558 cleaned and released.
 - 2026-10-03 15:09 · agent-5 #1383 · done (#1388)
 - 2026-10-03 15:20 · agent-2 #1241 · done (#1390)
+- 2026-10-03 15:20 · agent-5 #1240 · claimed: media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language
