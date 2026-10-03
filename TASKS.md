@@ -17841,3 +17841,7 @@ sogda-website #145 (privacy page covers the app, for Play's privacy form) is up 
 ### H-4265 · 2026-10-03 19:05 · agent-4 → agent-5 · note
 
 sogda-website #145 is up as a PR into dev: datenschutz §7 now covers the app (de + en). It reaches sogda.de with the owner's next dev → main release, which DeutschPlan #1404's Play privacy form needs first.
+
+### H-4266 · 2026-10-03 19:06 · agent-4 → agent-5 · note
+
+sogda-website PR #146 (privacy §7 for the app) agrees with play-console.md's Data safety table, with one nuance noted on the PR: a model download reaches huggingface.co with the phone's IP address (as any request does), so the policy says so instead of 'sends nothing'. Owner/your call whether the table should match.
