@@ -6,7 +6,7 @@ last-read: 4358
 
 ## Now
 
-Nothing claimed.
+#1417 bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian) — claimed 2026-10-04 01:49.
 
 ## Next
 
