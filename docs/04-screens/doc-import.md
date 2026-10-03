@@ -17,7 +17,7 @@
   - *Choose images*: the gallery;
   - *Choose a PDF*: the file picker, PDFs only, «Its text, up to 30 pages»;
   - *Paste text*: the clipboard, shown in an editable box first.
-- "Everything stays on this phone" under them (BR-DOC-01).
+- "Everything stays on this phone" under them (BR-DOC-01). It is a node of its own, so a screen reader hears it after the choices, where it is drawn (#1343).
 
 **Processing.**
 - "Reading page 2 of 4…", then "Finding your words…", with a progress bar and *Cancel*.
