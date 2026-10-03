@@ -295,7 +295,7 @@ Design targets the build is held to:
 | Cold start to Today | < 1.5 s on a mid-range 2022 Android phone | `accessibility-performance.md` |
 | Warm start | < 500 ms | same |
 | Search | < 50 ms a keystroke | same |
-| App size | at most 3 % over the baseline (the arm64 APK; 54.12 MB in `tools/perf_baseline.json` since #1293) | same, ADR 27, ADR 31 |
+| App size | at most 3 % over the baseline (the arm64 APK; 89.19 MB in `tools/perf_baseline.json` since #154, Hy-MT2's llama.cpp included) | same, ADR 27, ADR 30, ADR 31 |
 | Release quality | no P1 from the SQA pass (v1.0.0's pass 4 found none, and its three P2s were fixed and rechecked) | the team board |
 
 **Questions for the owner:** Google Play Console gives aggregate installs,
@@ -317,7 +317,7 @@ the product to?
 | **Low-end phones** | With Supertonic's sessions open the app uses about 520 MB of memory (PSS, on the emulator); the voice is 399 MB to download, Hy-MT2 1.1 GB | The voice and the translator are optional; a 100 MB free-space margin is enforced; the phone voice is the fallback; Hy-MT2 needs 3.5 GiB of memory (below it, it's *Not available*), loads on the first translation, stops after 60 s, and is released in the background (`translation.md`, #1269) | Owner: a memory budget (none yet) |
 | **Machine translation quality** | In #1278's spot check of 50 words outside the course per language, Hy-MT2's meaning was wrong for 17 in Polish, 15 in Bangla and 13 in Russian | Labelled machine-translated (BR-DOC-07); offered as suggestions to check, never a pre-filled meaning (the lead's call on #1278) | The owner may change that call |
 | **Personal documents on the phone** | A letter can be a bank statement or a doctor's | App-private storage, Android backup off (BR-PRIV-02), photo metadata removed, copies deleted once read, optional auto-delete, photos never exported (BR-DOC-05, BR-DOC-06) | — |
-| **App size** | v1.2.0 adds ML Kit's text recognition (about 12 MB a phone, `doc-import.md`), pdfbox-android (+1.8 MiB, ADR 31) and llama.cpp's CPU libraries (about 21 MB at ADR 29's measure, ADR 30) | One-ABI downloads from the App Bundle; the models download separately | #1318 trims pdfbox's CJK CMaps; #1306 measures v1.2.0 feature by feature |
+| **App size** | v1.2.0 adds ML Kit's text recognition (about 12 MB a phone, `doc-import.md`), pdfbox-android (+1.8 MiB, ADR 31) and llama.cpp's CPU libraries (+22.95 MB, measured with #154, ADR 30) | One-ABI downloads from the App Bundle; the models download separately | #1318 trims pdfbox's CJK CMaps; #1306 measures v1.2.0 feature by feature |
 | **Release depends on the owner** | Release builds fail without the upload key unless they opt in to the debug key, as the agents' device checks do (#705); start time on a real phone is unchecked | `tools/release_android.py` reports the signing key | Owner: upload key, real-phone check |
 | **The app id is permanent** | `de.sogda.app` can never change once on Play | Chosen by the owner (ADR 28, #601) | — |
 | **Exam claims and trademarks** | Implying official exams would mislead | Mock exams are labelled generated; Goethe and telc named only for the level | Recheck the store texts (`store-listing.md`) before each upload; the brand kit (`docs/sogda-brand-kit/`) names no exam body |

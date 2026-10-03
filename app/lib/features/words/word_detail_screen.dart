@@ -694,16 +694,8 @@ class _Body extends ConsumerWidget {
               StudyExampleRow(
                 example,
                 onPlay: () => unawaited(say(ref, context, example.german)),
+                machine: translated[example.german],
               ),
-              if (translated[example.german] case final line?)
-                Padding(
-                  padding: const EdgeInsets.only(left: 42, top: 2),
-                  child: SgText(
-                    line,
-                    role: SgTextRole.body,
-                    color: tokens.color.textSecondary,
-                  ),
-                ),
             ],
           ],
           // #1232: every sentence the learner met the word in, newest first.

@@ -927,6 +927,16 @@ void main() {
         ('Wir wohnen in einer ruhigen Straße.', 'bn'),
       ]);
       expect(find.text('অনুবাদ'), findsNWidgets(2));
+      // Read with its sentence, as the course's line is (#154, on the S24).
+      final semantics = tester.ensureSemantics();
+      expect(
+        tester.getSemantics(find.byType(StudyExampleRow).first).label,
+        allOf(
+          contains('Die Straße ist wegen Bauarbeiten gesperrt.'),
+          contains('অনুবাদ'),
+        ),
+      );
+      semantics.dispose();
     });
 
     testWidgets('#694 CC-3 a second tap on Translate while one runs '
