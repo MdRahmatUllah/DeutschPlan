@@ -125,3 +125,31 @@ def test_the_content_build_refreshes_it_before_reading_the_workbooks(monkeypatch
     except Refreshed:
         return
     raise AssertionError("the build never refreshed the additions workbook")
+
+
+def test_sources_name_the_additions_by_their_yaml_not_the_xlsx_bytes(tmp_path, monkeypatch):
+    # #1347: the xlsx is written afresh each build, its bytes never the same twice.
+    import additions_workbook
+    from excel_to_sqlite import read_workbook
+
+    out = tmp_path / "German_Everyday_Additions.xlsx"
+    monkeypatch.setattr(additions_workbook, "OUT", out)
+    additions_workbook.write(additions_workbook.read_entries(), out)
+    assert read_workbook(out).sha256 == additions_workbook.digest()
+    # Any other workbook is named by its own bytes.
+    other = tmp_path / "German_A1_Tracker.xlsx"
+    other.write_bytes(out.read_bytes())
+    assert read_workbook(other).sha256 != additions_workbook.digest()
+
+
+def test_the_yaml_digest_ignores_line_ends_but_not_words(tmp_path):
+    from additions_workbook import digest
+
+    lf, crlf = tmp_path / "lf", tmp_path / "crlf"
+    lf.mkdir()
+    crlf.mkdir()
+    (lf / "a1.yaml").write_bytes(b"- german: Zeit\n  level: A1\n")
+    (crlf / "a1.yaml").write_bytes(b"- german: Zeit\r\n  level: A1\r\n")
+    assert digest(lf) == digest(crlf)
+    (crlf / "a1.yaml").write_bytes(b"- german: Zeiten\r\n  level: A1\r\n")
+    assert digest(lf) != digest(crlf)
