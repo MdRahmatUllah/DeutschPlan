@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "content_version": "20261003000627",
+ "content_version": "20261003021005",
  "app": {
   "version": "1.1.0",
   "package": "de.sogda.app",
@@ -2591,8 +2591,8 @@
       "ru": "персонал"
      },
      "guide": {
-      "en": "per-zoh-NAHL",
-      "bn": "পেরজোনাল",
+      "en": "pair-zoh-NAHL",
+      "bn": "পের্জোনাল",
       "pl": "per-zo-NAL",
       "ru": "пэрзонАль"
      }
@@ -2859,8 +2859,8 @@
      "guide": {
       "en": "LAY-zer",
       "bn": "লেজার",
-      "pl": "LE-zer",
-      "ru": "лЕзэр"
+      "pl": "LE-za",
+      "ru": "лЕза"
      }
     },
     {

@@ -11,7 +11,7 @@ words:
     freq: 4
     english: amount / sum
     bangla: পরিমাণ (টাকার)
-    pron_bn: বেট্রাখ
+    pron_bn: বেট্রাক
     pron_en: buh-TRAHK
     examples_de: |-
       Bitte überweisen Sie den Betrag bis Freitag.
@@ -52,13 +52,13 @@ words:
       It's hard to find a good tradesman.
     ru:
       meaning: мастер / ремесленник
-      pron: хАнтвэркер
+      pron: хАнтвэрка
       examples: |-
         Завтра придёт мастер чинить отопление.
         Трудно найти хорошего мастера.
     pl:
       meaning: fachowiec / rzemieślnik
-      pron: HANT-wer-ker
+      pron: HANT-wer-ka
       examples: |-
         Jutro przyjdzie fachowiec do ogrzewania.
         Trudno znaleźć dobrego fachowca.
@@ -104,7 +104,7 @@ words:
     english: to lead / to run (a business)
     bangla: নেতৃত্ব দেওয়া / চালানো
     pron_bn: ফ্যুরেন
-    pron_en: FUE-ren
+    pron_en: FEW-ren
     examples_de: |-
       Sie führt ein kleines Café.
       Der Weg führt zum See.
@@ -119,7 +119,7 @@ words:
         Дорога ведёт к озеру.
     pl:
       meaning: prowadzić
-      pron: FY-ren
+      pron: FÜ-ren
       examples: |-
         Prowadzi małą kawiarnię.
         Droga prowadzi do jeziora.
@@ -194,8 +194,8 @@ words:
     freq: 3
     english: staff / personnel
     bangla: কর্মী / কর্মীবৃন্দ
-    pron_bn: পেরজোনাল
-    pron_en: per-zoh-NAHL
+    pron_bn: পের্জোনাল
+    pron_en: pair-zoh-NAHL
     examples_de: |-
       Das Personal ist sehr freundlich.
       Im Krankenhaus fehlt Personal.
@@ -297,13 +297,13 @@ words:
       Dear readers!
     ru:
       meaning: читатель
-      pron: лЕзэр
+      pron: лЕза
       examples: |-
         У газеты много читателей.
         Дорогие читательницы и читатели!
     pl:
       meaning: czytelnik
-      pron: LE-zer
+      pron: LE-za
       examples: |-
         Gazeta ma wielu czytelników.
         Drogie czytelniczki i drodzy czytelnicy!
@@ -347,7 +347,7 @@ words:
     freq: 4
     english: already
     bangla: ইতিমধ্যে
-    pron_bn: বেরাইট্স
+    pron_bn: বেরাইট্‌স
     pron_en: buh-RITES
     examples_de: |-
       Die Regel gilt bereits seit Januar.
@@ -409,7 +409,7 @@ words:
     freq: 3
     english: explanation / declaration
     bangla: ব্যাখ্যা / ঘোষণা
-    pron_bn: এরক্লেরুং
+    pron_bn: এয়াক্লেরুং
     pron_en: air-KLAIR-oong
     examples_de: |-
       Danke für die Erklärung!
@@ -419,13 +419,13 @@ words:
       There is a simple explanation for the mistake.
     ru:
       meaning: объяснение / заявление
-      pron: эрклЭрунг
+      pron: эаклЭрунг
       examples: |-
         Спасибо за объяснение!
         У этой ошибки есть простое объяснение.
     pl:
       meaning: wyjaśnienie / oświadczenie
-      pron: er-KLE-rung
+      pron: ea-KLE-rung
       examples: |-
         Dziękuję za wyjaśnienie!
         Na ten błąd jest proste wyjaśnienie.

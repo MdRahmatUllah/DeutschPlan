@@ -8,9 +8,9 @@ words:
     category: People & personality
     freq: 4
     english: personal / in person
-    bangla: ব্যক্তিগত / নিজে
+    bangla: ব্যক্তিগত / সরাসরি
     pron_bn: পেরজ্যোনলিশ
-    pron_en: per-ZURN-lihy
+    pron_en: pair-ZURN-lihy
     examples_de: |-
       Ich möchte Sie persönlich sprechen.
       Das ist eine persönliche Frage.
@@ -25,7 +25,7 @@ words:
         Это личный вопрос.
     pl:
       meaning: osobisty / osobiście
-      pron: per-ZEN-liś
+      pron: per-ZÖN-liś
       examples: |-
         Chciałbym porozmawiać z panem osobiście.
         To osobiste pytanie.
@@ -127,8 +127,8 @@ words:
     freq: 4
     english: to check / to examine
     bangla: পরীক্ষা করা / যাচাই করা
-    pron_bn: প্রুফেন
-    pron_en: PRUE-fen
+    pron_bn: প্র‍্যুফেন
+    pron_en: PREW-fen
     examples_de: |-
       Wir prüfen Ihren Antrag.
       Bitte prüfen Sie die Rechnung.
@@ -143,7 +143,7 @@ words:
         Пожалуйста, проверьте счёт.
     pl:
       meaning: sprawdzać
-      pron: PRY-fen
+      pron: PRÜ-fen
       examples: |-
         Sprawdzamy pana wniosek.
         Proszę sprawdzić rachunek.
@@ -186,7 +186,7 @@ words:
     freq: 3
     english: understanding
     bangla: বোঝাপড়া / সহানুভূতি
-    pron_bn: ফেরশ্টেন্টনিস
+    pron_bn: ফেয়াশ্টেন্টনিস
     pron_en: fair-SHTENT-nis
     examples_de: |-
       Wir bitten um Ihr Verständnis.
@@ -196,13 +196,13 @@ words:
       I understand your situation.
     ru:
       meaning: понимание
-      pron: фэрштЭнтнис
+      pron: фаштЭнтнис
       examples: |-
         Просим отнестись с пониманием.
         Я понимаю твою ситуацию.
     pl:
       meaning: zrozumienie
-      pron: fer-SZTENT-nis
+      pron: fea-SZTENT-nis
       examples: |-
         Prosimy o wyrozumiałość.
         Rozumiem twoją sytuację.
@@ -882,7 +882,7 @@ words:
     freq: 4
     english: visit / visitors
     bangla: সাক্ষাৎ / অতিথি
-    pron_bn: বেসুখ
+    pron_bn: বেজুখ
     pron_en: buh-ZOOKH
     examples_de: |-
       Am Wochenende bekommen wir Besuch.

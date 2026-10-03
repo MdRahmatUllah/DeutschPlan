@@ -11,8 +11,8 @@ words:
     freq: 3
     english: analysis
     bangla: বিশ্লেষণ
-    pron_bn: আনালুজে
-    pron_en: ah-nah-LUE-zuh
+    pron_bn: আনাল্যুজে
+    pron_en: ah-nah-LEW-zuh
     examples_de: |-
       Die Analyse der Daten dauert eine Woche.
       Das Labor macht eine Analyse des Wassers.
@@ -27,7 +27,7 @@ words:
         Лаборатория делает анализ воды.
     pl:
       meaning: analiza
-      pron: a-na-LY-ze
+      pron: a-na-LÜ-ze
       examples: |-
         Analiza danych trwa tydzień.
         Laboratorium wykonuje analizę wody.

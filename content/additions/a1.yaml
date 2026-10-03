@@ -361,7 +361,7 @@ words:
         Я вешаю куртку на крючок.
     pl:
       meaning: wisieć / wieszać
-      pron: HEN-gen
+      pron: HENG-en
       examples: |-
         Obraz wisi na ścianie.
         Wieszam kurtkę na haczyku.
@@ -436,8 +436,8 @@ words:
     freq: 5
     english: back
     bangla: ফিরে / পিছনে
-    pron_bn: ৎসুরুক
-    pron_en: tsoo-RUEK
+    pron_bn: ৎসুর‍্যুক
+    pron_en: tsoo-REWK
     examples_de: |-
       Wann kommst du zurück?
       Ich bringe die Flaschen zurück.
@@ -452,10 +452,10 @@ words:
         Я отношу бутылки обратно.
     pl:
       meaning: z powrotem
-      pron: cu-RYK
+      pron: cu-RÜK
       examples: |-
         Kiedy wracasz?
-        Odnoszę butelki z powrotem.
+        Oddaję butelki.
 
   - german: Pass
     article: der
