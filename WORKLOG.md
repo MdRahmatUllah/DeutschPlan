@@ -3031,3 +3031,4 @@ able to tell what is going on without asking.
 - 2026-10-03 13:09 · agent-2 #1364 · claimed: ux(exams): the mock exams, a headline fact, stay locked for about 81 days at setup's defaults; a day-1 sample task, or a pointer to the unlock setting
 - 2026-10-03 13:10 · agent-5 · unlocked emulator-5556
 - 2026-10-03 13:15 · agent-0 #1356 · PR #1373 open; review requested from agent-1
+- 2026-10-03 13:16 · agent-0 #1358 · assigned to agent-1
