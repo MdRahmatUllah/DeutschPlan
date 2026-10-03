@@ -3,7 +3,7 @@
 // describe.
 // ignore_for_file: riverpod_lint/scoped_providers_should_specify_dependencies
 
-import 'package:flutter/rendering.dart' show BackdropFilterLayer, BackdropKey;
+import 'package:flutter/rendering.dart' show BackdropFilterLayer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -15,22 +15,14 @@ import '../../features/me_fixtures.dart';
 import '../../features/today_fixtures.dart';
 import '../../golden/golden_harness.dart';
 
-/// #709: L1, Today and Me put 6 to 12 glass panels on screen, and each read
-/// the backdrop on its own. The panels in a screen's list share one read now;
-/// what keeps a read of its own is named in `SgSurface`'s blur budget.
+/// #709: L1, Today and Me put 6 to 19 glass panels on screen, each blurring
+/// the backdrop: far over the budget of three. A panel in the screen's list
+/// draws over the aurora with no blur of its own now; what keeps one is named
+/// in `SgSurface`'s blur budget.
 void main() {
-  /// How many times the engine reads the backdrop for the frame on screen:
-  /// once per shared key, and once for each blur that has none.
-  (int blurs, int reads) backdrop(WidgetTester tester) {
-    final keys = <BackdropKey?>[
-      for (final layer in tester.layers)
-        if (layer is BackdropFilterLayer) layer.backdropKey,
-    ];
-    return (
-      keys.length,
-      keys.where((key) => key == null).length + keys.nonNulls.toSet().length,
-    );
-  }
+  /// The blurs the engine draws for the frame on screen.
+  int blurs(WidgetTester tester) =>
+      tester.layers.whereType<BackdropFilterLayer>().length;
 
   for (final (name, screen) in <(String, WidgetBuilder)>[
     (
@@ -46,7 +38,7 @@ void main() {
     ),
     ('Me', (_) => ProviderScope(overrides: meStub(), child: const MeScreen())),
   ]) {
-    testWidgets('#709: $name under glass reads its backdrop once', (
+    testWidgets('#709 $name under glass keeps to the budget of three blurs', (
       tester,
     ) async {
       await tester.pumpGolden(
@@ -54,10 +46,9 @@ void main() {
         mode: GoldenMode.glass,
         device: GoldenDevice.phone,
       );
-      final (blurs, reads) = backdrop(tester);
-      // L1 has 19 on a phone, Today 7 and Me 6.
-      expect(blurs, greaterThan(5), reason: 'the panels still blur');
-      expect(reads, 1, reason: '$blurs panels');
+      // L1 drew 19 on a phone, Today 7 and Me 6; none now, as their panels
+      // are all in their lists (the shell's tab bar keeps its own).
+      expect(blurs(tester), lessThanOrEqualTo(3));
     });
   }
 }
