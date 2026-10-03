@@ -85,6 +85,21 @@ const List<Licence> nativeLicences = <Licence>[
   // #1229: Google's SDK and its bundled Latin model are no open-source
   // licence, but terms, published as web pages: named here with their
   // links, not fetched (`tools/licences.py` checks texts it can compare).
+  // #1237: in_app_review's Play In-App Review library and Play services:
+  // Google's terms too, named with their links.
+  (
+    name: 'Google Play In-App Review, Google Play services',
+    kind: 'Play Core Software Development Kit Terms of Service',
+    asset: null,
+    text:
+        'Sogda asks for Google Play\'s rating card once, after your first '
+        'passed mock exam, through the Google Play In-App Review library and '
+        'Google Play services. They are used under the Play Core Software '
+        'Development Kit Terms of Service '
+        '(https://developer.android.com/guide/playcore) and the Google APIs '
+        'Terms of Service (https://developers.google.com/terms).\n\n'
+        'The card is Google Play\'s own: Sogda sends nothing about you.',
+  ),
   (
     name: 'ML Kit text recognition (Latin, bundled)',
     kind: 'ML Kit Terms of Service',

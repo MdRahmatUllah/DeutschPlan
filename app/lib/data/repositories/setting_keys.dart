@@ -330,6 +330,10 @@ abstract final class SettingKeys {
   /// share sheet took. Unset until the first.
   static const lastExport = DateSetting('last_export');
 
+  /// BR-RATE-01 (#1237): Play's review card has been asked for, after the
+  /// first passed mock exam, so it never is again. All the app keeps of it.
+  static const playReviewAsked = BoolSetting('play_review_asked', false);
+
   // Translation.
   static const mtEnabled = BoolSetting('mt_enabled', false);
 
@@ -409,6 +413,7 @@ abstract final class SettingKeys {
     learnerName,
     examTimer,
     lastExport,
+    playReviewAsked,
     plannedStudyDays,
     plannedDocCap,
     docDailyCap,

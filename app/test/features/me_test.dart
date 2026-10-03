@@ -68,6 +68,7 @@ void main() {
     MeView? view,
     Locale? locale,
     List<DocumentEntry> documents = const <DocumentEntry>[],
+    OpenWeb? openApp,
   ]) async {
     went = null;
     tester.view
@@ -77,7 +78,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: UniqueKey(),
-        overrides: meStub(view, documents),
+        overrides: meStub(view, documents, openApp),
         child: MaterialApp.router(
           theme: AppTheme.light(),
           localizationsDelegates: appLocalizationsDelegates,
@@ -550,6 +551,41 @@ void main() {
         expect(went, path);
       });
     }
+  });
+
+  group('FR-M1-05 Rate Sogda on Google Play (#1237)', () {
+    testWidgets('opens the listing, in the Play Store app', (tester) async {
+      final opened = <Uri>[];
+      await pump(tester, null, null, const <DocumentEntry>[], (page) async {
+        opened.add(page);
+        return true;
+      });
+      await tapAndSettle(tester, find.text(l10n.meRatePlay));
+      expect(opened, <Uri>[playListing]);
+      expect(
+        playListing.toString(),
+        'https://play.google.com/store/apps/details?id=de.sogda.app',
+      );
+      expect(find.text(l10n.webOpenFailed), findsNothing);
+    });
+
+    testWidgets('with nothing to open it, says so', (tester) async {
+      await pump(
+        tester,
+        null,
+        null,
+        const <DocumentEntry>[],
+        (_) async => false,
+      );
+      await tapAndSettle(tester, find.text(l10n.meRatePlay));
+      expect(find.text(l10n.webOpenFailed), findsOneWidget);
+    });
+
+    testWidgets('not on iOS: the app is on Play alone', (tester) async {
+      await pump(tester);
+      expect(find.text(l10n.meRatePlay), findsNothing);
+      expect(find.text(l10n.meAbout), findsOneWidget);
+    }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
   });
 
   testWidgets('#1295 My documents says how many are kept', (tester) async {
