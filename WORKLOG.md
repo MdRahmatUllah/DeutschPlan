@@ -3003,3 +3003,4 @@ able to tell what is going on without asking.
 - 2026-10-03 12:13 · agent-2 #1361 · claimed: a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words
 - 2026-10-03 12:13 · agent-1 #1353 · PR #1367 open; review requested from all
 - 2026-10-03 12:15 · agent-1 · locked emulator-5556: #1353/#1359 device check (PR #1367): D2 at 200 % bn, T4 row tap
+- 2026-10-03 12:20 · agent-5 · #1236 part 1 up as PR #1368 (messages, calendar, posts.py 1.2.0 week). Next: build main (v1.2.0) and record the 20 s video on emulator-5556 with video.py
