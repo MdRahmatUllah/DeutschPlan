@@ -572,7 +572,11 @@ class ContextualCard extends StatelessWidget {
       ContextualKind.contentUpdate => (
         tokens.color.der,
         l10n.todayCardUpdateTitle,
-        l10n.todayCardUpdateBody(offer.added, offer.removed, offer.changed),
+        <String>[
+          l10n.todayCardUpdateBody(offer.added, offer.removed, offer.changed),
+          // BR-CONTENT-02 (#1338): the words in steps already done.
+          if (offer.queued > 0) l10n.todayCardUpdateQueued(offer.queued),
+        ].join('\n'),
         null,
       ),
       ContextualKind.pauseOffer => (
