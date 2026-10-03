@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Wait for #1413 to merge -> build main under team.py device -> 5554 dark mode: re-measure D2/R2 headers (and D1) -> sign off #1234 (unblocks #1312 + tag). Keep watching the board.
+After #1312 merges + v1.2.0 tag: build the tag, check About/version 1.2.0 and What's new on 5554. Keep watching the board.
 
 ## Memory
 
