@@ -669,6 +669,9 @@ class PlanEngine {
     if (open) await _topUpDocWords(today);
 
     final todays = (await _store.docPlannedOn(today)).toSet();
+    // #1315: a word today's plan has by the course's route starts today
+    // too, though the queue never took it (agent-3: «dringend»).
+    final planned = await plannedToday(today);
     final waiting = await _store.docWaiting(limit: 1 << 20);
     final wanted = uids.toSet();
     final days = step?.studyDaysMask ?? allDays;
@@ -682,10 +685,10 @@ class PlanEngine {
         : 0;
     final starts = <String, PlanDate?>{
       for (final uid in uids)
-        if (todays.contains(uid)) uid: today,
+        if (planned.contains(uid)) uid: today,
     };
     for (final (position, uid) in waiting.indexed) {
-      if (!wanted.contains(uid)) continue;
+      if (!wanted.contains(uid) || planned.contains(uid)) continue;
       if (_docDailyCap <= 0 || paused) {
         starts[uid] = null;
       } else if (position < roomToday) {
@@ -700,6 +703,14 @@ class PlanEngine {
     }
     return starts;
   });
+
+  /// Every word in [today]'s plan to learn: the course's new words and the
+  /// document queue's (#1315). D2 counts none of them against the cap note,
+  /// and an *Add* of one says today.
+  Future<Set<String>> plannedToday(PlanDate today) async => <String>{
+    ...await _store.docPlannedOn(today),
+    ...await _store.plannedOn(today, PlanKind.newWord),
+  };
 
   /// D2's cap note before *Add* (FR-D2-02, BR-PLAN-11): how many more words
   /// [today] can take from the document queue. None on a rest day, while

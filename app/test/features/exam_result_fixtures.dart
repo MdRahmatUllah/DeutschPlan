@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart' show Fake;
 import 'package:sogda/core/providers/app_providers.dart';
 import 'package:sogda/data/db/app_database.dart';
 import 'package:sogda/data/repositories/exam_result_service.dart';
 import 'package:sogda/domain/exam_generator.dart';
 import 'package:sogda/domain/grammar_item_generator.dart';
 import 'package:sogda/domain/plan_engine.dart' show PlanDate;
+import 'package:sogda/services/play_review.dart';
 
 import 'exam_run_fixtures.dart';
 
@@ -191,9 +193,19 @@ class StubExamResult implements ExamResultService {
   }
 }
 
-List<Override> examResultStub([StubExamResult? stub]) => <Override>[
-  examResultServiceProvider.overrideWithValue(stub ?? StubExamResult()),
-];
+List<Override> examResultStub([StubExamResult? stub, FakePlayReview? review]) =>
+    <Override>[
+      examResultServiceProvider.overrideWithValue(stub ?? StubExamResult()),
+      playReviewProvider.overrideWithValue(review ?? FakePlayReview()),
+    ];
+
+/// Play's review card (BR-RATE-01), counted: never the plugin in a test.
+class FakePlayReview extends Fake implements PlayReview {
+  int asked = 0;
+
+  @override
+  Future<void> afterPass() async => asked++;
+}
 
 /// A paper that does not pass: the artboard's, with six Vocabulary and all
 /// of Reverse missed — 25 of 48.

@@ -1,0 +1,92 @@
+{
+  "about": "The brand's values for every still and video (#1209). Tools read them here, through tools/media/brand.py; brand.md says why. Colours are the brand kit's (docs/sogda-brand-kit/README.md) and the app's gender colours (app/lib/core/theme/sg_tokens.dart, light); tools/tests/test_brand.py holds them to both, and computes every pair's contrast.",
+  "colours": {
+    "lagoon": "#00C2B2",
+    "sun": "#FFC61A",
+    "ink": "#15121F",
+    "paper": "#FFF8EE",
+    "night": "#13111D",
+    "cobalt": "#3D5AFE",
+    "raspberry": "#FF3D7F",
+    "emerald": "#00B86B"
+  },
+  "pairs": [
+    {"text": "ink", "on": "lagoon", "use": "text"},
+    {"text": "ink", "on": "sun", "use": "text"},
+    {"text": "ink", "on": "paper", "use": "text"},
+    {"text": "ink", "on": "raspberry", "use": "text"},
+    {"text": "ink", "on": "emerald", "use": "text"},
+    {"text": "paper", "on": "ink", "use": "text"},
+    {"text": "paper", "on": "night", "use": "text"},
+    {"text": "paper", "on": "cobalt", "use": "text"},
+    {"text": "lagoon", "on": "night", "use": "text"},
+    {"text": "sun", "on": "night", "use": "text"},
+    {"text": "emerald", "on": "night", "use": "text"},
+    {"text": "ink", "on": "cobalt", "use": "large"},
+    {"text": "sun", "on": "cobalt", "use": "large"}
+  ],
+  "never": [
+    {"text": "paper", "on": "lagoon"},
+    {"text": "sun", "on": "lagoon"},
+    {"text": "sun", "on": "paper"},
+    {"text": "lagoon", "on": "paper"}
+  ],
+  "type": {
+    "fonts": {
+      "Inter": "app/assets/fonts/Inter-Variable.ttf",
+      "Noto Sans Bengali": "app/assets/fonts/NotoSansBengali-Variable.ttf"
+    },
+    "weights": {"headline": 800, "title": 600, "body": 500, "caption": 500},
+    "tracking": {"headline": -0.02, "title": -0.01},
+    "line_height": {"latin": 1.2, "bengali": 1.5},
+    "sizes": {
+      "feature": {"title": 46},
+      "square": {"headline": 88, "body": 44, "caption": 32},
+      "portrait": {"headline": 88, "body": 44, "caption": 32},
+      "vertical": {"headline": 96, "body": 48, "caption": 36},
+      "landscape": {"headline": 96, "body": 48, "caption": 34}
+    }
+  },
+  "frame": {
+    "radius": 24,
+    "border": 3,
+    "shadow": 6,
+    "logo": {
+      "light": "docs/sogda-brand-kit/svg/lockup-horizontal-tiles-light.svg",
+      "dark": "docs/sogda-brand-kit/svg/lockup-horizontal-tiles-dark.svg",
+      "width": 0.4
+    }
+  },
+  "formats": {
+    "feature": {
+      "size": [1024, 500],
+      "for": "Play's feature graphic (RGB, no alpha)",
+      "safe": {"top": 0.10, "right": 0.15, "bottom": 0.10, "left": 0.15},
+      "source": "ours: Play draws its cutoff zones only as a picture (support.google.com/googleplay/android-developer/answer/9866151, read 2026-10-03)"
+    },
+    "square": {
+      "size": [1080, 1080],
+      "for": "feed posts (Instagram, Facebook, LinkedIn, X)",
+      "safe": {"top": 0.06, "right": 0.06, "bottom": 0.06, "left": 0.06},
+      "source": "ours: a feed shows the whole image"
+    },
+    "portrait": {
+      "size": [1080, 1350],
+      "for": "feed posts, the tallest a feed shows whole",
+      "safe": {"top": 0.06, "right": 0.06, "bottom": 0.06, "left": 0.06},
+      "source": "ours: a feed shows the whole image"
+    },
+    "vertical": {
+      "size": [1080, 1920],
+      "for": "Reels, Stories, TikTok, Shorts",
+      "safe": {"top": 0.14, "right": 0.06, "bottom": 0.35, "left": 0.06},
+      "source": "Meta's Reels safe zone (facebook.com/business/ads-guide/update/image/instagram-reels, read 2026-10-03); TikTok's own safe-zone article is gone, so the same zone serves TikTok and Shorts"
+    },
+    "landscape": {
+      "size": [1920, 1080],
+      "for": "YouTube, the website, slides",
+      "safe": {"top": 0.06, "right": 0.06, "bottom": 0.06, "left": 0.06},
+      "source": "ours"
+    }
+  }
+}

@@ -26,11 +26,14 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from export_site_facts import LISTING, listing_texts  # noqa: E402
 
+from brand import BRAND, colour, size  # noqa: E402  # #1209: the one place
+
 OUT = LISTING.parent / "store" / "feature-graphic"
 KIT = ROOT / "docs" / "sogda-brand-kit"
 FONTS = ROOT / "app" / "assets" / "fonts"
 LOCALES = {"en": "English (en-US)", "bn": "Bangla (bn-BD)", "pl": "Polish (pl-PL)", "ru": "Russian (ru-RU)"}
-WIDTH, HEIGHT = 1024, 500
+WIDTH, HEIGHT = size("feature")
+FRAME, TYPE = BRAND["frame"], BRAND["type"]
 
 
 def font(name: str) -> str:
@@ -50,10 +53,10 @@ def page_html(title: str, lang: str) -> str:
 @font-face{{font-family:Inter;src:url(data:font/ttf;base64,{font("Inter-Variable.ttf")});font-weight:100 900}}
 @font-face{{font-family:Bengali;src:url(data:font/ttf;base64,{font("NotoSansBengali-Variable.ttf")});font-weight:100 900}}
 *{{margin:0}}
-body{{width:{WIDTH}px;height:{HEIGHT}px;background:#00C2B2;color:#15121F;font-family:Inter,Bengali,sans-serif;
+body{{width:{WIDTH}px;height:{HEIGHT}px;background:{colour("lagoon")};color:{colour("ink")};font-family:Inter,Bengali,sans-serif;
 display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;overflow:hidden}}
-svg{{display:block;border-radius:24px;box-shadow:6px 6px 0 #15121F}}
-h1{{font-size:46px;font-weight:600;letter-spacing:-0.01em;white-space:nowrap}}
+svg{{display:block;border-radius:{FRAME["radius"]}px;box-shadow:{FRAME["shadow"]}px {FRAME["shadow"]}px 0 {colour("ink")}}}
+h1{{font-size:{TYPE["sizes"]["feature"]["title"]}px;font-weight:{TYPE["weights"]["title"]};letter-spacing:{TYPE["tracking"]["title"]}em;white-space:nowrap}}
 </style></head><body>{lockup()}<h1>{title}</h1></body></html>"""
 
 
