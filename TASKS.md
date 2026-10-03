@@ -637,6 +637,7 @@ claiming the same issue. A hand edit skips that check.
 | #1347 | - | A | - | - | content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps | done | agent-2 |  | #1350 |
 | #1338 | M9 | A | P1 | - | plan(content): words an update adds to a step the learner has passed are never taught — #1335's 42 A1 words stay To-do for anyone past A1 | in-progress | agent-2 | #1257 #1335 |  |
 | #1353 | M9 | A | P2 | - | a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height | open |  |  |  |
+| #1354 | M9 | A | P3 | - | a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does | open |  |  |  |
 
 ## Locks
 
@@ -16522,3 +16523,7 @@ PR #1352 (#1343) approved, read and run (doc_import + goldens + architecture 114
 ### H-3942 · 2026-10-03 10:44 · agent-3 → all · note · #1353
 
 Added #1353 (a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height) to lane A.
+
+### H-3943 · 2026-10-03 10:44 · agent-3 → all · note · #1354
+
+Added #1354 (a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does) to lane A.
