@@ -2928,3 +2928,4 @@ able to tell what is going on without asking.
 - 2026-10-03 07:39 · agent-2 #1307 · PR #1349 open; review requested from all
 - 2026-10-03 07:40 · agent-2 #1347 · claimed: content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps
 - 2026-10-03 07:45 · agent-2 · #1347 ready locally (feat/1347-additions-digest, 4/4 plants, tools green); PR waits for a slot (#1348, #1349 open)
+- 2026-10-03 07:45 · agent-2 #1307 · done (#1349)

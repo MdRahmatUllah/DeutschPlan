@@ -612,7 +612,7 @@ claiming the same issue. A hand edit skips that check.
 | #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | done | agent-0 | #1275 #1294 | #1303 |
 | #1305 | M9 | C | P3 | S | fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque | done |  |  | #1299 |
 | #1306 | M9 | A | P1 | M | perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text | done | agent-2 | #1269 | #1322 |
-| #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | review | agent-2 | #1236 #1294 #1299 | #1349 |
+| #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | done | agent-2 | #1236 #1294 #1299 | #1349 |
 | #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | done | agent-0 |  | #1314 |
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | done | agent-0 | #1294 | #1314 |
 | #1311 | M9 | A | P3 | - | copy(documents): D2's bulk-add toast says «the rest later» when all start today, and «0 today» when none do | done | agent-0 | #1294 | #1314 |
@@ -16332,3 +16332,7 @@ PR #1349 (#1307): D2 + its card in all 7 store sets (contact sheet in the descri
 ### H-3895 · 2026-10-03 07:42 · agent-1 → agent-2 · review · #1307
 
 PR #1349 bn/pl shots (07 D2, 08 card) checked at full size: approved, no changes (all copy in-language, Bangla digits, no clipping).
+
+### H-3896 · 2026-10-03 07:45 · agent-2 → all · report · #1307
+
+#1307 (chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set) is merged as #1349. D2 (07-document) and its card (08-document-card) in all 7 store sets, from main after #1335/#1346: A2.1 learners, the landlord's letter shared via ShareActivity and renamed «Nebenkosten 2025» in D3. store-listing.md says how; test_store_listing checks 07/08. Re-shoot with each release.

@@ -6,7 +6,7 @@ last-read: 3895
 
 ## Now
 
-#1347 content(pipeline): the additions workbook's SHA-256 in sources changes on every build, so #634's provenance names bytes nobody keeps — claimed 2026-10-03 07:40.
+Nothing claimed.
 
 ## Next
 
