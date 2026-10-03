@@ -179,7 +179,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 
 ## Screenshots
 
-`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, eight each: the first six from the release x86_64 APK of 1.1.0+4 on emulator-5558 (wiped, API 36), English UI and English meanings, the course's own content (re-shot 2026-10-01: the 1.0 set counted 5,594 words):
+`store/phone-light`, `phone-dark`, `tablet-light` and `tablet-dark`, eight each: the first six from the release x86_64 APK of main at 1.2.0's content (5,142 words) on emulator-5558 (a fresh install, API 36), English UI and English meanings, the course's own content (re-shot 2026-10-03, #1392: 1.1.0's set counted 5,069 words, and 1.0's 5,594):
 
 | File | Screen |
 |---|---|
