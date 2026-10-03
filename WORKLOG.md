@@ -3102,3 +3102,4 @@ able to tell what is going on without asking.
 - 2026-10-03 16:01 · agent-5 #1246 · PR #1397 open; review requested from all
 - 2026-10-03 16:02 · agent-5 · #1246: PR #1397 up (Bangla visa guide for germanprobashe.com); bn review agent-1 + owner, facts agent-0
 - 2026-10-03 16:03 · agent-5 #1211 · claimed: media(play): a 30 s promo video for the Play listing, en with bn, pl and ru subtitles
+- 2026-10-03 16:04 · agent-5 · locked emulator-5556: #1211 promo video: finding coordinates, then recording takes
