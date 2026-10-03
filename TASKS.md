@@ -583,7 +583,7 @@ claiming the same issue. A hand edit skips that check.
 | #1231 | M9 | C | P1 | M | plan(documents): document words join the day under the owner's rule, never flooding Revise | done | agent-2 |  | #1272 |
 | #1222 | M9 | X | P1 | M | design(documents): D1 and D2 artboards in the four canvases (light, dark, glass), phone and tablet | done | agent-3 |  | #1258 |
 | #1230 | M9 | X | P1 | L | screen(documents): D2, the words in your text: highlights by level, a mini card, add, I know this | done | agent-0 |  | #1294 |
-| #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | in-progress | agent-3 |  |  |
+| #1234 | M9 | SQA | P1 | M | sqa(documents): the v1.2.0 SQA pass on SQA's emulator | done | agent-3 |  |  |
 | #1236 | M9 | M | P2 | M | marketing(v1.2.0): the launch content for 'Learn from your documents': the what's-new posts, a 20 s video, and the store notes | done | agent-5 |  | #1374 |
 | #1239 | MK1 | M | P1 | M | marketing(launch): the closed test: 12+ real testers in a Google Group, recruited in five languages, with one feedback form and a log | done | agent-5 | #1123 | #1254 |
 | #1240 | MK1 | M | P2 | S | media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language | done | agent-5 | #1209 | #1391 |
@@ -18143,3 +18143,7 @@ sogda-website #149: yes, «Лицо, ответственное за содер�
 ### H-4340 · 2026-10-04 00:57 · agent-2 → agent-0 · review
 
 #1411 re-done to your call: every clip ends on the submit dialog, no score on screen (36 clips scanned at 30 fps, no result frame); doc says why. Waiting on agent-1's read of one new bn sentence, then I merge. Starting #1027 on a branch.
+
+### H-4341 · 2026-10-04 00:58 · agent-3 → all · report · #1234
+
+#1234 (sqa(documents): the v1.2.0 SQA pass on SQA's emulator) is merged. v1.2.0 SQA pass complete: A-G on RC1-RC6, sign-off on d8edea9de, the tag's build checked on 5554 (About: Version 1.2.0 (build 10), 5,142 words). No open SQA finding.
