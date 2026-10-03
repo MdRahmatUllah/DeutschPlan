@@ -3,7 +3,7 @@ Greetings & politeness,Приветствия и вежливость,Powitania 
 Question words & pronouns,Вопросительные слова и местоимения,Słowa pytające i zaimki,প্রশ্নবোধক শব্দ ও সর্বনাম
 Core verbs,Основные глаголы,Podstawowe czasowniki,মূল ক্রিয়া
 Core adjectives & adverbs,Основные прилагательные и наречия,Podstawowe przymiotniki i przysłówki,মূল বিশেষণ ও ক্রিয়াবিশেষণ
-Connectors & function words,Союзы и служебные слова,Spójniki i słowa funkcyjne,সংযোজক ও কার্যকরী শব্দ
+Connectors & function words,Союзы и служебные слова,Spójniki i słowa funkcyjne,সংযোজক ও ব্যাকরণগত শব্দ
 Prepositions & articles,Предлоги и артикли,Przyimki i rodzajniki,পদান্বয়ী অব্যয় ও আর্টিকেল
 "Numbers, time & dates","Числа, время и даты","Liczby, czas i daty","সংখ্যা, সময় ও তারিখ"
 Daily routine,Распорядок дня,Codzienne czynności,দৈনন্দিন রুটিন
@@ -14,7 +14,7 @@ Body & health,Тело и здоровье,Ciało i zdrowie,শরীর ও স
 Home & furniture,Дом и мебель,Dom i meble,বাড়ি ও আসবাবপত্র
 Home appliances,Бытовая техника,Sprzęt AGD,গৃহস্থালি যন্ত্রপাতি
 Kitchen & cooking,Кухня и готовка,Kuchnia i gotowanie,রান্নাঘর ও রান্না
-Grocery & supermarket,Продукты и супермаркет,Zakupy spożywcze i supermarket,মুদিবাজার ও সুপারমার্কেট
+Grocery & supermarket,Продукты и супермаркет,Zakupy spożywcze i supermarket,মুদি দোকান ও সুপারমার্কেট
 Food & drink,Еда и напитки,Jedzenie i picie,খাবার ও পানীয়
 Restaurant & café,Ресторан и кафе,Restauracja i kawiarnia,রেস্তোরাঁ ও ক্যাফে
 Shopping & clothing,Покупки и одежда,Zakupy i ubrania,কেনাকাটা ও পোশাক
@@ -24,7 +24,7 @@ Shopping & clothing,Покупки и одежда,Zakupy i ubrania,কেনা
 Animals & plants,Животные и растения,Zwierzęta i rośliny,প্রাণী ও উদ্ভিদ
 "City, places & directions","Город, места и направления","Miasto, miejsca i kierunki","শহর, স্থান ও দিকনির্দেশ"
 Transport & travel,Транспорт и путешествия,Transport i podróże,যানবাহন ও ভ্রমণ
-"Car, bike & driving","Машина, велосипед и вождение","Samochód, rower i jazda","গাড়ি, সাইকেল ও গাড়ি চালানো"
+"Car, bike & driving","Машина, велосипед и вождение","Samochód, rower i jazda","গাড়ি, সাইকেল ও ড্রাইভিং"
 Hotel & holidays,Отель и отпуск,Hotel i urlop,হোটেল ও ছুটি
 Office & work,Офис и работа,Biuro i praca,অফিস ও কাজ
 IT & software,IT и программы,IT i oprogramowanie,আইটি ও সফটওয়্যার
@@ -50,7 +50,7 @@ Advanced verbs,Глаголы продвинутого уровня,Czasowniki z
 Advanced adjectives & adverbs,Прилагательные и наречия продвинутого уровня,Przymiotniki i przysłówki zaawansowane,উচ্চতর বিশেষণ ও ক্রিয়াবিশেষণ
 Nomen-Verb-Verbindungen,Nomen-Verb-Verbindungen,Nomen-Verb-Verbindungen,Nomen-Verb-Verbindungen
 Verbs with prepositions,Глаголы с предлогами,Czasowniki z przyimkami,পদান্বয়ী অব্যয়সহ ক্রিয়া
-Collocations & fixed expressions,Коллокации и устойчивые выражения,Kolokacje i stałe wyrażenia,কোলোকেশন ও বাঁধা বাক্যাংশ
+Collocations & fixed expressions,Коллокации и устойчивые выражения,Kolokacje i stałe wyrażenia,কোলোকেশন ও বাঁধাধরা বাক্যাংশ
 Abstract nouns & concepts,Абстрактные существительные и понятия,Rzeczowniki abstrakcyjne i pojęcia,বিমূর্ত বিশেষ্য ও ধারণা
 Word formation,Словообразование,Słowotwórstwo,শব্দগঠন
 Synonyms & register,Синонимы и регистр,Synonimy i rejestr,সমার্থক শব্দ ও রেজিস্টার
@@ -131,5 +131,5 @@ Philosophy & Geistesgeschichte,Философия и Geistesgeschichte,Filozofia
 Economics & policy discourse,Экономика и политический дискурс,Ekonomia i dyskurs polityczny,অর্থনীতি ও নীতিগত আলোচনা
 Science communication,Научная коммуникация,Komunikacja naukowa,বিজ্ঞান যোগাযোগ
 Translation traps (EN/BN → DE),Ловушки перевода (EN/BN → DE),Pułapki tłumaczeniowe (EN/BN → DE),অনুবাদের ফাঁদ (EN/BN → DE)
-Text production: Erörterung & Essay,Письменная речь: Erörterung и эссе,Tworzenie tekstu: Erörterung i esej,লেখা তৈরি: Erörterung ও প্রবন্ধ
+Text production: Erörterung & Essay,Письменная речь: Erörterung и эссе,Tworzenie tekstu: Erörterung i esej,রচনা: Erörterung ও প্রবন্ধ
 Exam strategy: Goethe C2 (GDS),Стратегия экзамена: Goethe C2 (GDS),Strategia egzaminacyjna: Goethe C2 (GDS),পরীক্ষার কৌশল: Goethe C2 (GDS)
