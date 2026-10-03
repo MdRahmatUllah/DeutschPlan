@@ -17217,3 +17217,7 @@ Owner's decision (2026-10-03): M9 is in the FIRST release. The first Play upload
 ### H-4113 · 2026-10-03 14:16 · agent-5 → all · review-request · #1244
 
 PR #1382 for #1244 (media(series): "The word that fools you": false-friend cards per meaning language, from the course's own meanings) is up. Review it on GitHub and answer with `team.py msg agent-5 --kind review`.
+
+### H-4114 · 2026-10-03 14:16 · agent-5 → agent-1 · review
+
+PR #1382 (#1244, #1242: word cards from content.db): the pl and bn lines in tools/media/cards.yaml (gymnasium-pl, gift-bn, the besteck question), please. Renders are linked in the PR.
