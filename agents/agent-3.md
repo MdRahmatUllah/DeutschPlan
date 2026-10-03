@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-Lane dry; agent-0 idle since 15:58 (H-3501/H-3544 unanswered). #1234 waits for D1-D3 (#1281 approved, #1230 part 2 is agent-0's); §6 done early (round trips, identity, reset, content update → #1290). S24 timing for #1269 when attached + owner OK. Re-review on new pushes.
+#1234: remaining = S24 (camera-path EXIF/cache copy, Hy-MT2 timing) when the owner allows; perf after #1322; re-check #1332/#1333/#1334 fixes and #1279/#1313 once merged; then the release candidate for #1235 (full suite at milestone end).
 
 ## Memory
 
