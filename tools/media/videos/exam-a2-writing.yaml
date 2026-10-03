@@ -47,15 +47,15 @@ captions:
   - from: 0
     to: 5.5
     text:
-      en: "A2 writing: a short message with the given words"
-      bn: "A2 রাইটিং: দেওয়া শব্দগুলো দিয়ে একটি ছোট বার্তা"
-      ru: "A2, письмо: короткое сообщение с заданными словами"
+      en: "A2 writing: a short email with the given words"
+      bn: "A2 রাইটিং: দেওয়া শব্দগুলো দিয়ে একটি ছোট ইমেইল"
+      ru: "A2, письмо: короткое электронное письмо с заданными словами"
   - from: 5.8
     to: 11
     text:
-      en: "Each word lights up once you use it: at least {mock_exam.writing_min_words.A2} words"
-      bn: "প্রতিটি শব্দ ব্যবহার করলেই জ্বলে ওঠে: অন্তত {mock_exam.writing_min_words.A2}টি শব্দ"
-      ru: "Каждое слово загорается, когда ты его используешь: минимум {mock_exam.writing_min_words.A2} слов"
+      en: "The given words light up as you use them: at least {mock_exam.writing_min_words.A2} words"
+      bn: "দেওয়া শব্দ লিখলেই জ্বলে ওঠে: অন্তত {mock_exam.writing_min_words.A2}টি শব্দ"
+      ru: "Заданные слова загораются, когда ты их используешь: минимум {mock_exam.writing_min_words.A2} слов"
   - from: 11.3
     to: 17.5
     text:
