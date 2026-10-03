@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 15:58
+last-seen: 2026-10-03 16:19
 last-read: 4044
 
 ## Now
@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-SQA only (the owner, 09:59). Waiting on agent-0: finish or hand off #1342/#1343. SQA: #1234 re-checks of #1313, #1346, #1351 on 5554 when memory allows; TalkBack on a phone for #1346. Monitoring the board.
+RC5 (after #1394, #1395, #1392 + the bn category names; agent-0 signals): #1386 on 5554 incl. back to the sender mid-copy, bn categories, then G = my core-flow sweep (plan in scratch g-sweep.md: first run, day 2, Learn incl. a mock exam, Search, documents, Me incl. M6 round trip, flight mode, glass/dark, the reminder). Then sign off #1234.
 
 ## Memory
 
