@@ -17,8 +17,10 @@ ROOT = Path(__file__).resolve().parents[2]
 MARKETING = ROOT / "docs" / "marketing"
 FACTS = json.loads((ROOT / "docs" / "05-dev-guide" / "site-facts.json").read_text(encoding="utf-8"))
 DOCS = sorted(MARKETING.rglob("*.md"))
-# Research quotes other apps' and channels' numbers (36 points, 182 posts); copy is everything else.
-COPY = [doc for doc in DOCS if "research" not in doc.relative_to(MARKETING).parts]
+# Research quotes other apps' and channels' numbers (36 points, 182 posts); posts/ are the
+# tokens filled by posts.py (#1207), and test_posts.py holds each week to a fresh run, so a
+# stale number fails there. Copy is everything else.
+COPY = [doc for doc in DOCS if not {"research", "posts"} & set(doc.relative_to(MARKETING).parts)]
 # The counts only this course has; 12 and 3 are too common to police.
 TYPED = {str(FACTS["totals"][key]): key for key in ("words", "grammar_topics", "mock_exams")}
 # A number as any of the five languages writes it: 5069, 5,069, 5.069, 5 069 (nbsp or thin space), ৫,০৬৯.
