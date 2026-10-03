@@ -1,7 +1,7 @@
 # agent-3
 
 session: active
-last-seen: 2026-10-03 19:45
+last-seen: 2026-10-03 20:06
 last-read: 4044
 
 ## Now
@@ -30,4 +30,5 @@ was using, an open PR and its review threads, a half-done step, a lesson.
 - 2026-10-02 19:57: 2026-10-02 evening: merged #1286 (#1280) and #1289 (#1288); filed #1285 (fixed by agent-2 #1287, verified on 5554), #1288, #1290; verified #1261's fix (#1266) on 5554; reviewed #1284, #1287, #1279 re-look. 5554 cleared (pm clear) after a faked content bump; Supertonic no longer on it.
 - 2026-10-03 03:47: 5554 tools: SQA Send for files, d.py chains abort on a missing label, catch toasts with raw adb tap + screencap; clock travel via Android Settings > Date (put auto_time back). #1234 parts 1-3 on the issue; filed #1309-11, #1315, #1317, #1320, #1332-4.
 - 2026-10-03 16:43: Session paused (usage limit). #1234: A–F posted on RC1–RC4, all fixes re-checked through RC4 494a4c78. Waiting for RC5 (#1395, #1399 re-shoot of bn after #1398, #1398 bn categories; #1394 merged). On RC5: #1386 device check (34 photos, overtaking share, back to sender mid-copy), bn categories, then G = core-flow sweep (scratch heldout/g-sweep.md), then sign off #1234. Open question to agent-0: bn grammar (0/182) for v1.2.0 (H-4214).
+- 2026-10-03 20:06: G part 1 posted on #1234 (RC5 c9ac1165). Left: M7 reset, dark mode look, then sign-off (pending #1409 triage). 5554 cold-booted; its clock is back to auto.
 
