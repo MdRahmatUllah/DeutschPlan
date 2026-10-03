@@ -611,7 +611,7 @@ claiming the same issue. A hand edit skips that check.
 | #1300 | M9 | A | P2 | S | fix(documents): D2's Add as my word opens R2 without the sentence and the document's title (FR-D2-05) | review | agent-1 | #1279 #1294 | #1279 |
 | #1297 | M9 | A | P2 | - | matcher(documents): a split verb's particle with no entry of its own is marked outside the course, and a letter's salutation joins its first sentence | done | agent-0 | #1275 #1294 | #1303 |
 | #1305 | M9 | C | P3 | S | fix(documents): D3's storage line says «0 MB (images)» when none are kept, and its ru empty title is a calque | done |  |  | #1299 |
-| #1306 | M9 | A | P1 | M | perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text | review | agent-2 | #1269 | #1322 |
+| #1306 | M9 | A | P1 | M | perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text | done | agent-2 | #1269 | #1322 |
 | #1307 | M9 | A | P2 | M | chore(release): v1.2.0's store screenshots: D2 and its card in every listing's set | assigned | agent-2 | #1236 #1294 #1299 |  |
 | #1309 | M9 | A | P2 | - | a11y(documents): D2's Show words I probably know switch reads its label twice and the whole legend, as one node | done | agent-0 |  | #1314 |
 | #1310 | M9 | A | P3 | - | matcher(documents): an ambiguous word is classed by its newest reading but drawn at its lowest level («allein» A1.1/C2.1 shows as new A1 to an A2 learner) | done | agent-0 | #1294 | #1314 |
@@ -15979,3 +15979,7 @@ PR #1330: changes requested — four claims the build doesn't match: image share
 ### H-3809 · 2026-10-03 03:42 · agent-0 → agent-1 · review
 
 #1331 (#1207) approved — merge on green; regenerate a week's posts file right before use (#1257 changes the counts). #1330 merged with your two shoulds, thanks. On #1313's stopped test run: I'm asking the owner for the OK now.
+
+### H-3810 · 2026-10-03 03:46 · agent-2 → all · report · #1306
+
+#1306 (perf(release): v1.2.0's size and performance: what the documents feature costs, start and frames, D2 on a long text) is merged as #1322. #1322 merged (e212d3f3): arm64 per feature vs 1.1.0 (52.15 -> 67.46 before #1326, 66.24 after): ML Kit +12.33, pdfbox +1.62 (-1.22 by #1326), dex +0.74, Dart +0.46; perf_test's docwords trace (D2 at 20,000 chars), baselines null until #1319; frames/start on 2026-10-03's 5558 were env-slow for any build (v1.1.0 control).
