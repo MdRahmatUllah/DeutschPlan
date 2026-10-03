@@ -42,4 +42,24 @@ void main() {
       await tester.pumpAndSettle();
     },
   );
+
+  // #1233: from a document (D2's *Add as my word*), a word outside the
+  // course, with Hy-MT2's meaning labelled machine-translated.
+  goldenTest(
+    'add_word_document',
+    overrides: [courseMatchProvider.overrideWith((ref, german) async => null)],
+    builder: (_) => const AddWordScreen(
+      german: 'Bänke',
+      meanings: <String>['bench'],
+      meaningsHere: <String>['on the benches'],
+      example: 'Die Eltern saßen auf den Bänken am Fluss.',
+      where: 'Stadtnachrichten',
+    ),
+    act: (tester) async {
+      await tester.pump(AddWordScreen.debounce);
+      await tester.pumpAndSettle();
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+    },
+  );
 }

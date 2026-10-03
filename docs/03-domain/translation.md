@@ -41,6 +41,17 @@ Translate the following text into {target_lang}. Note that you should only outpu
 ```
 
 - `{target_lang}` is the full English name: German, English, Bengali, Russian or Polish.
+- **A word in its sentence** (`translate(…, context:)`, #1233): the card's background-information prompt ("Structured Data 2"), so the word comes back in that sense:
+
+```
+[Background Information]
+{context}
+
+Please translate the following text into {target_lang}, taking the provided background information into consideration.
+
+[Source Text]
+{source_text}
+```
 - **Sampling, as the card recommends:** temperature 0.7, top_p 0.6, top_k 20, repetition penalty 1.05. At most 256 new tokens.
 - **The output is trimmed.** An empty result is no result: `translate` returns null, and nothing is cached.
 
@@ -60,7 +71,7 @@ German into each meaning language the app offers (en, bn, ru, pl), and each of t
 
 ## The cache
 
-`translation_cache`, keyed by (`src_lang`, `tgt_lang`, `src_text`, `model`).
+`translation_cache`, keyed by (`src_lang`, `tgt_lang`, `src_text`, `model`). A word in its sentence is keyed by both, the sentence after a unit separator (U+001F) in `src_text`, so it's cached apart from the bare word and from the same word in another sentence (a `ponytail:`; a context column when the cache needs one).
 - **`model` is `hymt2-1.8b-q4km`,** so nothing an older or another model wrote is read back.
 - **A second ask doesn't run the model.**
 - **It's a cache,** so it isn't exported or restored (`user-database.md`), and a reset clears it.
@@ -75,6 +86,7 @@ German into each meaning language the app offers (en, bn, ru, pl), and each of t
 - **R1's *No results*:**
   - an extra action, *Translate «…»*;
   - a query can be German or the learner's own language, so it shows both: German into the first meaning language, and that language into German.
+- **D2's words outside the course** (#1233, `document-matcher.md`): `outsideMeaningProvider(word, sentence)` gives, into each meaning language, the bare word's meaning, then the word in its sentence when that differs. They're suggestions, never filled in (#1278): R2 offers them as chips under *Machine-translated: check it first*.
 
 ## The licence
 

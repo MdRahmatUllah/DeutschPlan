@@ -66,6 +66,7 @@ class _Asked extends Fake implements TranslationRepository {
     String text, {
     required String from,
     required String to,
+    String? context,
     Future<void>? abandoned,
   }) {
     this.abandoned.add(abandoned);
@@ -163,6 +164,41 @@ void main() {
       );
     },
   );
+
+  test('#1233 a word in its sentence: the card\'s background-information '
+      'prompt, word for word', () async {
+    await install();
+    await translator.translate(
+      'Bank',
+      from: 'de',
+      to: 'bn',
+      context: 'Die Eltern saßen auf der Bank.',
+    );
+    expect(
+      runner.asked.single.$2,
+      '[Background Information]\n'
+      'Die Eltern saßen auf der Bank.\n\n'
+      'Please translate the following text into Bengali, taking the provided '
+      'background information into consideration.\n\n'
+      '[Source Text]\n'
+      'Bank',
+    );
+  });
+
+  test('#1233 a word in its sentence is cached apart from the bare word, and '
+      'from the same word in another sentence', () async {
+    await install();
+    final repository = TranslationRepository(db, translator, DateTime.now);
+    Future<String?> ask(String? context) =>
+        repository.translate('Bank', from: 'de', to: 'en', context: context);
+    await ask('Die Eltern saßen auf der Bank.');
+    await ask(null);
+    await ask('Ich gehe zur Bank.');
+    expect(runner.asked, hasLength(3));
+    await ask('Die Eltern saßen auf der Bank.');
+    await ask(null);
+    expect(runner.asked, hasLength(3), reason: 'each cached under its own key');
+  });
 
   test('#154 the eight directions: German into each meaning language and '
       'back, each named in English', () async {

@@ -413,23 +413,56 @@ class SearchRoute extends GoRouteData with $SearchRoute {
 }
 
 class AddWordRoute extends GoRouteData with $AddWordRoute {
-  const AddWordRoute({this.german});
+  const AddWordRoute({
+    this.german,
+    this.example,
+    this.where,
+    this.meanings = const <String>[],
+    this.meaningsHere = const <String>[],
+  });
 
   /// R1's no-results *Add "…" as my word* (#139): the word, filled in.
   final String? german;
 
-  /// Pushed from R1 (navigation.md), so back returns to the search.
+  /// D2's *Add as my word* (FR-D2-05, #1233): the sentence, the document's
+  /// title, and Hy-MT2's suggestions for the meaning (#1278): the bare
+  /// word's ([meanings]) and the sentence's ([meaningsHere]).
+  final String? example;
+  final String? where;
+  final List<String> meanings;
+  final List<String> meaningsHere;
+
+  /// Pushed from R1 or D2 (navigation.md), so back returns there.
   static void open(BuildContext context, {String? german}) =>
-      unawaited(context.push<void>(AddWordRoute(german: german).location));
+      unawaited(openAndWait(context, german: german));
 
   /// As [open], for an opener that goes on once R2 is closed: D2's card
   /// reads the document again, the word now the learner's (#1294).
-  static Future<void> openAndWait(BuildContext context, {String? german}) =>
-      context.push<void>(AddWordRoute(german: german).location);
+  static Future<void> openAndWait(
+    BuildContext context, {
+    String? german,
+    String? example,
+    String? where,
+    List<String> meanings = const <String>[],
+    List<String> meaningsHere = const <String>[],
+  }) => context.push<void>(
+    AddWordRoute(
+      german: german,
+      example: example,
+      where: where,
+      meanings: meanings,
+      meaningsHere: meaningsHere,
+    ).location,
+  );
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      AddWordScreen(german: german);
+  Widget build(BuildContext context, GoRouterState state) => AddWordScreen(
+    german: german,
+    example: example,
+    where: where,
+    meanings: meanings,
+    meaningsHere: meaningsHere,
+  );
 }
 
 class EditCustomWordRoute extends GoRouteData with $EditCustomWordRoute {

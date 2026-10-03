@@ -8,13 +8,15 @@ abstract interface class Translator {
   String get model;
 
   /// [text] from [from] into [to] (`de`, `en`, `bn`), or null when there is
-  /// no model to ask. Once [abandoned] completes nobody waits for the
-  /// answer: a request still waiting is dropped, one running is stopped, and
-  /// either answers null (#154).
+  /// no model to ask. With a [context], [text] is translated as it reads
+  /// there: a word in its sentence, in that sense (#1233). Once [abandoned]
+  /// completes nobody waits for the answer: a request still waiting is
+  /// dropped, one running is stopped, and either answers null (#154).
   Future<String?> translate(
     String text, {
     required String from,
     required String to,
+    String? context,
     Future<void>? abandoned,
   });
 }
@@ -31,6 +33,7 @@ class UnavailableTranslator implements Translator {
     String text, {
     required String from,
     required String to,
+    String? context,
     Future<void>? abandoned,
   }) async => null;
 }

@@ -51,6 +51,11 @@ void main() {
     Locale? locale,
     TextScaler? textScaler,
     bool edit = true,
+    // D2's *Add as my word* (#1233, #1278).
+    List<String> meanings = const <String>[],
+    List<String> meaningsHere = const <String>[],
+    String? example,
+    String? where,
     WordRepository Function()? words,
     List<Override> overrides = const <Override>[],
   }) async {
@@ -102,8 +107,14 @@ void main() {
                 child: GestureDetector(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) =>
-                          AddWordScreen(german: german, id: edit ? id : null),
+                      builder: (_) => AddWordScreen(
+                        german: german,
+                        id: edit ? id : null,
+                        meanings: meanings,
+                        meaningsHere: meaningsHere,
+                        example: example,
+                        where: where,
+                      ),
                     ),
                   ),
                   child: const Text('R1'),
@@ -469,6 +480,128 @@ void main() {
       expect(find.text('R1'), findsOneWidget, reason: 'back to R1');
     });
 
+    String meaningField(WidgetTester tester) => tester
+        .widget<TextField>(
+          find.descendant(
+            of: field(l10n.addWordMeaning),
+            matching: find.byType(TextField),
+          ),
+        )
+        .controller!
+        .text;
+
+    testWidgets('#1233 #1278 FR-D2-05 from a document: the German, its '
+        'sentence and the document, and Hy-MT2\'s meanings offered, never '
+        'filled in: the bare word\'s, then the sentence\'s as «here»', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        german: 'Bänke',
+        meanings: <String>['bench'],
+        meaningsHere: <String>['on the benches'],
+        example: 'Die Eltern saßen auf den Bänken.',
+        where: 'Stadtnachrichten',
+      );
+      expect(meaningField(tester), isEmpty, reason: 'a suggestion only');
+      expect(find.text('Stadtnachrichten'), findsOneWidget);
+      expect(find.text(l10n.addWordMachineTranslated), findsOneWidget);
+      expect(find.text('bench'), findsOneWidget);
+      expect(
+        find.text(l10n.addWordMeaningHere('on the benches')),
+        findsOneWidget,
+      );
+      expect(
+        tester.getTopLeft(find.text('bench')).dx,
+        lessThan(
+          tester
+              .getTopLeft(find.text(l10n.addWordMeaningHere('on the benches')))
+              .dx,
+        ),
+        reason: "the bare word's first",
+      );
+
+      await tester.tap(find.text(l10n.addWordMeaningHere('on the benches')));
+      await tester.pump();
+      expect(meaningField(tester), 'on the benches', reason: 'the text alone');
+      await tester.tap(find.text('bench'));
+      await tester.pump();
+      expect(meaningField(tester), 'bench');
+      await tester.tap(find.text(l10n.addWordSave));
+      await settle(tester);
+
+      final row = (await tester.runAsync(
+        () => db.select(db.customWords).get(),
+      ))!.single;
+      expect(row.meaning, 'bench');
+      expect(row.example, 'Die Eltern saßen auf den Bänken.');
+      expect(row.whereSeen, 'Stadtnachrichten');
+      expect(row.mt, 1, reason: 'picked, machine-translated');
+    });
+
+    testWidgets('#1233 a sentence longer than the field comes in fitted, '
+        'around its word, so the first edit there cuts nothing', (
+      tester,
+    ) async {
+      const sentence =
+          'Bitte reichen Sie bis zum 15. November die folgenden Unterlagen '
+          'ein: eine Kopie des Personalausweises, die letzten drei '
+          'Gehaltsabrechnungen, eine Bescheinigung über die Höhe der Miete '
+          'und, falls vorhanden, den Bescheid über das Wohngeld sowie die '
+          'Mietschuldenfreiheitsbescheinigung.';
+      await pump(
+        tester,
+        german: 'Wohngeld',
+        meanings: <String>['housing benefit'],
+        example: sentence,
+      );
+      final example = find.descendant(
+        of: field(l10n.addWordExample),
+        matching: find.byType(TextField),
+      );
+      String text() => tester.widget<TextField>(example).controller!.text;
+      final filled = text();
+      expect(filled.length, lessThanOrEqualTo(AddWordScreen.fieldLength));
+      expect(filled, contains('Wohngeld'));
+      expect(filled, startsWith('…'));
+
+      await enter(tester, l10n.addWordExample, '$filled!');
+      expect(
+        text(),
+        filled.length < AddWordScreen.fieldLength ? '$filled!' : filled,
+        reason: 'an edit keeps what was there',
+      );
+    });
+
+    testWidgets('#1233 BR-DOC-07 a meaning the learner edits is theirs: the '
+        'label goes, and it is saved as not machine-translated', (
+      tester,
+    ) async {
+      await pump(tester, german: 'Bänke', meanings: <String>['bench']);
+      await tester.tap(find.text('bench'));
+      await tester.pump();
+      await enter(tester, l10n.addWordMeaning, 'park bench');
+      await tester.tap(find.text(l10n.addWordSave));
+      await settle(tester);
+      final row = (await tester.runAsync(
+        () => db.select(db.customWords).get(),
+      ))!.single;
+      expect(row.mt, 0);
+    });
+
+    testWidgets('#1233 from R1, with no suggestions: no chips, no label, '
+        'and a meaning typed in is the learner\'s', (tester) async {
+      await pump(tester, german: 'Bänke');
+      expect(find.text(l10n.addWordMachineTranslated), findsNothing);
+      await enter(tester, l10n.addWordMeaning, 'bench');
+      await tester.tap(find.text(l10n.addWordSave));
+      await settle(tester);
+      final row = (await tester.runAsync(
+        () => db.select(db.customWords).get(),
+      ))!.single;
+      expect(row.mt, 0);
+    });
+
     testWidgets('a word that is in the course keeps which one', (tester) async {
       await pump(tester, german: 'Haus');
       await enter(tester, l10n.addWordMeaning, 'house');
@@ -689,6 +822,34 @@ void main() {
   });
 
   group('edit mode', () {
+    testWidgets('#1233 BR-DOC-07 a word saved machine-translated keeps its '
+        'label while its meaning stands, and loses it once edited', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        seed: () => db
+            .into(db.customWords)
+            .insert(
+              CustomWordsCompanion.insert(
+                createdAt: '2026-10-02T10:00:00Z',
+                german: 'Bänke',
+                meaning: 'benches',
+                mt: const Value(1),
+              ),
+            ),
+      );
+      expect(find.text(l10n.addWordMachineTranslated), findsOneWidget);
+      await enter(tester, l10n.addWordMeaning, 'park benches');
+      expect(find.text(l10n.addWordMachineTranslated), findsNothing);
+      await tester.tap(find.text(l10n.addWordSave));
+      await settle(tester);
+      final row = (await tester.runAsync(
+        () => db.select(db.customWords).get(),
+      ))!.single;
+      expect(row.mt, 0);
+    });
+
     Future<int> saved() => db
         .into(db.customWords)
         .insert(
