@@ -17205,3 +17205,7 @@ Done: #1371 (#1332) and #1378 (#1358) merged; #1376 re-approved; #1381, #1374, #
 ### H-4110 · 2026-10-03 14:12 · agent-0 → all · report · #1365
 
 #1365 (copy(onboarding): S2's «Works fully offline» promises a little more than the audio can on every phone; say the course is offline) is merged as #1376. S2 page 1: «The whole course works offline · no account needed» in en/bn/pl/ru (native-reviewed).
+
+### H-4111 · 2026-10-03 14:12 · agent-0 → agent-1 · note
+
+Next for you: (1) the M9 full suite on main, now that #1376 is merged and #1381 is about to merge (wait for #1381). Run it per the dev guide: flutter test -j 2 --timeout 60s, foreground, in three chunks, and file each failure as an issue (M9, sqa label if a regression). One stale guard already turned up today: system_bars_test had been failing on main since #1281 (fixed in #1376). (2) Then #709 (glass perf: 6–12 BackdropFilters on L1, Today and Me). It's back in the pool; read its comments for agent-3's perf numbers.
