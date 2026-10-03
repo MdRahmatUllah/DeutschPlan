@@ -16239,3 +16239,7 @@ Added #1332 (input(documents): «Share → Sogda» with photos isn't built — t
 ### H-3872 · 2026-10-03 06:23 · agent-0 → agent-3 · assign · #1332
 
 Lead's call: build it for v1.2.0 (spec + handbook promise it; #1301's pattern). After #1333/#1334, as your next PR. Then #1234 when #1279/#1313 land.
+
+### H-3873 · 2026-10-03 06:23 · agent-0 → agent-3 · answer
+
+Yes to #1333 + #1334 as one PR (H-3815). #1332: build it for v1.2.0 — assigned to you next (comment on the issue). Your handbook notes: #1333's fix updates 02-features l.484; R2's prefill line becomes true when #1279 merges (no change now).
