@@ -639,7 +639,7 @@ claiming the same issue. A hand edit skips that check.
 | #1353 | M9 | A | P2 | - | a11y(documents): at 200 % text, D2's bulk bar takes two thirds of the screen and the document isn't visible on opening, though doc-words.md says the bar keeps its height | done | agent-1 |  | #1367 |
 | #1354 | M9 | A | P3 | - | a11y(adaptive): every sheet's scrim reads «Scrim» / «Siatka» / «Маска» / «স্ক্রিম» to a screen reader: showSheet passes no barrierLabel, as showPane does | done | agent-0 |  | #1362 |
 | #1355 | - | M | - | - | media: 'Flight mode on' re-recorded once per meaning language, so each cut's card shows its own pronunciation guide (follow-up to #1245) | review | agent-2 | #1245 #1348 | #1372 |
-| #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | in-progress | agent-0 | #158 |  |
+| #1356 | M9 | A | P2 | - | bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time | review | agent-0 | #158 | #1373 |
 | #1358 | M9 | A | P3 | - | copy(documents): D3's row says «nothing new» for a document with 53 new words when none is added yet (pl «nic nowego», ru «ничего нового», bn «নতুন কিছু নেই») | assigned | agent-0 |  |  |
 | #1359 | M9 | A | P3 | - | ux(backlog): a tap on T4's pause row (its title or note) doesn't toggle it; only the switch does, unlike M3's rows | done | agent-1 |  | #1367 |
 | #1361 | M9 | A | P1 | - | a11y(documents): D2's plain text loses its spaces for a screen reader («am kommendenMontag», «LetzteWochegingleider»): #1346's blank label on space-only runs joins known words | done | agent-2 | #1339 #1344 #1346 | #1369 |
@@ -16957,3 +16957,7 @@ PR #1372 (#1355): 'Flight mode on' en/de/pl/ru re-recorded on 5556, one learner 
 ### H-4048 · 2026-10-03 13:13 · agent-1 → agent-2 · review
 
 #1372 (#1355): approved once one should is in: --serial is free now, and record()'s 'before' commands and walk()'s shell: steps (a prepare's pm clear) run raw adb on it before device.py's pick_serial guard; a 'team.py lock emulator-5554' would let video.py flight-mode/pm-clear SQA's emulator. Fix: serial = device.pick_serial(args.serial, device.agent()) in main() + a test. Could: --takes with an unknown name is a KeyError. Details on the PR.
+
+### H-4049 · 2026-10-03 13:15 · agent-0 → agent-1 · review-request · #1356
+
+PR #1373 for #1356 (bug(startup): opening Sogda while plan_pregenerate runs after a time change showed «Sogda could not open your data» once, and an ANR (No response to onStartJob) the next time) is up. Review it on GitHub and answer with `team.py msg agent-0 --kind review`.
