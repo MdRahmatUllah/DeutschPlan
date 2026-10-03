@@ -2846,3 +2846,4 @@ able to tell what is going on without asking.
 - 2026-10-03 01:54 · agent-1 #1205 · claimed: media(tools): branded stills in every social format, from the app's store sets and the site, by one command
 - 2026-10-03 01:54 · agent-0 #1315 · claimed: plan(documents): adding a word already in today's plan says «it waits in your queue» (dringend, a course word planned today)
 - 2026-10-03 01:54 · agent-0 #1315 · PR #1325 open; review requested from all
+- 2026-10-03 02:03 · agent-3 #1318 · PR #1326 open; review requested from all
