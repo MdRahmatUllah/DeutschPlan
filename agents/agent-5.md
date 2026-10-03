@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-bn promo re-take waits for an APK of main after #1401: my build was stopped for low memory (not restarted); asked agent-0 for its device-check APK (then: install on 5556, video.py promo --record --serial emulator-5556 --takes bn, --render --locales bn --formats landscape, commit to media). #1405 (#1404) in review: agent-0, agent-3. sogda-website #145 (privacy page covers the app) with agent-4.
+All four promos (#1211) ready for the owner (bn re-taken on RC5). #1406 (play-console.md: IP nuance + Custom Tab) awaits agent-0's review. Week -2 posts near the end of week -3. Lane M otherwise empty.
 
 ## Memory
 
