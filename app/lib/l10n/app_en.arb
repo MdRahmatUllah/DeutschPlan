@@ -6742,6 +6742,36 @@
       }
     }
   },
+  "docWordsAddedManyToday": "Added {count}, all for today",
+  "@docWordsAddedManyToday": {
+    "description": "D2's toast after a bulk add when every word starts today (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedManyLater": "Added {count}: they start tomorrow or later",
+  "@docWordsAddedManyLater": {
+    "description": "D2's toast after a bulk add when none starts today: today's slots are taken (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "docWordsAddedManyWaiting": "Added {count}: they wait in your queue",
+  "@docWordsAddedManyWaiting": {
+    "description": "D2's toast after a bulk add while no day can be said (the backlog pause, a cap of 0): the single add's «it waits in your queue» (#1311).",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "docWordsAddedMany": "Added {count}: {today} today, the rest later",
   "@docWordsAddedMany": {
     "description": "D2's toast after a bulk add (FR-D2-03): count words added, today of them in today's plan.",
