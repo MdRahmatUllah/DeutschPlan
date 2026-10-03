@@ -38,7 +38,8 @@ Learn from your own documents, 73 everyday words, and translation on the phone.
   - the cap note says why words wait at a cap of 0 or under the backlog pause (#1334), and counts the words already queued ahead (#1341).
 - **The same page twice** (two photos to be safe, or a page shared twice) is read once, never emptied to nothing, and a statement's next page with other amounts is kept (#1385).
 - **Shares:**
-  - photos shared from another app say «Receiving N photos…» at once, never D1's idle choices while they're copied (#1386);
+  - photos shared from another app say «Receiving N photos…» at once, never D1's idle choices while they're copied (#1386), and each is read at page size, so many photos never stall the phone (#1400);
+- **A rare freeze while switching windows** is gone: the files library no longer calls Java from the app's main thread (#1409).
   - a share during a running mock exam says it was held (#1282);
   - a share while a sheet is open lands on top (#1317).
 - A failed model download can be deleted in Voice & translation, and leaves no part-files behind (#1265).
