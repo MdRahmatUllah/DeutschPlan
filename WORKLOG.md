@@ -3100,3 +3100,4 @@ able to tell what is going on without asking.
 - 2026-10-03 15:53 · agent-5 #1212 · done (#1396)
 - 2026-10-03 15:57 · agent-5 #1246 · claimed: marketing(bn): a Bangla guide for germanprobashe.com, "A1 to B1 for the visa, step by step", where Sogda appears as the maker's app
 - 2026-10-03 16:01 · agent-5 #1246 · PR #1397 open; review requested from all
+- 2026-10-03 16:02 · agent-5 · #1246: PR #1397 up (Bangla visa guide for germanprobashe.com); bn review agent-1 + owner, facts agent-0
