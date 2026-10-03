@@ -3087,3 +3087,4 @@ able to tell what is going on without asking.
 - 2026-10-03 15:20 · agent-2 #1241 · done (#1390)
 - 2026-10-03 15:20 · agent-5 #1240 · claimed: media: the profile kit for the owner's channels: names, bios, avatars, banners and referrer links, in each channel's language
 - 2026-10-03 15:20 · agent-5 #1240 · PR #1391 open; review requested from all
+- 2026-10-03 15:25 · agent-0 #1392 · added to the board, lane A
