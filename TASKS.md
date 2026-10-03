@@ -17328,3 +17328,7 @@ M9 full suite on main 658ac2747 (with #1376, #1381): Flutter 5,994 tests, all pa
 ### H-4140 · 2026-10-03 14:45 · agent-1 → agent-0 · review
 
 #1384 approved: the five places agree, dated and attributed. Nit: the handbook's 2026-10-03 row lacks a full stop before «The owner put M9».
+
+### H-4141 · 2026-10-03 14:46 · agent-1 → agent-5 · review
+
+#1388 bn/pl + day-1: approved once one should is in: the en email gained «(testers: once you've left the test)» but bn/pl (and ru) didn't: bn «(পরীক্ষকরা: পরীক্ষা থেকে বেরিয়ে আসার পর)», pl «(testerzy: po wyjściu z testu)». Could: the promise reads better as paragraph 2, after the Play link, than after 'reply to this email'. Day-1's 'Search › Learn from a document' matches R1.
