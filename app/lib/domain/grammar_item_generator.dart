@@ -647,27 +647,36 @@ List<({String german, String? english})> examplePairs(
 /// number, which follows an abbreviation ("§ 5 Abs. 2 vorliegen"); English
 /// before one too ("… September. 3 October …"), and after one ("built in
 /// 1990. The office …").
+///
+/// A translation is in the learner's meaning language (#1081), so (#1417)
+/// its sentence also ends at Bangla's «।», and the next begins with a capital
+/// in any script (Cyrillic, Polish), a number, or a Bengali letter, which has
+/// no capitals.
 List<String> _sentences(String text, {required bool german}) => <String>[
-  for (final part in text.split(
-    german
-        ? RegExp(r'(?<![0-9]\.)(?<=[.!?])\s+(?=[A-ZÄÖÜ„])')
-        : RegExp(r'(?<=[.!?])\s+(?=[A-Z0-9])'),
-  ))
+  for (final part in text.split(german ? _germanEnd : _translationEnd))
     for (final sentence in _alternatives(part.trim()))
       if (sentence.isNotEmpty) sentence,
 ];
 
 /// [sentence] split at " / " when each side is a sentence of its own: a
-/// capital, and three words at least.
+/// capital (any script's, or a Bengali letter, #1417), and three words at
+/// least.
 List<String> _alternatives(String sentence) {
   final sides = sentence.split(RegExp(r'\s+/\s+'));
   bool whole(String side) =>
-      _tokens(side).length >= 3 && RegExp('^[A-ZÄÖÜ„]').hasMatch(side);
+      _tokens(side).length >= 3 && _sentenceStart.hasMatch(side);
   return sides.length > 1 && sides.every(whole) ? sides : <String>[sentence];
 }
 
 // Built once, not per call (#687 AN-13): the generator runs for every topic
 // of a step on each practice and mock exam.
+final RegExp _germanEnd = RegExp(r'(?<![0-9]\.)(?<=[.!?])\s+(?=[A-ZÄÖÜ„])');
+final RegExp _translationEnd = RegExp(
+  r'(?<=[.!?\u0964])\s+(?=[\p{Lu}0-9\u0980-\u09FF])',
+  unicode: true,
+);
+final RegExp _sentenceStart = RegExp(r'^[\p{Lu}„\u0980-\u09FF]', unicode: true);
+final RegExp _letter = RegExp(r'\p{L}', unicode: true);
 final RegExp _ending = RegExp(r'(en|er|es|em|st|e|n|t|s)$');
 final RegExp _space = RegExp(r'\s+');
 final RegExp _wordRun = RegExp(r"[A-Za-zÄÖÜäöüß'-]+");
@@ -709,8 +718,10 @@ String _bare(String token) => token.replaceAll(_edges, '');
   );
 }
 
-/// Whether a field is empty or the pipeline's "—".
-bool _blank(String text) => !RegExp(r'[A-Za-zÄÖÜäöüß]').hasMatch(text);
+/// Whether a field is empty or the pipeline's "—": no letter in any script.
+/// A Russian or Bangla translation is not blank (#1417): a Latin-only test
+/// hid every one from L4 and L15.
+bool _blank(String text) => !_letter.hasMatch(text);
 
 /// How often the topic's rule and *watch out* name each word, in lower case
 /// and without the hyphen of "an-": what the gap is chosen by.

@@ -383,6 +383,74 @@ void main() {
     );
   });
 
+  // #1417: the translation is in the learner's meaning language (#1081). A
+  // Latin-only blank test hid every Russian and Bangla one, and their
+  // sentences end at «।» or before a capital outside A–Z.
+  test('#1417 FR-L4-03 a Russian or Bangla translation pairs with its German, '
+      'sentence by sentence; the dash is still none', () {
+    const de = 'Ich fahre mit dem Bus. Ich helfe meiner Frau.';
+    expect(
+      examplePairs(de, 'Я еду на автобусе. Я помогаю своей жене.'),
+      <({String german, String? english})>[
+        (german: 'Ich fahre mit dem Bus.', english: 'Я еду на автобусе.'),
+        (german: 'Ich helfe meiner Frau.', english: 'Я помогаю своей жене.'),
+      ],
+    );
+    expect(
+      examplePairs(de, 'আমি বাসে যাই। আমি আমার স্ত্রীকে সাহায্য করি।'),
+      <({String german, String? english})>[
+        (german: 'Ich fahre mit dem Bus.', english: 'আমি বাসে যাই।'),
+        (
+          german: 'Ich helfe meiner Frau.',
+          english: 'আমি আমার স্ত্রীকে সাহায্য করি।',
+        ),
+      ],
+    );
+    expect(
+      examplePairs('Ich lerne Deutsch.', 'Я учу немецкий.'),
+      <({String german, String? english})>[
+        (german: 'Ich lerne Deutsch.', english: 'Я учу немецкий.'),
+      ],
+    );
+    expect(
+      examplePairs(
+        'Wie heißen Sie? / Wie heißt du?',
+        'Как вас зовут? / Как тебя зовут?',
+      ),
+      <({String german, String? english})>[
+        (german: 'Wie heißen Sie?', english: 'Как вас зовут?'),
+        (german: 'Wie heißt du?', english: 'Как тебя зовут?'),
+      ],
+    );
+    expect(examplePairs('Ich lerne Deutsch.', '—').single.english, isNull);
+  });
+
+  test('#1417 FR-L15-01 a gap fill on a two-sentence example carries its own '
+      "sentence's Russian translation", () {
+    const dative = GrammarSource(
+      uid: 'dative',
+      topic: 'Dativ',
+      rule: 'mit and helfen take the dative: dem Bus, meiner Frau.',
+      exampleDe: 'Ich fahre mit dem Bus. Ich helfe meiner Frau.',
+      exampleEn: 'Я еду на автобусе. Я помогаю своей жене.',
+      watchOut: '',
+      tags: <String>['gap-fill', 'pick-the-form'],
+      levelCode: 'A1',
+    );
+    final gaps = generateItems(dative, seed: 1).whereType<GapFill>().toList();
+    expect(gaps, isNotEmpty);
+    for (final gap in gaps) {
+      final sentence = '${gap.before} ${gap.answer} ${gap.after}';
+      expect(
+        gap.translation,
+        sentence.contains('Bus')
+            ? 'Я еду на автобусе.'
+            : 'Я помогаю своей жене.',
+        reason: sentence,
+      );
+    }
+  });
+
   test('FR-L15-01 #406 a wrong form is the answer\'s own word\'s: not '
       '"bitter" for bitte, "heiß" for heißt, "sprecher" for spreche', () {
     final course = CourseText(
@@ -826,6 +894,28 @@ void main() {
       ],
     );
     test('there are 182', () => expect(rows, hasLength(182)));
+
+    // #1417: L4 shows the meaning language's example (#1081). Every topic
+    // with one keeps a translation in each language the course ships.
+    test('#1417 FR-L4-03 every example keeps its translation in pl, ru and '
+        'bn', () {
+      for (final lang in <String>['pl', 'ru', 'bn']) {
+        final missing = <String>[
+          for (final row in db.select(
+            'SELECT t.uid, t.example_de, g.example FROM grammar_topics t '
+            'JOIN grammar_translations g ON g.grammar_uid = t.uid '
+            'AND g.lang = ?',
+            <Object>[lang],
+          ))
+            if (examplePairs(
+              row['example_de'] as String,
+              row['example'] as String? ?? '',
+            ).any((pair) => pair.english == null))
+              row['uid'] as String,
+        ];
+        expect(missing, isEmpty, reason: lang);
+      }
+    });
 
     test('FR-L15-01 each yields 3–5 items of at least two types, every one '
         'sound, with the course and without it, on thirty days', () {
