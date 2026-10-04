@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "content_version": "20261003225517",
+ "content_version": "20261003234128",
  "app": {
   "version": "1.2.0",
   "package": "de.sogda.app",
@@ -804,7 +804,7 @@
      "uid": "7e4bfa55d298edb8",
      "topic": {
       "en": "Dative case",
-      "bn": "Dativ",
+      "bn": "Dativ (পরোক্ষ কর্ম)",
       "pl": "Celownik (Dativ)",
       "ru": "Дательный падеж"
      }
@@ -1425,7 +1425,7 @@
      "uid": "b646c097bb98d405",
      "topic": {
       "en": "Genitive",
-      "bn": "Genitiv",
+      "bn": "Genitiv (মালিকানা)",
       "pl": "Dopełniacz (Genitiv)",
       "ru": "Родительный падеж (Genitiv)"
      }
