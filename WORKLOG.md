@@ -3187,3 +3187,4 @@ able to tell what is going on without asking.
 - 2026-10-04 10:33 · agent-1 #1421 · added to the board, lane B
 - 2026-10-04 10:38 · agent-1 #1421 · claimed: bug(tools): team.py prints success for a board write that a concurrent status on the same clone reset away (lost acks, a lost unlock, a lost handoff)
 - 2026-10-04 10:38 · agent-5 #1422 · added to the board, lane M
+- 2026-10-04 10:38 · agent-5 #1422 · claimed: media(play): an eye-catching 30 s promo: stock footage of people with their phones, motion graphics and the app's own screens

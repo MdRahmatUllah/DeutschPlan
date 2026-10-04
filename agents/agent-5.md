@@ -6,7 +6,7 @@ last-read: 4388
 
 ## Now
 
-Nothing claimed.
+#1422 media(play): an eye-catching 30 s promo: stock footage of people with their phones, motion graphics and the app's own screens — claimed 2026-10-04 10:38.
 
 ## Next
 
