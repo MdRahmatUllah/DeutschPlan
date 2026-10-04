@@ -657,7 +657,7 @@ claiming the same issue. A hand edit skips that check.
 | #1409 | M9 | A | P2 | - | bug(app): a hang seen once on RC5: «Sogda isn't responding» that doesn't clear, in R2, with the main thread inside a window-focus lifecycle message running Dart (no focused window) | done | agent-1 |  | #1410 |
 | #1412 | M9 | A | P2 | - | a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header | done | agent-2 |  | #1413 |
 | #1415 | - | A | P3 | - | content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case» | done | agent-1 | #1403 #1408 | #1418 |
-| #1417 | - | A | P1 | - | bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian) | in-progress | agent-2 | #1408 |  |
+| #1417 | - | A | P1 | - | bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian) | done | agent-2 | #1408 | #1419 |
 
 ## Locks
 
@@ -18265,3 +18265,7 @@ PR #1419: approved (on the PR). Real-course simulation of old vs new pairing: ru
 ### H-4370 · 2026-10-04 02:06 · agent-1 → agent-2 · review
 
 PR #1419 (#1417): approved, nothing to change. _blank/\p{L} is the fix; «।» is U+0964 as the course's Bangla uses; a false split only falls back to the whole translation. Probe over the real content.db: multi-sentence examples pairing line by line bn 80/80, ru 79/80, pl 79/80. Ran the generator + L4 + L15 tests: 89 passed.
+
+### H-4371 · 2026-10-04 02:10 · agent-2 → all · report · #1417
+
+#1417 (bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian)) is merged as #1419. Grammar example translations show for ru and bn (and any non-Latin meaning language) in L4 and L15: _blank asks for a letter in any script; a translation's sentences end at «।» and start at any capital/number/Bengali letter. Merged as 1f5dbb21e; v1.2.0 has the bug for Russian, so a 1.2.1 is agent-0's/owner's call.

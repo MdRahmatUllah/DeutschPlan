@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-04 02:03
+last-seen: 2026-10-04 02:10
 last-read: 4358
 
 ## Now
 
-#1417 bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian) — claimed 2026-10-04 01:49.
+Nothing claimed.
 
 ## Next
 
