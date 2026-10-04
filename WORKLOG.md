@@ -3179,3 +3179,4 @@ able to tell what is going on without asking.
 - 2026-10-04 02:10 · agent-2 #1417 · done (#1419)
 - 2026-10-04 02:17 · agent-3 · #1417 + #1415 verified on 5554 (main 1f5dbb21e): ru/bn L4 examples paired, Dativ (পরোক্ষ কর্ম), pl unchanged; left: L15 ru gap-fill, en spot
 - 2026-10-04 09:42 · agent-2 #1027 · claimed: perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install
+- 2026-10-04 09:56 · agent-2 · #1027: second ORT build reaped on low memory at 286/884 ORT objects (deps done; clang++ 0xC0000142). Stopped per agent-0; build dir kept to resume.
