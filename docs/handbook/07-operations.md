@@ -357,6 +357,7 @@ From ONBOARDING §12:
 | `Flutter failed to delete … sqlite3.dll` | A stale `flutter_tester` from your own worktree: `python tools/plant.py x --kill-own-testers`. Never kill testers by name |
 | `team.py`: `refused: …` | Read it: someone else holds it, or it is blocked. `team.py status` shows what is ready |
 | `team.py`: "the board is busy" | Many agents pushed at once: run it again |
+| `team.py`: "… is held by another team.py command on this clone" | Another command (a watcher's `status`, say) held your clone for four minutes. Find it, and any orphaned watcher loops, and stop them by PID. A lock left by a killed command is broken after two minutes (#1421) |
 | `gh pr merge` prints `Aborting` | `--delete-branch` in a worktree. Check `gh pr view P --json state`, then `git push origin --delete <branch>` |
 | "Head branch is out of date", or the PR is `CONFLICTING` | Rebase on `origin/main`, regenerate, run the basic check, push |
 | The PR doesn't show your last push | `gh api repos/MdRahmatUllah/DeutschPlan/pulls/P --jq .head.sha`; close and reopen the PR if GitHub is stuck |

@@ -38,6 +38,7 @@ import shutil
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -60,6 +61,10 @@ IDLE_AFTER = timedelta(hours=2)
 # A device lock older than this is abandoned: a device check takes minutes,
 # and an agent that died holding it must not block the emulator all day.
 DEVICE_LOCK_STALE_SECONDS = 45 * 60
+
+# A team.py command holds its clone for seconds; a clone lock this old was
+# left by a command that was killed (#1421).
+CLONE_LOCK_STALE_SECONDS = 120
 
 
 class Refused(Exception):
@@ -345,6 +350,38 @@ def sync(root: Path) -> None:
     git(root, "clean", "--quiet", "-fd")
 
 
+@contextmanager
+def clone_lock(root: Path):
+    """One team.py command at a time on a clone (#1421). Another command's
+    sync() resets the clone: under a change being written, or between a commit
+    and its push, which then pushed nothing and still printed success."""
+    lock = root / ".git" / "team.lock"
+    deadline = time.time() + 2 * CLONE_LOCK_STALE_SECONDS
+    while True:
+        try:
+            lock.mkdir()  # atomic: exactly one command gets it
+            break
+        except FileExistsError:
+            try:
+                if time.time() - lock.stat().st_mtime > CLONE_LOCK_STALE_SECONDS:
+                    # ponytail: two commands breaking one stale lock at once can
+                    # both get in; a rename-aside as cmd_device's if that happens.
+                    lock.rmdir()
+                    continue
+            except FileNotFoundError:
+                continue  # released while we looked
+            if time.time() > deadline:
+                raise SystemExit(f"{lock} is held by another team.py command on this clone: try again") from None
+            time.sleep(0.1 + random.random() * 0.2)
+    try:
+        yield
+    finally:
+        try:
+            lock.rmdir()
+        except FileNotFoundError:
+            pass
+
+
 def transact(root: Path, agent: str, message: str, change, attempts: int = 8):
     """Apply [change] on top of origin/team and push it.
 
@@ -352,23 +389,27 @@ def transact(root: Path, agent: str, message: str, change, attempts: int = 8):
     rejected push it runs again from a fresh copy, so it must decide from what
     it reads now, never from what it read on an earlier attempt.
     """
-    for attempt in range(attempts):
-        sync(root)
-        result = change(root)
-        if agent_path(root, agent).exists():
-            write_field(root, agent, "last-seen", now())
-        render_status(root)
-        git(root, "add", "-A")
-        if not git(root, "status", "--porcelain").stdout.strip():
-            return result  # nothing changed: nothing to commit or push (#697 TL-7)
-        git(root, "commit", "--quiet", "-m", f"{agent}: {message}")
-        pushed = git(root, "push", "--quiet", "origin", f"HEAD:{BRANCH}", check=False)
-        if pushed.returncode == 0:
-            return result
-        if not re.search(r"rejected|fetch first|non-fast-forward|failed to update ref|cannot lock ref", pushed.stderr):
-            # Not a race: auth, network, permissions. Retrying won't help.
-            raise SystemExit(f"cannot push the board: {pushed.stderr.strip()}")
-        time.sleep(0.3 + random.random() * (attempt + 1))
+    with clone_lock(root):
+        for attempt in range(attempts):
+            sync(root)
+            result = change(root)
+            if agent_path(root, agent).exists():
+                write_field(root, agent, "last-seen", now())
+            render_status(root)
+            git(root, "add", "-A")
+            if not git(root, "status", "--porcelain").stdout.strip():
+                return result  # nothing changed: nothing to commit or push (#697 TL-7)
+            git(root, "commit", "--quiet", "-m", f"{agent}: {message}")
+            # The commit itself, not HEAD (#1421): a reset of the clone before the
+            # push left HEAD at origin/team, and pushing that "succeeded".
+            commit = git(root, "rev-parse", "HEAD").stdout.strip()
+            pushed = git(root, "push", "--quiet", "origin", f"{commit}:refs/heads/{BRANCH}", check=False)
+            if pushed.returncode == 0:
+                return result
+            if not re.search(r"rejected|fetch first|non-fast-forward|failed to update ref|cannot lock ref", pushed.stderr):
+                # Not a race: auth, network, permissions. Retrying won't help.
+                raise SystemExit(f"cannot push the board: {pushed.stderr.strip()}")
+            time.sleep(0.3 + random.random() * (attempt + 1))
     raise SystemExit("the board is busy: gave up after several rejected pushes — try again")
 
 
@@ -581,10 +622,11 @@ def cmd_leave(root: Path, agent: str, message: str) -> None:
 
 
 def cmd_status(root: Path, agent: str, closed=issue_closed) -> None:
-    sync(root)
-    text = (root / "TASKS.md").read_text(encoding="utf-8")
+    with clone_lock(root):  # #1421: a sync here reset another command's change
+        sync(root)
+        text = (root / "TASKS.md").read_text(encoding="utf-8")
+        mine = agent_path(root, agent).read_text(encoding="utf-8")
     board = Board(text)
-    mine = agent_path(root, agent).read_text(encoding="utf-8")
     # An identity from before #1216 has no joined: line, so it sees what it always did.
     unread = handoffs_for(text, agent, int(read_field(mine, "last-read") or 0), int(read_field(mine, "joined") or 0))
     print(f"== {agent}: {len(unread)} unread handoff(s)" + (" — act on them, then `team.py ack`" if unread else ""))
@@ -613,8 +655,10 @@ def cmd_status(root: Path, agent: str, closed=issue_closed) -> None:
 
 
 def cmd_agents(root: Path) -> None:
-    sync(root)
-    for agent, session, seen, doing in identities(root):
+    with clone_lock(root):
+        sync(root)
+        rows = list(identities(root))
+    for agent, session, seen, doing in rows:
         print(f"{agent}  {'idle' if is_idle(session, seen) else 'ACTIVE'}  last seen {seen}  now: {doing}")
 
 

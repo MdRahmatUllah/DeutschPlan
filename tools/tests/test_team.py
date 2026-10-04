@@ -364,3 +364,58 @@ def test_697_two_agents_breaking_one_stale_lock_leave_one_holder(tmp_path, monke
     with pytest.raises(team.Refused):
         team.cmd_device(tmp_path, "agent-3", release=False)
     assert (tmp_path / ".device.lock" / "owner").read_text(encoding="utf-8").startswith("agent-2")
+
+
+def test_1421_a_reset_between_commit_and_push_never_reports_a_write_that_is_not_on_the_board(team_repo, monkeypatch):
+    # Another command's sync() reset the clone after this one committed: HEAD
+    # went back to origin/team, the push sent nothing and still returned 0, and
+    # the claim was printed as made while the board never got it.
+    a1 = team_repo["agent-1"]
+    real = team.git
+
+    def reset_first(root, *args, check=True):
+        if args[0] == "push":
+            real(root, "reset", "--quiet", "--hard", f"origin/{team.BRANCH}")
+        return real(root, *args, check=check)
+
+    monkeypatch.setattr(team, "git", reset_first)
+    team.cmd_claim(a1, "agent-1", 12)
+    monkeypatch.setattr(team, "git", real)
+    log = real(a1, "log", "--format=%s", f"origin/{team.BRANCH}").stdout
+    assert "agent-1: claim #12" in log
+    assert board(a1).task(12).owner == "agent-1"
+
+
+def test_1421_two_commands_on_one_clone_take_turns(team_repo):
+    import threading
+
+    a1 = team_repo["agent-1"]
+    entered = threading.Event()
+
+    def hold():
+        with team.clone_lock(a1):
+            entered.set()
+            time.sleep(1.0)
+
+    holder = threading.Thread(target=hold)
+    holder.start()
+    entered.wait(5)
+    start = time.time()
+    with team.clone_lock(a1):
+        waited = time.time() - start
+    holder.join()
+    assert waited >= 0.8
+    assert not (a1 / ".git" / "team.lock").exists()
+
+
+def test_1421_a_lock_left_by_a_killed_command_is_broken(team_repo, monkeypatch):
+    # Short, so a lock that is never broken fails in seconds (the wait is twice it).
+    monkeypatch.setattr(team, "CLONE_LOCK_STALE_SECONDS", 5)
+    a1 = team_repo["agent-1"]
+    lock = a1 / ".git" / "team.lock"
+    lock.mkdir()
+    old = time.time() - 15
+    os.utime(lock, (old, old))
+    team.cmd_claim(a1, "agent-1", 12)
+    assert board(a1).task(12).owner == "agent-1"
+    assert not lock.exists()

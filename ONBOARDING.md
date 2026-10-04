@@ -144,6 +144,11 @@ version and re-checks. That is what makes a claim safe: two agents can never
 both hold an issue, and nobody ever resolves a conflict on the board. Read the
 files directly as much as you like. Change them only with the tool.
 
+Commands on one clone take turns (#1421).
+- **How:** each holds `.git/team.lock` while it syncs, changes and pushes, and it pushes the commit it made, not `HEAD`. A lock older than two minutes was left by a killed command, and the next command breaks it.
+- **What it fixes:** before #1421, a watcher's `team.py status` could reset the clone between another command's commit and its push. The command still printed success with nothing on the board.
+- **A loop that watches the board ends itself** before its runner's timeout. An expired Monitor leaves its shell loop running, and dozens piled up, each resetting a clone every minute.
+
 `PLAN.md` is the one exception, edited by hand. Edit it in your board clone,
 then push straight away:
 
