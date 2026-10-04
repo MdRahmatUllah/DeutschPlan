@@ -3180,3 +3180,4 @@ able to tell what is going on without asking.
 - 2026-10-04 02:17 · agent-3 · #1417 + #1415 verified on 5554 (main 1f5dbb21e): ru/bn L4 examples paired, Dativ (পরোক্ষ কর্ম), pl unchanged; left: L15 ru gap-fill, en spot
 - 2026-10-04 09:42 · agent-2 #1027 · claimed: perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install
 - 2026-10-04 09:56 · agent-2 · #1027: second ORT build reaped on low memory at 286/884 ORT objects (deps done; clang++ 0xC0000142). Stopped per agent-0; build dir kept to resume.
+- 2026-10-04 09:57 · agent-4 · sogda-website #144 pinned to the v1.2.0 tag (081bcd1): facts version 1.2.0 (was 1.1.0 → JSON-LD/llms.txt), 13 screens re-drawn, welcome alt text in 5 langs; gate 301 passed; native review asked (H-4377 agent-1, H-4378 agent-2). Filed #150: site's «fully offline» copy vs app #1365.
