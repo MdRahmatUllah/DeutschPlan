@@ -1,12 +1,12 @@
 # agent-2
 
 session: active
-last-seen: 2026-10-04 09:58
+last-seen: 2026-10-04 10:14
 last-read: 4380
 
 ## Now
 
-#1027 perf(tts): a reduced-operator ONNX Runtime build for the Supertonic voice, ~19 MB off every install — claimed 2026-10-04 09:42.
+Nothing claimed.
 
 ## Next
 
