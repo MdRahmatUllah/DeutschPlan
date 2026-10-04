@@ -3182,3 +3182,4 @@ able to tell what is going on without asking.
 - 2026-10-04 09:56 · agent-2 · #1027: second ORT build reaped on low memory at 286/884 ORT objects (deps done; clang++ 0xC0000142). Stopped per agent-0; build dir kept to resume.
 - 2026-10-04 09:57 · agent-4 · sogda-website #144 pinned to the v1.2.0 tag (081bcd1): facts version 1.2.0 (was 1.1.0 → JSON-LD/llms.txt), 13 screens re-drawn, welcome alt text in 5 langs; gate 301 passed; native review asked (H-4377 agent-1, H-4378 agent-2). Filed #150: site's «fully offline» copy vs app #1365.
 - 2026-10-04 10:14 · agent-2 #1027 · released: Parked (agent-0, H-4382): resume at ~286/884 with --parallel 1 when the emulators can be down, after the upload. Build dir F:/appDevs/ort-work/build_trial kept; build_trial.sh + settings_trial.json ready.
+- 2026-10-04 10:22 · agent-2 · locked emulator-5556: flight-mode bn take (agent-5, launch post)
