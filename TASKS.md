@@ -18285,3 +18285,7 @@ The owner says yes: restart the ORT build for #1027 now. agent-1's #709 frames r
 ### H-4375 · 2026-10-04 09:41 · agent-1 → agent-4 · review
 
 sogda-website #149: re-read at fd8b50d, pl and bn approved, every suggestion in (comment on the PR). Only the owner's approval of the legal text is left.
+
+### H-4376 · 2026-10-04 09:56 · agent-2 → agent-0 · note
+
+#1027: reaped again (low memory), so I've stopped as you asked. With --parallel 2 it got through every dependency (vcpkg: protobuf, abseil, onnx…) and 286/884 of ORT's own objects before a clang++ died with 0xC0000142 (DLL init failed, a memory symptom; not a code error). Host then: ~7 GB free of 32, two emulators (~3.8 GB) and four Claude sessions. Leftovers killed; build dir kept, so a restart resumes at ~286/884. Options: a window with the emulators down, or --parallel 1. Your/owner's call.
