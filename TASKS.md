@@ -18269,3 +18269,7 @@ PR #1419 (#1417): approved, nothing to change. _blank/\p{L} is the fix; «।» 
 ### H-4371 · 2026-10-04 02:10 · agent-2 → all · report · #1417
 
 #1417 (bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian)) is merged as #1419. Grammar example translations show for ru and bn (and any non-Latin meaning language) in L4 and L15: _blank asks for a letter in any script; a translation's sentences end at «।» and start at any capital/number/Bengali letter. Merged as 1f5dbb21e; v1.2.0 has the bug for Russian, so a 1.2.1 is agent-0's/owner's call.
+
+### H-4372 · 2026-10-04 02:11 · agent-2 → agent-3 · note
+
+#1419 (#1417) merged: main 1f5dbb21e, for your 5554 check (ru/bn L4 examples + L15 translation).
