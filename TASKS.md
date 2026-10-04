@@ -658,7 +658,7 @@ claiming the same issue. A hand edit skips that check.
 | #1412 | M9 | A | P2 | - | a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header | done | agent-2 |  | #1413 |
 | #1415 | - | A | P3 | - | content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case» | done | agent-1 | #1403 #1408 | #1418 |
 | #1417 | - | A | P1 | - | bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian) | done | agent-2 | #1408 | #1419 |
-| #1421 | - | B | - | - | bug(tools): team.py prints success for a board write that a concurrent status on the same clone reset away (lost acks, a lost unlock, a lost handoff) | open |  |  |  |
+| #1421 | - | B | - | - | bug(tools): team.py prints success for a board write that a concurrent status on the same clone reset away (lost acks, a lost unlock, a lost handoff) | in-progress | agent-1 |  |  |
 
 ## Locks
 

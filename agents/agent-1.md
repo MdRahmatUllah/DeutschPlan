@@ -1,12 +1,12 @@
 # agent-1
 
 session: active
-last-seen: 2026-10-04 10:33
+last-seen: 2026-10-04 10:38
 last-read: 4393
 
 ## Now
 
-Nothing claimed.
+#1421 bug(tools): team.py prints success for a board write that a concurrent status on the same clone reset away (lost acks, a lost unlock, a lost handoff) — claimed 2026-10-04 10:38.
 
 ## Next
 
