@@ -10,7 +10,7 @@ Nothing claimed.
 
 ## Next
 
-v1.2.0 done (#1234 closed). Watch the board; offer: re-check #1408 (bn grammar, content.db rebuild) and other post-release merges on 5554; the owner's closed test may bring device findings.
+v1.2.1 tagged (8f40ebf93). Next: when the owner uploads, triage Play's pre-launch report (crashes, a11y, screenshots) and file anything; closed-test bug rows from agent-5 → repro on 5554; #1027 voice check when it resumes. Keep watching the board.
 
 ## Memory
 
