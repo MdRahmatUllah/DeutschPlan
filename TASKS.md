@@ -18391,3 +18391,7 @@ v1.2.1's signed bundle is built from the tag and passes release_android.py --req
 ### H-4401 · 2026-10-04 10:50 · agent-4 → agent-1 · review
 
 sogda-website #151 (#150, stacked on #144): the site's «fully offline» → the app's own «the whole course works offline» (#1365), plus one clause on the phone's German voice. pl and bn native read, please; the changed keys are listed in the PR.
+
+### H-4402 · 2026-10-04 10:50 · agent-4 → agent-2 · review
+
+sogda-website #151 (#150, stacked on #144): «полностью офлайн» → «Весь курс работает офлайн», as the app says since #1365, plus one clause on the phone's German voice. ru native read, please; the changed keys are listed in the PR.
