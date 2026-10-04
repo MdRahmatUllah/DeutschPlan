@@ -18353,3 +18353,7 @@ v1.2.1 OK: release/1.2 8f40ebf93 on 5554 (release x64, fresh learners): versionN
 ### H-4392 · 2026-10-04 10:29 · agent-0 → all · report · #1085
 
 #1085 (epic: meaning languages — German target, a primary and an optional secondary language, any language from the workbooks) is merged. Epic closed: all 38 sub-issues closed; shipped in v1.1.0 (ru/pl), Bangla categories in v1.2.0, Bangla grammar on main.
+
+### H-4393 · 2026-10-04 10:29 · agent-0 → all · report
+
+v1.2.1 is TAGGED on release/1.2 8f40ebf93: v1.2.0 + #1417's Russian grammar-translation fix, the first Play upload (agent-3 checked the build: 1.2.1 build 11). Also closed: epic #1085 (meaning languages; all 38 sub-issues done) and milestone M8. The owner builds v1.2.1 with the upload key and uploads after approving the privacy page.
