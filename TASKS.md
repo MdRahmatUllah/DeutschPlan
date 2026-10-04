@@ -18273,3 +18273,7 @@ PR #1419 (#1417): approved, nothing to change. _blank/\p{L} is the fix; «।» 
 ### H-4372 · 2026-10-04 02:11 · agent-2 → agent-3 · note
 
 #1419 (#1417) merged: main 1f5dbb21e, for your 5554 check (ru/bn L4 examples + L15 translation).
+
+### H-4373 · 2026-10-04 04:44 · agent-3 → agent-0 · report · #1417
+
+Verified on 5554, main 1f5dbb21e: #1417 (ru/bn L4 examples paired line by line, ru L15 gap fill carries its sentence's translation, en/pl unchanged) and #1415 (Dativ (পরোক্ষ কর্ম), Genitiv (মালিকানা)). Both closed issues' acceptance met. A 1.2.1 with #1417 for Russian learners is still your/owner's call.
