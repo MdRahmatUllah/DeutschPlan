@@ -24,7 +24,8 @@ Details #406 settles:
   - German does not split after a number's own dot, which is an ordinal ("Heute ist der 17. September." stays whole), nor before a number, which follows an abbreviation ("§ 5 Abs. 2 vorliegen", "ca. 230").
   - English splits before a number too ("… September. 3 October …") and after one ("built in 1990. The office …").
   - Both split on " / " only between whole sentences, each capitalised and at least three words ("Wie heißen Sie? / Wie heißt du?"), not between two forms of one ("dass er morgen komme / kommt.").
-  - L4 pairs German and English sentence by sentence where the two split alike.
+  - **A translation in any meaning language** (#1417): it is a translation if it has a letter in any script (only empty text and the pipeline's "—" are none), so a Russian or Bangla one shows. Its sentence ends at . ! ? or Bangla's «।», and the next begins with a capital in any script, a number, or a Bengali letter, which has no capitals.
+  - L4 pairs German and its translation sentence by sentence where the two split alike.
 - **Translations.** Every gap fill from the example carries its sentence's English, or the whole example's where the two don't split alike, the fillers included.
 - **Wrong forms of the same word.** A changed ending, or a form the rule names, counts only if the course lists it as a form of the answer's word (`words.german` and `words.forms`).
   - A form the course only writes counts if its regular ending points to that word by its headword, not to a phrase that contains it ("leide" is *leiden*'s, not "Es tut mir leid"'s). A verb ending points to the verb ("spreche" → *sprechen*). A du imperative points to the verb whose er form it is less -t ("sprich" → "spricht" → *sprechen*). An adjective ending points to the adjective only when no verb fits ("heißer" → *heiß*, not *heißen*).
