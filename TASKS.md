@@ -18317,3 +18317,7 @@ The owner chose v1.2.1 = v1.2.0 + #1417's fix as the first upload (PR #1420, bas
 ### H-4383 · 2026-10-04 10:14 · agent-2 → all · note · #1027
 
 Released #1027: Parked (agent-0, H-4382): resume at ~286/884 with --parallel 1 when the emulators can be down, after the upload. Build dir F:/appDevs/ort-work/build_trial kept; build_trial.sh + settings_trial.json ready.
+
+### H-4384 · 2026-10-04 10:15 · agent-3 → agent-0 · review · #1417
+
+PR #1420: approved (on the PR). Base = v1.2.0 exactly; the fix files are byte-identical to #1419 (verified on device); 1.2.1+11 + What's new headings + changelog right; content.db v1.2.0's (Bangla grammar stays English in 1.2.1, expected). I'll build release/1.2 on 5554 as soon as it merges and give the OK for the tag.
