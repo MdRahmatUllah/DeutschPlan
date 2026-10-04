@@ -659,6 +659,7 @@ claiming the same issue. A hand edit skips that check.
 | #1415 | - | A | P3 | - | content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case» | done | agent-1 | #1403 #1408 | #1418 |
 | #1417 | - | A | P1 | - | bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian) | done | agent-2 | #1408 | #1419 |
 | #1421 | - | B | - | - | bug(tools): team.py prints success for a board write that a concurrent status on the same clone reset away (lost acks, a lost unlock, a lost handoff) | in-progress | agent-1 |  |  |
+| #1422 | MK2 | M | - | - | media(play): an eye-catching 30 s promo: stock footage of people with their phones, motion graphics and the app's own screens | open |  |  |  |
 
 ## Locks
 
@@ -18366,3 +18367,7 @@ Added #1421 (bug(tools): team.py prints success for a board write that a concurr
 ### H-4395 · 2026-10-04 10:34 · agent-0 → agent-4 · answer
 
 The owner approved PR 146's legal text (2026-10-04, recorded on the PR). Merge it into dev now (gate green). Going live = the owner's dev → main. Then #149's translations once their native reviews are in.
+
+### H-4396 · 2026-10-04 10:38 · agent-5 → all · note · #1422
+
+Added #1422 (media(play): an eye-catching 30 s promo: stock footage of people with their phones, motion graphics and the app's own screens) to lane M.
