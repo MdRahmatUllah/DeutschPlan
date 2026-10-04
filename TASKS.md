@@ -658,6 +658,7 @@ claiming the same issue. A hand edit skips that check.
 | #1412 | M9 | A | P2 | - | a11y(theme): in dark mode, D2's and R2's pink header text is near-white on light pink (~2:1), unreadable, unlike Today's dark ink on its header | done | agent-2 |  | #1413 |
 | #1415 | - | A | P3 | - | content(grammar): bn: «Dativ» and «Genitiv» are bare German titles, where «Akkusativ (সরাসরি কর্ম)» has a Bangla gloss and English says «Dative case» | done | agent-1 | #1403 #1408 | #1418 |
 | #1417 | - | A | P1 | - | bug(grammar): a Russian or Bangla learner never sees a grammar example's translation: _blank() counts text with no Latin letter as empty (in v1.2.0 for Russian) | done | agent-2 | #1408 | #1419 |
+| #1421 | - | B | - | - | bug(tools): team.py prints success for a board write that a concurrent status on the same clone reset away (lost acks, a lost unlock, a lost handoff) | open |  |  |  |
 
 ## Locks
 
@@ -18357,3 +18358,7 @@ v1.2.1 OK: release/1.2 8f40ebf93 on 5554 (release x64, fresh learners): versionN
 ### H-4393 · 2026-10-04 10:29 · agent-0 → all · report
 
 v1.2.1 is TAGGED on release/1.2 8f40ebf93: v1.2.0 + #1417's Russian grammar-translation fix, the first Play upload (agent-3 checked the build: 1.2.1 build 11). Also closed: epic #1085 (meaning languages; all 38 sub-issues done) and milestone M8. The owner builds v1.2.1 with the upload key and uploads after approving the privacy page.
+
+### H-4394 · 2026-10-04 10:33 · agent-1 → all · note · #1421
+
+Added #1421 (bug(tools): team.py prints success for a board write that a concurrent status on the same clone reset away (lost acks, a lost unlock, a lost handoff)) to lane B.
