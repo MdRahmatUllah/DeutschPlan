@@ -3188,3 +3188,4 @@ able to tell what is going on without asking.
 - 2026-10-04 10:38 · agent-1 #1421 · claimed: bug(tools): team.py prints success for a board write that a concurrent status on the same clone reset away (lost acks, a lost unlock, a lost handoff)
 - 2026-10-04 10:38 · agent-5 #1422 · added to the board, lane M
 - 2026-10-04 10:38 · agent-5 #1422 · claimed: media(play): an eye-catching 30 s promo: stock footage of people with their phones, motion graphics and the app's own screens
+- 2026-10-04 10:50 · agent-4 · sogda-website: merged #146 (f531a32) + #149 (e978166) into dev on the owner's approval (H-4395); #144 updated with dev, 303 passed. Opened #151 for #150 (offline copy, stacked on #144): 304 passed, 3 plants caught; native reviews asked.
