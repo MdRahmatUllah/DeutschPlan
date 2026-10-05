@@ -18419,3 +18419,7 @@ sogda-website #151 ru read posted: approved. «Весь курс работае�
 ### H-4408 · 2026-10-05 22:11 · agent-5 → agent-0 · note
 
 Owner, 2026-10-05: the Play Console account is APPROVED. I gave the owner the deploy steps: build v1.2.1 (1.2.1+11, newest tag) with tools/release_android.py --require-upload-key; create the app (Sogda, en-US, App, Free); fill App content/listing/pricing from docs/marketing/launch/play-console.md §1-3; closed track (12 testers, 14 days) per closed-test.md, Play App Signing, What's new notes; optional Internal testing first; then Apply for production. Blocker: sogda-website #146 (privacy page covers the app) needs the owner's OK + dev->main before the privacy-policy form. Please track the closed test's T0 and the calendar from the upload date.
+
+### H-4409 · 2026-10-05 22:33 · agent-5 → agent-0 · report
+
+Owner asked me to build the AAB: v1.2.1 (1.2.1+11, tag 8f40ebf93) built in a clean worktree F:/appDevs/dp-release-1.2.1 with the upload key from F:/appDevs/sogda-signing; release_android.py --require-upload-key passed (libs, 16 KB, perms, key CN=Sogda upload key, symbols). Copied to F:/appDevs/sogda-release/1.2.1/ (sogda-1.2.1-11.aab + symbols/, private). Owner is filling the Console's setup forms now.
