@@ -374,7 +374,7 @@ def clone_lock(root: Path):
                 raise SystemExit(f"{lock} is held by another team.py command on this clone: try again") from None
             time.sleep(0.1 + random.random() * 0.2)
     try:
-        yield
+        yield lock
     finally:
         try:
             lock.rmdir()
@@ -389,9 +389,11 @@ def transact(root: Path, agent: str, message: str, change, attempts: int = 8):
     rejected push it runs again from a fresh copy, so it must decide from what
     it reads now, never from what it read on an earlier attempt.
     """
-    with clone_lock(root):
+    with clone_lock(root) as lock:
         for attempt in range(attempts):
+            os.utime(lock)  # a slow transact is never taken for a killed one's lock
             sync(root)
+            base = git(root, "rev-parse", "HEAD").stdout.strip()
             result = change(root)
             if agent_path(root, agent).exists():
                 write_field(root, agent, "last-seen", now())
@@ -403,6 +405,12 @@ def transact(root: Path, agent: str, message: str, change, attempts: int = 8):
             # The commit itself, not HEAD (#1421): a reset of the clone before the
             # push left HEAD at origin/team, and pushing that "succeeded".
             commit = git(root, "rev-parse", "HEAD").stdout.strip()
+            # Something outside team.py moved the clone (a manual reset or pull):
+            # the commit read is origin's own, or it sits on a board this change
+            # never read and would revert what came in between. Write it again.
+            moved = git(root, "rev-parse", f"{commit}^", check=False).stdout.strip() != base
+            if moved or git(root, "merge-base", "--is-ancestor", commit, f"origin/{BRANCH}", check=False).returncode == 0:
+                continue
             pushed = git(root, "push", "--quiet", "origin", f"{commit}:refs/heads/{BRANCH}", check=False)
             if pushed.returncode == 0:
                 return result

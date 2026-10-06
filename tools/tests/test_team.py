@@ -419,3 +419,54 @@ def test_1421_a_lock_left_by_a_killed_command_is_broken(team_repo, monkeypatch):
     team.cmd_claim(a1, "agent-1", 12)
     assert board(a1).task(12).owner == "agent-1"
     assert not lock.exists()
+
+
+def test_1421_a_reset_between_commit_and_reading_it_writes_the_change_again(team_repo, monkeypatch):
+    # The window agent-0 named: a reset after the commit but before its sha is
+    # read leaves HEAD at origin's head, and pushing that would "succeed". Here
+    # origin moved by one commit on this change's own base, so only the check
+    # that the commit read isn't on origin already can tell.
+    a1, a2 = team_repo["agent-1"], team_repo["agent-2"]
+    real = team.git
+    commits = []
+
+    def reset_after_commit(root, *args, check=True):
+        if args[:2] == ("rev-parse", "HEAD") and Path(root) == a1 and len(commits) == 1:
+            commits.append("reset")  # once: the first attempt's commit only
+            team.cmd_msg(a2, "agent-2", "agent-1", "note", "one commit on the same base", None)
+            real(root, "fetch", "--quiet", "origin", team.BRANCH)
+            real(root, "reset", "--quiet", "--hard", f"origin/{team.BRANCH}")
+        result = real(root, *args, check=check)
+        if args[0] == "commit" and Path(root) == a1:
+            commits.append("commit")
+        return result
+
+    monkeypatch.setattr(team, "git", reset_after_commit)
+    team.cmd_claim(a1, "agent-1", 12)
+    monkeypatch.setattr(team, "git", real)
+    assert "agent-1: claim #12" in real(a1, "log", "--format=%s", f"origin/{team.BRANCH}").stdout
+    assert board(a1).task(12).owner == "agent-1"
+
+
+def test_1421_a_pull_under_a_change_never_reverts_what_came_in(team_repo, monkeypatch):
+    # agent-3's case: a plain `git pull` in the writing clone fast-forwarded
+    # while a change was being written. The commit then sat on the pulled board
+    # with the old TASKS.md, and its push reverted the handoff that came in.
+    a1, a2 = team_repo["agent-1"], team_repo["agent-2"]
+    real = team.git
+    pulled = []
+
+    def pull_before_commit(root, *args, check=True):
+        if args[0] == "commit" and Path(root) == a1 and not pulled:
+            pulled.append(True)
+            team.cmd_msg(a2, "agent-2", "agent-1", "note", "a handoff that came in", None)
+            real(root, "fetch", "--quiet", "origin", team.BRANCH)
+            real(root, "update-ref", f"refs/heads/{team.BRANCH}", f"origin/{team.BRANCH}")
+        return real(root, *args, check=check)
+
+    monkeypatch.setattr(team, "git", pull_before_commit)
+    team.cmd_claim(a1, "agent-1", 12)
+    monkeypatch.setattr(team, "git", real)
+    assert pulled
+    assert "a handoff that came in" in (team.sync(a1) or (a1 / "TASKS.md").read_text(encoding="utf-8"))
+    assert board(a1).task(12).owner == "agent-1"
