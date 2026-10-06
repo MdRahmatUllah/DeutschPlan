@@ -5,17 +5,20 @@
 #
 # One take per meaning language (#1355, agent-0 on #1348), so each cut's card
 # shows its own guide: en and de the English respelling, pl Polish letters, ru
-# Cyrillic. Each take's `prepare` makes its learner, unrecorded: a fresh A1.1
-# learner at Relaxed · 5 in that app language, three cards studied, the app on
-# Today in the background (Today says «Continue · 3 left»: its practice
-# sentence counts, but the card session holds two). bn's cut is the first
-# recording's (emulator-5558, #1348), approved as it was.
+# Cyrillic, bn Bangla letters. Each take's `prepare` makes its learner,
+# unrecorded: a fresh A1.1 learner at Relaxed · 5 in that app language, three
+# cards studied, the app on Today in the background (Today says «Continue · 3
+# left»: its practice sentence counts, but the card session holds two). bn
+# keeps setup's default English second (#1156); its take replaced the first
+# 5558 recording's English screens and 1.1.0 count (agent-5, launch week).
 #
 # Recorded on emulator-5556 (1080 x 1920, the media lane's:
 # `video.py flight-mode --serial emulator-5556` under `team.py lock
 # emulator-5556`). Taps by position (at:), as label taps wait for a UI dump:
 # Today's primary button, then Show meaning and Good, where the screens draw
-# them there. Captions in the listing's own words (de: messaging.md's, a draft).
+# them there; each setup leaves its session by its close button (at 77,120),
+# as a back key there lost Today's next tap on v1.2.1's build (bn's takes).
+# Captions in the listing's own words (de: messaging.md's, a draft).
 locales: [en, bn, pl, ru, de]
 takes:
   en:
@@ -55,7 +58,7 @@ takes:
       - "at:667,1694"
       - sleep2
       - sleep8
-      - back
+      - "at:77,120"
       - sleep3
   pl:
     locales: [pl]
@@ -95,7 +98,7 @@ takes:
       - "at:667,1694"
       - sleep2
       - sleep8
-      - back
+      - "at:77,120"
       - sleep3
   ru:
     locales: [ru]
@@ -135,7 +138,44 @@ takes:
       - "at:667,1694"
       - sleep2
       - sleep8
-      - back
+      - "at:77,120"
+      - sleep3
+  bn:
+    locales: [bn]
+    prepare:
+      - "shell:pm clear de.sogda.app"
+      - launch
+      - sleep4
+      - "tap:বাংলা"
+      - "tap:শুরু করি"
+      - sleep2
+      - "tap:চালিয়ে যান"
+      - sleep2
+      - "tap:A1.1"
+      - "tap:চালিয়ে যান"
+      - sleep2
+      - "tap:ধীরে"
+      - "tap:চালিয়ে যান"
+      - sleep2
+      - "tap:পরে"
+      - "tap:শেখা শুরু করুন"
+      - sleep4
+      - "at:540,1531"
+      - sleep3
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - "at:540,1699"
+      - sleep2
+      - "at:667,1694"
+      - sleep2
+      - sleep8
+      - "at:77,120"
       - sleep3
 before:
   - cmd connectivity airplane-mode enable
@@ -145,15 +185,20 @@ after:
 steps:
   - sleep2
   - "shell:am start -n de.sogda.app/.MainActivity"
-  - sleep2
+  # Time for Today to take taps after the task comes back (bn's took ~5 s on
+  # v1.2.1's build, a cold start's splash included: a tap at 2-3 s was lost),
+  # then for the card screen's way in: a tap during it lands on Today's tab
+  # bar (Search).
+  - sleep5
   - "at:540,1531"
+  - sleep1
   - "at:540,1699"
   - "at:667,1694"
   - "at:540,1699"
   - "at:667,1694"
   # The session's sheet, with the last rating's undo, to the cut's end.
   - sleep9
-cut: [1, 13]
+cut: [1, 17]
 captions:
   # Each caption over its screen: the home screen to 2.2 s, then Today and
   # the cards, then «Gut gemacht!».
@@ -166,15 +211,15 @@ captions:
       ru: Режим полёта включён
       de: Flugmodus an
   - from: 2.5
-    to: 7.5
+    to: 11.5
     text:
       en: No account and no signal needed
       bn: অ্যাকাউন্ট বা ইন্টারনেট লাগে না
       pl: Bez konta i bez zasięgu
       ru: Без аккаунта и без сети
       de: Ohne Konto, ohne Netz
-  - from: 7.8
-    to: 12
+  - from: 11.8
+    to: 16
     text:
       en: Your progress stays on this phone
       bn: আপনার অগ্রগতি এই ফোনেই থাকে
