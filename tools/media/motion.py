@@ -13,7 +13,7 @@ is each language's own take, `build/media/promo-<lang>.mp4`, which
 The base cut: each shot's stock clip at 30 fps, cropped to 1920 x 1080 with a
 slow push-in, or with the app keyed onto its green screen (OpenCV: the
 screen's quadrilateral each frame, the app warped into it, a finger kept on
-top since it isn't green). Then `templates/motion.html`, whose `render(t)`
+top since it isn't green). Then `motion/motion.html`, whose `render(t)`
 places every sticker, phone and wipe for time t, is screenshot frame by frame
 (Playwright, transparent) and laid over the base cut by ffmpeg.
 """
@@ -42,7 +42,7 @@ from posts import fill  # noqa: E402
 
 HERE = Path(__file__).parent
 SPEC = HERE / "motion" / "promo.yaml"
-TEMPLATE = HERE / "templates" / "motion.html"
+TEMPLATE = HERE / "motion" / "motion.html"
 BUILD = ROOT / "build" / "media"
 STORE = ROOT / "docs" / "05-dev-guide" / "store"
 W, H, FPS = 1920, 1080, 30
