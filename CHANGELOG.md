@@ -2,6 +2,13 @@
 
 Sogda's releases (named DeutschPlan up to 1.0.1; see ADR 28). The version is `pubspec.yaml`'s; each entry is dated in the commit that tags it (`docs/05-dev-guide/release.md`, step 7).
 
+## [1.2.1] — 2026-10-04
+
+The first release on Google Play: 1.2.0 with one fix.
+
+### Fixed
+- **A grammar example's translation shows in Russian** (and in any meaning language not written in Latin letters): L4 and L15 had hidden it, as text with no Latin letter counted as empty (#1417).
+
 ## [1.2.0] — 2026-10-04
 
 Learn from your own documents, 73 everyday words, and translation on the phone.

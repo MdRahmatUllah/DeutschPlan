@@ -2,7 +2,7 @@
  "schema": 1,
  "content_version": "20261003234128",
  "app": {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "package": "de.sogda.app",
   "min_sdk": 26,
   "min_android": "8.0"

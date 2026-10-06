@@ -53,7 +53,7 @@ MADE FOR YOU
 • Light, dark and glass themes, text up to 200 %, and screen-reader support
 • The app in English, Bangla, Polish or Russian
 
-### What's new (1.2.0)
+### What's new (1.2.1)
 New: learn from the German you meet. Paste or share a text, photograph a letter, or choose a PDF: Sogda reads it on your phone, marks the words you don't know yet by level, and adds the ones you pick to your plan with the sentence you met them in. My documents keeps them to reopen. And translation on the phone with Hy-MT2, an optional download: example sentences, and meanings for words outside the course. Nothing leaves your phone.
 
 ## Bangla (bn-BD)
@@ -100,7 +100,7 @@ Sogda একটি অফলাইন জার্মান কোর্স অ�
 • লাইট, ডার্ক আর গ্লাস থিম, ২০০ % পর্যন্ত বড় লেখা, আর স্ক্রিন রিডার সাপোর্ট
 • অ্যাপ ইংরেজি, বাংলা, পোলিশ বা রুশ ভাষায়
 
-### What's new (1.2.0)
+### What's new (1.2.1)
 নতুন: চারপাশের জার্মান থেকে শিখুন। একটি লেখা পেস্ট বা শেয়ার করুন, চিঠির ছবি তুলুন, বা একটি PDF বেছে নিন: Sogda আপনার ফোনেই সেটি পড়ে, যে শব্দগুলো এখনো জানেন না সেগুলো লেভেল অনুযায়ী চিহ্নিত করে, আর আপনি যেগুলো বাছেন সেগুলো যে বাক্যে পেয়েছেন সেটিসহ আপনার প্ল্যানে যোগ করে। "আমার ডকুমেন্ট"-এ সেগুলো থাকে, আবার খোলার জন্য। সঙ্গে ফোনেই অনুবাদ, Hy-MT2 দিয়ে (ঐচ্ছিক ডাউনলোড): উদাহরণ বাক্য, আর কোর্সের বাইরের শব্দের অর্থ। কিছুই আপনার ফোনের বাইরে যায় না।
 
 ## Polish (pl-PL)
@@ -147,7 +147,7 @@ DLA CIEBIE
 • Motyw jasny, ciemny i szklany, tekst do 200 % i obsługa czytników ekranu
 • Aplikacja po polsku, angielsku, bengalsku lub rosyjsku
 
-### What's new (1.2.0)
+### What's new (1.2.1)
 Nowość: ucz się z własnych tekstów. Wklej lub udostępnij tekst, zrób zdjęcie listu albo wybierz PDF: Sogda czyta go na Twoim telefonie, zaznacza według poziomu słowa, których jeszcze nie znasz, i dodaje wybrane do planu razem ze zdaniem, z którego pochodzą. „Moje dokumenty” przechowują je na później. Do tego tłumaczenie na telefonie z Hy-MT2 (opcjonalne pobranie): przykładowe zdania i znaczenia słów spoza kursu. Nic nie opuszcza Twojego telefonu.
 
 ## Russian (ru-RU)
@@ -194,7 +194,7 @@ Sogda — приложение с офлайн-курсом немецкого: 
 • Светлая, тёмная и стеклянная тема, текст до 200 % и поддержка программ экранного доступа
 • Приложение на русском, английском, бенгальском или польском
 
-### What's new (1.2.0)
+### What's new (1.2.1)
 Новое: учись на немецком, который встречаешь. Вставь текст или поделись им, сфотографируй письмо или выбери PDF: Sogda прочитает его на телефоне, отметит по уровням слова, которых ты ещё не знаешь, и добавит выбранные в план вместе с предложением, из которого они взяты. «Мои документы» хранят их, чтобы открыть снова. А ещё перевод на телефоне с Hy-MT2 (по желанию, отдельная загрузка): примеры предложений и значения слов вне курса. Ничего не покидает твой телефон.
 
 ## Screenshots
