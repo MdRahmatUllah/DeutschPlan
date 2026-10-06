@@ -89,3 +89,7 @@ content/build/
 
 # tools/team.py: which agent works in this worktree (one per worktree, never shared)
 .dp-agent
+
+# Local tool folders: Claude Code agents' git worktrees and the Playwright MCP's output.
+.claude/worktrees/
+.playwright-mcp/
