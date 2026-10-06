@@ -364,3 +364,109 @@ def test_697_two_agents_breaking_one_stale_lock_leave_one_holder(tmp_path, monke
     with pytest.raises(team.Refused):
         team.cmd_device(tmp_path, "agent-3", release=False)
     assert (tmp_path / ".device.lock" / "owner").read_text(encoding="utf-8").startswith("agent-2")
+
+
+def test_1421_a_reset_between_commit_and_push_never_reports_a_write_that_is_not_on_the_board(team_repo, monkeypatch):
+    # Another command's sync() reset the clone after this one committed: HEAD
+    # went back to origin/team, the push sent nothing and still returned 0, and
+    # the claim was printed as made while the board never got it.
+    a1 = team_repo["agent-1"]
+    real = team.git
+
+    def reset_first(root, *args, check=True):
+        if args[0] == "push":
+            real(root, "reset", "--quiet", "--hard", f"origin/{team.BRANCH}")
+        return real(root, *args, check=check)
+
+    monkeypatch.setattr(team, "git", reset_first)
+    team.cmd_claim(a1, "agent-1", 12)
+    monkeypatch.setattr(team, "git", real)
+    log = real(a1, "log", "--format=%s", f"origin/{team.BRANCH}").stdout
+    assert "agent-1: claim #12" in log
+    assert board(a1).task(12).owner == "agent-1"
+
+
+def test_1421_two_commands_on_one_clone_take_turns(team_repo):
+    import threading
+
+    a1 = team_repo["agent-1"]
+    entered = threading.Event()
+
+    def hold():
+        with team.clone_lock(a1):
+            entered.set()
+            time.sleep(1.0)
+
+    holder = threading.Thread(target=hold)
+    holder.start()
+    entered.wait(5)
+    start = time.time()
+    with team.clone_lock(a1):
+        waited = time.time() - start
+    holder.join()
+    assert waited >= 0.8
+    assert not (a1 / ".git" / "team.lock").exists()
+
+
+def test_1421_a_lock_left_by_a_killed_command_is_broken(team_repo, monkeypatch):
+    # Short, so a lock that is never broken fails in seconds (the wait is twice it).
+    monkeypatch.setattr(team, "CLONE_LOCK_STALE_SECONDS", 5)
+    a1 = team_repo["agent-1"]
+    lock = a1 / ".git" / "team.lock"
+    lock.mkdir()
+    old = time.time() - 15
+    os.utime(lock, (old, old))
+    team.cmd_claim(a1, "agent-1", 12)
+    assert board(a1).task(12).owner == "agent-1"
+    assert not lock.exists()
+
+
+def test_1421_a_reset_between_commit_and_reading_it_writes_the_change_again(team_repo, monkeypatch):
+    # The window agent-0 named: a reset after the commit but before its sha is
+    # read leaves HEAD at origin's head, and pushing that would "succeed". Here
+    # origin moved by one commit on this change's own base, so only the check
+    # that the commit read isn't on origin already can tell.
+    a1, a2 = team_repo["agent-1"], team_repo["agent-2"]
+    real = team.git
+    commits = []
+
+    def reset_after_commit(root, *args, check=True):
+        if args[:2] == ("rev-parse", "HEAD") and Path(root) == a1 and len(commits) == 1:
+            commits.append("reset")  # once: the first attempt's commit only
+            team.cmd_msg(a2, "agent-2", "agent-1", "note", "one commit on the same base", None)
+            real(root, "fetch", "--quiet", "origin", team.BRANCH)
+            real(root, "reset", "--quiet", "--hard", f"origin/{team.BRANCH}")
+        result = real(root, *args, check=check)
+        if args[0] == "commit" and Path(root) == a1:
+            commits.append("commit")
+        return result
+
+    monkeypatch.setattr(team, "git", reset_after_commit)
+    team.cmd_claim(a1, "agent-1", 12)
+    monkeypatch.setattr(team, "git", real)
+    assert "agent-1: claim #12" in real(a1, "log", "--format=%s", f"origin/{team.BRANCH}").stdout
+    assert board(a1).task(12).owner == "agent-1"
+
+
+def test_1421_a_pull_under_a_change_never_reverts_what_came_in(team_repo, monkeypatch):
+    # agent-3's case: a plain `git pull` in the writing clone fast-forwarded
+    # while a change was being written. The commit then sat on the pulled board
+    # with the old TASKS.md, and its push reverted the handoff that came in.
+    a1, a2 = team_repo["agent-1"], team_repo["agent-2"]
+    real = team.git
+    pulled = []
+
+    def pull_before_commit(root, *args, check=True):
+        if args[0] == "commit" and Path(root) == a1 and not pulled:
+            pulled.append(True)
+            team.cmd_msg(a2, "agent-2", "agent-1", "note", "a handoff that came in", None)
+            real(root, "fetch", "--quiet", "origin", team.BRANCH)
+            real(root, "update-ref", f"refs/heads/{team.BRANCH}", f"origin/{team.BRANCH}")
+        return real(root, *args, check=check)
+
+    monkeypatch.setattr(team, "git", pull_before_commit)
+    team.cmd_claim(a1, "agent-1", 12)
+    monkeypatch.setattr(team, "git", real)
+    assert pulled
+    assert "a handoff that came in" in (team.sync(a1) or (a1 / "TASKS.md").read_text(encoding="utf-8"))
+    assert board(a1).task(12).owner == "agent-1"
