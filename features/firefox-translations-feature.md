@@ -5,7 +5,7 @@
 | **Product** | Sogda (German A1–C2; Bangla and Polish meaning languages) |
 | **Target release** | Next release after the current Hy-MT2 release |
 | **Status** | Planned — specification |
-| **Owner** | Product: Maruf · Engineering: app team |
+| **Owner** | Product: the owner · Engineering: app team |
 | **Related** | Hy-MT2 translation (current release) · PR #534 (offline translator research) · Issue #1070 (Model manager Hy-MT card) · ADR 9 (translation) |
 
 ---
