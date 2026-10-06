@@ -1,0 +1,20 @@
+1
+00:00:00,000 --> 00:00:03,400
+Your plan for today, ready when you open the app
+
+2
+00:00:03,700 --> 00:00:13,200
+Every word with its meaning and a pronunciation guide
+
+3
+00:00:13,500 --> 00:00:17,200
+Say how well you knew it: spaced revision brings it back in time
+
+4
+00:00:17,500 --> 00:00:25,200
+Share a letter you got in German: its new words, marked by level
+
+5
+00:00:25,500 --> 00:00:30,000
+A whole German course, A1 to C2: offline, no account
+

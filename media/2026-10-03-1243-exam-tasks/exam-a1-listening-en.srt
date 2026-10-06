@@ -1,0 +1,12 @@
+1
+00:00:00,000 --> 00:00:06,500
+A1 listening: hear the word, write what you hear
+
+2
+00:00:06,800 --> 00:00:10,400
+The timer runs, and there's no feedback until the end
+
+3
+00:00:10,700 --> 00:00:13,100
+Then the result, section by section
+

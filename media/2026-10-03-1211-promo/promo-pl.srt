@@ -1,0 +1,20 @@
+1
+00:00:00,000 --> 00:00:03,400
+Plan na dziś czeka, gdy tylko otworzysz aplikację
+
+2
+00:00:03,700 --> 00:00:13,200
+Każde słowo ze znaczeniem po polsku i wymową zapisaną polskimi literami
+
+3
+00:00:13,500 --> 00:00:17,200
+Oceń, jak dobrze pamiętasz słowo: powtórka przyjdzie w porę
+
+4
+00:00:17,500 --> 00:00:25,200
+Udostępnij list po niemiecku: nowe słowa z kursu, zaznaczone według poziomu
+
+5
+00:00:25,500 --> 00:00:30,000
+Cały kurs od A1 do C2. Offline, bez konta
+
