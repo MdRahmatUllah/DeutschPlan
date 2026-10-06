@@ -1,0 +1,125 @@
+# #1422: the eye-catching promo, 30 s at 16:9, one render per listing language.
+# tools/media/motion.py puts templates/motion.html's frames (the type, the
+# stickers, the phones; frame-exact, Playwright) over a base cut of stock
+# footage and the app composited onto stock green-screen phones.
+#
+# Stock: Pexels only (https://www.pexels.com/license/, read 2026-10-04:
+# free to use and modify, no attribution; never imply that the people shown
+# endorse the product). So the app appears only on hands-only phones and in
+# our own frames, and the people who show their faces are scenery, never
+# "learners". The clips are fetched by id into build/ (never committed:
+# their licence forbids redistributing them unaltered).
+#
+# Copy: each line is a reviewed one (messaging.md, the #1211 promo, the
+# kit), split at a comma or colon to fit a sticker. Numbers are
+# site-facts.json tokens; pl and ru write «label: count» (#1379).
+
+license: https://www.pexels.com/license/
+stock:
+  gate: {id: 29955338, what: "Brandenburg Gate, Berlin, at night", page: "https://www.pexels.com/video/night-view-of-brandenburg-gate-in-berlin-29955338/"}
+  study: {id: 5272272, what: "a young man studying at a laptop", page: "https://www.pexels.com/video/young-man-studying-through-online-learning-5272272/"}
+  park: {id: 12039563, what: "a hand holding a green-screen phone in a park", page: "https://www.pexels.com/video/green-screen-on-cellhpone-12039563/"}
+  desk: {id: 13107026, what: "hands with a green-screen phone at a desk", page: "https://www.pexels.com/video/hands-holding-cellphone-with-green-screen-13107026/"}
+  sky: {id: 13879887, what: "an airplane window above the clouds", page: "https://www.pexels.com/video/view-from-an-airplane-window-flying-among-the-clouds-13879887/"}
+
+# The base cut: [from, to] in the video, what fills it, and from where.
+# `app` puts the learner's own take of the app (build/media/promo-<lang>.mp4,
+# made by `video.py promo --record`) on the clip's green screen, from `app_at`.
+# `scale` and `x` frame a clip (bigger by scale, cropped at x: 0 left, 1 right);
+# `zoom` pushes in slowly.
+shots:
+  - {from: 0.0, to: 1.7, stock: gate, at: 1.0, zoom: 0.06}
+  - {from: 1.7, to: 3.4, stock: study, at: 2.0, zoom: 0.04}
+  - {from: 3.4, to: 8.2, stock: park, at: 0.5, app_at: 1.0}
+  - {from: 8.2, to: 13.0}
+  - {from: 13.0, to: 17.0, stock: desk, at: 0.0, app_at: 19.0, scale: 1.3, x: 0.0}
+  - {from: 17.0, to: 21.6}
+  - {from: 21.6, to: 25.4, stock: sky, at: 2.0, zoom: 0.05}
+  - {from: 25.4, to: 30.0}
+
+locales: [en, bn, pl, ru]
+
+# The app's screens in the motion scenes: docs/05-dev-guide/store/<set>/.
+sets: {en: phone-light, bn: bn-phone-light, pl: pl-phone-light, ru: ru-phone-light}
+
+copy:
+  hook_1:
+    en: A whole German course
+    bn: জার্মানি যাওয়ার প্রস্তুতি নিচ্ছেন?
+    pl: Niemiecki od zera do C2
+    ru: Немецкий от A1 до C2
+  hook_2:
+    en: on your phone
+    bn: A1 থেকে C2 পর্যন্ত জার্মান শিখুন
+    pl: w całości po polsku
+    ru: и всё на русском
+  today_1:
+    en: Your plan for today
+    bn: অ্যাপ খুললেই
+    pl: Plan na dziś czeka
+    ru: План на сегодня готов
+  today_2:
+    en: ready when you open the app
+    bn: আজকের পরিকল্পনা তৈরি থাকে
+    pl: gdy tylko otworzysz aplikację
+    ru: как только откроешь приложение
+  card:
+    en: Every word with its meaning and a pronunciation guide
+    bn: প্রতিটি শব্দের অর্থ বাংলায় আর উচ্চারণ বাংলা অক্ষরে
+    pl: Każde słowo ze znaczeniem po polsku i wymową zapisaną polskimi literami
+    ru: Каждое слово — со значением на русском и произношением кириллицей
+  meaning:
+    en: Meaning
+    bn: অর্থ
+    pl: Znaczenie
+    ru: Значение
+  guide:
+    en: Pronunciation
+    bn: উচ্চারণ
+    pl: Wymowa
+    ru: Произношение
+  letter_1:
+    en: Share a letter you got in German
+    bn: জার্মান ভাষায় পাওয়া একটি চিঠি শেয়ার করুন
+    pl: Udostępnij list po niemiecku
+    ru: Поделись письмом на немецком
+  letter_2:
+    en: its new words, marked by level
+    bn: কোর্সের নতুন শব্দগুলো, লেভেল ধরে চিহ্নিত
+    pl: nowe słowa z kursu, zaznaczone według poziomu
+    ru: новые слова из курса, отмеченные по уровням
+  steps:
+    en: "{totals.steps} steps"
+    bn: "{totals.steps}টি ধাপ"
+    pl: "etapy: {totals.steps}"
+    ru: "этапов: {totals.steps}"
+  words:
+    en: "{totals.words} words"
+    bn: "{totals.words}টি শব্দ"
+    pl: "słowa: {totals.words}"
+    ru: "слов: {totals.words}"
+  grammar:
+    en: "{totals.grammar_topics} grammar topics"
+    bn: "{totals.grammar_topics}টি ব্যাকরণ বিষয়"
+    pl: "tematy gramatyczne: {totals.grammar_topics}"
+    ru: "грамматических тем: {totals.grammar_topics}"
+  exams:
+    en: "{totals.mock_exams} mock exams"
+    bn: "{totals.mock_exams}টি মক পরীক্ষা"
+    pl: "egzaminy próbne: {totals.mock_exams}"
+    ru: "пробных экзаменов: {totals.mock_exams}"
+  offline_1:
+    en: A whole German course, A1 to C2
+    bn: A1 থেকে C2 পর্যন্ত পুরো কোর্স
+    pl: Cały kurs od A1 do C2
+    ru: Полный курс немецкого от A1 до C2
+  offline_2:
+    en: offline, no account
+    bn: ইন্টারনেট আর অ্যাকাউন্ট ছাড়াই
+    pl: Offline, bez konta
+    ru: без интернета и без аккаунта
+  end:
+    en: Learn German A1–C2
+    bn: জার্মান ভাষা A1–C2
+    pl: Niemiecki od zera do C2
+    ru: Немецкий с нуля до C2
