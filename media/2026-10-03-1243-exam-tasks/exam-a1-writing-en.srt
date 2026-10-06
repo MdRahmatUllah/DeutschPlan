@@ -1,0 +1,12 @@
+1
+00:00:00,000 --> 00:00:05,500
+A1 writing: a short message with the given words
+
+2
+00:00:05,800 --> 00:00:09,500
+The given words light up as you use them: at least 30 words
+
+3
+00:00:09,800 --> 00:00:12,200
+Then the result, section by section
+
